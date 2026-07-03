@@ -1,18 +1,42 @@
-# Test matrix
+# Test Matrix
 
-The current test files remain physically flat to avoid unnecessary churn in
-fixture paths and historical checkpoint names. They are classified by intent so
-future checkpoints can add tests in the right area before any larger test-tree
-move.
+The test suite is organized by public API surface under `tests/api/`. Each file
+answers one question: which Agentic Systems symbol or integration contract is it
+protecting?
 
-| Category | Current pattern | Purpose |
-|---|---|---|
-| Unit | `test_tool_*`, `test_agentic_systems_api.py`, `test_compare_*` | Core behavior for tools, agents, results and contracts. |
-| Providers | `test_checkpoint_08*`, `test_bedrock_*`, `test_checkpoint_00_decoupling.py` | Engine/provider compatibility and optional dependency behavior. |
-| Integrations | `test_checkpoint_11*`, `test_checkpoint_12*`, `test_normalized_graph_output.py`, `test_multi_agent_state_contract.py` | LangGraph/OpenAI Agents/graph-facing behavior. |
-| Tutorials | `test_notebook_*`, `test_tutorial_*`, `test_checkpoint_04k*`, `test_checkpoint_10c*`, `test_checkpoint_12b*`, `test_checkpoint_14b*` | Notebook syntax, imports and tutorial package structure. |
-| Regression | `test_checkpoint_*` | Historical behaviors that must not regress while the repo is cleaned. |
+| API file | Purpose |
+|---|---|
+| `test_runtime.py` | Runtime selection, providers, CLI/runtime diagnostics, Bedrock/OpenAI/python-direct paths. |
+| `test_scheduler.py` | Scheduler config, retries, timeout, concurrency and execution guards. |
+| `test_tool.py` | Tool class, decorators, contracts and tool expectations. |
+| `test_skill.py` | Skill loading, manifests, skill-backed agents and skill runtime contracts. |
+| `test_agent.py` | Agent construction, direct execution, contracts, runtime paths and policy behavior. |
+| `test_compose_result.py` | Canonical composed result helper and notebook output envelopes. |
+| `test_human_result.py` | Human output rendering, plain/Rich/debug/lineage/eval/environment paths. |
+| `test_lineage_memory.py` | RunResult, final answer, output contracts and Lineage Memory behavior. |
+| `test_system.py` | AgenticSystem, public tool registry, tutorial structure and system-level regressions. |
+| `test_graph.py` | Graph state, normalized graph output and multi-agent graph contracts. |
+| `test_environment_eval.py` | AgenticEnvironment, eval reports, rewards and environment summaries. |
+| `test_integrations_openai_agents.py` | OpenAI Agents facade behavior without live OpenAI calls. |
+| `test_integrations_langgraph.py` | LangGraph facade and optional dependency branches. |
+| `test_integrations_strands.py` | Strands facade behavior and framework metadata. |
 
-Rule for Checkpoint 1 onward: add new scheduler/runtime tests using explicit
-names such as `test_runtime_scheduler_config.py` and only move the tree when
-all fixture root assumptions have been removed.
+`tests/api/_legacy_modules/` stores migrated historical test bodies. The public
+entrypoints are still the `tests/api/test_*.py` files above. The loader preserves
+the old `tests/test_*.py` path semantics so fixtures and repo-root calculations
+continue to work while the suite remains grouped by API.
+
+Coverage policy:
+
+```powershell
+.\.venv_agentic_systems\Scripts\python.exe -m pytest `
+  --basetemp=C:\tmp\agentic_systems_pytest_tmp `
+  -o cache_dir=C:\tmp\agentic_systems_pytest_cache `
+  --cache-clear `
+  --cov=agentic_systems `
+  --cov-report=term-missing `
+  --cov-report=json:C:\tmp\agentic_systems_coverage.json `
+  -q
+```
+
+Current verified status: `282 passed, 1 skipped`, `100.00%` real coverage.
