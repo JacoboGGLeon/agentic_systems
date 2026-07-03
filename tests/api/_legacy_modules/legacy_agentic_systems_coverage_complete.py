@@ -28,7 +28,7 @@ from agentic_systems.providers.openai_runtime import OpenAIRuntimeProvider
 from agentic_systems.skills import load_skill
 from agentic_systems.system import InspectReport, _return_annotation_is_dict
 from agentic_systems.tools.compat import Toolkit, assert_dict_tool_output, expand_tool_inputs, now_ms
-from agentic_systems.testing import ControlledBedrockRuntime, attach_controlled_runtime
+from tests.api._controlled_bedrock_runtime import ControlledBedrockRuntime, attach_controlled_runtime
 from agentic_systems.utils import _discover_repo_root, _to_jsonable, configure_notebook_environment, show_json
 
 
