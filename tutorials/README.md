@@ -1,4 +1,4 @@
-# Tutorials
+﻿# Tutorials
 
 `tutorials/` es la ruta pedagogica oficial del repo.
 
@@ -34,10 +34,14 @@ Memory / Lineage -> Runtime -> Provider -> Integrations
 | 4 | `04_human_result_api.ipynb` | RunResult, final answer y salida humana. |
 | 5 | `05_lineage_memory_api.ipynb` | Memory / Lineage como auditoria de ejecucion. |
 | 6 | `06_integrations_strands_api.ipynb` | Integrations: Strands. |
-| 7 | `07_integrations_openai_runtime_api.ipynb` | Integrations: OpenAI Runtime. |
+| 7 | `07_integrations_openai_runtime_api.ipynb` | Integrations: OpenAI Agents framework sobre runtime agnostico. |
 | 8 | `08_system_api.ipynb` | System API: registry, skills, agents y pipeline determinista. |
 | 9 | `09_graph_api.ipynb` | Graph API: state, nodes, edges y `agent.as_node(...)`. |
 | 10 | `10_environment_eval_api.ipynb` | Environment, reward, evals y estadisticas. |
+| 11 | `11_multi_agentic_system_api.ipynb` | Sistema multi-agente con agentes deterministas y LM opcional. |
+| 12 | `12_multi_agentic_graph_api.ipynb` | Graph multi-agente con nodos, estado y fallback local. |
+| 13 | `13_single_agentic_system_api.ipynb` | Recorrido completo single-agent: Tool -> Agent -> Environment -> Eval. |
+| 14 | `14_multi_agentic_system_api.ipynb` | Recorrido completo multi-agent: System -> Graph -> Environment -> Eval. |
 
 ## Regla De Ejecucion
 
@@ -74,3 +78,5 @@ lab.show(lab.runtime(provider="auto").describe(), title="Auto runtime - describe
 ```
 
 No hay rutas ocultas de negocio ni dependencias en `examples/`.
+
+

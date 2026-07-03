@@ -1,4 +1,4 @@
-# API - Agentic Systems
+﻿# API - Agentic Systems
 
 This document describes the public API as a stable product surface. Tutorials
 teach the same API step by step; source modules implement it.
@@ -402,7 +402,7 @@ Tutorials are the canonical learning path:
 
 | Notebook | API focus |
 |---|---|
-| `00_runtime_api.ipynb` | `runtime`, `RuntimeConfig.describe`, default problem. |
+| `00_runtime_api.ipynb` | `runtime`, `scheduler`, `RuntimeConfig.describe`, provider auto y engines canonicos. |
 | `00_runtime_bedrock_provider_api.ipynb` | `bedrock-runtime`, AWS diagnostics, Converse and embeddings smoke. |
 | `00_runtime_openai_provider_api.ipynb` | `openai-runtime`, OpenAI config and native provider smoke. |
 | `00_runtime_scheduler_api.ipynb` | `scheduler`, limits, retry and timeout behavior. |
@@ -416,6 +416,10 @@ Tutorials are the canonical learning path:
 | `08_system_api.ipynb` | `AgenticSystem`, registry, inspect and deterministic pipeline. |
 | `09_graph_api.ipynb` | `agent_node`, `graph`, state and node orchestration. |
 | `10_environment_eval_api.ipynb` | `AgenticEnvironment`, rewards, `run_eval`, reports. |
+| `11_multi_agentic_system_api.ipynb` | Multi-agent native system with deterministic and optional LM agents. |
+| `12_multi_agentic_graph_api.ipynb` | Multi-agent graph with state, nodes and local fallback. |
+| `13_single_agentic_system_api.ipynb` | End-to-end single-agent system path. |
+| `14_multi_agentic_system_api.ipynb` | End-to-end multi-agent system path. |
 
 ## Documentation Rules
 
@@ -539,4 +543,6 @@ providers
 integrations
 __version__
 ```
+
+
 
