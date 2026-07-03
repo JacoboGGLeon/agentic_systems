@@ -1,0 +1,120 @@
+{
+  "version": "1.2",
+  "engine": "athena",
+  "allowed_schemas": ["main"],
+  "defaults": {
+    "time_window_months": 12,
+    "currency": "moneda local",
+    "round_digits": 2
+  },
+
+  "business_glossary": {
+    "MTM": "Mark-to-Market: valor de mercado de un instrumento financiero.",
+    "Nominal": "Monto nocional del contrato financiero.",
+    "Contraparte": "Entidad con la que se realiza la operación financiera.",
+    "Derivados OTC": "Instrumentos financieros negociados fuera de mercados organizados.",
+    "Cuenta contable": "Cuenta del libro mayor donde se registra el impacto financiero.",
+    "FX": "Foreign Exchange: operaciones sobre divisas.",
+    "IRD": "Interest Rate Derivatives: derivados de tasas.",
+    "EQD": "Equity Derivatives: derivados de renta variable."
+  },
+
+  "schemas": {
+    "main": {
+      "tables": {
+
+        "t_mrdc_mthly_invty_otc": {
+          "description": "Movimientos y registros contables de instrumentos financieros OTC provenientes de Murex/Tesorería. Incluye derivados de FX, tasas y equity, junto con su valuación (MTM) y registro contable.",
+          
+          "primary_key": ["load_date", "contract_id", "murex_operation_id", "gl_account_id"],
+
+          "columns": [
+
+            {"name": "origin_app_type", "type": "TEXT", "description": "Aplicación origen (ej. TESO)."},
+            {"name": "contract_id", "type": "TEXT", "description": "Identificador del contrato financiero."},
+            {"name": "murex_operation_id", "type": "TEXT", "description": "Identificador único de la operación en Murex."},
+
+            {"name": "product_type", "type": "TEXT", "description": "Tipo de producto financiero (OP DIV, CAPS, SWAPTIONS, OP ACC)."},
+            {"name": "financial_asset_class_type", "type": "TEXT", "description": "Clase de activo (CURR=FX, IRD=tasas, EQD=equity)."},
+            {"name": "fin_product_group_type", "type": "TEXT", "description": "Grupo de producto financiero."},
+            {"name": "fin_product_sub_group_type", "type": "TEXT", "description": "Subgrupo de producto financiero."},
+
+            {"name": "trd_contracts_number", "type": "INTEGER", "description": "Número de contratos asociados a la operación."},
+            {"name": "subproduct_type", "type": "TEXT", "description": "Subtipo de producto financiero."},
+            {"name": "fndr_operation_portafolio_id", "type": "TEXT", "description": "Identificador de portafolio de la operación."},
+
+            {"name": "prch_sls_main_oper_mark_type", "type": "TEXT", "description": "Indicador de compra/venta de la operación."},
+            {"name": "call_put_option_mark_type", "type": "TEXT", "description": "Tipo de opción (Call/Put)."},            
+
+            {"name": "counterparty_name", "type": "TEXT", "description": "Nombre de la contraparte."},
+            {"name": "counterpart_id", "type": "TEXT", "description": "Identificador de la contraparte."},
+            {"name": "counterparty_type", "type": "TEXT", "description": "Tipo de contraparte (INT/EXT)."},
+
+            {"name": "derv_fin_instm_emission_id", "type": "TEXT", "description": "Identificador del instrumento derivado emitido."},
+            {"name": "portfolio_operation_strategy_id", "type": "TEXT", "description": "Estrategia de portafolio de la operación."},
+
+            {"name": "contract_price_amount", "type": "REAL", "description": "Precio del contrato (strike o tasa)."},
+            {"name": "premium_currency_id", "type": "TEXT", "description": "Moneda del premium."},
+            {"name": "issue_premium_amount", "type": "REAL", "description": "Monto del premium inicial."},
+
+            {"name": "market_valuation_amount", "type": "REAL", "description": "Valor de mercado (MTM)."},
+            {"name": "valuation_currency_id", "type": "TEXT", "description": "Moneda de valuación."},
+            {"name": "lc_mkt_valtn_change_amount", "type": "REAL", "description": "Cambio en valuación en moneda local."},
+            {"name": "non_fundd_pst_cpt_tot_amount", "type": "REAL", "description": "Importe no fondeado post capitalización."},
+            {"name": "mxn_present_value_amount", "type": "REAL", "description": "Valor presente en MXN."},
+
+            {"name": "operation_entry_currency_id", "type": "TEXT", "description": "Moneda de entrada de la operación."},
+            {"name": "nominal_amount", "type": "REAL", "description": "Monto nocional del contrato."},
+            {"name": "operation_end_currency_id", "type": "TEXT", "description": "Moneda de salida."},
+            {"name": "contracted_oper_end_amount", "type": "REAL", "description": "Monto final pactado."},
+
+            {"name": "hard_currency_type", "type": "TEXT", "description": "Moneda fuerte involucrada."},
+            {"name": "weak_currency_type", "type": "TEXT", "description": "Moneda débil involucrada."},
+
+            {"name": "srce_fndr_murex_oper_rec_date", "type": "DATE", "description": "Fecha de registro en Murex."},
+            {"name": "valuation_oper_date", "type": "DATE", "description": "Fecha de valuación."},
+            {"name": "market_operation_settlement_date", "type": "DATE", "description": "Fecha de liquidación."},
+            {"name": "expiry_date", "type": "DATE", "description": "Fecha de vencimiento."},
+            {"name": "file_reported_information_date", "type": "DATE", "description": "Fecha de reporte de la información."},
+            {"name": "premium_payment_date", "type": "DATE", "description": "Fecha de pago del premium."},
+
+            {"name": "undln_asset_notl_curr_amount", "type": "REAL", "description": "Monto nocional del activo subyacente."},
+            {"name": "mkt_oper_pay_notional_amount", "type": "REAL", "description": "Monto nocional de pago."},
+            {"name": "debtor_concept_amount", "type": "REAL", "description": "Importe deudor."},
+            {"name": "creditor_concept_amount", "type": "REAL", "description": "Importe acreedor."},
+
+            {"name": "global_transaction_id", "type": "TEXT", "description": "Identificador global de transacción."},
+
+            {"name": "local_neocon_gl_account_id", "type": "TEXT", "description": "Cuenta contable origen."},
+            {"name": "destiny_neocon_account_id", "type": "TEXT", "description": "Cuenta contable destino."},
+
+            {"name": "probability_cust_default_type", "type": "TEXT", "description": "Indicador de probabilidad de default del cliente."},
+
+            {"name": "gl_account_amount", "type": "REAL", "description": "Importe contable registrado."},
+            {"name": "currency_id", "type": "TEXT", "description": "Moneda contable."},
+            {"name": "gl_account_amount_value_type", "type": "TEXT", "description": "Tipo de valor contable (ORDEN, VALUACION)."},
+            {"name": "gl_account_id", "type": "TEXT", "description": "Cuenta contable."},
+
+            {"name": "branch_id", "type": "TEXT", "description": "Sucursal asociada."},
+
+            {"name": "load_date", "type": "DATE", "description": "Fecha de carga del dato (partición)."}
+          ],
+
+          "indexes": [
+            {"name": "idx_otc_contract", "columns": ["contract_id"], "unique": false},
+            {"name": "idx_otc_operation", "columns": ["murex_operation_id"], "unique": false},
+            {"name": "idx_otc_counterparty", "columns": ["counterparty_name"], "unique": false},
+            {"name": "idx_otc_load_date", "columns": ["load_date"], "unique": false}
+          ]
+        }
+
+      }
+    }
+  },
+
+  "relationships": [],
+
+  "table_summaries": {
+    "t_mrdc_mthly_invty_otc": "Operaciones OTC de tesorería con detalle de contratos, contraparte, valuación (MTM) y registro contable."
+  }
+}
