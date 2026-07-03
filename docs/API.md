@@ -355,6 +355,7 @@ configure_notebook_environment
 show_json
 show
 compare
+compose_result
 mask_sensitive
 aws_environment_snapshot
 boto3_session_snapshot
@@ -372,6 +373,11 @@ agent_output
 agent_output_mapper
 make_agent_output_mapper
 ```
+
+Use `compose_result(...)` when a notebook combines several real executions into
+one visible result, for example deterministic tools plus an optional LM review.
+It preserves real engine names, framework metadata, usage and tool events so
+tutorials do not hand-build `RunResult(...)` envelopes.
 
 ## CLI
 

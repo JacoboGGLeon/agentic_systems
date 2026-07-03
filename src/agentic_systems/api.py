@@ -148,6 +148,7 @@ NOTEBOOK_API = (
     "show_json",
     "show",
     "compare",
+    "compose_result",
     "mask_sensitive",
     "aws_environment_snapshot",
     "boto3_session_snapshot",

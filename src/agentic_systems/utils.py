@@ -40,6 +40,93 @@ OUTPUT_SCHEMA_VERSION = "agentic_systems.output.v1"
 FieldsMapper = Callable[[Any, Mapping[str, Any]], Mapping[str, Any]]
 
 
+def _aggregate_usage(results: list[Any]) -> dict[str, Any]:
+    usage: dict[str, Any] = {}
+    for result in results:
+        current = getattr(result, "usage", None) or {}
+        if not isinstance(current, Mapping):
+            continue
+        for key, value in current.items():
+            if isinstance(value, bool):
+                usage[key] = value
+            elif isinstance(value, int | float):
+                usage[key] = usage.get(key, 0) + value
+            elif key not in usage:
+                usage[key] = value
+    return usage
+
+
+def _select_representative_result(results: list[Any]) -> Any | None:
+    for result in reversed(results):
+        if getattr(result, "usage", None):
+            return result
+    return results[-1] if results else None
+
+
+def compose_result(
+    *,
+    text: str,
+    data: Mapping[str, Any],
+    results: list[Any] | tuple[Any, ...],
+    mode: str,
+    framework: str = "agentic-systems",
+    input: Any | None = None,
+    engine: str | None = None,
+    model: str | None = None,
+    meta: Mapping[str, Any] | None = None,
+) -> Any:
+    """Compose several real ``RunResult`` objects into one auditable result.
+
+    Tutorials use this when a visible workflow has several internal agent runs:
+    deterministic tools, optional LM review, graph nodes, and final rendering.
+    The helper keeps engine, usage and tool events grounded in actual results so
+    notebooks do not invent one-off runtime metadata.
+    """
+
+    from .engines.names import PYTHON_DIRECT_ENGINE
+    from .results import RunResult
+
+    real_results = [item for item in results if item is not None]
+    selected_runtime = _select_representative_result(real_results)
+    resolved_engine = engine or getattr(selected_runtime, "engine", None) or PYTHON_DIRECT_ENGINE
+    resolved_model = model or getattr(selected_runtime, "model", None) or "local-python"
+    tool_events: list[Any] = []
+    raw_responses: list[dict[str, Any]] = []
+    messages: list[dict[str, Any]] = []
+    engines_used: list[str] = []
+
+    for item in real_results:
+        item_engine = getattr(item, "engine", None)
+        if item_engine and item_engine not in engines_used:
+            engines_used.append(str(item_engine))
+        tool_events.extend(list(getattr(item, "tool_events", []) or []))
+        raw_responses.extend(list(getattr(item, "raw_responses", []) or []))
+        messages.extend(list(getattr(item, "messages", []) or []))
+
+    result_meta = dict(meta or {})
+    if input is not None:
+        result_meta.setdefault("input", input)
+    result_meta.setdefault("framework", framework)
+    result_meta.setdefault("runtime_engine", resolved_engine)
+    result_meta.setdefault("execution_engine", framework)
+    result_meta.setdefault("engines_used", engines_used or [resolved_engine])
+
+    return RunResult(
+        text=text,
+        data=dict(data),
+        final=dict(data),
+        ok=all(bool(getattr(item, "ok", True)) for item in real_results) if real_results else True,
+        messages=messages,
+        tool_events=tool_events,
+        raw_responses=raw_responses,
+        usage=_aggregate_usage(real_results),
+        engine=resolved_engine,
+        model=resolved_model,
+        mode=mode,
+        meta=result_meta,
+    )
+
+
 def agent_output(
     result: Any,
     *,
