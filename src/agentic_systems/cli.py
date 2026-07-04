@@ -9,11 +9,29 @@ import os
 import platform
 from typing import Any, Sequence
 
+from rich.columns import Columns
+from rich.console import Console
+from rich.panel import Panel
+from rich.table import Table
+from rich.text import Text
+
 from . import __version__
 from .api import ADVANCED_API, PUBLIC_API, RECOMMENDED_API
 from .core.runtime import _load_dotenv
 from .factories import runtime
 from .engines.names import supported_engine_names
+
+
+def _console() -> Console:
+    return Console(highlight=False)
+
+
+def _status(value: bool) -> str:
+    return "set" if value else "missing"
+
+
+def _availability(value: bool) -> str:
+    return "available" if value else "missing"
 
 
 def _optional_dependency(name: str) -> bool:
@@ -56,20 +74,41 @@ def _cmd_doctor(args: argparse.Namespace) -> int:
         _write_json(payload)
         return 0
 
-    print(f"Agentic Systems {payload['version']}")
-    print(f"Python: {payload['python']}")
-    print(f"Engines: {', '.join(payload['supported_engines'])}")
-    print(f".env loaded: {payload['dotenv_loaded']}")
+    console = _console()
     env = payload["environment"]
-    print("Environment:")
-    print(f"- OPENAI_API_KEY: {'set' if env['has_openai_api_key'] else 'missing'}")
-    print(f"- AWS region: {'set' if env['has_aws_region'] else 'missing'}")
-    print(f"- AWS profile: {'set' if env['has_aws_profile'] else 'missing'}")
     deps = payload["optional_dependencies"]
-    print("Optional dependencies:")
+
+    summary = Text()
+    summary.append(f"Agentic Systems {payload['version']}\n", style="bold cyan")
+    summary.append(f"Python: {payload['python']}\n")
+    summary.append(f"Engines: {', '.join(payload['supported_engines'])}\n")
+    summary.append(f".env loaded: {payload['dotenv_loaded']}")
+    console.print(Panel(summary, title="Agentic Systems Doctor", border_style="cyan"))
+
+    env_table = Table(title="Environment", box=None, show_header=False, padding=(0, 1))
+    env_table.add_column("Signal", style="bold")
+    env_table.add_column("Status")
+    env_table.add_row("OPENAI_API_KEY", _status(env["has_openai_api_key"]))
+    env_table.add_row("AWS region", _status(env["has_aws_region"]))
+    env_table.add_row("AWS profile", _status(env["has_aws_profile"]))
+
+    deps_table = Table(title="Optional Dependencies", box=None, show_header=False, padding=(0, 1))
+    deps_table.add_column("Package", style="bold")
+    deps_table.add_column("Status")
     for name, available in deps.items():
-        status = "available" if available else "missing"
-        print(f"- {name}: {status}")
+        deps_table.add_row(name, _availability(available))
+
+    # Keep plain key/value lines inside the rich output so existing smoke tests
+    # and human copy/paste diagnostics stay stable.
+    compatibility_lines = "\n".join([
+        f"OPENAI_API_KEY: {_status(env['has_openai_api_key'])}",
+        f"AWS region: {_status(env['has_aws_region'])}",
+        f"AWS profile: {_status(env['has_aws_profile'])}",
+        *[f"{name}: {_availability(available)}" for name, available in deps.items()],
+    ])
+
+    console.print(Columns([env_table, deps_table], equal=True, expand=True))
+    console.print(Panel(compatibility_lines, title="Copy/Paste Summary", border_style="green"))
     return 0
 
 
@@ -90,8 +129,11 @@ def _cmd_public_api(args: argparse.Namespace) -> int:
     if args.json:
         _write_json(names)
         return 0
+    console = _console()
+    title = "Public API" if args.all else "Recommended API"
+    console.print(Panel(f"count: {len(names)}", title=title, border_style="blue"))
     for name in names:
-        print(name)
+        console.print(Text(name, style="cyan"))
     return 0
 
 
@@ -119,10 +161,9 @@ def _cmd_api(args: argparse.Namespace) -> int:
         _write_json(payload)
         return 0
 
-    print(f"tier: {payload['tier']}")
-    print(f"count: {payload['count']}")
-    for name in names:
-        print(name)
+    console = _console()
+    console.print(Panel(f"tier: {payload['tier']}\ncount: {payload['count']}", title="API Inventory", border_style="magenta"))
+    console.print(Columns([Text(name, style="cyan") for name in names], equal=True, expand=True))
     return 0
 
 
