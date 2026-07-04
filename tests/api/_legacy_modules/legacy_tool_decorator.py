@@ -54,9 +54,9 @@ def test_tool_decorator_supports_non_strict_normalization() -> None:
     def keywords(text: str) -> list[str]:
         return text.split()
 
-    result = keywords.run({"text": "agentic lab"})
+    result = keywords.run({"text": "agentic systems"})
     assert result.ok is True
-    assert result.data == {"items": ["agentic", "lab"]}
+    assert result.data == {"items": ["agentic", "systems"]}
 
 
 def test_tool_decorator_rejects_non_callables() -> None:
