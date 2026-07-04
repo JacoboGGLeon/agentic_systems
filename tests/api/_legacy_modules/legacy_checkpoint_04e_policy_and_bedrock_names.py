@@ -4,7 +4,7 @@ import os
 from typing import Any
 
 from agentic_systems.contracts import RunPolicy
-from agentic_systems.engines.bedrock_runtime import BedrockRuntime
+from agentic_systems.providers.bedrock_runtime import BedrockRuntime
 
 
 os.environ.setdefault("AWS_EC2_METADATA_DISABLED", "true")

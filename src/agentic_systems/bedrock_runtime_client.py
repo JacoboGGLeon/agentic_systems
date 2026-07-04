@@ -258,7 +258,7 @@ def _import_bedrock_runtime() -> Any:
     """Import the optional Bedrock provider with a notebook-friendly error."""
 
     try:
-        from .engines.bedrock_runtime import BedrockRuntime
+        from .providers.bedrock_runtime import BedrockRuntime
     except Exception as exc:  # pragma: no cover - depends on optional install
         raise ImportError(
             "BedrockRuntimeClient requires optional AWS dependencies. "

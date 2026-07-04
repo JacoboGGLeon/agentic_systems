@@ -22,13 +22,13 @@ Comando ejecutado:
 Resultado funcional:
 
 ```text
-282 passed, 1 skipped
+283 passed, 1 skipped
 ```
 
 Resultado de coverage:
 
 ```text
-TOTAL statements: 5156
+TOTAL statements: 5109
 TOTAL missing: 0
 TOTAL coverage: 100.00%
 Required test coverage of 100.0% reached.

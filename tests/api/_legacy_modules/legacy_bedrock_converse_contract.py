@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from agentic_systems.engines.bedrock_runtime import BedrockRuntime
+from agentic_systems.providers.bedrock_runtime import BedrockRuntime
 
 
 class CapturingConverseClient:

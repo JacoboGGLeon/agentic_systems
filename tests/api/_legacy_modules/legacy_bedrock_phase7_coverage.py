@@ -1,13 +1,9 @@
 from __future__ import annotations
 
 import json
-import sys
-from types import ModuleType, SimpleNamespace
-
 import pytest
 
 import agentic_systems.bedrock_runtime_client as brc
-import agentic_systems.engines as engines
 import agentic_systems.providers.bedrock_runtime as bedrock_provider
 
 
@@ -145,17 +141,16 @@ def test_bedrock_runtime_client_embeddings_and_helpers(monkeypatch):
     assert brc._extract_embeddings({}) == []
 
 
-def test_bedrock_provider_lazy_facade(monkeypatch):
-    fake_module = ModuleType("agentic_systems.engines.bedrock_runtime")
-    fake_module.BedrockRuntime = object
-    fake_module.BedrockRunResult = SimpleNamespace
-    fake_module.RuntimeToolCallRecord = dict
-    fake_module.RuntimeToolSpec = tuple
-    fake_module.ToolEnvelope = list
-
-    monkeypatch.setitem(sys.modules, "agentic_systems.engines.bedrock_runtime", fake_module)
-    monkeypatch.setattr(engines, "bedrock_runtime", fake_module, raising=False)
-    assert bedrock_provider._bedrock_module() is fake_module
-    assert bedrock_provider.__getattr__("BedrockRuntime") is object
-    with pytest.raises(AttributeError, match="Missing"):
-        bedrock_provider.__getattr__("Missing")
+def test_bedrock_provider_exports_runtime_implementation():
+    assert bedrock_provider.BedrockRuntime.__name__ == "BedrockRuntime"
+    assert bedrock_provider.BedrockRunResult.__name__ == "BedrockRunResult"
+    assert bedrock_provider.RuntimeToolCallRecord.__name__ == "RuntimeToolCallRecord"
+    assert bedrock_provider.RuntimeToolSpec.__name__ == "RuntimeToolSpec"
+    assert bedrock_provider.ToolEnvelope.__name__ == "ToolEnvelope"
+    assert set(bedrock_provider.__all__) >= {
+        "BedrockRuntime",
+        "BedrockRunResult",
+        "RuntimeToolCallRecord",
+        "RuntimeToolSpec",
+        "ToolEnvelope",
+    }

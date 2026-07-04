@@ -3,7 +3,7 @@ from __future__ import annotations
 from types import SimpleNamespace
 
 from agentic_systems import RunResult, run_result_summary
-from agentic_systems.engines.bedrock_runtime import BedrockRuntime
+from agentic_systems.providers.bedrock_runtime import BedrockRuntime
 from agentic_systems.results import RunResult as RunResultModel
 from agentic_systems.utils import chain_history_summary
 

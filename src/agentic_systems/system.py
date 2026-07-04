@@ -427,7 +427,7 @@ class AgenticSystem:
         if hasattr(self._runtime, "run_direct"):
             return self._runtime
         try:
-            from .engines.bedrock_runtime import BedrockRuntime
+            from .providers.bedrock_runtime import BedrockRuntime
         except Exception as exc:  # pragma: no cover - depends on optional install
             raise ImportError(
                 "Bedrock Runtime provider requires optional AWS dependencies. "
@@ -492,7 +492,7 @@ def _resolve_auto_provider(model: str | None, region: str | None) -> str:
 
     if _bedrock_signal_present(region):
         try:
-            from .engines.bedrock_runtime import BedrockRuntime  # noqa: F401
+            from .providers.bedrock_runtime import BedrockRuntime  # noqa: F401
         except Exception:
             pass
         else:

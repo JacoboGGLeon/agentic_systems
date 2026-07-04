@@ -30,9 +30,9 @@ def test_phase7_small_contract_and_engine_residuals(monkeypatch):
     class FakeImportedBedrock:
         pass
 
-    fake_module = ModuleType("agentic_systems.engines.bedrock_runtime")
+    fake_module = ModuleType("agentic_systems.providers.bedrock_runtime")
     fake_module.BedrockRuntime = FakeImportedBedrock
-    monkeypatch.setitem(sys.modules, "agentic_systems.engines.bedrock_runtime", fake_module)
+    monkeypatch.setitem(sys.modules, "agentic_systems.providers.bedrock_runtime", fake_module)
     assert brc._import_bedrock_runtime() is FakeImportedBedrock
 
 
@@ -62,7 +62,7 @@ def test_phase7_system_auto_provider_and_runtime_copy(monkeypatch):
 
     monkeypatch.setattr(system_mod, "_openai_signal_present", lambda: False)
     monkeypatch.setattr(system_mod, "_bedrock_signal_present", lambda region: True)
-    fake_bedrock = ModuleType("agentic_systems.engines.bedrock_runtime")
+    fake_bedrock = ModuleType("agentic_systems.providers.bedrock_runtime")
 
     class FakeBedrockRuntime:
         def __init__(self, *, model_id, region_name, max_tokens_default, temperature_default, disable_openai_runtime_tracing):
@@ -74,7 +74,7 @@ def test_phase7_system_auto_provider_and_runtime_copy(monkeypatch):
             self._tools = {}
 
     fake_bedrock.BedrockRuntime = FakeBedrockRuntime
-    monkeypatch.setitem(sys.modules, "agentic_systems.engines.bedrock_runtime", fake_bedrock)
+    monkeypatch.setitem(sys.modules, "agentic_systems.providers.bedrock_runtime", fake_bedrock)
     monkeypatch.setattr(system_mod, "BedrockRuntime", FakeBedrockRuntime, raising=False)
     assert system_mod._resolve_auto_provider(None, "us-test-1") == "bedrock-runtime"
 
@@ -159,7 +159,7 @@ def test_phase7_final_small_residuals(monkeypatch):
     monkeypatch.setattr(system_mod, "_bedrock_signal_present", lambda region: True)
 
     def block_bedrock(name, *args, **kwargs):
-        if name.endswith("engines.bedrock_runtime") or name == "agentic_systems.engines.bedrock_runtime":
+        if name.endswith("providers.bedrock_runtime") or name == "agentic_systems.providers.bedrock_runtime":
             raise ImportError("blocked bedrock")
         return real_import(name, *args, **kwargs)
 

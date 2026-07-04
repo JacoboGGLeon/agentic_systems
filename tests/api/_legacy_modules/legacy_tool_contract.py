@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 from pydantic import BaseModel
 
-from agentic_systems.engines.bedrock_runtime import BedrockRuntime, ToolEnvelope
+from agentic_systems.providers.bedrock_runtime import BedrockRuntime, ToolEnvelope
 
 
 def build_runtime() -> BedrockRuntime:

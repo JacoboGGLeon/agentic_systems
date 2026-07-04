@@ -241,7 +241,7 @@ def test_system_core_branches_bedrock_hydration_auto_and_merge(monkeypatch):
     assert broken_result.ok is False
     assert "tool broken" in str(broken_result.data)
 
-    runtime_module = types.ModuleType("agentic_systems.engines.bedrock_runtime")
+    runtime_module = types.ModuleType("agentic_systems.providers.bedrock_runtime")
 
     class FakeBedrockRuntime:
         def __init__(self, **kwargs):
@@ -257,7 +257,7 @@ def test_system_core_branches_bedrock_hydration_auto_and_merge(monkeypatch):
             return "ok"
 
     runtime_module.BedrockRuntime = FakeBedrockRuntime
-    monkeypatch.setitem(sys.modules, "agentic_systems.engines.bedrock_runtime", runtime_module)
+    monkeypatch.setitem(sys.modules, "agentic_systems.providers.bedrock_runtime", runtime_module)
     system._runtime.runtime = "previous-runtime"
     system._runtime.bedrock = "previous-bedrock"
     system._runtime.sts = "previous-sts"
