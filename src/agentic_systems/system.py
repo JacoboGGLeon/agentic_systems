@@ -14,6 +14,7 @@ from .engines.names import (
     LANGGRAPH_ORCHESTRATOR,
     OPENAI_RUNTIME_ENGINE,
     PYTHON_DIRECT_ENGINE,
+    VLLM_RUNTIME_ENGINE,
     canonical_engine_name,
     supported_engine_names,
 )
@@ -21,6 +22,7 @@ from .agents import Agent, _normalize_agent_tool_inputs
 from .contracts import AgentContract, RunPolicy, ValidationResult
 from .engines.bedrock import BedrockEngine
 from .providers.openai_runtime import OpenAIRuntimeProvider
+from .providers.vllm_runtime import VLLMRuntimeProvider
 from .providers.python_direct import PythonDirectEngine
 from .errors import ToolContractError
 from .evals import run_eval
@@ -468,6 +470,8 @@ class AgenticSystem:
                 self._engines[name] = OpenAIRuntimeProvider(self)
             elif name == PYTHON_DIRECT_ENGINE:
                 self._engines[name] = PythonDirectEngine(self)
+            elif name == VLLM_RUNTIME_ENGINE:
+                self._engines[name] = VLLMRuntimeProvider(self)
             else:
                 raise ValueError(f"Unknown engine {name!r}. Supported engines: {list(supported_engine_names())}")
         return self._engines[name]

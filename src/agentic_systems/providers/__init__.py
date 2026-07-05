@@ -12,6 +12,7 @@ from typing import Any
 from .base import RuntimeToolSpec, ToolEnvelope, ToolRegistryRuntime
 from .python_direct import PythonDirectEngine, PythonDirectProvider
 from .openai_runtime import OpenAIRuntimeProvider
+from .vllm_runtime import VLLMRuntimeProvider
 
 _LAZY = {
     "BedrockRuntime": ("agentic_systems.providers.bedrock_runtime", "BedrockRuntime"),
@@ -35,6 +36,7 @@ __all__ = [
     "PythonDirectEngine",
     "PythonDirectProvider",
     "OpenAIRuntimeProvider",
+    "VLLMRuntimeProvider",
     "BedrockRuntime",
     "BedrockRunResult",
     "RuntimeToolCallRecord",

@@ -90,6 +90,8 @@ def _openai_tools(runtime: Any, agent: Any) -> list[dict[str, Any]]:
     tool_specs = list(getattr(runtime, "tools", []) or []) if runtime is not None else []
     specs = {spec.name: spec for spec in tool_specs}
     tool_names = list(getattr(agent, "tools", ()) or [])
+    if tool_names:
+        tool_names = [getattr(tool, "name", tool) for tool in tool_names]
     if not tool_names:
         tool_names = [spec.name for spec in tool_specs]
     if not tool_names and hasattr(agent, "available_tools"):
@@ -99,9 +101,12 @@ def _openai_tools(runtime: Any, agent: Any) -> list[dict[str, Any]]:
             schema = getattr(tool, "input_schema", None)
             description = getattr(tool, "description", "") or getattr(tool, "__doc__", "") or f"Tool {tool.name}"
             if schema is not None and hasattr(schema, "model_json_schema"):
-                specs[tool.name] = type("_Spec", (), {"name": tool.name, "description": description, "input_schema": schema.model_json_schema()})()
+                input_schema = schema.model_json_schema()
             elif schema is not None and isinstance(schema, Mapping):
-                specs[tool.name] = type("_Spec", (), {"name": tool.name, "description": description, "input_schema": dict(schema)})()
+                input_schema = dict(schema)
+            else:
+                input_schema = {"type": "object", "properties": {}, "additionalProperties": True}
+            specs[tool.name] = type("_Spec", (), {"name": tool.name, "description": description, "input_schema": input_schema})()
     defs: list[dict[str, Any]] = []
     for name in tool_names:
         spec = specs.get(name)
