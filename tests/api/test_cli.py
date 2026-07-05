@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import json
 
@@ -53,7 +53,7 @@ def test_cli_public_api_plain_json_and_runtime_safe_configuration(capsys, monkey
                 "preferred_provider": None,
                 "fallback_provider": None,
                 "reason": "test",
-                "model": "local-python",
+                "model": "python-runtime",
                 "region": None,
                 "scheduler": {"timeout_s": 1},
                 "configuration": {"openai": {"api_key_configured": True}},

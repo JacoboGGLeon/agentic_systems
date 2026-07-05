@@ -143,7 +143,7 @@ system still receives a provider through `toolkit.runtime(...)`.
 ```python
 import agentic_systems as toolkit
 
-system = toolkit.AgenticSystem(model="local-python", runtime=toolkit.runtime(provider="python-runtime"))
+system = toolkit.AgenticSystem(model="python-runtime", runtime=toolkit.runtime(provider="python-runtime"))
 
 @system.tool
 def add(a: int, b: int) -> dict:
@@ -166,7 +166,7 @@ cases with pass/fail statistics.
 import agentic_systems as toolkit
 
 runtime = toolkit.runtime(provider="python-runtime")
-system = toolkit.AgenticSystem(model="local-python", runtime=runtime)
+system = toolkit.AgenticSystem(model="python-runtime", runtime=runtime)
 
 @system.tool
 def double(value: int) -> dict:

@@ -36,7 +36,7 @@ result = toolkit.RunResult(
         schema=schema,
     ),
     engine="python-runtime",
-    model="local-python",
+    model="python-runtime",
     mode="eval",
 )
 

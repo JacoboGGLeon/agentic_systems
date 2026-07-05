@@ -89,7 +89,7 @@ def compose_result(
     real_results = [item for item in results if item is not None]
     selected_runtime = _select_representative_result(real_results)
     resolved_engine = engine or getattr(selected_runtime, "engine", None) or PYTHON_RUNTIME_ENGINE
-    resolved_model = model or getattr(selected_runtime, "model", None) or "local-python"
+    resolved_model = model or getattr(selected_runtime, "model", None) or "python-runtime"
     tool_events: list[Any] = []
     raw_responses: list[dict[str, Any]] = []
     messages: list[dict[str, Any]] = []

@@ -27,7 +27,7 @@ def test_compose_result_preserves_runtime_metadata_and_usage():
         text="direct",
         data={"value": 1},
         engine="python-runtime",
-        model="local-python",
+        model="python-runtime",
         mode="eval",
         tool_events=[ToolEvent(id="tool-1", name="sumar", input={}, output={"data": {"result": 1}}, ok=True)],
     )

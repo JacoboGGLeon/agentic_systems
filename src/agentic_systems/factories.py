@@ -371,7 +371,7 @@ def _merge_skill_inputs(skill: Any = None, skills: Any = None) -> Any:
 
 def _default_agent_model(engine: str) -> str:
     if engine == PYTHON_RUNTIME_ENGINE:
-        return "local-python"
+        return "python-runtime"
     if engine == OPENAI_RUNTIME_ENGINE:
         return default_openai_model_id()
     return default_model_id()

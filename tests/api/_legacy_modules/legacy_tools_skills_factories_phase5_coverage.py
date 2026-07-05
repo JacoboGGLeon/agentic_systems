@@ -190,7 +190,7 @@ def test_chain_expectations_and_factories(monkeypatch, tmp_path):
     assert factories_module.default_model_id() == "bedrock-model"
     assert factories_module.default_openai_model_id() == "openai-model"
     assert factories_module.default_region() == "mx-test-1"
-    assert factories_module._default_agent_model("python-runtime") == "local-python"
+    assert factories_module._default_agent_model("python-runtime") == "python-runtime"
     assert factories_module._default_agent_model("openai-runtime") == "openai-model"
 
     assert factories_module._merge_skill_inputs(None, "skills") == "skills"

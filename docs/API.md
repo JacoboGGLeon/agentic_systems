@@ -283,7 +283,7 @@ LINEAGE_SCHEMA_VERSION
 skills, agents, runtime and contracts.
 
 ```python
-system = toolkit.AgenticSystem(model="local-python", runtime=runtime)
+system = toolkit.AgenticSystem(model="python-runtime", runtime=runtime)
 
 @system.tool
 def multiply(a: int, b: int) -> dict:

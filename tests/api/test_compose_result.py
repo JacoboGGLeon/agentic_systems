@@ -16,7 +16,7 @@ def test_compose_result_usage_edge_cases():
     class OddUsage:
         usage = ["not", "a", "mapping"]
         engine = "python-runtime"
-        model = "local-python"
+        model = "python-runtime"
         mode = "eval"
         ok = True
         tool_events = []
@@ -27,10 +27,10 @@ def test_compose_result_usage_edge_cases():
         text="bool",
         data={},
         engine="python-runtime",
-        model="local-python",
+        model="python-runtime",
         usage={"cached": True, "label": "first"},
     )
-    fallback = lab.RunResult(text="fallback", data={}, engine="python-runtime", model="local-python")
+    fallback = lab.RunResult(text="fallback", data={}, engine="python-runtime", model="python-runtime")
 
     result = lab.compose_result(
         text="edge",
