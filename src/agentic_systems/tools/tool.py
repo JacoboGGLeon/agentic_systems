@@ -16,7 +16,7 @@ from typing import Any, get_type_hints
 from pydantic import BaseModel
 
 from ..contracts import ValidationResult
-from ..engines.names import PYTHON_DIRECT_ENGINE
+from ..engines.names import PYTHON_RUNTIME_ENGINE
 from ..errors import ToolContractError
 from .compat import ToolEvent, assert_dict_tool_output
 
@@ -155,7 +155,7 @@ class Tool:
                 ok=True,
                 tool_events=[event],
                 usage={"requests": 1},
-                engine=PYTHON_DIRECT_ENGINE,
+                engine=PYTHON_RUNTIME_ENGINE,
                 mode="tool",
                 meta=_result_meta(context, input_payload),
             )
@@ -168,7 +168,7 @@ class Tool:
                 ok=False,
                 tool_events=[event],
                 usage={"requests": 1},
-                engine=PYTHON_DIRECT_ENGINE,
+                engine=PYTHON_RUNTIME_ENGINE,
                 mode="tool",
                 meta=_result_meta(context, input_payload),
             )

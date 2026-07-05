@@ -83,12 +83,12 @@ def compose_result(
     notebooks do not invent one-off runtime metadata.
     """
 
-    from .engines.names import PYTHON_DIRECT_ENGINE
+    from .engines.names import PYTHON_RUNTIME_ENGINE
     from .results import RunResult
 
     real_results = [item for item in results if item is not None]
     selected_runtime = _select_representative_result(real_results)
-    resolved_engine = engine or getattr(selected_runtime, "engine", None) or PYTHON_DIRECT_ENGINE
+    resolved_engine = engine or getattr(selected_runtime, "engine", None) or PYTHON_RUNTIME_ENGINE
     resolved_model = model or getattr(selected_runtime, "model", None) or "local-python"
     tool_events: list[Any] = []
     raw_responses: list[dict[str, Any]] = []

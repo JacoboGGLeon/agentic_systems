@@ -14,7 +14,7 @@ from .engines.names import (
     BEDROCK_RUNTIME_ENGINE,
     LANGGRAPH_ORCHESTRATOR,
     OPENAI_RUNTIME_ENGINE,
-    PYTHON_DIRECT_ENGINE,
+    PYTHON_RUNTIME_ENGINE,
     VLLM_RUNTIME_ENGINE,
     canonical_engine_name,
     supported_engine_names,
@@ -469,7 +469,7 @@ class AgenticSystem:
                 self._engines[name] = BedrockEngine(self)
             elif name == OPENAI_RUNTIME_ENGINE:
                 self._engines[name] = OpenAIRuntimeProvider(self)
-            elif name == PYTHON_DIRECT_ENGINE:
+            elif name == PYTHON_RUNTIME_ENGINE:
                 self._engines[name] = PythonDirectEngine(self)
             elif name == VLLM_RUNTIME_ENGINE:
                 self._engines[name] = VLLMRuntimeProvider(self)

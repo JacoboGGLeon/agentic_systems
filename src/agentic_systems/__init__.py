@@ -10,7 +10,7 @@ from .contracts import AgentContract, ContractPolicySpec, RunPolicy, ToolExpecta
 from .engines.names import (
     BEDROCK_RUNTIME_ENGINE,
     OPENAI_RUNTIME_ENGINE,
-    PYTHON_DIRECT_ENGINE,
+    PYTHON_RUNTIME_ENGINE,
     VLLM_RUNTIME_ENGINE,
     SUPPORTED_ENGINES,
     canonical_engine_name,

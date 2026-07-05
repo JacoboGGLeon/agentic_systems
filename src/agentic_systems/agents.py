@@ -16,7 +16,7 @@ from .engines.names import (
     LANGGRAPH_ORCHESTRATOR,
     OPENAI_AGENTS_FRAMEWORK,
     OPENAI_RUNTIME_ENGINE,
-    PYTHON_DIRECT_ENGINE,
+    PYTHON_RUNTIME_ENGINE,
     STRANDS_FRAMEWORK,
     canonical_engine_name,
     normalize_engine_text,
@@ -268,7 +268,7 @@ class Agent:
         policy = self._policy_for_runtime(resolve_policy(mode=mode, agent_policy=self.policy, run_config=config))
         scheduler = self._scheduler()
         if self.system is None:
-            if self.engine != PYTHON_DIRECT_ENGINE:
+            if self.engine != PYTHON_RUNTIME_ENGINE:
                 raise RuntimeError(
                     f"Direct Agent.run(...) without AgenticSystem cannot use engine={self.engine!r}. "
                     "Use `agent.bind(system)` or create the agent through `system.agent(...)` for runtime-backed execution."
@@ -308,7 +308,7 @@ class Agent:
         policy = self._policy_for_runtime(resolve_policy(mode=mode, agent_policy=self.policy, run_config=config))
         scheduler = self._scheduler()
         if self.system is None:
-            if self.engine != PYTHON_DIRECT_ENGINE:
+            if self.engine != PYTHON_RUNTIME_ENGINE:
                 raise RuntimeError(
                     f"Direct Agent.arun(...) without AgenticSystem cannot use engine={self.engine!r}. "
                     "Use `agent.bind(system)` or create the agent through `system.agent(...)` for runtime-backed execution."

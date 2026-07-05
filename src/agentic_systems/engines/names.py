@@ -1,4 +1,4 @@
-"""Canonical engine names and compatibility aliases for Agentic Systems."""
+"""Canonical runtime/provider names for Agentic Systems."""
 
 from __future__ import annotations
 
@@ -6,16 +6,20 @@ from typing import Iterable
 
 BEDROCK_RUNTIME_ENGINE = "bedrock-runtime"
 OPENAI_RUNTIME_ENGINE = "openai-runtime"
-PYTHON_DIRECT_ENGINE = "python-runtime"
+PYTHON_RUNTIME_ENGINE = "python-runtime"
 VLLM_RUNTIME_ENGINE = "vllm-runtime"
 LANGGRAPH_ORCHESTRATOR = "langgraph"
 OPENAI_AGENTS_FRAMEWORK = "openai-agents"
 STRANDS_FRAMEWORK = "strands"
 
+# Internal implementation alias. Public docs and notebooks should use
+# PYTHON_RUNTIME_ENGINE / "python-runtime".
+PYTHON_DIRECT_ENGINE = PYTHON_RUNTIME_ENGINE
+
 SUPPORTED_ENGINES = (
     BEDROCK_RUNTIME_ENGINE,
     OPENAI_RUNTIME_ENGINE,
-    PYTHON_DIRECT_ENGINE,
+    PYTHON_RUNTIME_ENGINE,
     VLLM_RUNTIME_ENGINE,
 )
 
@@ -30,7 +34,7 @@ COMPAT_ENGINE_ALIASES: dict[str, str] = {
     "bedrock": BEDROCK_RUNTIME_ENGINE,
     BEDROCK_RUNTIME_ENGINE: BEDROCK_RUNTIME_ENGINE,
     OPENAI_RUNTIME_ENGINE: OPENAI_RUNTIME_ENGINE,
-    PYTHON_DIRECT_ENGINE: PYTHON_DIRECT_ENGINE,
+    PYTHON_RUNTIME_ENGINE: PYTHON_RUNTIME_ENGINE,
     "vllm": VLLM_RUNTIME_ENGINE,
     VLLM_RUNTIME_ENGINE: VLLM_RUNTIME_ENGINE,
 }

@@ -1,4 +1,4 @@
-﻿# API - Agentic Systems
+# API - Agentic Systems
 
 This document describes the public API as a stable product surface. Tutorials
 teach the same API step by step; source modules implement it.
@@ -357,7 +357,7 @@ Engine names are public constants and helpers:
 ```text
 BEDROCK_RUNTIME_ENGINE
 OPENAI_RUNTIME_ENGINE
-PYTHON_DIRECT_ENGINE
+PYTHON_RUNTIME_ENGINE
 VLLM_RUNTIME_ENGINE
 SUPPORTED_ENGINES
 canonical_engine_name
@@ -532,7 +532,7 @@ Chain
 ChainStep
 BEDROCK_RUNTIME_ENGINE
 OPENAI_RUNTIME_ENGINE
-PYTHON_DIRECT_ENGINE
+PYTHON_RUNTIME_ENGINE
 VLLM_RUNTIME_ENGINE
 SUPPORTED_ENGINES
 canonical_engine_name

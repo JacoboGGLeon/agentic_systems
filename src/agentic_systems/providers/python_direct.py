@@ -13,6 +13,7 @@ from collections.abc import Iterable, Mapping
 from typing import Any
 
 from agentic_systems.contracts import RunPolicy
+from agentic_systems.engines.names import PYTHON_RUNTIME_ENGINE
 from agentic_systems.results import RunResult
 from agentic_systems.tools import Tool
 from agentic_systems.tools.compat import ToolEvent
@@ -21,7 +22,7 @@ from agentic_systems.tools.compat import ToolEvent
 class PythonDirectProvider:
     """Local deterministic provider for tool-backed agents."""
 
-    name = "python-runtime"
+    name = PYTHON_RUNTIME_ENGINE
 
     def __init__(self, system: Any | None = None) -> None:
         self.system = system
@@ -116,7 +117,7 @@ def _run_calls(agent: Any, tools: Mapping[str, Tool], calls: list[dict[str, Any]
         ok=ok,
         tool_events=events,
         engine=PythonDirectProvider.name,
-        model=getattr(agent, "model", None) or "python-runtime",
+        model=getattr(agent, "model", None) or PYTHON_RUNTIME_ENGINE,
         mode=mode,
         meta={
             "source_result_type": PythonDirectProvider.__name__,
@@ -160,7 +161,7 @@ def _run_pipeline(
         ok=ok,
         tool_events=events,
         engine=PythonDirectProvider.name,
-        model=getattr(agent, "model", None) or "python-runtime",
+        model=getattr(agent, "model", None) or PYTHON_RUNTIME_ENGINE,
         mode=mode,
         meta={
             "source_result_type": PythonDirectProvider.__name__,
@@ -308,7 +309,7 @@ def _failure(*, message: str, agent: Any, mode: str, code: str, meta: dict[str, 
         data={"ok": False, "error": {"code": code, "message": message}},
         ok=False,
         engine=PythonDirectProvider.name,
-        model=getattr(agent, "model", None) or "python-runtime",
+        model=getattr(agent, "model", None) or PYTHON_RUNTIME_ENGINE,
         mode=mode,
         meta={"source_result_type": PythonDirectProvider.__name__, **(meta or {})},
     )

@@ -10,7 +10,7 @@ from typing import Any
 from .agents import Agent
 from .core.runtime import RuntimeConfig, _bedrock_signal_present, _load_dotenv, _openai_signal_present
 from .core.scheduler import SchedulerConfig
-from .engines.names import BEDROCK_RUNTIME_ENGINE, OPENAI_RUNTIME_ENGINE, PYTHON_DIRECT_ENGINE, VLLM_RUNTIME_ENGINE, canonical_engine_name
+from .engines.names import BEDROCK_RUNTIME_ENGINE, OPENAI_RUNTIME_ENGINE, PYTHON_RUNTIME_ENGINE, VLLM_RUNTIME_ENGINE, canonical_engine_name
 from .final_answer import output_schema as make_output_schema
 from .system import AgenticSystem
 from .skills import Skill
@@ -370,7 +370,7 @@ def _merge_skill_inputs(skill: Any = None, skills: Any = None) -> Any:
 
 
 def _default_agent_model(engine: str) -> str:
-    if engine == PYTHON_DIRECT_ENGINE:
+    if engine == PYTHON_RUNTIME_ENGINE:
         return "local-python"
     if engine == OPENAI_RUNTIME_ENGINE:
         return default_openai_model_id()
