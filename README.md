@@ -70,50 +70,6 @@ Human output renders results for notebooks, reviews and users.
 
 The goal is not to hide complexity. The goal is to make the complexity explicit, inspectable and reusable.
 
-## Public API Surface
-
-The stable import rule is:
-
-```python
-import agentic_systems as toolkit
-```
-
-Recommended user-facing API starts with:
-
-```text
-agent
-runtime
-scheduler
-output_schema
-final_answer
-normalize_output
-tool
-Tool
-Agent
-RunResult
-LineageMemory
-LineageStep
-lineage_memory
-AgentContract
-ContractPolicySpec
-RunPolicy
-validate_contract_policy
-RuntimeConfig
-SchedulerConfig
-OutputSchema
-human_result
-human_results
-load_skill
-Skill
-LoadedSkill
-expect
-core
-providers
-integrations
-```
-
-Advanced public API includes systems, environments, graphs, evals, output contracts, engine constants, notebook utilities and CLI diagnostics.
-
 ## Runtime And Providers
 
 Runtime selection is explicit and inspectable:
