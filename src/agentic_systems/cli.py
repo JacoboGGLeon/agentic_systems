@@ -22,6 +22,15 @@ from .factories import runtime
 from .engines.names import supported_engine_names
 
 
+CONTACT_INFO = {
+    "author": "Jacobo Gerardo González León",
+    "email_1": "jacobogerardo.gonzalez@bbva.com",
+    "email_2": "jacoboggleon@gmail..com",
+    "linkedin": "https://www.linkedin.com/in/jacoboggleon/",
+    "github_repo": "https://www.github.com/JacoboGGLeon/agentic_systems",
+}
+
+
 def _console() -> Console:
     return Console(highlight=False)
 
@@ -65,6 +74,25 @@ def _doctor_payload() -> dict[str, Any]:
 
 def _cmd_version(_args: argparse.Namespace) -> int:
     print(__version__)
+    return 0
+
+
+def _cmd_contact(args: argparse.Namespace) -> int:
+    payload = dict(CONTACT_INFO)
+    if args.json:
+        _write_json(payload)
+        return 0
+
+    console = _console()
+    table = Table(title="Contact", box=None, show_header=False, padding=(0, 1))
+    table.add_column("Field", style="bold")
+    table.add_column("Value")
+    table.add_row("Author", payload["author"])
+    table.add_row("E-Mail 1", payload["email_1"])
+    table.add_row("E-Mail 2", payload["email_2"])
+    table.add_row("LinkedIn", payload["linkedin"])
+    table.add_row("Github Repo", payload["github_repo"])
+    console.print(Panel(table, title="Agentic Systems", border_style="cyan"))
     return 0
 
 
@@ -190,6 +218,10 @@ def build_parser() -> argparse.ArgumentParser:
 
     version_parser = subparsers.add_parser("version", help="Print the installed Agentic Systems version.")
     version_parser.set_defaults(func=_cmd_version)
+
+    contact_parser = subparsers.add_parser("contact", help="Print Agentic Systems author and project contact information.")
+    contact_parser.add_argument("--json", action="store_true", help="Emit machine-readable JSON.")
+    contact_parser.set_defaults(func=_cmd_contact)
 
     doctor_parser = subparsers.add_parser("doctor", help="Inspect local package health and optional dependencies.")
     doctor_parser.add_argument("--json", action="store_true", help="Emit machine-readable JSON.")

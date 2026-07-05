@@ -16,6 +16,7 @@ observable from a terminal.
 
 ```bash
 agentic-systems version
+agentic-systems contact
 agentic-systems doctor
 agentic-systems runtime
 agentic-systems api
@@ -33,6 +34,24 @@ You can always use the module form while diagnosing the environment:
 
 ```bash
 python -m agentic_systems.cli doctor
+```
+
+
+## Contact
+
+```bash
+agentic-systems contact
+agentic-systems contact --json
+```
+
+Prints package author and project contact information:
+
+```text
+Author: Jacobo Gerardo González León
+E-Mail 1: jacobogerardo.gonzalez@bbva.com
+E-Mail 2: jacoboggleon@gmail..com
+LinkedIn: https://www.linkedin.com/in/jacoboggleon/
+Github Repo: https://www.github.com/JacoboGGLeon/agentic_systems
 ```
 
 ## Version

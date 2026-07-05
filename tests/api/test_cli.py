@@ -70,3 +70,20 @@ def test_cli_public_api_plain_json_and_runtime_safe_configuration(capsys, monkey
     api_out = capsys.readouterr().out
     assert "API Inventory" in api_out
     assert "runtime" in api_out
+
+
+def test_cli_contact_plain_and_json(capsys):
+    from agentic_systems import cli
+
+    assert cli.main(["contact", "--json"]) == 0
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["author"] == "Jacobo Gerardo González León"
+    assert payload["email_1"] == "jacobogerardo.gonzalez@bbva.com"
+    assert payload["email_2"] == "jacoboggleon@gmail..com"
+    assert payload["linkedin"] == "https://www.linkedin.com/in/jacoboggleon/"
+    assert payload["github_repo"] == "https://www.github.com/JacoboGGLeon/agentic_systems"
+
+    assert cli.main(["contact"]) == 0
+    out = capsys.readouterr().out
+    assert "Jacobo Gerardo González León" in out
+    assert "Github Repo" in out
