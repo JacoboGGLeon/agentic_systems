@@ -124,6 +124,11 @@ vLLM runtime also reads `AGENTIC_SYSTEMS_VLLM_BASE_URL`, `VLLM_MODEL_ID`,
 `AGENTIC_SYSTEMS_VLLM_API_KEY`. It uses the OpenAI-compatible vLLM server API;
 it does not start the server.
 
+Bedrock runtime reads `AGENTIC_SYSTEMS_MODEL_ID`, `OTC_MODEL_ID`,
+`BEDROCK_MODEL_ID`, `AWS_REGION`, `AWS_DEFAULT_REGION`, `AWS_PROFILE`,
+`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and `AWS_SESSION_TOKEN`. CLI output
+only reports safe availability flags; it never prints secret values.
+
 Important fields:
 
 ```text

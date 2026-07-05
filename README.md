@@ -11,7 +11,10 @@
 </p>
 Agentic Systems is a Python library for building, running and evaluating
 auditable agentic systems with tools, skills, agents, systems, graphs,
-environments, evals, contracts, lineage memory and stable human output.
+environments, evals, contracts, lineage memory and stable human output. It is
+built for industrial agentic workloads: deterministic execution, explicit
+runtime selection, observable provider diagnostics and repeatable evaluation
+contracts for large volumes of agentic computation.
 
 Install from PyPI:
 
@@ -123,6 +126,20 @@ vLLM runtime reads `VLLM_BASE_URL`, `VLLM_API_BASE`,
 `AGENTIC_SYSTEMS_VLLM_MODEL_ID`, `VLLM_API_KEY` and
 `AGENTIC_SYSTEMS_VLLM_API_KEY`. It talks to a running vLLM OpenAI-compatible
 server; the package does not start or install the GPU server by default.
+
+Bedrock runtime reads `AGENTIC_SYSTEMS_MODEL_ID`, `OTC_MODEL_ID`,
+`BEDROCK_MODEL_ID`, `AWS_REGION`, `AWS_DEFAULT_REGION`, `AWS_PROFILE`,
+`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and `AWS_SESSION_TOKEN` from the
+environment or `.env`. Diagnostics show region/profile/credential availability
+flags, never secret values. Actual execution still uses the normal boto3/AWS
+credential chain.
+
+Integration-specific args stay owned by the selected framework. Agentic Systems
+keeps a thin facade: pass provider/runtime config through `runtime(...)`, pass
+framework identity through `framework="langgraph"`, `framework="strands"` or
+`framework="openai-agents"`, and pass native framework options to the concrete
+integration helper/factory that owns them. The library does not reinterpret or
+hide framework-specific behavior.
 
 ## Quick Start
 

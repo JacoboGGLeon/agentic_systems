@@ -125,8 +125,30 @@ server, usually at `http://127.0.0.1:8000/v1`, and uses the OpenAI SDK client.
 Install `agentic-systems[openai]` for the client dependency. Install and run
 `vllm` separately in GPU environments such as Colab.
 
-`runtime.describe()` shows safe configuration flags in `configuration.openai`
-and `configuration.vllm`. It never prints API keys.
+Bedrock runtime reads configuration from the environment or `.env`:
+
+```text
+AGENTIC_SYSTEMS_MODEL_ID
+OTC_MODEL_ID
+BEDROCK_MODEL_ID
+AWS_REGION
+AWS_DEFAULT_REGION
+AWS_PROFILE
+AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY
+AWS_SESSION_TOKEN
+```
+
+`runtime.describe()` shows safe configuration flags in `configuration.openai`,
+`configuration.vllm` and `configuration.bedrock`. It never prints API keys,
+secret keys or session tokens. Bedrock execution still uses the normal boto3/AWS
+credential chain.
+
+Integration-specific args stay owned by the selected framework. Agentic Systems
+keeps a thin facade: `runtime(...)` selects provider/backend, `framework=...`
+selects integration identity, and native framework options should be passed to
+the concrete integration helper/factory that owns them. The library does not
+reinterpret framework-specific behavior.
 
 ## Tools
 
