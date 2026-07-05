@@ -7,8 +7,6 @@ def test_cli_runtime_json_and_rich_output(capsys, monkeypatch):
     from agentic_systems import cli
 
     monkeypatch.delenv("VLLM_BASE_URL", raising=False)
-    monkeypatch.delenv("VLLM_API_BASE", raising=False)
-    monkeypatch.delenv("AGENTIC_SYSTEMS_VLLM_BASE_URL", raising=False)
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
     monkeypatch.delenv("AWS_REGION", raising=False)
     monkeypatch.delenv("AWS_DEFAULT_REGION", raising=False)
@@ -99,7 +97,7 @@ def test_cli_runtime_auto_resolves_vllm_json(capsys, monkeypatch):
     from agentic_systems import cli
 
     monkeypatch.setenv("VLLM_BASE_URL", "http://127.0.0.1:8000/v1")
-    monkeypatch.setenv("VLLM_MODEL_ID", "Qwen/Qwen3-0.6B")
+    monkeypatch.setenv("VLLM_MODEL", "Qwen/Qwen3-0.6B")
     monkeypatch.setattr(runtime_module, "_module_available", lambda name: name == "openai")
 
     assert cli.main(["runtime", "--provider", "auto", "--json"]) == 0

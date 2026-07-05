@@ -99,25 +99,16 @@ OpenAI runtime reads configuration from the environment or `.env`:
 
 ```text
 OPENAI_API_KEY
-AGENTIC_SYSTEMS_OPENAI_MODEL_ID
-OPENAI_MODEL_ID
 OPENAI_MODEL
 OPENAI_BASE_URL
-OPENAI_ORG_ID
-OPENAI_PROJECT
 ```
 
 vLLM runtime reads configuration from the environment or `.env`:
 
 ```text
 VLLM_BASE_URL
-VLLM_API_BASE
-AGENTIC_SYSTEMS_VLLM_BASE_URL
-VLLM_MODEL_ID
 VLLM_MODEL
-AGENTIC_SYSTEMS_VLLM_MODEL_ID
 VLLM_API_KEY
-AGENTIC_SYSTEMS_VLLM_API_KEY
 ```
 
 `vllm-runtime` is an OpenAI-compatible client path. It expects a running vLLM
@@ -128,8 +119,6 @@ Install `agentic-systems[openai]` for the client dependency. Install and run
 Bedrock runtime reads configuration from the environment or `.env`:
 
 ```text
-AGENTIC_SYSTEMS_MODEL_ID
-OTC_MODEL_ID
 BEDROCK_MODEL_ID
 AWS_REGION
 AWS_DEFAULT_REGION

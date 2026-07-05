@@ -81,7 +81,7 @@ Git Bash example for vLLM/OpenAI-compatible Colab or local GPU server:
 
 ```bash
 export VLLM_BASE_URL="http://127.0.0.1:8000/v1"
-export VLLM_MODEL_ID="Qwen/Qwen3-0.6B"
+export VLLM_MODEL="Qwen/Qwen3-0.6B"
 export VLLM_API_KEY="EMPTY"
 ```
 
@@ -118,11 +118,11 @@ bedrock-runtime  when AWS config is available
 auto             when no provider signal is available
 ```
 
-Bedrock selection can use `AGENTIC_SYSTEMS_MODEL_ID`, `OTC_MODEL_ID`,
-`BEDROCK_MODEL_ID`, `AWS_REGION`, `AWS_DEFAULT_REGION`, `AWS_PROFILE`,
-`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and `AWS_SESSION_TOKEN`. Runtime
-and CLI diagnostics show safe flags only; actual execution uses the standard
-boto3/AWS credential chain.
+Bedrock selection can use `BEDROCK_MODEL_ID`, `AWS_REGION`,
+`AWS_DEFAULT_REGION`, `AWS_PROFILE`, `AWS_ACCESS_KEY_ID`,
+`AWS_SECRET_ACCESS_KEY` and `AWS_SESSION_TOKEN`. Runtime and CLI diagnostics
+show safe flags only; actual execution uses the standard boto3/AWS credential
+chain.
 
 ## First Tutorial Route
 

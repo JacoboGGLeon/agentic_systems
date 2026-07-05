@@ -168,9 +168,7 @@ def test_runtime_auto_prefers_openai_when_openai_signal_exists(monkeypatch) -> N
 
 def test_runtime_auto_describe_resolves_openai_signal(monkeypatch) -> None:
     monkeypatch.setenv("OPENAI_API_KEY", "test-key")
-    monkeypatch.setenv("AGENTIC_SYSTEMS_OPENAI_MODEL_ID", "")
-    monkeypatch.setenv("OPENAI_MODEL_ID", "gpt-test")
-    monkeypatch.setenv("OPENAI_MODEL", "")
+    monkeypatch.setenv("OPENAI_MODEL", "gpt-test")
     monkeypatch.delenv("AWS_ACCESS_KEY_ID", raising=False)
     monkeypatch.delenv("AWS_SECRET_ACCESS_KEY", raising=False)
     monkeypatch.delenv("AWS_SESSION_TOKEN", raising=False)
@@ -190,12 +188,8 @@ def test_runtime_auto_describe_resolves_openai_signal(monkeypatch) -> None:
 
 def test_openai_runtime_reads_environment_config_without_leaking_secret(monkeypatch) -> None:
     monkeypatch.setenv("OPENAI_API_KEY", "secret-test-key")
-    monkeypatch.setenv("AGENTIC_SYSTEMS_OPENAI_MODEL_ID", "")
-    monkeypatch.setenv("OPENAI_MODEL_ID", "gpt-env-model")
-    monkeypatch.setenv("OPENAI_MODEL", "")
+    monkeypatch.setenv("OPENAI_MODEL", "gpt-env-model")
     monkeypatch.setenv("OPENAI_BASE_URL", "https://example.openai.test/v1")
-    monkeypatch.setenv("OPENAI_ORG_ID", "org-test")
-    monkeypatch.setenv("OPENAI_PROJECT", "project-test")
 
     runtime = lab.runtime(provider="openai-runtime")
     summary = runtime.describe()
@@ -205,21 +199,15 @@ def test_openai_runtime_reads_environment_config_without_leaking_secret(monkeypa
     assert summary["configuration"]["openai"] == {
         "api_key_configured": True,
         "base_url": "https://example.openai.test/v1",
-        "org_id_configured": True,
-        "project": "project-test",
-        "model_env_vars": ["OPENAI_MODEL_ID"],
+        "model_env_vars": ["OPENAI_MODEL"],
     }
     assert "secret-test-key" not in str(summary)
 
 
 def test_runtime_auto_falls_back_to_bedrock_when_aws_signal_exists(monkeypatch) -> None:
-    monkeypatch.setenv("AGENTIC_SYSTEMS_VLLM_BASE_URL", "")
     monkeypatch.setenv("VLLM_BASE_URL", "")
-    monkeypatch.setenv("VLLM_API_BASE", "")
     monkeypatch.setenv("OPENAI_API_KEY", "")
     monkeypatch.setenv("OPENAI_BASE_URL", "")
-    monkeypatch.setenv("OPENAI_ORG_ID", "")
-    monkeypatch.setenv("OPENAI_PROJECT", "")
     monkeypatch.setenv("AWS_ACCESS_KEY_ID", "x")
     monkeypatch.setenv("AWS_SECRET_ACCESS_KEY", "y")
     monkeypatch.setenv("AWS_REGION", "us-east-1")
@@ -234,8 +222,6 @@ def test_runtime_auto_falls_back_to_bedrock_when_aws_signal_exists(monkeypatch) 
 def test_runtime_auto_describe_resolves_bedrock_signal(monkeypatch) -> None:
     monkeypatch.setenv("OPENAI_API_KEY", "")
     monkeypatch.setenv("OPENAI_BASE_URL", "")
-    monkeypatch.setenv("OPENAI_ORG_ID", "")
-    monkeypatch.setenv("OPENAI_PROJECT", "")
     monkeypatch.setenv("AWS_REGION", "us-east-1")
     monkeypatch.setattr(runtime_module, "_module_available", lambda name: name == "boto3")
 
@@ -248,13 +234,9 @@ def test_runtime_auto_describe_resolves_bedrock_signal(monkeypatch) -> None:
 
 
 def test_runtime_auto_describe_reports_unresolved_without_backend_signal(monkeypatch) -> None:
-    monkeypatch.setenv("AGENTIC_SYSTEMS_VLLM_BASE_URL", "")
     monkeypatch.setenv("VLLM_BASE_URL", "")
-    monkeypatch.setenv("VLLM_API_BASE", "")
     monkeypatch.setenv("OPENAI_API_KEY", "")
     monkeypatch.setenv("OPENAI_BASE_URL", "")
-    monkeypatch.setenv("OPENAI_ORG_ID", "")
-    monkeypatch.setenv("OPENAI_PROJECT", "")
     monkeypatch.setenv("AWS_ACCESS_KEY_ID", "")
     monkeypatch.setenv("AWS_SECRET_ACCESS_KEY", "")
     monkeypatch.setenv("AWS_SESSION_TOKEN", "")

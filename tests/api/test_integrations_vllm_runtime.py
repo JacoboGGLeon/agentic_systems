@@ -75,7 +75,7 @@ def test_agentic_system_can_create_vllm_runtime_engine() -> None:
 def test_vllm_environment_snapshot_is_non_secret(monkeypatch) -> None:
     monkeypatch.setenv("VLLM_BASE_URL", "http://127.0.0.1:8000/v1")
     monkeypatch.setenv("VLLM_API_KEY", "secret-value")
-    monkeypatch.setenv("VLLM_MODEL_ID", "Qwen/Qwen3-0.6B")
+    monkeypatch.setenv("VLLM_MODEL", "Qwen/Qwen3-0.6B")
 
     snapshot = vllm_environment_snapshot()
 
@@ -92,7 +92,7 @@ def test_runtime_auto_resolves_vllm_when_base_url_is_configured(monkeypatch) -> 
     import agentic_systems.system as system_module
 
     monkeypatch.setenv("VLLM_BASE_URL", "http://127.0.0.1:8000/v1")
-    monkeypatch.setenv("VLLM_MODEL_ID", "Qwen/Qwen3-0.6B")
+    monkeypatch.setenv("VLLM_MODEL", "Qwen/Qwen3-0.6B")
     monkeypatch.setenv("OPENAI_API_KEY", "openai-should-be-fallback")
     monkeypatch.setenv("AWS_REGION", "us-east-1")
     monkeypatch.setattr(runtime_module, "_module_available", lambda name: name in {"openai", "boto3"})
@@ -115,13 +115,9 @@ def test_runtime_auto_unresolved_mentions_vllm(monkeypatch) -> None:
     import agentic_systems.core.runtime as runtime_module
 
     for key in (
-        "AGENTIC_SYSTEMS_VLLM_BASE_URL",
         "VLLM_BASE_URL",
-        "VLLM_API_BASE",
         "OPENAI_API_KEY",
         "OPENAI_BASE_URL",
-        "OPENAI_ORG_ID",
-        "OPENAI_PROJECT",
         "AWS_ACCESS_KEY_ID",
         "AWS_SECRET_ACCESS_KEY",
         "AWS_SESSION_TOKEN",
@@ -188,10 +184,7 @@ def test_vllm_runtime_provider_environment_clients_and_defaults(monkeypatch) -> 
         def __init__(self, **kwargs):
             created["async"] = kwargs
 
-    monkeypatch.delenv("AGENTIC_SYSTEMS_VLLM_BASE_URL", raising=False)
     monkeypatch.delenv("VLLM_BASE_URL", raising=False)
-    monkeypatch.delenv("VLLM_API_BASE", raising=False)
-    monkeypatch.delenv("AGENTIC_SYSTEMS_VLLM_API_KEY", raising=False)
     monkeypatch.delenv("VLLM_API_KEY", raising=False)
     monkeypatch.setattr(vllm_module, "_openai_module", lambda: SimpleNamespace(OpenAI=FakeOpenAI, AsyncOpenAI=FakeAsyncOpenAI))
 
@@ -202,7 +195,7 @@ def test_vllm_runtime_provider_environment_clients_and_defaults(monkeypatch) -> 
     assert created["sync"] == {"base_url": "http://127.0.0.1:8000/v1", "api_key": "EMPTY"}
     assert created["async"] == {"base_url": "http://127.0.0.1:8000/v1", "api_key": "EMPTY"}
 
-    monkeypatch.setenv("AGENTIC_SYSTEMS_VLLM_API_KEY", "configured")
+    monkeypatch.setenv("VLLM_API_KEY", "configured")
     assert vllm_module._vllm_api_key() == "configured"
 
 

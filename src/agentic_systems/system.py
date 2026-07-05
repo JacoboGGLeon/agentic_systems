@@ -525,15 +525,13 @@ def _module_available(name: str) -> bool:
 
 
 def _vllm_signal_present() -> bool:
-    return bool(os.getenv("AGENTIC_SYSTEMS_VLLM_BASE_URL") or os.getenv("VLLM_BASE_URL") or os.getenv("VLLM_API_BASE"))
+    return bool(os.getenv("VLLM_BASE_URL"))
 
 
 def _openai_signal_present() -> bool:
     return bool(
         os.getenv("OPENAI_API_KEY")
         or os.getenv("OPENAI_BASE_URL")
-        or os.getenv("OPENAI_ORG_ID")
-        or os.getenv("OPENAI_PROJECT")
     )
 
 

@@ -68,7 +68,7 @@ This smoke validates configuration only. It does not start a GPU server.
 ```bash
 python -m pip install -e ".[openai]"
 export VLLM_BASE_URL="http://127.0.0.1:8000/v1"
-export VLLM_MODEL_ID="Qwen/Qwen3-0.6B"
+export VLLM_MODEL="Qwen/Qwen3-0.6B"
 agentic-systems runtime --provider auto --json
 ```
 

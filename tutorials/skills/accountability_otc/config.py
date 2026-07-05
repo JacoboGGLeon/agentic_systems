@@ -18,7 +18,7 @@ class AccountabilitySettings:
     table: str = os.getenv("OTC_TABLE", "t_mrdc_mthly_invty_otc")
     workgroup: str = os.getenv("OTC_WORKGROUP", "sandbox")
     region: str = os.getenv("AWS_REGION") or os.getenv("AWS_DEFAULT_REGION", "us-east-1")
-    model_id: str = os.getenv("OTC_MODEL_ID", "qwen.qwen3-32b-v1:0")
+    model_id: str = os.getenv("BEDROCK_MODEL_ID", "qwen.qwen3-32b-v1:0")
     max_limit: int = int(os.getenv("OTC_MAX_LIMIT", "500"))
 
     @property

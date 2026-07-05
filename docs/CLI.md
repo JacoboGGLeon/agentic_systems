@@ -111,23 +111,20 @@ agentic-systems runtime --provider vllm-runtime --model Qwen/Qwen3-0.6B
 
 This command constructs `RuntimeConfig` and prints `runtime.describe()` without
 executing a model. For `provider="auto"`, it reads environment signals such as
-`VLLM_BASE_URL`, `VLLM_API_BASE`, `OPENAI_API_KEY`, `OPENAI_BASE_URL`,
+`VLLM_BASE_URL`, `OPENAI_API_KEY`, `OPENAI_BASE_URL`,
 `AWS_REGION` and `AWS_PROFILE` to show the effective provider selection.
 
 Auto priority is `vllm-runtime`, then `openai-runtime`, then `bedrock-runtime`.
 
-OpenAI runtime also reads `AGENTIC_SYSTEMS_OPENAI_MODEL_ID`,
-`OPENAI_MODEL_ID`, `OPENAI_MODEL`, `OPENAI_ORG_ID` and `OPENAI_PROJECT`.
+OpenAI runtime also reads `OPENAI_MODEL`.
 
-vLLM runtime also reads `AGENTIC_SYSTEMS_VLLM_BASE_URL`, `VLLM_MODEL_ID`,
-`VLLM_MODEL`, `AGENTIC_SYSTEMS_VLLM_MODEL_ID`, `VLLM_API_KEY` and
-`AGENTIC_SYSTEMS_VLLM_API_KEY`. It uses the OpenAI-compatible vLLM server API;
-it does not start the server.
+vLLM runtime also reads `VLLM_MODEL` and `VLLM_API_KEY`. It uses the
+OpenAI-compatible vLLM server API; it does not start the server.
 
-Bedrock runtime reads `AGENTIC_SYSTEMS_MODEL_ID`, `OTC_MODEL_ID`,
-`BEDROCK_MODEL_ID`, `AWS_REGION`, `AWS_DEFAULT_REGION`, `AWS_PROFILE`,
-`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and `AWS_SESSION_TOKEN`. CLI output
-only reports safe availability flags; it never prints secret values.
+Bedrock runtime reads `BEDROCK_MODEL_ID`, `AWS_REGION`, `AWS_DEFAULT_REGION`,
+`AWS_PROFILE`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and
+`AWS_SESSION_TOKEN`. CLI output only reports safe availability flags; it never
+prints secret values.
 
 Important fields:
 
@@ -164,7 +161,7 @@ For vLLM/OpenAI-compatible local or Colab GPU inference:
 
 ```bash
 export VLLM_BASE_URL="http://127.0.0.1:8000/v1"
-export VLLM_MODEL_ID="Qwen/Qwen3-0.6B"
+export VLLM_MODEL="Qwen/Qwen3-0.6B"
 export VLLM_API_KEY="EMPTY"
 agentic-systems runtime --provider auto --json
 ```

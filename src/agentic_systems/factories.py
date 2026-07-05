@@ -16,20 +16,14 @@ from .system import AgenticSystem
 from .skills import Skill
 
 DEFAULT_MODEL_ENV_VARS = (
-    "AGENTIC_SYSTEMS_MODEL_ID",
-    "OTC_MODEL_ID",
     "BEDROCK_MODEL_ID",
 )
 
 OPENAI_MODEL_ENV_VARS = (
-    "AGENTIC_SYSTEMS_OPENAI_MODEL_ID",
-    "OPENAI_MODEL_ID",
     "OPENAI_MODEL",
 )
 
 VLLM_MODEL_ENV_VARS = (
-    "AGENTIC_SYSTEMS_VLLM_MODEL_ID",
-    "VLLM_MODEL_ID",
     "VLLM_MODEL",
 )
 
@@ -154,9 +148,9 @@ def _runtime_metadata(provider: str, metadata: dict[str, Any] | None, region: st
         merged.setdefault(
             "vllm",
             {
-                "base_url": os.getenv("AGENTIC_SYSTEMS_VLLM_BASE_URL") or os.getenv("VLLM_BASE_URL") or os.getenv("VLLM_API_BASE") or None,
+                "base_url": os.getenv("VLLM_BASE_URL") or None,
                 "base_url_configured": _vllm_signal_present(),
-                "api_key_configured": bool(os.getenv("AGENTIC_SYSTEMS_VLLM_API_KEY") or os.getenv("VLLM_API_KEY")),
+                "api_key_configured": bool(os.getenv("VLLM_API_KEY")),
                 "model_env_vars": [key for key in VLLM_MODEL_ENV_VARS if os.getenv(key)],
             },
         )
@@ -166,8 +160,6 @@ def _runtime_metadata(provider: str, metadata: dict[str, Any] | None, region: st
             {
                 "api_key_configured": bool(os.getenv("OPENAI_API_KEY")),
                 "base_url": os.getenv("OPENAI_BASE_URL") or None,
-                "org_id_configured": bool(os.getenv("OPENAI_ORG_ID")),
-                "project": os.getenv("OPENAI_PROJECT") or None,
                 "model_env_vars": [key for key in OPENAI_MODEL_ENV_VARS if os.getenv(key)],
             },
         )
@@ -188,7 +180,7 @@ def _runtime_metadata(provider: str, metadata: dict[str, Any] | None, region: st
 
 
 def _vllm_signal_present() -> bool:
-    return bool(os.getenv("AGENTIC_SYSTEMS_VLLM_BASE_URL") or os.getenv("VLLM_BASE_URL") or os.getenv("VLLM_API_BASE"))
+    return bool(os.getenv("VLLM_BASE_URL"))
 
 
 def output_schema(

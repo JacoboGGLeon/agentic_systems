@@ -60,7 +60,7 @@ def _doctor_payload() -> dict[str, Any]:
         "supported_engines": supported_engine_names(),
         "dotenv_loaded": dotenv_loaded,
         "environment": {
-            "has_vllm_base_url": bool(os.getenv("AGENTIC_SYSTEMS_VLLM_BASE_URL") or os.getenv("VLLM_BASE_URL") or os.getenv("VLLM_API_BASE")),
+            "has_vllm_base_url": bool(os.getenv("VLLM_BASE_URL")),
             "has_openai_api_key": bool(os.getenv("OPENAI_API_KEY")),
             "has_aws_region": bool(os.getenv("AWS_REGION") or os.getenv("AWS_DEFAULT_REGION")),
             "has_aws_profile": bool(os.getenv("AWS_PROFILE")),

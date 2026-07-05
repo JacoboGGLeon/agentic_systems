@@ -104,29 +104,24 @@ class VLLMRuntimeProvider:
 
 
 def _vllm_base_url() -> str:
-    return (
-        os.getenv("AGENTIC_SYSTEMS_VLLM_BASE_URL")
-        or os.getenv("VLLM_BASE_URL")
-        or os.getenv("VLLM_API_BASE")
-        or DEFAULT_VLLM_BASE_URL
-    )
+    return os.getenv("VLLM_BASE_URL") or DEFAULT_VLLM_BASE_URL
 
 
 def _vllm_api_key() -> str:
-    return os.getenv("AGENTIC_SYSTEMS_VLLM_API_KEY") or os.getenv("VLLM_API_KEY") or DEFAULT_VLLM_API_KEY
+    return os.getenv("VLLM_API_KEY") or DEFAULT_VLLM_API_KEY
 
 
 def vllm_environment_snapshot() -> dict[str, Any]:
     """Return non-secret vLLM runtime configuration for diagnostics."""
 
     base_url = _vllm_base_url()
-    model = os.getenv("AGENTIC_SYSTEMS_VLLM_MODEL_ID") or os.getenv("VLLM_MODEL_ID") or os.getenv("VLLM_MODEL")
+    model = os.getenv("VLLM_MODEL")
     return {
         "base_url": base_url,
-        "base_url_configured": bool(os.getenv("AGENTIC_SYSTEMS_VLLM_BASE_URL") or os.getenv("VLLM_BASE_URL") or os.getenv("VLLM_API_BASE")),
+        "base_url_configured": bool(os.getenv("VLLM_BASE_URL")),
         "model": model,
         "model_configured": bool(model),
-        "api_key_configured": bool(os.getenv("AGENTIC_SYSTEMS_VLLM_API_KEY") or os.getenv("VLLM_API_KEY")),
+        "api_key_configured": bool(os.getenv("VLLM_API_KEY")),
     }
 
 

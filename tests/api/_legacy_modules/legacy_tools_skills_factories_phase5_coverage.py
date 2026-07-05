@@ -184,8 +184,8 @@ def test_chain_expectations_and_factories(monkeypatch, tmp_path):
     assert expect.allowed("a", "b") == {"allowed": ["a", "b"]}
     assert expect.at_least(2, ["a", "b"]) == {"min_count": 2, "allowed": ["a", "b"]}
 
-    monkeypatch.setenv("AGENTIC_SYSTEMS_MODEL_ID", "bedrock-model")
-    monkeypatch.setenv("AGENTIC_SYSTEMS_OPENAI_MODEL_ID", "openai-model")
+    monkeypatch.setenv("BEDROCK_MODEL_ID", "bedrock-model")
+    monkeypatch.setenv("OPENAI_MODEL", "openai-model")
     monkeypatch.setenv("AWS_REGION", "mx-test-1")
     assert factories_module.default_model_id() == "bedrock-model"
     assert factories_module.default_openai_model_id() == "openai-model"
@@ -242,8 +242,6 @@ def test_chain_expectations_and_factories(monkeypatch, tmp_path):
 
 def test_phase5_residual_factories_loader_and_tool_edges(monkeypatch, tmp_path):
     monkeypatch.setattr(factories_module, "_load_dotenv", lambda: None)
-    monkeypatch.delenv("AGENTIC_SYSTEMS_OPENAI_MODEL_ID", raising=False)
-    monkeypatch.delenv("OPENAI_MODEL_ID", raising=False)
     monkeypatch.delenv("OPENAI_MODEL", raising=False)
     assert factories_module.default_openai_model_id() == "gpt-4o-mini"
 

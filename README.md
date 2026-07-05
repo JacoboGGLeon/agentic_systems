@@ -116,23 +116,18 @@ CLI to see what the current environment selects before executing a model. The
 current priority is `vllm-runtime`, then `openai-runtime`, then
 `bedrock-runtime`.
 
-OpenAI runtime reads `OPENAI_API_KEY`, `AGENTIC_SYSTEMS_OPENAI_MODEL_ID`,
-`OPENAI_MODEL_ID`, `OPENAI_MODEL`, `OPENAI_BASE_URL`, `OPENAI_ORG_ID` and
-`OPENAI_PROJECT` from the environment or `.env`. Diagnostics show safe flags,
-not secret values.
+OpenAI runtime reads `OPENAI_API_KEY`, `OPENAI_MODEL` and `OPENAI_BASE_URL` from
+the environment or `.env`. Diagnostics show safe flags, not secret values.
 
-vLLM runtime reads `VLLM_BASE_URL`, `VLLM_API_BASE`,
-`AGENTIC_SYSTEMS_VLLM_BASE_URL`, `VLLM_MODEL_ID`, `VLLM_MODEL`,
-`AGENTIC_SYSTEMS_VLLM_MODEL_ID`, `VLLM_API_KEY` and
-`AGENTIC_SYSTEMS_VLLM_API_KEY`. It talks to a running vLLM OpenAI-compatible
-server; the package does not start or install the GPU server by default.
+vLLM runtime reads `VLLM_BASE_URL`, `VLLM_MODEL` and `VLLM_API_KEY`. It talks to
+a running vLLM OpenAI-compatible server; the package does not start or install
+the GPU server by default.
 
-Bedrock runtime reads `AGENTIC_SYSTEMS_MODEL_ID`, `OTC_MODEL_ID`,
-`BEDROCK_MODEL_ID`, `AWS_REGION`, `AWS_DEFAULT_REGION`, `AWS_PROFILE`,
-`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and `AWS_SESSION_TOKEN` from the
-environment or `.env`. Diagnostics show region/profile/credential availability
-flags, never secret values. Actual execution still uses the normal boto3/AWS
-credential chain.
+Bedrock runtime reads `BEDROCK_MODEL_ID`, `AWS_REGION`, `AWS_DEFAULT_REGION`,
+`AWS_PROFILE`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and
+`AWS_SESSION_TOKEN` from the environment or `.env`. Diagnostics show
+region/profile/credential availability flags, never secret values. Actual
+execution still uses the normal boto3/AWS credential chain.
 
 Integration-specific args stay owned by the selected framework. Agentic Systems
 keeps a thin facade: pass provider/runtime config through `runtime(...)`, pass
