@@ -13,7 +13,6 @@ Core install keeps optional backends out of the default path.
 
 ```bash
 pip install -e '.[bedrock]'
-pip install -e '.[athena]'
 pip install -e '.[langgraph]'
 pip install -e '.[tutorials]'
 pip install -e '.[dev]'
