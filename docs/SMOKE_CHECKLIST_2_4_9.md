@@ -12,7 +12,7 @@ pip install -e .
 Expected:
 
 ```text
-install succeeds without requiring AWS, OpenAI, LangGraph or Strands extras
+install succeeds without requiring AWS, OpenAI, vLLM, LangGraph or Strands extras
 ```
 
 ## 2. CLI Smoke
@@ -58,6 +58,24 @@ result = agent.run({"tool": "add", "input": {"a": 2, "b": 3}}, mode="eval")
 
 assert result.ok
 assert result.data["result"] == 5
+```
+
+
+## 4b. vLLM Runtime Client Smoke
+
+This smoke validates configuration only. It does not start a GPU server.
+
+```bash
+python -m pip install -e ".[openai]"
+export VLLM_BASE_URL="http://127.0.0.1:8000/v1"
+export VLLM_MODEL_ID="Qwen/Qwen3-0.6B"
+agentic-systems runtime --provider auto --json
+```
+
+Expected:
+
+```text
+selected_provider is vllm-runtime when the OpenAI SDK is installed and VLLM_BASE_URL is configured
 ```
 
 ## 5. Tutorial Route Smoke

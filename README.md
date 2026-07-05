@@ -20,7 +20,7 @@ Agentic Systems exposes five practical routes:
 ```text
 toolkit       top-level public facade for normal user code
 primitives    Tool, Skill, Agent, RunResult, contracts, runtime and lineage
-providers     execution backends: python-direct, openai-runtime, bedrock-runtime or auto
+providers     execution backends: python-direct, openai-runtime, bedrock-runtime, vllm-runtime or auto
 system        AgenticSystem as the native composition layer
 integrations  bridges to external agent frameworks such as LangGraph, Strands and OpenAI Agents
 ```
@@ -36,7 +36,7 @@ Agentic Systems supports two agent styles:
 
 ```text
 deterministic agents  execute explicit tools and local Python policies with python-direct
-reasoning agents      use language-model providers such as openai-runtime or bedrock-runtime
+reasoning agents      use language-model providers such as openai-runtime, bedrock-runtime or vllm-runtime
 ```
 
 Both styles share the same lifecycle: tools expose executable capabilities,
@@ -48,7 +48,7 @@ environments run episodes, and evals validate behavior with empirical evidence.
 Current verified test status is documented in [`docs/PYTEST_COVERAGE_REPORT.md`](docs/PYTEST_COVERAGE_REPORT.md):
 
 ```text
-288 passed, 1 skipped
+295 passed, 1 skipped
 Coverage: 100.00%
 TOTAL statements: 5173
 TOTAL missing: 0
@@ -69,7 +69,7 @@ Eval        empirical validation and scoring over cases or episodes
 Cross-cutting APIs:
 
 ```text
-runtime/provider     python-direct, openai-runtime, bedrock-runtime or auto
+runtime/provider     python-direct, openai-runtime, bedrock-runtime, vllm-runtime or auto
 scheduler            execution budgets, retries, turns, timeouts and concurrency
 contracts/policies   expected tools, strictness, repair and finalization rules
 Lineage Memory       traceability, context, memory and audit trail
@@ -86,6 +86,7 @@ Canonical providers:
 python-direct     deterministic local execution for tools and policies
 openai-runtime    native OpenAI language-model provider
 bedrock-runtime   AWS Bedrock Runtime language-model provider
+vllm-runtime      OpenAI-compatible vLLM provider for local or Colab GPU inference
 auto              environment-based provider selection
 ```
 
@@ -98,12 +99,20 @@ OpenAI Agents   OpenAI Agents-style framework integration
 ```
 
 `provider="auto"` is explicit selection mode. Use `runtime.describe()` or the
-CLI to see what the current environment selects before executing a model.
+CLI to see what the current environment selects before executing a model. The
+current priority is `vllm-runtime`, then `openai-runtime`, then
+`bedrock-runtime`.
 
 OpenAI runtime reads `OPENAI_API_KEY`, `AGENTIC_SYSTEMS_OPENAI_MODEL_ID`,
 `OPENAI_MODEL_ID`, `OPENAI_MODEL`, `OPENAI_BASE_URL`, `OPENAI_ORG_ID` and
 `OPENAI_PROJECT` from the environment or `.env`. Diagnostics show safe flags,
 not secret values.
+
+vLLM runtime reads `VLLM_BASE_URL`, `VLLM_API_BASE`,
+`AGENTIC_SYSTEMS_VLLM_BASE_URL`, `VLLM_MODEL_ID`, `VLLM_MODEL`,
+`AGENTIC_SYSTEMS_VLLM_MODEL_ID`, `VLLM_API_KEY` and
+`AGENTIC_SYSTEMS_VLLM_API_KEY`. It talks to a running vLLM OpenAI-compatible
+server; the package does not start or install the GPU server by default.
 
 ## Quick Start
 
@@ -134,7 +143,7 @@ system still receives a provider through `toolkit.runtime(...)`.
 ```python
 import agentic_systems as toolkit
 
-system = toolkit.AgenticSystem(runtime=toolkit.runtime(provider="python-direct"))
+system = toolkit.AgenticSystem(model="local-python", runtime=toolkit.runtime(provider="python-direct"))
 
 @system.tool
 def add(a: int, b: int) -> dict:

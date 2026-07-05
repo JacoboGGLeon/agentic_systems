@@ -106,15 +106,23 @@ agentic-systems runtime --provider auto --json
 agentic-systems runtime --provider python-direct
 agentic-systems runtime --provider openai-runtime --model gpt-4.1-mini
 agentic-systems runtime --provider bedrock-runtime --region us-east-1
+agentic-systems runtime --provider vllm-runtime --model Qwen/Qwen3-0.6B
 ```
 
 This command constructs `RuntimeConfig` and prints `runtime.describe()` without
 executing a model. For `provider="auto"`, it reads environment signals such as
-`OPENAI_API_KEY`, `OPENAI_BASE_URL`, `AWS_REGION` and `AWS_PROFILE` to show the
-effective provider selection.
+`VLLM_BASE_URL`, `VLLM_API_BASE`, `OPENAI_API_KEY`, `OPENAI_BASE_URL`,
+`AWS_REGION` and `AWS_PROFILE` to show the effective provider selection.
+
+Auto priority is `vllm-runtime`, then `openai-runtime`, then `bedrock-runtime`.
 
 OpenAI runtime also reads `AGENTIC_SYSTEMS_OPENAI_MODEL_ID`,
 `OPENAI_MODEL_ID`, `OPENAI_MODEL`, `OPENAI_ORG_ID` and `OPENAI_PROJECT`.
+
+vLLM runtime also reads `AGENTIC_SYSTEMS_VLLM_BASE_URL`, `VLLM_MODEL_ID`,
+`VLLM_MODEL`, `AGENTIC_SYSTEMS_VLLM_MODEL_ID`, `VLLM_API_KEY` and
+`AGENTIC_SYSTEMS_VLLM_API_KEY`. It uses the OpenAI-compatible vLLM server API;
+it does not start the server.
 
 Important fields:
 
@@ -145,6 +153,30 @@ Git Bash:
 ```bash
 export OPENAI_API_KEY="your_key_here"
 agentic-systems runtime --provider auto --json
+```
+
+For vLLM/OpenAI-compatible local or Colab GPU inference:
+
+```bash
+export VLLM_BASE_URL="http://127.0.0.1:8000/v1"
+export VLLM_MODEL_ID="Qwen/Qwen3-0.6B"
+export VLLM_API_KEY="EMPTY"
+agentic-systems runtime --provider auto --json
+```
+
+Expected vLLM output includes:
+
+```json
+{
+  "selected_provider": "vllm-runtime",
+  "mode": "auto",
+  "model": "Qwen/Qwen3-0.6B",
+  "configuration": {
+    "vllm": {
+      "base_url_configured": true
+    }
+  }
+}
 ```
 
 Expected OpenAI output includes:

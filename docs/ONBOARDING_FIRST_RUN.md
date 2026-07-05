@@ -16,6 +16,7 @@ pip install -e ".[dev]"
 pip install -e ".[tutorials]"
 pip install -e ".[bedrock]"
 pip install -e ".[langgraph]"
+pip install -e ".[openai]"   # OpenAI client; also used by vllm-runtime
 ```
 
 ## Smoke Test
@@ -76,6 +77,17 @@ export AWS_REGION="us-east-1"
 export AWS_PROFILE="your_profile"
 ```
 
+Git Bash example for vLLM/OpenAI-compatible Colab or local GPU server:
+
+```bash
+export VLLM_BASE_URL="http://127.0.0.1:8000/v1"
+export VLLM_MODEL_ID="Qwen/Qwen3-0.6B"
+export VLLM_API_KEY="EMPTY"
+```
+
+In Colab, install `agentic-systems[openai]` for the client and install/run
+`vllm` separately for the GPU server.
+
 Do not paste API keys into notebooks or repo files. `provider="auto"` reads
 environment variables that already exist in the kernel process.
 
@@ -100,6 +112,7 @@ toolkit.show(runtime.describe(), title="Auto runtime - describe")
 Expected `selected_provider` values:
 
 ```text
+vllm-runtime     when VLLM_BASE_URL/vLLM config is available
 openai-runtime   when OpenAI config is available
 bedrock-runtime  when AWS config is available
 auto             when no provider signal is available
@@ -140,7 +153,7 @@ Use local deterministic execution first:
 runtime = toolkit.runtime(provider="python-direct")
 ```
 
-Use automatic selection when moving between local, OpenAI and AWS environments:
+Use automatic selection when moving between local, vLLM, OpenAI and AWS environments:
 
 ```python
 runtime = toolkit.runtime(provider="auto")

@@ -39,7 +39,7 @@ tests/                     regression and API contract tests
 
 ```text
 core          provider-agnostic primitives
-providers     runtime/model access: python-direct, bedrock-runtime, openai-runtime
+providers     runtime/model access: python-direct, bedrock-runtime, openai-runtime, vllm-runtime
 integrations  framework adapters: LangGraph, Strands and runtime bridges
 engines       internal execution implementation details
 ```
@@ -48,7 +48,7 @@ Rules:
 
 ```text
 - Core imports must not require optional framework dependencies.
-- Provider code owns model/backend calls.
+- Provider code owns model/backend calls. `vllm-runtime` owns only the OpenAI-compatible client call; the vLLM GPU server is external infrastructure.
 - Integration code owns framework adaptation only.
 - Business and tutorial assets stay outside src/agentic_systems.
 - `provider="auto"` must resolve to one concrete provider before execution.

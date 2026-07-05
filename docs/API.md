@@ -91,7 +91,7 @@ let `runtime(provider="auto")` or `runtime(provider="openai-runtime")` select th
 backend.
 
 Best practice: keep `provider="auto"` at the boundary where code moves between
-local, OpenAI and AWS environments. Use `runtime.describe()` in notebooks and
+local, vLLM, OpenAI and AWS environments. Use `runtime.describe()` in notebooks and
 CLI diagnostics to make the selected provider visible. `describe()` performs a
 dry resolution from environment variables; it does not execute models.
 
@@ -107,8 +107,26 @@ OPENAI_ORG_ID
 OPENAI_PROJECT
 ```
 
-`runtime.describe()` shows safe configuration flags in `configuration.openai`.
-It never prints the API key.
+vLLM runtime reads configuration from the environment or `.env`:
+
+```text
+VLLM_BASE_URL
+VLLM_API_BASE
+AGENTIC_SYSTEMS_VLLM_BASE_URL
+VLLM_MODEL_ID
+VLLM_MODEL
+AGENTIC_SYSTEMS_VLLM_MODEL_ID
+VLLM_API_KEY
+AGENTIC_SYSTEMS_VLLM_API_KEY
+```
+
+`vllm-runtime` is an OpenAI-compatible client path. It expects a running vLLM
+server, usually at `http://127.0.0.1:8000/v1`, and uses the OpenAI SDK client.
+Install `agentic-systems[openai]` for the client dependency. Install and run
+`vllm` separately in GPU environments such as Colab.
+
+`runtime.describe()` shows safe configuration flags in `configuration.openai`
+and `configuration.vllm`. It never prints API keys.
 
 ## Tools
 
@@ -265,7 +283,7 @@ LINEAGE_SCHEMA_VERSION
 skills, agents, runtime and contracts.
 
 ```python
-system = toolkit.AgenticSystem(runtime=runtime)
+system = toolkit.AgenticSystem(model="local-python", runtime=runtime)
 
 @system.tool
 def multiply(a: int, b: int) -> dict:
@@ -362,7 +380,7 @@ DEFAULT_EMBEDDING_MODEL_ID
 ```
 
 Use `BedrockRuntimeClient` only when you need direct Bedrock Runtime primitives.
-Most user code should use `toolkit.runtime(provider="bedrock-runtime")`.
+Most user code should use `toolkit.runtime(provider="bedrock-runtime")`, `toolkit.runtime(provider="openai-runtime")`, `toolkit.runtime(provider="vllm-runtime")` or `toolkit.runtime(provider="auto")`.
 
 ## Notebook Utilities
 

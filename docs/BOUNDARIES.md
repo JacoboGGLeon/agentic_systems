@@ -7,7 +7,7 @@ This document defines where new code belongs.
 | Namespace | Owns | Must not own |
 |---|---|---|
 | `agentic_systems.core` | runtime-agnostic contracts, results, scheduler and runtime config | provider SDK calls, framework compilation, business logic |
-| `agentic_systems.providers` | backend/model access for `python-direct`, `bedrock-runtime`, `openai-runtime` | framework orchestration or tutorial-specific workflows |
+| `agentic_systems.providers` | backend/model access for `python-direct`, `bedrock-runtime`, `openai-runtime`, `vllm-runtime` | framework orchestration or tutorial-specific workflows |
 | `agentic_systems.integrations` | adapters to external frameworks and bridges | core contracts or provider implementation details |
 | `agentic_systems.engines` | internal execution modules | new public API design |
 | `tutorials/` | executable API learning path | library implementation |
@@ -29,6 +29,8 @@ Examples:
 python-direct      provider
 bedrock-runtime    provider
 openai-runtime     provider
+vllm-runtime       provider
+vLLM server        external infrastructure, not a framework and not package core
 langgraph          integration
 strands            integration
 ```
