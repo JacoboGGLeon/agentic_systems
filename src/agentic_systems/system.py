@@ -474,7 +474,7 @@ class AgenticSystem:
                 self._engines[name] = PythonDirectEngine(self)
             elif name == VLLM_RUNTIME_ENGINE:
                 self._engines[name] = VLLMRuntimeProvider(self)
-            else:
+            else:  # pragma: no cover - canonical_engine_name rejects this before engine construction.
                 raise ValueError(f"Unknown engine {name!r}. Supported engines: {list(supported_engine_names())}")
         return self._engines[name]
 

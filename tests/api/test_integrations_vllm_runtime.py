@@ -137,3 +137,128 @@ def test_runtime_auto_unresolved_mentions_vllm(monkeypatch) -> None:
     assert summary["selected_provider"] == "auto"
     assert summary["mode"] == "auto-unresolved"
     assert "VLLM_BASE_URL" in summary["reason"]
+
+
+class FakeAsyncChatCompletions:
+    async def create(self, **kwargs):
+        message = SimpleNamespace(content="Respuesta async vLLM.", tool_calls=[])
+        usage = SimpleNamespace(prompt_tokens=3, completion_tokens=2, total_tokens=5)
+        return SimpleNamespace(choices=[SimpleNamespace(message=message)], usage=usage)
+
+
+class FakeAsyncVLLMClient:
+    def __init__(self) -> None:
+        self.chat = SimpleNamespace(completions=FakeAsyncChatCompletions())
+
+
+def test_vllm_runtime_provider_async_missing_tools_and_success() -> None:
+    import asyncio
+
+    runtime = toolkit.runtime(provider="vllm-runtime", model="Qwen/Qwen3-0.6B")
+    provider = VLLMRuntimeProvider(async_client=FakeAsyncVLLMClient())
+    missing_agent = toolkit.Agent(name="empty", tools=[], runtime=runtime)
+
+    missing = asyncio.run(provider.arun(missing_agent, "Hola", toolkit.RunPolicy(max_turns=1)))
+
+    assert missing.ok is False
+    assert missing.engine == VLLM_RUNTIME_ENGINE
+    assert missing.meta["runtime_engine"] == VLLM_RUNTIME_ENGINE
+
+    system = toolkit.AgenticSystem(runtime=runtime, model="Qwen/Qwen3-0.6B")
+    agent = system.agent(name="qwen_async", instructions="Responde.", tools=[duplicar], engine="vllm-runtime", runtime=runtime)
+
+    result = asyncio.run(provider.arun(agent, "Contesta sin tools.", toolkit.RunPolicy(max_turns=1), mode="eval"))
+
+    assert result.ok is True
+    assert result.engine == VLLM_RUNTIME_ENGINE
+    assert result.text == "Respuesta async vLLM."
+    assert result.usage["total_tokens"] == 5
+
+
+def test_vllm_runtime_provider_environment_clients_and_defaults(monkeypatch) -> None:
+    import agentic_systems.providers.vllm_runtime as vllm_module
+
+    created = {}
+
+    class FakeOpenAI:
+        def __init__(self, **kwargs):
+            created["sync"] = kwargs
+
+    class FakeAsyncOpenAI:
+        def __init__(self, **kwargs):
+            created["async"] = kwargs
+
+    monkeypatch.delenv("AGENTIC_SYSTEMS_VLLM_BASE_URL", raising=False)
+    monkeypatch.delenv("VLLM_BASE_URL", raising=False)
+    monkeypatch.delenv("VLLM_API_BASE", raising=False)
+    monkeypatch.delenv("AGENTIC_SYSTEMS_VLLM_API_KEY", raising=False)
+    monkeypatch.delenv("VLLM_API_KEY", raising=False)
+    monkeypatch.setattr(vllm_module, "_openai_module", lambda: SimpleNamespace(OpenAI=FakeOpenAI, AsyncOpenAI=FakeAsyncOpenAI))
+
+    provider = VLLMRuntimeProvider()
+
+    assert provider._client_from_environment().__class__ is FakeOpenAI
+    assert provider._async_client_from_environment().__class__ is FakeAsyncOpenAI
+    assert created["sync"] == {"base_url": "http://127.0.0.1:8000/v1", "api_key": "EMPTY"}
+    assert created["async"] == {"base_url": "http://127.0.0.1:8000/v1", "api_key": "EMPTY"}
+
+    monkeypatch.setenv("AGENTIC_SYSTEMS_VLLM_API_KEY", "configured")
+    assert vllm_module._vllm_api_key() == "configured"
+
+
+def test_system_unknown_engine_and_auto_vllm_import_failure(monkeypatch) -> None:
+    import builtins
+    import pytest
+    import agentic_systems.system as system_module
+
+    system = toolkit.AgenticSystem(model="python-runtime", runtime=toolkit.runtime(provider="python-runtime"))
+    with pytest.raises(ValueError, match="Unknown runtime/provider"):
+        system._engine("unknown-runtime")
+
+    monkeypatch.setenv("VLLM_BASE_URL", "http://127.0.0.1:8000/v1")
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    monkeypatch.delenv("AWS_REGION", raising=False)
+    monkeypatch.delenv("AWS_DEFAULT_REGION", raising=False)
+    monkeypatch.setattr(system_module, "_module_available", lambda name: name == "openai")
+
+    real_import = builtins.__import__
+
+    def block_vllm(name, *args, **kwargs):
+        if name.endswith("providers.vllm_runtime") or name == "agentic_systems.providers.vllm_runtime":
+            raise ImportError("blocked vllm")
+        return real_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "__import__", block_vllm)
+
+    with pytest.raises(ValueError, match="provider='auto' could not resolve"):
+        system_module._resolve_auto_provider(None, None)
+
+    assert system_module._module_available("openai") is True
+
+
+def test_openai_tool_def_builder_skips_missing_tool_specs() -> None:
+    from agentic_systems.providers.openai_runtime import _openai_tools
+
+    runtime = SimpleNamespace(tool_names=lambda: ["missing"], tool_specs=lambda names: {})
+    agent = SimpleNamespace(system=None, tools=[])
+
+    assert _openai_tools(runtime, agent) == []
+
+
+def test_openai_tool_def_builder_uses_default_schema_for_schema_less_tools() -> None:
+    from agentic_systems.providers.openai_runtime import _openai_tools
+
+    tool = SimpleNamespace(name="plain", description="Plain tool", input_schema=None)
+    agent = SimpleNamespace(tools=[], available_tools=lambda: [tool])
+
+    defs = _openai_tools(None, agent)
+
+    assert defs[0]["function"]["name"] == "plain"
+    assert defs[0]["function"]["parameters"] == {"type": "object", "properties": {}, "additionalProperties": True}
+
+
+def test_system_module_available_real_lookup() -> None:
+    import agentic_systems.system as system_module
+
+    assert system_module._module_available("sys") is True
+    assert system_module._module_available("definitely_missing_agentic_systems_module") is False

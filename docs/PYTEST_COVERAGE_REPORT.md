@@ -4,7 +4,7 @@ Fecha de corte: 2026-07-05
 
 ## Estado Actual Verificado
 
-Esta medicion es real. Viene de una ejecucion local de `pytest` con `coverage.py` usando el virtualenv del proyecto; no es un numero escrito a mano.
+Esta medicion es real. Viene de una ejecucion local de `pytest` con `coverage.py` usando el virtualenv del proyecto; no es un numero escrito a mano. PyPI tambien fue verificado con `pip index versions agentic-systems`, que reporto `agentic-systems (1.0.0)`.
 
 Comando ejecutado:
 
@@ -15,13 +15,13 @@ Comando ejecutado:
 Resultado funcional:
 
 ```text
-288 passed, 1 skipped
+303 passed, 1 skipped
 ```
 
 Resultado de coverage:
 
 ```text
-TOTAL statements: 5173
+TOTAL statements: 5290
 TOTAL missing: 0
 TOTAL coverage: 100.00%
 Required test coverage of 100.0% reached.

@@ -3,11 +3,21 @@
 <p align="center">
   <img src="https://raw.githubusercontent.com/JacoboGGLeon/agentic_systems/main/docs/assets/logo_agentic_systems.png" alt="Agentic Systems logo" width="360" />
 </p>
-
-
+<p align="center">
+  <a href="https://pypi.org/project/agentic-systems/"><img src="https://img.shields.io/pypi/v/agentic-systems.svg" alt="PyPI version" /></a>
+  <a href="https://pypi.org/project/agentic-systems/"><img src="https://img.shields.io/pypi/pyversions/agentic-systems.svg" alt="Python versions" /></a>
+  <img src="https://img.shields.io/badge/coverage-100%25-brightgreen.svg" alt="Coverage 100%" />
+  <img src="https://img.shields.io/badge/tests-303%20passed%2C%201%20skipped-brightgreen.svg" alt="Tests 303 passed, 1 skipped" />
+</p>
 Agentic Systems is a Python library for building, running and evaluating
 auditable agentic systems with tools, skills, agents, systems, graphs,
 environments, evals, contracts, lineage memory and stable human output.
+
+Install from PyPI:
+
+```bash
+pip install agentic-systems
+```
 
 Use the public facade as the stable entry point:
 
@@ -48,9 +58,9 @@ environments run episodes, and evals validate behavior with empirical evidence.
 Current verified test status is documented in [`docs/PYTEST_COVERAGE_REPORT.md`](docs/PYTEST_COVERAGE_REPORT.md):
 
 ```text
-295 passed, 1 skipped
+303 passed, 1 skipped
 Coverage: 100.00%
-TOTAL statements: 5173
+TOTAL statements: 5290
 TOTAL missing: 0
 ```
 
