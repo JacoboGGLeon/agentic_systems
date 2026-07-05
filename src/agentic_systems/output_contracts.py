@@ -1,7 +1,7 @@
 """Canonical output contracts for Agentic Systems.
 
 The models in this module are intentionally runtime-agnostic. Bedrock,
-python-direct, LangGraph, evals, skills and environments should adapt into the
+python-runtime, LangGraph, evals, skills and environments should adapt into the
 same small envelope instead of inventing notebook-specific shapes.
 """
 

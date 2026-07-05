@@ -35,7 +35,7 @@ result = toolkit.RunResult(
         {"procedure": ["2 + 3 = 5"], "final_result": 5},
         schema=schema,
     ),
-    engine="python-direct",
+    engine="python-runtime",
     model="local-python",
     mode="eval",
 )

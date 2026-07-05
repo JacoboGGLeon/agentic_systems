@@ -38,7 +38,7 @@ def _sample_run_result() -> RunResult:
             )
         ],
         usage={"requests": 1},
-        engine="python-direct",
+        engine="python-runtime",
         mode="tool",
         meta={"input": {"query_id": "demo_query"}},
     )

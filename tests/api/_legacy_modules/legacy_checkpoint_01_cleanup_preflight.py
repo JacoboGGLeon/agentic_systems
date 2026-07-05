@@ -16,10 +16,10 @@ def test_runtime_scheduler_contracts_are_reserved_without_public_factory() -> No
     core_scheduler = importlib.import_module("agentic_systems.core.scheduler")
 
     scheduler = core_scheduler.SchedulerConfig(timeout_s=10, max_retries=1)
-    runtime = core_runtime.RuntimeConfig(provider="python-direct", scheduler=scheduler)
+    runtime = core_runtime.RuntimeConfig(provider="python-runtime", scheduler=scheduler)
 
     assert scheduler.to_dict()["timeout_s"] == 10
-    assert runtime.to_dict()["provider"] == "python-direct"
+    assert runtime.to_dict()["provider"] == "python-runtime"
     assert runtime.to_dict()["scheduler"]["max_retries"] == 1
 
 

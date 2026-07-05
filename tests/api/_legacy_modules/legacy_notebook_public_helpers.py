@@ -26,7 +26,7 @@ def test_compose_result_preserves_runtime_metadata_and_usage():
     direct = lab.RunResult(
         text="direct",
         data={"value": 1},
-        engine="python-direct",
+        engine="python-runtime",
         model="local-python",
         mode="eval",
         tool_events=[ToolEvent(id="tool-1", name="sumar", input={}, output={"data": {"result": 1}}, ok=True)],
@@ -53,4 +53,4 @@ def test_compose_result_preserves_runtime_metadata_and_usage():
     assert normalized["runtime"]["framework"] == "agentic-systems"
     assert normalized["usage"]["total_tokens"] == 12
     assert normalized["tools"][0]["name"] == "sumar"
-    assert result.meta["engines_used"] == ["python-direct", "openai-runtime"]
+    assert result.meta["engines_used"] == ["python-runtime", "openai-runtime"]

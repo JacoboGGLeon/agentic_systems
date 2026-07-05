@@ -14,16 +14,16 @@ def test_cli_runtime_json_and_rich_output(capsys, monkeypatch):
     monkeypatch.delenv("AWS_DEFAULT_REGION", raising=False)
     monkeypatch.delenv("AWS_PROFILE", raising=False)
 
-    assert cli.main(["runtime", "--provider", "python-direct", "--json"]) == 0
+    assert cli.main(["runtime", "--provider", "python-runtime", "--json"]) == 0
     payload = json.loads(capsys.readouterr().out)
-    assert payload["selected_provider"] == "python-direct"
+    assert payload["selected_provider"] == "python-runtime"
     assert payload["mode"] == "explicit"
 
-    assert cli.main(["runtime", "--provider", "python-direct"]) == 0
+    assert cli.main(["runtime", "--provider", "python-runtime"]) == 0
     out = capsys.readouterr().out
     assert "Agentic Systems" in out
     assert "Runtime Resolution" in out
-    assert "python-direct" in out
+    assert "python-runtime" in out
 
 
 def test_cli_doctor_and_api_inventory(capsys):
@@ -48,7 +48,7 @@ def test_cli_public_api_plain_json_and_runtime_safe_configuration(capsys, monkey
     class FakeRuntime:
         def describe(self):
             return {
-                "selected_provider": "python-direct",
+                "selected_provider": "python-runtime",
                 "mode": "explicit",
                 "preferred_provider": None,
                 "fallback_provider": None,
@@ -60,7 +60,7 @@ def test_cli_public_api_plain_json_and_runtime_safe_configuration(capsys, monkey
             }
 
     monkeypatch.setattr(cli, "runtime", lambda **kwargs: FakeRuntime())
-    assert cli.main(["runtime", "--provider", "python-direct"]) == 0
+    assert cli.main(["runtime", "--provider", "python-runtime"]) == 0
     runtime_out = capsys.readouterr().out
     assert "Safe Configuration" in runtime_out
     assert "api_key_configured" in runtime_out

@@ -12,7 +12,7 @@ def test_run_result_separates_final_answer_from_runtime_envelope() -> None:
         text="Se generó la conciliación.",
         data={"rows": [{"cuenta": "100", "mes_actual": 10, "extra": "evidence"}]},
         usage={"requests": 1},
-        engine="python-direct",
+        engine="python-runtime",
     )
 
     assert result.final == {"rows": [{"cuenta": "100", "mes_actual": 10, "extra": "evidence"}]}
@@ -29,7 +29,7 @@ def test_output_schema_projects_requested_fields_without_mutating_evidence_data(
         strict=False,
         function=lambda rows: {"rows": rows, "evidence": {"source": "demo"}},
     )
-    agent = lab.agent(name="reconciliation", engine="python-direct", output=schema, tools=[tool])
+    agent = lab.agent(name="reconciliation", engine="python-runtime", output=schema, tools=[tool])
 
     result = agent.run({"tool": "build_rows", "input": {"rows": [{"cuenta": "100", "mes_actual": 10, "diferencia": 2, "debug": "x"}]}})
 

@@ -43,7 +43,7 @@ assert callable(toolkit.scheduler)
 assert callable(toolkit.human_result)
 ```
 
-## 4. Python-Direct Tool Smoke
+## 4. Python-Runtime Tool Smoke
 
 ```python
 import agentic_systems as toolkit
@@ -52,7 +52,7 @@ import agentic_systems as toolkit
 def add(a: int, b: int) -> dict:
     return {"result": a + b}
 
-runtime = toolkit.runtime(provider="python-direct", scheduler=toolkit.scheduler(timeout_s=5))
+runtime = toolkit.runtime(provider="python-runtime", scheduler=toolkit.scheduler(timeout_s=5))
 agent = toolkit.agent(name="calc", tools=[add], runtime=runtime)
 result = agent.run({"tool": "add", "input": {"a": 2, "b": 3}}, mode="eval")
 

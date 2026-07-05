@@ -3,8 +3,8 @@ import agentic_systems as lab
 
 def test_compare_accepts_keys_for_compact_traces():
     rows = [
-        {"run_ok": True, "engine": "python-direct", "mode": "tool", "usage": {"requests": 1}},
-        {"run_ok": True, "engine": "python-direct", "mode": "tool", "usage": {"requests": 1}},
+        {"run_ok": True, "engine": "python-runtime", "mode": "tool", "usage": {"requests": 1}},
+        {"run_ok": True, "engine": "python-runtime", "mode": "tool", "usage": {"requests": 1}},
     ]
 
     compared = lab.compare(rows, keys=["run_ok", "engine", "mode", "usage"])

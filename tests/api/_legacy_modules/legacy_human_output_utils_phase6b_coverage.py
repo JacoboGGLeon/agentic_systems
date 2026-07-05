@@ -38,10 +38,10 @@ def make_result(ok: bool = True) -> RunResult:
         final={"summary": "resultado final", "sections": [{"kind": "sql", "content": "select 1"}, {"kind": "table", "rows": [{"x": 1}]}]},
         data={"answer": "ok", "items": [1, 2, 3]},
         ok=ok,
-        engine="python-direct",
+        engine="python-runtime",
         model="local",
         mode="eval",
-        meta={"input": {"question": "q"}, "framework": "native", "runtime_engine": "python-direct"},
+        meta={"input": {"question": "q"}, "framework": "native", "runtime_engine": "python-runtime"},
         tool_events=events,
         usage={"input_tokens": 1, "output_tokens": 2, "total_tokens": 3},
         validation={"ok": ok, "issues": [] if ok else [{"code": "bad", "message": "boom"}]},
@@ -182,7 +182,7 @@ def test_human_output_render_modes_and_domain_blocks(capsys, monkeypatch):
     normalized_eval = {
         "schema_version": ho.RUN_SCHEMA_FALLBACK,
         "ok": True,
-        "runtime": {"engine": "python-direct", "framework": "agentic-eval", "mode": "eval"},
+        "runtime": {"engine": "python-runtime", "framework": "agentic-eval", "mode": "eval"},
         "input": {"suite": "demo"},
         "answer": {"text": "", "final": {}, "data": {"cases": [{"name": "case_a", "ok": True, "input": {"x": 1}, "result": {"final": {"result": 1}}}]}},
         "tools": [],
@@ -197,7 +197,7 @@ def test_human_output_render_modes_and_domain_blocks(capsys, monkeypatch):
     normalized_env = {
         "schema_version": ho.RUN_SCHEMA_FALLBACK,
         "ok": True,
-        "runtime": {"engine": "python-direct", "framework": "agentic-environment", "mode": "eval"},
+        "runtime": {"engine": "python-runtime", "framework": "agentic-environment", "mode": "eval"},
         "input": {"episode": "demo"},
         "answer": {"text": "", "final": {}, "data": {"history": [{"step_index": 1, "reward": 1, "row": {"x": 2}, "graph_state": {"selected_agent": "judge"}}]}},
         "tools": [],
@@ -295,7 +295,7 @@ def test_utils_additional_branch_coverage(capsys):
     assert "human explanation" in capsys.readouterr().out
 
     summary = utils.run_result_summary(make_result(ok=False), include_runtime=True, include_usage=True)
-    assert summary["runtime"]["engine"] == "python-direct"
+    assert summary["runtime"]["engine"] == "python-runtime"
     assert summary["usage"]["total_tokens"] == 3
 
     history = [

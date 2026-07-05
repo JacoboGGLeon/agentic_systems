@@ -151,7 +151,7 @@ Run in order:
 Use local deterministic execution first:
 
 ```python
-runtime = toolkit.runtime(provider="python-direct")
+runtime = toolkit.runtime(provider="python-runtime")
 ```
 
 Use automatic selection when moving between local, vLLM, OpenAI and AWS environments:

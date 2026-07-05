@@ -103,7 +103,7 @@ python -m pip install -e ".[openai]"
 
 ```bash
 agentic-systems runtime --provider auto --json
-agentic-systems runtime --provider python-direct
+agentic-systems runtime --provider python-runtime
 agentic-systems runtime --provider openai-runtime --model gpt-4.1-mini
 agentic-systems runtime --provider bedrock-runtime --region us-east-1
 agentic-systems runtime --provider vllm-runtime --model Qwen/Qwen3-0.6B

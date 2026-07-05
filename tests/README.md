@@ -6,7 +6,7 @@ protecting?
 
 | API file | Purpose |
 |---|---|
-| `test_runtime.py` | Runtime selection, providers, CLI/runtime diagnostics, Bedrock/OpenAI/python-direct paths. |
+| `test_runtime.py` | Runtime selection, providers, CLI/runtime diagnostics, Bedrock/OpenAI/python-runtime paths. |
 | `test_scheduler.py` | Scheduler config, retries, timeout, concurrency and execution guards. |
 | `test_tool.py` | Tool class, decorators, contracts and tool expectations. |
 | `test_skill.py` | Skill loading, manifests, skill-backed agents and skill runtime contracts. |

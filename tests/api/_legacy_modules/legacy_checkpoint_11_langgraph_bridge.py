@@ -73,7 +73,7 @@ def join_values(prefix: str, value: int) -> dict:
 
 
 def build_direct_agent() -> Agent:
-    return Agent(name="generic_local_agent", tools=[join_values], engine="python-direct")
+    return Agent(name="generic_local_agent", tools=[join_values], engine="python-runtime")
 
 
 def test_bridge_import_does_not_import_langgraph(monkeypatch):
@@ -119,7 +119,7 @@ def test_build_langgraph_agent_node_maps_generic_state_and_result():
     assert update["joined"] == "case-7"
     assert update["source"] == "unit-test"
     assert update["raw_result"]["data"]["result"] == "case-7"
-    assert update["trace"]["engine"] == "python-direct"
+    assert update["trace"]["engine"] == "python-runtime"
 
 
 def test_build_langgraph_agent_node_validates_contracts():
@@ -254,7 +254,7 @@ def test_agent_output_envelope_keeps_answer_data_and_runtime_separate():
     assert output["data"]["result"] == "case-11"
     assert output["summary"]["kind"] == "structured_data"
     assert output["tools"][0]["name"] == "join_values"
-    assert output["runtime"]["engine"] == "python-direct"
+    assert output["runtime"]["engine"] == "python-runtime"
 
 
 

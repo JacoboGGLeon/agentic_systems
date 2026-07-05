@@ -70,7 +70,7 @@ Canonical providers:
 
 | Provider | Use |
 |---|---|
-| `python-direct` | Local deterministic execution for tools and smoke tests. |
+| `python-runtime` | Local deterministic execution for tools and smoke tests. |
 | `openai-runtime` | Direct OpenAI provider path. |
 | `bedrock-runtime` | AWS Bedrock Runtime provider path. |
 | `vllm-runtime` | OpenAI-compatible vLLM provider path for local or Colab GPU inference. |

@@ -62,7 +62,7 @@ def test_final_answer_schema_normalization_and_projection_edges():
 
 
 def test_output_contract_compact_dict_filters_empty_fields():
-    output = AgenticOutput(answer="done", data={"x": 1}, runtime={"engine": "python-direct"})
+    output = AgenticOutput(answer="done", data={"x": 1}, runtime={"engine": "python-runtime"})
     full = output.compact_dict()
     compact = output.compact_dict(include_empty=False)
     assert full["schema_version"]
@@ -79,7 +79,7 @@ def test_run_result_lineage_validation_and_normalized_tool_edges():
     result = RunResult(
         text="answer",
         data={"result": 42},
-        engine="python-direct",
+        engine="python-runtime",
         model="local",
         mode="eval",
         meta={"input": {"question": "q"}, "framework": "native"},

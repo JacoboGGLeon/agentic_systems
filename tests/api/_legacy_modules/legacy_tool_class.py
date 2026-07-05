@@ -39,7 +39,7 @@ def test_tool_runs_simple_dict_function_and_reports_info() -> None:
 
     assert result.ok is True
     assert result.data == {"result": 42}
-    assert result.engine == "python-direct"
+    assert result.engine == "python-runtime"
     assert result.mode == "tool"
     assert result.tool_events[0].name == "sumar"
     assert result.tool_events[0].input == {"a": 17, "b": 25}

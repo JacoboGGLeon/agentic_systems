@@ -50,7 +50,7 @@ integrations framework adapters
 Canonical engines:
 
 ```text
-python-direct
+python-runtime
 bedrock-runtime
 openai-runtime
 ```

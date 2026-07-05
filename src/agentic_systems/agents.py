@@ -106,7 +106,7 @@ class Agent:
     A direct agent is a portable configuration. By default it targets the
     canonical cloud engine, ``bedrock-runtime``. Use ``agent.bind(system)`` or
     create the agent through ``system.agent(...)`` to run with AWS credentials.
-    For smoke tests without AWS, opt in explicitly with ``engine="python-direct"``
+    For smoke tests without AWS, opt in explicitly with ``engine="python-runtime"``
     and pass a structured tool plan.
     """
 

@@ -231,7 +231,7 @@ def build_parser() -> argparse.ArgumentParser:
     doctor_parser.set_defaults(func=_cmd_doctor)
 
     runtime_parser = subparsers.add_parser("runtime", help="Describe a RuntimeConfig without executing a model.")
-    runtime_parser.add_argument("--provider", default="auto", help="Runtime provider, for example auto, python-direct, vllm-runtime, bedrock-runtime or openai-runtime.")
+    runtime_parser.add_argument("--provider", default="auto", help="Runtime provider, for example auto, python-runtime, vllm-runtime, bedrock-runtime or openai-runtime.")
     runtime_parser.add_argument("--model", default=None, help="Optional model identifier.")
     runtime_parser.add_argument("--region", default=None, help="Optional provider region.")
     runtime_parser.add_argument("--json", action="store_true", help="Emit machine-readable JSON.")

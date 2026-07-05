@@ -4,7 +4,7 @@ Unlike ``accountability_tools``, this module receives the final skill package
 and builds one node-agent per tool exposed by that skill.  LangGraph compiles
 the graph; Bedrock Runtime is the default LM engine for the agent nodes.
 
-For local smoke tests without an LM, pass ``engine='python-direct', framework=None``
+For local smoke tests without an LM, pass ``engine='python-runtime', framework=None``
 to ``build_system(...)``.
 """
 
@@ -123,7 +123,7 @@ def _runtime_kwargs(
     if runtime is not None:
         return {"runtime": runtime, "defaults": defaults}
     kwargs: dict[str, Any] = {"engine": engine, "model": model, "region": region, "defaults": defaults}
-    if framework and engine != "python-direct":
+    if framework and engine != "python-runtime":
         kwargs["framework"] = framework
     return kwargs
 
@@ -204,7 +204,7 @@ def _answer_data(normalized: dict[str, Any]) -> dict[str, Any]:
 
 
 def _tool_payload(result: Any, tool_name: str | None = None) -> dict[str, Any]:
-    """Extract successful structured tool output from python-direct or Bedrock results."""
+    """Extract successful structured tool output from python-runtime or Bedrock results."""
 
     normalized = _result_payload(result)
     tools = normalized.get("tools") if isinstance(normalized.get("tools"), list) else []

@@ -34,12 +34,12 @@ def restar(a: int, b: int) -> dict:
 
 
 def test_direct_agent_runs_single_tool_without_system_or_credentials() -> None:
-    agent = Agent(name="calculator", tools=[sumar], engine="python-direct")
+    agent = Agent(name="calculator", tools=[sumar], engine="python-runtime")
 
     result = agent.run({"a": 17, "b": 25})
 
     assert result.ok is True
-    assert result.engine == "python-direct"
+    assert result.engine == "python-runtime"
     assert result.data["result"] == 42
     assert result.data["tool"] == "sumar"
     assert result.text.startswith("sumar ->")
@@ -47,7 +47,7 @@ def test_direct_agent_runs_single_tool_without_system_or_credentials() -> None:
 
 
 def test_direct_agent_runs_structured_multi_tool_plan() -> None:
-    agent = Agent(name="calculator", tools=[sumar, multiplicar], engine="python-direct")
+    agent = Agent(name="calculator", tools=[sumar, multiplicar], engine="python-runtime")
 
     result = agent.run(
         {
@@ -66,12 +66,12 @@ def test_direct_agent_runs_structured_multi_tool_plan() -> None:
 
 
 def test_python_direct_returns_helpful_failure_for_natural_language_multi_tool_prompt() -> None:
-    agent = Agent(name="calculator", tools=[sumar, multiplicar], engine="python-direct")
+    agent = Agent(name="calculator", tools=[sumar, multiplicar], engine="python-runtime")
 
     result = agent.run("suma 17 y 25")
 
     assert result.ok is False
-    assert result.engine == "python-direct"
+    assert result.engine == "python-runtime"
     assert "does not parse natural language" in result.text
     assert result.data["error"]["code"] == "ValueError"
 
@@ -83,19 +83,19 @@ def test_system_agent_can_select_python_direct_engine_with_runtime_skill() -> No
         name="local_math_agent",
         instructions="Ejecuta tools locales.",
         skills=[skill],
-        engine="python-direct",
+        engine="python-runtime",
     )
 
     result = agent.run({"tool": "restar", "input": {"a": 100, "b": 58}})
 
-    assert isinstance(system._engine("python-direct"), PythonDirectEngine)
+    assert isinstance(system._engine("python-runtime"), PythonDirectEngine)
     assert result.ok is True
     assert result.data["result"] == 42
     assert result.data["tool"] == "restar"
 
 
 def test_direct_agent_async_python_direct_run() -> None:
-    agent = Agent(name="calculator", tools=[sumar], engine="python-direct")
+    agent = Agent(name="calculator", tools=[sumar], engine="python-runtime")
 
     result = asyncio.run(agent.arun({"a": 20, "b": 22}))
 

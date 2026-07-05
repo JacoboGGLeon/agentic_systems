@@ -19,7 +19,7 @@ from agentic_systems.results import RunResult
 def test_phase7_small_contract_and_engine_residuals(monkeypatch):
     with pytest.raises(ValueError, match="non-empty"):
         names.canonical_engine_name(None)
-    assert names.canonical_engine_name("", default="python-direct") == "python-direct"
+    assert names.canonical_engine_name("", default="python-runtime") == "python-runtime"
     assert "bedrock" in names.supported_engine_names(include_aliases=True)
     assert "langgraph" in names.supported_engine_names(include_langgraph=True)
 
@@ -37,15 +37,15 @@ def test_phase7_small_contract_and_engine_residuals(monkeypatch):
 
 
 def test_phase7_agents_output_contract_and_eval_residuals():
-    result = RunResult(text="fallback", data={"answer": 42}, ok=True, engine="python-direct")
+    result = RunResult(text="fallback", data={"answer": 42}, ok=True, engine="python-runtime")
     agents_mod._coerce_output_data(result, None)
     assert result.final == {"answer": 42}
 
-    projected = RunResult(text="fallback", data={"answer": 42}, ok=True, engine="python-direct")
+    projected = RunResult(text="fallback", data={"answer": 42}, ok=True, engine="python-runtime")
     agents_mod._coerce_output_data(projected, output_schema(["answer"]))
     assert projected.final == {"answer": 42}
 
-    agent = agents_mod.Agent(name="direct", instructions="x", engine="python-direct")
+    agent = agents_mod.Agent(name="direct", instructions="x", engine="python-runtime")
     with pytest.raises(RuntimeError, match="needs an attached AgenticSystem"):
         agent.eval([])
 
@@ -102,7 +102,7 @@ def test_phase7_utils_residual_branches(capsys):
     )
     assert output["summary"]["answer_preview"]["chars"] > 12
 
-    serialized = {"ok": True, "engine": "python-direct", "tool_events": [], "data": {"x": 1}}
+    serialized = {"ok": True, "engine": "python-runtime", "tool_events": [], "data": {"x": 1}}
     assert utils._coerce_compare_item(serialized)["run_ok"] is True
     assert utils._coerce_compare_item({"plain": "value"}) == {"plain": "value"}
 
@@ -131,7 +131,7 @@ def test_phase7_utils_residual_branches(capsys):
 
 
 def test_phase7_final_small_residuals(monkeypatch):
-    constructed = RunResult.model_construct(text="txt", data={"x": 1}, final={}, ok=True, engine="python-direct", meta={}, tool_events=[])
+    constructed = RunResult.model_construct(text="txt", data={"x": 1}, final={}, ok=True, engine="python-runtime", meta={}, tool_events=[])
     agents_mod._coerce_output_data(constructed, None)
     assert constructed.final == {"x": 1}
 

@@ -29,7 +29,7 @@ print(callable(toolkit.tool), callable(toolkit.agent), callable(toolkit.runtime)
 PY
 ```
 
-## Python-Direct
+## Python-Runtime
 
 ```bash
 python - <<'PY'
@@ -39,7 +39,7 @@ import agentic_systems as toolkit
 def add(a: int, b: int) -> dict:
     return {"result": a + b}
 
-runtime = toolkit.runtime(provider="python-direct", scheduler=toolkit.scheduler(timeout_s=5, max_retries=0))
+runtime = toolkit.runtime(provider="python-runtime", scheduler=toolkit.scheduler(timeout_s=5, max_retries=0))
 agent = toolkit.agent(name="calc", tools=[add], runtime=runtime)
 result = agent.run({"tool": "add", "input": {"a": 1, "b": 2}}, mode="eval")
 print(result.ok, result.data["result"])

@@ -78,7 +78,7 @@ def test_explicit_keyword_runner_accepts_state_pipeline_without_steps_or_fields_
 
     tool = ags.Tool(add_state, name="add_state", input=AddState, output=AddState)
 
-    agent = ags.Agent(name="state_agent", tools=[tool], engine="python-direct")
+    agent = ags.Agent(name="state_agent", tools=[tool], engine="python-runtime")
 
     result = agent.run({"tool": "add_state", "input": {"x": 17, "y": 25}}, mode="eval")
 

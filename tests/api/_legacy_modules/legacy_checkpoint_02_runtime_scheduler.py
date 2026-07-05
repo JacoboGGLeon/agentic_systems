@@ -14,7 +14,7 @@ from agentic_systems import system as system_module
 
 def test_public_runtime_scheduler_factories_and_aliases() -> None:
     sched = lab.scheduler(timeout_s=10, max_retries=2, max_tool_calls=3, max_turns=4, max_concurrency=1)
-    runtime = lab.runtime(provider="python-direct", model="m1", region="r1", scheduler=sched)
+    runtime = lab.runtime(provider="python-runtime", model="m1", region="r1", scheduler=sched)
 
     assert isinstance(sched, lab.SchedulerConfig)
     assert isinstance(runtime, lab.RuntimeConfig)
@@ -51,7 +51,7 @@ def test_python_direct_runtime_retries_failed_agent_run() -> None:
         return {"result": value * 2}
 
     runtime = lab.runtime(
-        provider="python-direct",
+        provider="python-runtime",
         scheduler=lab.scheduler(timeout_s=2, max_retries=1, max_tool_calls=5, max_turns=6),
     )
     agent = lab.agent(name="retry_agent", tools=[flaky], runtime=runtime)
@@ -71,7 +71,7 @@ def test_python_direct_runtime_times_out_slow_tool() -> None:
         time.sleep(0.2)
         return {"result": value}
 
-    runtime = lab.runtime(provider="python-direct", scheduler=lab.scheduler(timeout_s=0.01, max_retries=0))
+    runtime = lab.runtime(provider="python-runtime", scheduler=lab.scheduler(timeout_s=0.01, max_retries=0))
     agent = lab.agent(name="timeout_agent", tools=[slow], runtime=runtime)
 
     result = agent.run({"tool": "slow", "input": {"value": 1}})
@@ -87,7 +87,7 @@ def test_scheduler_max_tool_calls_limits_python_direct_plan() -> None:
     def add_one(value: int) -> dict:
         return {"value": value + 1}
 
-    runtime = lab.runtime(provider="python-direct", scheduler=lab.scheduler(max_tool_calls=1, timeout_s=2))
+    runtime = lab.runtime(provider="python-runtime", scheduler=lab.scheduler(max_tool_calls=1, timeout_s=2))
     agent = lab.agent(name="limit_agent", tools=[add_one], runtime=runtime)
 
     result = agent.run(
@@ -109,7 +109,7 @@ def test_legacy_python_direct_agent_without_runtime_has_no_scheduler_meta() -> N
     def add(a: int, b: int) -> dict:
         return {"result": a + b}
 
-    agent = lab.Agent(name="legacy_local", tools=[add], engine="python-direct")
+    agent = lab.Agent(name="legacy_local", tools=[add], engine="python-runtime")
     result = agent.run({"tool": "add", "input": {"a": 1, "b": 2}})
 
     assert result.ok is True

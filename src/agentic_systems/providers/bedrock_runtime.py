@@ -4,7 +4,7 @@ Internal Bedrock runtime for Agentic Systems 1.0.
 This module contains the reusable Bedrock Converse implementation used by
 `agentic_systems.AgenticSystem`:
 
-1. Python-direct runtime: Bedrock Converse + local tool loop.
+1. Python-runtime runtime: Bedrock Converse + local tool loop.
 2. OpenAI Agents SDK bridge: optional ModelProvider backed by Bedrock.
 3. LangGraph utility support used by the higher-level Agent API.
 
@@ -86,7 +86,7 @@ class RuntimeToolCallRecord(BaseModel):
 
 
 class BedrockRunResult(BaseModel):
-    """Serializable result for Python-direct and LangGraph runs."""
+    """Serializable result for Python-runtime and LangGraph runs."""
 
     model_config = ConfigDict(extra="forbid")
 
@@ -968,7 +968,7 @@ class BedrockRuntime:
         """
         Execute one registered tool locally and return a ToolEnvelope.
 
-        This is used by Python-direct runtime, OpenAI Agents SDK wrappers,
+        This is used by Python-runtime runtime, OpenAI Agents SDK wrappers,
         and any custom framework that wants deterministic local tool execution.
         """
 
@@ -1240,7 +1240,7 @@ class BedrockRuntime:
         return safe_content, valid_tool_uses, invalid_records
 
     # ---------------------------------------------------------------------
-    # Python-direct runtime
+    # Python-runtime runtime
     # ---------------------------------------------------------------------
 
     def run_direct(
@@ -2895,7 +2895,7 @@ class BedrockRuntime:
 
         The LangGraph node intentionally delegates to `run_direct()` so that
         LangGraph uses the same Bedrock tool loop, ToolEnvelope contract, and
-        tracing shape as the Python-direct runtime.
+        tracing shape as the Python-runtime runtime.
 
         Keep this bridge thin: LangGraph owns orchestration/state transitions;
         BedrockRuntime owns Bedrock Converse and tool execution.

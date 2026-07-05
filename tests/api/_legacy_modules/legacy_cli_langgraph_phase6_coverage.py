@@ -87,14 +87,14 @@ def test_cli_plain_and_json_paths(monkeypatch, capsys):
 
     class FakeRuntime:
         def describe(self):
-            return {"selected_provider": "python-direct", "mode": "explicit"}
+            return {"selected_provider": "python-runtime", "mode": "explicit"}
 
     monkeypatch.setattr(cli_module, "runtime", lambda **kwargs: FakeRuntime())
-    assert cli_module.main(["runtime", "--provider", "python-direct"]) == 0
+    assert cli_module.main(["runtime", "--provider", "python-runtime"]) == 0
     runtime_plain = capsys.readouterr().out
     assert "Runtime Resolution" in runtime_plain
-    assert "python-direct" in runtime_plain
-    assert cli_module.main(["runtime", "--provider", "python-direct", "--json"]) == 0
+    assert "python-runtime" in runtime_plain
+    assert cli_module.main(["runtime", "--provider", "python-runtime", "--json"]) == 0
     assert json.loads(capsys.readouterr().out)["mode"] == "explicit"
 
     assert cli_module.main(["public-api"]) == 0
@@ -273,7 +273,7 @@ def test_langgraph_lineage_projection_helpers_cover_business_shapes():
         "prompt": "Pregunta",
         "plan": {"route": "worker", "reason": "because"},
         "result": {"answer": {"data": {"summary": "answer from trace"}}, "validation": {"ok": False, "node": "worker"}},
-        "worker_trace": {"tools": [{"name": "calc", "output": {"operation": "sum", "result": 42}}], "runtime": {"engine": "python-direct"}, "ok": True},
+        "worker_trace": {"tools": [{"name": "calc", "output": {"operation": "sum", "result": 42}}], "runtime": {"engine": "python-runtime"}, "ok": True},
         "graph_validation": {"ok": False, "node": "graph"},
     }
     memory = lg.lineage_from_langgraph_state(state, name="lg", goal="g", metadata={"m": 1})

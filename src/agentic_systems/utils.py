@@ -1135,8 +1135,8 @@ def _user_facing_answer_text(text: str, data: Any, result_dict: dict[str, Any]) 
     if not text:
         return ""
     engine = str(result_dict.get("engine") or "")
-    if engine == "python-direct":
-        # python-direct is a deterministic tool runner. Its text is an execution
+    if engine == "python-runtime":
+        # python-runtime is a deterministic tool runner. Its text is an execution
         # artifact (for example JSON of tool steps), not a synthesized business
         # answer. Keep the data visible under ``data``/``summary`` instead.
         return ""

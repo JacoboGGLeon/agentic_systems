@@ -20,7 +20,7 @@ Agentic Systems exposes five practical routes:
 ```text
 toolkit       top-level public facade for normal user code
 primitives    Tool, Skill, Agent, RunResult, contracts, runtime and lineage
-providers     execution backends: python-direct, openai-runtime, bedrock-runtime, vllm-runtime or auto
+providers     execution backends: python-runtime, openai-runtime, bedrock-runtime, vllm-runtime or auto
 system        AgenticSystem as the native composition layer
 integrations  bridges to external agent frameworks such as LangGraph, Strands and OpenAI Agents
 ```
@@ -35,7 +35,7 @@ loop, while the provider decides where inference or deterministic execution runs
 Agentic Systems supports two agent styles:
 
 ```text
-deterministic agents  execute explicit tools and local Python policies with python-direct
+deterministic agents  execute explicit tools and local Python policies with python-runtime
 reasoning agents      use language-model providers such as openai-runtime, bedrock-runtime or vllm-runtime
 ```
 
@@ -69,7 +69,7 @@ Eval        empirical validation and scoring over cases or episodes
 Cross-cutting APIs:
 
 ```text
-runtime/provider     python-direct, openai-runtime, bedrock-runtime, vllm-runtime or auto
+runtime/provider     python-runtime, openai-runtime, bedrock-runtime, vllm-runtime or auto
 scheduler            execution budgets, retries, turns, timeouts and concurrency
 contracts/policies   expected tools, strictness, repair and finalization rules
 Lineage Memory       traceability, context, memory and audit trail
@@ -83,7 +83,7 @@ CLI diagnostics      doctor, runtime, API inventory and contact
 Canonical providers:
 
 ```text
-python-direct     deterministic local execution for tools and policies
+python-runtime     deterministic local execution for tools and policies
 openai-runtime    native OpenAI language-model provider
 bedrock-runtime   AWS Bedrock Runtime language-model provider
 vllm-runtime      OpenAI-compatible vLLM provider for local or Colab GPU inference
@@ -127,7 +127,7 @@ import agentic_systems as toolkit
 def add(a: int, b: int) -> dict:
     return {"result": a + b}
 
-runtime = toolkit.runtime(provider="python-direct")
+runtime = toolkit.runtime(provider="python-runtime")
 agent = toolkit.agent(name="calc", tools=[add], runtime=runtime)
 
 result = agent.run({"tool": "add", "input": {"a": 2, "b": 3}}, mode="eval")
@@ -143,7 +143,7 @@ system still receives a provider through `toolkit.runtime(...)`.
 ```python
 import agentic_systems as toolkit
 
-system = toolkit.AgenticSystem(model="local-python", runtime=toolkit.runtime(provider="python-direct"))
+system = toolkit.AgenticSystem(model="local-python", runtime=toolkit.runtime(provider="python-runtime"))
 
 @system.tool
 def add(a: int, b: int) -> dict:
@@ -155,7 +155,59 @@ result = agent.run({"tool": "add", "input": {"a": 2, "b": 3}}, mode="eval")
 toolkit.human_result(result)
 ```
 
-### Route 3: Integrations
+### Route 3: Environment And Evals
+
+Use an environment when execution is episodic: each record becomes a step, the
+system graph updates state, a reward function scores the transition, and history
+keeps auditable evidence. Use evals when you want batch validation over declared
+cases with pass/fail statistics.
+
+```python
+import agentic_systems as toolkit
+
+runtime = toolkit.runtime(provider="python-runtime")
+system = toolkit.AgenticSystem(model="local-python", runtime=runtime)
+
+@system.tool
+def double(value: int) -> dict:
+    return {"value": value * 2, "ok": True}
+
+agent = system.agent(
+    name="doubler",
+    instructions="Call double when the input asks for a doubled value.",
+    tools=["double"],
+)
+
+graph = toolkit.build_single_agent_step_graph(agent)
+records = [
+    {"input": {"tool": "double", "input": {"value": 21}}},
+]
+
+def reward_fn(state, row, action, env) -> float:
+    return 1.0 if state.get("result", {}).get("ok") else 0.0
+
+environment = system.environment(records, graph=graph, reward_fn=reward_fn)
+observation, info = environment.reset(seed=0)
+observation, reward, terminated, truncated, info = environment.step()
+
+toolkit.show(toolkit.environment_summary(environment), title="Environment summary")
+```
+
+```python
+cases = [
+    {
+        "name": "double_21",
+        "input": {"tool": "double", "input": {"value": 21}},
+        "expected": {"data_contains": {"value": 42, "ok": True}},
+    }
+]
+
+report = system.eval(agent, cases)
+toolkit.human_result(report)
+report.raise_if_failed()
+```
+
+### Route 4: Integrations
 
 Use integrations when LangGraph, Strands or OpenAI Agents should own the outer
 framework loop while Agentic Systems keeps the same tools, provider/runtime,

@@ -39,7 +39,7 @@ tests/                     regression and API contract tests
 
 ```text
 core          provider-agnostic primitives
-providers     runtime/model access: python-direct, bedrock-runtime, openai-runtime, vllm-runtime
+providers     runtime/model access: python-runtime, bedrock-runtime, openai-runtime, vllm-runtime
 integrations  framework adapters: LangGraph, Strands and runtime bridges
 engines       internal execution implementation details
 ```

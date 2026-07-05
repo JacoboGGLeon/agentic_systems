@@ -8,7 +8,7 @@ def test_compact_human_result_does_not_emit_empty_sql_or_table_blocks(capsys):
         text="Respuesta simple",
         final={"value": 42},
         data={"value": 42},
-        engine="python-direct",
+        engine="python-runtime",
         mode="demo",
         meta={"input": {"operation": "answer"}},
     )
@@ -35,7 +35,7 @@ def test_compact_human_result_renders_declared_final_sections(capsys):
             ],
         },
         data={"evidence": "demo"},
-        engine="python-direct",
+        engine="python-runtime",
         mode="demo",
     )
 

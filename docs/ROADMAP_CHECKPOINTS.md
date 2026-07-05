@@ -31,7 +31,7 @@ runtime/provider, scheduler, contracts, lineage memory, human output, CLI
 - tutorials/ is the canonical learning path.
 - examples/ is not an active root layer.
 - public API is exposed from `import agentic_systems as toolkit`.
-- provider names are canonical: python-direct, bedrock-runtime, openai-runtime.
+- provider names are canonical: python-runtime, bedrock-runtime, openai-runtime.
 - graph/framework integrations stay optional.
 - CLI diagnostics are available through `agentic-systems`.
 ```

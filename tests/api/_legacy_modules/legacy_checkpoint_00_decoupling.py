@@ -22,7 +22,7 @@ def test_python_direct_agent_does_not_require_bedrock_runtime_hydration() -> Non
         """Add two numbers."""
         return {"result": a + b}
 
-    agent = lab.agent(name="calculator", instructions="Run the selected tool.", tools=[add], engine="python-direct")
+    agent = lab.agent(name="calculator", instructions="Run the selected tool.", tools=[add], engine="python-runtime")
 
     assert isinstance(agent.system._runtime, ToolRegistryRuntime)
     result = agent.run({"tool": "add", "input": {"a": 2, "b": 3}}, mode="eval")

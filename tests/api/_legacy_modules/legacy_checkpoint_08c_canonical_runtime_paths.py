@@ -54,7 +54,7 @@ def test_python_direct_is_explicit_smoke_test_engine() -> None:
 def test_ambiguous_local_aliases_are_not_engine_shortcuts() -> None:
     assert canonical_engine_name("local") == "local"
     assert canonical_engine_name("runtime") == "runtime"
-    assert canonical_engine_name("python_direct") == PYTHON_DIRECT_ENGINE
+    assert canonical_engine_name("python_runtime") == PYTHON_DIRECT_ENGINE
     assert canonical_engine_name("vllm") == VLLM_RUNTIME_ENGINE
     assert canonical_engine_name("vllm_runtime") == VLLM_RUNTIME_ENGINE
 

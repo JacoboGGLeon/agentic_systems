@@ -1,4 +1,4 @@
-"""Legacy execution-engine shim for Python-direct runtime."""
+"""Legacy execution-engine shim for Python-runtime runtime."""
 
 from __future__ import annotations
 

@@ -39,7 +39,7 @@ def test_fundamentals_notebooks_are_simple_runtime_blueprints():
     expected = {
         "01_tool_api.ipynb": ["@toolkit.tool", "toolkit.Tool", "Pydantic"],
         "02_skill_api.ipynb": ["toolkit.Skill", "Skill.check", "skills=[math_skill]"],
-        "03_agent_api.ipynb": ['engine="python-direct"', 'provider="auto"', "Agente LM"],
+        "03_agent_api.ipynb": ['engine="python-runtime"', 'provider="auto"', "Agente LM"],
         "04_human_result_api.ipynb": ["toolkit.RunResult", "toolkit.final_answer", "toolkit.human_result"],
         "07_integrations_openai_runtime_api.ipynb": ['provider="auto"', 'framework="openai-agents"', "await agent.arun"],
         "08_system_api.ipynb": ["toolkit.AgenticSystem", "system.tool", "system.skill", "system.agent", "system.inspect"],

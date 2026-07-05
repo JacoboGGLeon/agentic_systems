@@ -19,7 +19,7 @@ def test_cli_doctor_json_reports_engines(capsys) -> None:
 
     payload = json.loads(capsys.readouterr().out)
     assert payload["package"] == "agentic-systems"
-    assert "python-direct" in payload["supported_engines"]
+    assert "python-runtime" in payload["supported_engines"]
     assert "environment" in payload
     assert "optional_dependencies" in payload
 

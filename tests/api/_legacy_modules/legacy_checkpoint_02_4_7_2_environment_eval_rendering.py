@@ -11,7 +11,7 @@ def _report() -> lab.EvalReport:
     agent = lab.agent(
         name="test_eval_agent",
         tools=[add],
-        engine="python-direct",
+        engine="python-runtime",
         contract=lab.AgentContract(tool_expectation=lab.expect.exactly("add")),
         policy=lab.RunPolicy(max_tool_calls=1),
     )
