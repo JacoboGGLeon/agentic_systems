@@ -24,7 +24,7 @@ def test_engine_constants_are_public_but_aliases_stay_out_of_supported_names() -
     assert api.PYTHON_DIRECT_ENGINE == PYTHON_DIRECT_ENGINE
     assert api.VLLM_RUNTIME_ENGINE == VLLM_RUNTIME_ENGINE
     assert "bedrock" not in supported_engine_names(include_aliases=False)
-    assert "bedrock" in supported_engine_names(include_aliases=True)
+    assert "bedrock" not in supported_engine_names(include_aliases=True)
 
 
 def test_compatibility_helpers_are_quarantined_to_explicit_module() -> None:

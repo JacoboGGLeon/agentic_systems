@@ -39,8 +39,10 @@ class EchoBedrockRuntimeEngine:
 
 def test_engine_names_keep_one_canonical_cloud_path() -> None:
     assert canonical_engine_name("bedrock-runtime") == BEDROCK_RUNTIME_ENGINE
-    assert canonical_engine_name("bedrock_runtime") == BEDROCK_RUNTIME_ENGINE
-    assert canonical_engine_name("bedrock") == BEDROCK_RUNTIME_ENGINE
+    with pytest.raises(ValueError, match="Unknown runtime/provider"):
+        canonical_engine_name("bedrock_runtime")
+    with pytest.raises(ValueError, match="Unknown runtime/provider"):
+        canonical_engine_name("bedrock")
 
 
 def test_system_agent_uses_bedrock_runtime_as_default_engine() -> None:
@@ -50,10 +52,10 @@ def test_system_agent_uses_bedrock_runtime_as_default_engine() -> None:
     assert agent.engine == BEDROCK_RUNTIME_ENGINE
 
 
-def test_relocated_bedrock_engine_alias_still_runs_injected_engines() -> None:
+def test_relocated_bedrock_runtime_uses_canonical_injected_engine() -> None:
     system = build_system()
-    system._engines["bedrock"] = EchoBedrockRuntimeEngine()
-    agent = system.agent(name="cloud_agent", instructions="Echo.", tools=[sumar], engine="bedrock")
+    system._engines[BEDROCK_RUNTIME_ENGINE] = EchoBedrockRuntimeEngine()
+    agent = system.agent(name="cloud_agent", instructions="Echo.", tools=[sumar], engine=BEDROCK_RUNTIME_ENGINE)
 
     result = agent.run("hola", mode="eval")
 

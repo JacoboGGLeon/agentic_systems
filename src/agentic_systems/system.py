@@ -17,6 +17,7 @@ from .engines.names import (
     PYTHON_RUNTIME_ENGINE,
     VLLM_RUNTIME_ENGINE,
     canonical_engine_name,
+    normalize_engine_text,
     supported_engine_names,
 )
 from .agents import Agent, _normalize_agent_tool_inputs
@@ -307,11 +308,11 @@ class AgenticSystem:
         runtime: RuntimeConfig | dict[str, Any] | None = None,
     ) -> Agent:
         runtime_config = RuntimeConfig.coerce(runtime) if runtime is not None else self.runtime_config
+        if normalize_engine_text(engine) == LANGGRAPH_ORCHESTRATOR:
+            raise ValueError("LangGraph is an orchestrator, not an engine. Use agent.as_node(...).")
         if runtime_config is not None and engine == BEDROCK_RUNTIME_ENGINE:
             engine = runtime_config.provider
         engine = canonical_engine_name(engine)
-        if engine == LANGGRAPH_ORCHESTRATOR:
-            raise ValueError("LangGraph is an orchestrator, not an engine. Use agent.as_node(...).")
         skill_tool_names, skill_names = self._expand_skill_inputs(_merge_skill_inputs(skill, skills))
         explicit_tool_names, explicit_tool_objects = _normalize_agent_tool_inputs(tools)
         for public_tool in explicit_tool_objects:

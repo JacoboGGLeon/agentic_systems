@@ -281,7 +281,7 @@ def test_system_public_branches_and_helpers(monkeypatch):
         system.agent(name="g", instructions="x", engine="langgraph")
     with pytest.raises(KeyError, match="Unknown tools"):
         system.agent(name="missing", instructions="x", tools=["missing"])
-    with pytest.raises(ValueError, match="Unknown engine"):
+    with pytest.raises(ValueError, match="Unknown runtime/provider"):
         system._engine("unknown")
     assert isinstance(system._engine("openai-runtime"), OpenAIRuntimeProvider)
 

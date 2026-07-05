@@ -8,6 +8,7 @@ BEDROCK_RUNTIME_ENGINE = "bedrock-runtime"
 OPENAI_RUNTIME_ENGINE = "openai-runtime"
 PYTHON_RUNTIME_ENGINE = "python-runtime"
 VLLM_RUNTIME_ENGINE = "vllm-runtime"
+AUTO_RUNTIME_SELECTOR = "auto"
 LANGGRAPH_ORCHESTRATOR = "langgraph"
 OPENAI_AGENTS_FRAMEWORK = "openai-agents"
 STRANDS_FRAMEWORK = "strands"
@@ -23,34 +24,29 @@ SUPPORTED_ENGINES = (
     VLLM_RUNTIME_ENGINE,
 )
 
+SUPPORTED_RUNTIME_SELECTORS = (
+    AUTO_RUNTIME_SELECTOR,
+    *SUPPORTED_ENGINES,
+)
+
 SUPPORTED_FRAMEWORKS = (
     LANGGRAPH_ORCHESTRATOR,
     OPENAI_AGENTS_FRAMEWORK,
     STRANDS_FRAMEWORK,
 )
 
-# Central compatibility map. Public docs/notebooks should use canonical names.
-COMPAT_ENGINE_ALIASES: dict[str, str] = {
-    "bedrock": BEDROCK_RUNTIME_ENGINE,
-    BEDROCK_RUNTIME_ENGINE: BEDROCK_RUNTIME_ENGINE,
-    OPENAI_RUNTIME_ENGINE: OPENAI_RUNTIME_ENGINE,
-    PYTHON_RUNTIME_ENGINE: PYTHON_RUNTIME_ENGINE,
-    "vllm": VLLM_RUNTIME_ENGINE,
-    VLLM_RUNTIME_ENGINE: VLLM_RUNTIME_ENGINE,
-}
-
 
 def normalize_engine_text(value: str) -> str:
-    """Normalize user input before alias resolution."""
+    """Normalize casing and surrounding whitespace without accepting aliases."""
 
-    return str(value).strip().lower().replace("_", "-")
+    return str(value).strip().lower()
 
 
 def canonical_engine_name(value: str | None, *, default: str | None = None) -> str:
-    """Return the stable engine identifier.
+    """Return a supported runtime/provider identifier.
 
-    Use canonical names in new code: ``bedrock-runtime``, ``openai-runtime``,
-    ``python-runtime`` and ``vllm-runtime``.
+    Use canonical names in new code: ``python-runtime``, ``bedrock-runtime``,
+    ``openai-runtime``, ``vllm-runtime`` or ``auto``.
     """
 
     if value is None or str(value).strip() == "":
@@ -58,15 +54,20 @@ def canonical_engine_name(value: str | None, *, default: str | None = None) -> s
             raise ValueError("Engine name must be non-empty.")
         value = default
     text = normalize_engine_text(value)
-    return COMPAT_ENGINE_ALIASES.get(text, text)
+    if text not in SUPPORTED_RUNTIME_SELECTORS:
+        supported = ", ".join(SUPPORTED_RUNTIME_SELECTORS)
+        raise ValueError(f"Unknown runtime/provider {value!r}. Use one of: {supported}.")
+    return text
 
 
 def supported_engine_names(*, include_langgraph: bool = False, include_aliases: bool = False) -> tuple[str, ...]:
-    """Return supported engine names for errors and diagnostics."""
+    """Return supported canonical runtime/provider names for errors and diagnostics.
+
+    ``include_aliases`` is retained as a no-op keyword for old internal callers;
+    Agentic Systems no longer exposes runtime aliases.
+    """
 
     names: Iterable[str] = SUPPORTED_ENGINES
     if include_langgraph:
         names = (*SUPPORTED_ENGINES, LANGGRAPH_ORCHESTRATOR)
-    if include_aliases:
-        names = (*names, *(alias for alias in COMPAT_ENGINE_ALIASES if alias not in names))
     return tuple(names)

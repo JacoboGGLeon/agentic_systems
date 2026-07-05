@@ -79,10 +79,11 @@ def _resolve_framework_and_engine(engine: str | None, framework: str | None) -> 
     describes the orchestration layer.
     """
 
-    resolved_engine = canonical_engine_name(engine or BEDROCK_RUNTIME_ENGINE)
+    requested_engine = normalize_engine_text(engine or BEDROCK_RUNTIME_ENGINE)
+    if requested_engine == LANGGRAPH_ORCHESTRATOR:
+        raise ValueError("langgraph_is_not_engine: LangGraph is an orchestrator, not an engine. Use framework='langgraph' with engine='bedrock-runtime'.")
+    resolved_engine = canonical_engine_name(requested_engine)
     if framework is None or str(framework).strip() == "":
-        if resolved_engine == LANGGRAPH_ORCHESTRATOR:
-            raise ValueError("langgraph_is_not_engine: LangGraph is an orchestrator, not an engine. Use framework='langgraph' with engine='bedrock-runtime'.")
         return resolved_engine, None
 
     fw = normalize_engine_text(framework)

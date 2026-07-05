@@ -178,7 +178,7 @@ def test_openai_provider_helpers_and_import_paths(monkeypatch):
     assert _canonical_runtime_engine(" ") is None
     assert _canonical_runtime_engine("openai-runtime") is None
     assert _canonical_runtime_engine("bedrock-runtime") == "bedrock-runtime"
-    assert _canonical_runtime_engine(object()) is not None
+    assert _canonical_runtime_engine(object()) is None
 
     class DumpJsonNoIndent:
         def model_dump_json(self, *args, **kwargs):
