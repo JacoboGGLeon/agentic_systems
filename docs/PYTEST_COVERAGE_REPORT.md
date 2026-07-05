@@ -15,7 +15,7 @@ Comando ejecutado:
 Resultado funcional:
 
 ```text
-303 passed, 1 skipped
+304 passed, 0 skipped
 ```
 
 Resultado de coverage:

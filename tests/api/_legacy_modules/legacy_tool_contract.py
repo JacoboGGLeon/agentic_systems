@@ -1,4 +1,6 @@
 import os
+import sys
+import types
 from dataclasses import dataclass
 
 from pydantic import BaseModel
@@ -168,11 +170,16 @@ def test_coerce_framework_tool_arguments_accepts_dict_and_json_string():
     assert BedrockRuntime._coerce_framework_tool_arguments(None) == {}
 
 
-def test_openai_function_tool_accepts_dict_raw_args_without_json_string_assumption():
+def test_openai_function_tool_accepts_dict_raw_args_without_json_string_assumption(monkeypatch):
     import asyncio
     import json
-    pytest = __import__("pytest")
-    pytest.importorskip("agents")
+
+    class FakeFunctionTool:
+        def __init__(self, **kwargs):
+            self.__dict__.update(kwargs)
+
+    fake_agents = types.SimpleNamespace(FunctionTool=FakeFunctionTool)
+    monkeypatch.setitem(sys.modules, "agents", fake_agents)
 
     runtime = build_runtime()
 
