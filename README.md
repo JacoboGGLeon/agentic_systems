@@ -12,7 +12,7 @@
 Agentic Systems is a Python library for building, running and evaluating
 auditable agentic systems with tools, skills, agents, systems, graphs,
 environments, evals, contracts, lineage memory and stable human output. It is
-built for industrial agentic workloads: deterministic execution, explicit
+built for industrial agentic workloads: deterministic and language-model-based execution, explicit
 runtime selection, observable provider diagnostics and repeatable evaluation
 contracts for large volumes of agentic computation.
 
