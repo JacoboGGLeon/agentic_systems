@@ -7,6 +7,7 @@ from typing import Iterable
 BEDROCK_RUNTIME_ENGINE = "bedrock-runtime"
 OPENAI_RUNTIME_ENGINE = "openai-runtime"
 PYTHON_DIRECT_ENGINE = "python-direct"
+VLLM_RUNTIME_ENGINE = "vllm-runtime"
 LANGGRAPH_ORCHESTRATOR = "langgraph"
 OPENAI_AGENTS_FRAMEWORK = "openai-agents"
 STRANDS_FRAMEWORK = "strands"
@@ -15,6 +16,7 @@ SUPPORTED_ENGINES = (
     BEDROCK_RUNTIME_ENGINE,
     OPENAI_RUNTIME_ENGINE,
     PYTHON_DIRECT_ENGINE,
+    VLLM_RUNTIME_ENGINE,
 )
 
 SUPPORTED_FRAMEWORKS = (
@@ -29,6 +31,8 @@ COMPAT_ENGINE_ALIASES: dict[str, str] = {
     BEDROCK_RUNTIME_ENGINE: BEDROCK_RUNTIME_ENGINE,
     OPENAI_RUNTIME_ENGINE: OPENAI_RUNTIME_ENGINE,
     PYTHON_DIRECT_ENGINE: PYTHON_DIRECT_ENGINE,
+    "vllm": VLLM_RUNTIME_ENGINE,
+    VLLM_RUNTIME_ENGINE: VLLM_RUNTIME_ENGINE,
 }
 
 
@@ -41,8 +45,8 @@ def normalize_engine_text(value: str) -> str:
 def canonical_engine_name(value: str | None, *, default: str | None = None) -> str:
     """Return the stable engine identifier.
 
-    Use canonical names in new code: ``bedrock-runtime``, ``openai-runtime`` and
-    ``python-direct``.
+    Use canonical names in new code: ``bedrock-runtime``, ``openai-runtime``,
+    ``python-direct`` and ``vllm-runtime``.
     """
 
     if value is None or str(value).strip() == "":

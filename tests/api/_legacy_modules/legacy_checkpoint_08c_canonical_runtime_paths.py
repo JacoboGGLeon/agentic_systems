@@ -11,6 +11,7 @@ from agentic_systems.providers.python_direct import PythonDirectEngine
 from agentic_systems.engines.names import (
     BEDROCK_RUNTIME_ENGINE,
     PYTHON_DIRECT_ENGINE,
+    VLLM_RUNTIME_ENGINE,
     canonical_engine_name,
     supported_engine_names,
 )
@@ -54,10 +55,12 @@ def test_ambiguous_local_aliases_are_not_engine_shortcuts() -> None:
     assert canonical_engine_name("local") == "local"
     assert canonical_engine_name("runtime") == "runtime"
     assert canonical_engine_name("python_direct") == PYTHON_DIRECT_ENGINE
+    assert canonical_engine_name("vllm") == VLLM_RUNTIME_ENGINE
+    assert canonical_engine_name("vllm_runtime") == VLLM_RUNTIME_ENGINE
 
 
 def test_supported_engine_names_show_canonical_surface_only() -> None:
-    assert supported_engine_names() == (BEDROCK_RUNTIME_ENGINE, "openai-runtime", PYTHON_DIRECT_ENGINE)
+    assert supported_engine_names() == (BEDROCK_RUNTIME_ENGINE, "openai-runtime", PYTHON_DIRECT_ENGINE, VLLM_RUNTIME_ENGINE)
     assert "bedrock" not in supported_engine_names()
 
 

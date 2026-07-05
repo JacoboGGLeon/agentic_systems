@@ -11,6 +11,7 @@ from .engines.names import (
     BEDROCK_RUNTIME_ENGINE,
     OPENAI_RUNTIME_ENGINE,
     PYTHON_DIRECT_ENGINE,
+    VLLM_RUNTIME_ENGINE,
     SUPPORTED_ENGINES,
     canonical_engine_name,
     supported_engine_names,

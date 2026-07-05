@@ -73,6 +73,7 @@ Canonical providers:
 | `python-direct` | Local deterministic execution for tools and smoke tests. |
 | `openai-runtime` | Direct OpenAI provider path. |
 | `bedrock-runtime` | AWS Bedrock Runtime provider path. |
+| `vllm-runtime` | OpenAI-compatible vLLM provider path for local or Colab GPU inference. |
 | `auto` | Selects one concrete provider from environment signals before execution. |
 
 Canonical frameworks are orchestration/integration facades. They are not model
@@ -339,6 +340,7 @@ Engine names are public constants and helpers:
 BEDROCK_RUNTIME_ENGINE
 OPENAI_RUNTIME_ENGINE
 PYTHON_DIRECT_ENGINE
+VLLM_RUNTIME_ENGINE
 SUPPORTED_ENGINES
 canonical_engine_name
 supported_engine_names
@@ -512,6 +514,7 @@ ChainStep
 BEDROCK_RUNTIME_ENGINE
 OPENAI_RUNTIME_ENGINE
 PYTHON_DIRECT_ENGINE
+VLLM_RUNTIME_ENGINE
 SUPPORTED_ENGINES
 canonical_engine_name
 supported_engine_names

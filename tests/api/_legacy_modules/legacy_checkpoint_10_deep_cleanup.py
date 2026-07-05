@@ -4,7 +4,7 @@ import inspect
 
 import agentic_systems as api
 from agentic_systems.api import BEDROCK_PRIMITIVE_API, CHAIN_API, CORE_API, ENGINE_API, NOTEBOOK_API, PUBLIC_API
-from agentic_systems.engines.names import BEDROCK_RUNTIME_ENGINE, PYTHON_DIRECT_ENGINE, supported_engine_names
+from agentic_systems.engines.names import BEDROCK_RUNTIME_ENGINE, PYTHON_DIRECT_ENGINE, VLLM_RUNTIME_ENGINE, supported_engine_names
 
 
 def test_top_level_exports_are_intentional_and_grouped() -> None:
@@ -16,11 +16,13 @@ def test_top_level_exports_are_intentional_and_grouped() -> None:
     assert "Chain" in CHAIN_API
     assert "run_result_view" in NOTEBOOK_API
     assert "BEDROCK_RUNTIME_ENGINE" in ENGINE_API
+    assert "VLLM_RUNTIME_ENGINE" in ENGINE_API
 
 
 def test_engine_constants_are_public_but_aliases_stay_out_of_supported_names() -> None:
     assert api.BEDROCK_RUNTIME_ENGINE == BEDROCK_RUNTIME_ENGINE
     assert api.PYTHON_DIRECT_ENGINE == PYTHON_DIRECT_ENGINE
+    assert api.VLLM_RUNTIME_ENGINE == VLLM_RUNTIME_ENGINE
     assert "bedrock" not in supported_engine_names(include_aliases=False)
     assert "bedrock" in supported_engine_names(include_aliases=True)
 
