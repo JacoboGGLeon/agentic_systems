@@ -54,6 +54,19 @@ def test_human_result_debug_and_plain_text_fallbacks(capsys):
     assert "solo texto" in out
 
 
+def test_human_result_prefers_runtime_engine_over_wrapper_engine(capsys):
+    import agentic_systems as lab
+
+    payload = _normalized_payload()
+    payload["runtime"]["engine"] = "agentic-system"
+    payload["runtime"]["runtime_engine"] = "python-runtime"
+
+    lab.human_result(payload, title="Runtime engine preference")
+    out = capsys.readouterr().out
+
+    assert "Engine: python-runtime" in out
+    assert "Engine: agentic-system" not in out
+
 def test_human_result_uses_native_framework_label_when_missing(capsys):
     import agentic_systems as lab
 

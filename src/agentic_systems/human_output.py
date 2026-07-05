@@ -364,6 +364,13 @@ def _print_actions(tools: list[dict[str, Any]]) -> None:
             print(f"   error: {tool['error']}")
 
 
+
+def _runtime_engine(normalized: dict[str, Any]) -> str:
+    runtime = normalized.get("runtime") if isinstance(normalized.get("runtime"), dict) else {}
+    engine = runtime.get("runtime_engine") or runtime.get("engine") or runtime.get("execution_engine")
+    return str(engine) if engine not in (None, "", "n/a") else ""
+
+
 def _runtime_framework(normalized: dict[str, Any]) -> str:
     runtime = normalized.get("runtime") if isinstance(normalized.get("runtime"), dict) else {}
     framework = runtime.get("framework")
@@ -624,7 +631,7 @@ def _rich_print_human_result(
     runtime_table.add_column("Campo", style="bold")
     runtime_table.add_column("Valor")
     runtime_table.add_row("Estado", "OK" if normalized.get("ok") else "ERROR")
-    runtime_table.add_row("Engine", str(runtime.get("engine") or "n/a"))
+    runtime_table.add_row("Engine", _runtime_engine(normalized) or "n/a")
     runtime_table.add_row("Framework", _runtime_framework(normalized) or "agentic-systems")
     runtime_table.add_row("Mode", str(runtime.get("mode") or "n/a"))
     if runtime.get("model"):
@@ -810,7 +817,7 @@ def print_human_result(
 
     _print_block(2, "Runtime y usage")
     print(f"Estado: {'OK' if normalized.get('ok') else 'ERROR'}")
-    print(f"Engine: {runtime.get('engine') or 'n/a'}")
+    print(f"Engine: {_runtime_engine(normalized) or 'n/a'}")
     print(f"Framework: {_runtime_framework(normalized) or 'agentic-systems'}")
     print(f"Mode: {runtime.get('mode') or 'n/a'}")
     if runtime.get("model"):

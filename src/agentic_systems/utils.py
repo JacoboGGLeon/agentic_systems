@@ -108,7 +108,7 @@ def compose_result(
         result_meta.setdefault("input", input)
     result_meta.setdefault("framework", framework)
     result_meta.setdefault("runtime_engine", resolved_engine)
-    result_meta.setdefault("execution_engine", framework)
+    result_meta.setdefault("execution_engine", resolved_engine)
     result_meta.setdefault("engines_used", engines_used or [resolved_engine])
 
     return RunResult(

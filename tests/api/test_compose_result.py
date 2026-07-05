@@ -60,3 +60,19 @@ def test_compose_result_empty_results_and_explicit_runtime():
     assert result.engine == "openai-runtime"
     assert result.model == "gpt-test"
     assert result.meta["engines_used"] == ["openai-runtime"]
+
+def test_compose_result_keeps_execution_engine_as_runtime_not_framework():
+    import agentic_systems as lab
+
+    result = lab.compose_result(
+        text="workflow",
+        data={"ok": True},
+        results=[],
+        mode="workflow",
+        framework="agentic-systems",
+        engine="python-runtime",
+    )
+
+    assert result.meta["framework"] == "agentic-systems"
+    assert result.meta["runtime_engine"] == "python-runtime"
+    assert result.meta["execution_engine"] == "python-runtime"
