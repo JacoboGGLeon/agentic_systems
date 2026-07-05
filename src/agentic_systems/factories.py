@@ -283,7 +283,7 @@ def agent(
     metadata: dict[str, Any] | None = None,
     runtime: RuntimeConfig | dict[str, Any] | None = None,
 ) -> Agent:
-    """Create an Agentic Systems agent without exposing a workspace in notebooks.
+    """Create an Agentic Systems agent without exposing a full system in notebooks.
 
     This is the recommended public entrypoint for fundamentals:
 
@@ -291,10 +291,10 @@ def agent(
 
         agent = lab.agent(name="calculator", tools=[sumar])
 
-    Internally it creates a small ``AgenticSystem`` workspace and registers any
+    Internally it creates a small ``AgenticSystem`` and registers any
     concrete tools passed through ``tools=[...]``.  Users who need multiple
     shared agents, shared registry state, or environments may still create an
-    explicit ``lab.AgenticSystem(...)`` workspace.
+    explicit ``lab.AgenticSystem(...)`` system.
     """
 
     resolved_skills = _merge_skill_inputs(skill, skills)

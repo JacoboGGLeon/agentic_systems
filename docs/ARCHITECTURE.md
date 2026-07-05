@@ -9,7 +9,7 @@ boundaries.
 Tool        executable capability
 Skill       package of tools, instructions, contracts and assets
 Agent       instructions + runtime + tools/skills + contracts
-System      workspace that registers and composes tools, skills and agents
+System      native container that registers and composes tools, skills and agents
 Graph       state + nodes + edges orchestration
 Environment episodic execution with reward and history
 Eval        batch validation and scoring
@@ -73,7 +73,7 @@ the envelope.
 Tutorials should present output in this order:
 
 ```text
-1. lab.human_result(...) or lab.show(...) for the human view
+1. toolkit.human_result(...) or toolkit.show(...) for the human view
 2. compact technical snapshot
 3. raw object only when the API lesson needs it
 ```

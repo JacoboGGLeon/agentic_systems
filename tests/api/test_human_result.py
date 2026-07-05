@@ -54,6 +54,16 @@ def test_human_result_debug_and_plain_text_fallbacks(capsys):
     assert "solo texto" in out
 
 
+def test_human_result_uses_native_framework_label_when_missing(capsys):
+    import agentic_systems as lab
+
+    payload = _normalized_payload(framework=None)
+    lab.human_result(payload, title="Native framework")
+    out = capsys.readouterr().out
+    assert "Framework: agentic-systems" in out
+    assert "Framework: n/a" not in out
+
+
 def test_human_result_plain_sql_table_validation_and_lineage(capsys):
     import agentic_systems as lab
 
@@ -132,6 +142,8 @@ def test_human_result_rich_eval_environment_and_empty_actions(capsys):
 def test_human_output_defensive_helpers(monkeypatch, capsys):
     import builtins
     import agentic_systems.human_output as human_output
+
+    assert human_output._runtime_framework({}) == ""
 
     real_import = builtins.__import__
 

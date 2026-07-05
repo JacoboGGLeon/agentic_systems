@@ -85,7 +85,7 @@ class InspectReport(dict):
 
 
 class AgenticSystem:
-    """Canonical Agentic Systems workspace/factory for advanced use cases."""
+    """Canonical Agentic Systems system/factory for advanced use cases."""
 
     def __init__(
         self,

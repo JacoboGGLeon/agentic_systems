@@ -1,5 +1,10 @@
 # Agentic Systems
 
+<p align="center">
+  <img src="docs/assets/logo_agentic_systems.png" alt="Agentic Systems logo" width="360" />
+</p>
+
+
 Agentic Systems is a Python library for building, running and evaluating
 auditable agentic systems with tools, skills, agents, systems, graphs,
 environments, evals, contracts, lineage memory and stable human output.
@@ -8,6 +13,17 @@ Use the public facade:
 
 ```python
 import agentic_systems as lab
+```
+
+## Quality Gate
+
+Current verified test status is documented in [`docs/PYTEST_COVERAGE_REPORT.md`](docs/PYTEST_COVERAGE_REPORT.md):
+
+```text
+287 passed, 1 skipped
+Coverage: 100.00%
+TOTAL statements: 5153
+TOTAL missing: 0
 ```
 
 ## What It Exposes

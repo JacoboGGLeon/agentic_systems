@@ -366,7 +366,13 @@ def _print_actions(tools: list[dict[str, Any]]) -> None:
 
 def _runtime_framework(normalized: dict[str, Any]) -> str:
     runtime = normalized.get("runtime") if isinstance(normalized.get("runtime"), dict) else {}
-    return str(runtime.get("framework") or "")
+    framework = runtime.get("framework")
+    if framework not in (None, "", "n/a"):
+        return str(framework)
+    engine = runtime.get("engine") or runtime.get("runtime_engine") or runtime.get("execution_engine")
+    if engine:
+        return "agentic-systems"
+    return ""
 
 
 def _eval_cases_from_normalized(normalized: dict[str, Any]) -> list[dict[str, Any]]:
@@ -619,7 +625,7 @@ def _rich_print_human_result(
     runtime_table.add_column("Valor")
     runtime_table.add_row("Estado", "OK" if normalized.get("ok") else "ERROR")
     runtime_table.add_row("Engine", str(runtime.get("engine") or "n/a"))
-    runtime_table.add_row("Framework", str(runtime.get("framework") or "n/a"))
+    runtime_table.add_row("Framework", _runtime_framework(normalized) or "agentic-systems")
     runtime_table.add_row("Mode", str(runtime.get("mode") or "n/a"))
     if runtime.get("model"):
         runtime_table.add_row("Model", str(runtime.get("model")))
@@ -805,7 +811,7 @@ def print_human_result(
     _print_block(2, "Runtime y usage")
     print(f"Estado: {'OK' if normalized.get('ok') else 'ERROR'}")
     print(f"Engine: {runtime.get('engine') or 'n/a'}")
-    print(f"Framework: {runtime.get('framework') or 'n/a'}")
+    print(f"Framework: {_runtime_framework(normalized) or 'agentic-systems'}")
     print(f"Mode: {runtime.get('mode') or 'n/a'}")
     if runtime.get("model"):
         print(f"Model: {runtime.get('model')}")

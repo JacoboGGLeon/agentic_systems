@@ -38,7 +38,7 @@ strands            integration
 Public user code should use:
 
 ```python
-import agentic_systems as lab
+import agentic_systems as toolkit
 ```
 
 Internal modules can change. Avoid documenting direct imports from:

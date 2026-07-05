@@ -119,8 +119,25 @@ def _cmd_runtime(args: argparse.Namespace) -> int:
     if args.json:
         _write_json(payload)
         return 0
-    for key, value in payload.items():
-        print(f"{key}: {value}")
+
+    console = _console()
+    summary = Table(title="Runtime Resolution", box=None, show_header=False, padding=(0, 1))
+    summary.add_column("Field", style="bold")
+    summary.add_column("Value")
+    for key in ("selected_provider", "mode", "preferred_provider", "fallback_provider", "reason", "model", "region"):
+        summary.add_row(key, str(payload.get(key)))
+
+    scheduler_table = Table(title="Scheduler", box=None, show_header=False, padding=(0, 1))
+    scheduler_table.add_column("Limit", style="bold")
+    scheduler_table.add_column("Value")
+    for key, value in (payload.get("scheduler") or {}).items():
+        scheduler_table.add_row(str(key), str(value))
+
+    console.print(Panel("agentic-systems runtime", title="Agentic Systems", border_style="cyan"))
+    console.print(Columns([summary, scheduler_table], equal=True, expand=True))
+    configuration = payload.get("configuration") or {}
+    if configuration:
+        console.print(Panel(json.dumps(configuration, indent=2, sort_keys=True), title="Safe Configuration", border_style="green"))
     return 0
 
 

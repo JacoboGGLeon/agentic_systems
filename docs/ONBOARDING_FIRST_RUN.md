@@ -29,12 +29,12 @@ agentic-systems api --tier public --json
 Python smoke:
 
 ```python
-import agentic_systems as lab
+import agentic_systems as toolkit
 
-assert callable(lab.tool)
-assert callable(lab.agent)
-assert callable(lab.runtime)
-assert callable(lab.scheduler)
+assert callable(toolkit.tool)
+assert callable(toolkit.agent)
+assert callable(toolkit.runtime)
+assert callable(toolkit.scheduler)
 ```
 
 ## Environment Variables
@@ -91,10 +91,10 @@ python -m pip install -e ".[openai]"
 Verify selection from Python:
 
 ```python
-import agentic_systems as lab
+import agentic_systems as toolkit
 
-runtime = lab.runtime(provider="auto")
-lab.show(runtime.describe(), title="Auto runtime - describe")
+runtime = toolkit.runtime(provider="auto")
+toolkit.show(runtime.describe(), title="Auto runtime - describe")
 ```
 
 Expected `selected_provider` values:
@@ -137,14 +137,14 @@ Run in order:
 Use local deterministic execution first:
 
 ```python
-runtime = lab.runtime(provider="python-direct")
+runtime = toolkit.runtime(provider="python-direct")
 ```
 
 Use automatic selection when moving between local, OpenAI and AWS environments:
 
 ```python
-runtime = lab.runtime(provider="auto")
-lab.show(runtime.describe())
+runtime = toolkit.runtime(provider="auto")
+toolkit.show(runtime.describe())
 ```
 
 If no provider signal is available, `auto` should fail explicitly instead of

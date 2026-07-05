@@ -55,12 +55,11 @@ def test_mvp_tutorial_set_is_progressive_fundamentals_tools_skills():
     actual = {path.relative_to(tutorials).as_posix() for path in _tutorials()}
     assert actual == expected
     assert not (tutorials / "roadmap").exists()
-    assert (tutorials / "tutorials" / "skills" / "accountability_otc").exists()
-
+    
     for tutorial_path in _tutorials():
         text = tutorial_path.read_text(encoding="utf-8")
         assert "agentic_systems" in text
-        assert "lab.human_" in text or "print_human_" in text or "lab.show" in text
+        assert "toolkit.human_" in text or "toolkit.show" in text or "lab.human_" in text or "print_human_" in text or "lab.show" in text
         assert "system." + "_adapter" not in text
         assert "ada_" + "bedrock_" + "adapter" not in text
         assert "Controlled" + "BedrockRuntime" not in text

@@ -91,7 +91,9 @@ def test_cli_plain_and_json_paths(monkeypatch, capsys):
 
     monkeypatch.setattr(cli_module, "runtime", lambda **kwargs: FakeRuntime())
     assert cli_module.main(["runtime", "--provider", "python-direct"]) == 0
-    assert "selected_provider: python-direct" in capsys.readouterr().out
+    runtime_plain = capsys.readouterr().out
+    assert "Runtime Resolution" in runtime_plain
+    assert "python-direct" in runtime_plain
     assert cli_module.main(["runtime", "--provider", "python-direct", "--json"]) == 0
     assert json.loads(capsys.readouterr().out)["mode"] == "explicit"
 

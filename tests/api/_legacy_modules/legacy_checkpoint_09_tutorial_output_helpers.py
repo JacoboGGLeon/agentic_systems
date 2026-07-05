@@ -64,7 +64,7 @@ def test_tutorials_keep_engine_and_mode_semantics_clear():
 def test_tutorials_end_with_human_output_view():
     for path in _tutorials():
         text = _notebook_source(path)
-        assert "lab.human_result" in text or "lab.human_results" in text or "print_human_result" in text or "print_human_results" in text
+        assert "toolkit.human_result" in text or "toolkit.human_results" in text or "toolkit.show" in text or "lab.human_result" in text or "lab.human_results" in text or "lab.show" in text or "print_human_result" in text or "print_human_results" in text
 
 
 def test_all_notebook_cells_have_ids_after_checkpoint_09_cleanup():

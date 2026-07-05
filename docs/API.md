@@ -8,7 +8,7 @@ teach the same API step by step; source modules implement it.
 Use one import in notebooks, examples and user code:
 
 ```python
-import agentic_systems as lab
+import agentic_systems as toolkit
 ```
 
 Avoid importing from internal modules unless you are maintaining the library.
@@ -61,9 +61,9 @@ integrations
 Runtime configuration is explicit and inspectable:
 
 ```python
-scheduler = lab.scheduler(timeout_s=30, max_retries=0, max_tool_calls=5)
-runtime = lab.runtime(provider="auto", scheduler=scheduler)
-lab.show(runtime.describe())
+scheduler = toolkit.scheduler(timeout_s=30, max_retries=0, max_tool_calls=5)
+runtime = toolkit.runtime(provider="auto", scheduler=scheduler)
+toolkit.show(runtime.describe())
 ```
 
 Canonical providers:
@@ -115,7 +115,7 @@ A tool is the smallest executable capability. It should accept typed arguments
 and return a dictionary.
 
 ```python
-@lab.tool
+@toolkit.tool
 def add(a: int, b: int) -> dict:
     """Add two integers."""
     return {"result": a + b}
@@ -123,21 +123,21 @@ def add(a: int, b: int) -> dict:
 
 Production tools should have stable names, docstrings and predictable payloads.
 Use `Tool`, `tool`, `validate_tool_expectation`, `ToolExpectationValue` and
-`lab.expect` when contracts need to be explicit.
+`toolkit.expect` when contracts need to be explicit.
 
 ## Skills
 
 A skill packages tools, instructions, assets and metadata.
 
 ```python
-skill = lab.Skill(
+skill = toolkit.Skill(
     name="calculator_skill",
     description="Arithmetic tools and instructions.",
     tools=[add],
     prompts={"instructions": "Use arithmetic tools and return a structured answer."},
 )
 
-agent = lab.agent(name="skill_agent", instructions=skill.instructions, skills=[skill])
+agent = toolkit.agent(name="skill_agent", instructions=skill.instructions, skills=[skill])
 ```
 
 Public skill names:
@@ -154,7 +154,7 @@ load_skill
 An agent turns instructions, runtime, tools and skills into an executable unit.
 
 ```python
-agent = lab.agent(
+agent = toolkit.agent(
     name="calculator",
     instructions="Use the available tools and return a structured answer.",
     tools=[add],
@@ -167,6 +167,23 @@ result = agent.run({"tool": "add", "input": {"a": 2, "b": 3}}, mode="eval")
 Use `agent.run(...)` for sync execution and `agent.arun(...)` for async provider
 flows. Use `AgentContract`, `RunPolicy` and `ContractPolicySpec` before runtime
 calls when tool usage must be constrained.
+
+### RunPolicy Parameters
+
+`RunPolicy` is the execution contract for agent loops. It should be declared near the agent definition, not hidden inside a notebook cell.
+
+| Parameter | Meaning | Recommended tutorial use |
+|---|---|---|
+| `max_turns` | Maximum internal turns before the run must stop. | Keep small, usually `4` to `8`. |
+| `max_tool_calls` | Maximum tool calls allowed during the run. | Set when the expected path is tool-based. |
+| `max_tokens` | Provider token budget when supported. | Use for LM providers; leave `None` for deterministic Python. |
+| `temperature` | LM randomness. | Use `0.0` for reproducible tutorials. |
+| `tool_choice` | Tool selection strategy, usually `auto`. | Use `auto` unless teaching forced tool use. |
+| `repair` | Whether invalid outputs/tool calls may be repaired. | Keep `True` for robust user flows. |
+| `max_repairs` | Maximum repair attempts. | Use `1` or `2`; higher values hide failures. |
+| `finalize` | Finalization behavior when the loop reaches limits. | Use `on_max_turns` for evaluable LM runs. |
+| `trace` | Trace detail level. | Use `compact` in tutorials and `debug` for diagnosis. |
+| `strict` | Whether contract validation is strict. | Use `True` for public examples and tests. |
 
 ## Results And Human Output
 
@@ -185,8 +202,8 @@ result.errors      structured errors
 Render user-facing output with:
 
 ```python
-lab.human_result(result, pretty=False)
-lab.human_results([result], pretty=False)
+toolkit.human_result(result, pretty=False)
+toolkit.human_results([result], pretty=False)
 ```
 
 `print_human_result` and `print_human_results` remain public aliases, but new
@@ -197,17 +214,17 @@ docs and notebooks should prefer `human_result` and `human_results`.
 Final answers are dictionaries. The helpers normalize arbitrary payloads:
 
 ```python
-lab.normalize_output({"a": 1})    # {"a": 1}
-lab.normalize_output([{"a": 1}])  # {"rows": [{"a": 1}]}
-lab.normalize_output([1, 2])      # {"items": [1, 2]}
-lab.normalize_output("ok")        # {"value": "ok"}
+toolkit.normalize_output({"a": 1})    # {"a": 1}
+toolkit.normalize_output([{"a": 1}])  # {"rows": [{"a": 1}]}
+toolkit.normalize_output([1, 2])      # {"items": [1, 2]}
+toolkit.normalize_output("ok")        # {"value": "ok"}
 ```
 
 Use an output schema when the user requested fields:
 
 ```python
-schema = lab.output_schema(["procedure", "final_result"])
-answer = lab.final_answer({"procedure": ["2 + 3"], "final_result": 5}, schema=schema)
+schema = toolkit.output_schema(["procedure", "final_result"])
+answer = toolkit.final_answer({"procedure": ["2 + 3"], "final_result": 5}, schema=schema)
 ```
 
 Public output names include `OutputSchema`, `AgenticOutput`, `RuntimeInfo`,
@@ -228,7 +245,7 @@ memory = result.lineage(
     goal="Explain the answer from tool evidence.",
 )
 
-lab.show(memory)
+toolkit.show(memory)
 memory.to_prompt_context(max_chars=1200)
 ```
 
@@ -243,11 +260,11 @@ LINEAGE_SCHEMA_VERSION
 
 ## System
 
-`AgenticSystem` is a workspace and composition factory. It registers tools,
+`AgenticSystem` is the native system and composition factory. It registers tools,
 skills, agents, runtime and contracts.
 
 ```python
-system = lab.AgenticSystem(runtime=runtime)
+system = toolkit.AgenticSystem(runtime=runtime)
 
 @system.tool
 def multiply(a: int, b: int) -> dict:
@@ -271,8 +288,8 @@ Graph APIs coordinate state, nodes and edges. They do not replace tools, agents
 or systems.
 
 ```python
-node = lab.agent_node(agent, input_mapper=..., output_mapper=...)
-graph = lab.graph(state=..., nodes=[...], edges=[...])
+node = toolkit.agent_node(agent, input_mapper=..., output_mapper=...)
+graph = toolkit.graph(state=..., nodes=[...], edges=[...])
 ```
 
 Public graph names:
@@ -289,11 +306,11 @@ LangGraph remains optional. The core package must import without LangGraph.
 Environments execute episodes. Evals score cases.
 
 ```python
-env = lab.AgenticEnvironment(records=records, transition_fn=transition, reward_fn=reward)
+env = toolkit.AgenticEnvironment(records=records, transition_fn=transition, reward_fn=reward)
 observation, info = env.reset()
 observation, reward, terminated, truncated, info = env.step(action=None)
 
-report = lab.run_eval(agent, cases)
+report = toolkit.run_eval(agent, cases)
 ```
 
 Public names:
@@ -343,7 +360,7 @@ DEFAULT_EMBEDDING_MODEL_ID
 ```
 
 Use `BedrockRuntimeClient` only when you need direct Bedrock Runtime primitives.
-Most user code should use `lab.runtime(provider="bedrock-runtime")`.
+Most user code should use `toolkit.runtime(provider="bedrock-runtime")`.
 
 ## Notebook Utilities
 

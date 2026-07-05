@@ -34,26 +34,26 @@ commands exit with code 0 and print parseable output
 ## 3. Import Smoke
 
 ```python
-import agentic_systems as lab
+import agentic_systems as toolkit
 
-assert callable(lab.tool)
-assert callable(lab.agent)
-assert callable(lab.runtime)
-assert callable(lab.scheduler)
-assert callable(lab.human_result)
+assert callable(toolkit.tool)
+assert callable(toolkit.agent)
+assert callable(toolkit.runtime)
+assert callable(toolkit.scheduler)
+assert callable(toolkit.human_result)
 ```
 
 ## 4. Python-Direct Tool Smoke
 
 ```python
-import agentic_systems as lab
+import agentic_systems as toolkit
 
-@lab.tool
+@toolkit.tool
 def add(a: int, b: int) -> dict:
     return {"result": a + b}
 
-runtime = lab.runtime(provider="python-direct", scheduler=lab.scheduler(timeout_s=5))
-agent = lab.agent(name="calc", tools=[add], runtime=runtime)
+runtime = toolkit.runtime(provider="python-direct", scheduler=toolkit.scheduler(timeout_s=5))
+agent = toolkit.agent(name="calc", tools=[add], runtime=runtime)
 result = agent.run({"tool": "add", "input": {"a": 2, "b": 3}}, mode="eval")
 
 assert result.ok

@@ -6,7 +6,7 @@ runtime inspection and API inventory.
 The CLI is not a second framework. It does not replace Python usage through:
 
 ```python
-import agentic_systems as lab
+import agentic_systems as toolkit
 ```
 
 It exists to make installs, provider selection and public API coverage

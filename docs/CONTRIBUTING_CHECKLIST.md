@@ -8,7 +8,7 @@ Use this checklist before handing off changes.
 [ ] New public names are added to `agentic_systems.api`.
 [ ] Recommended names are documented in `docs/API.md`.
 [ ] Advanced names are documented as advanced, not as first-step API.
-[ ] No tutorial imports from internal modules when `import agentic_systems as lab` works.
+[ ] No tutorial imports from internal modules when `import agentic_systems as toolkit` works.
 [ ] Optional dependencies are not required at package import time.
 ```
 

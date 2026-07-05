@@ -90,6 +90,10 @@ def _resolve_framework_and_engine(engine: str | None, framework: str | None) -> 
         return resolved_engine, fw
     raise ValueError("framework must be one of: langgraph, openai-agents, strands.")
 
+def _framework_label(framework: str | None) -> str:
+    return str(framework).strip() if framework not in (None, "", "n/a") else "agentic-systems"
+
+
 class Agent:
     """Portable agent configuration and execution facade.
 
@@ -189,7 +193,7 @@ class Agent:
             "tools": list(self.tools),
             "skills": list(self.skills),
             "engine": runtime_engine,
-            "framework": self.framework,
+            "framework": _framework_label(self.framework),
             "runtime_engine": runtime_engine,
             "execution_engine": self.engine,
             "model": self.model,
@@ -371,7 +375,7 @@ class Agent:
             meta={
                 "input": _json_like(clean_input),
                 "source_result_type": "SchedulerFailure",
-                "framework": self.framework,
+                "framework": _framework_label(self.framework),
                 "runtime_engine": runtime_engine,
                 "execution_engine": self.engine,
             },
@@ -381,7 +385,7 @@ class Agent:
         return self.engine
 
     def _finalize_result(self, result: RunResult, clean_input: Any | None = None) -> RunResult:
-        result.meta.setdefault("framework", self.framework)
+        result.meta["framework"] = _framework_label(self.framework)
         if clean_input is not None:
             result.meta.setdefault("input", _json_like(clean_input))
         runtime_engine = self._runtime_engine_name()

@@ -1,6 +1,6 @@
 # Pytest Coverage Report
 
-Fecha de corte: 2026-07-03
+Fecha de corte: 2026-07-05
 
 ## Estado Actual Verificado
 
@@ -9,35 +9,22 @@ Esta medicion es real. Viene de una ejecucion local de `pytest` con `coverage.py
 Comando ejecutado:
 
 ```powershell
-.\.venv_agentic_systems\Scripts\python.exe -m pytest `
-  --basetemp=C:\tmp\agentic_systems_pytest_tmp `
-  -o cache_dir=C:\tmp\agentic_systems_pytest_cache `
-  --cache-clear `
-  --cov=agentic_systems `
-  --cov-report=term-missing `
-  --cov-report=json:C:\tmp\agentic_systems_coverage.json `
-  -q
+.\.venv_agentic_systems\Scripts\python.exe -m pytest --cov=agentic_systems --cov-report=term-missing -q
 ```
 
 Resultado funcional:
 
 ```text
-283 passed, 1 skipped
+287 passed, 1 skipped
 ```
 
 Resultado de coverage:
 
 ```text
-TOTAL statements: 5131
+TOTAL statements: 5153
 TOTAL missing: 0
 TOTAL coverage: 100.00%
 Required test coverage of 100.0% reached.
-```
-
-Archivo JSON generado por la corrida:
-
-```text
-C:\tmp\agentic_systems_coverage.json
 ```
 
 
@@ -61,6 +48,7 @@ tests/api/
   test_integrations_openai_agents.py
   test_integrations_langgraph.py
   test_integrations_strands.py
+  test_cli.py
 ```
 
 Los archivos `tests/api/test_*.py` son los puntos de entrada legibles por simbolo/API. La carpeta `tests/api/_legacy_modules/` conserva cuerpos historicos migrados para no perder cobertura ni comportamiento mientras se estabiliza la nueva taxonomia. El loader preserva las rutas originales de `tests/test_*.py` para que fixtures y calculos de `Path(__file__).parents[1]` sigan apuntando al repo.
@@ -86,14 +74,7 @@ Los archivos `tests/api/test_*.py` son los puntos de entrada legibles por simbol
 El objetivo de coverage queda cerrado cuando este comando pasa sin bajar `fail_under = 100`:
 
 ```powershell
-.\.venv_agentic_systems\Scripts\python.exe -m pytest `
-  --basetemp=C:\tmp\agentic_systems_pytest_tmp `
-  -o cache_dir=C:\tmp\agentic_systems_pytest_cache `
-  --cache-clear `
-  --cov=agentic_systems `
-  --cov-report=term-missing `
-  --cov-report=json:C:\tmp\agentic_systems_coverage.json `
-  -q
+.\.venv_agentic_systems\Scripts\python.exe -m pytest --cov=agentic_systems --cov-report=term-missing -q
 ```
 
 Estado actual: cerrado.

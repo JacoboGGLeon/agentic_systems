@@ -4,13 +4,13 @@ import ast
 import json
 from pathlib import Path
 
-import agentic_systems as lab
+import agentic_systems as toolkit
 
 
 def test_tool_api_supports_simple_decorator_and_pydantic_tool_contracts():
     from pydantic import BaseModel
 
-    @lab.tool
+    @toolkit.tool
     def sumar(a: int, b: int) -> dict:
         return {"operation": "sumar", "result": a + b}
 
@@ -25,7 +25,7 @@ def test_tool_api_supports_simple_decorator_and_pydantic_tool_contracts():
     def sumar_contract(data: TwoNumbers) -> OperationResult:
         return OperationResult(operation="sumar", result=data.a + data.b)
 
-    explicit = lab.Tool(sumar_contract, name="sumar", input=TwoNumbers, output=OperationResult)
+    explicit = toolkit.Tool(sumar_contract, name="sumar", input=TwoNumbers, output=OperationResult)
 
     assert sumar.run({"a": 17, "b": 25}).data == {"operation": "sumar", "result": 42}
     assert explicit.run({"a": 17, "b": 25}).data == {"operation": "sumar", "result": 42}
@@ -37,14 +37,14 @@ def test_fundamentals_notebooks_are_simple_runtime_blueprints():
     root = Path(__file__).resolve().parents[1]
     notebook_dir = root / "tutorials"
     expected = {
-        "01_tool_api.ipynb": ["@lab.tool", "lab.Tool", "Pydantic"],
-        "02_skill_api.ipynb": ["lab.Skill", "Skill.check", "skills=[math_skill]"],
+        "01_tool_api.ipynb": ["@toolkit.tool", "toolkit.Tool", "Pydantic"],
+        "02_skill_api.ipynb": ["toolkit.Skill", "Skill.check", "skills=[math_skill]"],
         "03_agent_api.ipynb": ['engine="python-direct"', 'provider="auto"', "Agente LM"],
-        "04_human_result_api.ipynb": ["lab.RunResult", "lab.final_answer", "lab.human_result"],
+        "04_human_result_api.ipynb": ["toolkit.RunResult", "toolkit.final_answer", "toolkit.human_result"],
         "07_integrations_openai_runtime_api.ipynb": ['provider="auto"', 'framework="openai-agents"', "await agent.arun"],
-        "08_system_api.ipynb": ["lab.AgenticSystem", "system.tool", "system.skill", "system.agent", "system.inspect"],
-        "09_graph_api.ipynb": ["lab.graph(", "lab.agent_node", "agent.as_node", "graph.run"],
-        "10_environment_eval_api.ipynb": ["lab.AgenticEnvironment", "lab.run_eval", "reward_fn"],
+        "08_system_api.ipynb": ["toolkit.AgenticSystem", "system.tool", "system.skill", "system.agent", "system.inspect"],
+        "09_graph_api.ipynb": ["toolkit.graph(", "toolkit.agent_node", "agent.as_node", "graph.run"],
+        "10_environment_eval_api.ipynb": ["toolkit.AgenticEnvironment", "toolkit.run_eval", "reward_fn"],
     }
     paths = {path.name: path for path in notebook_dir.glob("*.ipynb")}
 
@@ -78,7 +78,7 @@ def test_fundamentals_notebooks_are_simple_runtime_blueprints():
         combined_text = text + "\n" + code_text
         for token in forbidden:
             assert token not in combined_text, f"{name} should stay simple and real; found {token!r}."
-        assert "lab.human_result" in combined_text or "lab.human_results" in combined_text or "lab.print_human_result" in combined_text
+        assert "toolkit.human_result" in combined_text or "toolkit.human_results" in combined_text or "toolkit.print_human_result" in combined_text or "toolkit.show" in combined_text or "toolkit.human_result" in combined_text or "toolkit.human_results" in combined_text or "lab.print_human_result" in combined_text
         for token in required_tokens:
             assert token in combined_text, f"{name} should contain {token!r}."
 
@@ -89,12 +89,12 @@ def test_fundamentals_notebooks_are_simple_runtime_blueprints():
             for cell in nb.get("cells", [])
             if cell.get("cell_type") == "code"
         )
-        assert "import agentic_systems as lab" in code
+        assert "import agentic_systems as toolkit" in code
         if name == "04_human_result_api.ipynb":
-            assert "lab.normalize_output" in code and "lab.output_schema" in code
-            assert "lab.RunResult" in code and "lab.final_answer" in code
+            assert "toolkit.normalize_output" in code and "toolkit.output_schema" in code
+            assert "toolkit.RunResult" in code and "toolkit.final_answer" in code
         elif name not in {"08_system_api.ipynb", "09_graph_api.ipynb", "10_environment_eval_api.ipynb"}:
-            assert "@lab.tool" in code or "mas.make_tools" in code
+            assert "@toolkit.tool" in code or "mas.make_tools" in code
         for index, cell in enumerate(nb.get("cells", [])):
             if cell.get("cell_type") != "code":
                 continue
@@ -141,7 +141,7 @@ def test_high_level_graph_api_builds_state_nodes_edges(monkeypatch):
 
     monkeypatch.setattr(bridge, "_import_langgraph_graph", lambda: ("__start__", "__end__", FakeStateGraph))
 
-    graph = lab.graph(
+    graph = toolkit.graph(
         state=dict,
         nodes={"double": lambda state: {"value": state["value"] * 2}},
         edges=[("START", "double"), ("double", "END")],
