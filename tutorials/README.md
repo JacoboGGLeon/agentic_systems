@@ -61,6 +61,8 @@ cp .env.example .env
 $env:OPENAI_API_KEY="your_key_here"
 $env:AWS_REGION="us-east-1"
 $env:AWS_PROFILE="your_profile"
+$env:VLLM_BASE_URL="http://127.0.0.1:8000/v1"
+$env:VLLM_MODEL_ID="Qwen/Qwen3-0.6B"
 ```
 
 En Git Bash usa `export`:
@@ -69,6 +71,8 @@ En Git Bash usa `export`:
 export OPENAI_API_KEY="your_key_here"
 export AWS_REGION="us-east-1"
 export AWS_PROFILE="your_profile"
+export VLLM_BASE_URL="http://127.0.0.1:8000/v1"
+export VLLM_MODEL_ID="Qwen/Qwen3-0.6B"
 ```
 
 Los notebooks no piden ni guardan secretos. Verifica la selección efectiva con:

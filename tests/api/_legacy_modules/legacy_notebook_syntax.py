@@ -36,6 +36,7 @@ def test_mvp_tutorial_set_is_progressive_fundamentals_tools_skills():
         "tutorials/00_runtime_api.ipynb",
         "tutorials/00_runtime_bedrock_provider_api.ipynb",
         "tutorials/00_runtime_openai_provider_api.ipynb",
+        "tutorials/00_runtime_vllm_provider_api.ipynb",
         "tutorials/00_runtime_scheduler_api.ipynb",
         "tutorials/01_tool_api.ipynb",
         "tutorials/02_skill_api.ipynb",

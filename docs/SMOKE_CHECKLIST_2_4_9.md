@@ -86,6 +86,7 @@ Confirm these notebooks exist:
 tutorials/00_runtime_api.ipynb
 tutorials/00_runtime_bedrock_provider_api.ipynb
 tutorials/00_runtime_openai_provider_api.ipynb
+tutorials/00_runtime_vllm_provider_api.ipynb
 tutorials/00_runtime_scheduler_api.ipynb
 tutorials/01_tool_api.ipynb
 tutorials/02_skill_api.ipynb

@@ -25,6 +25,7 @@ def test_tutorials_have_progressive_walkthrough_routes() -> None:
         "00_runtime_bedrock_provider_api.ipynb",
         "00_runtime_openai_provider_api.ipynb",
         "00_runtime_scheduler_api.ipynb",
+        "00_runtime_vllm_provider_api.ipynb",
         "01_tool_api.ipynb",
         "02_skill_api.ipynb",
         "03_agent_api.ipynb",

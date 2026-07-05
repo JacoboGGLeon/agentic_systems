@@ -442,6 +442,7 @@ Tutorials are the canonical learning path:
 | `00_runtime_api.ipynb` | `runtime`, `scheduler`, `RuntimeConfig.describe`, provider auto y engines canonicos. |
 | `00_runtime_bedrock_provider_api.ipynb` | `bedrock-runtime`, AWS diagnostics, Converse and embeddings smoke. |
 | `00_runtime_openai_provider_api.ipynb` | `openai-runtime`, OpenAI config and native provider smoke. |
+| `00_runtime_vllm_provider_api.ipynb` | `vllm-runtime`, OpenAI-compatible vLLM config and optional Colab/GPU smoke. |
 | `00_runtime_scheduler_api.ipynb` | `scheduler`, limits, retry and timeout behavior. |
 | `01_tool_api.ipynb` | `tool`, `Tool`, contracts and direct tool execution. |
 | `02_skill_api.ipynb` | `Skill`, skill validation and skill-backed agents. |
