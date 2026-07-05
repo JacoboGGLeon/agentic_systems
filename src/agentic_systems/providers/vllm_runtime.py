@@ -12,6 +12,7 @@ from collections.abc import Mapping
 from typing import Any
 
 from agentic_systems.contracts import RunPolicy
+from agentic_systems.defaults import DEFAULT_VLLM_API_KEY, DEFAULT_VLLM_BASE_URL
 from agentic_systems.core.results import RunResult
 from agentic_systems.engines.names import VLLM_RUNTIME_ENGINE
 from agentic_systems.providers.openai_runtime import (
@@ -23,8 +24,6 @@ from agentic_systems.providers.openai_runtime import (
     _run_chat_loop_async,
 )
 
-DEFAULT_VLLM_BASE_URL = "http://127.0.0.1:8000/v1"
-DEFAULT_VLLM_API_KEY = "EMPTY"
 
 
 class VLLMRuntimeProvider:

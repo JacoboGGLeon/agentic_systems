@@ -63,7 +63,7 @@ Current verified test status is documented in [`docs/PYTEST_COVERAGE_REPORT.md`]
 ```text
 304 passed, 0 skipped
 Coverage: 100.00%
-TOTAL statements: 5290
+TOTAL statements: 5299
 TOTAL missing: 0
 ```
 

@@ -17,6 +17,8 @@ from typing import Any, Callable, Dict, Optional, Sequence, Type
 
 from pydantic import BaseModel, ConfigDict, Field, create_model
 
+from agentic_systems.defaults import DEFAULT_AWS_REGION
+
 
 class ToolEnvelope(BaseModel):
     """Canonical JSON-first output returned by provider-neutral tools."""
@@ -60,7 +62,7 @@ class ToolRegistryRuntime:
         temperature_default: float = 0.0,
     ) -> None:
         self.model_id = model_id
-        self.region_name = region_name or os.getenv("AWS_REGION") or os.getenv("AWS_DEFAULT_REGION") or "us-east-1"
+        self.region_name = region_name or os.getenv("AWS_REGION") or os.getenv("AWS_DEFAULT_REGION") or DEFAULT_AWS_REGION
         self.max_tokens_default = int(max_tokens_default)
         self.temperature_default = float(temperature_default)
         self._tools: dict[str, RuntimeToolSpec] = {}

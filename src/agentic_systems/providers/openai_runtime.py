@@ -13,6 +13,7 @@ from collections.abc import Iterable, Mapping
 from typing import Any
 
 from agentic_systems.contracts import RunPolicy
+from agentic_systems.defaults import DEFAULT_OPENAI_MODEL_ID
 from agentic_systems.engines.names import BEDROCK_RUNTIME_ENGINE, OPENAI_RUNTIME_ENGINE, canonical_engine_name
 from agentic_systems.results import RunResult
 from agentic_systems.tools.compat import ToolEvent
@@ -135,7 +136,7 @@ def _run_chat_loop(client: Any, messages: list[dict[str, Any]], tools: list[dict
         if turns > max_turns:
             return _failure("OpenAIRuntimeProvider exceeded max_turns.", agent, mode, "max_turns_exceeded", meta={"turns": turns})
         response = client.chat.completions.create(
-            model=getattr(agent, "model", None) or getattr(getattr(agent, "system", None), "model", None) or "gpt-4o-mini",
+            model=getattr(agent, "model", None) or getattr(getattr(agent, "system", None), "model", None) or DEFAULT_OPENAI_MODEL_ID,
             messages=messages,
             tools=tools or None,
             tool_choice=_tool_choice(policy.tool_choice),
@@ -180,7 +181,7 @@ async def _run_chat_loop_async(client: Any, messages: list[dict[str, Any]], tool
         if turns > max_turns:
             return _failure("OpenAIRuntimeProvider exceeded max_turns.", agent, mode, "max_turns_exceeded", meta={"turns": turns})
         response = await client.chat.completions.create(
-            model=getattr(agent, "model", None) or getattr(getattr(agent, "system", None), "model", None) or "gpt-4o-mini",
+            model=getattr(agent, "model", None) or getattr(getattr(agent, "system", None), "model", None) or DEFAULT_OPENAI_MODEL_ID,
             messages=messages,
             tools=tools or None,
             tool_choice=_tool_choice(policy.tool_choice),
@@ -235,7 +236,7 @@ def _finalize_run_result(text: str, tool_events: list[ToolEvent], ok: bool, usag
         tool_events=tool_events,
         usage=usage,
         engine=runtime_engine,
-        model=getattr(agent, "model", None) or "gpt-4o-mini",
+        model=getattr(agent, "model", None) or DEFAULT_OPENAI_MODEL_ID,
         mode=mode,
         meta={"source_result_type": source, "runtime_engine": runtime_engine, "framework": framework, "execution_engine": OPENAI_RUNTIME_ENGINE},
     )
@@ -249,7 +250,7 @@ def _finalize_run_result(text: str, tool_events: list[ToolEvent], ok: bool, usag
 
 def _failure(message: str, agent: Any, mode: str, code: str, meta: dict[str, Any] | None = None) -> RunResult:
     framework = getattr(agent, "framework", None) or OPENAI_RUNTIME_ENGINE
-    return RunResult(text=message, data={"ok": False, "error": {"code": code, "message": message}}, ok=False, engine=OPENAI_RUNTIME_ENGINE, model=getattr(agent, "model", None) or "gpt-4o-mini", mode=mode, meta={"framework": framework, "execution_engine": OPENAI_RUNTIME_ENGINE, **(meta or {})})
+    return RunResult(text=message, data={"ok": False, "error": {"code": code, "message": message}}, ok=False, engine=OPENAI_RUNTIME_ENGINE, model=getattr(agent, "model", None) or DEFAULT_OPENAI_MODEL_ID, mode=mode, meta={"framework": framework, "execution_engine": OPENAI_RUNTIME_ENGINE, **(meta or {})})
 
 
 def _usage_from_response(response: Any) -> dict[str, Any]:

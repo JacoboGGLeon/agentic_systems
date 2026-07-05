@@ -10,6 +10,7 @@ from typing import Any
 from .agents import Agent
 from .core.runtime import RuntimeConfig, _bedrock_signal_present, _load_dotenv, _openai_signal_present
 from .core.scheduler import SchedulerConfig
+from .defaults import DEFAULT_AWS_REGION, DEFAULT_BEDROCK_MODEL_ID, DEFAULT_OPENAI_MODEL_ID, DEFAULT_VLLM_MODEL_ID
 from .engines.names import BEDROCK_RUNTIME_ENGINE, OPENAI_RUNTIME_ENGINE, PYTHON_RUNTIME_ENGINE, VLLM_RUNTIME_ENGINE, canonical_engine_name
 from .final_answer import output_schema as make_output_schema
 from .system import AgenticSystem
@@ -36,7 +37,7 @@ def default_model_id() -> str:
         value = os.getenv(key)
         if value:
             return value
-    return "qwen.qwen3-32b-v1:0"
+    return DEFAULT_BEDROCK_MODEL_ID
 
 
 def default_openai_model_id() -> str:
@@ -47,7 +48,7 @@ def default_openai_model_id() -> str:
         value = os.getenv(key)
         if value:
             return value
-    return "gpt-4o-mini"
+    return DEFAULT_OPENAI_MODEL_ID
 
 
 def default_vllm_model_id() -> str:
@@ -58,14 +59,14 @@ def default_vllm_model_id() -> str:
         value = os.getenv(key)
         if value:
             return value
-    return "Qwen/Qwen3-0.6B"
+    return DEFAULT_VLLM_MODEL_ID
 
 
 def default_region() -> str:
     """Return the default AWS region used by notebook-first examples."""
 
     _load_dotenv()
-    return os.getenv("AWS_REGION") or os.getenv("AWS_DEFAULT_REGION") or "us-east-1"
+    return os.getenv("AWS_REGION") or os.getenv("AWS_DEFAULT_REGION") or DEFAULT_AWS_REGION
 
 
 

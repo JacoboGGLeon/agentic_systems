@@ -269,7 +269,7 @@ class BedrockRuntime:
             self.session.region_name
             or os.getenv("AWS_REGION")
             or os.getenv("AWS_DEFAULT_REGION")
-            or "us-east-1"
+            or DEFAULT_AWS_REGION
         )
 
         self.runtime = boto3.client("bedrock-runtime", region_name=self.region_name)
