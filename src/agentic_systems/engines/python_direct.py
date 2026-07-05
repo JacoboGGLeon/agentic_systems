@@ -1,4 +1,4 @@
-"""Legacy execution-engine shim for Python-runtime runtime."""
+"""Compatibility import for the canonical Python runtime engine."""
 
 from __future__ import annotations
 

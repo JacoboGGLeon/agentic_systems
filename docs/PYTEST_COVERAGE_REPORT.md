@@ -60,7 +60,7 @@ Los archivos `tests/api/test_*.py` son los puntos de entrada legibles por simbol
 | Core execution: `agents.py`, `system.py`, runtime, scheduler | 100% |
 | Contracts/results/output contracts/final answer | 100% |
 | Tools, skills, factories, chain, expectations | 100% |
-| Providers: python-runtime, openai-runtime, bedrock wrapper, base | 100% |
+| Providers: python-runtime, openai-runtime, bedrock-runtime, vllm-runtime, base | 100% |
 | Bedrock Runtime client con fakes | 100% |
 | LangGraph facade e integraciones | 100% |
 | Environment y evals | 100% |
