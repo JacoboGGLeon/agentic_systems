@@ -30,7 +30,7 @@ dist/
 ## Public Import
 
 ```python
-import agentic_systems as lab
+import agentic_systems as toolkit
 ```
 
 Removed public names:

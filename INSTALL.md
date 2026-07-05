@@ -24,9 +24,9 @@ pip install -e '.[all]'
 
 ```bash
 python - <<'PY'
-import agentic_systems as lab
-print("agentic_systems", lab.__version__)
-print(callable(lab.tool), callable(lab.agent), callable(lab.runtime))
+import agentic_systems as toolkit
+print("agentic_systems", toolkit.__version__)
+print(callable(toolkit.tool), callable(toolkit.agent), callable(toolkit.runtime))
 PY
 ```
 
@@ -34,14 +34,14 @@ PY
 
 ```bash
 python - <<'PY'
-import agentic_systems as lab
+import agentic_systems as toolkit
 
-@lab.tool
+@toolkit.tool
 def add(a: int, b: int) -> dict:
     return {"result": a + b}
 
-runtime = lab.runtime(provider="python-direct", scheduler=lab.scheduler(timeout_s=5, max_retries=0))
-agent = lab.agent(name="calc", tools=[add], runtime=runtime)
+runtime = toolkit.runtime(provider="python-direct", scheduler=toolkit.scheduler(timeout_s=5, max_retries=0))
+agent = toolkit.agent(name="calc", tools=[add], runtime=runtime)
 result = agent.run({"tool": "add", "input": {"a": 1, "b": 2}}, mode="eval")
 print(result.ok, result.data["result"])
 PY

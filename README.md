@@ -12,7 +12,7 @@ environments, evals, contracts, lineage memory and stable human output.
 Use the public facade:
 
 ```python
-import agentic_systems as lab
+import agentic_systems as toolkit
 ```
 
 ## Quality Gate
@@ -80,17 +80,17 @@ not secret values.
 ## Quick Start
 
 ```python
-import agentic_systems as lab
+import agentic_systems as toolkit
 
-@lab.tool
+@toolkit.tool
 def add(a: int, b: int) -> dict:
     return {"result": a + b}
 
-runtime = lab.runtime(provider="python-direct")
-agent = lab.agent(name="calc", tools=[add], runtime=runtime)
+runtime = toolkit.runtime(provider="python-direct")
+agent = toolkit.agent(name="calc", tools=[add], runtime=runtime)
 
 result = agent.run({"tool": "add", "input": {"a": 2, "b": 3}}, mode="eval")
-lab.human_result(result)
+toolkit.human_result(result)
 ```
 
 ## CLI
