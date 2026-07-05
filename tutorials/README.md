@@ -1,6 +1,6 @@
 # Tutorials
 
-`tutorials/` es la ruta pedagógica oficial del repo.
+`tutorials/` es la ruta pedagogica oficial del repo.
 
 ```text
 tutorials -> explora y explota la API 1:1
@@ -22,22 +22,23 @@ Memory / Lineage -> Runtime -> Provider -> Integrations
 
 ## Orden
 
-| Orden | Notebook | Qué cubre |
+| Orden | Notebook | Que cubre |
 |---:|---|---|
 | 0.1 | `00_runtime_api.ipynb` | Runtime base y `provider="auto"`. |
 | 0.2 | `00_runtime_bedrock_provider_api.ipynb` | Bedrock Runtime: AWS diagnostics, Converse y embeddings. |
-| 0.3 | `00_runtime_openai_provider_api.ipynb` | OpenAI Runtime: provider nativo directo; la integración `openai-agents` se declara como framework cuando aplica. |
-| 0.4 | `00_runtime_scheduler_api.ipynb` | Scheduler, budgets, retries y timeout. |
+| 0.3 | `00_runtime_openai_provider_api.ipynb` | OpenAI Runtime: provider nativo directo; la integracion `openai-agents` se declara como framework cuando aplica. |
+| 0.4 | `00_runtime_vllm_provider_api.ipynb` | `vllm-runtime`: provider OpenAI-compatible para Colab/local GPU. |
+| 0.5 | `00_runtime_scheduler_api.ipynb` | Scheduler, budgets, retries y timeout. |
 | 1 | `01_tool_api.ipynb` | Tool API e IO estructurado. |
 | 2 | `02_skill_api.ipynb` | Skill API: tools, prompts, contracts, policy y metadata. |
 | 3 | `03_agent_api.ipynb` | Agent API: contexto transformado en acciones. |
 | 4 | `04_human_result_api.ipynb` | RunResult, final answer y salida humana. |
-| 5 | `05_lineage_memory_api.ipynb` | Memory / Lineage como auditoría de ejecución. |
+| 5 | `05_lineage_memory_api.ipynb` | Memory / Lineage como auditoria de ejecucion. |
 | 6 | `06_integrations_strands_api.ipynb` | Integrations: Strands. |
-| 7 | `07_integrations_openai_runtime_api.ipynb` | Integrations: OpenAI Agents framework sobre runtime agnóstico. |
+| 7 | `07_integrations_openai_runtime_api.ipynb` | Integrations: OpenAI Agents framework sobre runtime agnostico. |
 | 8 | `08_system_api.ipynb` | System API: registry, skills, agents y pipeline determinista. |
 | 9 | `09_graph_api.ipynb` | Graph API: state, nodes, edges y `agent.as_node(...)`. |
-| 10 | `10_environment_eval_api.ipynb` | Environment, reward, evals y estadísticas. |
+| 10 | `10_environment_eval_api.ipynb` | Environment, reward, evals y estadisticas. |
 | 11 | `11_multi_agentic_system_api.ipynb` | Sistema multi-agente con agentes deterministas y LM opcional. |
 | 12 | `12_multi_agentic_graph_api.ipynb` | Graph multi-agente con nodos, estado y fallback local. |
 | 13 | `13_single_agentic_system_api.ipynb` | Recorrido completo single-agent: Tool -> Agent -> Environment -> Eval. |
@@ -75,7 +76,7 @@ export VLLM_BASE_URL="http://127.0.0.1:8000/v1"
 export VLLM_MODEL_ID="Qwen/Qwen3-0.6B"
 ```
 
-Los notebooks no piden ni guardan secretos. Verifica la selección efectiva con:
+Los notebooks no piden ni guardan secretos. Verifica la seleccion efectiva con:
 
 ```python
 toolkit.show(toolkit.runtime(provider="auto").describe(), title="Auto runtime - describe")
@@ -85,6 +86,6 @@ No hay rutas ocultas de negocio ni dependencias en `examples/`.
 
 
 
-## Alias público
+## Alias publico
 
-Los notebooks usan `toolkit` como alias de `agentic_systems` para subrayar que se consume la fachada pública de la librería, no módulos internos.
+Los notebooks usan `toolkit` como alias de `agentic_systems` para subrayar que se consume la fachada publica de la libreria, no modulos internos.
