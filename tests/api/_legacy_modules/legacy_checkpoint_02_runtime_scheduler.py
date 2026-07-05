@@ -213,6 +213,9 @@ def test_openai_runtime_reads_environment_config_without_leaking_secret(monkeypa
 
 
 def test_runtime_auto_falls_back_to_bedrock_when_aws_signal_exists(monkeypatch) -> None:
+    monkeypatch.setenv("AGENTIC_SYSTEMS_VLLM_BASE_URL", "")
+    monkeypatch.setenv("VLLM_BASE_URL", "")
+    monkeypatch.setenv("VLLM_API_BASE", "")
     monkeypatch.setenv("OPENAI_API_KEY", "")
     monkeypatch.setenv("OPENAI_BASE_URL", "")
     monkeypatch.setenv("OPENAI_ORG_ID", "")
@@ -245,6 +248,9 @@ def test_runtime_auto_describe_resolves_bedrock_signal(monkeypatch) -> None:
 
 
 def test_runtime_auto_describe_reports_unresolved_without_backend_signal(monkeypatch) -> None:
+    monkeypatch.setenv("AGENTIC_SYSTEMS_VLLM_BASE_URL", "")
+    monkeypatch.setenv("VLLM_BASE_URL", "")
+    monkeypatch.setenv("VLLM_API_BASE", "")
     monkeypatch.setenv("OPENAI_API_KEY", "")
     monkeypatch.setenv("OPENAI_BASE_URL", "")
     monkeypatch.setenv("OPENAI_ORG_ID", "")
@@ -261,7 +267,9 @@ def test_runtime_auto_describe_reports_unresolved_without_backend_signal(monkeyp
 
     assert summary["selected_provider"] == "auto"
     assert summary["mode"] == "auto-unresolved"
-    assert "no OPENAI_API_KEY" in summary["reason"]
+    assert "VLLM_BASE_URL" in summary["reason"]
+    assert "OPENAI_API_KEY" in summary["reason"]
+    assert "AWS" in summary["reason"]
 
 
 def test_runtime_auto_errors_without_backend_signal(monkeypatch) -> None:

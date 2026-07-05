@@ -8,7 +8,7 @@ from pathlib import Path
 from dataclasses import asdict, dataclass, field
 from typing import Any
 
-from agentic_systems.engines.names import BEDROCK_RUNTIME_ENGINE, OPENAI_RUNTIME_ENGINE, canonical_engine_name
+from agentic_systems.engines.names import BEDROCK_RUNTIME_ENGINE, OPENAI_RUNTIME_ENGINE, VLLM_RUNTIME_ENGINE, canonical_engine_name
 from agentic_systems.providers.base import RuntimeToolSpec, ToolEnvelope, ToolRegistryRuntime
 from agentic_systems.core.scheduler import DEFAULT_SCHEDULER_CONFIG, SchedulerConfig
 
@@ -101,6 +101,14 @@ def _describe_resolution(provider: str, region: str | None, resolution: dict[str
             "fallback_provider": None,
             "reason": "runtime configured explicitly",
         }
+    if _vllm_signal_present() and _module_available("openai"):
+        return {
+            "selected_provider": VLLM_RUNTIME_ENGINE,
+            "mode": "auto",
+            "preferred_provider": VLLM_RUNTIME_ENGINE,
+            "fallback_provider": OPENAI_RUNTIME_ENGINE if _openai_signal_present() and _module_available("openai") else (BEDROCK_RUNTIME_ENGINE if _bedrock_signal_present(region) and _module_available("boto3") else None),
+            "reason": "VLLM_BASE_URL/vLLM config detected",
+        }
     if _openai_signal_present() and _module_available("openai"):
         return {
             "selected_provider": OPENAI_RUNTIME_ENGINE,
@@ -122,7 +130,7 @@ def _describe_resolution(provider: str, region: str | None, resolution: dict[str
         "mode": "auto-unresolved",
         "preferred_provider": None,
         "fallback_provider": None,
-        "reason": "no OPENAI_API_KEY/OpenAI config or AWS credentials/region detected",
+        "reason": "no VLLM_BASE_URL/vLLM config, OPENAI_API_KEY/OpenAI config or AWS credentials/region detected",
     }
 
 
@@ -157,6 +165,10 @@ def _find_dotenv(start: Path) -> Path | None:
     return None
 
 
+def _vllm_signal_present() -> bool:
+    return bool(os.getenv("AGENTIC_SYSTEMS_VLLM_BASE_URL") or os.getenv("VLLM_BASE_URL") or os.getenv("VLLM_API_BASE"))
+
+
 def _openai_signal_present() -> bool:
     return bool(
         os.getenv("OPENAI_API_KEY")
@@ -182,7 +194,7 @@ def _safe_configuration(metadata: dict[str, Any]) -> dict[str, Any]:
     """Return runtime configuration metadata that is safe to print."""
 
     configuration: dict[str, Any] = {}
-    for key in ("openai", "bedrock"):
+    for key in ("vllm", "openai", "bedrock"):
         value = metadata.get(key)
         if isinstance(value, dict):
             configuration[key] = dict(value)

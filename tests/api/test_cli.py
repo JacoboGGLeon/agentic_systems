@@ -6,6 +6,9 @@ import json
 def test_cli_runtime_json_and_rich_output(capsys, monkeypatch):
     from agentic_systems import cli
 
+    monkeypatch.delenv("VLLM_BASE_URL", raising=False)
+    monkeypatch.delenv("VLLM_API_BASE", raising=False)
+    monkeypatch.delenv("AGENTIC_SYSTEMS_VLLM_BASE_URL", raising=False)
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
     monkeypatch.delenv("AWS_REGION", raising=False)
     monkeypatch.delenv("AWS_DEFAULT_REGION", raising=False)
@@ -30,6 +33,8 @@ def test_cli_doctor_and_api_inventory(capsys):
     doctor = json.loads(capsys.readouterr().out)
     assert doctor["package"] == "agentic-systems"
     assert "supported_engines" in doctor
+    assert "vllm-runtime" in doctor["supported_engines"]
+    assert "has_vllm_base_url" in doctor["environment"]
 
     assert cli.main(["api", "--tier", "public", "--contains", "runtime", "--json"]) == 0
     api = json.loads(capsys.readouterr().out)
@@ -87,3 +92,19 @@ def test_cli_contact_plain_and_json(capsys):
     out = capsys.readouterr().out
     assert "Jacobo Gerardo González León" in out
     assert "Github Repo" in out
+
+
+def test_cli_runtime_auto_resolves_vllm_json(capsys, monkeypatch):
+    import agentic_systems.core.runtime as runtime_module
+    from agentic_systems import cli
+
+    monkeypatch.setenv("VLLM_BASE_URL", "http://127.0.0.1:8000/v1")
+    monkeypatch.setenv("VLLM_MODEL_ID", "Qwen/Qwen3-0.6B")
+    monkeypatch.setattr(runtime_module, "_module_available", lambda name: name == "openai")
+
+    assert cli.main(["runtime", "--provider", "auto", "--json"]) == 0
+    payload = json.loads(capsys.readouterr().out)
+
+    assert payload["selected_provider"] == "vllm-runtime"
+    assert payload["model"] == "Qwen/Qwen3-0.6B"
+    assert payload["configuration"]["vllm"]["base_url"] == "http://127.0.0.1:8000/v1"

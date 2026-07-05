@@ -60,6 +60,7 @@ def _doctor_payload() -> dict[str, Any]:
         "supported_engines": supported_engine_names(),
         "dotenv_loaded": dotenv_loaded,
         "environment": {
+            "has_vllm_base_url": bool(os.getenv("AGENTIC_SYSTEMS_VLLM_BASE_URL") or os.getenv("VLLM_BASE_URL") or os.getenv("VLLM_API_BASE")),
             "has_openai_api_key": bool(os.getenv("OPENAI_API_KEY")),
             "has_aws_region": bool(os.getenv("AWS_REGION") or os.getenv("AWS_DEFAULT_REGION")),
             "has_aws_profile": bool(os.getenv("AWS_PROFILE")),
@@ -116,6 +117,7 @@ def _cmd_doctor(args: argparse.Namespace) -> int:
     env_table = Table(title="Environment", box=None, show_header=False, padding=(0, 1))
     env_table.add_column("Signal", style="bold")
     env_table.add_column("Status")
+    env_table.add_row("VLLM_BASE_URL", _status(env["has_vllm_base_url"]))
     env_table.add_row("OPENAI_API_KEY", _status(env["has_openai_api_key"]))
     env_table.add_row("AWS region", _status(env["has_aws_region"]))
     env_table.add_row("AWS profile", _status(env["has_aws_profile"]))
@@ -129,6 +131,7 @@ def _cmd_doctor(args: argparse.Namespace) -> int:
     # Keep plain key/value lines inside the rich output so existing smoke tests
     # and human copy/paste diagnostics stay stable.
     compatibility_lines = "\n".join([
+        f"VLLM_BASE_URL: {_status(env['has_vllm_base_url'])}",
         f"OPENAI_API_KEY: {_status(env['has_openai_api_key'])}",
         f"AWS region: {_status(env['has_aws_region'])}",
         f"AWS profile: {_status(env['has_aws_profile'])}",
@@ -228,7 +231,7 @@ def build_parser() -> argparse.ArgumentParser:
     doctor_parser.set_defaults(func=_cmd_doctor)
 
     runtime_parser = subparsers.add_parser("runtime", help="Describe a RuntimeConfig without executing a model.")
-    runtime_parser.add_argument("--provider", default="auto", help="Runtime provider, for example auto, python-direct, bedrock-runtime or openai-runtime.")
+    runtime_parser.add_argument("--provider", default="auto", help="Runtime provider, for example auto, python-direct, vllm-runtime, bedrock-runtime or openai-runtime.")
     runtime_parser.add_argument("--model", default=None, help="Optional model identifier.")
     runtime_parser.add_argument("--region", default=None, help="Optional provider region.")
     runtime_parser.add_argument("--json", action="store_true", help="Emit machine-readable JSON.")

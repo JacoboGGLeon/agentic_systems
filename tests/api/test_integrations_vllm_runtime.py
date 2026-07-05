@@ -85,3 +85,55 @@ def test_vllm_environment_snapshot_is_non_secret(monkeypatch) -> None:
     assert snapshot["api_key_configured"] is True
     assert "secret-value" not in str(snapshot)
     assert vllm_signal_present() is True
+
+
+def test_runtime_auto_resolves_vllm_when_base_url_is_configured(monkeypatch) -> None:
+    import agentic_systems.core.runtime as runtime_module
+    import agentic_systems.system as system_module
+
+    monkeypatch.setenv("VLLM_BASE_URL", "http://127.0.0.1:8000/v1")
+    monkeypatch.setenv("VLLM_MODEL_ID", "Qwen/Qwen3-0.6B")
+    monkeypatch.setenv("OPENAI_API_KEY", "openai-should-be-fallback")
+    monkeypatch.setenv("AWS_REGION", "us-east-1")
+    monkeypatch.setattr(runtime_module, "_module_available", lambda name: name in {"openai", "boto3"})
+    monkeypatch.setattr(system_module, "_module_available", lambda name: name == "openai")
+
+    runtime = toolkit.runtime(provider="auto")
+    summary = runtime.describe()
+    system = toolkit.AgenticSystem(model="Qwen/Qwen3-0.6B", runtime=runtime)
+
+    assert runtime.model_id == "Qwen/Qwen3-0.6B"
+    assert summary["selected_provider"] == VLLM_RUNTIME_ENGINE
+    assert summary["mode"] == "auto"
+    assert summary["preferred_provider"] == VLLM_RUNTIME_ENGINE
+    assert summary["fallback_provider"] == "openai-runtime"
+    assert summary["configuration"]["vllm"]["base_url"] == "http://127.0.0.1:8000/v1"
+    assert isinstance(system._engine("auto"), VLLMRuntimeProvider)
+
+
+def test_runtime_auto_unresolved_mentions_vllm(monkeypatch) -> None:
+    import agentic_systems.core.runtime as runtime_module
+
+    for key in (
+        "AGENTIC_SYSTEMS_VLLM_BASE_URL",
+        "VLLM_BASE_URL",
+        "VLLM_API_BASE",
+        "OPENAI_API_KEY",
+        "OPENAI_BASE_URL",
+        "OPENAI_ORG_ID",
+        "OPENAI_PROJECT",
+        "AWS_ACCESS_KEY_ID",
+        "AWS_SECRET_ACCESS_KEY",
+        "AWS_SESSION_TOKEN",
+        "AWS_PROFILE",
+        "AWS_REGION",
+        "AWS_DEFAULT_REGION",
+    ):
+        monkeypatch.delenv(key, raising=False)
+    monkeypatch.setattr(runtime_module, "_module_available", lambda name: False)
+
+    summary = toolkit.runtime(provider="auto").describe()
+
+    assert summary["selected_provider"] == "auto"
+    assert summary["mode"] == "auto-unresolved"
+    assert "VLLM_BASE_URL" in summary["reason"]

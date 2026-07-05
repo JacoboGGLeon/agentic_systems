@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import importlib.util
 import inspect
 import os
 from functools import wraps
@@ -481,10 +482,19 @@ def _resolve_auto_provider(model: str | None, region: str | None) -> str:
     """Resolve ``provider='auto'`` to a concrete runtime backend.
 
     Priority:
-    1. OpenAI when an API key or base URL is configured and the SDK is importable.
-    2. Bedrock when AWS credentials/region are configured and the provider is importable.
-    3. Fail explicitly if no supported backend is detectable.
+    1. vLLM when a vLLM base URL is configured and the OpenAI SDK is importable.
+    2. OpenAI when an API key or base URL is configured and the SDK is importable.
+    3. Bedrock when AWS credentials/region are configured and the provider is importable.
+    4. Fail explicitly if no supported backend is detectable.
     """
+
+    if _vllm_signal_present() and _module_available("openai"):
+        try:
+            from .providers.vllm_runtime import VLLMRuntimeProvider  # noqa: F401
+        except Exception:
+            pass
+        else:
+            return VLLM_RUNTIME_ENGINE
 
     if _openai_signal_present():
         try:
@@ -504,8 +514,17 @@ def _resolve_auto_provider(model: str | None, region: str | None) -> str:
 
     raise ValueError(
         "provider='auto' could not resolve a backend. "
-        "Set OPENAI_API_KEY for openai-runtime or AWS credentials/region for bedrock-runtime."
+        "Set VLLM_BASE_URL for vllm-runtime, OPENAI_API_KEY for openai-runtime, "
+        "or AWS credentials/region for bedrock-runtime."
     )
+
+
+def _module_available(name: str) -> bool:
+    return importlib.util.find_spec(name) is not None
+
+
+def _vllm_signal_present() -> bool:
+    return bool(os.getenv("AGENTIC_SYSTEMS_VLLM_BASE_URL") or os.getenv("VLLM_BASE_URL") or os.getenv("VLLM_API_BASE"))
 
 
 def _openai_signal_present() -> bool:

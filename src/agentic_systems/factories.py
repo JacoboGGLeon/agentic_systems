@@ -10,7 +10,7 @@ from typing import Any
 from .agents import Agent
 from .core.runtime import RuntimeConfig, _bedrock_signal_present, _load_dotenv, _openai_signal_present
 from .core.scheduler import SchedulerConfig
-from .engines.names import BEDROCK_RUNTIME_ENGINE, OPENAI_RUNTIME_ENGINE, PYTHON_DIRECT_ENGINE, canonical_engine_name
+from .engines.names import BEDROCK_RUNTIME_ENGINE, OPENAI_RUNTIME_ENGINE, PYTHON_DIRECT_ENGINE, VLLM_RUNTIME_ENGINE, canonical_engine_name
 from .final_answer import output_schema as make_output_schema
 from .system import AgenticSystem
 from .skills import Skill
@@ -25,6 +25,12 @@ OPENAI_MODEL_ENV_VARS = (
     "AGENTIC_SYSTEMS_OPENAI_MODEL_ID",
     "OPENAI_MODEL_ID",
     "OPENAI_MODEL",
+)
+
+VLLM_MODEL_ENV_VARS = (
+    "AGENTIC_SYSTEMS_VLLM_MODEL_ID",
+    "VLLM_MODEL_ID",
+    "VLLM_MODEL",
 )
 
 
@@ -48,6 +54,17 @@ def default_openai_model_id() -> str:
         if value:
             return value
     return "gpt-4o-mini"
+
+
+def default_vllm_model_id() -> str:
+    """Return the default vLLM model id from environment configuration."""
+
+    _load_dotenv()
+    for key in VLLM_MODEL_ENV_VARS:
+        value = os.getenv(key)
+        if value:
+            return value
+    return "Qwen/Qwen3-0.6B"
 
 
 def default_region() -> str:
@@ -115,6 +132,8 @@ def runtime(
 
 def _default_runtime_model(provider: str, region: str | None) -> str | None:
     _load_dotenv()
+    if provider == VLLM_RUNTIME_ENGINE or (provider == "auto" and _vllm_signal_present()):
+        return default_vllm_model_id()
     if provider == OPENAI_RUNTIME_ENGINE or (provider == "auto" and _openai_signal_present()):
         return default_openai_model_id()
     if provider == BEDROCK_RUNTIME_ENGINE or (provider == "auto" and _bedrock_signal_present(region)):
@@ -123,7 +142,7 @@ def _default_runtime_model(provider: str, region: str | None) -> str | None:
 
 
 def _default_runtime_region(provider: str) -> str | None:
-    if provider == BEDROCK_RUNTIME_ENGINE or (provider == "auto" and not _openai_signal_present() and _bedrock_signal_present(None)):
+    if provider == BEDROCK_RUNTIME_ENGINE or (provider == "auto" and not _vllm_signal_present() and not _openai_signal_present() and _bedrock_signal_present(None)):
         return default_region()
     return None
 
@@ -131,7 +150,17 @@ def _default_runtime_region(provider: str) -> str | None:
 def _runtime_metadata(provider: str, metadata: dict[str, Any] | None, region: str | None) -> dict[str, Any]:
     _load_dotenv()
     merged = dict(metadata or {})
-    if provider == OPENAI_RUNTIME_ENGINE or (provider == "auto" and _openai_signal_present()):
+    if provider == VLLM_RUNTIME_ENGINE or (provider == "auto" and _vllm_signal_present()):
+        merged.setdefault(
+            "vllm",
+            {
+                "base_url": os.getenv("AGENTIC_SYSTEMS_VLLM_BASE_URL") or os.getenv("VLLM_BASE_URL") or os.getenv("VLLM_API_BASE") or None,
+                "base_url_configured": _vllm_signal_present(),
+                "api_key_configured": bool(os.getenv("AGENTIC_SYSTEMS_VLLM_API_KEY") or os.getenv("VLLM_API_KEY")),
+                "model_env_vars": [key for key in VLLM_MODEL_ENV_VARS if os.getenv(key)],
+            },
+        )
+    if provider == OPENAI_RUNTIME_ENGINE or (provider == "auto" and not _vllm_signal_present() and _openai_signal_present()):
         merged.setdefault(
             "openai",
             {
@@ -142,7 +171,7 @@ def _runtime_metadata(provider: str, metadata: dict[str, Any] | None, region: st
                 "model_env_vars": [key for key in OPENAI_MODEL_ENV_VARS if os.getenv(key)],
             },
         )
-    if provider == BEDROCK_RUNTIME_ENGINE or (provider == "auto" and _bedrock_signal_present(region)):
+    if provider == BEDROCK_RUNTIME_ENGINE or (provider == "auto" and not _vllm_signal_present() and not _openai_signal_present() and _bedrock_signal_present(region)):
         merged.setdefault(
             "bedrock",
             {
@@ -156,6 +185,10 @@ def _runtime_metadata(provider: str, metadata: dict[str, Any] | None, region: st
             },
         )
     return merged
+
+
+def _vllm_signal_present() -> bool:
+    return bool(os.getenv("AGENTIC_SYSTEMS_VLLM_BASE_URL") or os.getenv("VLLM_BASE_URL") or os.getenv("VLLM_API_BASE"))
 
 
 def output_schema(
