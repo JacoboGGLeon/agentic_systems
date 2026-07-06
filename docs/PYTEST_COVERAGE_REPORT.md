@@ -4,7 +4,7 @@ Fecha de corte: 2026-07-05
 
 ## Estado Actual Verificado
 
-Esta medicion es real. Viene de una ejecucion local de `pytest` con `coverage.py` usando el virtualenv del proyecto; no es un numero escrito a mano. PyPI fue verificado con `pip index versions agentic-systems`; la version publica previa es `1.0.1`. La version local preparada para publicacion es `1.0.2`.
+Esta medicion es real. Viene de una ejecucion local de `pytest` con `coverage.py` usando el virtualenv del proyecto; no es un numero escrito a mano. PyPI fue publicado y verificado en `https://pypi.org/project/agentic-systems/1.0.2/`. Release history muestra `1.0.2`, `1.0.1` y `1.0.0`.
 
 Comando ejecutado:
 
