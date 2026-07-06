@@ -11,7 +11,7 @@ def test_cli_version_prints_package_version(capsys) -> None:
     assert main(["version"]) == 0
 
     out = capsys.readouterr().out.strip()
-    assert out == "1.0.1"
+    assert out == "1.0.2"
 
 
 def test_cli_doctor_json_reports_engines(capsys) -> None:

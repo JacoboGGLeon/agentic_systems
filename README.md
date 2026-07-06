@@ -502,7 +502,7 @@ docs/ROADMAP_CHECKPOINTS.md
 Current verified status:
 
 ```text
-Version: 1.0.1
+Version: 1.0.2
 PyPI package: agentic-systems
 Tests: 304 passed, 0 skipped
 Coverage: 100.00%
