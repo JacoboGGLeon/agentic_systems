@@ -13,9 +13,9 @@
 
 **Agentic Systems is a Python framework for building industrial, auditable and provider-agnostic agentic systems.**
 
-It gives you one consistent public API to compose tools, skills, agents, systems, graphs, environments, evals, contracts, lineage memory and stable human-readable outputs. It supports deterministic local execution and language-model-based execution through explicit runtime selection, provider diagnostics and repeatable evaluation contracts.
+It gives you one public API to compose tools, skills, agents, systems, graphs, environments, evals, contracts, lineage memory and stable human-readable outputs. It supports deterministic execution, OpenAI, AWS Bedrock Runtime and OpenAI-compatible vLLM endpoints through explicit runtime selection.
 
-Use it when you need agentic workloads that are not just demos, but observable, testable, portable and ready for large-volume execution.
+Use it when agentic workloads need to be observable, testable, portable and ready for repeated execution, not just notebook demos.
 
 ```bash
 pip install agentic-systems
@@ -25,50 +25,42 @@ pip install agentic-systems
 import agentic_systems as toolkit
 ```
 
-## Why Agentic Systems Exists
+## Why Agentic Systems
 
-Most agent prototypes fail when they move from a notebook to a real workload because the same questions come back every time:
+Agent prototypes usually break when they leave the demo path because the important questions are not represented in code:
 
-- Which provider is actually running this agent?
-- Which tools were available?
-- Which tool calls happened?
-- What evidence supports the final answer?
+- Which provider actually ran this workload?
+- Which tools were available and which ones were called?
+- What evidence supports the answer?
 - Can the same behavior be evaluated again?
-- Can the same agent run locally, with OpenAI, with AWS Bedrock or against a vLLM-compatible endpoint?
-- Can deterministic tools and language-model reasoning live under the same execution contract?
+- Can the same agent run locally, with OpenAI, with Bedrock or with vLLM?
+- Can deterministic tools and language-model reasoning share one execution contract?
 
-Agentic Systems is built around those questions. The library treats agentic computation as an engineered system: explicit runtime, typed tools, contracts, result envelopes, lineage, environment transitions, eval reports and human output are first-class parts of the workflow.
+Agentic Systems makes those concerns first-class: runtime, tools, contracts, result envelopes, lineage, environments, eval reports and human output are all part of the same API.
 
 ## What You Can Build
 
-Agentic Systems can be used to build:
+| Layer | What it gives you |
+|---|---|
+| Tools | Typed executable capabilities with structured results. |
+| Skills | Packaged tools, instructions, contracts, assets and metadata. |
+| Agents | Context transformed into actions through deterministic or LM-backed execution. |
+| Systems | A native workspace that registers runtime, tools, skills, agents and environments. |
+| Graphs | Explicit state, nodes and edges for orchestrating agents and systems. |
+| Environments | Episodic execution over records, transitions, rewards and history. |
+| Evals | Repeatable validation cases with pass/fail reporting. |
+| Lineage Memory | Human-readable explanation of what happened and why. |
+| Integrations | Thin facades for LangGraph, Strands and OpenAI Agents-style workflows. |
 
-- deterministic tool systems for auditable local execution;
-- reasoning agents backed by language-model providers;
-- native `AgenticSystem` workspaces that register tools, skills and agents;
-- graph-based orchestration with state, nodes and edges;
-- episodic environments with rewards and execution history;
-- eval suites with expected outputs and pass/fail reports;
-- lineage-aware workflows that explain what happened and why;
-- portable agent code that can switch providers through `runtime(provider=...)`;
-- integration facades for LangGraph, Strands and OpenAI Agents-style workflows.
-
-## Core Idea
+## Core Model
 
 ```text
-Tools provide capabilities.
-Skills package tools, instructions, contracts and assets.
-Agents turn context into actions.
-Systems register and compose tools, skills and agents.
-Graphs coordinate state, nodes and edges.
-Environments run episodes over records and rewards.
-Evals validate behavior with repeatable cases.
-RunResult keeps the final answer, evidence, usage, validation and errors.
-Lineage Memory explains how the result was produced.
-Human output renders results for notebooks, reviews and users.
+Tool -> Skill -> Agent -> System -> Graph -> Environment -> Eval
+
+Runtime, Provider, Contracts, Lineage Memory and Human Output support the whole cycle.
 ```
 
-The goal is not to hide complexity. The goal is to make the complexity explicit, inspectable and reusable.
+The goal is not to hide complexity. The goal is to make agentic computation explicit, inspectable and reusable.
 
 ## Runtime And Providers
 
@@ -77,6 +69,7 @@ Runtime selection is explicit and inspectable:
 ```python
 scheduler = toolkit.scheduler(timeout_s=30, max_retries=0, max_tool_calls=5)
 runtime = toolkit.runtime(provider="auto", scheduler=scheduler)
+
 toolkit.show(runtime.describe())
 ```
 
@@ -90,9 +83,9 @@ Canonical providers:
 | `python-runtime` | Local deterministic execution for tools, policies and smoke tests. |
 | `auto` | Selects a concrete provider from environment signals before execution. |
 
-Default `provider="auto"` priority is `bedrock-runtime`, then `openai-runtime`, then `vllm-runtime`. Override it per call with `provider_priority=[...]` or per environment with `AGENTIC_SYSTEMS_PROVIDER_PRIORITY=bedrock-runtime,openai-runtime,vllm-runtime`. Add `allow_python_fallback=True` only when deterministic fallback is intentional.
+Default `provider="auto"` priority is `bedrock-runtime`, then `openai-runtime`, then `vllm-runtime`. Override it with `provider_priority=[...]` or `AGENTIC_SYSTEMS_PROVIDER_PRIORITY=...`.
 
-Canonical framework/integration facades:
+Canonical framework facades:
 
 | Framework | Use |
 |---|---|
@@ -100,60 +93,11 @@ Canonical framework/integration facades:
 | `openai-agents` | OpenAI Agents-style integration over the selected runtime. |
 | `strands` | Strands integration over the selected runtime. |
 
-Providers and frameworks are deliberately separate. A provider decides where execution runs. A framework decides who owns the outer orchestration loop.
+Providers decide where execution runs. Frameworks decide who owns the outer orchestration loop. Configuration details live in `docs/ONBOARDING_FIRST_RUN.md`, `docs/CLI.md` and the `tutorials/00_runtime_*` notebooks.
 
-## Provider Configuration
+## From Zero-to-Hero
 
-### OpenAI Runtime
-
-Reads configuration from the environment or `.env`:
-
-```text
-OPENAI_API_KEY
-OPENAI_MODEL
-OPENAI_BASE_URL
-```
-
-### vLLM Runtime
-
-Reads configuration from the environment or `.env`:
-
-```text
-VLLM_BASE_URL
-VLLM_MODEL
-VLLM_API_KEY
-```
-
-`vllm-runtime` expects a running OpenAI-compatible vLLM server. Base install does not install the GPU server. Use `agentic-systems[vllm]` or alias `agentic-systems[vll]` when you want the vLLM server dependency, and `agentic-systems[all]` when you want every optional dependency including vLLM.
-
-For Colab/L4 or Colab/T4, keep the vLLM server dependency explicit and aligned with the CUDA runtime. If a vLLM import fails with `libcudart.so.13`, install a CUDA 12 compatible vLLM build, restart the runtime, then install Agentic Systems with the OpenAI-compatible client:
-
-```python
-%pip uninstall -y vllm
-%pip install -U "vllm==0.10.2"
-%pip install -U "transformers>=4.55.2,<5" "tokenizers>=0.21.1,<0.22" "openai>=1.99.1" "huggingface_hub>=0.23.0"
-%pip install -U "agentic-systems[openai]"
-```
-
-The vLLM tutorial follows the Qwen recipe used in the working Colab template: download the model locally first, clean GPU/process state, launch `vllm.entrypoints.openai.api_server` against the local model path, and then point `VLLM_BASE_URL` at the OpenAI-compatible server.
-
-### Bedrock Runtime
-
-Reads configuration from the environment or `.env`:
-
-```text
-BEDROCK_MODEL_ID
-AWS_REGION
-AWS_DEFAULT_REGION
-AWS_PROFILE
-AWS_ACCESS_KEY_ID
-AWS_SECRET_ACCESS_KEY
-AWS_SESSION_TOKEN
-```
-
-Diagnostics expose safe configuration flags only. They do not print API keys, secret keys or session tokens.
-
-## Quick Start: Deterministic Tool Agent
+### 1. Deterministic Tool Agent
 
 ```python
 import agentic_systems as toolkit
@@ -163,27 +107,39 @@ def add(a: int, b: int) -> dict:
     """Add two integers."""
     return {"result": a + b}
 
-runtime = toolkit.runtime(provider="python-runtime")
 agent = toolkit.agent(
     name="calculator",
     instructions="Use the available tools and return a structured answer.",
     tools=[add],
-    runtime=runtime,
+    runtime=toolkit.runtime(provider="python-runtime"),
 )
 
 result = agent.run({"tool": "add", "input": {"a": 2, "b": 3}})
 toolkit.human_result(result)
 ```
 
-## Quick Start: Native AgenticSystem
-
-Use `AgenticSystem` when you want a system boundary that registers tools, skills, agents, runtime and contracts.
+### 2. Provider-Backed Agent
 
 ```python
-import agentic_systems as toolkit
+runtime = toolkit.runtime(provider="auto")
 
-runtime = toolkit.runtime(provider="python-runtime")
-system = toolkit.AgenticSystem(runtime=runtime)
+agent = toolkit.agent(
+    name="portable_calculator",
+    instructions="Use tools when useful. Return a concise final answer.",
+    tools=[add],
+    runtime=runtime,
+)
+
+result = agent.run("Add 10 and 20 using the tool.")
+toolkit.human_result(result, pretty=False, show_lineage=True)
+```
+
+### 3. Native AgenticSystem
+
+Use `AgenticSystem` when you want a single system boundary that owns runtime, tools, skills, agents and diagnostics.
+
+```python
+system = toolkit.AgenticSystem(runtime=toolkit.runtime(provider="python-runtime"))
 
 @system.tool
 def multiply(a: int, b: int) -> dict:
@@ -194,24 +150,17 @@ agent = system.agent(
     instructions="Use registered tools to solve arithmetic requests.",
 )
 
-inspection = system.inspect()
-inspection.raise_if_errors()
+system.inspect().raise_if_errors()
 
 result = agent.run({"tool": "multiply", "input": {"a": 6, "b": 7}})
 toolkit.human_result(result)
 ```
 
-## Quick Start: Skills
+### 4. Skills
 
 A skill packages tools, instructions, contracts, assets and metadata.
 
 ```python
-import agentic_systems as toolkit
-
-@toolkit.tool
-def add(a: int, b: int) -> dict:
-    return {"result": a + b}
-
 skill = toolkit.Skill(
     name="calculator_skill",
     description="Arithmetic tools and instructions.",
@@ -227,56 +176,84 @@ agent = toolkit.agent(
 )
 ```
 
-## Quick Start: Contracts And Policies
+### 5. Graphs
 
-Agents can be constrained with contracts and run policies. This matters when a workflow needs predictable tool usage, strict validation or bounded execution.
+Graphs coordinate state, nodes and edges. They do not replace tools, agents or systems; they orchestrate them.
 
 ```python
-import agentic_systems as toolkit
+system = toolkit.AgenticSystem(runtime=toolkit.runtime(provider="python-runtime"))
 
-policy = toolkit.RunPolicy(
-    max_turns=4,
-    max_tool_calls=2,
-    temperature=0.0,
-    tool_choice="auto",
-    repair=True,
-    max_repairs=1,
-    finalize="on_max_turns",
-    trace="compact",
-    strict=True,
+@system.tool
+def double(value: int) -> dict:
+    return {"value": value * 2, "ok": True}
+
+agent = system.agent(
+    name="doubler",
+    instructions="Call double when the input asks for a doubled value.",
+    tools=["double"],
 )
+
+graph = toolkit.build_single_agent_step_graph(agent, input="input")
+
+state = {
+    "input": {"tool": "double", "input": {"value": 21}},
+    "history": [],
+}
+
+next_state = graph.invoke(state)
+toolkit.show(next_state, title="Graph state")
 ```
 
-`RunPolicy` keeps execution limits visible near the agent definition instead of hiding them inside notebook cells or provider-specific code.
+### 6. Environments And Evals
 
-## Results And Human Output
-
-Every run returns a stable `RunResult` envelope:
-
-```text
-result.final       user-facing answer dictionary
-result.data        reusable evidence payload
-result.text        text fallback
-result.tool_events executed tool events
-result.usage       runtime usage metadata
-result.validation  contract validation
-result.errors      structured errors
-```
-
-Render output with:
+Use environments when execution is episodic. Use evals when behavior must be checked repeatedly.
 
 ```python
-toolkit.human_result(result, pretty=False)
+records = [
+    {"input": {"tool": "double", "input": {"value": 21}}},
+]
+
+def reward_fn(state, row, action, env) -> float:
+    return 1.0 if state.get("result", {}).get("ok") else 0.0
+
+environment = system.environment(records, graph=graph, reward_fn=reward_fn)
+environment.reset(seed=0)
+environment.step()
+
+toolkit.show(toolkit.environment_summary(environment), title="Environment summary")
+
+cases = [
+    {
+        "name": "double_21",
+        "input": {"tool": "double", "input": {"value": 21}},
+        "expected": {"data_contains": {"value": 42, "ok": True}},
+    }
+]
+
+report = system.eval(agent, cases)
+toolkit.human_result(report)
+report.raise_if_failed()
+```
+
+### 7. Results, Lineage And Human Output
+
+Every execution returns a stable `RunResult` envelope with answer, evidence, usage, validation, errors and tool events.
+
+```python
+result.final       # user-facing answer dictionary
+result.data        # reusable evidence payload
+result.text        # text fallback
+result.tool_events # executed tool events
+result.usage       # runtime usage metadata
+result.validation  # contract validation
+result.errors      # structured errors
+```
+
+Render one execution with `human_result`. Render many executions with `human_results`.
+
+```python
+toolkit.human_result(result, pretty=False, show_lineage=True)
 toolkit.human_results([result], pretty=False)
-```
-
-Normalize final answers with:
-
-```python
-toolkit.normalize_output({"a": 1})    # {"a": 1}
-toolkit.normalize_output([{"a": 1}])  # {"rows": [{"a": 1}]}
-toolkit.normalize_output([1, 2])      # {"items": [1, 2]}
-toolkit.normalize_output("ok")        # {"value": "ok"}
 ```
 
 Use output schemas when the expected response fields matter:
@@ -288,8 +265,6 @@ answer = toolkit.final_answer(
     schema=schema,
 )
 ```
-
-## Lineage Memory
 
 Lineage Memory explains what happened, how it happened and why the result is supported.
 
@@ -304,114 +279,13 @@ toolkit.show(memory)
 memory.to_prompt_context(max_chars=1200)
 ```
 
-Public lineage names:
-
-```text
-LineageMemory
-LineageStep
-lineage_memory
-LINEAGE_SCHEMA_VERSION
-```
-
-## Graphs
-
-Graph APIs coordinate state, nodes and edges. They do not replace tools, agents or systems; they orchestrate them.
-
-Public graph and environment names include:
-
-```text
-AgenticEnvironment
-EnvironmentTransition
-AgentStepGraph
-DynamicAgentRouterGraph
-PlannedAgentGraph
-build_agent_step_graph
-build_dynamic_agent_router_graph
-build_planned_agent_graph
-build_single_agent_step_graph
-environment_lineage
-```
-
-LangGraph integration helpers include:
-
-```text
-agent_node
-graph
-build_langgraph_agent_graph
-build_langgraph_agent_node
-build_langgraph_planned_graph
-lineage_from_langgraph_result
-lineage_from_langgraph_state
-```
-
-## Environments And Evals
-
-Use environments when execution is episodic. Each record can become a step, the graph can update state, a reward function can score the transition and history can preserve evidence.
-
-```python
-import agentic_systems as toolkit
-
-runtime = toolkit.runtime(provider="python-runtime")
-system = toolkit.AgenticSystem(runtime=runtime)
-
-@system.tool
-def double(value: int) -> dict:
-    return {"value": value * 2, "ok": True}
-
-agent = system.agent(
-    name="doubler",
-    instructions="Call double when the input asks for a doubled value.",
-    tools=["double"],
-)
-
-graph = toolkit.build_single_agent_step_graph(agent)
-records = [
-    {"input": {"tool": "double", "input": {"value": 21}}},
-]
-
-def reward_fn(state, row, action, env) -> float:
-    return 1.0 if state.get("result", {}).get("ok") else 0.0
-
-environment = system.environment(records, graph=graph, reward_fn=reward_fn)
-observation, info = environment.reset(seed=0)
-observation, reward, terminated, truncated, info = environment.step()
-
-toolkit.show(toolkit.environment_summary(environment), title="Environment summary")
-```
-
-Use evals when you want repeatable validation over declared cases:
-
-```python
-cases = [
-    {
-        "name": "double_21",
-        "input": {"tool": "double", "input": {"value": 21}},
-        "expected": {"data_contains": {"value": 42, "ok": True}},
-    }
-]
-
-report = system.eval(agent, cases)
-toolkit.human_result(report)
-report.raise_if_failed()
-```
-
-Public eval names:
-
-```text
-EvalCaseResult
-EvalReport
-Evaluator
-run_eval
-```
-
 ## Integrations
 
 Use integrations when an external framework should own orchestration while Agentic Systems keeps the same tools, runtime, contracts, lineage and human output conventions.
 
 ```python
-import agentic_systems as toolkit
-
 runtime = toolkit.runtime(provider="auto")
+
 agent = toolkit.agent(
     name="portable_agent",
     runtime=runtime,
@@ -419,37 +293,7 @@ agent = toolkit.agent(
 )
 ```
 
-Integration-specific arguments stay owned by the selected framework. Agentic Systems does not reinterpret or hide framework-specific behavior.
-
-## Notebook Utilities
-
-Notebook utilities are public because tutorials use them, but they are not the first layer to teach:
-
-```text
-configure_notebook_environment
-show_json
-show
-compare
-compose_result
-mask_sensitive
-aws_environment_snapshot
-boto3_session_snapshot
-repair_ada_credential_chain
-run_result_output
-run_result_view
-run_result_summary
-tool_result_summary
-chain_history_summary
-environment_summary
-eval_report_output
-eval_report_summary
-maybe_show_trace
-agent_output
-agent_output_mapper
-make_agent_output_mapper
-```
-
-Use `compose_result(...)` when a notebook combines several real executions into one visible result while preserving engine names, framework metadata, usage and tool events.
+Integration-specific arguments stay owned by the selected framework. Agentic Systems keeps a thin facade; it does not reinterpret or hide framework-specific behavior.
 
 ## CLI
 
@@ -457,7 +301,6 @@ The package exposes diagnostics and inspection commands:
 
 ```bash
 agentic-systems version
-agentic-systems contact
 agentic-systems doctor --json
 agentic-systems runtime --provider auto --json
 agentic-systems api --tier public --json
@@ -468,7 +311,7 @@ The CLI is for inspection, diagnostics and packaging smoke tests. It should not 
 
 ## Tutorials
 
-The official learning path is `tutorials/`:
+The official learning path is `tutorials/`. It explains and exercises the public API directly from `import agentic_systems as toolkit`.
 
 ```text
 tutorials/00_runtime_api.ipynb
@@ -492,7 +335,7 @@ tutorials/13_single_agentic_system_api.ipynb
 tutorials/14_multi_agentic_system_api.ipynb
 ```
 
-There is no active `examples/` root. Tutorials both explain and exercise the API.
+There is no active `examples/` root. Tutorials are the executable documentation.
 
 ## Documentation
 
@@ -513,15 +356,13 @@ docs/ROADMAP_CHECKPOINTS.md
 Current verified status:
 
 ```text
-Version: 1.0.3
+Version: 1.0.5
 PyPI package: agentic-systems
-Tests: 304 passed, 0 skipped
+Tests: 305 passed, 0 skipped
 Coverage: 100.00%
 TOTAL statements: 5299
 TOTAL missing: 0
 ```
-
-Covered layers include core execution, contracts, results, output contracts, tools, skills, factories, chain, expectations, providers, Bedrock Runtime client with fakes, LangGraph facade, environments, evals, Lineage Memory, human output, notebook utilities and CLI diagnostics.
 
 Run validation locally:
 
@@ -554,7 +395,7 @@ Tutorials as executable API documentation.
 
 ## Contact
 
-Author: Jacobo Gerardo González León
+Author: Jacobo Gerardo Gonzalez Leon
 
 E-Mail 1: jacobogerardo.gonzalez@bbva.com
 
