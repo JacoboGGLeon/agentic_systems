@@ -126,6 +126,17 @@ VLLM_API_KEY
 
 `vllm-runtime` expects a running OpenAI-compatible vLLM server. Base install does not install the GPU server. Use `agentic-systems[vllm]` or alias `agentic-systems[vll]` when you want the vLLM server dependency, and `agentic-systems[all]` when you want every optional dependency including vLLM.
 
+For Colab/L4 or Colab/T4, keep the vLLM server dependency explicit and aligned with the CUDA runtime. If a vLLM import fails with `libcudart.so.13`, install a CUDA 12 compatible vLLM build, restart the runtime, then install Agentic Systems with the OpenAI-compatible client:
+
+```python
+%pip uninstall -y vllm
+%pip install -U "vllm==0.10.2"
+%pip install -U "transformers>=4.55.2,<5" "tokenizers>=0.21.1,<0.22" "openai>=1.99.1" "huggingface_hub>=0.23.0"
+%pip install -U "agentic-systems[openai]"
+```
+
+The vLLM tutorial follows the Qwen recipe used in the working Colab template: download the model locally first, clean GPU/process state, launch `vllm.entrypoints.openai.api_server` against the local model path, and then point `VLLM_BASE_URL` at the OpenAI-compatible server.
+
 ### Bedrock Runtime
 
 Reads configuration from the environment or `.env`:
