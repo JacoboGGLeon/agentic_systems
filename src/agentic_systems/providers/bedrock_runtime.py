@@ -41,7 +41,7 @@ from botocore.exceptions import ClientError
 from pydantic import BaseModel, ConfigDict, Field, create_model
 
 
-__version__ = "1.0.2"
+__version__ = "1.0.3"
 
 
 class ToolEnvelope(BaseModel):

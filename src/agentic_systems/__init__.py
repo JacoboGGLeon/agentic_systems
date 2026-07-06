@@ -87,6 +87,6 @@ from .utils import (
     tool_result_summary,
 )
 
-__version__ = "1.0.2"
+__version__ = "1.0.3"
 
 __all__ = list(PUBLIC_API)

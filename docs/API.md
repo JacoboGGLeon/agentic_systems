@@ -113,8 +113,7 @@ VLLM_API_KEY
 
 `vllm-runtime` is an OpenAI-compatible client path. It expects a running vLLM
 server, usually at `http://127.0.0.1:8000/v1`, and uses the OpenAI SDK client.
-Install `agentic-systems[openai]` for the client dependency. Install and run
-`vllm` separately in GPU environments such as Colab.
+Install `agentic-systems[vllm]` for the OpenAI-compatible client plus the vLLM server dependency. Alias `agentic-systems[vll]` is also available. `agentic-systems[all]` includes vLLM as well. The server still runs as external infrastructure; Agentic Systems does not start it automatically.
 
 Bedrock runtime reads configuration from the environment or `.env`:
 

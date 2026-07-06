@@ -40,6 +40,10 @@ def test_pyproject_keeps_frameworks_and_aws_as_extras() -> None:
     assert LEGACY_AGENTS_DEP not in base_deps
     assert "awswrangler" not in base_deps
     assert "boto3" not in base_deps
+    assert "vllm" not in base_deps
     assert "bedrock =" in text
     assert "langgraph =" in text
+    assert "vllm =" in text
+    assert "vll =" in text
+    assert "vllm>=0.9.0" in text
     assert LEGACY_AGENTS_DEP not in text

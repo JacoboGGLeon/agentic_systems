@@ -124,7 +124,7 @@ VLLM_MODEL
 VLLM_API_KEY
 ```
 
-`vllm-runtime` expects a running OpenAI-compatible vLLM server. The package does not start or install the GPU server by default.
+`vllm-runtime` expects a running OpenAI-compatible vLLM server. Base install does not install the GPU server. Use `agentic-systems[vllm]` or alias `agentic-systems[vll]` when you want the vLLM server dependency, and `agentic-systems[all]` when you want every optional dependency including vLLM.
 
 ### Bedrock Runtime
 
@@ -502,7 +502,7 @@ docs/ROADMAP_CHECKPOINTS.md
 Current verified status:
 
 ```text
-Version: 1.0.2
+Version: 1.0.3
 PyPI package: agentic-systems
 Tests: 304 passed, 0 skipped
 Coverage: 100.00%

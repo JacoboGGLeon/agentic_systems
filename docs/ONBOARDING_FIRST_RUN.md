@@ -85,8 +85,7 @@ export VLLM_MODEL="Qwen/Qwen3-0.6B"
 export VLLM_API_KEY="EMPTY"
 ```
 
-In Colab, install `agentic-systems[openai]` for the client and install/run
-`vllm` separately for the GPU server.
+In Colab, install `agentic-systems[vllm]` or `agentic-systems[all]` when you want the vLLM server dependency available in the notebook. The server still runs separately from Agentic Systems.
 
 Do not paste API keys into notebooks or repo files. `provider="auto"` reads
 environment variables that already exist in the kernel process.
