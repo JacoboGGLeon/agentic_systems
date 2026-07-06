@@ -269,3 +269,27 @@ def test_human_result_rejects_invalid_render_mode():
 
     with pytest.raises(ValueError, match="render_mode"):
         lab.human_result(_normalized_payload(), render_mode="invalid")
+
+
+def test_human_result_renders_final_output_as_human_text(capsys):
+    import agentic_systems as lab
+
+    payload = _normalized_payload(
+        answer={
+            "text": "",
+            "final": {
+                "final_output": "Procedimiento:\n1. Empezamos con 10.\n2. Sumamos 20: 30.\n\nResultado final: 42."
+            },
+            "data": {
+                "final_output": "Procedimiento:\n1. Empezamos con 10.\n2. Sumamos 20: 30.\n\nResultado final: 42."
+            },
+        }
+    )
+
+    lab.human_result(payload, title="Final output human readable")
+    out = capsys.readouterr().out
+
+    assert "Procedimiento:" in out
+    assert "1. Empezamos con 10." in out
+    assert "Resultado final: 42." in out
+    assert "{\"final_output\"" not in out

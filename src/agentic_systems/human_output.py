@@ -212,6 +212,36 @@ def _print_input(prompt: Any) -> None:
         print(_compact(prompt, max_chars=1200))
 
 
+_TEXT_FINAL_KEYS = ("final_output", "output", "answer", "response", "text", "summary")
+
+
+def _human_text_from_mapping(payload: dict[str, Any]) -> str | None:
+    """Return the user-facing text from a structured final-answer payload.
+
+    This stays provider/framework agnostic: many runtimes normalize a final
+    answer as ``{"final_output": "..."}``, ``{"answer": "..."}`` or
+    ``{"summary": "..."}``. For human output, that single textual answer is
+    clearer than printing the JSON wrapper with escaped newlines.
+    """
+
+    for key in _TEXT_FINAL_KEYS:
+        value = payload.get(key)
+        if not isinstance(value, str) or not value.strip():
+            continue
+        # ``final_output`` is the explicit normalized final-answer text channel.
+        # Other generic names such as ``answer`` may coexist with scores,
+        # citations or debug fields; keep those as JSON unless the textual field
+        # is the whole payload. ``summary`` preserves its historical short-payload
+        # behavior.
+        if key == "final_output":
+            return value.strip()
+        if key == "summary" and len(payload) <= 3:
+            return value.strip()
+        if len(payload) == 1:
+            return value.strip()
+    return None
+
+
 def _print_answer(answer: dict[str, Any]) -> None:
     final = answer.get("final") if isinstance(answer.get("final"), dict) else {}
     text = str(answer.get("text") or "").strip()
@@ -221,10 +251,9 @@ def _print_answer(answer: dict[str, Any]) -> None:
     # raw text/data so requested fields are shown first.  Preserve the old text
     # fallback for pure language-model answers that have no structured payload.
     if final:
-        if set(final) == {"text"} and text and final.get("text") == text:
-            print(text)
-        elif final.get("summary") and len(final) <= 3:
-            print(final["summary"])
+        final_text = _human_text_from_mapping(final)
+        if final_text:
+            print(final_text)
         elif final.get("error") and len(final) <= 3:
             print(final["error"])
         else:
@@ -643,8 +672,9 @@ def _rich_print_human_result(
     answer_final = answer.get("final") if isinstance(answer.get("final"), dict) else {}
     answer_data = answer.get("data") if isinstance(answer.get("data"), dict) else {}
     if answer_final:
-        if set(answer_final) == {"text"} and answer_text and answer_final.get("text") == answer_text:
-            answer_body = answer_text
+        final_text = _human_text_from_mapping(answer_final)
+        if final_text:
+            answer_body = final_text
         else:
             answer_body = _rich_json(answer_final)
     elif answer_text:
