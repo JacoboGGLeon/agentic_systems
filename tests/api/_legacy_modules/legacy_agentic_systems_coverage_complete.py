@@ -137,7 +137,7 @@ def test_agent_validation_error_paths_direct_construction():
     assert openai_agent.engine == "openai-runtime"
     assert openai_agent.framework == "openai-agents"
     with pytest.raises(ValueError, match="openai-agents"):
-        Agent(system=system, name="bad_framework", instructions="x", tools=(), engine="openai-runtime", framework="openai-runtime")
+        Agent(system=system, name="bad_framework", instructions="x", tools=(), engine="openai-runtime", framework="unsupported-framework")
 
 
 def test_contract_policy_and_validation_error_paths():

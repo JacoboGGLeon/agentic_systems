@@ -105,7 +105,10 @@ Verify selection from Python:
 ```python
 import agentic_systems as toolkit
 
-runtime = toolkit.runtime(provider="auto")
+runtime = toolkit.runtime(
+    provider="auto",
+    provider_priority=["bedrock-runtime", "openai-runtime", "vllm-runtime"],
+)
 toolkit.show(runtime.describe(), title="Auto runtime - describe")
 ```
 
@@ -184,3 +187,8 @@ would select from the current environment.
 | Final answer contract | `docs/RUNRESULT_FINAL_ANSWER.md` |
 | Validation checklist | `docs/SMOKE_CHECKLIST_2_4_9.md` |
 | Tutorial order | `tutorials/README.md` |
+
+
+## Auto Provider Priority
+
+Default `provider="auto"` priority is `bedrock-runtime`, then `openai-runtime`, then `vllm-runtime`. Override it with `provider_priority=[...]` in Python or `AGENTIC_SYSTEMS_PROVIDER_PRIORITY=bedrock-runtime,openai-runtime,vllm-runtime` in `.env`. Use `allow_python_fallback=True` only for local deterministic fallback.

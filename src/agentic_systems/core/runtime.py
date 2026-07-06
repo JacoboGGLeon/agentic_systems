@@ -6,11 +6,15 @@ import importlib.util
 import os
 from pathlib import Path
 from dataclasses import asdict, dataclass, field
-from typing import Any
+from typing import Any, Iterable
 
-from agentic_systems.engines.names import BEDROCK_RUNTIME_ENGINE, OPENAI_RUNTIME_ENGINE, VLLM_RUNTIME_ENGINE, canonical_engine_name
+from agentic_systems.engines.names import BEDROCK_RUNTIME_ENGINE, OPENAI_RUNTIME_ENGINE, PYTHON_RUNTIME_ENGINE, VLLM_RUNTIME_ENGINE, canonical_engine_name
 from agentic_systems.providers.base import RuntimeToolSpec, ToolEnvelope, ToolRegistryRuntime
 from agentic_systems.core.scheduler import DEFAULT_SCHEDULER_CONFIG, SchedulerConfig
+
+
+DEFAULT_AUTO_PROVIDER_PRIORITY = (BEDROCK_RUNTIME_ENGINE, OPENAI_RUNTIME_ENGINE, VLLM_RUNTIME_ENGINE)
+AUTO_PROVIDER_ENV_VAR = "AGENTIC_SYSTEMS_PROVIDER_PRIORITY"
 
 
 @dataclass(frozen=True)
@@ -22,11 +26,18 @@ class RuntimeConfig:
     region_name: str | None = None
     scheduler: SchedulerConfig = field(default_factory=lambda: DEFAULT_SCHEDULER_CONFIG)
     metadata: dict[str, Any] = field(default_factory=dict)
+    provider_priority: tuple[str, ...] | None = None
+    allow_python_fallback: bool = False
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "provider", canonical_engine_name(self.provider))
         object.__setattr__(self, "scheduler", SchedulerConfig.coerce(self.scheduler))
         object.__setattr__(self, "metadata", dict(self.metadata or {}))
+        object.__setattr__(
+            self,
+            "provider_priority",
+            normalize_provider_priority(self.provider_priority, allow_python_fallback=self.allow_python_fallback),
+        )
 
     @classmethod
     def coerce(cls, value: "RuntimeConfig | dict[str, Any] | None", **overrides: Any) -> "RuntimeConfig":
@@ -69,7 +80,7 @@ class RuntimeConfig:
         """
 
         resolution = dict(self.metadata.get("resolution") or {})
-        resolved = _describe_resolution(self.provider, self.region_name, resolution)
+        resolved = _describe_resolution(self.provider, self.region_name, resolution, self.provider_priority)
         return {
             "selected_provider": resolved["selected_provider"],
             "mode": resolved["mode"],
@@ -79,12 +90,14 @@ class RuntimeConfig:
             "model": self.model_id,
             "region": self.region_name,
             "scheduler": self.scheduler.to_dict(),
+            "provider_priority": list(resolved.get("provider_priority") or self.provider_priority or ()),
             "configuration": _safe_configuration(self.metadata),
         }
 
 
-def _describe_resolution(provider: str, region: str | None, resolution: dict[str, Any]) -> dict[str, Any]:
+def _describe_resolution(provider: str, region: str | None, resolution: dict[str, Any], provider_priority: Iterable[str] | None = None) -> dict[str, Any]:
     _load_dotenv()
+    priority = normalize_provider_priority(provider_priority)
     if resolution:
         return {
             "selected_provider": resolution.get("selected_provider") or provider,
@@ -92,6 +105,7 @@ def _describe_resolution(provider: str, region: str | None, resolution: dict[str
             "preferred_provider": resolution.get("preferred_provider"),
             "fallback_provider": resolution.get("fallback_provider"),
             "reason": resolution.get("reason") or "runtime configured explicitly",
+            "provider_priority": tuple(resolution.get("provider_priority") or priority),
         }
     if provider != "auto":
         return {
@@ -100,42 +114,126 @@ def _describe_resolution(provider: str, region: str | None, resolution: dict[str
             "preferred_provider": None,
             "fallback_provider": None,
             "reason": "runtime configured explicitly",
+            "provider_priority": priority,
         }
-    if _vllm_signal_present() and _module_available("openai"):
+
+    available = _available_auto_providers(region, priority)
+    if available:
+        selected = available[0]
         return {
-            "selected_provider": VLLM_RUNTIME_ENGINE,
+            "selected_provider": selected,
             "mode": "auto",
-            "preferred_provider": VLLM_RUNTIME_ENGINE,
-            "fallback_provider": OPENAI_RUNTIME_ENGINE if _openai_signal_present() and _module_available("openai") else (BEDROCK_RUNTIME_ENGINE if _bedrock_signal_present(region) and _module_available("boto3") else None),
-            "reason": "VLLM_BASE_URL/vLLM config detected",
-        }
-    if _openai_signal_present() and _module_available("openai"):
-        return {
-            "selected_provider": OPENAI_RUNTIME_ENGINE,
-            "mode": "auto",
-            "preferred_provider": OPENAI_RUNTIME_ENGINE,
-            "fallback_provider": BEDROCK_RUNTIME_ENGINE if _bedrock_signal_present(region) else None,
-            "reason": "OPENAI_API_KEY/OPENAI config detected",
-        }
-    if _bedrock_signal_present(region) and _module_available("boto3"):
-        return {
-            "selected_provider": BEDROCK_RUNTIME_ENGINE,
-            "mode": "auto",
-            "preferred_provider": BEDROCK_RUNTIME_ENGINE,
-            "fallback_provider": None,
-            "reason": "AWS credentials/region detected",
+            "preferred_provider": selected,
+            "fallback_provider": available[1] if len(available) > 1 else None,
+            "reason": _auto_reason(selected),
+            "provider_priority": priority,
         }
     return {
         "selected_provider": "auto",
         "mode": "auto-unresolved",
         "preferred_provider": None,
         "fallback_provider": None,
-        "reason": "no VLLM_BASE_URL/vLLM config, OPENAI_API_KEY/OpenAI config or AWS credentials/region detected",
+        "reason": _auto_unresolved_reason(priority),
+        "provider_priority": priority,
     }
 
 
+def normalize_provider_priority(priority: Iterable[str] | str | None, *, allow_python_fallback: bool = False) -> tuple[str, ...]:
+    """Return canonical provider priority for ``provider='auto'``.
+
+    Priority can be passed explicitly or through AGENTIC_SYSTEMS_PROVIDER_PRIORITY
+    as a comma-separated list. ``python-runtime`` is allowed only when explicitly
+    requested or when ``allow_python_fallback=True`` appends it.
+    """
+
+    _load_dotenv()
+    raw_priority: Iterable[str] | str | None = priority
+    if raw_priority is None:
+        raw_priority = os.getenv(AUTO_PROVIDER_ENV_VAR)
+    if raw_priority is None or raw_priority == "":
+        values: list[str] = list(DEFAULT_AUTO_PROVIDER_PRIORITY)
+    elif isinstance(raw_priority, str):
+        values = [item.strip() for item in raw_priority.split(",") if item.strip()]
+    else:
+        values = [str(item).strip() for item in raw_priority if str(item).strip()]
+
+    normalized: list[str] = []
+    for value in values:
+        provider = canonical_engine_name(value)
+        if provider == "auto":
+            raise ValueError("provider_priority cannot include 'auto'.")
+        if provider not in normalized:
+            normalized.append(provider)
+    if allow_python_fallback and PYTHON_RUNTIME_ENGINE not in normalized:
+        normalized.append(PYTHON_RUNTIME_ENGINE)
+    return tuple(normalized)
+
+
+def resolve_auto_provider(region: str | None, provider_priority: Iterable[str] | None = None) -> str:
+    """Resolve ``provider='auto'`` to a concrete provider using priority order."""
+
+    priority = normalize_provider_priority(provider_priority)
+    available = _available_auto_providers(region, priority)
+    if available:
+        return available[0]
+    raise ValueError(
+        "provider='auto' could not resolve a backend. "
+        f"Configured priority: {', '.join(priority)}. "
+        "Set AWS credentials/region for bedrock-runtime, OPENAI_API_KEY for openai-runtime, "
+        "VLLM_BASE_URL for vllm-runtime, or include python-runtime explicitly for deterministic fallback."
+    )
+
+
+def _available_auto_providers(region: str | None, priority: Iterable[str]) -> list[str]:
+    available: list[str] = []
+    for provider in priority:
+        if _provider_available(provider, region):
+            available.append(provider)
+    return available
+
+
+def _provider_available(provider: str, region: str | None) -> bool:
+    if provider == BEDROCK_RUNTIME_ENGINE:
+        return _bedrock_signal_present(region) and _module_available("boto3")
+    if provider == OPENAI_RUNTIME_ENGINE:
+        return _openai_signal_present() and _module_available("openai")
+    if provider == VLLM_RUNTIME_ENGINE:
+        return _vllm_signal_present() and _module_available("openai")
+    if provider == PYTHON_RUNTIME_ENGINE:
+        return True
+    return False
+
+
+def _auto_reason(provider: str) -> str:
+    if provider == BEDROCK_RUNTIME_ENGINE:
+        return "AWS credentials/region detected"
+    if provider == OPENAI_RUNTIME_ENGINE:
+        return "OPENAI_API_KEY/OPENAI config detected"
+    if provider == VLLM_RUNTIME_ENGINE:
+        return "VLLM_BASE_URL/vLLM config detected"
+    if provider == PYTHON_RUNTIME_ENGINE:
+        return "python-runtime deterministic fallback enabled"
+    return "provider selected by configured priority"
+
+
+def _auto_unresolved_reason(priority: Iterable[str]) -> str:
+    hints = []
+    for provider in priority:
+        if provider == BEDROCK_RUNTIME_ENGINE:
+            hints.append("AWS credentials/region")
+        elif provider == OPENAI_RUNTIME_ENGINE:
+            hints.append("OPENAI_API_KEY/OpenAI config")
+        elif provider == VLLM_RUNTIME_ENGINE:
+            hints.append("VLLM_BASE_URL/vLLM config")
+        elif provider == PYTHON_RUNTIME_ENGINE:
+            hints.append("python-runtime fallback")
+    return "no " + ", ".join(hints) + " detected"
+
 def _module_available(name: str) -> bool:
-    return importlib.util.find_spec(name) is not None
+    try:
+        return importlib.util.find_spec(name) is not None
+    except (ImportError, ValueError):
+        return False
 
 
 def _load_dotenv(start: Path | None = None) -> bool:
@@ -200,7 +298,11 @@ def _safe_configuration(metadata: dict[str, Any]) -> dict[str, Any]:
 
 
 __all__ = [
+    "AUTO_PROVIDER_ENV_VAR",
+    "DEFAULT_AUTO_PROVIDER_PRIORITY",
     "RuntimeConfig",
+    "normalize_provider_priority",
+    "resolve_auto_provider",
     "RuntimeToolSpec",
     "ToolEnvelope",
     "ToolRegistryRuntime",

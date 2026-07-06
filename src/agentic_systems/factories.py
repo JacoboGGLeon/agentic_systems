@@ -5,10 +5,10 @@ from __future__ import annotations
 import os
 from importlib import resources
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterable
 
 from .agents import Agent
-from .core.runtime import RuntimeConfig, _bedrock_signal_present, _load_dotenv, _openai_signal_present
+from .core.runtime import RuntimeConfig, _bedrock_signal_present, _load_dotenv, _openai_signal_present, normalize_provider_priority, resolve_auto_provider
 from .core.scheduler import SchedulerConfig
 from .defaults import DEFAULT_AWS_REGION, DEFAULT_BEDROCK_MODEL_ID, DEFAULT_OPENAI_MODEL_ID, DEFAULT_VLLM_MODEL_ID
 from .engines.names import BEDROCK_RUNTIME_ENGINE, OPENAI_RUNTIME_ENGINE, PYTHON_RUNTIME_ENGINE, VLLM_RUNTIME_ENGINE, canonical_engine_name
@@ -104,17 +104,21 @@ def runtime(
     region_name: str | None = None,
     scheduler: SchedulerConfig | dict[str, Any] | None = None,
     metadata: dict[str, Any] | None = None,
+    provider_priority: Iterable[str] | str | None = None,
+    allow_python_fallback: bool = False,
 ) -> RuntimeConfig:
     """Create a runtime/provider configuration for ``lab.agent(..., runtime=...)``.
 
     ``model``/``region`` are accepted as user-facing aliases for the internal
-    ``model_id``/``region_name`` fields.
+    ``model_id``/``region_name`` fields. ``provider_priority`` controls
+    ``provider="auto"`` without requiring YAML or hidden global state.
     """
 
     selected_provider = canonical_engine_name(provider)
-    selected_model = model_id or model or _default_runtime_model(selected_provider, region_name or region)
-    selected_region = region_name or region or _default_runtime_region(selected_provider)
-    merged_metadata = _runtime_metadata(selected_provider, metadata, selected_region)
+    priority = normalize_provider_priority(provider_priority, allow_python_fallback=allow_python_fallback)
+    selected_model = model_id or model or _default_runtime_model(selected_provider, region_name or region, priority)
+    selected_region = region_name or region or _default_runtime_region(selected_provider, priority)
+    merged_metadata = _runtime_metadata(selected_provider, metadata, selected_region, priority)
 
     return RuntimeConfig(
         provider=provider,
@@ -122,30 +126,56 @@ def runtime(
         region_name=selected_region,
         scheduler=SchedulerConfig.coerce(scheduler),
         metadata=merged_metadata,
+        provider_priority=priority,
+        allow_python_fallback=allow_python_fallback,
     )
 
 
-def _default_runtime_model(provider: str, region: str | None) -> str | None:
+def _default_runtime_model(provider: str, region: str | None, provider_priority: Iterable[str] | None = None) -> str | None:
     _load_dotenv()
-    if provider == VLLM_RUNTIME_ENGINE or (provider == "auto" and _vllm_signal_present()):
+    if provider == "auto":
+        try:
+            resolved = resolve_auto_provider(region, provider_priority)
+        except ValueError:
+            return None
+    else:
+        resolved = provider
+    if resolved == VLLM_RUNTIME_ENGINE:
         return default_vllm_model_id()
-    if provider == OPENAI_RUNTIME_ENGINE or (provider == "auto" and _openai_signal_present()):
+    if resolved == OPENAI_RUNTIME_ENGINE:
         return default_openai_model_id()
-    if provider == BEDROCK_RUNTIME_ENGINE or (provider == "auto" and _bedrock_signal_present(region)):
+    if resolved == BEDROCK_RUNTIME_ENGINE:
         return default_model_id()
+    if resolved == PYTHON_RUNTIME_ENGINE:
+        return PYTHON_RUNTIME_ENGINE
     return None
 
 
-def _default_runtime_region(provider: str) -> str | None:
-    if provider == BEDROCK_RUNTIME_ENGINE or (provider == "auto" and not _vllm_signal_present() and not _openai_signal_present() and _bedrock_signal_present(None)):
+def _default_runtime_region(provider: str, provider_priority: Iterable[str] | None = None) -> str | None:
+    if provider == BEDROCK_RUNTIME_ENGINE:
         return default_region()
+    if provider == "auto":
+        try:
+            resolved = resolve_auto_provider(None, provider_priority)
+        except ValueError:
+            return None
+        if resolved == BEDROCK_RUNTIME_ENGINE:
+            return default_region()
     return None
 
 
-def _runtime_metadata(provider: str, metadata: dict[str, Any] | None, region: str | None) -> dict[str, Any]:
+def _runtime_metadata(provider: str, metadata: dict[str, Any] | None, region: str | None, provider_priority: Iterable[str] | None = None) -> dict[str, Any]:
     _load_dotenv()
     merged = dict(metadata or {})
-    if provider == VLLM_RUNTIME_ENGINE or (provider == "auto" and _vllm_signal_present()):
+    resolved = None
+    if provider == "auto":
+        try:
+            resolved = resolve_auto_provider(region, provider_priority)
+        except ValueError:
+            resolved = None
+    else:
+        resolved = provider
+    if resolved == VLLM_RUNTIME_ENGINE:
         merged.setdefault(
             "vllm",
             {
@@ -155,7 +185,7 @@ def _runtime_metadata(provider: str, metadata: dict[str, Any] | None, region: st
                 "model_env_vars": [key for key in VLLM_MODEL_ENV_VARS if os.getenv(key)],
             },
         )
-    if provider == OPENAI_RUNTIME_ENGINE or (provider == "auto" and not _vllm_signal_present() and _openai_signal_present()):
+    if resolved == OPENAI_RUNTIME_ENGINE:
         merged.setdefault(
             "openai",
             {
@@ -164,7 +194,7 @@ def _runtime_metadata(provider: str, metadata: dict[str, Any] | None, region: st
                 "model_env_vars": [key for key in OPENAI_MODEL_ENV_VARS if os.getenv(key)],
             },
         )
-    if provider == BEDROCK_RUNTIME_ENGINE or (provider == "auto" and not _vllm_signal_present() and not _openai_signal_present() and _bedrock_signal_present(region)):
+    if resolved == BEDROCK_RUNTIME_ENGINE:
         merged.setdefault(
             "bedrock",
             {

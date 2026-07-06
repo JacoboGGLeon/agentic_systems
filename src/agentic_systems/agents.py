@@ -255,7 +255,7 @@ class Agent:
             runtime=self.runtime_config,
         )
 
-    def run(self, input: Any = None, *, mode: str = "default", config: RunPolicy | dict[str, Any] | None = None) -> RunResult:
+    def run(self, input: Any = None, *, mode: str = "eval", config: RunPolicy | dict[str, Any] | None = None) -> RunResult:
         """Run the agent from synchronous user code.
 
         This is the primary execution method for notebooks, scripts and tests.
@@ -297,7 +297,7 @@ class Agent:
             scheduler_meta = {"scheduler": scheduler.to_dict(), "attempts": int(scheduler.max_retries) + 1, "retries": int(scheduler.max_retries), "timed_out": False}
         return self._finalize_result(self._attach_scheduler_meta(result, scheduler_meta), clean_input)
 
-    async def arun(self, input: Any = None, *, mode: str = "default", config: RunPolicy | dict[str, Any] | None = None) -> RunResult:
+    async def arun(self, input: Any = None, *, mode: str = "eval", config: RunPolicy | dict[str, Any] | None = None) -> RunResult:
         """Run the agent from async application code.
 
         Async execution uses the engine's native async path when available. If a

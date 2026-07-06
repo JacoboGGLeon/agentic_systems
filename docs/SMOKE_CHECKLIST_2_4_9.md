@@ -54,7 +54,7 @@ def add(a: int, b: int) -> dict:
 
 runtime = toolkit.runtime(provider="python-runtime", scheduler=toolkit.scheduler(timeout_s=5))
 agent = toolkit.agent(name="calc", tools=[add], runtime=runtime)
-result = agent.run({"tool": "add", "input": {"a": 2, "b": 3}}, mode="eval")
+result = agent.run({"tool": "add", "input": {"a": 2, "b": 3}})
 
 assert result.ok
 assert result.data["result"] == 5

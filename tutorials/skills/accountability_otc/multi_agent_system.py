@@ -348,9 +348,9 @@ def make_nodes(agents: dict[str, Any]) -> dict[str, Any]:
     """Create explicit graph nodes from already-created skill agents."""
 
     return {
-        "orchestrator": lab.agent_node(agents["orchestrator"], input=_orchestrator_input, output=_orchestrator_output, result_key=None, mode="eval"),
-        "free_sql_agent": lab.agent_node(agents["free_sql"], input=_free_sql_input, output=_tool_output, result_key=None, mode="eval"),
-        "nl2sql_agent": lab.agent_node(agents["nl2sql"], input=_nl2sql_input, output=_tool_output, result_key=None, mode="eval"),
+        "orchestrator": lab.agent_node(agents["orchestrator"], input=_orchestrator_input, output=_orchestrator_output, result_key=None),
+        "free_sql_agent": lab.agent_node(agents["free_sql"], input=_free_sql_input, output=_tool_output, result_key=None),
+        "nl2sql_agent": lab.agent_node(agents["nl2sql"], input=_nl2sql_input, output=_tool_output, result_key=None),
         "synthesize_result": synthesize_result,
     }
 

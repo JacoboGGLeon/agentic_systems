@@ -70,10 +70,10 @@ Canonical providers:
 
 | Provider | Use |
 |---|---|
-| `python-runtime` | Local deterministic execution for tools and smoke tests. |
-| `openai-runtime` | Direct OpenAI provider path. |
 | `bedrock-runtime` | AWS Bedrock Runtime provider path. |
+| `openai-runtime` | Direct OpenAI provider path. |
 | `vllm-runtime` | OpenAI-compatible vLLM provider path for local or Colab GPU inference. |
+| `python-runtime` | Local deterministic execution for tools and smoke tests. |
 | `auto` | Selects one concrete provider from environment signals before execution. |
 
 Canonical frameworks are orchestration/integration facades. They are not model
@@ -85,7 +85,7 @@ providers:
 | `openai-agents` | OpenAI Agents-style integration facade over the selected runtime. |
 | `strands` | Strands integration facade over the selected runtime. |
 
-Do not use `framework="openai-runtime"`: `openai-runtime` is a provider/engine.
+Do not pass provider names as `framework`: runtime providers are selected with `provider=...`, while frameworks are selected with `framework=...`.
 Use `framework="openai-agents"` when the integration is OpenAI Agents-style and
 let `runtime(provider="auto")` or `runtime(provider="openai-runtime")` select the
 backend.
@@ -191,7 +191,7 @@ agent = toolkit.agent(
     runtime=runtime,
 )
 
-result = agent.run({"tool": "add", "input": {"a": 2, "b": 3}}, mode="eval")
+result = agent.run({"tool": "add", "input": {"a": 2, "b": 3}})
 ```
 
 Use `agent.run(...)` for sync execution and `agent.arun(...)` for async provider
@@ -294,7 +294,7 @@ LINEAGE_SCHEMA_VERSION
 skills, agents, runtime and contracts.
 
 ```python
-system = toolkit.AgenticSystem(model="python-runtime", runtime=runtime)
+system = toolkit.AgenticSystem(runtime=runtime)
 
 @system.tool
 def multiply(a: int, b: int) -> dict:
@@ -461,7 +461,7 @@ Tutorials are the canonical learning path:
 | `04_human_result_api.ipynb` | `final_answer`, `normalize_output`, `human_result`. |
 | `05_lineage_memory_api.ipynb` | `LineageMemory`, prompt context and trace explanation. |
 | `06_integrations_strands_api.ipynb` | Strands integration facade. |
-| `07_integrations_openai_runtime_api.ipynb` | native OpenAI runtime path. |
+| `07_integrations_openai_runtime_api.ipynb` | OpenAI Agents-style integration facade over the selected runtime. |
 | `08_system_api.ipynb` | `AgenticSystem`, registry, inspect and deterministic pipeline. |
 | `09_graph_api.ipynb` | `agent_node`, `graph`, state and node orchestration. |
 | `10_environment_eval_api.ipynb` | `AgenticEnvironment`, rewards, `run_eval`, reports. |
@@ -594,5 +594,15 @@ integrations
 __version__
 ```
 
+
+
+Auto priority API symbols:
+
+```text
+DEFAULT_AUTO_PROVIDER_PRIORITY
+AUTO_PROVIDER_ENV_VAR
+normalize_provider_priority
+resolve_auto_provider
+```
 
 

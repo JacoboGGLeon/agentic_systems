@@ -98,7 +98,7 @@ def test_runtime_auto_resolves_vllm_when_base_url_is_configured(monkeypatch) -> 
     monkeypatch.setattr(runtime_module, "_module_available", lambda name: name in {"openai", "boto3"})
     monkeypatch.setattr(system_module, "_module_available", lambda name: name == "openai")
 
-    runtime = toolkit.runtime(provider="auto")
+    runtime = toolkit.runtime(provider="auto", provider_priority=["vllm-runtime", "openai-runtime", "bedrock-runtime"])
     summary = runtime.describe()
     system = toolkit.AgenticSystem(model="Qwen/Qwen3-0.6B", runtime=runtime)
 
@@ -107,6 +107,7 @@ def test_runtime_auto_resolves_vllm_when_base_url_is_configured(monkeypatch) -> 
     assert summary["mode"] == "auto"
     assert summary["preferred_provider"] == VLLM_RUNTIME_ENGINE
     assert summary["fallback_provider"] == "openai-runtime"
+    assert summary["provider_priority"] == ["vllm-runtime", "openai-runtime", "bedrock-runtime"]
     assert summary["configuration"]["vllm"]["base_url"] == "http://127.0.0.1:8000/v1"
     assert isinstance(system._engine("auto"), VLLMRuntimeProvider)
 
@@ -199,10 +200,9 @@ def test_vllm_runtime_provider_environment_clients_and_defaults(monkeypatch) -> 
     assert vllm_module._vllm_api_key() == "configured"
 
 
-def test_system_unknown_engine_and_auto_vllm_import_failure(monkeypatch) -> None:
-    import builtins
+def test_system_unknown_engine_and_auto_vllm_priority(monkeypatch) -> None:
     import pytest
-    import agentic_systems.system as system_module
+    import agentic_systems.core.runtime as runtime_module
 
     system = toolkit.AgenticSystem(model="python-runtime", runtime=toolkit.runtime(provider="python-runtime"))
     with pytest.raises(ValueError, match="Unknown runtime/provider"):
@@ -212,21 +212,12 @@ def test_system_unknown_engine_and_auto_vllm_import_failure(monkeypatch) -> None
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
     monkeypatch.delenv("AWS_REGION", raising=False)
     monkeypatch.delenv("AWS_DEFAULT_REGION", raising=False)
-    monkeypatch.setattr(system_module, "_module_available", lambda name: name == "openai")
+    monkeypatch.setattr(runtime_module, "_module_available", lambda name: name == "openai")
 
-    real_import = builtins.__import__
+    runtime = toolkit.runtime(provider="auto", provider_priority=["vllm-runtime"])
+    system = toolkit.AgenticSystem(model="python-runtime", runtime=runtime)
+    assert isinstance(system._engine("auto"), VLLMRuntimeProvider)
 
-    def block_vllm(name, *args, **kwargs):
-        if name.endswith("providers.vllm_runtime") or name == "agentic_systems.providers.vllm_runtime":
-            raise ImportError("blocked vllm")
-        return real_import(name, *args, **kwargs)
-
-    monkeypatch.setattr(builtins, "__import__", block_vllm)
-
-    with pytest.raises(ValueError, match="provider='auto' could not resolve"):
-        system_module._resolve_auto_provider(None, None)
-
-    assert system_module._module_available("openai") is True
 
 
 def test_openai_tool_def_builder_skips_missing_tool_specs() -> None:

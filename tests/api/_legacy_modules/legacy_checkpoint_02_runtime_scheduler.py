@@ -23,6 +23,10 @@ def test_public_runtime_scheduler_factories_and_aliases() -> None:
     assert runtime.region_name == "r1"
     assert runtime.scheduler.max_retries == 2
 
+    system_from_runtime = lab.AgenticSystem(runtime=runtime)
+    assert system_from_runtime.model == "m1"
+    assert system_from_runtime.region == "r1"
+
 
 @pytest.mark.parametrize(
     "kwargs",
@@ -153,13 +157,9 @@ def test_runtime_auto_prefers_openai_when_openai_signal_exists(monkeypatch) -> N
     monkeypatch.delenv("AWS_PROFILE", raising=False)
     monkeypatch.delenv("AWS_REGION", raising=False)
     monkeypatch.delenv("AWS_DEFAULT_REGION", raising=False)
-    monkeypatch.setitem(
-        __import__("sys").modules,
-        "openai",
-        types.SimpleNamespace(OpenAI=object, AsyncOpenAI=object),
-    )
+    monkeypatch.setattr(runtime_module, "_module_available", lambda name: name == "openai")
 
-    runtime = lab.runtime(provider="auto")
+    runtime = lab.runtime(provider="auto", provider_priority=["openai-runtime", "bedrock-runtime", "vllm-runtime"])
     system = lab.AgenticSystem(model="m", region="r", runtime=runtime)
 
     assert runtime.provider == "auto"
@@ -255,8 +255,9 @@ def test_runtime_auto_describe_reports_unresolved_without_backend_signal(monkeyp
 
 
 def test_runtime_auto_errors_without_backend_signal(monkeypatch) -> None:
-    monkeypatch.setattr(system_module, "_openai_signal_present", lambda: False)
-    monkeypatch.setattr(system_module, "_bedrock_signal_present", lambda region: False)
+    for key in ("VLLM_BASE_URL", "OPENAI_API_KEY", "OPENAI_BASE_URL", "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_SESSION_TOKEN", "AWS_PROFILE", "AWS_REGION", "AWS_DEFAULT_REGION"):
+        monkeypatch.delenv(key, raising=False)
+    monkeypatch.setattr(runtime_module, "_module_available", lambda name: False)
 
     with pytest.raises(ValueError, match="provider='auto' could not resolve a backend"):
         system_module._resolve_auto_provider(model=None, region=None)

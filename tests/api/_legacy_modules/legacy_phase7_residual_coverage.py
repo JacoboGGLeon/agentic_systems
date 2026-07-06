@@ -11,6 +11,7 @@ import agentic_systems.bedrock_runtime_client as brc
 import agentic_systems.contracts as contracts
 import agentic_systems.engines.names as names
 import agentic_systems.system as system_mod
+import agentic_systems.core.runtime as runtime_core_mod
 import agentic_systems.utils as utils
 from agentic_systems.final_answer import output_schema
 from agentic_systems.results import RunResult
@@ -54,14 +55,18 @@ def test_phase7_agents_output_contract_and_eval_residuals():
 
 
 def test_phase7_system_auto_provider_and_runtime_copy(monkeypatch):
-    monkeypatch.setattr(system_mod, "_openai_signal_present", lambda: True)
+    monkeypatch.setenv("OPENAI_API_KEY", "key")
+    monkeypatch.delenv("AWS_REGION", raising=False)
+    monkeypatch.delenv("AWS_DEFAULT_REGION", raising=False)
+    monkeypatch.setattr(runtime_core_mod, "_module_available", lambda name: name == "openai")
     fake_openai = ModuleType("agentic_systems.providers.openai_runtime")
     fake_openai.OpenAIRuntimeProvider = object
     monkeypatch.setitem(sys.modules, "agentic_systems.providers.openai_runtime", fake_openai)
-    assert system_mod._resolve_auto_provider(None, None) == "openai-runtime"
+    assert system_mod._resolve_auto_provider(None, None, ("openai-runtime",)) == "openai-runtime"
 
-    monkeypatch.setattr(system_mod, "_openai_signal_present", lambda: False)
-    monkeypatch.setattr(system_mod, "_bedrock_signal_present", lambda region: True)
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    monkeypatch.setenv("AWS_REGION", "us-test-1")
+    monkeypatch.setattr(runtime_core_mod, "_module_available", lambda name: name == "boto3")
     fake_bedrock = ModuleType("agentic_systems.providers.bedrock_runtime")
 
     class FakeBedrockRuntime:
@@ -142,30 +147,12 @@ def test_phase7_final_small_residuals(monkeypatch):
     with pytest.raises(system_mod.ToolContractError, match="no callable"):
         system._register_tool_object(broken)
 
-    monkeypatch.setattr(system_mod, "_openai_signal_present", lambda: True)
-    monkeypatch.setattr(system_mod, "_bedrock_signal_present", lambda region: False)
-    real_import = __import__
-
-    def block_openai(name, *args, **kwargs):
-        if name.endswith("providers.openai_runtime") or name == "agentic_systems.providers.openai_runtime":
-            raise ImportError("blocked openai")
-        return real_import(name, *args, **kwargs)
-
-    monkeypatch.setattr("builtins.__import__", block_openai)
+    for key in ("OPENAI_API_KEY", "OPENAI_BASE_URL", "AWS_REGION", "AWS_DEFAULT_REGION", "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_SESSION_TOKEN", "AWS_PROFILE", "VLLM_BASE_URL"):
+        monkeypatch.setenv(key, "")
+    monkeypatch.setattr(runtime_core_mod, "_module_available", lambda name: False)
     with pytest.raises(ValueError, match="could not resolve"):
         system_mod._resolve_auto_provider(None, None)
 
-    monkeypatch.setattr(system_mod, "_openai_signal_present", lambda: False)
-    monkeypatch.setattr(system_mod, "_bedrock_signal_present", lambda region: True)
-
-    def block_bedrock(name, *args, **kwargs):
-        if name.endswith("providers.bedrock_runtime") or name == "agentic_systems.providers.bedrock_runtime":
-            raise ImportError("blocked bedrock")
-        return real_import(name, *args, **kwargs)
-
-    monkeypatch.setattr("builtins.__import__", block_bedrock)
-    with pytest.raises(ValueError, match="could not resolve"):
-        system_mod._resolve_auto_provider(None, "us-test-1")
 
     assert utils._looks_like_json_object("{bad}") is False
     monkeypatch.setattr(utils.re, "fullmatch", lambda *args, **kwargs: (_ for _ in ()).throw(RuntimeError("regex")))

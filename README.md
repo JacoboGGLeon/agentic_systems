@@ -84,11 +84,13 @@ Canonical providers:
 
 | Provider | Use |
 |---|---|
-| `python-runtime` | Local deterministic execution for tools, policies and smoke tests. |
-| `openai-runtime` | Direct OpenAI provider path. |
 | `bedrock-runtime` | AWS Bedrock Runtime provider path. |
+| `openai-runtime` | Direct OpenAI provider path. |
 | `vllm-runtime` | OpenAI-compatible vLLM provider path for local or Colab GPU inference. |
+| `python-runtime` | Local deterministic execution for tools, policies and smoke tests. |
 | `auto` | Selects a concrete provider from environment signals before execution. |
+
+Default `provider="auto"` priority is `bedrock-runtime`, then `openai-runtime`, then `vllm-runtime`. Override it per call with `provider_priority=[...]` or per environment with `AGENTIC_SYSTEMS_PROVIDER_PRIORITY=bedrock-runtime,openai-runtime,vllm-runtime`. Add `allow_python_fallback=True` only when deterministic fallback is intentional.
 
 Canonical framework/integration facades:
 
@@ -158,7 +160,7 @@ agent = toolkit.agent(
     runtime=runtime,
 )
 
-result = agent.run({"tool": "add", "input": {"a": 2, "b": 3}}, mode="eval")
+result = agent.run({"tool": "add", "input": {"a": 2, "b": 3}})
 toolkit.human_result(result)
 ```
 
@@ -170,7 +172,7 @@ Use `AgenticSystem` when you want a system boundary that registers tools, skills
 import agentic_systems as toolkit
 
 runtime = toolkit.runtime(provider="python-runtime")
-system = toolkit.AgenticSystem(model="python-runtime", runtime=runtime)
+system = toolkit.AgenticSystem(runtime=runtime)
 
 @system.tool
 def multiply(a: int, b: int) -> dict:
@@ -184,7 +186,7 @@ agent = system.agent(
 inspection = system.inspect()
 inspection.raise_if_errors()
 
-result = agent.run({"tool": "multiply", "input": {"a": 6, "b": 7}}, mode="eval")
+result = agent.run({"tool": "multiply", "input": {"a": 6, "b": 7}})
 toolkit.human_result(result)
 ```
 
@@ -339,7 +341,7 @@ Use environments when execution is episodic. Each record can become a step, the 
 import agentic_systems as toolkit
 
 runtime = toolkit.runtime(provider="python-runtime")
-system = toolkit.AgenticSystem(model="python-runtime", runtime=runtime)
+system = toolkit.AgenticSystem(runtime=runtime)
 
 @system.tool
 def double(value: int) -> dict:
@@ -500,7 +502,7 @@ docs/ROADMAP_CHECKPOINTS.md
 Current verified status:
 
 ```text
-Version: 1.0.0
+Version: 1.0.1
 PyPI package: agentic-systems
 Tests: 304 passed, 0 skipped
 Coverage: 100.00%

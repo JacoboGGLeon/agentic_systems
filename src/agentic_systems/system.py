@@ -8,7 +8,7 @@ import os
 from functools import wraps
 from typing import Any, Callable, get_args, get_origin, get_type_hints
 
-from .core.runtime import RuntimeConfig
+from .core.runtime import RuntimeConfig, resolve_auto_provider
 from .providers.base import RuntimeToolSpec, ToolRegistryRuntime
 from .engines.names import (
     BEDROCK_RUNTIME_ENGINE,
@@ -94,7 +94,7 @@ class AgenticSystem:
     def __init__(
         self,
         *,
-        model: str,
+        model: str | None = None,
         region: str | None = None,
         defaults: dict[str, Any] | None = None,
         strict: bool = True,
@@ -103,7 +103,7 @@ class AgenticSystem:
     ) -> None:
         os.environ.setdefault("AWS_EC2_METADATA_DISABLED", "true")
         self.runtime_config = RuntimeConfig.coerce(runtime) if runtime is not None else None
-        self.model = model or (self.runtime_config.model_id if self.runtime_config else None)
+        self.model = model or (self.runtime_config.model_id if self.runtime_config else None) or "python-runtime"
         self.region = region or (self.runtime_config.region_name if self.runtime_config else None)
         self.defaults = defaults or {}
         self.strict = strict
@@ -459,7 +459,7 @@ class AgenticSystem:
     def _engine(self, name: str):
         name = canonical_engine_name(name)
         if name == "auto":
-            name = _resolve_auto_provider(self.model, self.region)
+            name = _resolve_auto_provider(self.model, self.region, getattr(self.runtime_config, "provider_priority", None))
         if name == BEDROCK_RUNTIME_ENGINE and name not in self._engines and "bedrock" in self._engines:
             # Safe relocation for code that injected the old Bedrock key before
             # bedrock-runtime became the canonical engine name.
@@ -479,73 +479,17 @@ class AgenticSystem:
         return self._engines[name]
 
 
-def _resolve_auto_provider(model: str | None, region: str | None) -> str:
-    """Resolve ``provider='auto'`` to a concrete runtime backend.
+def _resolve_auto_provider(model: str | None, region: str | None, provider_priority: tuple[str, ...] | None = None) -> str:
+    """Resolve ``provider='auto'`` to a concrete runtime backend."""
 
-    Priority:
-    1. vLLM when a vLLM base URL is configured and the OpenAI SDK is importable.
-    2. OpenAI when an API key or base URL is configured and the SDK is importable.
-    3. Bedrock when AWS credentials/region are configured and the provider is importable.
-    4. Fail explicitly if no supported backend is detectable.
-    """
-
-    if _vllm_signal_present() and _module_available("openai"):
-        try:
-            from .providers.vllm_runtime import VLLMRuntimeProvider  # noqa: F401
-        except Exception:
-            pass
-        else:
-            return VLLM_RUNTIME_ENGINE
-
-    if _openai_signal_present():
-        try:
-            from .providers.openai_runtime import OpenAIRuntimeProvider  # noqa: F401
-        except Exception:
-            pass
-        else:
-            return OPENAI_RUNTIME_ENGINE
-
-    if _bedrock_signal_present(region):
-        try:
-            from .providers.bedrock_runtime import BedrockRuntime  # noqa: F401
-        except Exception:
-            pass
-        else:
-            return BEDROCK_RUNTIME_ENGINE
-
-    raise ValueError(
-        "provider='auto' could not resolve a backend. "
-        "Set VLLM_BASE_URL for vllm-runtime, OPENAI_API_KEY for openai-runtime, "
-        "or AWS credentials/region for bedrock-runtime."
-    )
+    return resolve_auto_provider(region or None, provider_priority)
 
 
 def _module_available(name: str) -> bool:
-    return importlib.util.find_spec(name) is not None
-
-
-def _vllm_signal_present() -> bool:
-    return bool(os.getenv("VLLM_BASE_URL"))
-
-
-def _openai_signal_present() -> bool:
-    return bool(
-        os.getenv("OPENAI_API_KEY")
-        or os.getenv("OPENAI_BASE_URL")
-    )
-
-
-def _bedrock_signal_present(region: str | None) -> bool:
-    return bool(
-        os.getenv("AWS_ACCESS_KEY_ID")
-        or os.getenv("AWS_SECRET_ACCESS_KEY")
-        or os.getenv("AWS_SESSION_TOKEN")
-        or os.getenv("AWS_PROFILE")
-        or os.getenv("AWS_REGION")
-        or os.getenv("AWS_DEFAULT_REGION")
-        or region
-    )
-
+    try:
+        return importlib.util.find_spec(name) is not None
+    except (ImportError, ValueError):
+        return False
 
 
 def _merge_skill_inputs(skill: Any = None, skills: Any = None) -> Any:

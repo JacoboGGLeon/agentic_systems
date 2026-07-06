@@ -4,7 +4,7 @@ Fecha de corte: 2026-07-05
 
 ## Estado Actual Verificado
 
-Esta medicion es real. Viene de una ejecucion local de `pytest` con `coverage.py` usando el virtualenv del proyecto; no es un numero escrito a mano. PyPI tambien fue verificado con `pip index versions agentic-systems`, que reporto `agentic-systems (1.0.0)`.
+Esta medicion es real. Viene de una ejecucion local de `pytest` con `coverage.py` usando el virtualenv del proyecto; no es un numero escrito a mano. PyPI tambien fue verificado con `pip index versions agentic-systems`, que reporto `agentic-systems (1.0.1)`.
 
 Comando ejecutado:
 

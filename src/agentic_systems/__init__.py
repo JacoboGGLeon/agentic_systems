@@ -55,7 +55,7 @@ from .output_contracts import (
 from .results import TRACE_SCHEMA_VERSION, RunResult
 from .lineage import LINEAGE_SCHEMA_VERSION, LineageMemory, LineageStep, lineage_memory
 from .final_answer import FINAL_ANSWER_SCHEMA_VERSION, OutputSchema, final_answer, normalize_output
-from .core.runtime import RuntimeConfig
+from .core.runtime import AUTO_PROVIDER_ENV_VAR, DEFAULT_AUTO_PROVIDER_PRIORITY, RuntimeConfig, normalize_provider_priority, resolve_auto_provider
 from .core.scheduler import SchedulerConfig
 from .skills import LoadedSkill, Skill, SkillManifest
 from .system import AgenticSystem, PublicToolRegistry
@@ -87,6 +87,6 @@ from .utils import (
     tool_result_summary,
 )
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 
 __all__ = list(PUBLIC_API)

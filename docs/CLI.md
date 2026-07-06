@@ -114,7 +114,7 @@ executing a model. For `provider="auto"`, it reads environment signals such as
 `VLLM_BASE_URL`, `OPENAI_API_KEY`, `OPENAI_BASE_URL`,
 `AWS_REGION` and `AWS_PROFILE` to show the effective provider selection.
 
-Auto priority is `vllm-runtime`, then `openai-runtime`, then `bedrock-runtime`.
+Default auto priority is `bedrock-runtime`, then `openai-runtime`, then `vllm-runtime`. Override it with `--provider-priority bedrock-runtime,openai-runtime,vllm-runtime` or `AGENTIC_SYSTEMS_PROVIDER_PRIORITY`. Add `--allow-python-fallback` only when deterministic local fallback is intentional.
 
 OpenAI runtime also reads `OPENAI_MODEL`.
 

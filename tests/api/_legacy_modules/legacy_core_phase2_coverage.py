@@ -13,7 +13,8 @@ from pydantic import BaseModel, ValidationError
 
 from agentic_systems.agents import Agent, _coerce_output_data, _contract_name, _json_like
 from agentic_systems.contracts import AgentContract, ContractPolicySpec, RunPolicy, resolve_policy, validate_contract_policy
-from agentic_systems.core.runtime import RuntimeConfig, _find_dotenv, _load_dotenv
+from agentic_systems.core import runtime as runtime_core_module
+from agentic_systems.core.runtime import RuntimeConfig, _auto_reason, _auto_unresolved_reason, _find_dotenv, _load_dotenv, _module_available, _provider_available, normalize_provider_priority, resolve_auto_provider
 from agentic_systems.core.scheduler import (
     SchedulerConfig,
     SchedulerConfigError,
@@ -24,6 +25,9 @@ from agentic_systems.core.scheduler import (
 )
 from agentic_systems.engines.names import BEDROCK_RUNTIME_ENGINE, OPENAI_RUNTIME_ENGINE, PYTHON_DIRECT_ENGINE
 from agentic_systems.results import RunResult
+import agentic_systems.factories as factories_module
+import agentic_systems.system as system_module
+import agentic_systems.utils as utils_module
 from agentic_systems.system import AgenticSystem, _merge_skill_inputs, _resolve_auto_provider
 from agentic_systems.tools import Tool
 
@@ -142,7 +146,7 @@ def test_runtime_config_coerce_dotenv_and_describe(monkeypatch, tmp_path):
     outside = tmp_path.parent / "outside_without_env"
     outside.mkdir(exist_ok=True)
     assert _load_dotenv(outside) is False
-    assert RuntimeConfig(provider="auto", metadata={"openai": {"configured": True}}).describe()["selected_provider"] == OPENAI_RUNTIME_ENGINE
+    assert RuntimeConfig(provider="auto", metadata={"resolution": {"selected_provider": OPENAI_RUNTIME_ENGINE, "mode": "test"}, "openai": {"configured": True}}).describe()["selected_provider"] == OPENAI_RUNTIME_ENGINE
     explicit = RuntimeConfig(provider="auto", metadata={"resolution": {"selected_provider": "python-runtime", "mode": "test"}, "bedrock": {"configured": True}}).describe()
     assert explicit["selected_provider"] == PYTHON_DIRECT_ENGINE
     assert explicit["configuration"]["bedrock"]["configured"] is True
@@ -175,6 +179,9 @@ def test_agent_core_branches_bind_describe_async_scheduler_and_validation():
     sys_agent = system.agent(name="sys", instructions="x", tools=[add_tool], engine="python-runtime")
     assert asyncio.run(sys_agent.arun({"tool": "add", "input": {"a": 1, "b": 2}})).ok is True
     assert sys_agent.bind(system) is sys_agent
+    default_mode_result = sys_agent.run({"tool": "add", "input": {"a": 1, "b": 2}})
+    assert default_mode_result.mode == "eval"
+
 
     system._engines[PYTHON_DIRECT_ENGINE] = SyncOnlyEngine()
     sync_only = system.agent(name="sync_only", instructions="x", tools=[add_tool], engine="python-runtime")
@@ -271,20 +278,49 @@ def test_system_core_branches_bedrock_hydration_auto_and_merge(monkeypatch):
     assert system2._engine("bedrock-runtime") == "legacy"
 
     monkeypatch.setenv("OPENAI_API_KEY", "key")
-    assert _resolve_auto_provider("m", None) == OPENAI_RUNTIME_ENGINE
-    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
-    monkeypatch.delenv("AWS_REGION", raising=False)
-    monkeypatch.delenv("AWS_DEFAULT_REGION", raising=False)
-    monkeypatch.delenv("AWS_ACCESS_KEY_ID", raising=False)
-    monkeypatch.delenv("AWS_SECRET_ACCESS_KEY", raising=False)
-    monkeypatch.delenv("AWS_SESSION_TOKEN", raising=False)
-    monkeypatch.delenv("AWS_PROFILE", raising=False)
+    assert _resolve_auto_provider("m", None, (OPENAI_RUNTIME_ENGINE,)) == OPENAI_RUNTIME_ENGINE
+    for key in ("OPENAI_API_KEY", "OPENAI_BASE_URL", "AWS_REGION", "AWS_DEFAULT_REGION", "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_SESSION_TOKEN", "AWS_PROFILE", "VLLM_BASE_URL"):
+        monkeypatch.setenv(key, "")
+    monkeypatch.setattr(runtime_core_module, "_module_available", lambda name: False)
     with pytest.raises(ValueError):
         _resolve_auto_provider(None, None)
 
+    assert normalize_provider_priority("openai-runtime,openai-runtime,bedrock-runtime") == (OPENAI_RUNTIME_ENGINE, BEDROCK_RUNTIME_ENGINE)
+    assert normalize_provider_priority(None, allow_python_fallback=True)[-1] == PYTHON_DIRECT_ENGINE
+    with pytest.raises(ValueError, match="provider_priority"):
+        normalize_provider_priority(["auto"])
+    assert resolve_auto_provider(None, [PYTHON_DIRECT_ENGINE]) == PYTHON_DIRECT_ENGINE
+    assert RuntimeConfig(provider="auto", allow_python_fallback=True).describe()["selected_provider"] == PYTHON_DIRECT_ENGINE
+    assert _auto_reason("unexpected-runtime") == "provider selected by configured priority"
+    assert "python-runtime fallback" in _auto_unresolved_reason([PYTHON_DIRECT_ENGINE])
+    assert _module_available("definitely_missing_agentic_systems_module") is False
+    monkeypatch.setattr(runtime_core_module.importlib.util, "find_spec", lambda name: (_ for _ in ()).throw(ValueError("bad spec")))
+    assert _module_available("broken") is False
+
     assert _merge_skill_inputs("one", None) == ["one"]
+    assert _merge_skill_inputs(None, ["two"]) == ["two"]
     assert _merge_skill_inputs("one", ["two"]) == ["one", "two"]
     assert _merge_skill_inputs("one", "two") == ["one", "two"]
+    assert _provider_available("unknown-runtime", None) is False
+    assert factories_module._default_runtime_model("unknown-runtime", None) is None
+    assert factories_module._default_runtime_region(BEDROCK_RUNTIME_ENGINE)
+    monkeypatch.setattr(system_module.importlib.util, "find_spec", lambda name: (_ for _ in ()).throw(ValueError("bad spec")))
+    assert system_module._module_available("broken") is False
+    monkeypatch.setattr(utils_module.json, "loads", lambda value: (_ for _ in ()).throw(ValueError("bad json")))
+    assert utils_module._looks_like_json_object("{bad}") is False
+    monkeypatch.setattr(utils_module.re, "fullmatch", lambda *args, **kwargs: (_ for _ in ()).throw(RuntimeError("bad regex")))
+    assert utils_module._coerce_field_value("123") == "123"
+    assert _merge_skill_inputs("one", ["two"]) == ["one", "two"]
+    assert _merge_skill_inputs("one", "two") == ["one", "two"]
+    assert _provider_available("unknown-runtime", None) is False
+    assert factories_module._default_runtime_model("unknown-runtime", None) is None
+    assert factories_module._default_runtime_region(BEDROCK_RUNTIME_ENGINE)
+    monkeypatch.setattr(system_module.importlib.util, "find_spec", lambda name: (_ for _ in ()).throw(ValueError("bad spec")))
+    assert system_module._module_available("broken") is False
+    monkeypatch.setattr(utils_module.json, "loads", lambda value: (_ for _ in ()).throw(ValueError("bad json")))
+    assert utils_module._looks_like_json_object("{bad}") is False
+    monkeypatch.setattr(utils_module.re, "fullmatch", lambda *args, **kwargs: (_ for _ in ()).throw(RuntimeError("bad regex")))
+    assert utils_module._coerce_field_value("123") == "123"
 
 
 def test_contract_policy_core_branches():

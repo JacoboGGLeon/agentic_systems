@@ -145,7 +145,13 @@ def _cmd_doctor(args: argparse.Namespace) -> int:
 
 def _cmd_runtime(args: argparse.Namespace) -> int:
     _load_dotenv()
-    config = runtime(provider=args.provider, model=args.model, region=args.region)
+    config = runtime(
+        provider=args.provider,
+        model=args.model,
+        region=args.region,
+        provider_priority=args.provider_priority,
+        allow_python_fallback=args.allow_python_fallback,
+    )
     payload = config.describe()
     if args.json:
         _write_json(payload)
@@ -155,7 +161,7 @@ def _cmd_runtime(args: argparse.Namespace) -> int:
     summary = Table(title="Runtime Resolution", box=None, show_header=False, padding=(0, 1))
     summary.add_column("Field", style="bold")
     summary.add_column("Value")
-    for key in ("selected_provider", "mode", "preferred_provider", "fallback_provider", "reason", "model", "region"):
+    for key in ("selected_provider", "mode", "preferred_provider", "fallback_provider", "provider_priority", "reason", "model", "region"):
         summary.add_row(key, str(payload.get(key)))
 
     scheduler_table = Table(title="Scheduler", box=None, show_header=False, padding=(0, 1))
@@ -234,6 +240,8 @@ def build_parser() -> argparse.ArgumentParser:
     runtime_parser.add_argument("--provider", default="auto", help="Runtime provider, for example auto, python-runtime, vllm-runtime, bedrock-runtime or openai-runtime.")
     runtime_parser.add_argument("--model", default=None, help="Optional model identifier.")
     runtime_parser.add_argument("--region", default=None, help="Optional provider region.")
+    runtime_parser.add_argument("--provider-priority", default=None, help="Comma-separated auto priority, for example bedrock-runtime,openai-runtime,vllm-runtime.")
+    runtime_parser.add_argument("--allow-python-fallback", action="store_true", help="Append python-runtime as deterministic fallback for provider=auto.")
     runtime_parser.add_argument("--json", action="store_true", help="Emit machine-readable JSON.")
     runtime_parser.set_defaults(func=_cmd_runtime)
 

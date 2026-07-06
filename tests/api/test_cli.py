@@ -100,7 +100,7 @@ def test_cli_runtime_auto_resolves_vllm_json(capsys, monkeypatch):
     monkeypatch.setenv("VLLM_MODEL", "Qwen/Qwen3-0.6B")
     monkeypatch.setattr(runtime_module, "_module_available", lambda name: name == "openai")
 
-    assert cli.main(["runtime", "--provider", "auto", "--json"]) == 0
+    assert cli.main(["runtime", "--provider", "auto", "--provider-priority", "vllm-runtime,openai-runtime,bedrock-runtime", "--json"]) == 0
     payload = json.loads(capsys.readouterr().out)
 
     assert payload["selected_provider"] == "vllm-runtime"
