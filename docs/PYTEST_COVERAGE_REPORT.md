@@ -1,10 +1,10 @@
 # Pytest Coverage Report
 
-Fecha de corte: 2026-07-05
+Fecha de corte: 2026-07-06
 
 ## Estado Actual Verificado
 
-Esta medicion es real. Viene de una ejecucion local de `pytest` con `coverage.py` usando el virtualenv del proyecto; no es un numero escrito a mano. PyPI fue verificado con release publico `1.0.2`. La version local preparada para publicacion es `1.0.3`, que agrega extras `vllm`/`vll` y hace que `all` incluya vLLM.
+Esta medicion es real. Viene de una ejecucion local de `pytest` con `coverage.py` usando el virtualenv del proyecto; no es un numero escrito a mano. PyPI fue verificado con release publico `1.0.6`.
 
 Comando ejecutado:
 
@@ -15,13 +15,13 @@ Comando ejecutado:
 Resultado funcional:
 
 ```text
-304 passed, 0 skipped
+308 passed, 0 skipped
 ```
 
 Resultado de coverage:
 
 ```text
-TOTAL statements: 5299
+TOTAL statements: 5380
 TOTAL missing: 0
 TOTAL coverage: 100.00%
 Required test coverage of 100.0% reached.

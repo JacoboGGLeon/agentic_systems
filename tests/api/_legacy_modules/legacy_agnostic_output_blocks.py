@@ -54,7 +54,7 @@ def test_compare_accepts_runresult_and_serialized_langgraph_result():
 
 
 def test_human_output_prints_stable_blocks(capsys):
-    lab.print_human_result(_sample_result(), title="Demo", expected_tools=["free_sql"])
+    lab.human_result(_sample_result(), title="Demo", expected_tools=["free_sql"])
     out = capsys.readouterr().out
 
     assert "1) Entrada del usuario" in out

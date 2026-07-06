@@ -60,7 +60,7 @@ from .core.scheduler import SchedulerConfig
 from .skills import LoadedSkill, Skill, SkillManifest
 from .system import AgenticSystem, PublicToolRegistry
 from .tools import Tool, tool
-from .human_output import human_result, human_results, print_human_result, print_human_results
+from .human_output import human_result
 from .utils import (
     AGENT_OUTPUT_SCHEMA_VERSION,
     OUTPUT_SCHEMA_VERSION,
@@ -87,6 +87,6 @@ from .utils import (
     tool_result_summary,
 )
 
-__version__ = "1.0.3"
+__version__ = "1.0.6"
 
 __all__ = list(PUBLIC_API)

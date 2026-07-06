@@ -8,7 +8,7 @@
   <a href="https://pypi.org/project/agentic-systems/"><img src="https://img.shields.io/pypi/v/agentic-systems.svg" alt="PyPI version" /></a>
   <a href="https://pypi.org/project/agentic-systems/"><img src="https://img.shields.io/badge/python-%3E%3D3.10-blue.svg" alt="Python >=3.10" /></a>
   <img src="https://img.shields.io/badge/coverage-100%25-brightgreen.svg" alt="Coverage 100%" />
-  <img src="https://img.shields.io/badge/tests-305%20passed%2C%200%20skipped-brightgreen.svg" alt="Tests 305 passed, 0 skipped" />
+  <img src="https://img.shields.io/badge/tests-308%20passed%2C%200%20skipped-brightgreen.svg" alt="Tests 308 passed, 0 skipped" />
 </p>
 
 **Agentic Systems is a Python framework for building industrial, auditable and provider-agnostic agentic systems.**
@@ -249,11 +249,11 @@ result.validation  # contract validation
 result.errors      # structured errors
 ```
 
-Render one execution with `human_result`. Render many executions with `human_results`.
+Render one execution or a batch with `human_result`.
 
 ```python
 toolkit.human_result(result, pretty=False, show_lineage=True)
-toolkit.human_results([result], pretty=False)
+toolkit.human_result([result_a, result_b], pretty=False)
 ```
 
 Use output schemas when the expected response fields matter:
@@ -356,11 +356,11 @@ docs/ROADMAP_CHECKPOINTS.md
 Current verified status:
 
 ```text
-Version: 1.0.5
+Version: 1.0.6
 PyPI package: agentic-systems
-Tests: 305 passed, 0 skipped
+Tests: 308 passed, 0 skipped
 Coverage: 100.00%
-TOTAL statements: 5299
+TOTAL statements: 5380
 TOTAL missing: 0
 ```
 

@@ -236,7 +236,7 @@ def test_langgraph_tutorial_uses_mvp_graph_and_human_output():
     assert "toolkit.agent_node" in source or "lab.agent_node" in source
     assert "toolkit.graph" in source or "lab.graph" in source
     assert "graph.run" in source or "graph.invoke" in source
-    assert "toolkit.human_result" in source or "lab.human_result" in source or "print_human_result" in source
+    assert "toolkit.human_result" in source or "lab.human_result" in source
     assert "LangGraph" in source
     assert "/home/sagemaker-user" not in source
 

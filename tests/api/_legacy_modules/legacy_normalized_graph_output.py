@@ -44,12 +44,12 @@ def _sample_run_result() -> RunResult:
     )
 
 
-def test_print_human_result_accepts_already_normalized_run_schema():
+def test_human_result_accepts_already_normalized_run_schema():
     normalized = _sample_run_result().normalized()
     stream = io.StringIO()
 
     with redirect_stdout(stream):
-        lab.print_human_result(normalized, title="Demo", expected_tools=lab.expect.exactly("demo_tool"))
+        lab.human_result(normalized, title="Demo", expected_tools=lab.expect.exactly("demo_tool"))
 
     output = stream.getvalue()
     assert "demo_tool (route=demo_route, query_id=demo_query, rows=1)" in output

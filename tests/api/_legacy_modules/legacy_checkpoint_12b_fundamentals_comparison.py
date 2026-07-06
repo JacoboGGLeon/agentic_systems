@@ -78,7 +78,7 @@ def test_fundamentals_notebooks_are_simple_runtime_blueprints():
         combined_text = text + "\n" + code_text
         for token in forbidden:
             assert token not in combined_text, f"{name} should stay simple and real; found {token!r}."
-        assert "toolkit.human_result" in combined_text or "toolkit.human_results" in combined_text or "toolkit.print_human_result" in combined_text or "toolkit.show" in combined_text or "toolkit.human_result" in combined_text or "toolkit.human_results" in combined_text or "lab.print_human_result" in combined_text
+        assert "toolkit.human_result" in combined_text or "toolkit.human_result" in combined_text or "toolkit.show" in combined_text or "toolkit.human_result" in combined_text or "lab.human_result" in combined_text
         for token in required_tokens:
             assert token in combined_text, f"{name} should contain {token!r}."
 

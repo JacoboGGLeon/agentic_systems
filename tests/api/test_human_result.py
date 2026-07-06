@@ -293,3 +293,39 @@ def test_human_result_renders_final_output_as_human_text(capsys):
     assert "1. Empezamos con 10." in out
     assert "Resultado final: 42." in out
     assert "{\"final_output\"" not in out
+
+
+
+def test_human_result_accepts_batch_with_single_public_function(capsys):
+    import agentic_systems as lab
+
+    first = _normalized_payload(answer={"text": "primera", "final": {}, "data": {}})
+    second = _normalized_payload(answer={"text": "segunda", "final": {}, "data": {}})
+
+    lab.human_result([first, second], title="Batch")
+    out = capsys.readouterr().out
+
+    assert "Batch #1" in out
+    assert "Batch #2" in out
+    assert "primera" in out
+    assert "segunda" in out
+
+
+def test_human_result_does_not_treat_plain_payload_list_as_batch(capsys):
+    import agentic_systems as lab
+
+    lab.human_result([{"a": 1}, {"a": 2}], title="Plain payload list")
+    out = capsys.readouterr().out
+
+    assert "Plain payload list #1" not in out
+    assert "Plain payload list" in out
+    assert "Respuesta:" in out
+
+
+
+def test_human_result_batch_detection_defensive_branches():
+    import agentic_systems.human_output as human_output
+
+    assert human_output._result_batch("not a batch") is None
+    assert human_output._result_batch(object()) is None
+    assert human_output._result_batch([]) is None

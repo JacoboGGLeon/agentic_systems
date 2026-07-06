@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from collections.abc import Iterable, Sequence
+from collections.abc import Iterable, Mapping, Sequence
 from typing import Any
 
 from .contracts import ToolExpectationValue, normalize_tool_expectation, validate_tool_expectation
@@ -910,6 +910,30 @@ def print_human_results(
         print()
 
 
+def _is_result_like(value: Any) -> bool:
+    """Return True only for execution-result-like objects.
+
+    Lists and dictionaries are valid final-answer payloads, so batch detection
+    must be conservative. A batch is only a batch when every item looks like a
+    real execution result.
+    """
+
+    if isinstance(value, Mapping):
+        return any(key in value for key in ("runtime", "tool_events", "tools", "validation", "schema_version"))
+    return hasattr(value, "normalized") or hasattr(value, "tool_events") or hasattr(value, "lineage")
+
+
+def _result_batch(value: Any) -> list[Any] | None:
+    if isinstance(value, (str, bytes, Mapping)):
+        return None
+    if not isinstance(value, Iterable):
+        return None
+    items = list(value)
+    if not items:
+        return None
+    return items if all(_is_result_like(item) for item in items) else None
+
+
 def human_result(
     result: Any,
     *,
@@ -921,11 +945,25 @@ def human_result(
     lineage: Any = None,
     lineage_goal: str = "",
 ) -> None:
-    """Public notebook alias for ``print_human_result``.
+    """Render one RunResult-like object or a batch of RunResult-like objects.
 
     ``pretty=False`` keeps deterministic plain text. ``pretty=True`` uses Rich
     tables/panels when Rich is installed and falls back to plain text otherwise.
     """
+
+    batch = _result_batch(result)
+    if batch is not None:
+        batch_title = "Ejecuciones" if title == "Ejecución" else title
+        print_human_results(
+            batch,
+            title=batch_title,
+            expected_tools=expected_tools,
+            pretty=pretty,
+            render_mode=render_mode,
+            show_lineage=show_lineage,
+            lineage_goal=lineage_goal,
+        )
+        return
 
     print_human_result(
         result,
@@ -935,28 +973,5 @@ def human_result(
         render_mode=render_mode,
         show_lineage=show_lineage,
         lineage=lineage,
-        lineage_goal=lineage_goal,
-    )
-
-
-def human_results(
-    results: Iterable[Any],
-    *,
-    title: str = "Ejecuciones",
-    expected_tools: ToolExpectationValue = None,
-    pretty: bool = False,
-    render_mode: str = "compact",
-    show_lineage: bool = False,
-    lineage_goal: str = "",
-) -> None:
-    """Public notebook alias for ``print_human_results``."""
-
-    print_human_results(
-        results,
-        title=title,
-        expected_tools=expected_tools,
-        pretty=pretty,
-        render_mode=render_mode,
-        show_lineage=show_lineage,
         lineage_goal=lineage_goal,
     )

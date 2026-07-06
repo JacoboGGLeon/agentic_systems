@@ -162,16 +162,16 @@ def test_human_output_helpers_and_plain_render(capsys, monkeypatch):
     assert ho._format_expectation({"exactly": ["a"]})
 
     monkeypatch.setattr(ho, "_rich_available", lambda: False)
-    ho.print_human_result(result, title="Demo", show_lineage=True)
+    ho.human_result(result, title="Demo", show_lineage=True)
     plain = capsys.readouterr().out
     assert "Demo" in plain
     assert "Runtime" in plain
-    ho.print_human_results([result, result], title="Batch")
+    ho.human_result([result, result], title="Batch")
     assert "Batch" in capsys.readouterr().out
     rendered = ho.human_result(result, title="One")
     assert rendered is None
     assert "One" in capsys.readouterr().out
-    assert ho.human_results([result]) is None
+    assert ho.human_result([result]) is None
     assert "Ejecuciones" in capsys.readouterr().out
 
 
@@ -189,7 +189,7 @@ def test_human_output_render_modes_and_domain_blocks(capsys, monkeypatch):
         "usage": {},
         "validation": {"ok": True, "passed": 1, "failed": 0},
     }
-    ho.print_human_result(normalized_eval, title="Eval demo")
+    ho.human_result(normalized_eval, title="Eval demo")
     out = capsys.readouterr().out
     assert "Casos evaluados" in out
     assert "case_a" in out
@@ -204,12 +204,12 @@ def test_human_output_render_modes_and_domain_blocks(capsys, monkeypatch):
         "usage": {},
         "validation": {"ok": True, "passed_steps": 1, "failed_steps": 0},
     }
-    ho.print_human_result(normalized_env, title="Env demo")
+    ho.human_result(normalized_env, title="Env demo")
     out = capsys.readouterr().out
     assert "Pasos del episodio" in out
     assert "route=judge" in out
 
-    ho.print_human_result(make_result(), title="JSON demo", render_mode="debug")
+    ho.human_result(make_result(), title="JSON demo", render_mode="debug")
     out = capsys.readouterr().out
     assert "schema_version" in out
 
@@ -269,7 +269,7 @@ def test_human_output_lineage_and_rich_paths(capsys, monkeypatch):
     assert "x" in capsys.readouterr().out
 
     monkeypatch.setattr(ho, "_rich_available", lambda: True)
-    ho.print_human_result(result, title="Pretty demo", pretty=True, show_lineage=False)
+    ho.human_result(result, title="Pretty demo", pretty=True, show_lineage=False)
     assert "Pretty demo" in capsys.readouterr().out
 
 

@@ -46,7 +46,6 @@ RuntimeConfig
 SchedulerConfig
 OutputSchema
 human_result
-human_results
 load_skill
 Skill
 LoadedSkill
@@ -232,11 +231,10 @@ Render user-facing output with:
 
 ```python
 toolkit.human_result(result, pretty=False)
-toolkit.human_results([result], pretty=False)
+toolkit.human_result([result_a, result_b], pretty=False)
 ```
 
-`print_human_result` and `print_human_results` remain public aliases, but new
-docs and notebooks should prefer `human_result` and `human_results`.
+`human_result` is intentionally polymorphic: pass one result for one execution or a list of RunResult-like objects for a batch. There is no separate plural public API.
 
 ## Final Answer
 
@@ -501,9 +499,6 @@ Tool
 tool
 expect
 human_result
-human_results
-print_human_result
-print_human_results
 Skill
 SkillManifest
 LoadedSkill
