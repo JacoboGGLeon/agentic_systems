@@ -4,7 +4,7 @@ Fecha de corte: 2026-07-06
 
 ## Estado Actual Verificado
 
-Esta medicion es real. Viene de una ejecucion local de `pytest` con `coverage.py` usando el virtualenv del proyecto; no es un numero escrito a mano. PyPI fue verificado con release publico `1.0.6`.
+Esta medicion es real. Viene de una ejecucion local de `pytest` con `coverage.py` usando el virtualenv del proyecto; no es un numero escrito a mano. PyPI fue verificado con release publico `1.0.7`.
 
 Comando ejecutado:
 
