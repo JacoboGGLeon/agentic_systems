@@ -1,6 +1,6 @@
 # Composition Laws
 
-Status: normative through Checkpoint 1.1.5.
+Status: normative through Checkpoint 1.1.6.
 
 These laws govern Tool and Skill composition independently of Provider and
 Framework implementations. They apply inside one explicit composition boundary,
@@ -189,3 +189,25 @@ wrappers declare boundary kind; `result_key` requests full result preservation.
 
 **Test strategy.** Project a controlled RunResult through the real LangGraph node
 adapter and compare all normative central fields.
+
+## Law 9 - Episodic Ownership And Reproducibility
+
+**Motivation.** Composition, transition, episode, and verification state must not
+collapse into hidden shared mutation or unsupported replay claims.
+
+**Definition.** System owns registries/configuration, Graph owns transition
+topology, Environment owns episode lifecycle and local randomness, and Eval owns
+checks and aggregation. Replayability is claimed only with an explicit
+classification, seed where required, and fixed conditions.
+
+**Scope.** AgenticSystem factories, Graph invocation, AgenticEnvironment reset
+and step, run_eval, EvalReproducibility, and EvalReport.
+
+**Counterexample.** Seeding a local Environment while a remote model remains
+uncontrolled, then labeling the entire Eval deterministic.
+
+**API implication.** Environment exposes seed/rng evidence; Eval reports embed a
+validated reproducibility block and reject aggregate contradictions.
+
+**Test strategy.** Replay an episode with a local seed, verify global RNG
+isolation, classify Eval runs, and construct contradictory reports.

@@ -106,3 +106,17 @@ declare `graph_kind="framework-native"` where wrapped.
 
 Only LangGraph has an SDK adapter. `openai-agents` is style-only and `strands` is
 declarative-only in the current package.
+
+## Lifecycle And Ownership
+
+```text
+System composition/configuration
+        -> Graph transition state
+        -> Environment episode state and evidence
+        -> Eval case evidence and aggregation
+```
+
+The arrows describe data flow, not ownership transfer. Environment owns episode
+seed and a local RNG; Graph owns transition topology; Eval owns checks and
+reports. See `SYSTEM_ENVIRONMENT_EVAL_SEMANTICS.md` for replay conditions
+and report invariants.

@@ -180,7 +180,9 @@ required Tool.
 Identity: caller-owned composition boundary.
 
 Owns: shared registries, Agent binding, runtime defaults, Provider hydration,
-execution implementation cache, and System inspection.
+execution implementation cache, and System inspection. System state is
+composition/configuration state; factories do not transfer Graph, Environment,
+or Eval ownership into the registry.
 
 Does not own: the semantic definitions of Tool, Agent, Graph, Environment, or
 Eval.
@@ -203,6 +205,8 @@ through module-global mutation.
 Identity: Graph name and native or compiled instance.
 
 Owns: state expectations, nodes, edges, entry, termination, and transition order.
+Graph state is transition-scoped and remains distinct from System registry state
+and Environment episode state.
 
 Does not own: Provider selection unless a node explicitly contains an actor with
 runtime configuration.
@@ -229,6 +233,8 @@ Does not own: Agent definition or Provider semantics.
 `reset` begins an episode. `step` advances one transition and returns the
 Gymnasium-shaped tuple supported by the public API. A transition MUST retain
 enough evidence to relate observation, action, state, reward, and termination.
+The Environment owns the episode seed and a local random generator. The seed
+MUST be projected as evidence and MUST NOT mutate process-global random state.
 
 Example: reset selects a record; step invokes the Graph, records an
 `EnvironmentTransition`, computes reward, and exposes the next observation.
@@ -246,6 +252,10 @@ Does not own: the semantics of the Agent or Environment under evaluation.
 
 Each `EvalCaseResult` MUST preserve case identity, pass/fail meaning, and enough
 evidence to diagnose failure. Aggregation MUST derive from case results.
+Reproducibility MUST be classified as `deterministic`, `seeded`, or
+`non_deterministic`. A seed is evidence, not proof that Providers, models,
+Tools, external services, or schedulers replay deterministically. The full
+contract is defined in `SYSTEM_ENVIRONMENT_EVAL_SEMANTICS.md`.
 
 Example: one case fails during execution; another executes successfully but
 fails an expected-output assertion. The report distinguishes both.

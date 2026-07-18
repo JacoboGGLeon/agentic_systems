@@ -28,7 +28,7 @@ from .environments import (
     build_single_agent_step_graph,
     environment_lineage,
 )
-from .evals import EvalCaseResult, EvalReport, Evaluator, run_eval
+from .evals import EvalCaseResult, EvalReport, EvalReproducibility, Evaluator, run_eval
 from .expectations import ExpectationBuilder, expect
 from .integrations.langgraph import (
     AgenticGraph,

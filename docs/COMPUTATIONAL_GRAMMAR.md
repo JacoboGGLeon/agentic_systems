@@ -166,7 +166,9 @@ An Environment is an episodic interaction context. It owns observations,
 actions, transitions, rewards, termination, truncation, and episode history.
 
 An Environment MUST make episode boundaries explicit and retain enough
-transition evidence for inspection. It MAY use a Graph to implement a
+transition evidence for inspection. Episode identity, cursor, memory, history,
+seed, and the local random generator belong to the Environment; transition
+topology belongs to the Graph. It MAY use a Graph to implement a
 transition. The current `AgenticEnvironment` uses a Gymnasium-shaped step
 contract; that return shape remains part of compatibility.
 
@@ -186,8 +188,10 @@ transitions, or evidence.
 
 An Eval MUST declare what is checked and produce an inspectable report. It MUST
 distinguish execution failure from assertion failure when evidence permits that
-distinction. It SHOULD be deterministic when its subject and evaluator are
-deterministic.
+distinction. It MUST classify reproducibility as deterministic, seeded, or
+non-deterministic and derive aggregate fields from case results. A seed only
+supports replay when every stochastic dependency consumes it and all declared
+conditions remain fixed.
 
 An Eval is not a demonstration and not a screenshot of a successful run.
 

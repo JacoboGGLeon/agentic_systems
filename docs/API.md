@@ -351,10 +351,16 @@ Environments execute episodes. Evals score cases.
 
 ```python
 env = toolkit.AgenticEnvironment(records=records, transition_fn=transition, reward_fn=reward)
-observation, info = env.reset()
+observation, info = env.reset(seed=17)
 observation, reward, terminated, truncated, info = env.step(action=None)
 
-report = toolkit.run_eval(agent, cases)
+report = toolkit.run_eval(
+    agent,
+    cases,
+    determinism="seeded",
+    seed=17,
+    reproducibility_conditions=["same fixtures and provider configuration"],
+)
 ```
 
 Public names:
@@ -371,6 +377,7 @@ build_planned_agent_graph
 environment_lineage
 EvalCaseResult
 EvalReport
+EvalReproducibility
 Evaluator
 run_eval
 ```
@@ -563,6 +570,7 @@ agent_node
 graph
 EvalCaseResult
 EvalReport
+EvalReproducibility
 Evaluator
 run_eval
 AgenticEnvironment

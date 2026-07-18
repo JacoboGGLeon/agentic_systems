@@ -46,7 +46,7 @@ configure_tutorial_environment
 Latest full validation:
 
 ```text
-pytest: 347 passed
+pytest: 351 passed
 coverage: 100.00%
 compileall: OK
 wheel smoke: OK
@@ -62,10 +62,12 @@ wheel smoke: OK
 | 1.1.3 Tool and Skill composition | complete | `docs/checkpoints/1.1.3_tool_skill_composition.md` |
 | 1.1.4 Runtime and Provider substitution | complete | `docs/checkpoints/1.1.4_runtime_provider_substitution.md` |
 | 1.1.5 Framework and Graph boundary | complete | `docs/checkpoints/1.1.5_framework_graph_boundary.md` |
+| 1.1.6 Systems, Environments, and Evals | complete | `docs/checkpoints/1.1.6_system_environment_eval.md` |
 
 Checkpoint 1.1.4 introduces a shared base conformance suite and explicit
 capability profiles for python-runtime, openai-runtime, vllm-runtime, and
 bedrock-runtime. Checkpoint 1.1.5 distinguishes the real LangGraph adapter from
 OpenAI Agents-style and Strands declarative identities, and separates portable
-Graphs from framework-native objects. Validation totals are recorded in the
-checkpoint reports.
+Graphs from framework-native objects. Checkpoint 1.1.6 separates composition,
+transition, episode, and verification ownership and adds explicit replay
+classification. Validation totals are recorded in the checkpoint reports.

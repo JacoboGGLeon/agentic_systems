@@ -124,6 +124,7 @@ ENGINE_API = (
 EVAL_API = (
     "EvalCaseResult",
     "EvalReport",
+    "EvalReproducibility",
     "Evaluator",
     "run_eval",
 )

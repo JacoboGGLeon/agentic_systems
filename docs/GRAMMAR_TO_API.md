@@ -25,14 +25,14 @@ import agentic_systems as toolkit
 | `CHAIN_API` | 2 | Sequential composition helpers |
 | `ENGINE_API` | 7 | Canonical engine names and normalization |
 | `INTEGRATION_API` | 2 | Recommended graph integration entry points |
-| `EVAL_API` | 4 | Evaluation cases, evaluator, report, and runner |
+| `EVAL_API` | 5 | Evaluation cases, reproducibility, evaluator, report, and runner |
 | `ENVIRONMENT_API` | 9 | Episodic environment and specialized graph helpers |
 | `NOTEBOOK_API` | 24 | Rendering, normalization, diagnostics, and notebook helpers |
 | `TRACE_API` | 1 | Trace schema version |
 | `LINEAGE_API` | 4 | Lineage records and factory |
 | `NAMESPACE_API` | 3 | `core`, `providers`, and `integrations` namespaces |
-| `ADVANCED_API` | 103 | Deduplicated union of the public groups |
-| `PUBLIC_API` | 104 | `ADVANCED_API` plus `__version__` |
+| `ADVANCED_API` | 104 | Deduplicated union of the public groups |
+| `PUBLIC_API` | 105 | `ADVANCED_API` plus `__version__` |
 
 The 33 recommended symbols are:
 
@@ -60,7 +60,7 @@ are not top-level exports. Documentation and tests must not imply that
 | Composition/governance | `AgenticSystem` | `system.py` | Registry and factory with explicit `error`/`keep`/`replace` conflict policy and inspectable provenance. |
 | Explicit state/composition | `graph`, `agent_node`; advanced graph classes | `integrations/langgraph.py`, `environments.py`, `graphs/` | Thin LangGraph facade plus specialized graph implementations. |
 | Episodic interaction | `AgenticEnvironment`, `EnvironmentTransition` | `environments.py` | Gymnasium-shaped, record-driven episodes backed by an invokable graph. |
-| Verification | `run_eval`, `Evaluator`, `EvalReport`, `EvalCaseResult` | `evals.py` | Batch agent/environment execution with case checks and scoring. |
+| Verification | `run_eval`, `Evaluator`, `EvalReport`, `EvalReproducibility`, `EvalCaseResult` | `evals.py` | Batch execution with case checks, scoring, aggregate invariants, and explicit replay classification. |
 | Execution result | `RunResult` | `results.py` | Shared envelope for tool and agent execution; carries answer, evidence, events, usage, validation, errors, trace, and metadata. |
 | Execution selection | `runtime`, `RuntimeConfig` | `factories.py`, `core/runtime.py` | Declarative provider selection, including environment-based `auto` resolution. |
 | Execution limits | `scheduler`, `SchedulerConfig`, `RunPolicy` | `factories.py`, `core/scheduler.py`, `contracts.py` | Timeout/retry/concurrency configuration merged with per-run policy. |
@@ -151,3 +151,15 @@ and are intentionally not added to the recommended top-level grammar.
 | Portable Graph | `AgentStepGraph`, `DynamicAgentRouterGraph`, `PlannedAgentGraph` | `environments.py` | Framework-independent `invoke(state)` adapters for episodes. |
 | LangGraph facade | `graph`, `agent_node`, `GraphApp`, `AgenticGraph`, LangGraph builders | `integrations/langgraph.py` | Optional framework-native nodes, state graphs, compilation, and native access. |
 | Declarative identities | `openai-agents`, `strands` constants and Agent configuration | `engines/names.py`, `agents.py` | Compatibility metadata only; no external SDK adapter in 1.1.5. |
+
+## Checkpoint 1.1.6 Lifecycle And Eval Map
+
+| Boundary | Public API | Owner |
+|---|---|---|
+| Composition state | `AgenticSystem`, `composition`, `inspect` | System instance |
+| Transition state | Graph `invoke(state)` APIs | Graph/native Framework runtime |
+| Episode state | `AgenticEnvironment`, `EnvironmentTransition`, `seed`, `rng` | Environment instance |
+| Verification state | `EvalCaseResult`, `EvalReport`, `EvalReproducibility` | Eval definition/report |
+
+Normative replay conditions and aggregate invariants are in
+`SYSTEM_ENVIRONMENT_EVAL_SEMANTICS.md`.
