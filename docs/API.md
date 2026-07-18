@@ -1,4 +1,4 @@
-# API - Agentic Systems
+﻿# API - Agentic Systems
 
 This document describes the public API as a stable product surface. Tutorials
 teach the same API step by step; source modules implement it.
@@ -616,4 +616,26 @@ normalize_provider_priority
 resolve_auto_provider
 ```
 
+
+
+## Provider Conformance API
+
+The advanced `agentic_systems.providers` namespace exposes the Runtime/Provider
+substitution contract:
+
+```python
+from agentic_systems.providers import (
+    evaluate_provider_conformance,
+    provider_profile,
+    provider_profiles,
+)
+
+profile = provider_profile("python-runtime")
+profile.check(["offline_execution"]).raise_if_failed()
+```
+
+`ProviderProfile.check` validates required and requested capabilities.
+`evaluate_provider_conformance` applies the common observable suite to one
+successful and one failed `RunResult`. Adapter classes expose the same profile
+through `profile()`.
 

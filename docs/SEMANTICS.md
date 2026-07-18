@@ -427,3 +427,28 @@ For 1.1:
 
 Any implementation change violating these anchors requires an ADR, compatibility
 analysis, migration path, and explicit release decision.
+
+## Provider Substitution Semantics
+
+Provider substitution preserves the normalized execution contract, not the
+internal mechanism or generated answer. A substitutable Provider MUST preserve
+canonical engine identity, structured Tool evidence, structured failure,
+Contract validation, mode, and JSON-serializable `RunResult` fields.
+
+Required capabilities are binary conformance requirements. Optional capabilities
+MUST be declared as `supported`, `degraded`, or `unsupported`. A degraded
+capability may be accepted explicitly, but MUST retain its reason; strict callers
+may reject it before execution. Unsupported capabilities MUST NOT be silently
+emulated or inferred from method names.
+
+Provider substitution does not imply equal text, model quality, determinism,
+latency, cost, token accounting, or vendor-native behavior. Applications that
+need stronger semantic equivalence MUST express it through Contracts, expected
+Tool evidence, and domain evaluations.
+
+Example: changing from OpenAI to Bedrock is conforming when both results retain
+the actual engine, validation, errors, and required Tool events even if their
+final wording and usage differ.
+
+Counterexample: a sync implementation exposes `arun` through a worker thread and
+claims native async support without declaring degradation.

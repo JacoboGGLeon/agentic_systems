@@ -1,4 +1,4 @@
-# Agentic Systems progress
+﻿# Agentic Systems progress
 
 ## Current Status
 
@@ -46,8 +46,22 @@ configure_tutorial_environment
 Latest full validation:
 
 ```text
-pytest: 210 passed
+pytest: 342 passed
+coverage: 100.00%
 compileall: OK
 wheel smoke: OK
-PUBLIC_API: 101 names, 101 unique, no missing names
 ```
+
+## 1.1 Checkpoints
+
+| Checkpoint | Status | Primary evidence |
+|---|---|---|
+| 1.1.0 Grammar audit | complete | `docs/checkpoints/1.1.0_grammar_audit.md` |
+| 1.1.1 Normative semantics | complete | `docs/COMPUTATIONAL_GRAMMAR.md`, `docs/SEMANTICS.md` |
+| 1.1.2 RunResult invariants | complete | `docs/checkpoints/1.1.2_run_result_invariants.md` |
+| 1.1.3 Tool and Skill composition | complete | `docs/checkpoints/1.1.3_tool_skill_composition.md` |
+| 1.1.4 Runtime and Provider substitution | complete | `docs/checkpoints/1.1.4_runtime_provider_substitution.md` |
+
+Checkpoint 1.1.4 introduces a shared base conformance suite and explicit
+capability profiles for python-runtime, openai-runtime, vllm-runtime, and
+bedrock-runtime. Validation totals are recorded in the checkpoint report.

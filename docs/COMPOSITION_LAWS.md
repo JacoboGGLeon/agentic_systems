@@ -1,6 +1,6 @@
-# Composition Laws
+﻿# Composition Laws
 
-Status: normative for Checkpoint 1.1.3.
+Status: normative through Checkpoint 1.1.4.
 
 These laws govern Tool and Skill composition independently of Provider and
 Framework implementations. They apply inside one explicit composition boundary,
@@ -143,3 +143,26 @@ the implementation actually executed.
   separate contract-composition problem.
 - Instructions are represented by the existing prompt mapping; this checkpoint
   does not create an instruction-merging language.
+
+## Law 7 - Provider Substitution
+
+**Motivation.** Selecting another Provider must not change the meaning of the
+common execution envelope while pretending operationally different features are
+equivalent.
+
+**Definition.** A substitutable Provider preserves normalized `RunResult`, actual
+engine identity, Tool evidence, structured failure, Contract validation, and
+serialization. Optional capabilities are explicitly supported, degraded, or
+unsupported. Generated text and vendor behavior are not required to be equal.
+
+**Scope.** Canonical Provider adapters at the Agent execution boundary.
+
+**Counterexample.** A fallback result reports the requested Provider rather than
+the Provider that executed, or silently reports unavailable token metrics as
+zero.
+
+**API implication.** Adapters expose `ProviderProfile`; the common evaluator
+produces `ProviderConformanceReport`.
+
+**Test strategy.** Run controlled success and failure fixtures through each
+primary adapter and apply the same named checks.

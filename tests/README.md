@@ -1,4 +1,4 @@
-# Test Matrix
+﻿# Test Matrix
 
 The test suite is organized by public API surface under `tests/api/`. Each file
 answers one question: which Agentic Systems symbol or integration contract is it
@@ -41,4 +41,10 @@ Coverage policy:
   -q
 ```
 
-Current verified status: `334 passed, 0 skipped`, `100.00%` real coverage.
+Current verified status: `342 passed, 0 skipped`, `100.00%` real coverage.
+
+Provider substitution coverage:
+
+| API file | Purpose |
+|---|---|
+| `test_provider_conformance.py` | Shared base contract across python-runtime, OpenAI, vLLM, and Bedrock; capability profiles and explicit degradation. |

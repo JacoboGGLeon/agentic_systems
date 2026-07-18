@@ -7,15 +7,15 @@ Systems tool registry and normalizes the response into ``RunResult``.
 
 from __future__ import annotations
 
-import asyncio
 import json
-from collections.abc import Iterable, Mapping
+from collections.abc import Mapping
 from typing import Any
 
 from agentic_systems.contracts import RunPolicy
 from agentic_systems.defaults import DEFAULT_OPENAI_MODEL_ID
-from agentic_systems.engines.names import BEDROCK_RUNTIME_ENGINE, OPENAI_RUNTIME_ENGINE, canonical_engine_name
+from agentic_systems.engines.names import OPENAI_RUNTIME_ENGINE, canonical_engine_name
 from agentic_systems.results import RunResult
+from agentic_systems.providers.conformance import ProviderProfile, provider_profile
 from agentic_systems.tools.compat import ToolEvent
 
 _INSTALL_HINT = "Install with: pip install openai"
@@ -33,6 +33,10 @@ class OpenAIRuntimeProvider:
     """Direct OpenAI chat-completions tool-loop provider."""
 
     name = OPENAI_RUNTIME_ENGINE
+
+    @classmethod
+    def profile(cls) -> ProviderProfile:
+        return provider_profile(cls.name)
 
     def __init__(self, system: Any | None = None, *, client: Any | None = None, async_client: Any | None = None) -> None:
         self.system = system

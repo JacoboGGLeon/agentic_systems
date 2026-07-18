@@ -127,3 +127,16 @@ Later checkpoints should turn this descriptive map into:
 3. `COMPOSITION_LAWS.md`: executable invariants and substitution laws.
 4. ADRs for result, context, provider/framework, skill, graph, and environment
    decisions that cannot be derived from backward compatibility alone.
+
+## Checkpoint 1.1.4 Provider Contract Map
+
+| Grammar role | Public advanced API | Implementation | Observable contract |
+|---|---|---|---|
+| Provider capability | `CapabilityDeclaration` | `providers/conformance.py` | Required or optional status with a normative detail. |
+| Provider profile | `ProviderProfile`, `provider_profile`, `provider_profiles` | `providers/conformance.py` and adapter `profile()` methods | Immutable, JSON-serializable capability declaration. |
+| Provider conformance | `ProviderConformanceReport`, `evaluate_provider_conformance` | `providers/conformance.py` | Common success/failure checks over normalized `RunResult`. |
+| Required capability vocabulary | `REQUIRED_PROVIDER_CAPABILITIES` | `providers/conformance.py` | Base substitution requirements shared by all canonical Providers. |
+| Optional capability vocabulary | `OPTIONAL_PROVIDER_CAPABILITIES` | `providers/conformance.py` | Explicit supported, degraded, or unsupported operational differences. |
+
+These symbols live in `agentic_systems.providers`; they are advanced adapter API
+and are intentionally not added to the recommended top-level grammar.

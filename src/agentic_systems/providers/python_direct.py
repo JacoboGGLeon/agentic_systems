@@ -15,6 +15,7 @@ from typing import Any
 from agentic_systems.contracts import RunPolicy
 from agentic_systems.engines.names import PYTHON_RUNTIME_ENGINE
 from agentic_systems.results import RunResult
+from agentic_systems.providers.conformance import ProviderProfile, provider_profile
 from agentic_systems.tools import Tool
 from agentic_systems.tools.compat import ToolEvent
 
@@ -23,6 +24,10 @@ class PythonDirectProvider:
     """Local deterministic provider for tool-backed agents."""
 
     name = PYTHON_RUNTIME_ENGINE
+
+    @classmethod
+    def profile(cls) -> ProviderProfile:
+        return provider_profile(cls.name)
 
     def __init__(self, system: Any | None = None) -> None:
         self.system = system

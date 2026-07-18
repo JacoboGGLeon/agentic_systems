@@ -334,3 +334,20 @@ A proposed public abstraction SHOULD be added only when:
 
 Otherwise, it SHOULD be an internal adapter, helper, or extension of an existing
 abstraction.
+
+## Provider Capability Profiles
+
+A Provider profile is an inspectable declaration attached to a canonical
+Provider adapter. It is not a new actor, Runtime, or execution result.
+
+```text
+Provider -> required capabilities + optional capability statuses
+Runtime + Provider + Agent + input -> RunResult
+ProviderProfile + requested capabilities -> ValidationResult
+ProviderProfile + success/failure evidence -> ProviderConformanceReport
+```
+
+Legal composition validates a profile before execution or evaluates normalized
+results after execution. A profile MUST NOT call a model, probe credentials, or
+hide fallback. Provider differences remain adapter facts unless promoted to a
+Provider-independent required capability.

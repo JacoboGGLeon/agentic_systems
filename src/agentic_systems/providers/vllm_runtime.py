@@ -15,6 +15,7 @@ from agentic_systems.contracts import RunPolicy
 from agentic_systems.defaults import DEFAULT_VLLM_API_KEY, DEFAULT_VLLM_BASE_URL
 from agentic_systems.core.results import RunResult
 from agentic_systems.engines.names import VLLM_RUNTIME_ENGINE
+from agentic_systems.providers.conformance import ProviderProfile, provider_profile
 from agentic_systems.providers.openai_runtime import (
     _build_messages,
     _failure,
@@ -30,6 +31,10 @@ class VLLMRuntimeProvider:
     """OpenAI-compatible provider for a running vLLM server."""
 
     name = VLLM_RUNTIME_ENGINE
+
+    @classmethod
+    def profile(cls) -> ProviderProfile:
+        return provider_profile(cls.name)
 
     def __init__(self, system: Any | None = None, *, client: Any | None = None, async_client: Any | None = None) -> None:
         self.system = system
