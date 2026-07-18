@@ -83,10 +83,17 @@ class Tool:
         self.metadata = dict(metadata or {})
         self.strict = bool(strict)
 
+    @property
+    def identity(self) -> str:
+        """Return the Tool identity used inside a composition boundary."""
+
+        return self.name
+
     def info(self) -> dict[str, Any]:
         """Return a JSON-like description of this tool."""
 
         return {
+            "identity": self.identity,
             "name": self.name,
             "description": self.description,
             "description_source": self.description_source,

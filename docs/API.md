@@ -168,6 +168,17 @@ skill = toolkit.Skill(
 agent = toolkit.agent(name="skill_agent", instructions=skill.instructions, skills=[skill])
 ```
 
+Compose packages without executing them:
+
+```python
+combined = toolkit.Skill.compose(skill_a, skill_b, name="combined")
+report = combined.composition()
+```
+
+Different Tool, prompt, contract or policy definitions with the same identity fail
+by default. Pass `on_conflict="keep"` or `on_conflict="replace"` only when
+the precedence is intentional.
+
 Public skill names:
 
 ```text
@@ -300,7 +311,13 @@ def multiply(a: int, b: int) -> dict:
 agent = system.agent(name="system_agent", instructions="Use registered tools.")
 inspection = system.inspect()
 inspection.raise_if_errors()
+composition = system.composition()
 ```
+
+Tool and Skill registration rejects different definitions with an occupied name.
+`system.tool(...)`, `system.skill(...)`, and Toolkit registration accept explicit
+`on_conflict="keep"` or `on_conflict="replace"` policies. Composition decisions
+and selected sources are included in inspection.
 
 Public system names:
 

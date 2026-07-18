@@ -101,7 +101,8 @@ Failure is an observable inability to satisfy execution or Contract semantics.
 
 ### Tool
 
-Identity: `Tool.name` inside a Tool registry.
+Identity: `Tool.identity`, currently its public
+ame`, inside one Tool registry.
 
 Owns: callable capability, description, input/output Contracts, metadata, and
 strictness.
@@ -119,6 +120,10 @@ Example: `add.run({"a": 2, "b": 3})` records that `add` executed and produced
 
 Counterexample: an adapter renames `add`, drops its schema, and reports success
 under the original identity.
+
+A registry MUST reject a different Tool definition with the same identity unless
+the caller explicitly selects `keep` or `replace`. Reusing the same definition
+MAY be idempotent and MUST remain inspectable.
 
 ### Skill and LoadedSkill
 
@@ -139,6 +144,12 @@ Skill without executing its Agent.
 
 Counterexample: incompatible Skill assets silently overwrite one another because
 they share a name.
+
+`Skill.compose(...)` MUST combine packages without executing Tools or models. Tool,
+prompt, Contract, and policy collisions MUST fail by default. `keep` selects the
+existing value and `replace` selects the incoming value only when requested
+explicitly. The resulting Skill MUST expose its sources and decisions and MUST
+remain a package rather than acquiring an Agent execution loop.
 
 ### Agent
 
@@ -174,9 +185,12 @@ execution implementation cache, and System inspection.
 Does not own: the semantic definitions of Tool, Agent, Graph, Environment, or
 Eval.
 
-Registration MUST be local to the System. Inspection MUST expose enough registry
-and configuration information to explain whether an Agent can execute. A System
-MAY offer factories without collapsing the separate semantics of their results.
+Registration MUST be local to the System. A different Tool or Skill definition
+MUST NOT replace an occupied identity silently. Explicit conflict decisions and
+selected sources MUST be available through composition inspection. Inspection MUST
+expose enough registry and configuration information to explain whether an Agent
+can execute. A System MAY offer factories without collapsing the separate
+semantics of their results.
 
 Example: `system.inspect()` identifies registered Tools and invalid references
 before Provider execution.

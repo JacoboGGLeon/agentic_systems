@@ -54,10 +54,10 @@ are not top-level exports. Documentation and tests must not imply that
 
 | Grammar concept | Current public API | Primary implementation | Current semantics |
 |---|---|---|---|
-| Capability | `Tool`, `tool` | `tools/tool.py`, `tools/decorators.py` | Portable callable wrapper with optional Pydantic contracts; `Tool.run` returns `RunResult`. |
-| Operational knowledge | `Skill`, `LoadedSkill`, `load_skill` | `skills/skill.py`, skill loader modules | Runtime package and filesystem-loaded package are separate object models. |
+| Capability | `Tool`, `tool` | `tools/tool.py`, `tools/decorators.py` | Portable callable wrapper with scoped `identity`, optional Pydantic contracts, and `RunResult` execution. |
+| Operational knowledge | `Skill`, `LoadedSkill`, `load_skill` | `skills/skill.py`, skill loader modules | Runtime packages compose through `Skill.compose`; filesystem-loaded packages remain a separate compatible object model. |
 | Actor | `Agent`, `agent` | `agents.py`, `factories.py` | Portable configuration/execution facade; the factory creates an internal `AgenticSystem`. |
-| Composition/governance | `AgenticSystem` | `system.py` | Registry and factory for tools, skills, agents, engines, graphs, environments, evals, and inspection. |
+| Composition/governance | `AgenticSystem` | `system.py` | Registry and factory with explicit `error`/`keep`/`replace` conflict policy and inspectable provenance. |
 | Explicit state/composition | `graph`, `agent_node`; advanced graph classes | `integrations/langgraph.py`, `environments.py`, `graphs/` | Thin LangGraph facade plus specialized graph implementations. |
 | Episodic interaction | `AgenticEnvironment`, `EnvironmentTransition` | `environments.py` | Gymnasium-shaped, record-driven episodes backed by an invokable graph. |
 | Verification | `run_eval`, `Evaluator`, `EvalReport`, `EvalCaseResult` | `evals.py` | Batch agent/environment execution with case checks and scoring. |
@@ -82,6 +82,10 @@ callable -> Tool -> Skill -> Agent -> AgenticSystem
                                             v
                                       Environment -> EvalReport
 ```
+
+`Skill.compose(...)` is an ordinary API composition step: it combines packages
+without adding execution semantics. Conflicts default to errors; explicit `keep`
+or `replace` decisions are ordered and inspectable.
 
 This is not a single uniform return-type pipeline. Tools and agents return
 `RunResult`; graphs return framework state; environments return Gymnasium tuples;

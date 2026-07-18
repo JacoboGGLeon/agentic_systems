@@ -13,10 +13,11 @@ import json
 import os
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from typing import Any, Callable, Dict, Optional, Sequence, Type
+from typing import Any, Callable, Dict, Sequence, Type
 
 from pydantic import BaseModel, ConfigDict, Field, create_model
 
+from agentic_systems.composition import conflict_message, normalize_conflict_policy
 from agentic_systems.defaults import DEFAULT_AWS_REGION
 
 
@@ -66,6 +67,7 @@ class ToolRegistryRuntime:
         self.max_tokens_default = int(max_tokens_default)
         self.temperature_default = float(temperature_default)
         self._tools: dict[str, RuntimeToolSpec] = {}
+        self._composition_events: list[dict[str, Any]] = []
 
     @property
     def tools(self) -> list[RuntimeToolSpec]:
@@ -73,17 +75,51 @@ class ToolRegistryRuntime:
 
         return list(self._tools.values())
 
+    def composition(self) -> dict[str, Any]:
+        """Return inspectable registry identities and conflict decisions."""
+
+        return {
+            "schema_version": "agentic_systems.tool-registry-composition.v1",
+            "tools": [
+                {
+                    "identity": spec.name,
+                    "description": spec.description,
+                    "is_async": spec.is_async,
+                }
+                for spec in self._tools.values()
+            ],
+            "events": [dict(event) for event in self._composition_events],
+        }
+
     def tool(
         self,
         func: Callable[..., Any] | None = None,
         *,
         name: str | None = None,
         description: str | None = None,
+        on_conflict: str = "error",
     ):
         """Register a Python function as a provider-neutral tool."""
 
         def decorator(fn: Callable[..., Any]) -> Callable[..., Any]:
+            policy = normalize_conflict_policy(on_conflict)
             tool_name = name or fn.__name__
+            existing = self._tools.get(tool_name)
+            if existing is not None:
+                if existing.func is fn:
+                    self._composition_events.append(
+                        {"kind": "tool", "identity": tool_name, "decision": "reuse"}
+                    )
+                    return fn
+                if policy == "error":
+                    raise ValueError(
+                        conflict_message("Tool", tool_name, "runtime registry", "runtime registration")
+                    )
+                self._composition_events.append(
+                    {"kind": "tool", "identity": tool_name, "decision": policy}
+                )
+                if policy == "keep":
+                    return fn
             tool_description = description or inspect.getdoc(fn) or f"Tool {tool_name}"
             signature = inspect.signature(fn)
             input_model = self._build_input_model(tool_name, signature)
@@ -100,6 +136,12 @@ class ToolRegistryRuntime:
                 input_schema=input_schema,
                 is_async=inspect.iscoroutinefunction(fn),
             )
+            if existing is None:
+                self._composition_events.append(
+                    {"kind": "tool", "identity": tool_name, "decision": "add"}
+                )
+            elif policy == "replace":
+                self._composition_events[-1]["selected"] = "incoming"
             return fn
 
         if func is None:

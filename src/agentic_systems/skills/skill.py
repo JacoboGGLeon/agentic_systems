@@ -16,6 +16,7 @@ from typing import Any
 
 from pydantic import BaseModel
 
+from ..composition import conflict_message, normalize_conflict_policy, same_tool_definition
 from ..contracts import ValidationResult
 from ..tools import Tool
 
@@ -68,6 +69,143 @@ class Skill:
         self.contracts = _string_keyed_dict(contracts, field_name="contracts")
         self.policy = _string_keyed_dict(policy, field_name="policy")
         self.metadata = _string_keyed_dict(metadata, field_name="metadata")
+        self._composition = {
+            "schema_version": "agentic_systems.skill-composition.v1",
+            "identity": self.name,
+            "on_conflict": "error",
+            "sources": [self.name],
+            "events": [
+                {
+                    "kind": "tool",
+                    "identity": item.name,
+                    "decision": "add",
+                    "selected_source": self.name,
+                }
+                for item in self._tools
+            ],
+        }
+
+    @property
+    def identity(self) -> str:
+        """Return the Skill identity used inside a composition boundary."""
+
+        return self.name
+
+    @classmethod
+    def compose(
+        cls,
+        *skills: "Skill",
+        name: str,
+        description: str = "",
+        version: str = "0.1.0",
+        metadata: Mapping[str, Any] | None = None,
+        on_conflict: str = "error",
+    ) -> "Skill":
+        """Compose Skills without executing them or applying implicit overrides."""
+
+        if not skills:
+            raise ValueError("Skill.compose(...) requires at least one source Skill.")
+        if not all(isinstance(skill, Skill) for skill in skills):
+            raise TypeError("Skill.compose(...) accepts only Skill instances.")
+        policy = normalize_conflict_policy(on_conflict)
+        selected_sources: dict[str, Skill] = {}
+        events: list[dict[str, Any]] = []
+        for source in skills:
+            existing = selected_sources.get(source.identity)
+            if existing is None:
+                selected_sources[source.identity] = source
+                continue
+            if existing is source:
+                events.append(_composition_event("skill", source.identity, "reuse", source.identity))
+                continue
+            if policy == "error":
+                raise ValueError(conflict_message("Skill", source.identity, existing.identity, source.identity))
+            decision = policy
+            if policy == "replace":
+                selected_sources[source.identity] = source
+            events.append(_composition_event("skill", source.identity, decision, source.identity))
+
+        tools: dict[str, Tool] = {}
+        tool_sources: dict[str, str] = {}
+        prompts: dict[str, Any] = {}
+        prompt_sources: dict[str, str] = {}
+        contracts: dict[str, Any] = {}
+        contract_sources: dict[str, str] = {}
+        composed_policy: dict[str, Any] = {}
+        policy_sources: dict[str, str] = {}
+        sources = list(selected_sources.values())
+        for source in sources:
+            for item in source.tools:
+                existing = tools.get(item.identity)
+                if existing is None:
+                    tools[item.identity] = item
+                    tool_sources[item.identity] = source.identity
+                    events.append(_composition_event("tool", item.identity, "add", source.identity))
+                    continue
+                if same_tool_definition(existing, item):
+                    events.append(
+                        _composition_event(
+                            "tool",
+                            item.identity,
+                            "reuse",
+                            source.identity,
+                            selected_source=tool_sources[item.identity],
+                        )
+                    )
+                    continue
+                if policy == "error":
+                    raise ValueError(
+                        conflict_message("Tool", item.identity, tool_sources[item.identity], source.identity)
+                    )
+                if policy == "replace":
+                    tools[item.identity] = item
+                    tool_sources[item.identity] = source.identity
+                events.append(
+                    _composition_event(
+                        "tool",
+                        item.identity,
+                        policy,
+                        source.identity,
+                        selected_source=tool_sources[item.identity],
+                    )
+                )
+            _merge_mapping(prompts, prompt_sources, source.prompts, source.identity, "prompt", policy, events)
+            _merge_mapping(
+                contracts, contract_sources, source.contracts, source.identity, "contract", policy, events
+            )
+            _merge_mapping(
+                composed_policy, policy_sources, source.policy, source.identity, "policy", policy, events
+            )
+
+        source_metadata = {source.identity: source.metadata for source in sources}
+        composed_metadata = {
+            "composed_from": [source.identity for source in sources],
+            "source_metadata": source_metadata,
+            **dict(metadata or {}),
+        }
+        result = cls(
+            name=name,
+            description=description,
+            version=version,
+            tools=tools.values(),
+            prompts=prompts,
+            contracts=contracts,
+            policy=composed_policy,
+            metadata=composed_metadata,
+        )
+        result._composition = {
+            "schema_version": "agentic_systems.skill-composition.v1",
+            "identity": result.identity,
+            "on_conflict": policy,
+            "sources": [source.identity for source in sources],
+            "events": events,
+        }
+        return result
+
+    def composition(self) -> dict[str, Any]:
+        """Return the serializable provenance and decisions for this Skill."""
+
+        return _json_like(self._composition)
 
     @property
     def tool_names(self) -> tuple[str, ...]:
@@ -126,6 +264,7 @@ class Skill:
 
         return _json_like(
             {
+                "identity": self.identity,
                 "name": self.name,
                 "version": self.version,
                 "description": self.description,
@@ -135,6 +274,7 @@ class Skill:
                 "contracts": self.contracts,
                 "policy": self.policy,
                 "metadata": self.metadata,
+                "composition": self.composition(),
             }
         )
 
@@ -179,6 +319,65 @@ class Skill:
 
     def __repr__(self) -> str:  # pragma: no cover - debug helper
         return f"Skill(name={self.name!r}, tools={list(self.tool_names)!r})"
+
+
+def _composition_event(
+    kind: str,
+    identity: str,
+    decision: str,
+    incoming_source: str,
+    *,
+    selected_source: str | None = None,
+) -> dict[str, Any]:
+    return {
+        "kind": kind,
+        "identity": identity,
+        "decision": decision,
+        "incoming_source": incoming_source,
+        "selected_source": selected_source or incoming_source,
+    }
+
+
+def _merge_mapping(
+    target: dict[str, Any],
+    selected_sources: dict[str, str],
+    incoming: Mapping[str, Any],
+    incoming_source: str,
+    kind: str,
+    policy: str,
+    events: list[dict[str, Any]],
+) -> None:
+    for key, value in incoming.items():
+        if key not in target:
+            target[key] = value
+            selected_sources[key] = incoming_source
+            events.append(_composition_event(kind, key, "add", incoming_source))
+            continue
+        if target[key] == value:
+            events.append(
+                _composition_event(
+                    kind,
+                    key,
+                    "reuse",
+                    incoming_source,
+                    selected_source=selected_sources[key],
+                )
+            )
+            continue
+        if policy == "error":
+            raise ValueError(conflict_message(kind.title(), key, selected_sources[key], incoming_source))
+        if policy == "replace":
+            target[key] = value
+            selected_sources[key] = incoming_source
+        events.append(
+            _composition_event(
+                kind,
+                key,
+                policy,
+                incoming_source,
+                selected_source=selected_sources[key],
+            )
+        )
 
 
 def _as_iterable(items: Iterable[Tool | Callable[..., Any]] | None) -> tuple[Tool | Callable[..., Any], ...]:
