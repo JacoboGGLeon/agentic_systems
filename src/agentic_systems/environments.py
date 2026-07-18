@@ -35,6 +35,9 @@ class AgentStepGraph:
     LangGraph app; use this adapter for portable sandbox episodes.
     """
 
+    graph_kind = "agentic-systems-native"
+    framework = None
+
     def __init__(
         self,
         agent: Any,
@@ -69,6 +72,9 @@ class DynamicAgentRouterGraph:
     - Router owns the decision of which agent should act on the current state.
     - Agent owns one reasoning/tool-use turn after it has been selected.
     """
+
+    graph_kind = "agentic-systems-native"
+    framework = None
 
     def __init__(
         self,
@@ -127,6 +133,9 @@ class PlannedAgentGraph:
     input it should receive. The graph validates the selected agent and records
     the route decision alongside the agent result.
     """
+
+    graph_kind = "agentic-systems-native"
+    framework = None
 
     def __init__(
         self,
@@ -551,7 +560,7 @@ def environment_lineage(
     transitions, rewards, routes and step evidence.
     """
 
-    from .lineage import LINEAGE_SCHEMA_VERSION, LineageMemory, LineageStep, _safe_json, _short
+    from .lineage import LINEAGE_SCHEMA_VERSION, LineageMemory, LineageStep, _short
 
     history = list(environment.history)
     selected_history = history if max_steps is None else history[:max_steps]

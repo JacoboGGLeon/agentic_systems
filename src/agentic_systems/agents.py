@@ -15,7 +15,6 @@ from .engines.names import (
     BEDROCK_RUNTIME_ENGINE,
     LANGGRAPH_ORCHESTRATOR,
     OPENAI_AGENTS_FRAMEWORK,
-    OPENAI_RUNTIME_ENGINE,
     PYTHON_RUNTIME_ENGINE,
     STRANDS_FRAMEWORK,
     canonical_engine_name,
@@ -93,6 +92,15 @@ def _resolve_framework_and_engine(engine: str | None, framework: str | None) -> 
 
 def _framework_label(framework: str | None) -> str:
     return str(framework).strip() if framework not in (None, "", "n/a") else "agentic-systems"
+
+
+def _framework_metadata(framework: str | None, *, adapter: str | None = None) -> dict[str, Any]:
+    requested = str(framework).strip() if framework not in (None, "", "n/a") else None
+    return {
+        "framework": requested or "agentic-systems",
+        "framework_requested": requested,
+        "framework_adapter": adapter,
+    }
 
 
 class Agent:
@@ -376,7 +384,7 @@ class Agent:
             meta={
                 "input": _json_like(clean_input),
                 "source_result_type": "SchedulerFailure",
-                "framework": _framework_label(self.framework),
+                **_framework_metadata(self.framework),
                 "runtime_engine": runtime_engine,
                 "execution_engine": self.engine,
             },
@@ -386,7 +394,7 @@ class Agent:
         return self.engine
 
     def _finalize_result(self, result: RunResult, clean_input: Any | None = None) -> RunResult:
-        result.meta["framework"] = _framework_label(self.framework)
+        result.meta.update(_framework_metadata(self.framework, adapter=result.meta.get("framework_adapter")))
         if clean_input is not None:
             result.meta.setdefault("input", _json_like(clean_input))
         runtime_engine = self._runtime_engine_name()
@@ -409,15 +417,16 @@ class Agent:
         input: str | Callable[[dict[str, Any]], Any] = "prompt",
         output: str | Callable[[RunResult, dict[str, Any]], Any] | None = "answer",
         trace: str | None = "ada_trace",
+        result_key: str | None = None,
         mode: str = "default",
         config: RunPolicy | dict[str, Any] | None = None,
     ):
-        """Return a sync LangGraph-compatible node with partial state updates."""
+        """Return a framework-neutral sync state-node callable."""
 
         def _node(state: dict[str, Any]) -> Any:
             prompt = _read_node_input(state, input)
             result = self.run(prompt, mode=mode, config=config)
-            return _map_node_output(result, state, output, trace)
+            return _map_node_output(result, state, output, trace, result_key)
 
         return _node
 
@@ -427,19 +436,16 @@ class Agent:
         input: str | Callable[[dict[str, Any]], Any] = "prompt",
         output: str | Callable[[RunResult, dict[str, Any]], Any] | None = "answer",
         trace: str | None = "ada_trace",
+        result_key: str | None = None,
         mode: str = "default",
         config: RunPolicy | dict[str, Any] | None = None,
     ):
-        """Return an async LangGraph-compatible node.
-
-        Use this node with LangGraph ``ainvoke``/async graphs when the engine or
-        surrounding application is async-first.
-        """
+        """Return a framework-neutral async state-node callable."""
 
         async def _node(state: dict[str, Any]) -> Any:
             prompt = _read_node_input(state, input)
             result = await self.arun(prompt, mode=mode, config=config)
-            return _map_node_output(result, state, output, trace)
+            return _map_node_output(result, state, output, trace, result_key)
 
         return _node
 
@@ -655,6 +661,7 @@ def _map_node_output(
     state: dict[str, Any],
     output: str | Callable[[RunResult, dict[str, Any]], Any] | None,
     trace: str | None,
+    result_key: str | None,
 ) -> Any:
     if callable(output):
         return output(result, state)
@@ -662,6 +669,8 @@ def _map_node_output(
     update: dict[str, Any] = {}
     if output is not None:
         update[output] = result.text
+    if result_key is not None:
+        update[result_key] = result.to_dict()
     if trace is not None:
         update[trace] = result.trace("compact")
     return update

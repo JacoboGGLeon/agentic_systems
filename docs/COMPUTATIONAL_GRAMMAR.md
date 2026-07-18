@@ -351,3 +351,24 @@ Legal composition validates a profile before execution or evaluates normalized
 results after execution. A profile MUST NOT call a model, probe credentials, or
 hide fallback. Provider differences remain adapter facts unless promoted to a
 Provider-independent required capability.
+
+## Framework and Graph Boundary Categories
+
+Framework integration maturity is an adapter fact, not a new core grammar role:
+
+```text
+native-adapter   -> external Framework code is invoked
+style-only       -> configuration describes a workflow style; core execution remains active
+declarative-only -> compatibility identity is recorded; no adapter executes
+```
+
+Graphs have two boundary categories:
+
+```text
+agentic-systems-native -> portable invoke(state) transition owned by this package
+framework-native       -> external state/compile/lifecycle semantics exposed by an integration
+```
+
+A framework-native projection MAY store a serialized RunResult in state. When it
+does, it MUST preserve central result fields and MAY add adapter metadata. Graph
+state itself does not become RunResult.

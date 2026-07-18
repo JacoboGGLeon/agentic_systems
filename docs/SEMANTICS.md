@@ -452,3 +452,19 @@ final wording and usage differ.
 
 Counterexample: a sync implementation exposes `arun` through a worker thread and
 claims native async support without declaring degradation.
+
+## Framework Execution Evidence
+
+Framework configuration and Framework execution are distinct facts.
+`framework_requested` records configuration; `framework_adapter` records the
+adapter that actually projected or orchestrated execution. The compatibility
+`framework` field may retain the requested label but MUST NOT be interpreted as
+proof that an SDK ran.
+
+Direct Agent execution sets no external adapter. LangGraph full-result
+projection records `framework_adapter="langgraph"`. Provider identities such as
+`openai-runtime` and `vllm-runtime` MUST NOT be used as Framework identities.
+
+A Graph answer or compact trace is a lossy projection. Consumers requiring Tool
+evidence, validation, errors, usage, or lineage inputs MUST request and consume a
+full serialized RunResult state key.

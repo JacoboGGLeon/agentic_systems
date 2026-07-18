@@ -50,7 +50,7 @@ Agentic Systems makes those concerns first-class: runtime, tools, contracts, res
 | Environments | Episodic execution over records, transitions, rewards and history. |
 | Evals | Repeatable validation cases with pass/fail reporting. |
 | Lineage Memory | Human-readable explanation of what happened and why. |
-| Integrations | Thin facades for LangGraph, Strands and OpenAI Agents-style workflows. |
+| Integrations | A thin LangGraph adapter plus explicit profiles for declarative framework identities. |
 
 ## Core Model
 
@@ -90,10 +90,10 @@ Canonical framework facades:
 | Framework | Use |
 |---|---|
 | `langgraph` | LangGraph graph orchestration. |
-| `openai-agents` | OpenAI Agents-style integration over the selected runtime. |
-| `strands` | Strands integration over the selected runtime. |
+| `openai-agents` | Style-only identity over the selected runtime; no OpenAI Agents SDK adapter. |
+| `strands` | Declarative compatibility identity; no Strands SDK adapter. |
 
-Providers decide where execution runs. Frameworks decide who owns the outer orchestration loop. Configuration details live in `docs/ONBOARDING_FIRST_RUN.md`, `docs/CLI.md` and the `tutorials/00_runtime_*` notebooks.
+Providers decide where execution runs. A real Framework adapter may own the outer orchestration loop; an accepted framework label alone does not prove adapter execution. Configuration details live in `docs/ONBOARDING_FIRST_RUN.md`, `docs/CLI.md` and the `tutorials/00_runtime_*` notebooks.
 
 ## From Zero-to-Hero
 

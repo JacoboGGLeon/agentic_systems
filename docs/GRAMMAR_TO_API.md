@@ -140,3 +140,14 @@ Later checkpoints should turn this descriptive map into:
 
 These symbols live in `agentic_systems.providers`; they are advanced adapter API
 and are intentionally not added to the recommended top-level grammar.
+
+## Checkpoint 1.1.5 Framework Boundary Map
+
+| Boundary role | Advanced API | Implementation | Meaning |
+|---|---|---|---|
+| Framework declaration | `FrameworkProfile`, `framework_profile`, `framework_profiles` | `integrations/boundary.py` | Distinguishes real adapter, style-only, and declarative-only identities. |
+| Graph boundary | `GraphBoundary`, `describe_graph_boundary` | `integrations/boundary.py` plus Graph class attributes | Distinguishes portable Agentic Systems Graphs from framework-native wrappers. |
+| Projection conformance | `FrameworkProjectionReport`, `evaluate_framework_projection` | `integrations/boundary.py` | Verifies preserved RunResult fields in explicit Framework state projection. |
+| Portable Graph | `AgentStepGraph`, `DynamicAgentRouterGraph`, `PlannedAgentGraph` | `environments.py` | Framework-independent `invoke(state)` adapters for episodes. |
+| LangGraph facade | `graph`, `agent_node`, `GraphApp`, `AgenticGraph`, LangGraph builders | `integrations/langgraph.py` | Optional framework-native nodes, state graphs, compilation, and native access. |
+| Declarative identities | `openai-agents`, `strands` constants and Agent configuration | `engines/names.py`, `agents.py` | Compatibility metadata only; no external SDK adapter in 1.1.5. |

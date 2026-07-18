@@ -1,6 +1,6 @@
-﻿# Composition Laws
+# Composition Laws
 
-Status: normative through Checkpoint 1.1.4.
+Status: normative through Checkpoint 1.1.5.
 
 These laws govern Tool and Skill composition independently of Provider and
 Framework implementations. They apply inside one explicit composition boundary,
@@ -166,3 +166,26 @@ produces `ProviderConformanceReport`.
 
 **Test strategy.** Run controlled success and failure fixtures through each
 primary adapter and apply the same named checks.
+
+## Law 8 - Framework Boundary Preservation
+
+**Motivation.** External orchestration must not redefine central execution
+semantics or hide evidence while projecting Agent results into state.
+
+**Definition.** A Framework adapter maps state to Agent input and RunResult back
+to explicit state fields. A full-result projection preserves central RunResult
+fields and records the actual adapter. Requested framework labels without real
+adapters do not count as Framework execution.
+
+**Scope.** Agent state-node adapters, LangGraph integration, portable Environment
+Graphs, and Framework execution metadata.
+
+**Counterexample.** `framework="strands"` produces adapter evidence despite no
+Strands integration, or a Graph retains only answer text and claims full result
+preservation.
+
+**API implication.** Framework profiles declare integration maturity; Graph
+wrappers declare boundary kind; `result_key` requests full result preservation.
+
+**Test strategy.** Project a controlled RunResult through the real LangGraph node
+adapter and compare all normative central fields.

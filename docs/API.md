@@ -1,4 +1,4 @@
-﻿# API - Agentic Systems
+# API - Agentic Systems
 
 This document describes the public API as a stable product surface. Tutorials
 teach the same API step by step; source modules implement it.
@@ -75,19 +75,19 @@ Canonical providers:
 | `python-runtime` | Local deterministic execution for tools and smoke tests. |
 | `auto` | Selects one concrete provider from environment signals before execution. |
 
-Canonical frameworks are orchestration/integration facades. They are not model
-providers:
+Canonical framework identities describe orchestration intent or an implemented
+integration. They are not model providers:
 
 | Framework | Use |
 |---|---|
 | `langgraph` | LangGraph graph orchestration. |
-| `openai-agents` | OpenAI Agents-style integration facade over the selected runtime. |
-| `strands` | Strands integration facade over the selected runtime. |
+| `openai-agents` | Style-only identity over the selected runtime; no OpenAI Agents SDK adapter is included. |
+| `strands` | Declarative compatibility identity; no Strands SDK adapter is included. |
 
 Do not pass provider names as `framework`: runtime providers are selected with `provider=...`, while frameworks are selected with `framework=...`.
-Use `framework="openai-agents"` when the integration is OpenAI Agents-style and
+Use `framework="openai-agents"` to retain the existing style label and
 let `runtime(provider="auto")` or `runtime(provider="openai-runtime")` select the
-backend.
+backend. This does not invoke the OpenAI Agents SDK.
 
 Best practice: keep `provider="auto"` at the boundary where code moves between
 local, vLLM, OpenAI and AWS environments. Use `runtime.describe()` in notebooks and
@@ -474,8 +474,8 @@ Tutorials are the canonical learning path:
 | `03_agent_api.ipynb` | `agent`, `Agent`, contracts, policies and `RunResult`. |
 | `04_human_result_api.ipynb` | `final_answer`, `normalize_output`, `human_result`. |
 | `05_lineage_memory_api.ipynb` | `LineageMemory`, prompt context and trace explanation. |
-| `06_integrations_strands_api.ipynb` | Strands integration facade. |
-| `07_integrations_openai_runtime_api.ipynb` | OpenAI Agents-style integration facade over the selected runtime. |
+| `06_integrations_strands_api.ipynb` | Strands declarative identity and availability boundary. |
+| `07_integrations_openai_runtime_api.ipynb` | OpenAI Agents-style identity over the selected runtime. |
 | `08_system_api.ipynb` | `AgenticSystem`, registry, inspect and deterministic pipeline. |
 | `09_graph_api.ipynb` | `agent_node`, `graph`, state and node orchestration. |
 | `10_environment_eval_api.ipynb` | `AgenticEnvironment`, rewards, `run_eval`, reports. |
@@ -639,3 +639,27 @@ profile.check(["offline_execution"]).raise_if_failed()
 successful and one failed `RunResult`. Adapter classes expose the same profile
 through `profile()`.
 
+## Framework Boundary API
+
+The advanced `agentic_systems.integrations` namespace exposes framework and
+Graph boundary inspection without importing optional SDKs:
+
+```python
+from agentic_systems.integrations import (
+    describe_graph_boundary,
+    evaluate_framework_projection,
+    framework_profile,
+)
+
+profile = framework_profile("langgraph")
+profile.check(require_adapter=True).raise_if_failed()
+```
+
+`framework_profile("openai-agents")` reports `style-only` and
+`framework_profile("strands")` reports `declarative-only`. Only LangGraph has an
+implemented external adapter in Checkpoint 1.1.5.
+
+`describe_graph_boundary(...)` distinguishes portable Agentic Systems Graphs
+from framework-native wrappers. `evaluate_framework_projection(...)` verifies
+that a serialized RunResult stored under an explicit `result_key` preserves the
+central result contract.

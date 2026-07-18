@@ -40,7 +40,7 @@ tests/                     regression and API contract tests
 ```text
 core          provider-agnostic primitives
 providers     runtime/model access: python-runtime, bedrock-runtime, openai-runtime, vllm-runtime
-integrations  framework adapters: LangGraph, Strands and runtime bridges
+integrations  optional LangGraph adapter plus framework/Graph boundary profiles
 engines       internal execution implementation details
 ```
 
@@ -49,7 +49,7 @@ Rules:
 ```text
 - Core imports must not require optional framework dependencies.
 - Provider code owns model/backend calls. `vllm-runtime` owns only the OpenAI-compatible client call; the vLLM GPU server is external infrastructure.
-- Integration code owns framework adaptation only.
+- Integration code owns framework adaptation only; accepted framework labels without adapters remain declarative metadata.
 - Business and tutorial assets stay outside src/agentic_systems.
 - `provider="auto"` must resolve to one concrete provider before execution.
 - New user code should not import from `agentic_systems.engines.*`.
@@ -93,3 +93,16 @@ agentic-systems public-api
 ```
 
 It must remain package-oriented. Do not add domain workflows to the CLI.
+
+## Framework Boundary
+
+`AgentStepGraph`, `DynamicAgentRouterGraph`, and `PlannedAgentGraph` are portable
+Agentic Systems Graph adapters used by Environment execution. They require no
+external framework and declare `graph_kind="agentic-systems-native"`.
+
+`GraphApp`, `AgenticGraph`, and the LangGraph builders are optional integration
+objects. Their state model, compilation, and lifecycle belong to LangGraph and
+declare `graph_kind="framework-native"` where wrapped.
+
+Only LangGraph has an SDK adapter. `openai-agents` is style-only and `strands` is
+declarative-only in the current package.

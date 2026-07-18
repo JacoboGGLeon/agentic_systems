@@ -231,8 +231,16 @@ def _execute_tool(runtime: Any, agent: Any, name: str, args: dict[str, Any]) -> 
     return {"envelope": envelope, "event": event}
 
 
+def _framework_meta(agent: Any) -> dict[str, Any]:
+    requested = getattr(agent, "framework", None)
+    return {
+        "framework": requested,
+        "framework_requested": requested,
+        "framework_adapter": None,
+    }
+
+
 def _finalize_run_result(text: str, tool_events: list[ToolEvent], ok: bool, usage: dict[str, Any], *, agent: Any, mode: str, runtime_engine: str, source: str) -> RunResult:
-    framework = getattr(agent, "framework", None) or OPENAI_RUNTIME_ENGINE
     result = RunResult(
         text=text,
         data={"final_output": text} if text else {},
@@ -242,7 +250,7 @@ def _finalize_run_result(text: str, tool_events: list[ToolEvent], ok: bool, usag
         engine=runtime_engine,
         model=getattr(agent, "model", None) or DEFAULT_OPENAI_MODEL_ID,
         mode=mode,
-        meta={"source_result_type": source, "runtime_engine": runtime_engine, "framework": framework, "execution_engine": OPENAI_RUNTIME_ENGINE},
+        meta={"source_result_type": source, "runtime_engine": runtime_engine, "execution_engine": OPENAI_RUNTIME_ENGINE, **_framework_meta(agent)},
     )
     contract = getattr(agent, "contract", None)
     if contract is not None and hasattr(result, "validate"):
@@ -252,8 +260,7 @@ def _finalize_run_result(text: str, tool_events: list[ToolEvent], ok: bool, usag
 
 
 def _failure(message: str, agent: Any, mode: str, code: str, meta: dict[str, Any] | None = None) -> RunResult:
-    framework = getattr(agent, "framework", None) or OPENAI_RUNTIME_ENGINE
-    return RunResult(text=message, data={"ok": False, "error": {"code": code, "message": message}}, ok=False, engine=OPENAI_RUNTIME_ENGINE, model=getattr(agent, "model", None) or DEFAULT_OPENAI_MODEL_ID, mode=mode, meta={"framework": framework, "execution_engine": OPENAI_RUNTIME_ENGINE, **(meta or {})})
+    return RunResult(text=message, data={"ok": False, "error": {"code": code, "message": message}}, ok=False, engine=OPENAI_RUNTIME_ENGINE, model=getattr(agent, "model", None) or DEFAULT_OPENAI_MODEL_ID, mode=mode, meta={"execution_engine": OPENAI_RUNTIME_ENGINE, **_framework_meta(agent), **(meta or {})})
 
 
 def _usage_from_response(response: Any) -> dict[str, Any]:

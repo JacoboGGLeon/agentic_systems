@@ -103,7 +103,7 @@ class VLLMRuntimeProvider:
         result = _failure(message, agent, mode, code, meta={"execution_engine": VLLM_RUNTIME_ENGINE})
         result.engine = VLLM_RUNTIME_ENGINE
         result.meta["runtime_engine"] = VLLM_RUNTIME_ENGINE
-        result.meta["framework"] = getattr(agent, "framework", None) or VLLM_RUNTIME_ENGINE
+        result.meta.update({"framework": getattr(agent, "framework", None), "framework_requested": getattr(agent, "framework", None), "framework_adapter": None})
         return result
 
 
@@ -140,7 +140,7 @@ def _as_vllm_result(result: RunResult) -> RunResult:
     result.engine = VLLM_RUNTIME_ENGINE
     result.meta["runtime_engine"] = VLLM_RUNTIME_ENGINE
     result.meta["execution_engine"] = VLLM_RUNTIME_ENGINE
-    result.meta["framework"] = VLLM_RUNTIME_ENGINE
+    result.meta.setdefault("framework_adapter", None)
     if result.meta.get("source_result_type") == "openai.chat.completions":
         result.meta["source_result_type"] = "vllm.openai_compatible.chat.completions"
     return result
