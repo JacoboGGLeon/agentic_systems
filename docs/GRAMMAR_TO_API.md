@@ -101,7 +101,7 @@ types.
 | Determinism | Inferred mainly from provider/engine identity | Add a semantic field only after use cases and compatibility are defined. |
 | Execution requirements | Scattered across provider config, optional dependencies, and tool async metadata | Model conceptually first. |
 | Evidence | Present in `RunResult.data`, tool events, trace, and lineage, but not governed by one invariant | Define evidence ownership and consistency laws. |
-| Execution context | Implicit across input, runtime config, scheduler, mode, graph state, environment memory, and metadata | Do not add a public class in 1.1.0. |
+| Execution context | Conceptual union across input, RuntimeConfig, AgenticSystem, RunPolicy, scheduler, state, and metadata | Checkpoint 1.1.7 confirms no public or internal aggregate object; see ADR 0009. |
 | Degradation | Implemented through fallback and structured failures in several paths | Define a common observable rule before adding API. |
 | Substitution | Provider selection exists; behavioral equivalence is not tested as a law | Add conformance fixtures in later checkpoints. |
 
@@ -163,3 +163,17 @@ and are intentionally not added to the recommended top-level grammar.
 
 Normative replay conditions and aggregate invariants are in
 `SYSTEM_ENVIRONMENT_EVAL_SEMANTICS.md`.
+
+## Checkpoint 1.1.7 Execution Context Map
+
+| Resolved concern | Existing API owner |
+|---|---|
+| Provider/model/scheduler configuration | `RuntimeConfig` |
+| Capability composition and Agent binding | `AgenticSystem` |
+| Per-run limits and behavior | `RunPolicy` |
+| Transition and episode state | Graph / `AgenticEnvironment` |
+| Correlation and execution evidence | `RunResult` |
+
+No `ExecutionContext` symbol is added. `PUBLIC_API` remains 105 symbols and no
+existing owner, signature, schema, or return shape changes. The normative
+decision is `EXECUTION_CONTEXT_DECISION.md`.

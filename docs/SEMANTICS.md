@@ -291,9 +291,11 @@ actor definition
 + correlation and trace metadata
 ```
 
-This set is the conceptual Execution Context. It has no required public class in
-1.1. Internal representations MAY reduce duplication if public construction and
-results remain compatible.
+This set is the conceptual Execution Context. Checkpoint 1.1.7 explicitly keeps
+it as a concept: there is no public class and no internal aggregate object.
+Each value retains its existing owner, and ephemeral resolution locals do not
+create a new ownership boundary. See `EXECUTION_CONTEXT_DECISION.md` and ADR
+0009 for the compatibility matrix and reconsideration triggers.
 
 ### Resolution Order
 

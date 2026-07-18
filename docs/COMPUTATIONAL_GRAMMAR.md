@@ -277,13 +277,16 @@ and remains useful for deterministic or direct model pipelines.
 
 ## Execution Context
 
-Execution Context is a conceptual role, not a public class in 1.1. It is the
-resolved set of conditions relevant to one execution, including input, mode,
-actor/system binding, runtime and Provider, optional Framework, contracts,
-policy, scheduler limits, state, and correlation metadata.
+Execution Context is a conceptual role, not a public class or internal aggregate
+object in 1.1. It is the resolved set of conditions relevant to one execution,
+including input, mode, actor/System binding, Runtime and Provider, optional
+Framework, Contracts, policy, scheduler limits, state, and correlation metadata.
 
-Implementations MAY represent these conditions across existing objects. They
-MUST NOT require users to construct a new `ExecutionContext` object in 1.1.
+Those conditions retain their existing owners: `RuntimeConfig`,
+`AgenticSystem`, `Agent`, `RunPolicy`, Graph/Environment state, and `RunResult`.
+Execution Context MUST NOT duplicate ownership or require user construction.
+The decision, compatibility impact, and reconsideration triggers are normative
+in `EXECUTION_CONTEXT_DECISION.md` and ADR 0009.
 
 ## Legal Composition
 

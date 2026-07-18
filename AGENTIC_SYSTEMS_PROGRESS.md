@@ -63,6 +63,7 @@ wheel smoke: OK
 | 1.1.4 Runtime and Provider substitution | complete | `docs/checkpoints/1.1.4_runtime_provider_substitution.md` |
 | 1.1.5 Framework and Graph boundary | complete | `docs/checkpoints/1.1.5_framework_graph_boundary.md` |
 | 1.1.6 Systems, Environments, and Evals | complete | `docs/checkpoints/1.1.6_system_environment_eval.md` |
+| 1.1.7 Execution Context decision | complete | `docs/checkpoints/1.1.7_execution_context_decision.md` |
 
 Checkpoint 1.1.4 introduces a shared base conformance suite and explicit
 capability profiles for python-runtime, openai-runtime, vllm-runtime, and
@@ -70,4 +71,6 @@ bedrock-runtime. Checkpoint 1.1.5 distinguishes the real LangGraph adapter from
 OpenAI Agents-style and Strands declarative identities, and separates portable
 Graphs from framework-native objects. Checkpoint 1.1.6 separates composition,
 transition, episode, and verification ownership and adds explicit replay
-classification. Validation totals are recorded in the checkpoint reports.
+classification. Checkpoint 1.1.7 keeps Execution Context conceptual, with no new
+public/internal object or compatibility change. Validation totals are recorded
+in the checkpoint reports.

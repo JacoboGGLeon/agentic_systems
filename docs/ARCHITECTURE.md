@@ -120,3 +120,11 @@ The arrows describe data flow, not ownership transfer. Environment owns episode
 seed and a local RNG; Graph owns transition topology; Eval owns checks and
 reports. See `SYSTEM_ENVIRONMENT_EVAL_SEMANTICS.md` for replay conditions
 and report invariants.
+
+## Execution Resolution
+
+Execution Context is the conceptual snapshot produced while resolving System
+binding, input/mode, Runtime/Provider, policy, scheduler, state, and correlation
+metadata. It is not another container in the package architecture. Existing
+owners remain authoritative, and no ambient global or context-variable state is
+introduced. See `EXECUTION_CONTEXT_DECISION.md`.

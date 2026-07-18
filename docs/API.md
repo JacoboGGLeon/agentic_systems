@@ -326,6 +326,15 @@ AgenticSystem
 PublicToolRegistry
 ```
 
+### Execution Context
+
+Execution Context is a conceptual resolution view, not a public object. Runtime
+selection remains in `RuntimeConfig`, composition remains in `AgenticSystem`,
+per-run limits remain in `RunPolicy`, and state/evidence remain in their Graph,
+Environment, and `RunResult` owners. Do not import or construct
+`ExecutionContext`; no such public symbol exists in 1.1.7. See
+`EXECUTION_CONTEXT_DECISION.md`.
+
 ## Graph Integrations
 
 Graph APIs coordinate state, nodes and edges. They do not replace tools, agents
