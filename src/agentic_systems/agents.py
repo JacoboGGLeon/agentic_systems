@@ -396,9 +396,7 @@ class Agent:
             result.engine = runtime_engine
         result = _coerce_output_data(result, self.output_contract)
         validation = result.validate(self.contract)
-        result.validation = validation.to_dict()
-        result.ok = result.ok and validation.ok
-        return result
+        return result.apply_validation(validation)
 
     def run_sync(self, input: Any = None, *, mode: str = "default", config: RunPolicy | dict[str, Any] | None = None) -> RunResult:
         """Alias for ``run`` for call sites that want explicit sync naming."""

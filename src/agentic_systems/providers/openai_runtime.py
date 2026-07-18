@@ -243,8 +243,7 @@ def _finalize_run_result(text: str, tool_events: list[ToolEvent], ok: bool, usag
     contract = getattr(agent, "contract", None)
     if contract is not None and hasattr(result, "validate"):
         validation = result.validate(contract)
-        result.validation = validation.to_dict()
-        result.ok = result.ok and validation.ok
+        result.apply_validation(validation)
     return result
 
 
