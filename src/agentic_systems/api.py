@@ -51,6 +51,7 @@ CORE_API = (
     "default_model_id",
     "default_region",
     "AgenticSystem",
+    "InspectReport",
     "PublicToolRegistry",
     "Agent",
     "Tool",

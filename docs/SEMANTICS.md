@@ -382,6 +382,17 @@ Observation has three levels:
 2. Explanation: Lineage Memory derived from evidence.
 3. Presentation: Human Output and notebook/CLI summaries.
 
+Static System inspection is a pre-execution observation. It derives entities,
+relationships, contracts, Provider and Framework declarations, capabilities,
+conflicts, limits, and degradation risks from registered definitions only. It
+MUST NOT execute a model or Tool, and it MUST NOT present declared availability
+as execution evidence.
+
+`InspectReport.to_dict()` is the canonical serializable projection.
+`InspectReport.human_text()` MUST preserve section ordering and deterministic
+entity ordering for equivalent System definitions. Each diagnostic MUST include
+an actionable suggestion and identify its affected entity when one exists.
+
 Information may be compacted from level 1 to levels 2 and 3. It MUST NOT be
 invented or contradicted. Programmatic consumers MUST use level 1.
 

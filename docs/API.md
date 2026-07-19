@@ -311,6 +311,8 @@ def multiply(a: int, b: int) -> dict:
 agent = system.agent(name="system_agent", instructions="Use registered tools.")
 inspection = system.inspect()
 inspection.raise_if_errors()
+structured = inspection.to_dict()
+human = inspection.human_text()
 composition = system.composition()
 ```
 
@@ -323,8 +325,18 @@ Public system names:
 
 ```text
 AgenticSystem
+InspectReport
 PublicToolRegistry
 ```
+
+### Static Inspection
+
+`AgenticSystem.inspect()` returns an `InspectReport` without executing models or
+Tools. The report preserves the legacy dictionary interface and adds stable
+structured sections for entities, relationships, contracts, Providers,
+Frameworks, capabilities, conflicts, limits, degradation risks, and actionable
+diagnostics. Use `to_dict()` for JSON serialization and `human_text()` for the
+stable human view. See `STATIC_SYSTEM_INSPECTION.md`.
 
 ### Execution Context
 
@@ -526,6 +538,7 @@ load_skill
 default_model_id
 default_region
 AgenticSystem
+InspectReport
 PublicToolRegistry
 Agent
 Tool

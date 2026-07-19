@@ -20,7 +20,7 @@ import agentic_systems as toolkit
 | API group | Symbols | Role |
 |---|---:|---|
 | `RECOMMENDED_API` | 33 | Names intended for first-use documentation |
-| `CORE_API` | 49 | Core factories, contracts, results, output, and composition objects |
+| `CORE_API` | 50 | Core factories, contracts, results, output, and composition objects |
 | `BEDROCK_PRIMITIVE_API` | 2 | Direct Bedrock primitives |
 | `CHAIN_API` | 2 | Sequential composition helpers |
 | `ENGINE_API` | 7 | Canonical engine names and normalization |
@@ -31,8 +31,8 @@ import agentic_systems as toolkit
 | `TRACE_API` | 1 | Trace schema version |
 | `LINEAGE_API` | 4 | Lineage records and factory |
 | `NAMESPACE_API` | 3 | `core`, `providers`, and `integrations` namespaces |
-| `ADVANCED_API` | 104 | Deduplicated union of the public groups |
-| `PUBLIC_API` | 105 | `ADVANCED_API` plus `__version__` |
+| `ADVANCED_API` | 105 | Deduplicated union of the public groups |
+| `PUBLIC_API` | 106 | `ADVANCED_API` plus `__version__` |
 
 The 33 recommended symbols are:
 
@@ -177,3 +177,17 @@ Normative replay conditions and aggregate invariants are in
 No `ExecutionContext` symbol is added. `PUBLIC_API` remains 105 symbols and no
 existing owner, signature, schema, or return shape changes. The normative
 decision is `EXECUTION_CONTEXT_DECISION.md`.
+
+## Checkpoint 1.1.8 Static Inspection Map
+
+| Inspection role | Public API / field | Source |
+|---|---|---|
+| System projection | `AgenticSystem.inspect()` | `system.py` |
+| Structured and human report | `InspectReport`, `to_dict()`, `human_text()` | `inspection.py` |
+| Registered definitions | `entities`, `relationships`, `contracts` | System registries and composition history |
+| Adapter declarations | `providers`, `frameworks`, `capabilities` | Static conformance profiles |
+| Actionable analysis | `conflicts`, `limits`, `degradation_risks`, `diagnostics` | Static report builder |
+
+Inspection adds one public symbol. `PUBLIC_API` changes from 105 to 106 without
+removing names or changing the legacy dictionary fields returned by `inspect()`.
+The normative contract is `STATIC_SYSTEM_INSPECTION.md`.

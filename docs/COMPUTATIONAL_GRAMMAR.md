@@ -288,6 +288,18 @@ Execution Context MUST NOT duplicate ownership or require user construction.
 The decision, compatibility impact, and reconsideration triggers are normative
 in `EXECUTION_CONTEXT_DECISION.md` and ADR 0009.
 
+## Static System Inspection
+
+Static inspection is an Observation over an `AgenticSystem` definition before
+execution. It maps composition into entities and relationships, exposes owned
+contracts and limits, and joins declarative Provider and Framework capability
+profiles. Conflicts and degradation risks are diagnostics; they are not new
+actors, effects, or execution results.
+
+Inspection MUST be referentially stable for equivalent registered definitions
+and MUST NOT invoke Capabilities, Actors, Providers, or Framework runtimes. Its
+structured and human projections describe the same report.
+
 ## Legal Composition
 
 The grammar permits these compositions:

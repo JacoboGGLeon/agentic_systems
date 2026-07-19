@@ -31,6 +31,7 @@ from .errors import ToolContractError
 from .evals import run_eval
 from .environments import AgenticEnvironment
 from .integrations.langgraph import AgenticGraph
+from .inspection import InspectReport, build_inspection_report
 from .skills import LoadedSkill, Skill, load_skill
 from .tools import Tool
 from .tools.compat import Toolkit
@@ -77,16 +78,6 @@ class PublicToolRegistry:
 
     def __repr__(self) -> str:
         return f"PublicToolRegistry({list(self._tools)!r})"
-
-
-class InspectReport(dict):
-    """Dictionary report with a convenience raise_if_errors method."""
-
-    def raise_if_errors(self) -> "InspectReport":
-        if not self.get("ok"):
-            errors = self.get("errors", [])
-            raise ValueError(f"Agentic Systems inspect failed: {errors}")
-        return self
 
 
 class AgenticSystem:
@@ -495,26 +486,7 @@ class AgenticSystem:
             for issue in validation.issues:
                 target = errors if issue.severity == "error" else warnings
                 target.append(issue.model_dump(mode="json"))
-        report = InspectReport(
-            ok=not errors,
-            model=self.model,
-            region=self.region,
-            strict=self.strict,
-            tool_count=len(self.tools),
-            tools=list(self.tool_names),
-            agent_count=len(self._agents),
-            agents=[agent.name for agent in self._agents],
-            toolkit_count=len(self._toolkits),
-            toolkits={name: list(toolkit.tool_names) for name, toolkit in self._toolkits.items()},
-            skill_count=len(self._skills) + len(self._runtime_skills),
-            skills=[skill.manifest.model_dump(mode="json") for skill in self._skills],
-            runtime_skill_count=len(self._runtime_skills),
-            runtime_skills=[skill.info() for skill in self._runtime_skills.values()],
-            composition=self.composition(),
-            warnings=warnings,
-            errors=errors,
-        )
-        return report
+        return build_inspection_report(self, warnings=warnings, errors=errors)
 
     def eval(self, agent: Agent, cases: list[dict[str, Any]], **kwargs: Any):
         return run_eval(agent, cases, **kwargs)

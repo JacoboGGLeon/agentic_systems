@@ -128,3 +128,16 @@ binding, input/mode, Runtime/Provider, policy, scheduler, state, and correlation
 metadata. It is not another container in the package architecture. Existing
 owners remain authoritative, and no ambient global or context-variable state is
 introduced. See `EXECUTION_CONTEXT_DECISION.md`.
+
+## Static Inspection Boundary
+
+`AgenticSystem.inspect()` projects registered composition and declarative
+configuration into an `InspectReport`. It may read local registries, contracts,
+Provider profiles, Framework profiles, and composition history. It must not call
+models or Tools, probe credentials, compile external Graphs, or import optional
+Framework SDKs.
+
+The report has one canonical structured representation and a stable human
+projection. Diagnostics identify the affected entity, severity, code, message,
+and suggested action. Runtime availability remains a declared risk until actual
+execution; inspection does not claim behavioral conformance.
