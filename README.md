@@ -8,7 +8,7 @@
   <a href="https://pypi.org/project/agentic-systems/"><img src="https://img.shields.io/pypi/v/agentic-systems.svg" alt="PyPI version" /></a>
   <a href="https://pypi.org/project/agentic-systems/"><img src="https://img.shields.io/badge/python-%3E%3D3.10-blue.svg" alt="Python >=3.10" /></a>
   <img src="https://img.shields.io/badge/coverage-100%25-brightgreen.svg" alt="Coverage 100%" />
-  <img src="https://img.shields.io/badge/tests-308%20passed%2C%200%20skipped-brightgreen.svg" alt="Tests 308 passed, 0 skipped" />
+  <img src="https://img.shields.io/badge/tests-358%20passed%2C%200%20skipped-brightgreen.svg" alt="Tests 358 passed, 0 skipped" />
 </p>
 
 **Agentic Systems is a Python framework for building industrial, auditable and provider-agnostic agentic systems.**
@@ -16,6 +16,10 @@
 It gives you one public API to compose tools, skills, agents, systems, graphs, environments, evals, contracts, lineage memory and stable human-readable outputs. It supports deterministic execution, OpenAI, AWS Bedrock Runtime and OpenAI-compatible vLLM endpoints through explicit runtime selection.
 
 Use it when agentic workloads need to be observable, testable, portable and ready for repeated execution, not just notebook demos.
+
+Release status: this repository is preparing `1.1.0rc1`. The published PyPI
+version may remain 1.0.7 until the candidate passes the manual notebook gate in
+`docs/RELEASE_CANDIDATE_1_1.md`.
 
 ```bash
 pip install agentic-systems
@@ -150,7 +154,10 @@ agent = system.agent(
     instructions="Use registered tools to solve arithmetic requests.",
 )
 
-system.inspect().raise_if_errors()
+inspection = system.inspect()
+inspection.raise_if_errors()
+toolkit.show(inspection.to_dict(), title="Static inspection")
+print(inspection.human_text())
 
 result = agent.run({"tool": "multiply", "input": {"a": 6, "b": 7}})
 toolkit.human_result(result)
@@ -346,9 +353,13 @@ docs/ARCHITECTURE.md
 docs/BOUNDARIES.md
 docs/ONBOARDING_FIRST_RUN.md
 docs/RUNRESULT_FINAL_ANSWER.md
+docs/STATIC_SYSTEM_INSPECTION.md
+docs/MIGRATION_1_0_TO_1_1.md
+docs/RELEASE_CANDIDATE_1_1.md
 docs/PYTEST_COVERAGE_REPORT.md
 docs/CONTRIBUTING_CHECKLIST.md
 docs/ROADMAP_CHECKPOINTS.md
+CHANGELOG.md
 ```
 
 ## Quality Gate
@@ -356,12 +367,14 @@ docs/ROADMAP_CHECKPOINTS.md
 Current verified status:
 
 ```text
-Version: 1.0.7
+Version: 1.1.0rc1
 PyPI package: agentic-systems
-Tests: 308 passed, 0 skipped
+Tests: 358 passed, 0 skipped
 Coverage: 100.00%
-TOTAL statements: 5380
+TOTAL statements: 6069
 TOTAL missing: 0
+Canonical notebooks: 18 parsed, source-clean, and statically compiled
+Manual notebook execution: pending RC gate
 ```
 
 Run validation locally:

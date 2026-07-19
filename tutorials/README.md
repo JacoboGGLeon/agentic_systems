@@ -34,8 +34,8 @@ Memory / Lineage -> Runtime -> Provider -> Integrations
 | 3 | `03_agent_api.ipynb` | Agent API: contexto transformado en acciones. |
 | 4 | `04_human_result_api.ipynb` | RunResult, final answer y salida humana. |
 | 5 | `05_lineage_memory_api.ipynb` | Memory / Lineage como auditoria de ejecucion. |
-| 6 | `06_integrations_strands_api.ipynb` | Integrations: Strands. |
-| 7 | `07_integrations_openai_runtime_api.ipynb` | Integrations: OpenAI Agents framework sobre runtime agnostico. |
+| 6 | `06_integrations_strands_api.ipynb` | Strands como identidad `declarative-only`; no SDK adapter. |
+| 7 | `07_integrations_openai_runtime_api.ipynb` | OpenAI Agents-style como identidad `style-only`; no Agents SDK adapter. |
 | 8 | `08_system_api.ipynb` | System API: registry, skills, agents y pipeline determinista. |
 | 9 | `09_graph_api.ipynb` | Graph API: state, nodes, edges y `agent.as_node(...)`. |
 | 10 | `10_environment_eval_api.ipynb` | Environment, reward, evals y estadisticas. |
@@ -89,3 +89,17 @@ No hay rutas ocultas de negocio ni dependencias en `examples/`.
 ## Alias publico
 
 Los notebooks usan `toolkit` como alias de `agentic_systems` para subrayar que se consume la fachada publica de la libreria, no modulos internos.
+
+## Contrato De Release Candidate
+
+Los 18 notebooks deben:
+
+- importar solo `agentic_systems as toolkit`;
+- iniciar sin outputs persistidos;
+- compilar todas sus celdas de codigo;
+- registrar skips de Providers opcionales sin presentarlos como ejecucion;
+- separar Provider ejecutable de identidad Framework.
+
+La suite automatica verifica estructura y compilacion. La ejecucion completa
+desde kernels limpios es el gate manual posterior descrito en
+`docs/RELEASE_CANDIDATE_1_1.md`.

@@ -1,76 +1,53 @@
-# Agentic Systems roadmap
+# Agentic Systems Roadmap
 
-## Current State
+## Release Candidate 1.1
 
-Agentic Systems is in a production-clean tutorial-first state.
+The current repository candidate is `1.1.0rc1`.
 
 ```text
-src/agentic_systems/  library package
-tutorials/            API walkthroughs
-docs/                 current docs
-tests/                regression suite
-dist/                 built wheel and sdist
+src/agentic_systems/  package
+tutorials/            18 canonical notebooks
+docs/                 normative and operating documentation
+tests/                API, contract, composition, integration, and release gates
 ```
 
-Removed surfaces:
+## Closed 1.1 Checkpoints
 
 ```text
-examples/
-src/agentic_systems/examples/
-tutorials/tools/
-legacy package imports
-demo_case / run_tools top-level exports
-```
-
-## Active Route
-
-```text
-tutorials/00_runtime_api.ipynb
-tutorials/00_runtime_provider_api.ipynb
-tutorials/00_runtime_scheduler_api.ipynb
-tutorials/01_tool_api.ipynb
-tutorials/02_agent_api.ipynb
-tutorials/03_human_result_api.ipynb
-tutorials/04_lineage_memory_api.ipynb
-tutorials/05_lineage_memory_strands_api.ipynb
-tutorials/06_lineage_memory_openai_runtime_api.ipynb
-tutorials/07_lineage_memory_langgraph_single_agent_tools_api.ipynb
-tutorials/08_lineage_memory_langgraph_multi_agent_system_api.ipynb
-tutorials/09_lineage_memory_environment_eval_api.ipynb
+1.1.0 grammar audit
+1.1.1 normative grammar and semantics
+1.1.2 RunResult invariants
+1.1.3 Tool and Skill composition
+1.1.4 Runtime and Provider substitution
+1.1.5 Framework and Graph boundary
+1.1.6 Systems, Environments, and Evals
+1.1.7 Execution Context decision
+1.1.8 static System inspection
+1.1.9 tutorials, migration, and release closure
 ```
 
 ## Runtime Boundary
 
-```text
-engines      canonical execution names
-providers    backend implementations
-integrations framework adapters
-```
-
-Canonical engines:
+Canonical Providers:
 
 ```text
 python-runtime
 bedrock-runtime
 openai-runtime
+vllm-runtime
+auto
 ```
 
-Framework integrations:
+Framework status:
 
 ```text
-langgraph
-openai-runtime
-strands
+langgraph       optional implemented adapter
+openai-agents   style-only metadata
+strands         declarative-only metadata
 ```
 
-## Release Rule
+## Promotion Gate
 
-Before handoff:
-
-```bash
-python -m pytest -q
-python -m compileall -q src tests tutorials
-python -m build --no-isolation
-```
-
-The wheel and sdist must not include `tests/`, `tutorials/`, `docs/`, or `agentic_systems/examples`.
+The candidate is not a final release until automated package gates and the
+manual notebook matrix in `docs/RELEASE_CANDIDATE_1_1.md` pass. External Provider
+support is claimed only at the evidence level recorded there.

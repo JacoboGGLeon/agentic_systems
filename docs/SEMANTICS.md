@@ -7,7 +7,8 @@ described in [`COMPUTATIONAL_GRAMMAR.md`](COMPUTATIONAL_GRAMMAR.md). It separate
 portable semantics from Provider and Framework implementation details.
 
 It does not define public algebraic syntax. Executable composition laws and
-conformance fixtures belong to later checkpoints.
+conformance fixtures are defined by `COMPOSITION_LAWS.md`, the Provider and
+Framework contracts, and their regression suites.
 
 ## Normative Language
 
@@ -371,8 +372,9 @@ Consistency requirements:
 - Rendering MUST NOT alter result fields.
 - Provider normalization MUST record the actual Provider used.
 
-These requirements define target semantics. Later conformance work will classify
-historical payloads before runtime validation becomes stricter.
+These requirements are enforced by RunResult invariant and Provider conformance
+tests. Historical compatibility is preserved only where it does not create a
+contradictory result envelope.
 
 ## Observation Semantics
 

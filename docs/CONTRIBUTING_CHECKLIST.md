@@ -49,3 +49,15 @@ agentic-systems api --tier public --json
 [ ] No API keys, AWS credentials, local sandbox paths or notebook outputs with secrets are committed.
 [ ] Generated artifacts are either ignored or intentionally documented.
 ```
+
+## Release Candidate
+
+```text
+[ ] Version agrees in pyproject, package, CLI, changelog, and RC docs.
+[ ] Canonical notebooks parse, compile, use the public import, and have no outputs.
+[ ] Provider/Framework support statements identify their evidence level.
+[ ] Wheel and sdist content are inspected.
+[ ] Wheel installs and imports outside the repository.
+[ ] twine check passes.
+[ ] Manual notebook matrix is recorded before final promotion.
+```

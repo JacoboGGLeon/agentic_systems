@@ -1,10 +1,11 @@
 # Grammar To API Map
 
-Status: Checkpoint 1.1.0 audit baseline for Agentic Systems 1.0.7.
+Status: audit baseline from 1.0.7, updated through Checkpoint 1.1.9 for
+`1.1.0rc1`.
 
-This document maps the 1.1 computational grammar to the current implementation.
-It is descriptive, not yet normative. Normative semantics and composition laws
-belong to later checkpoints.
+This document maps the normative 1.1 computational grammar to the release
+candidate implementation. `COMPUTATIONAL_GRAMMAR.md`, `SEMANTICS.md`, and the
+specialized contract documents define normative behavior.
 
 ## Public Surface Baseline
 
@@ -98,12 +99,12 @@ types.
 | Desired concept | Current state | Audit disposition |
 |---|---|---|
 | Effects | No first-class tool effect descriptor | Specify before implementing. |
-| Determinism | Inferred mainly from provider/engine identity | Add a semantic field only after use cases and compatibility are defined. |
-| Execution requirements | Scattered across provider config, optional dependencies, and tool async metadata | Model conceptually first. |
-| Evidence | Present in `RunResult.data`, tool events, trace, and lineage, but not governed by one invariant | Define evidence ownership and consistency laws. |
-| Execution context | Conceptual union across input, RuntimeConfig, AgenticSystem, RunPolicy, scheduler, state, and metadata | Checkpoint 1.1.7 confirms no public or internal aggregate object; see ADR 0009. |
-| Degradation | Implemented through fallback and structured failures in several paths | Define a common observable rule before adding API. |
-| Substitution | Provider selection exists; behavioral equivalence is not tested as a law | Add conformance fixtures in later checkpoints. |
+| Determinism | Eval replay is classified; Provider behavior remains capability-dependent | Preserve explicit `deterministic`, `seeded`, and `non_deterministic` conditions. |
+| Execution requirements | Provider config, optional dependencies, and Tool async metadata remain distributed | Keep ownership local and expose requirements through profiles and inspection. |
+| Evidence | Governed by RunResult invariants, lineage derivation, and Eval report contracts | Do not add a second evidence envelope. |
+| Execution context | Conceptual union across existing owners | Checkpoint 1.1.7 confirms no public or internal aggregate object; see ADR 0009. |
+| Degradation | Provider/Framework profiles and static inspection expose declared risks | Do not infer live availability from static declarations. |
+| Substitution | Shared conformance fixtures validate the common observable contract | Do not promise equivalent model outputs or optional capabilities. |
 
 ## Compatibility Anchors
 
@@ -118,15 +119,16 @@ The following are compatibility constraints for 1.1 work:
   migration or unification strategy exists.
 - Treat `engines/` as internal even though engine names are public.
 
-## Next Normative Work
+## Normative Closure
 
-Later checkpoints should turn this descriptive map into:
+The 1.1 candidate is governed by:
 
-1. `COMPUTATIONAL_GRAMMAR.md`: syntax, categories, and legal compositions.
-2. `SEMANTICS.md`: identity, ownership, state, effects, evidence, and failures.
-3. `COMPOSITION_LAWS.md`: executable invariants and substitution laws.
-4. ADRs for result, context, provider/framework, skill, graph, and environment
-   decisions that cannot be derived from backward compatibility alone.
+1. `COMPUTATIONAL_GRAMMAR.md` and `SEMANTICS.md`;
+2. `RUNRESULT_INVARIANTS.md` and `COMPOSITION_LAWS.md`;
+3. Provider, Framework/Graph, System/Environment/Eval, Execution Context, and
+   Static Inspection contracts;
+4. ADRs 0005 through 0010;
+5. executable contract tests and the release evidence matrix.
 
 ## Checkpoint 1.1.4 Provider Contract Map
 

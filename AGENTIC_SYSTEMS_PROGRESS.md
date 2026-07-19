@@ -46,7 +46,7 @@ configure_tutorial_environment
 Latest full validation:
 
 ```text
-pytest: 354 passed
+pytest: 358 passed
 coverage: 100.00%
 compileall: OK
 wheel smoke: OK
@@ -65,6 +65,7 @@ wheel smoke: OK
 | 1.1.6 Systems, Environments, and Evals | complete | `docs/checkpoints/1.1.6_system_environment_eval.md` |
 | 1.1.7 Execution Context decision | complete | `docs/checkpoints/1.1.7_execution_context_decision.md` |
 | 1.1.8 Static system inspection | complete | `docs/checkpoints/1.1.8_static_system_inspection.md` |
+| 1.1.9 Tutorials, migration, and release closure | complete | `docs/checkpoints/1.1.9_tutorial_migration_release_closure.md` |
 
 Checkpoint 1.1.4 introduces a shared base conformance suite and explicit
 capability profiles for python-runtime, openai-runtime, vllm-runtime, and
@@ -76,3 +77,7 @@ classification. Checkpoint 1.1.7 keeps Execution Context conceptual, with no new
 public/internal object or compatibility change. Validation totals are recorded
 in the checkpoint reports. Checkpoint 1.1.8 adds a non-executing structured and
 human inspection projection with actionable diagnostics.
+
+Checkpoint 1.1.9 prepares `1.1.0rc1`, aligns all 18 tutorials, adds migration
+and release evidence, and validates clean wheel/sdist artifacts. Full notebook
+execution remains the documented manual post-checkpoint gate.

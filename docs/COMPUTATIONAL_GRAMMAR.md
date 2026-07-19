@@ -7,8 +7,8 @@ the concepts users compose and the boundaries implementations must preserve.
 It does not introduce a public algebra, DSL, parser, or new runtime object.
 
 Detailed behavioral meaning is defined in [`SEMANTICS.md`](SEMANTICS.md). The
-mapping to the 1.0.7 implementation is documented in
-[`GRAMMAR_TO_API.md`](GRAMMAR_TO_API.md).
+mapping from the 1.0.7 audit baseline through the `1.1.0rc1` implementation is
+documented in [`GRAMMAR_TO_API.md`](GRAMMAR_TO_API.md).
 
 ## Normative Language
 
