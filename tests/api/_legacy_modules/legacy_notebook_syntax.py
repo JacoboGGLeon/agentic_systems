@@ -48,10 +48,9 @@ def test_mvp_tutorial_set_is_progressive_fundamentals_tools_skills():
         "tutorials/08_system_api.ipynb",
         "tutorials/09_graph_api.ipynb",
         "tutorials/10_environment_eval_api.ipynb",
-        "tutorials/11_multi_agentic_system_api.ipynb",
-        "tutorials/12_multi_agentic_graph_api.ipynb",
-        "tutorials/13_single_agentic_system_api.ipynb",
-        "tutorials/14_multi_agentic_system_api.ipynb",
+        "tutorials/11_single_agentic_system_api.ipynb",
+        "tutorials/12_multi_agentic_system_api.ipynb",
+        "tutorials/13_multi_agentic_graph_api.ipynb",
     }
     actual = {path.relative_to(tutorials).as_posix() for path in _tutorials()}
     assert actual == expected

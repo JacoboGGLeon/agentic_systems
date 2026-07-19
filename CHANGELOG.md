@@ -33,6 +33,8 @@ Release candidate. Full notebook execution remains a manual release gate.
   fails, while required deterministic results preserve their own status.
 - Arithmetic integration tutorials validate expected tool outputs, preventing a
   final answer from contradicting its execution evidence.
+- Tutorials 11-14 were consolidated into three end-to-end paths: single
+  AgenticSystem, multi-agent System, and the same multi-agent System as Graph.
 - Eval reports record deterministic, seeded, or non-deterministic replay
   conditions.
 - The public API grows additively from 105 to 106 symbols with
@@ -49,7 +51,7 @@ Release candidate. Full notebook execution remains a manual release gate.
 ### Verified Evidence
 
 - Unit, contract, composition, and integration-boundary tests.
-- Static compilation and source-clean checks for all 19 canonical notebooks.
+- Static compilation and source-clean checks for all 18 canonical notebooks.
 - Package API inventory and documentation checksum.
 - Wheel and source distribution content inspection.
 

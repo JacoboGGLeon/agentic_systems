@@ -335,10 +335,9 @@ tutorials/07_integrations_openai_runtime_api.ipynb
 tutorials/08_system_api.ipynb
 tutorials/09_graph_api.ipynb
 tutorials/10_environment_eval_api.ipynb
-tutorials/11_multi_agentic_system_api.ipynb
-tutorials/12_multi_agentic_graph_api.ipynb
-tutorials/13_single_agentic_system_api.ipynb
-tutorials/14_multi_agentic_system_api.ipynb
+tutorials/11_single_agentic_system_api.ipynb
+tutorials/12_multi_agentic_system_api.ipynb
+tutorials/13_multi_agentic_graph_api.ipynb
 ```
 
 There is no active `examples/` root. Tutorials are the executable documentation.

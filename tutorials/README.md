@@ -36,13 +36,12 @@ Memory / Lineage -> Runtime -> Provider -> Integrations
 | 5 | `05_lineage_memory_api.ipynb` | Memory / Lineage como auditoria de ejecucion. |
 | 6 | `06_integrations_strands_api.ipynb` | Strands como identidad `declarative-only`; no SDK adapter. |
 | 7 | `07_integrations_openai_runtime_api.ipynb` | OpenAI Agents-style como identidad `style-only`; no Agents SDK adapter. |
-| 8 | `08_system_api.ipynb` | System API: registry, skills, agents y pipeline determinista. |
-| 9 | `09_graph_api.ipynb` | Graph API: state, nodes, edges y `agent.as_node(...)`. |
-| 10 | `10_environment_eval_api.ipynb` | Environment, reward, evals y estadisticas. |
-| 11 | `11_multi_agentic_system_api.ipynb` | Sistema multi-agente con agentes deterministas y LM opcional. |
-| 12 | `12_multi_agentic_graph_api.ipynb` | Graph multi-agente con nodos, estado y fallback local. |
-| 13 | `13_single_agentic_system_api.ipynb` | Recorrido completo single-agent: Tool -> Agent -> Environment -> Eval. |
-| 14 | `14_multi_agentic_system_api.ipynb` | Recorrido completo multi-agent: System -> Graph -> Environment -> Eval. |
+| 8 | `08_system_api.ipynb` | Fundamentos de `AgenticSystem`: ownership, registro, Skills, Agents e inspeccion. |
+| 9 | `09_graph_api.ipynb` | Fundamentos de Graph: estado, nodos, edges y frontera con LangGraph. |
+| 10 | `10_environment_eval_api.ipynb` | Episodios, Environment, seeds, reproducibilidad y Evals. |
+| 11 | `11_single_agentic_system_api.ipynb` | Integracion end-to-end de un System con un Agent obligatorio y un explainer LM opcional. |
+| 12 | `12_multi_agentic_system_api.ipynb` | Integracion end-to-end de solver, judge y reviewer LM opcional en un solo System. |
+| 13 | `13_multi_agentic_graph_api.ipynb` | El sistema multiagente anterior orquestado como Graph con estado, nodos y edges. |
 
 ## Regla De Ejecucion
 
@@ -92,7 +91,7 @@ Los notebooks usan `toolkit` como alias de `agentic_systems` para subrayar que s
 
 ## Contrato De Release Candidate
 
-Los 19 notebooks deben:
+Los 18 notebooks deben:
 
 - importar solo `agentic_systems as toolkit`;
 - iniciar sin outputs persistidos;

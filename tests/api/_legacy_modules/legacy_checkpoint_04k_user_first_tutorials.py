@@ -36,8 +36,7 @@ def test_tutorials_have_progressive_walkthrough_routes() -> None:
         "08_system_api.ipynb",
         "09_graph_api.ipynb",
         "10_environment_eval_api.ipynb",
-        "11_multi_agentic_system_api.ipynb",
-        "12_multi_agentic_graph_api.ipynb",
-        "13_single_agentic_system_api.ipynb",
-        "14_multi_agentic_system_api.ipynb",
+        "11_single_agentic_system_api.ipynb",
+        "12_multi_agentic_system_api.ipynb",
+        "13_multi_agentic_graph_api.ipynb",
     ]

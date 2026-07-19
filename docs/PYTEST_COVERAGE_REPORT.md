@@ -39,6 +39,6 @@ credential, endpoint, GPU, model, Strands SDK, or OpenAI Agents SDK execution.
 
 ## Tutorial Gate
 
-All 19 canonical notebooks parse, use the public import, contain no persisted
+All 18 canonical notebooks parse, use the public import, contain no persisted
 outputs, and compile statically. Full notebook execution is the separate manual
 gate in `RELEASE_CANDIDATE_1_1.md`.

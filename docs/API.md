@@ -504,13 +504,12 @@ Tutorials are the canonical learning path:
 | `05_lineage_memory_api.ipynb` | `LineageMemory`, prompt context and trace explanation. |
 | `06_integrations_strands_api.ipynb` | Strands declarative identity and availability boundary. |
 | `07_integrations_openai_runtime_api.ipynb` | OpenAI Agents-style identity over the selected runtime. |
-| `08_system_api.ipynb` | `AgenticSystem`, registry, inspect and deterministic pipeline. |
-| `09_graph_api.ipynb` | `agent_node`, `graph`, state and node orchestration. |
-| `10_environment_eval_api.ipynb` | `AgenticEnvironment`, rewards, `run_eval`, reports. |
-| `11_multi_agentic_system_api.ipynb` | Multi-agent native system with deterministic and optional LM agents. |
-| `12_multi_agentic_graph_api.ipynb` | Multi-agent graph with state, nodes and local fallback. |
-| `13_single_agentic_system_api.ipynb` | End-to-end single-agent system path. |
-| `14_multi_agentic_system_api.ipynb` | End-to-end multi-agent system path. |
+| `08_system_api.ipynb` | AgenticSystem fundamentals: ownership, registration, Skills, Agents and static inspection. |
+| `09_graph_api.ipynb` | Graph fundamentals: state, nodes, edges and the LangGraph boundary. |
+| `10_environment_eval_api.ipynb` | Episodes, Environment, seeds, reproducibility and Evals. |
+| `11_single_agentic_system_api.ipynb` | End-to-end integration of a System with one required Agent and an optional LM explainer. |
+| `12_multi_agentic_system_api.ipynb` | End-to-end solver, judge and optional LM reviewer composition owned by one System. |
+| `13_multi_agentic_graph_api.ipynb` | The preceding multi-agent System orchestrated as a stateful Graph. |
 
 ## Documentation Rules
 
