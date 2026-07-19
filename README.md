@@ -11,15 +11,14 @@
   <img src="https://img.shields.io/badge/tests-358%20passed%2C%200%20skipped-brightgreen.svg" alt="Tests 358 passed, 0 skipped" />
 </p>
 
-**Agentic Systems is a Python framework for building industrial, auditable and provider-agnostic agentic systems.**
+**Agentic Systems proposes a computational grammar for building, executing, observing, and evaluating intelligent systems.**
 
-It gives you one public API to compose tools, skills, agents, systems, graphs, environments, evals, contracts, lineage memory and stable human-readable outputs. It supports deterministic execution, OpenAI, AWS Bedrock Runtime and OpenAI-compatible vLLM endpoints through explicit runtime selection.
+Its Python API turns that grammar into explicit, composable abstractions: tools, skills, agents, systems, graphs, environments, evals, contracts, lineage memory and stable human-readable outputs. Runtime and Provider remain separate concepts, so the same computational model supports deterministic execution, OpenAI, AWS Bedrock Runtime and OpenAI-compatible vLLM endpoints through explicit runtime selection.
 
 Use it when agentic workloads need to be observable, testable, portable and ready for repeated execution, not just notebook demos.
 
-Release status: this repository is preparing `1.1.0rc1`. The published PyPI
-version may remain 1.0.7 until the candidate passes the manual notebook gate in
-`docs/RELEASE_CANDIDATE_1_1.md`.
+Release status: `1.1.0rc1` is the current release candidate. Its manual notebook
+execution matrix is tracked in `docs/RELEASE_CANDIDATE_1_1.md`.
 
 ```bash
 pip install agentic-systems
@@ -40,7 +39,7 @@ Agent prototypes usually break when they leave the demo path because the importa
 - Can the same agent run locally, with OpenAI, with Bedrock or with vLLM?
 - Can deterministic tools and language-model reasoning share one execution contract?
 
-Agentic Systems makes those concerns first-class: runtime, tools, contracts, result envelopes, lineage, environments, eval reports and human output are all part of the same API.
+Agentic Systems represents those concerns as a computational grammar: runtime, tools, contracts, result envelopes, lineage, environments, eval reports and human output are first-class concepts in the same API.
 
 ## What You Can Build
 
@@ -64,7 +63,7 @@ Tool -> Skill -> Agent -> System -> Graph -> Environment -> Eval
 Runtime, Provider, Contracts, Lineage Memory and Human Output support the whole cycle.
 ```
 
-The goal is not to hide complexity. The goal is to make agentic computation explicit, inspectable and reusable.
+The grammar does not hide complexity. It makes intelligent computation explicit, inspectable, portable and reusable across execution backends.
 
 ## Runtime And Providers
 
