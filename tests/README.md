@@ -44,7 +44,7 @@ Coverage policy:
   -q
 ```
 
-Current verified status: `358 passed, 0 skipped`, `100.00%` real coverage.
+Current verified status: `359 passed, 0 skipped`, `100.00%` real coverage.
 
 Provider substitution coverage:
 

@@ -8,7 +8,7 @@
   <a href="https://pypi.org/project/agentic-systems/"><img src="https://img.shields.io/pypi/v/agentic-systems.svg" alt="PyPI version" /></a>
   <a href="https://pypi.org/project/agentic-systems/"><img src="https://img.shields.io/badge/python-%3E%3D3.10-blue.svg" alt="Python >=3.10" /></a>
   <img src="https://img.shields.io/badge/coverage-100%25-brightgreen.svg" alt="Coverage 100%" />
-  <img src="https://img.shields.io/badge/tests-358%20passed%2C%200%20skipped-brightgreen.svg" alt="Tests 358 passed, 0 skipped" />
+  <img src="https://img.shields.io/badge/tests-359%20passed%2C%200%20skipped-brightgreen.svg" alt="Tests 359 passed, 0 skipped" />
 </p>
 
 **Agentic Systems proposes a computational grammar for building, executing, observing, and evaluating intelligent systems.**
@@ -86,7 +86,7 @@ Canonical providers:
 | `python-runtime` | Local deterministic execution for tools, policies and smoke tests. |
 | `auto` | Selects a concrete provider from environment signals before execution. |
 
-Default `provider="auto"` priority is `bedrock-runtime`, then `openai-runtime`, then `vllm-runtime`. Override it with `provider_priority=[...]` or `AGENTIC_SYSTEMS_PROVIDER_PRIORITY=...`.
+Default `provider="auto"` priority is `bedrock-runtime`, then `openai-runtime`, then `vllm-runtime`. Override it with `provider_priority=[...]` or `AGENTIC_SYSTEMS_PROVIDER_PRIORITY=...`. Bedrock is considered configured only when both a region and an AWS authentication signal are present; a region alone does not outrank a usable OpenAI or vLLM configuration.
 
 Canonical framework facades:
 
@@ -368,9 +368,9 @@ Current verified status:
 ```text
 Version: 1.1.0rc1
 PyPI package: agentic-systems
-Tests: 358 passed, 0 skipped
+Tests: 359 passed, 0 skipped
 Coverage: 100.00%
-TOTAL statements: 6069
+TOTAL statements: 6079
 TOTAL missing: 0
 Canonical notebooks: 18 parsed, source-clean, and statically compiled
 Manual notebook execution: pending RC gate

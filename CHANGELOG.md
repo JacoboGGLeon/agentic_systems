@@ -26,6 +26,13 @@ Release candidate. Full notebook execution remains a manual release gate.
   `python-runtime`; `python-direct` remains a compatibility alias.
 - Tool and Skill collisions require an explicit decision.
 - Provider and Framework concepts are documented independently.
+- Auto Provider resolution requires both AWS authentication and region signals
+  before selecting Bedrock; a region alone no longer masks configured OpenAI or
+  vLLM backends.
+- Tutorial LM reviewers degrade explicitly when optional Provider execution
+  fails, while required deterministic results preserve their own status.
+- Arithmetic integration tutorials validate expected tool outputs, preventing a
+  final answer from contradicting its execution evidence.
 - Eval reports record deterministic, seeded, or non-deterministic replay
   conditions.
 - The public API grows additively from 105 to 106 symbols with
@@ -42,7 +49,7 @@ Release candidate. Full notebook execution remains a manual release gate.
 ### Verified Evidence
 
 - Unit, contract, composition, and integration-boundary tests.
-- Static compilation and source-clean checks for all 18 canonical notebooks.
+- Static compilation and source-clean checks for all 19 canonical notebooks.
 - Package API inventory and documentation checksum.
 - Wheel and source distribution content inspection.
 

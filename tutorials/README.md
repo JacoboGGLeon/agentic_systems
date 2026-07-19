@@ -92,7 +92,7 @@ Los notebooks usan `toolkit` como alias de `agentic_systems` para subrayar que s
 
 ## Contrato De Release Candidate
 
-Los 18 notebooks deben:
+Los 19 notebooks deben:
 
 - importar solo `agentic_systems as toolkit`;
 - iniciar sin outputs persistidos;

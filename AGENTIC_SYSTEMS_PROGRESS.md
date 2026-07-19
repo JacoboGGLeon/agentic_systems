@@ -46,7 +46,7 @@ configure_tutorial_environment
 Latest full validation:
 
 ```text
-pytest: 358 passed
+pytest: 359 passed
 coverage: 100.00%
 compileall: OK
 wheel smoke: OK

@@ -120,11 +120,12 @@ bedrock-runtime  when AWS config is available
 auto             when no provider signal is available
 ```
 
-Bedrock selection can use `BEDROCK_MODEL_ID`, `AWS_REGION`,
-`AWS_DEFAULT_REGION`, `AWS_PROFILE`, `AWS_ACCESS_KEY_ID`,
-`AWS_SECRET_ACCESS_KEY` and `AWS_SESSION_TOKEN`. Runtime and CLI diagnostics
-show safe flags only; actual execution uses the standard boto3/AWS credential
-chain.
+Bedrock selection requires a region plus an AWS authentication signal.
+It can use `BEDROCK_MODEL_ID`, `AWS_REGION`, `AWS_DEFAULT_REGION`,
+`AWS_PROFILE`, paired `AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY`, web
+identity, container credentials, or a shared credentials file. Runtime and CLI
+diagnostics show safe flags only; actual execution uses the standard boto3/AWS
+credential chain.
 
 ## First Tutorial Route
 

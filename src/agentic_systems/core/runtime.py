@@ -206,7 +206,7 @@ def _provider_available(provider: str, region: str | None) -> bool:
 
 def _auto_reason(provider: str) -> str:
     if provider == BEDROCK_RUNTIME_ENGINE:
-        return "AWS credentials/region detected"
+        return "AWS credentials and region detected"
     if provider == OPENAI_RUNTIME_ENGINE:
         return "OPENAI_API_KEY/OPENAI config detected"
     if provider == VLLM_RUNTIME_ENGINE:
@@ -220,7 +220,7 @@ def _auto_unresolved_reason(priority: Iterable[str]) -> str:
     hints = []
     for provider in priority:
         if provider == BEDROCK_RUNTIME_ENGINE:
-            hints.append("AWS credentials/region")
+            hints.append("AWS credentials and region")
         elif provider == OPENAI_RUNTIME_ENGINE:
             hints.append("OPENAI_API_KEY/OpenAI config")
         elif provider == VLLM_RUNTIME_ENGINE:
@@ -274,16 +274,29 @@ def _openai_signal_present() -> bool:
     )
 
 
+def _aws_shared_credentials_present() -> bool:
+    configured_path = os.getenv("AWS_SHARED_CREDENTIALS_FILE")
+    credentials_path = Path(configured_path).expanduser() if configured_path else Path.home() / ".aws" / "credentials"
+    return credentials_path.is_file()
+
+
 def _bedrock_signal_present(region: str | None) -> bool:
-    return bool(
-        os.getenv("AWS_ACCESS_KEY_ID")
-        or os.getenv("AWS_SECRET_ACCESS_KEY")
-        or os.getenv("AWS_SESSION_TOKEN")
-        or os.getenv("AWS_PROFILE")
-        or os.getenv("AWS_REGION")
-        or os.getenv("AWS_DEFAULT_REGION")
-        or region
+    region_present = bool(region or os.getenv("AWS_REGION") or os.getenv("AWS_DEFAULT_REGION"))
+    static_credentials = bool(os.getenv("AWS_ACCESS_KEY_ID") and os.getenv("AWS_SECRET_ACCESS_KEY"))
+    profile_credentials = bool(os.getenv("AWS_PROFILE"))
+    web_identity = bool(os.getenv("AWS_ROLE_ARN") and os.getenv("AWS_WEB_IDENTITY_TOKEN_FILE"))
+    container_credentials = bool(
+        os.getenv("AWS_CONTAINER_CREDENTIALS_FULL_URI")
+        or os.getenv("AWS_CONTAINER_CREDENTIALS_RELATIVE_URI")
     )
+    authentication_present = (
+        static_credentials
+        or profile_credentials
+        or web_identity
+        or container_credentials
+        or _aws_shared_credentials_present()
+    )
+    return region_present and authentication_present
 
 
 def _safe_configuration(metadata: dict[str, Any]) -> dict[str, Any]:

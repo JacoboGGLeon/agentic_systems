@@ -111,8 +111,10 @@ agentic-systems runtime --provider vllm-runtime --model Qwen/Qwen3-0.6B
 
 This command constructs `RuntimeConfig` and prints `runtime.describe()` without
 executing a model. For `provider="auto"`, it reads environment signals such as
-`VLLM_BASE_URL`, `OPENAI_API_KEY`, `OPENAI_BASE_URL`,
-`AWS_REGION` and `AWS_PROFILE` to show the effective provider selection.
+`VLLM_BASE_URL`, `OPENAI_API_KEY`, `OPENAI_BASE_URL`, and paired
+AWS region/authentication signals to show the effective provider selection.
+For Bedrock, a region must be accompanied by static credentials, an AWS
+profile, web identity, container credentials, or a shared credentials file.
 
 Default auto priority is `bedrock-runtime`, then `openai-runtime`, then `vllm-runtime`. Override it with `--provider-priority bedrock-runtime,openai-runtime,vllm-runtime` or `AGENTIC_SYSTEMS_PROVIDER_PRIORITY`. Add `--allow-python-fallback` only when deterministic local fallback is intentional.
 

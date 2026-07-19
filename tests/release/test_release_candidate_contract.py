@@ -58,7 +58,7 @@ def test_release_candidate_version_and_public_inventory_are_consistent():
     assert "`PUBLIC_API` | 106" in (
         ROOT / "docs" / "GRAMMAR_TO_API.md"
     ).read_text(encoding="utf-8")
-    assert "Tests: 358 passed, 0 skipped" in (
+    assert "Tests: 359 passed, 0 skipped" in (
         ROOT / "README.md"
     ).read_text(encoding="utf-8")
     assert "include CHANGELOG.md" in (
@@ -74,6 +74,13 @@ def test_canonical_notebooks_are_clean_public_and_statically_executable():
         notebook = _notebook(name)
         source = _source(notebook)
         assert "import agentic_systems as toolkit" in source
+        parameter_sections = [
+            "".join(cell.get("source", []))
+            for cell in notebook["cells"]
+            if cell.get("cell_type") == "markdown"
+            and "".join(cell.get("source", [])).startswith("## Parámetros de ")
+        ]
+        assert len(parameter_sections) == 1
         assert "from agentic_systems." not in source
         assert "import agentic_systems." not in source
         assert "python-direct" not in source

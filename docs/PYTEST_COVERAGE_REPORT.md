@@ -18,8 +18,8 @@ The measurement comes from the repository virtual environment:
 ```
 
 ```text
-358 passed, 0 skipped
-TOTAL statements: 6069
+359 passed, 0 skipped
+TOTAL statements: 6079
 TOTAL missing: 0
 TOTAL coverage: 100.00%
 ```
@@ -39,6 +39,6 @@ credential, endpoint, GPU, model, Strands SDK, or OpenAI Agents SDK execution.
 
 ## Tutorial Gate
 
-All 18 canonical notebooks parse, use the public import, contain no persisted
+All 19 canonical notebooks parse, use the public import, contain no persisted
 outputs, and compile statically. Full notebook execution is the separate manual
 gate in `RELEASE_CANDIDATE_1_1.md`.

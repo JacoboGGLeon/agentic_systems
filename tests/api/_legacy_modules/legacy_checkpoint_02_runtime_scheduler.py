@@ -222,6 +222,8 @@ def test_runtime_auto_falls_back_to_bedrock_when_aws_signal_exists(monkeypatch) 
 def test_runtime_auto_describe_resolves_bedrock_signal(monkeypatch) -> None:
     monkeypatch.setenv("OPENAI_API_KEY", "")
     monkeypatch.setenv("OPENAI_BASE_URL", "")
+    monkeypatch.setenv("AWS_ACCESS_KEY_ID", "test-access-key")
+    monkeypatch.setenv("AWS_SECRET_ACCESS_KEY", "test-secret-key")
     monkeypatch.setenv("AWS_REGION", "us-east-1")
     monkeypatch.setattr(runtime_module, "_module_available", lambda name: name == "boto3")
 
@@ -231,6 +233,23 @@ def test_runtime_auto_describe_resolves_bedrock_signal(monkeypatch) -> None:
     assert summary["mode"] == "auto"
     assert summary["preferred_provider"] == BEDROCK_RUNTIME_ENGINE
     assert "AWS" in summary["reason"]
+
+
+def test_runtime_auto_does_not_treat_region_as_bedrock_credentials(monkeypatch) -> None:
+    monkeypatch.setenv("AWS_REGION", "us-east-1")
+    monkeypatch.setenv("AWS_ACCESS_KEY_ID", "")
+    monkeypatch.setenv("AWS_SECRET_ACCESS_KEY", "")
+    monkeypatch.setenv("AWS_SESSION_TOKEN", "")
+    monkeypatch.setenv("AWS_PROFILE", "")
+    monkeypatch.setenv("OPENAI_API_KEY", "test-openai-key")
+    monkeypatch.setenv("VLLM_BASE_URL", "")
+    monkeypatch.setattr(runtime_module, "_aws_shared_credentials_present", lambda: False)
+    monkeypatch.setattr(runtime_module, "_module_available", lambda name: name in {"boto3", "openai"})
+
+    summary = lab.runtime(provider="auto").describe()
+
+    assert summary["selected_provider"] == OPENAI_RUNTIME_ENGINE
+    assert summary["fallback_provider"] is None
 
 
 def test_runtime_auto_describe_reports_unresolved_without_backend_signal(monkeypatch) -> None:

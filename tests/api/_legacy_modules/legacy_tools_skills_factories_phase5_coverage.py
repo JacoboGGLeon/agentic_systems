@@ -245,8 +245,7 @@ def test_phase5_residual_factories_loader_and_tool_edges(monkeypatch, tmp_path):
     monkeypatch.delenv("OPENAI_MODEL", raising=False)
     assert factories_module.default_openai_model_id() == "gpt-4o-mini"
 
-    monkeypatch.setattr(factories_module, "_openai_signal_present", lambda: False)
-    monkeypatch.setattr(factories_module, "_bedrock_signal_present", lambda region: True)
+    monkeypatch.setattr(factories_module, "resolve_auto_provider", lambda region, priority=None: "bedrock-runtime")
     monkeypatch.setattr(factories_module, "default_region", lambda: "bedrock-region")
     assert factories_module._default_runtime_region("auto") == "bedrock-region"
     assert factories_module._default_runtime_region("openai-runtime") is None
