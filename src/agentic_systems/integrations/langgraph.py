@@ -14,6 +14,7 @@ import warnings
 from typing import Any
 
 from agentic_systems.errors import GraphContractError
+from agentic_systems.engines.names import LANGGRAPH_ORCHESTRATOR
 from agentic_systems.environments import PlannedAgentGraph
 from agentic_systems.results import RunResult
 from agentic_systems.utils import agent_output_mapper
@@ -103,7 +104,13 @@ def _map_node_update(
         update[str(output)] = _result_text(result)
 
     if result_key is not None:
-        update[str(result_key)] = _json_result(result)
+        projected = _json_result(result)
+        if isinstance(projected, Mapping):
+            projected = dict(projected)
+            meta = dict(projected.get("meta") or {})
+            meta["framework_adapter"] = LANGGRAPH_ORCHESTRATOR
+            projected["meta"] = meta
+        update[str(result_key)] = projected
     if trace is not None:
         update[str(trace)] = _compact_trace(result)
     return update
@@ -470,6 +477,7 @@ def build_langgraph_agent_node(
                     input=input,
                     output=output,
                     trace=trace,
+                    result_key=result_key,
                     mode=mode,
                     config=config,
                 )
@@ -489,6 +497,7 @@ def build_langgraph_agent_node(
                 input=input,
                 output=output,
                 trace=trace,
+                result_key=result_key,
                 mode=mode,
                 config=config,
             )
@@ -535,7 +544,10 @@ def agent_node(
 
 
 class GraphApp:
-    """Small runtime wrapper around a compiled graph app."""
+    """Thin Agentic Systems wrapper around a framework-native LangGraph app."""
+
+    graph_kind = "framework-native"
+    framework = LANGGRAPH_ORCHESTRATOR
 
     def __init__(self, *, native: Any, engine: str, name: str = "graph") -> None:
         self.native = native
@@ -600,11 +612,11 @@ def graph(
     name: str = "graph",
     compile_graph: bool = True,
 ) -> Any:
-    """Build a graph from state, nodes and edges using LangGraph as backend.
+    """Build a framework-native LangGraph from state, nodes and edges.
 
-    The public API is intentionally backend-neutral: users define state, nodes
-    and edges. When ``engine='langgraph'`` the implementation builds a real
-    native LangGraph ``StateGraph`` behind the scenes. For router-style systems,
+    This is an optional integration facade, not the Agentic Systems native Graph
+    contract. ``engine`` remains as a compatibility argument and only accepts
+    ``langgraph``. For router-style systems,
     pass ``conditional_edges=[('router', route_fn, {'a': 'node_a', 'b': 'END'})]``.
     """
 
@@ -723,6 +735,9 @@ class AgenticGraph:
     Agentic Systems agents, but ``native`` still exposes LangGraph directly for
     advanced users.
     """
+
+    graph_kind = "framework-native"
+    framework = LANGGRAPH_ORCHESTRATOR
 
     def __init__(self, *, name: str, state: Any = None) -> None:
         self.name = _validate_node_name(name, parameter="name")

@@ -6,8 +6,9 @@ import importlib.util
 import inspect
 import os
 from functools import wraps
-from typing import Any, Callable, get_args, get_origin, get_type_hints
+from typing import Any, Callable, get_origin, get_type_hints
 
+from .composition import conflict_message, normalize_conflict_policy, same_tool_definition
 from .core.runtime import RuntimeConfig, resolve_auto_provider
 from .providers.base import RuntimeToolSpec, ToolRegistryRuntime
 from .engines.names import (
@@ -21,7 +22,7 @@ from .engines.names import (
     supported_engine_names,
 )
 from .agents import Agent, _normalize_agent_tool_inputs
-from .contracts import AgentContract, RunPolicy, ValidationResult
+from .contracts import AgentContract, RunPolicy
 from .engines.bedrock import BedrockEngine
 from .providers.openai_runtime import OpenAIRuntimeProvider
 from .providers.vllm_runtime import VLLMRuntimeProvider
@@ -30,9 +31,10 @@ from .errors import ToolContractError
 from .evals import run_eval
 from .environments import AgenticEnvironment
 from .integrations.langgraph import AgenticGraph
+from .inspection import InspectReport, build_inspection_report
 from .skills import LoadedSkill, Skill, load_skill
 from .tools import Tool
-from .tools.compat import Toolkit, assert_dict_tool_output
+from .tools.compat import Toolkit
 
 
 class PublicToolRegistry:
@@ -78,16 +80,6 @@ class PublicToolRegistry:
         return f"PublicToolRegistry({list(self._tools)!r})"
 
 
-class InspectReport(dict):
-    """Dictionary report with a convenience raise_if_errors method."""
-
-    def raise_if_errors(self) -> "InspectReport":
-        if not self.get("ok"):
-            errors = self.get("errors", [])
-            raise ValueError(f"Agentic Systems inspect failed: {errors}")
-        return self
-
-
 class AgenticSystem:
     """Canonical Agentic Systems system/factory for advanced use cases."""
 
@@ -113,6 +105,9 @@ class AgenticSystem:
         self._skills: list[LoadedSkill] = []
         self._runtime_skills: dict[str, Skill] = {}
         self._engines: dict[str, Any] = {}
+        self._tool_origins: dict[str, list[str]] = {}
+        self._tool_selected_source: dict[str, str] = {}
+        self._composition_events: list[dict[str, Any]] = []
         max_tokens_default = self.defaults.get("max_tokens", 800)
         temperature_default = self.defaults.get("temperature", 0.0)
         if max_tokens_default is None:
@@ -188,6 +183,8 @@ class AgenticSystem:
         *,
         name: str | None = None,
         description: str | None = None,
+        on_conflict: str = "error",
+        source: str | None = None,
     ):
         """Register a dict-returning tool.
 
@@ -205,17 +202,13 @@ class AgenticSystem:
                 function=fn,
                 strict=self.strict,
             )
-            self._public_tools[tool_name] = public_tool
-
-            @wraps(fn)
-            def _wrapped(*args: Any, **kwargs: Any) -> dict[str, Any]:
-                value = fn(*args, **kwargs)
-                if self.strict:
-                    return assert_dict_tool_output(tool_name, value)
-                return value
-
-            registered = self._runtime.tool(_wrapped, name=tool_name, description=public_tool.description or description)
-            return fn if registered is _wrapped else registered
+            self._register_tool_object(
+                public_tool,
+                on_conflict=on_conflict,
+                source=source or "system.tool",
+                runtime_description=description,
+            )
+            return fn
 
         if func is None:
             return decorator
@@ -228,7 +221,7 @@ class AgenticSystem:
             self._toolkits[name] = toolkit
         return toolkit
 
-    def skill(self, skill: Skill) -> Skill:
+    def skill(self, skill: Skill, *, on_conflict: str = "error") -> Skill:
         """Register a runtime ``Skill`` and its tools in this system.
 
         This is the bridge between the new user-facing ``Skill(...)`` object and
@@ -239,12 +232,60 @@ class AgenticSystem:
         if not isinstance(skill, Skill):
             raise TypeError("system.skill(...) expects a runtime Skill instance.")
         skill.check().raise_if_failed()
+        policy = normalize_conflict_policy(on_conflict)
+        existing_skill = self._runtime_skills.get(skill.identity)
+        if existing_skill is not None:
+            if existing_skill is skill:
+                self._composition_events.append(
+                    {"kind": "skill", "identity": skill.identity, "decision": "reuse"}
+                )
+                return existing_skill
+            if policy == "error":
+                raise ValueError(
+                    conflict_message("Skill", skill.identity, "system registry", "incoming Skill")
+                )
+            if policy == "keep":
+                self._composition_events.append(
+                    {"kind": "skill", "identity": skill.identity, "decision": "keep"}
+                )
+                return existing_skill
+
+        source = f"skill:{skill.identity}"
         for public_tool in skill.available_tools():
-            self._register_tool_object(public_tool)
+            existing_tool = self._public_tools.get(public_tool.identity)
+            if existing_tool is None or same_tool_definition(existing_tool, public_tool):
+                continue
+            if policy == "error":
+                raise ValueError(
+                    conflict_message(
+                        "Tool",
+                        public_tool.identity,
+                        self._tool_selected_source.get(public_tool.identity, "system registry"),
+                        source,
+                    )
+                )
+            if policy == "keep":
+                raise ValueError(
+                    f"Cannot register Skill {skill.identity!r} with on_conflict='keep': "
+                    f"Tool {public_tool.identity!r} would resolve to a different implementation. "
+                    "Compose the Skills first or use on_conflict='replace'."
+                )
+        for public_tool in skill.available_tools():
+            self._register_tool_object(public_tool, on_conflict=policy, source=source)
         self._runtime_skills[skill.name] = skill
+        self._composition_events.append(
+            {"kind": "skill", "identity": skill.identity, "decision": "add" if existing_skill is None else "replace"}
+        )
         return skill
 
-    def _register_tool_object(self, public_tool: Tool) -> Tool:
+    def _register_tool_object(
+        self,
+        public_tool: Tool,
+        *,
+        on_conflict: str = "error",
+        source: str = "direct",
+        runtime_description: str | None = None,
+    ) -> Tool:
         """Register a public ``Tool`` object into the runtime registry.
 
         ``Tool`` is the source of truth for Pydantic input/output contracts.
@@ -259,7 +300,32 @@ class AgenticSystem:
         if public_tool.function is None:
             raise ToolContractError(f"Tool '{public_tool.name}' has no callable function.")
 
+        policy = normalize_conflict_policy(on_conflict)
+        existing = self._public_tools.get(public_tool.identity)
+        existing_source = self._tool_selected_source.get(public_tool.identity, "system registry")
+        if existing is not None:
+            if same_tool_definition(existing, public_tool):
+                _append_origin(self._tool_origins, public_tool.identity, source)
+                self._composition_events.append(
+                    {"kind": "tool", "identity": public_tool.identity, "decision": "reuse", "source": source}
+                )
+                return existing
+            if policy == "error":
+                raise ValueError(conflict_message("Tool", public_tool.identity, existing_source, source))
+            self._composition_events.append(
+                {"kind": "tool", "identity": public_tool.identity, "decision": policy, "source": source}
+            )
+            _append_origin(self._tool_origins, public_tool.identity, source)
+            if policy == "keep":
+                return existing
+
         self._public_tools[public_tool.name] = public_tool
+        _append_origin(self._tool_origins, public_tool.identity, source)
+        self._tool_selected_source[public_tool.identity] = source
+        if existing is None:
+            self._composition_events.append(
+                {"kind": "tool", "identity": public_tool.identity, "decision": "add", "source": source}
+            )
 
         @wraps(public_tool.function)
         def _wrapped(**kwargs: Any) -> dict[str, Any]:
@@ -270,7 +336,12 @@ class AgenticSystem:
             return result.data
 
         if public_tool.input_schema is None:
-            self._runtime.tool(_wrapped, name=public_tool.name, description=public_tool.description)
+            self._runtime.tool(
+                _wrapped,
+                name=public_tool.name,
+                description=runtime_description if runtime_description is not None else public_tool.description,
+                on_conflict="replace",
+            )
             return public_tool
 
         input_model = public_tool.input_schema
@@ -371,6 +442,30 @@ class AgenticSystem:
             return _dedupe_preserve_order(tool_names), _dedupe_preserve_order(skill_names)
         raise TypeError(f"Unsupported skills value: {skills!r}")
 
+    def composition(self) -> dict[str, Any]:
+        """Return registered identities, provenance, and explicit conflict decisions."""
+
+        return {
+            "schema_version": "agentic_systems.system-composition.v1",
+            "tools": [
+                {
+                    "identity": name,
+                    "selected_source": self._tool_selected_source.get(name),
+                    "sources": list(self._tool_origins.get(name, ())),
+                }
+                for name in self._public_tools
+            ],
+            "skills": [
+                {
+                    "identity": skill.identity,
+                    "version": skill.version,
+                    "tool_names": list(skill.tool_names),
+                }
+                for skill in self._runtime_skills.values()
+            ],
+            "events": [dict(event) for event in self._composition_events],
+        }
+
     def graph(self, *, name: str, state: Any = None) -> AgenticGraph:
         return AgenticGraph(name=name, state=state)
 
@@ -391,25 +486,7 @@ class AgenticSystem:
             for issue in validation.issues:
                 target = errors if issue.severity == "error" else warnings
                 target.append(issue.model_dump(mode="json"))
-        report = InspectReport(
-            ok=not errors,
-            model=self.model,
-            region=self.region,
-            strict=self.strict,
-            tool_count=len(self.tools),
-            tools=list(self.tool_names),
-            agent_count=len(self._agents),
-            agents=[agent.name for agent in self._agents],
-            toolkit_count=len(self._toolkits),
-            toolkits={name: list(toolkit.tool_names) for name, toolkit in self._toolkits.items()},
-            skill_count=len(self._skills) + len(self._runtime_skills),
-            skills=[skill.manifest.model_dump(mode="json") for skill in self._skills],
-            runtime_skill_count=len(self._runtime_skills),
-            runtime_skills=[skill.info() for skill in self._runtime_skills.values()],
-            warnings=warnings,
-            errors=errors,
-        )
-        return report
+        return build_inspection_report(self, warnings=warnings, errors=errors)
 
     def eval(self, agent: Agent, cases: list[dict[str, Any]], **kwargs: Any):
         return run_eval(agent, cases, **kwargs)
@@ -528,6 +605,12 @@ def _validate_tool_signature(tool_name: str, fn: Callable[..., Any]) -> None:
             f"Tool '{tool_name}' must be annotated as returning dict. "
             "Fix: use `-> dict` and return {'key': value}."
         )
+
+
+def _append_origin(origins: dict[str, list[str]], identity: str, source: str) -> None:
+    values = origins.setdefault(identity, [])
+    if source not in values:
+        values.append(source)
 
 
 def _return_annotation_is_dict(fn: Callable[..., Any]) -> bool:

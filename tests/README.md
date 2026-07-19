@@ -17,9 +17,14 @@ protecting?
 | `test_system.py` | AgenticSystem, public tool registry, tutorial structure and system-level regressions. |
 | `test_graph.py` | Graph state, normalized graph output and multi-agent graph contracts. |
 | `test_environment_eval.py` | AgenticEnvironment, eval reports, rewards and environment summaries. |
-| `test_integrations_openai_agents.py` | OpenAI Agents facade behavior without live OpenAI calls. |
+| `tests/contracts/test_run_result_invariants.py` | RunResult consistency, partial failure, evidence, lineage and JSON serialization invariants. |
+| `tests/contracts/test_system_environment_eval_semantics.py` | System/Graph/Environment/Eval ownership, local-seed replay, RNG isolation, Eval classification and report invariants. |
+| `tests/contracts/test_static_system_inspection.py` | Static System entities, relationships, contracts, profiles, conflicts, degradation risks, serialization, stable human output, and non-execution. |
+| `tests/release/test_release_candidate_contract.py` | RC version/API consistency, canonical notebook inventory, public imports, clean outputs, static compilation, and evidence limits. |
+| `tests/composition/` | Tool and Skill identity, conflicts, precedence, reuse, coherence and inspectable composition. |
+| `test_integrations_openai_agents.py` | OpenAI Agents-style metadata behavior; no Agents SDK adapter or live OpenAI claim. |
 | `test_integrations_langgraph.py` | LangGraph facade and optional dependency branches. |
-| `test_integrations_strands.py` | Strands facade behavior and framework metadata. |
+| `test_integrations_strands.py` | Strands declarative metadata behavior; no Strands SDK adapter claim. |
 
 `tests/api/_legacy_modules/` stores migrated historical test bodies. The public
 entrypoints are still the `tests/api/test_*.py` files above. The loader preserves
@@ -39,4 +44,16 @@ Coverage policy:
   -q
 ```
 
-Current verified status: `304 passed, 0 skipped`, `100.00%` real coverage.
+Current verified status: `358 passed, 0 skipped`, `100.00%` real coverage.
+
+Provider substitution coverage:
+
+| API file | Purpose |
+|---|---|
+| `test_provider_conformance.py` | Shared base contract across python-runtime, OpenAI, vLLM, and Bedrock; capability profiles and explicit degradation. |
+
+Framework and Graph boundary coverage:
+
+| API file | Purpose |
+|---|---|
+| `tests/integration_conformance/test_framework_boundary.py` | Framework profiles, requested/actual adapter metadata, native-vs-framework Graph identity, and RunResult state-projection preservation. |

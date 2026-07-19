@@ -111,12 +111,19 @@ class Toolkit:
         *,
         name: str | None = None,
         description: str | None = None,
+        on_conflict: str = "error",
     ):
         """Register a namespaced tool in the parent system."""
 
         def decorator(fn: Callable[..., Any]) -> Callable[..., Any]:
             full_name = self._full_name(fn, name)
-            registered = self.system.tool(fn, name=full_name, description=description)
+            registered = self.system.tool(
+                fn,
+                name=full_name,
+                description=description,
+                on_conflict=on_conflict,
+                source=f"toolkit:{self.name}",
+            )
             if full_name not in self._tool_names:
                 self._tool_names.append(full_name)
             return registered
@@ -131,8 +138,9 @@ class Toolkit:
         *,
         name: str | None = None,
         description: str | None = None,
+        on_conflict: str = "error",
     ) -> Callable[..., Any]:
-        return self.tool(fn, name=name, description=description)
+        return self.tool(fn, name=name, description=description, on_conflict=on_conflict)
 
     def ref(self) -> ToolkitRef:
         return ToolkitRef(name=self.name, tool_names=self.tool_names)

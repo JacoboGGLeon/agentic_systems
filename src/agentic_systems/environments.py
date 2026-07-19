@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import asyncio
 import inspect
+import random
 from collections import Counter
 from dataclasses import dataclass, field
 from typing import Any, Callable, Iterable, Mapping
@@ -34,6 +35,9 @@ class AgentStepGraph:
     ``build_single_agent_step_graph`` when you specifically want a native
     LangGraph app; use this adapter for portable sandbox episodes.
     """
+
+    graph_kind = "agentic-systems-native"
+    framework = None
 
     def __init__(
         self,
@@ -69,6 +73,9 @@ class DynamicAgentRouterGraph:
     - Router owns the decision of which agent should act on the current state.
     - Agent owns one reasoning/tool-use turn after it has been selected.
     """
+
+    graph_kind = "agentic-systems-native"
+    framework = None
 
     def __init__(
         self,
@@ -127,6 +134,9 @@ class PlannedAgentGraph:
     input it should receive. The graph validates the selected agent and records
     the route decision alongside the agent result.
     """
+
+    graph_kind = "agentic-systems-native"
+    framework = None
 
     def __init__(
         self,
@@ -269,6 +279,8 @@ class AgenticEnvironment:
         self._closed = False
         self._memory = self.initial_memory
         self._history: list[EnvironmentTransition] = []
+        self._seed: int | None = None
+        self._rng = random.Random()
 
     @property
     def memory(self) -> Any:
@@ -282,11 +294,25 @@ class AgenticEnvironment:
     def current_step(self) -> int:
         return self._steps
 
+    @property
+    def seed(self) -> int | None:
+        """Return the seed selected for the current episode."""
+
+        return self._seed
+
+    @property
+    def rng(self) -> random.Random:
+        """Return the environment-owned random generator for callbacks."""
+
+        return self._rng
+
     def reset(self, *, seed: int | None = None, options: dict[str, Any] | None = None) -> tuple[Any, dict[str, Any]]:
         """Start a new episode and return ``(observation, info)``."""
 
         if self._closed:
             raise RuntimeError("Environment is closed. Create a new AgenticEnvironment to run another episode.")
+        self._seed = seed
+        self._rng.seed(seed)
         self.episode_id = str((options or {}).get("episode_id") or self._default_episode_id or (f"episode-{seed}" if seed is not None else uuid4()))
         self._cursor = int((options or {}).get("start_index", 0))
         if self._cursor < 0 or self._cursor > len(self._records):
@@ -318,6 +344,7 @@ class AgenticEnvironment:
         data = {
             "name": self.name,
             "episode_id": self.episode_id,
+            "seed": self._seed,
             "step": self._steps,
             "total_records": len(self._records),
             "done": self._done,
@@ -340,6 +367,7 @@ class AgenticEnvironment:
         return {
             "name": self.name,
             "episode_id": self.episode_id,
+            "seed": self._seed,
             "steps": len(self._history),
             "total_records": len(self._records),
             "done": self._done,
@@ -483,6 +511,7 @@ class AgenticEnvironment:
             self.memory_key: self._memory,
             self.episode_key: {
                 "id": self.episode_id,
+                "seed": self._seed,
                 "step_index": self._steps,
                 "row_index": self._cursor,
                 "total_records": len(self._records),
@@ -523,6 +552,7 @@ class AgenticEnvironment:
         return {
             "name": self.name,
             "episode_id": self.episode_id,
+            "seed": self._seed,
             "step": self._steps,
             "cursor": self._cursor,
             "total_records": len(self._records),
@@ -551,7 +581,7 @@ def environment_lineage(
     transitions, rewards, routes and step evidence.
     """
 
-    from .lineage import LINEAGE_SCHEMA_VERSION, LineageMemory, LineageStep, _safe_json, _short
+    from .lineage import LINEAGE_SCHEMA_VERSION, LineageMemory, LineageStep, _short
 
     history = list(environment.history)
     selected_history = history if max_steps is None else history[:max_steps]

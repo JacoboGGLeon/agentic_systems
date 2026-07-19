@@ -9,10 +9,15 @@ from typing import Any
 from agentic_systems.contracts import RunPolicy
 from agentic_systems.engines.names import BEDROCK_RUNTIME_ENGINE
 from agentic_systems.results import RunResult
+from agentic_systems.providers.conformance import ProviderProfile, provider_profile
 
 
 class BedrockEngine:
     name = BEDROCK_RUNTIME_ENGINE
+
+    @classmethod
+    def profile(cls) -> ProviderProfile:
+        return provider_profile(cls.name)
 
     def __init__(self, system: Any) -> None:
         self.system = system

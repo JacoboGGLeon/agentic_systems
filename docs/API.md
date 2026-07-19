@@ -75,19 +75,19 @@ Canonical providers:
 | `python-runtime` | Local deterministic execution for tools and smoke tests. |
 | `auto` | Selects one concrete provider from environment signals before execution. |
 
-Canonical frameworks are orchestration/integration facades. They are not model
-providers:
+Canonical framework identities describe orchestration intent or an implemented
+integration. They are not model providers:
 
 | Framework | Use |
 |---|---|
 | `langgraph` | LangGraph graph orchestration. |
-| `openai-agents` | OpenAI Agents-style integration facade over the selected runtime. |
-| `strands` | Strands integration facade over the selected runtime. |
+| `openai-agents` | Style-only identity over the selected runtime; no OpenAI Agents SDK adapter is included. |
+| `strands` | Declarative compatibility identity; no Strands SDK adapter is included. |
 
 Do not pass provider names as `framework`: runtime providers are selected with `provider=...`, while frameworks are selected with `framework=...`.
-Use `framework="openai-agents"` when the integration is OpenAI Agents-style and
+Use `framework="openai-agents"` to retain the existing style label and
 let `runtime(provider="auto")` or `runtime(provider="openai-runtime")` select the
-backend.
+backend. This does not invoke the OpenAI Agents SDK.
 
 Best practice: keep `provider="auto"` at the boundary where code moves between
 local, vLLM, OpenAI and AWS environments. Use `runtime.describe()` in notebooks and
@@ -167,6 +167,17 @@ skill = toolkit.Skill(
 
 agent = toolkit.agent(name="skill_agent", instructions=skill.instructions, skills=[skill])
 ```
+
+Compose packages without executing them:
+
+```python
+combined = toolkit.Skill.compose(skill_a, skill_b, name="combined")
+report = combined.composition()
+```
+
+Different Tool, prompt, contract or policy definitions with the same identity fail
+by default. Pass `on_conflict="keep"` or `on_conflict="replace"` only when
+the precedence is intentional.
 
 Public skill names:
 
@@ -300,14 +311,41 @@ def multiply(a: int, b: int) -> dict:
 agent = system.agent(name="system_agent", instructions="Use registered tools.")
 inspection = system.inspect()
 inspection.raise_if_errors()
+structured = inspection.to_dict()
+human = inspection.human_text()
+composition = system.composition()
 ```
+
+Tool and Skill registration rejects different definitions with an occupied name.
+`system.tool(...)`, `system.skill(...)`, and Toolkit registration accept explicit
+`on_conflict="keep"` or `on_conflict="replace"` policies. Composition decisions
+and selected sources are included in inspection.
 
 Public system names:
 
 ```text
 AgenticSystem
+InspectReport
 PublicToolRegistry
 ```
+
+### Static Inspection
+
+`AgenticSystem.inspect()` returns an `InspectReport` without executing models or
+Tools. The report preserves the legacy dictionary interface and adds stable
+structured sections for entities, relationships, contracts, Providers,
+Frameworks, capabilities, conflicts, limits, degradation risks, and actionable
+diagnostics. Use `to_dict()` for JSON serialization and `human_text()` for the
+stable human view. See `STATIC_SYSTEM_INSPECTION.md`.
+
+### Execution Context
+
+Execution Context is a conceptual resolution view, not a public object. Runtime
+selection remains in `RuntimeConfig`, composition remains in `AgenticSystem`,
+per-run limits remain in `RunPolicy`, and state/evidence remain in their Graph,
+Environment, and `RunResult` owners. Do not import or construct
+`ExecutionContext`; no such public symbol exists in 1.1.7. See
+`EXECUTION_CONTEXT_DECISION.md`.
 
 ## Graph Integrations
 
@@ -334,10 +372,16 @@ Environments execute episodes. Evals score cases.
 
 ```python
 env = toolkit.AgenticEnvironment(records=records, transition_fn=transition, reward_fn=reward)
-observation, info = env.reset()
+observation, info = env.reset(seed=17)
 observation, reward, terminated, truncated, info = env.step(action=None)
 
-report = toolkit.run_eval(agent, cases)
+report = toolkit.run_eval(
+    agent,
+    cases,
+    determinism="seeded",
+    seed=17,
+    reproducibility_conditions=["same fixtures and provider configuration"],
+)
 ```
 
 Public names:
@@ -354,6 +398,7 @@ build_planned_agent_graph
 environment_lineage
 EvalCaseResult
 EvalReport
+EvalReproducibility
 Evaluator
 run_eval
 ```
@@ -457,8 +502,8 @@ Tutorials are the canonical learning path:
 | `03_agent_api.ipynb` | `agent`, `Agent`, contracts, policies and `RunResult`. |
 | `04_human_result_api.ipynb` | `final_answer`, `normalize_output`, `human_result`. |
 | `05_lineage_memory_api.ipynb` | `LineageMemory`, prompt context and trace explanation. |
-| `06_integrations_strands_api.ipynb` | Strands integration facade. |
-| `07_integrations_openai_runtime_api.ipynb` | OpenAI Agents-style integration facade over the selected runtime. |
+| `06_integrations_strands_api.ipynb` | Strands declarative identity and availability boundary. |
+| `07_integrations_openai_runtime_api.ipynb` | OpenAI Agents-style identity over the selected runtime. |
 | `08_system_api.ipynb` | `AgenticSystem`, registry, inspect and deterministic pipeline. |
 | `09_graph_api.ipynb` | `agent_node`, `graph`, state and node orchestration. |
 | `10_environment_eval_api.ipynb` | `AgenticEnvironment`, rewards, `run_eval`, reports. |
@@ -493,6 +538,7 @@ load_skill
 default_model_id
 default_region
 AgenticSystem
+InspectReport
 PublicToolRegistry
 Agent
 Tool
@@ -546,6 +592,7 @@ agent_node
 graph
 EvalCaseResult
 EvalReport
+EvalReproducibility
 Evaluator
 run_eval
 AgenticEnvironment
@@ -600,3 +647,49 @@ resolve_auto_provider
 ```
 
 
+
+## Provider Conformance API
+
+The advanced `agentic_systems.providers` namespace exposes the Runtime/Provider
+substitution contract:
+
+```python
+from agentic_systems.providers import (
+    evaluate_provider_conformance,
+    provider_profile,
+    provider_profiles,
+)
+
+profile = provider_profile("python-runtime")
+profile.check(["offline_execution"]).raise_if_failed()
+```
+
+`ProviderProfile.check` validates required and requested capabilities.
+`evaluate_provider_conformance` applies the common observable suite to one
+successful and one failed `RunResult`. Adapter classes expose the same profile
+through `profile()`.
+
+## Framework Boundary API
+
+The advanced `agentic_systems.integrations` namespace exposes framework and
+Graph boundary inspection without importing optional SDKs:
+
+```python
+from agentic_systems.integrations import (
+    describe_graph_boundary,
+    evaluate_framework_projection,
+    framework_profile,
+)
+
+profile = framework_profile("langgraph")
+profile.check(require_adapter=True).raise_if_failed()
+```
+
+`framework_profile("openai-agents")` reports `style-only` and
+`framework_profile("strands")` reports `declarative-only`. Only LangGraph has an
+implemented external adapter in Checkpoint 1.1.5.
+
+`describe_graph_boundary(...)` distinguishes portable Agentic Systems Graphs
+from framework-native wrappers. `evaluate_framework_projection(...)` verifies
+that a serialized RunResult stored under an explicit `result_key` preserves the
+central result contract.

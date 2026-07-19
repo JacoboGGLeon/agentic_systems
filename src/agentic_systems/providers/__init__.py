@@ -10,6 +10,17 @@ from __future__ import annotations
 from typing import Any
 
 from .base import RuntimeToolSpec, ToolEnvelope, ToolRegistryRuntime
+from .conformance import (
+    OPTIONAL_PROVIDER_CAPABILITIES,
+    PROVIDER_CONFORMANCE_SCHEMA_VERSION,
+    REQUIRED_PROVIDER_CAPABILITIES,
+    CapabilityDeclaration,
+    ProviderConformanceReport,
+    ProviderProfile,
+    evaluate_provider_conformance,
+    provider_profile,
+    provider_profiles,
+)
 from .python_direct import PythonDirectEngine, PythonDirectProvider
 from .openai_runtime import OpenAIRuntimeProvider
 from .vllm_runtime import VLLMRuntimeProvider
@@ -33,6 +44,15 @@ __all__ = [
     "RuntimeToolSpec",
     "ToolEnvelope",
     "ToolRegistryRuntime",
+    "PROVIDER_CONFORMANCE_SCHEMA_VERSION",
+    "REQUIRED_PROVIDER_CAPABILITIES",
+    "OPTIONAL_PROVIDER_CAPABILITIES",
+    "CapabilityDeclaration",
+    "ProviderProfile",
+    "ProviderConformanceReport",
+    "provider_profile",
+    "provider_profiles",
+    "evaluate_provider_conformance",
     "PythonDirectEngine",
     "PythonDirectProvider",
     "OpenAIRuntimeProvider",

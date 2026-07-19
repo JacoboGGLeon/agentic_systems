@@ -7,15 +7,15 @@ Systems tool registry and normalizes the response into ``RunResult``.
 
 from __future__ import annotations
 
-import asyncio
 import json
-from collections.abc import Iterable, Mapping
+from collections.abc import Mapping
 from typing import Any
 
 from agentic_systems.contracts import RunPolicy
 from agentic_systems.defaults import DEFAULT_OPENAI_MODEL_ID
-from agentic_systems.engines.names import BEDROCK_RUNTIME_ENGINE, OPENAI_RUNTIME_ENGINE, canonical_engine_name
+from agentic_systems.engines.names import OPENAI_RUNTIME_ENGINE, canonical_engine_name
 from agentic_systems.results import RunResult
+from agentic_systems.providers.conformance import ProviderProfile, provider_profile
 from agentic_systems.tools.compat import ToolEvent
 
 _INSTALL_HINT = "Install with: pip install openai"
@@ -33,6 +33,10 @@ class OpenAIRuntimeProvider:
     """Direct OpenAI chat-completions tool-loop provider."""
 
     name = OPENAI_RUNTIME_ENGINE
+
+    @classmethod
+    def profile(cls) -> ProviderProfile:
+        return provider_profile(cls.name)
 
     def __init__(self, system: Any | None = None, *, client: Any | None = None, async_client: Any | None = None) -> None:
         self.system = system
@@ -227,8 +231,16 @@ def _execute_tool(runtime: Any, agent: Any, name: str, args: dict[str, Any]) -> 
     return {"envelope": envelope, "event": event}
 
 
+def _framework_meta(agent: Any) -> dict[str, Any]:
+    requested = getattr(agent, "framework", None)
+    return {
+        "framework": requested,
+        "framework_requested": requested,
+        "framework_adapter": None,
+    }
+
+
 def _finalize_run_result(text: str, tool_events: list[ToolEvent], ok: bool, usage: dict[str, Any], *, agent: Any, mode: str, runtime_engine: str, source: str) -> RunResult:
-    framework = getattr(agent, "framework", None) or OPENAI_RUNTIME_ENGINE
     result = RunResult(
         text=text,
         data={"final_output": text} if text else {},
@@ -238,19 +250,17 @@ def _finalize_run_result(text: str, tool_events: list[ToolEvent], ok: bool, usag
         engine=runtime_engine,
         model=getattr(agent, "model", None) or DEFAULT_OPENAI_MODEL_ID,
         mode=mode,
-        meta={"source_result_type": source, "runtime_engine": runtime_engine, "framework": framework, "execution_engine": OPENAI_RUNTIME_ENGINE},
+        meta={"source_result_type": source, "runtime_engine": runtime_engine, "execution_engine": OPENAI_RUNTIME_ENGINE, **_framework_meta(agent)},
     )
     contract = getattr(agent, "contract", None)
     if contract is not None and hasattr(result, "validate"):
         validation = result.validate(contract)
-        result.validation = validation.to_dict()
-        result.ok = result.ok and validation.ok
+        result.apply_validation(validation)
     return result
 
 
 def _failure(message: str, agent: Any, mode: str, code: str, meta: dict[str, Any] | None = None) -> RunResult:
-    framework = getattr(agent, "framework", None) or OPENAI_RUNTIME_ENGINE
-    return RunResult(text=message, data={"ok": False, "error": {"code": code, "message": message}}, ok=False, engine=OPENAI_RUNTIME_ENGINE, model=getattr(agent, "model", None) or DEFAULT_OPENAI_MODEL_ID, mode=mode, meta={"framework": framework, "execution_engine": OPENAI_RUNTIME_ENGINE, **(meta or {})})
+    return RunResult(text=message, data={"ok": False, "error": {"code": code, "message": message}}, ok=False, engine=OPENAI_RUNTIME_ENGINE, model=getattr(agent, "model", None) or DEFAULT_OPENAI_MODEL_ID, mode=mode, meta={"execution_engine": OPENAI_RUNTIME_ENGINE, **_framework_meta(agent), **(meta or {})})
 
 
 def _usage_from_response(response: Any) -> dict[str, Any]:

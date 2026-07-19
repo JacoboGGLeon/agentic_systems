@@ -51,6 +51,7 @@ CORE_API = (
     "default_model_id",
     "default_region",
     "AgenticSystem",
+    "InspectReport",
     "PublicToolRegistry",
     "Agent",
     "Tool",
@@ -124,6 +125,7 @@ ENGINE_API = (
 EVAL_API = (
     "EvalCaseResult",
     "EvalReport",
+    "EvalReproducibility",
     "Evaluator",
     "run_eval",
 )

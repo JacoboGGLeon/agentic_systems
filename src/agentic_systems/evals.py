@@ -1,4 +1,4 @@
-﻿"""Evaluation helpers for Agentic Systems 1.0.
+"""Evaluation helpers for Agentic Systems 1.0.
 
 Evals reuse ``AgenticEnvironment`` so batch evaluation, rewards, memory and
 per-step evidence all flow through the same episode abstraction used by table
@@ -7,9 +7,9 @@ or graph-based agent runs.
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from .contracts import AgentContract, ValidationResult
 from .environments import AgenticEnvironment, GraphState
@@ -31,15 +31,61 @@ class EvalCaseResult(BaseModel):
         return self.model_dump(mode="json")
 
 
+class EvalReproducibility(BaseModel):
+    """Describe which sources of variation an eval run controls."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    schema_version: str = "agentic_systems.eval-reproducibility.v1"
+    classification: Literal["deterministic", "seeded", "non_deterministic"] = "non_deterministic"
+    seed: int | None = 0
+    replayable: bool = False
+    conditions: list[str] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def validate_classification(self) -> "EvalReproducibility":
+        if self.classification == "seeded" and self.seed is None:
+            raise ValueError("seeded eval reproducibility requires a non-null seed")
+        if self.classification == "non_deterministic" and self.replayable:
+            raise ValueError("non_deterministic eval reproducibility cannot promise replayable=True")
+        return self
+
+    def to_dict(self) -> dict[str, Any]:
+        return self.model_dump(mode="json")
+
+
 class EvalReport(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
+    schema_version: str = "agentic_systems.eval-report.v1"
     ok: bool
     total: int
     passed: int
     failed: int
     pass_rate: float
     cases: list[EvalCaseResult]
+    reproducibility: EvalReproducibility = Field(default_factory=EvalReproducibility)
+
+    @model_validator(mode="after")
+    def validate_aggregates(self) -> "EvalReport":
+        actual_total = len(self.cases)
+        actual_passed = sum(1 for case in self.cases if case.ok)
+        actual_failed = actual_total - actual_passed
+        actual_rate = (actual_passed / actual_total) if actual_total else 1.0
+        problems = []
+        if self.total != actual_total:
+            problems.append(f"total={self.total}, expected {actual_total}")
+        if self.passed != actual_passed:
+            problems.append(f"passed={self.passed}, expected {actual_passed}")
+        if self.failed != actual_failed:
+            problems.append(f"failed={self.failed}, expected {actual_failed}")
+        if abs(self.pass_rate - actual_rate) > 1e-12:
+            problems.append(f"pass_rate={self.pass_rate}, expected {actual_rate}")
+        if self.ok != (actual_failed == 0):
+            problems.append(f"ok={self.ok}, expected {actual_failed == 0}")
+        if problems:
+            raise ValueError("EvalReport aggregates are inconsistent: " + "; ".join(problems))
+        return self
 
     def to_dict(self) -> dict[str, Any]:
         return self.model_dump(mode="json")
@@ -61,7 +107,10 @@ class EvalReport(BaseModel):
                 "framework": "agentic-eval",
                 "mode": "eval",
             },
-            "input": {"total_cases": self.total},
+            "input": {
+                "total_cases": self.total,
+                "reproducibility": self.reproducibility.to_dict(),
+            },
             "answer": {
                 "text": self.summary_text(),
                 "final": {
@@ -70,6 +119,7 @@ class EvalReport(BaseModel):
                     "passed": self.passed,
                     "failed": self.failed,
                     "pass_rate": self.pass_rate,
+                    "reproducibility": self.reproducibility.to_dict(),
                 },
                 "data": self.to_dict(),
             },
@@ -236,11 +286,7 @@ def _case_actual_summary(case: EvalCaseResult) -> str:
 
 
 class Evaluator:
-    """Small public evaluation facade.
-
-    This wrapper keeps notebook and script usage simple while delegating the
-    actual batch execution to ``run_eval``.
-    """
+    """Small public evaluation facade."""
 
     def evaluate_agent(
         self,
@@ -249,10 +295,21 @@ class Evaluator:
         *,
         mode: str = "eval",
         environment_kwargs: dict[str, Any] | None = None,
+        determinism: Literal["deterministic", "seeded", "non_deterministic"] = "non_deterministic",
+        seed: int | None = 0,
+        reproducibility_conditions: list[str] | None = None,
     ) -> EvalReport:
-        """Evaluate an agent over cases and return an ``EvalReport``."""
+        """Evaluate an agent over cases and return an EvalReport."""
 
-        return run_eval(agent, cases, mode=mode, environment_kwargs=environment_kwargs)
+        return run_eval(
+            agent,
+            cases,
+            mode=mode,
+            environment_kwargs=environment_kwargs,
+            determinism=determinism,
+            seed=seed,
+            reproducibility_conditions=reproducibility_conditions,
+        )
 
     def run(
         self,
@@ -261,10 +318,21 @@ class Evaluator:
         *,
         mode: str = "eval",
         environment_kwargs: dict[str, Any] | None = None,
+        determinism: Literal["deterministic", "seeded", "non_deterministic"] = "non_deterministic",
+        seed: int | None = 0,
+        reproducibility_conditions: list[str] | None = None,
     ) -> EvalReport:
-        """Notebook-friendly alias for :meth:`evaluate_agent`."""
+        """Notebook-friendly alias for evaluate_agent."""
 
-        return self.evaluate_agent(agent, cases, mode=mode, environment_kwargs=environment_kwargs)
+        return self.evaluate_agent(
+            agent,
+            cases,
+            mode=mode,
+            environment_kwargs=environment_kwargs,
+            determinism=determinism,
+            seed=seed,
+            reproducibility_conditions=reproducibility_conditions,
+        )
 
 
 class _EvalStepGraph:
@@ -308,8 +376,11 @@ def run_eval(
     *,
     mode: str = "eval",
     environment_kwargs: dict[str, Any] | None = None,
+    determinism: Literal["deterministic", "seeded", "non_deterministic"] = "non_deterministic",
+    seed: int | None = 0,
+    reproducibility_conditions: list[str] | None = None,
 ) -> EvalReport:
-    """Run a deterministic batch eval through ``AgenticEnvironment``.
+    """Run a classified batch eval through ``AgenticEnvironment``.
 
     Each case is one environment step. The graph invokes the agent, validates
     contracts and expected outputs, and writes the evidence into the step state.
@@ -325,7 +396,7 @@ def run_eval(
         reward_fn=_eval_reward,
         **kwargs,
     )
-    observation, _info = env.reset(seed=0)
+    observation, _info = env.reset(seed=seed)
     while observation is not None:
         observation, _reward, terminated, truncated, _info = env.step()
         if terminated or truncated:
@@ -345,6 +416,36 @@ def run_eval(
         failed=total - passed,
         pass_rate=(passed / total) if total else 1.0,
         cases=results,
+        reproducibility=_eval_reproducibility(
+            determinism,
+            seed=seed,
+            conditions=reproducibility_conditions,
+        ),
+    )
+
+
+def _eval_reproducibility(
+    classification: Literal["deterministic", "seeded", "non_deterministic"],
+    *,
+    seed: int | None,
+    conditions: list[str] | None,
+) -> EvalReproducibility:
+    default_conditions = [
+        "same ordered cases and inputs",
+        "same Agentic Systems, dependency, runtime, and provider configuration",
+        "all tools and external side effects deterministic or replayed",
+    ]
+    if classification == "seeded":
+        default_conditions.append("all stochastic components consume the declared seed")
+    elif classification == "deterministic":
+        default_conditions.append("agent, graph, scorer, and provider contain no uncontrolled randomness")
+    else:
+        default_conditions.append("uncontrolled model, provider, tool, or external randomness may vary results")
+    return EvalReproducibility(
+        classification=classification,
+        seed=seed,
+        replayable=classification != "non_deterministic",
+        conditions=[*default_conditions, *(conditions or [])],
     )
 
 

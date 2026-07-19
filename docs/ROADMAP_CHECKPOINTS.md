@@ -58,3 +58,9 @@ agentic-systems runtime --provider auto --json
 ```
 
 The release is not ready if docs teach an import path that tutorials do not use.
+
+## 1.1 Release Candidate Closure
+
+Checkpoint 1.1.9 prepares `1.1.0rc1`. Automated package and tutorial source gates
+are recorded in `RELEASE_CANDIDATE_1_1.md`. Final promotion waits for the manual
+18-notebook execution matrix and does not infer live Provider support from mocks.

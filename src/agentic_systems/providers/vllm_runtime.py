@@ -15,6 +15,7 @@ from agentic_systems.contracts import RunPolicy
 from agentic_systems.defaults import DEFAULT_VLLM_API_KEY, DEFAULT_VLLM_BASE_URL
 from agentic_systems.core.results import RunResult
 from agentic_systems.engines.names import VLLM_RUNTIME_ENGINE
+from agentic_systems.providers.conformance import ProviderProfile, provider_profile
 from agentic_systems.providers.openai_runtime import (
     _build_messages,
     _failure,
@@ -30,6 +31,10 @@ class VLLMRuntimeProvider:
     """OpenAI-compatible provider for a running vLLM server."""
 
     name = VLLM_RUNTIME_ENGINE
+
+    @classmethod
+    def profile(cls) -> ProviderProfile:
+        return provider_profile(cls.name)
 
     def __init__(self, system: Any | None = None, *, client: Any | None = None, async_client: Any | None = None) -> None:
         self.system = system
@@ -98,7 +103,7 @@ class VLLMRuntimeProvider:
         result = _failure(message, agent, mode, code, meta={"execution_engine": VLLM_RUNTIME_ENGINE})
         result.engine = VLLM_RUNTIME_ENGINE
         result.meta["runtime_engine"] = VLLM_RUNTIME_ENGINE
-        result.meta["framework"] = getattr(agent, "framework", None) or VLLM_RUNTIME_ENGINE
+        result.meta.update({"framework": getattr(agent, "framework", None), "framework_requested": getattr(agent, "framework", None), "framework_adapter": None})
         return result
 
 
@@ -135,7 +140,7 @@ def _as_vllm_result(result: RunResult) -> RunResult:
     result.engine = VLLM_RUNTIME_ENGINE
     result.meta["runtime_engine"] = VLLM_RUNTIME_ENGINE
     result.meta["execution_engine"] = VLLM_RUNTIME_ENGINE
-    result.meta["framework"] = VLLM_RUNTIME_ENGINE
+    result.meta.setdefault("framework_adapter", None)
     if result.meta.get("source_result_type") == "openai.chat.completions":
         result.meta["source_result_type"] = "vllm.openai_compatible.chat.completions"
     return result

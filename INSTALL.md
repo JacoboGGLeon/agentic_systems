@@ -1,6 +1,7 @@
 # Install
 
-Agentic Systems is published on PyPI as `agentic-systems`.
+Agentic Systems is published on PyPI as `agentic-systems`. The stable index may
+still serve 1.0.7 while `1.1.0rc1` is validated from source and local artifacts.
 
 ## PyPI
 
@@ -11,7 +12,7 @@ python -m pip install -U pip
 python -m pip install agentic-systems
 ```
 
-Core install includes the public API, CLI, `python-direct`, tools, skills, agents, systems, graphs, environments, evals, contracts, lineage memory and human-readable results.
+Core install includes the public API, CLI, `python-runtime`, tools, skills, agents, systems, graphs, environments, evals, contracts, lineage memory and human-readable results.
 
 It does not install optional backend SDKs such as OpenAI, boto3, LangGraph, JupyterLab or vLLM.
 
@@ -41,6 +42,17 @@ Then point Agentic Systems to the server:
 export VLLM_BASE_URL="http://127.0.0.1:8000/v1"
 export VLLM_API_KEY="EMPTY"
 ```
+
+## Release Candidate
+
+Build or install `1.1.0rc1` locally until publication:
+
+```bash
+python -m pip wheel . --no-deps --no-build-isolation
+python -m pip install --force-reinstall path/to/agentic_systems-1.1.0rc1-py3-none-any.whl
+```
+
+See `docs/RELEASE_CANDIDATE_1_1.md` for automated and manual gates.
 
 ## From GitHub
 
@@ -85,7 +97,7 @@ import agentic_systems as toolkit
 def add(a: int, b: int) -> dict:
     return {"result": a + b}
 
-runtime = toolkit.runtime(provider="python-direct", scheduler=toolkit.scheduler(timeout_s=5, max_retries=0))
+runtime = toolkit.runtime(provider="python-runtime", scheduler=toolkit.scheduler(timeout_s=5, max_retries=0))
 agent = toolkit.agent(name="calc", tools=[add], runtime=runtime)
 result = agent.run({"tool": "add", "input": {"a": 1, "b": 2}}, mode="eval")
 print(result.ok, result.data["result"])

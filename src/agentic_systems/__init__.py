@@ -28,7 +28,7 @@ from .environments import (
     build_single_agent_step_graph,
     environment_lineage,
 )
-from .evals import EvalCaseResult, EvalReport, Evaluator, run_eval
+from .evals import EvalCaseResult, EvalReport, EvalReproducibility, Evaluator, run_eval
 from .expectations import ExpectationBuilder, expect
 from .integrations.langgraph import (
     AgenticGraph,
@@ -58,7 +58,7 @@ from .final_answer import FINAL_ANSWER_SCHEMA_VERSION, OutputSchema, final_answe
 from .core.runtime import AUTO_PROVIDER_ENV_VAR, DEFAULT_AUTO_PROVIDER_PRIORITY, RuntimeConfig, normalize_provider_priority, resolve_auto_provider
 from .core.scheduler import SchedulerConfig
 from .skills import LoadedSkill, Skill, SkillManifest
-from .system import AgenticSystem, PublicToolRegistry
+from .system import AgenticSystem, InspectReport, PublicToolRegistry
 from .tools import Tool, tool
 from .human_output import human_result
 from .utils import (
@@ -87,6 +87,6 @@ from .utils import (
     tool_result_summary,
 )
 
-__version__ = "1.0.7"
+__version__ = "1.1.0rc1"
 
 __all__ = list(PUBLIC_API)

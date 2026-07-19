@@ -31,16 +31,55 @@ def _contains_subset(actual: Any, expected: Any) -> bool:
 
 
 
+def _classify_tool_failures(tool_events: list[ToolEvent]) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    recovered: list[dict[str, Any]] = []
+    unresolved: list[dict[str, Any]] = []
+    for index, event in enumerate(tool_events):
+        if event.ok:
+            continue
+        payload = event.model_dump(mode="json")
+        recovery = next(
+            (later for later in tool_events[index + 1 :] if later.name == event.name and later.ok),
+            None,
+        )
+        if recovery is None:
+            unresolved.append(payload)
+        else:
+            recovered.append({**payload, "recovered_by_tool_event_id": recovery.id})
+    return recovered, unresolved
+
+
+def _append_unique_error(errors: list[dict[str, Any]], error: dict[str, Any]) -> None:
+    identity = (error.get("code"), error.get("message"), error.get("path"), error.get("tool_event_id"))
+    if not any(
+        (item.get("code"), item.get("message"), item.get("path"), item.get("tool_event_id")) == identity
+        for item in errors
+    ):
+        errors.append(error)
+
+
 def _result_errors(result: "RunResult") -> list[dict[str, Any]]:
     errors: list[dict[str, Any]] = []
     if not result.ok and result.text:
         errors.append({"code": "run_failed", "message": result.text})
+    recovered, _unresolved = _classify_tool_failures(result.tool_events)
+    recovered_by_id = {item.get("id"): item.get("recovered_by_tool_event_id") for item in recovered}
     for event in result.tool_events:
         if event.ok:
             continue
         payload = event.model_dump(mode="json") if hasattr(event, "model_dump") else dict(event)
         error = payload.get("error") or payload.get("output") or {}
-        errors.append({"code": "tool_failed", "tool": payload.get("name"), "error": error})
+        recovered_by = recovered_by_id.get(payload.get("id"))
+        entry = {
+            "code": "tool_failed",
+            "tool": payload.get("name"),
+            "tool_event_id": payload.get("id"),
+            "error": error,
+            "resolved": recovered_by is not None,
+        }
+        if recovered_by is not None:
+            entry["recovered_by_tool_event_id"] = recovered_by
+        errors.append(entry)
     return errors
 
 class RunResult(BaseModel):
@@ -78,6 +117,8 @@ class RunResult(BaseModel):
             self.final = final_answer(self.data, text=self.text)
         if not self.errors:
             self.errors = _result_errors(self)
+        if self.validation is not None:
+            self.apply_validation(self.validation)
         return self
 
     @classmethod
@@ -107,10 +148,147 @@ class RunResult(BaseModel):
             mode=mode,
             meta={"source_result_type": type(runtime_result).__name__},
         )
-        validation = result.validate(contract)
-        result.validation = validation.to_dict()
-        result.ok = result.ok and validation.ok
+        return result.apply_validation(result.validate(contract))
+
+    def apply_validation(self, validation: ValidationResult | dict[str, Any]) -> "RunResult":
+        """Apply contract validation without allowing success to contradict it."""
+
+        if isinstance(validation, ValidationResult):
+            validation_payload = validation.to_dict()
+            validation_issues = validation.issues
+            validation_ok = validation.ok
+        else:
+            validation_payload = dict(validation)
+            validation_ok = bool(validation_payload.get("ok", True))
+            validation_issues = validation_payload.get("issues") or []
+
+        self.validation = validation_payload
+        self.ok = self.ok and validation_ok
+        for issue in validation_issues:
+            if hasattr(issue, "model_dump"):
+                issue_payload = issue.model_dump(mode="json")
+            elif isinstance(issue, dict):
+                issue_payload = issue
+            else:
+                issue_payload = {"code": "validation_failed", "message": str(issue)}
+            if issue_payload.get("severity", "error") != "error":
+                continue
+            self.ok = False
+            validation_code = str(issue_payload.get("code") or "validation_failed")
+            _append_unique_error(
+                self.errors,
+                {
+                    "code": "validation_failed",
+                    "message": str(issue_payload.get("message") or validation_code),
+                    "path": issue_payload.get("path"),
+                    "validation_code": validation_code,
+                    "meta": issue_payload.get("meta") or {},
+                },
+            )
+        return self
+
+    def check_invariants(self) -> ValidationResult:
+        """Return structural consistency issues without changing this result."""
+
+        result = ValidationResult(ok=True)
+        validation = self.validation or {}
+        validation_issues = validation.get("issues") or []
+        validation_has_errors = any(
+            isinstance(issue, dict) and issue.get("severity", "error") == "error"
+            for issue in validation_issues
+        )
+        if validation and validation.get("ok") is False and self.ok:
+            result.add(
+                "success_with_failed_validation",
+                "RunResult.ok cannot be true when required contract validation failed.",
+                path="ok",
+            )
+        if validation.get("ok") is True and validation_has_errors:
+            result.add(
+                "validation_status_mismatch",
+                "RunResult.validation.ok is true but validation contains error-severity issues.",
+                path="validation.ok",
+            )
+
+        event_ids = [event.id for event in self.tool_events if event.id]
+        duplicate_ids = sorted({event_id for event_id in event_ids if event_ids.count(event_id) > 1})
+        if duplicate_ids:
+            result.add(
+                "duplicate_tool_event_id",
+                f"Tool event ids must be unique; duplicates: {duplicate_ids}.",
+                path="tool_events",
+                meta={"duplicate_ids": duplicate_ids},
+            )
+        for index, event in enumerate(self.tool_events):
+            if event.ok and event.error:
+                result.add(
+                    "successful_tool_event_with_error",
+                    f"Tool event '{event.id}' is successful but still carries an error.",
+                    path=f"tool_events[{index}].error",
+                )
+
+        recovered, unresolved = _classify_tool_failures(self.tool_events)
+        if self.ok and unresolved:
+            result.add(
+                "success_with_unresolved_tool_failure",
+                "RunResult is successful with unresolved Tool failures; this is valid only under an explicit partial-failure policy.",
+                severity="warning",
+                path="tool_events",
+                meta={"tool_event_ids": [item.get("id") for item in unresolved]},
+            )
+        if self.ok and self.errors:
+            result.add(
+                "success_with_recorded_errors",
+                "RunResult is successful and contains errors; recorded errors must be recovered or allowed by policy.",
+                severity="warning",
+                path="errors",
+            )
+        if not self.ok and not self.errors and not unresolved and not validation_has_errors:
+            result.add(
+                "failure_without_error_evidence",
+                "RunResult.ok is false but no error, failed validation, or unresolved Tool failure explains it.",
+                severity="warning",
+                path="errors",
+            )
+
+        for key, value in self.usage.items():
+            if isinstance(value, (int, float)) and not isinstance(value, bool) and value < 0:
+                result.add(
+                    "negative_usage_value",
+                    f"Usage metric '{key}' cannot be negative; received {value}.",
+                    path=f"usage.{key}",
+                )
+
+        if self.ok and not self.final and not self.data and not self.text:
+            result.add(
+                "success_without_answer",
+                "Successful RunResult has no final, data, or text answer projection.",
+                severity="warning",
+                path="final",
+            )
+
+        try:
+            self.model_dump(mode="json")
+        except Exception as exc:  # noqa: BLE001 - report serialization failures as invariant issues.
+            result.add(
+                "not_json_serializable",
+                f"RunResult must serialize in JSON mode: {type(exc).__name__}: {exc}",
+                path="serialization",
+            )
+
+        result_meta = {
+            "recovered_tool_error_count": len(recovered),
+            "unresolved_tool_error_count": len(unresolved),
+        }
+        for issue in result.issues:
+            issue.meta = {**result_meta, **issue.meta}
         return result
+
+    def raise_if_inconsistent(self) -> "RunResult":
+        """Raise a clear ValueError when structural RunResult invariants fail."""
+
+        self.check_invariants().raise_if_failed()
+        return self
 
 
     def normalized(self) -> dict[str, Any]:
@@ -190,23 +368,7 @@ class RunResult(BaseModel):
 
     def trace(self, mode: str = "compact") -> dict[str, Any]:
         failed = [event for event in self.tool_events if not event.ok]
-        recovered = []
-        unresolved = []
-        for idx, event in enumerate(self.tool_events):
-            if event.ok:
-                continue
-            recovery = next(
-                (
-                    later
-                    for later in self.tool_events[idx + 1 :]
-                    if later.name == event.name and later.ok
-                ),
-                None,
-            )
-            if recovery:
-                recovered.append({**event.model_dump(mode="json"), "recovered_by_tool_event_id": recovery.id})
-            else:
-                unresolved.append(event.model_dump(mode="json"))
+        recovered, unresolved = _classify_tool_failures(self.tool_events)
 
         compact = {
             "trace_schema_version": self.trace_schema_version,
