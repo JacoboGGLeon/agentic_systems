@@ -17,6 +17,14 @@ Its Python API turns that grammar into explicit, composable abstractions: tools,
 
 Use it when agentic workloads need to be observable, testable, portable and ready for repeated execution, not just notebook demos.
 
+**Agentic Systems 1.1 establishes verifiable coherence between its API, documentation, tutorials, and tests.**
+
+```text
+API == Docs == Tutorials == Pytests
+```
+
+Here, `==` means verifiable traceability: public concepts are defined in the API, explained in the documentation, taught through the canonical tutorials, and enforced by tests and release gates.
+
 Release status: `1.1.0rc1` is the current release candidate. Its manual notebook
 execution matrix is tracked in `docs/RELEASE_CANDIDATE_1_1.md`.
 

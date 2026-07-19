@@ -57,9 +57,19 @@ def test_release_candidate_version_and_public_inventory_are_consistent():
     assert "`PUBLIC_API` | 106" in (
         ROOT / "docs" / "GRAMMAR_TO_API.md"
     ).read_text(encoding="utf-8")
-    assert "Tests: 359 passed, 0 skipped" in (
-        ROOT / "README.md"
+    coherence_claim = (
+        "Agentic Systems 1.1 establishes verifiable coherence between its API, "
+        "documentation, tutorials, and tests."
+    )
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    release_candidate = (
+        ROOT / "docs" / "RELEASE_CANDIDATE_1_1.md"
     ).read_text(encoding="utf-8")
+    assert "Tests: 359 passed, 0 skipped" in readme
+    assert coherence_claim in readme
+    assert "API == Docs == Tutorials == Pytests" in readme
+    assert coherence_claim in release_candidate.replace("\n", " ")
+    assert "API == Docs == Tutorials == Pytests" in release_candidate
     assert "include CHANGELOG.md" in (
         ROOT / "MANIFEST.in"
     ).read_text(encoding="utf-8")

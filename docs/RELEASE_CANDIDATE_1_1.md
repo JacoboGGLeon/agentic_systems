@@ -5,6 +5,19 @@ Candidate version: `1.1.0rc1`.
 Status: automated gates passed locally; full notebook execution and publication
 remain pending release gates.
 
+## Coherence Claim
+
+**Agentic Systems 1.1 establishes verifiable coherence between its API,
+documentation, tutorials, and tests.**
+
+```text
+API == Docs == Tutorials == Pytests
+```
+
+This is a traceability claim, not literal identity. The release gates verify that
+public concepts are defined in the API, explained in documentation, taught in the
+canonical tutorials, and enforced by tests.
+
 ## Evidence Levels
 
 | Surface | Evidence in this repository | Not claimed |
