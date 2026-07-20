@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 import ast
+import importlib
 import json
 from pathlib import Path
 import tomllib
 
 import agentic_systems
-from agentic_systems.api import PUBLIC_API
+from agentic_systems.api import PUBLIC_API, RECOMMENDED_API
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -47,14 +48,14 @@ def _source(notebook: dict) -> str:
 def test_release_candidate_version_and_public_inventory_are_consistent():
     project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
 
-    assert project["project"]["version"] == "1.1.0rc1"
-    assert agentic_systems.__version__ == "1.1.0rc1"
-    assert len(PUBLIC_API) == 106
+    assert project["project"]["version"] == "1.1.0"
+    assert agentic_systems.__version__ == "1.1.0"
+    assert len(PUBLIC_API) == 110
     assert "InspectReport" in PUBLIC_API
 
     api_docs = (ROOT / "docs" / "API.md").read_text(encoding="utf-8")
     assert "InspectReport" in api_docs
-    assert "`PUBLIC_API` | 106" in (
+    assert "`PUBLIC_API` | 110" in (
         ROOT / "docs" / "GRAMMAR_TO_API.md"
     ).read_text(encoding="utf-8")
     coherence_claim = (
@@ -65,7 +66,7 @@ def test_release_candidate_version_and_public_inventory_are_consistent():
     release_candidate = (
         ROOT / "docs" / "RELEASE_CANDIDATE_1_1.md"
     ).read_text(encoding="utf-8")
-    assert "Tests: 359 passed, 0 skipped" in readme
+    assert "Tests: 361 passed, 0 skipped" in readme
     assert coherence_claim in readme
     assert "API == Docs == Tutorials == Pytests" in readme
     assert coherence_claim in release_candidate.replace("\n", " ")
@@ -140,8 +141,96 @@ def test_release_documents_state_manual_and_live_evidence_limits():
     )
     changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
 
-    assert "1.1.0rc1" in migration
+    assert "1.1.0" in migration
     assert "Full cell execution" in release
     assert "manual notebook matrix" in release
     assert "Live OpenAI, Bedrock, vLLM" in changelog
     assert "not part of 1.1" in changelog
+
+    final_release = (ROOT / "docs" / "RELEASE_1_1.md").read_text(encoding="utf-8")
+    notebook_matrix = (
+        ROOT / "docs" / "MANUAL_NOTEBOOK_MATRIX_1_1.md"
+    ).read_text(encoding="utf-8")
+    assert "canonical notebooks: 18/18 executed, 0 failed" in final_release
+    assert "twine check: passed for both artifacts" in final_release
+    assert "notebooks: 18" in notebook_matrix
+    assert "external live Provider claims: 0" in notebook_matrix
+
+
+def test_canonical_grammar_factories_delegate_to_existing_types():
+    assert RECOMMENDED_API[:7] == (
+        "tool",
+        "skill",
+        "agent",
+        "system",
+        "graph",
+        "environment",
+        "eval",
+    )
+
+    capability = agentic_systems.skill(name="demo")
+    composition = agentic_systems.system(
+        runtime=agentic_systems.runtime(provider="python-runtime")
+    )
+    episode = agentic_systems.environment(
+        [{"value": 1}],
+        transition_fn=lambda row, action, info: {"value": row["value"]},
+    )
+    evaluation = agentic_systems.eval()
+
+    assert isinstance(capability, agentic_systems.Skill)
+    system_module = importlib.import_module("agentic_systems.system")
+    assert callable(agentic_systems.system)
+    assert system_module.AgenticSystem is agentic_systems.AgenticSystem
+    assert composition.__class__ is agentic_systems.AgenticSystem
+
+    assert isinstance(composition, agentic_systems.AgenticSystem)
+    assert isinstance(episode, agentic_systems.AgenticEnvironment)
+    assert isinstance(evaluation, agentic_systems.Evaluator)
+
+def test_notebooks_follow_the_user_centered_api_first_standard():
+    canonical_usage = {
+        "01_tool_api.ipynb": "toolkit.tool",
+        "02_skill_api.ipynb": "toolkit.skill(",
+        "03_agent_api.ipynb": "toolkit.agent(",
+        "08_system_api.ipynb": "toolkit.system(",
+        "09_graph_api.ipynb": "toolkit.graph(",
+        "10_environment_eval_api.ipynb": "toolkit.environment(",
+        "11_single_agentic_system_api.ipynb": "toolkit.eval().run(",
+        "12_multi_agentic_system_api.ipynb": "toolkit.system(",
+        "13_multi_agentic_graph_api.ipynb": "toolkit.graph(",
+    }
+    narrative_markers = (
+        "Objetivo",
+        "Historia",
+        "Este notebook",
+        "Contrato 1.1",
+        "Checkpoint",
+        "Fundamentals explora",
+    )
+
+    for name in EXPECTED_NOTEBOOKS:
+        notebook = _notebook(name)
+        source = _source(notebook)
+        first_markdown = "".join(notebook["cells"][0].get("source", []))
+        assert any(marker in first_markdown for marker in narrative_markers), name
+        assert "api_coverage" in source, name
+        assert "from tutorials" not in source, name
+        assert "import tutorials" not in source, name
+        assert "class Fake" not in source, name
+        assert "unittest.mock" not in source, name
+        assert "toolkit.Skill(" not in source, name
+        assert "toolkit.AgenticSystem(" not in source, name
+        if "toolkit.system(" in source:
+            assert "toolkit.runtime(" in source, name
+            assert source.index("toolkit.runtime(") < source.index("toolkit.system("), name
+        if name in canonical_usage:
+            assert canonical_usage[name] in source, name
+
+    standard = (ROOT / "docs" / "TUTORIAL_QUALITY_STANDARD.md").read_text(
+        encoding="utf-8"
+    )
+    assert "API antes que codigo local" in standard
+    assert "toolkit.environment(...)" in standard
+    assert "La agnosticidad es obligatoria" in standard
+    assert "rutas y registries publicos" in standard

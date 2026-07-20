@@ -8,13 +8,18 @@ about internals.
 from __future__ import annotations
 
 RECOMMENDED_API = (
+    "tool",
+    "skill",
     "agent",
+    "system",
+    "graph",
+    "environment",
+    "eval",
     "runtime",
     "scheduler",
     "output_schema",
     "final_answer",
     "normalize_output",
-    "tool",
     "Tool",
     "Agent",
     "RunResult",
@@ -44,7 +49,11 @@ RECOMMENDED_API = (
 )
 
 CORE_API = (
+    "skill",
     "agent",
+    "system",
+    "environment",
+    "eval",
     "runtime",
     "scheduler",
     "load_skill",

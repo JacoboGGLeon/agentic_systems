@@ -2,6 +2,24 @@
 
 All notable changes to Agentic Systems are documented here.
 
+## 1.1.0 - 2026-07-19
+
+Stable 1.1 release. The release candidate was promoted after the complete
+manual notebook matrix and updated automated gates passed.
+
+### Closure evidence
+
+- 18 of 18 canonical notebooks executed from fresh kernels; no failures.
+- 361 tests passed with 100.00% coverage over 6,089 statements.
+- Canonical construction remains under `import agentic_systems as toolkit`.
+- Added ergonomic `toolkit.skill(...)`, `toolkit.environment(...)`, and
+  `toolkit.eval()` factories over existing public types.
+- Preserved `toolkit.system(...)` to avoid shadowing the supported
+  `agentic_systems.system` module import.
+- vLLM installation, server startup, SDK smoke and Agentic Systems smoke are
+  opt-in and report explicit skips when disabled.
+- Live OpenAI, Bedrock and vLLM execution remains outside the release claim.
+
 ## 1.1.0rc1 - 2026-07-18
 
 Release candidate. Full notebook execution remains a manual release gate.

@@ -38,13 +38,13 @@ def test_fundamentals_notebooks_are_simple_runtime_blueprints():
     notebook_dir = root / "tutorials"
     expected = {
         "01_tool_api.ipynb": ["@toolkit.tool", "toolkit.Tool", "Pydantic"],
-        "02_skill_api.ipynb": ["toolkit.Skill", "Skill.check", "skills=[math_skill]"],
+        "02_skill_api.ipynb": ["toolkit.skill", "Skill.check", "skills=[math_skill]"],
         "03_agent_api.ipynb": ['engine="python-runtime"', 'provider="auto"', "Agente LM"],
         "04_human_result_api.ipynb": ["toolkit.RunResult", "toolkit.final_answer", "toolkit.human_result"],
         "07_integrations_openai_runtime_api.ipynb": ['provider="auto"', 'framework="openai-agents"', "await agent.arun"],
         "08_system_api.ipynb": ["toolkit.AgenticSystem", "system.tool", "system.skill", "system.agent", "system.inspect"],
         "09_graph_api.ipynb": ["toolkit.graph(", "toolkit.agent_node", "agent.as_node", "graph.run"],
-        "10_environment_eval_api.ipynb": ["toolkit.AgenticEnvironment", "toolkit.run_eval", "reward_fn"],
+        "10_environment_eval_api.ipynb": ["toolkit.environment", "toolkit.eval().run", "reward_fn"],
     }
     paths = {path.name: path for path in notebook_dir.glob("*.ipynb")}
 

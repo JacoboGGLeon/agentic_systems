@@ -3,7 +3,19 @@
 from . import core, providers, integrations
 from .agents import Agent
 from .api import PUBLIC_API
-from .factories import agent, default_model_id, default_region, load_skill, runtime, scheduler, output_schema
+from .factories import (
+    agent,
+    default_model_id,
+    default_region,
+    environment,
+    eval,
+    load_skill,
+    runtime,
+    scheduler,
+    skill,
+    system,
+    output_schema,
+)
 from .bedrock_runtime_client import BedrockRuntimeClient, DEFAULT_EMBEDDING_MODEL_ID
 from .chain import Chain, ChainStep
 from .contracts import AgentContract, ContractPolicySpec, RunPolicy, ToolExpectationValue, ValidationIssue, ValidationResult, normalize_tool_expectation, validate_contract_policy, validate_tool_expectation
@@ -87,6 +99,6 @@ from .utils import (
     tool_result_summary,
 )
 
-__version__ = "1.1.0rc1"
+__version__ = "1.1.0"
 
 __all__ = list(PUBLIC_API)

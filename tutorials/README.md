@@ -5,6 +5,22 @@
 ```text
 tutorials -> explora y explota la API 1:1
 ```
+Cada notebook sigue el contrato de calidad definido en
+`docs/TUTORIAL_QUALITY_STANDARD.md`: resultado para el usuario, API publica
+primero, limites visibles y evidencia ejecutable.
+
+La gramatica de construccion que se ensena es:
+
+```python
+toolkit.tool(...)
+toolkit.skill(...)
+toolkit.agent(...)
+toolkit.system(...)
+toolkit.graph(...)
+toolkit.environment(...)
+toolkit.eval(...)
+```
+
 
 ## Ruta Conceptual
 

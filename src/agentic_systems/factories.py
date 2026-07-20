@@ -13,6 +13,8 @@ from .core.scheduler import SchedulerConfig
 from .defaults import DEFAULT_AWS_REGION, DEFAULT_BEDROCK_MODEL_ID, DEFAULT_OPENAI_MODEL_ID, DEFAULT_VLLM_MODEL_ID
 from .engines.names import BEDROCK_RUNTIME_ENGINE, OPENAI_RUNTIME_ENGINE, PYTHON_RUNTIME_ENGINE, VLLM_RUNTIME_ENGINE, canonical_engine_name
 from .final_answer import output_schema as make_output_schema
+from .environments import AgenticEnvironment
+from .evals import Evaluator
 from .system import AgenticSystem
 from .skills import Skill
 
@@ -232,6 +234,64 @@ def output_schema(
     return make_output_schema(fields, many=many, root_key=root_key, required=required, aliases=aliases)
 
 
+def skill(
+    *,
+    name: str,
+    description: str = "",
+    tools: Iterable[Any] | None = None,
+    prompts: dict[str, Any] | None = None,
+    contracts: dict[str, Any] | None = None,
+    policy: dict[str, Any] | None = None,
+    metadata: dict[str, Any] | None = None,
+    version: str = "0.1.0",
+) -> Skill:
+    """Create a reusable Skill through the canonical toolkit grammar."""
+
+    return Skill(
+        name=name,
+        description=description,
+        tools=tools,
+        prompts=prompts,
+        contracts=contracts,
+        policy=policy,
+        metadata=metadata,
+        version=version,
+    )
+
+
+def environment(records: Any, **kwargs: Any) -> AgenticEnvironment:
+    """Create an episodic environment through the canonical toolkit API."""
+
+    return AgenticEnvironment(records=records, **kwargs)
+
+
+def eval() -> Evaluator:  # noqa: A001 - intentional public grammar term.
+    """Create the evaluation facade used to verify agents over declared cases."""
+
+    return Evaluator()
+
+
+def system(
+    *,
+    model: str | None = None,
+    region: str | None = None,
+    defaults: dict[str, Any] | None = None,
+    strict: bool = True,
+    disable_framework_tracing: bool = True,
+    runtime: RuntimeConfig | dict[str, Any] | None = None,
+) -> AgenticSystem:
+    """Create a provider-agnostic system through the canonical toolkit API."""
+
+    return AgenticSystem(
+        model=model,
+        region=region,
+        defaults=defaults,
+        strict=strict,
+        disable_framework_tracing=disable_framework_tracing,
+        runtime=runtime,
+    )
+
+
 def load_skill(name_or_path: Any, **kwargs: Any) -> Any:
     """Load a runtime skill from a filesystem path or return an existing Skill.
 
@@ -350,7 +410,7 @@ def agent(
     Internally it creates a small ``AgenticSystem`` and registers any
     concrete tools passed through ``tools=[...]``.  Users who need multiple
     shared agents, shared registry state, or environments may still create an
-    explicit ``lab.AgenticSystem(...)`` system.
+    system through ``lab.system(...)``.
     """
 
     resolved_skills = _merge_skill_inputs(skill, skills)

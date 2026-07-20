@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import importlib
 import time
 import types
 
@@ -9,7 +10,7 @@ import agentic_systems as lab
 from agentic_systems.engines.names import BEDROCK_RUNTIME_ENGINE, OPENAI_RUNTIME_ENGINE, PYTHON_DIRECT_ENGINE
 from agentic_systems.core import runtime as runtime_module
 from agentic_systems.results import RunResult
-from agentic_systems import system as system_module
+system_module = importlib.import_module("agentic_systems.system")
 
 
 def test_public_runtime_scheduler_factories_and_aliases() -> None:

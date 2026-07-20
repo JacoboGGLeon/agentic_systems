@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import importlib
 from types import SimpleNamespace
 
 import agentic_systems as toolkit
@@ -37,7 +38,7 @@ def duplicar(value: int) -> dict:
 
 def test_vllm_runtime_provider_runs_openai_compatible_tool_loop() -> None:
     runtime = toolkit.runtime(provider="vllm-runtime", model="Qwen/Qwen3-0.6B")
-    system = toolkit.AgenticSystem(runtime=runtime, model="Qwen/Qwen3-0.6B")
+    system = toolkit.system(runtime=runtime, model="Qwen/Qwen3-0.6B")
     provider = VLLMRuntimeProvider(system, client=FakeVLLMClient())
     agent = system.agent(name="qwen", instructions="Usa tools cuando sea necesario.", tools=[duplicar], engine="vllm-runtime", runtime=runtime)
 
@@ -67,7 +68,7 @@ def test_vllm_runtime_provider_reports_missing_tools_with_vllm_engine() -> None:
 
 
 def test_agentic_system_can_create_vllm_runtime_engine() -> None:
-    system = toolkit.AgenticSystem(model="Qwen/Qwen3-0.6B", runtime=toolkit.runtime(provider="vllm-runtime"))
+    system = toolkit.system(model="Qwen/Qwen3-0.6B", runtime=toolkit.runtime(provider="vllm-runtime"))
 
     assert isinstance(system._engine("vllm-runtime"), VLLMRuntimeProvider)
 
@@ -89,7 +90,7 @@ def test_vllm_environment_snapshot_is_non_secret(monkeypatch) -> None:
 
 def test_runtime_auto_resolves_vllm_when_base_url_is_configured(monkeypatch) -> None:
     import agentic_systems.core.runtime as runtime_module
-    import agentic_systems.system as system_module
+    system_module = importlib.import_module("agentic_systems.system")
 
     monkeypatch.setenv("VLLM_BASE_URL", "http://127.0.0.1:8000/v1")
     monkeypatch.setenv("VLLM_MODEL", "Qwen/Qwen3-0.6B")
@@ -100,7 +101,7 @@ def test_runtime_auto_resolves_vllm_when_base_url_is_configured(monkeypatch) -> 
 
     runtime = toolkit.runtime(provider="auto", provider_priority=["vllm-runtime", "openai-runtime", "bedrock-runtime"])
     summary = runtime.describe()
-    system = toolkit.AgenticSystem(model="Qwen/Qwen3-0.6B", runtime=runtime)
+    system = toolkit.system(model="Qwen/Qwen3-0.6B", runtime=runtime)
 
     assert runtime.model_id == "Qwen/Qwen3-0.6B"
     assert summary["selected_provider"] == VLLM_RUNTIME_ENGINE
@@ -161,7 +162,7 @@ def test_vllm_runtime_provider_async_missing_tools_and_success() -> None:
     assert missing.engine == VLLM_RUNTIME_ENGINE
     assert missing.meta["runtime_engine"] == VLLM_RUNTIME_ENGINE
 
-    system = toolkit.AgenticSystem(runtime=runtime, model="Qwen/Qwen3-0.6B")
+    system = toolkit.system(runtime=runtime, model="Qwen/Qwen3-0.6B")
     agent = system.agent(name="qwen_async", instructions="Responde.", tools=[duplicar], engine="vllm-runtime", runtime=runtime)
 
     result = asyncio.run(provider.arun(agent, "Contesta sin tools.", toolkit.RunPolicy(max_turns=1), mode="eval"))
@@ -204,7 +205,7 @@ def test_system_unknown_engine_and_auto_vllm_priority(monkeypatch) -> None:
     import pytest
     import agentic_systems.core.runtime as runtime_module
 
-    system = toolkit.AgenticSystem(model="python-runtime", runtime=toolkit.runtime(provider="python-runtime"))
+    system = toolkit.system(model="python-runtime", runtime=toolkit.runtime(provider="python-runtime"))
     with pytest.raises(ValueError, match="Unknown runtime/provider"):
         system._engine("unknown-runtime")
 
@@ -215,7 +216,7 @@ def test_system_unknown_engine_and_auto_vllm_priority(monkeypatch) -> None:
     monkeypatch.setattr(runtime_module, "_module_available", lambda name: name == "openai")
 
     runtime = toolkit.runtime(provider="auto", provider_priority=["vllm-runtime"])
-    system = toolkit.AgenticSystem(model="python-runtime", runtime=runtime)
+    system = toolkit.system(model="python-runtime", runtime=runtime)
     assert isinstance(system._engine("auto"), VLLMRuntimeProvider)
 
 
@@ -242,7 +243,7 @@ def test_openai_tool_def_builder_uses_default_schema_for_schema_less_tools() -> 
 
 
 def test_system_module_available_real_lookup() -> None:
-    import agentic_systems.system as system_module
+    system_module = importlib.import_module("agentic_systems.system")
 
     assert system_module._module_available("sys") is True
     assert system_module._module_available("definitely_missing_agentic_systems_module") is False

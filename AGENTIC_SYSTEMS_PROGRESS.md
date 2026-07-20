@@ -2,6 +2,8 @@
 
 ## Current Status
 
+Version 1.1.0 is closed and release-ready with automated and manual evidence.
+
 The repository is clean around the canonical `agentic_systems` package.
 
 Closed cleanup phases:
@@ -46,8 +48,9 @@ configure_tutorial_environment
 Latest full validation:
 
 ```text
-pytest: 359 passed
+pytest: 361 passed
 coverage: 100.00%
+notebooks: 18/18 executed, 0 failed
 compileall: OK
 wheel smoke: OK
 ```

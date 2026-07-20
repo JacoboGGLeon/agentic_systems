@@ -22,38 +22,26 @@ The curated public names live in `agentic_systems.api`.
 | `ADVANCED_API` | Public names for systems, environments, evals, engines and notebook utilities. |
 | `PUBLIC_API` | Complete top-level importable surface. |
 
-Recommended user code should start with:
+Canonical user code starts with one compositional grammar:
 
-```text
-agent
-runtime
-scheduler
-output_schema
-final_answer
-normalize_output
-tool
-Tool
-Agent
-RunResult
-LineageMemory
-LineageStep
-lineage_memory
-AgentContract
-ContractPolicySpec
-RunPolicy
-validate_contract_policy
-RuntimeConfig
-SchedulerConfig
-OutputSchema
-human_result
-load_skill
-Skill
-LoadedSkill
-expect
-core
-providers
-integrations
+```python
+toolkit.tool(...)
+toolkit.skill(...)
+toolkit.agent(...)
+toolkit.system(...)
+toolkit.graph(...)
+toolkit.environment(...)
+toolkit.eval(...)
 ```
+
+These canonical constructors are the teaching path. Their class counterparts
+(`Tool`, `Skill`, `Agent`, `AgenticSystem`, `AgenticEnvironment`, `Evaluator`)
+remain public for typing, extension and advanced lifecycle control. Runtime,
+contracts, results, lineage and rendering support the grammar without becoming
+alternative construction paths.
+
+`toolkit.system(...)` is provider-agnostic: provider and model routing belong to
+`toolkit.runtime(...)`, not to the system factory.
 
 ## Runtime And Providers
 
@@ -158,7 +146,7 @@ Use `Tool`, `tool`, `validate_tool_expectation`, `ToolExpectationValue` and
 A skill packages tools, instructions, assets and metadata.
 
 ```python
-skill = toolkit.Skill(
+skill = toolkit.skill(
     name="calculator_skill",
     description="Arithmetic tools and instructions.",
     tools=[add],
@@ -302,7 +290,7 @@ LINEAGE_SCHEMA_VERSION
 skills, agents, runtime and contracts.
 
 ```python
-system = toolkit.AgenticSystem(runtime=runtime)
+system = toolkit.system(runtime=runtime)
 
 @system.tool
 def multiply(a: int, b: int) -> dict:

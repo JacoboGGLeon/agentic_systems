@@ -1,7 +1,7 @@
 # Grammar To API Map
 
-Status: audit baseline from 1.0.7, updated through Checkpoint 1.1.9 for
-`1.1.0rc1`.
+Status: stable 1.1 baseline, promoted as
+`1.1.0`.
 
 This document maps the normative 1.1 computational grammar to the release
 candidate implementation. `COMPUTATIONAL_GRAMMAR.md`, `SEMANTICS.md`, and the
@@ -20,8 +20,8 @@ import agentic_systems as toolkit
 
 | API group | Symbols | Role |
 |---|---:|---|
-| `RECOMMENDED_API` | 33 | Names intended for first-use documentation |
-| `CORE_API` | 50 | Core factories, contracts, results, output, and composition objects |
+| `RECOMMENDED_API` | 38 | Names intended for first-use documentation |
+| `CORE_API` | 54 | Core factories, contracts, results, output, and composition objects |
 | `BEDROCK_PRIMITIVE_API` | 2 | Direct Bedrock primitives |
 | `CHAIN_API` | 2 | Sequential composition helpers |
 | `ENGINE_API` | 7 | Canonical engine names and normalization |
@@ -32,20 +32,20 @@ import agentic_systems as toolkit
 | `TRACE_API` | 1 | Trace schema version |
 | `LINEAGE_API` | 4 | Lineage records and factory |
 | `NAMESPACE_API` | 3 | `core`, `providers`, and `integrations` namespaces |
-| `ADVANCED_API` | 105 | Deduplicated union of the public groups |
-| `PUBLIC_API` | 106 | `ADVANCED_API` plus `__version__` |
+| `ADVANCED_API` | 109 | Deduplicated union of the public groups |
+| `PUBLIC_API` | 110 | `ADVANCED_API` plus `__version__` |
 
-The 33 recommended symbols are:
+The 38 recommended symbols are:
 
 ```text
-agent, runtime, scheduler, output_schema, final_answer, normalize_output,
-tool, Tool, Agent, RunResult, LineageMemory, LineageStep, lineage_memory,
-LINEAGE_SCHEMA_VERSION, AgentContract, ContractPolicySpec, RunPolicy,
-validate_contract_policy, AUTO_PROVIDER_ENV_VAR,
-DEFAULT_AUTO_PROVIDER_PRIORITY, RuntimeConfig, normalize_provider_priority,
-resolve_auto_provider, SchedulerConfig, OutputSchema, human_result, load_skill,
-Skill, LoadedSkill, expect, core, providers, integrations
-```
+tool, skill, agent, system, graph, environment, eval, runtime, scheduler,
+output_schema, final_answer, normalize_output, Tool, Agent, RunResult,
+LineageMemory, LineageStep, lineage_memory, LINEAGE_SCHEMA_VERSION,
+AgentContract, ContractPolicySpec, RunPolicy, validate_contract_policy,
+AUTO_PROVIDER_ENV_VAR, DEFAULT_AUTO_PROVIDER_PRIORITY, RuntimeConfig,
+normalize_provider_priority, resolve_auto_provider, SchedulerConfig,
+OutputSchema, human_result, load_skill, Skill, LoadedSkill, expect, core,
+providers, integrations
 
 The tier constants themselves are maintainer API in `agentic_systems.api`; they
 are not top-level exports. Documentation and tests must not imply that

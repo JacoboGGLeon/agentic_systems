@@ -1,6 +1,6 @@
 # Migration Guide: Agentic Systems 1.0 to 1.1
 
-Status: release-candidate guidance for `1.1.0rc1`.
+Status: stable guidance for `1.1.0`.
 
 ## Scope
 
@@ -16,11 +16,9 @@ algebraic syntax layer or promise identical behavior across model Providers.
 ## Upgrade
 
 ```bash
-python -m pip install --pre "agentic-systems==1.1.0rc1"
+python -m pip install "agentic-systems==1.1.0"
 ```
 
-Until the release candidate is published, install the branch or a locally built
-wheel. Do not interpret this command as evidence that the RC is already on PyPI.
 
 ## Runtime And Provider
 

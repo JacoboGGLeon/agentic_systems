@@ -1,9 +1,8 @@
 # Agentic Systems 1.1 Release Candidate
 
-Candidate version: `1.1.0rc1`.
+Candidate version: `1.1.0rc1`, promoted to `1.1.0` on 2026-07-19.
 
-Status: automated gates passed locally; full notebook execution and publication
-remain pending release gates.
+Status: historical candidate record; promotion gates passed.
 
 ## Coherence Claim
 
@@ -78,10 +77,10 @@ Promote `1.1.0rc1` only after:
 ## Recorded Automated Results
 
 ```text
-pytest: 359 passed
-coverage: 100.00% (6079 statements, 0 missing)
-canonical notebooks: 18 parsed, clean, statically compiled
-PUBLIC_API: 106 symbols
+pytest: 361 passed
+coverage: 100.00% (6089 statements, 0 missing)
+canonical notebooks: 18/18 executed, 0 failed
+PUBLIC_API: 110 symbols
 wheel: 57 entries, clean, isolated import passed
 sdist: 74 entries, clean
 twine check: passed for wheel and sdist

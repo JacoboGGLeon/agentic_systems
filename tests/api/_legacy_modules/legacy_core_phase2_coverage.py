@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+import importlib
 import sys
 import time
 import types
@@ -26,11 +27,11 @@ from agentic_systems.core.scheduler import (
 from agentic_systems.engines.names import BEDROCK_RUNTIME_ENGINE, OPENAI_RUNTIME_ENGINE, PYTHON_DIRECT_ENGINE
 from agentic_systems.results import RunResult
 import agentic_systems.factories as factories_module
-import agentic_systems.system as system_module
 import agentic_systems.utils as utils_module
 from agentic_systems.system import AgenticSystem, _merge_skill_inputs, _resolve_auto_provider
 from agentic_systems.tools import Tool
 
+system_module = importlib.import_module("agentic_systems.system")
 
 class EchoEngine:
     def __init__(self, ok=True, fail=False):

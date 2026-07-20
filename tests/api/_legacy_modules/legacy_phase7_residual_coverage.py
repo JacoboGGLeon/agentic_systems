@@ -1,6 +1,7 @@
 
 from __future__ import annotations
 
+import importlib
 import sys
 from types import ModuleType, SimpleNamespace
 
@@ -10,11 +11,11 @@ import agentic_systems.agents as agents_mod
 import agentic_systems.bedrock_runtime_client as brc
 import agentic_systems.contracts as contracts
 import agentic_systems.engines.names as names
-import agentic_systems.system as system_mod
 import agentic_systems.core.runtime as runtime_core_mod
 import agentic_systems.utils as utils
 from agentic_systems.final_answer import output_schema
 from agentic_systems.results import RunResult
+system_mod = importlib.import_module("agentic_systems.system")
 
 
 def test_phase7_small_contract_and_engine_residuals(monkeypatch):

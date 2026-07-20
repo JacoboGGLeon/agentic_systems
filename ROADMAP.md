@@ -1,8 +1,8 @@
 # Agentic Systems Roadmap
 
-## Release Candidate 1.1
+## Stable Release 1.1
 
-The current repository candidate is `1.1.0rc1`.
+The current repository release is `1.1.0`.
 
 ```text
 src/agentic_systems/  package
@@ -46,8 +46,8 @@ openai-agents   style-only metadata
 strands         declarative-only metadata
 ```
 
-## Promotion Gate
+## Promotion Evidence
 
-The candidate is not a final release until automated package gates and the
-manual notebook matrix in `docs/RELEASE_CANDIDATE_1_1.md` pass. External Provider
-support is claimed only at the evidence level recorded there.
+Automated package gates and the 18/18 manual notebook matrix passed. External
+Provider support remains limited to the evidence recorded in
+`docs/MANUAL_NOTEBOOK_MATRIX_1_1.md`.

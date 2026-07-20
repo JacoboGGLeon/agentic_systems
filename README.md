@@ -8,7 +8,7 @@
   <a href="https://pypi.org/project/agentic-systems/"><img src="https://img.shields.io/pypi/v/agentic-systems.svg" alt="PyPI version" /></a>
   <a href="https://pypi.org/project/agentic-systems/"><img src="https://img.shields.io/badge/python-%3E%3D3.10-blue.svg" alt="Python >=3.10" /></a>
   <img src="https://img.shields.io/badge/coverage-100%25-brightgreen.svg" alt="Coverage 100%" />
-  <img src="https://img.shields.io/badge/tests-359%20passed%2C%200%20skipped-brightgreen.svg" alt="Tests 359 passed, 0 skipped" />
+  <img src="https://img.shields.io/badge/tests-361%20passed%2C%200%20skipped-brightgreen.svg" alt="Tests 361 passed, 0 skipped" />
 </p>
 
 **Agentic Systems proposes a computational grammar for building, executing, observing, and evaluating intelligent systems.**
@@ -25,8 +25,8 @@ API == Docs == Tutorials == Pytests
 
 Here, `==` means verifiable traceability: public concepts are defined in the API, explained in the documentation, taught through the canonical tutorials, and enforced by tests and release gates.
 
-Release status: `1.1.0rc1` is the current release candidate. Its manual notebook
-execution matrix is tracked in `docs/RELEASE_CANDIDATE_1_1.md`.
+Release status: `1.1.0` is the stable 1.1 release. Its automated and manual
+evidence is recorded in `docs/RELEASE_1_1.md`.
 
 ```bash
 pip install agentic-systems
@@ -150,7 +150,7 @@ toolkit.human_result(result, pretty=False, show_lineage=True)
 Use `AgenticSystem` when you want a single system boundary that owns runtime, tools, skills, agents and diagnostics.
 
 ```python
-system = toolkit.AgenticSystem(runtime=toolkit.runtime(provider="python-runtime"))
+system = toolkit.system(runtime=toolkit.runtime(provider="python-runtime"))
 
 @system.tool
 def multiply(a: int, b: int) -> dict:
@@ -175,7 +175,7 @@ toolkit.human_result(result)
 A skill packages tools, instructions, contracts, assets and metadata.
 
 ```python
-skill = toolkit.Skill(
+skill = toolkit.skill(
     name="calculator_skill",
     description="Arithmetic tools and instructions.",
     tools=[add],
@@ -195,7 +195,7 @@ agent = toolkit.agent(
 Graphs coordinate state, nodes and edges. They do not replace tools, agents or systems; they orchestrate them.
 
 ```python
-system = toolkit.AgenticSystem(runtime=toolkit.runtime(provider="python-runtime"))
+system = toolkit.system(runtime=toolkit.runtime(provider="python-runtime"))
 
 @system.tool
 def double(value: int) -> dict:
@@ -373,14 +373,14 @@ CHANGELOG.md
 Current verified status:
 
 ```text
-Version: 1.1.0rc1
+Version: 1.1.0
 PyPI package: agentic-systems
-Tests: 359 passed, 0 skipped
+Tests: 361 passed, 0 skipped
 Coverage: 100.00%
-TOTAL statements: 6079
+TOTAL statements: 6089
 TOTAL missing: 0
-Canonical notebooks: 18 parsed, source-clean, and statically compiled
-Manual notebook execution: pending RC gate
+Canonical notebooks: 18/18 executed from fresh kernels
+Manual notebook execution: passed, 0 failures
 ```
 
 Run validation locally:
