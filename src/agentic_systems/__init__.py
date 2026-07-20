@@ -98,6 +98,7 @@ from .utils import (
     compose_result,
     tool_result_summary,
 )
+from .providers.vllm_runtime import vllm_environment_snapshot
 
 __version__ = "1.1.0"
 

@@ -544,15 +544,19 @@ def agent_node(
 
 
 class GraphApp:
-    """Thin Agentic Systems wrapper around a framework-native LangGraph app."""
+    """Thin Agentic Systems wrapper around a compiled graph backend."""
 
-    graph_kind = "framework-native"
-    framework = LANGGRAPH_ORCHESTRATOR
+    graph_kind = "graph-app"
+    framework = None
 
     def __init__(self, *, native: Any, engine: str, name: str = "graph") -> None:
         self.native = native
         self.engine = engine
         self.name = name
+        self.graph_kind = (
+            "framework-native" if engine == "langgraph" else "agentic-systems-native"
+        )
+        self.framework = LANGGRAPH_ORCHESTRATOR if engine == "langgraph" else None
 
     def run(self, state: Any) -> Any:
         """Run the compiled graph with a user state object or mapping."""
@@ -582,6 +586,106 @@ class GraphApp:
         return lineage_from_langgraph_state(state, **kwargs)
 
 
+
+class _PortableGraph:
+    """Dependency-free backend for the portable ``graph`` contract."""
+
+    def __init__(self, *, nodes, edges, conditional_edges) -> None:
+        self.nodes = dict(nodes)
+        self.edges = [(str(source), str(target)) for source, target in edges]
+        self.conditional_edges = list(conditional_edges)
+        for name, node in self.nodes.items():
+            _validate_node_name(name, parameter="node name")
+            if not callable(node):
+                raise TypeError(f"Graph node {name!r} must be callable.")
+
+    @staticmethod
+    def _merge_state(state: Any, update: Any) -> Any:
+        if update is None:
+            return state
+        if isinstance(state, Mapping) and isinstance(update, Mapping):
+            return {**dict(state), **dict(update)}
+        return update
+
+    def _conditional_target(self, source: str, state: Any) -> str | None:
+        matches = [item for item in self.conditional_edges if str(item[0]) == source]
+        if len(matches) > 1:
+            raise GraphContractError(
+                f"Portable graph supports one conditional router per node; got {source!r} twice."
+            )
+        if not matches:
+            return None
+        item = matches[0]
+        if len(item) not in {2, 3} or not callable(item[1]):
+            raise TypeError("Each conditional edge must be (source, route_fn) or (source, route_fn, path_map).")
+        route = str(item[1](state))
+        if len(item) == 3:
+            path_map = item[2]
+            if not isinstance(path_map, Mapping):
+                raise TypeError("conditional edge path_map must be a mapping of route -> node name.")
+            if route not in path_map:
+                raise GraphContractError(f"Conditional route {route!r} is not present in path_map.")
+            return str(path_map[route])
+        return route
+
+    def _next_target(self, source: str, state: Any) -> str:
+        conditional = self._conditional_target(source, state)
+        if conditional is not None:
+            return conditional
+        targets = [target for edge_source, target in self.edges if edge_source == source]
+        if not targets:
+            return "END"
+        if len(targets) > 1:
+            raise GraphContractError(
+                f"Portable graph does not execute parallel branches from {source!r}; "
+                "use conditional_edges or engine='langgraph'."
+            )
+        return targets[0]
+
+    def _start_target(self) -> str:
+        starts = [target for source, target in self.edges if source.upper() == "START"]
+        if len(starts) != 1:
+            raise GraphContractError("Portable graph requires exactly one START edge.")
+        return starts[0]
+
+    def invoke(self, state: Any) -> Any:
+        current = self._start_target()
+        result = dict(state) if isinstance(state, Mapping) else state
+        steps = 0
+        step_limit = max(100, len(self.nodes) * 10)
+        while current.upper() != "END":
+            if current not in self.nodes:
+                raise GraphContractError(f"Graph references unknown node {current!r}.")
+            update = self.nodes[current](result)
+            if inspect.isawaitable(update):
+                if inspect.iscoroutine(update):
+                    update.close()
+                raise TypeError("Async graph node requires await graph.arun(state).")
+            result = self._merge_state(result, update)
+            current = self._next_target(current, result)
+            steps += 1
+            if steps > step_limit:
+                raise GraphContractError("Portable graph exceeded its cycle safety limit.")
+        return result
+
+    async def ainvoke(self, state: Any) -> Any:
+        current = self._start_target()
+        result = dict(state) if isinstance(state, Mapping) else state
+        steps = 0
+        step_limit = max(100, len(self.nodes) * 10)
+        while current.upper() != "END":
+            if current not in self.nodes:
+                raise GraphContractError(f"Graph references unknown node {current!r}.")
+            update = self.nodes[current](result)
+            if inspect.isawaitable(update):
+                update = await update
+            result = self._merge_state(result, update)
+            current = self._next_target(current, result)
+            steps += 1
+            if steps > step_limit:
+                raise GraphContractError("Portable graph exceeded its cycle safety limit.")
+        return result
+
 def _edge_endpoint(value: str, *, start: Any, end: Any) -> Any:
     text = str(value)
     if text.upper() == "START":
@@ -608,27 +712,43 @@ def graph(
         tuple[str, Callable[[LangGraphState], str]]
         | tuple[str, Callable[[LangGraphState], str], Mapping[str, str]]
     ] | None = None,
-    engine: str = "langgraph",
+    engine: str = "auto",
     name: str = "graph",
     compile_graph: bool = True,
 ) -> Any:
-    """Build a framework-native LangGraph from state, nodes and edges.
+    """Build a graph from portable state, nodes and edges.
 
-    This is an optional integration facade, not the Agentic Systems native Graph
-    contract. ``engine`` remains as a compatibility argument and only accepts
-    ``langgraph``. For router-style systems,
+    ``engine='auto'`` uses native LangGraph when installed and otherwise the
+    dependency-free portable backend. ``engine='portable'`` forces the portable
+    subset; ``engine='langgraph'`` explicitly requires LangGraph. For routers,
     pass ``conditional_edges=[('router', route_fn, {'a': 'node_a', 'b': 'END'})]``.
     """
 
-    if str(engine).strip().lower().replace("_", "-") != "langgraph":
-        raise ValueError("graph(..., engine=...) currently supports only engine='langgraph'.")
-    START, END, StateGraph = _import_langgraph_graph()
+    resolved_engine = str(engine).strip().lower().replace("_", "-")
+    if resolved_engine not in {"auto", "portable", "langgraph"}:
+        raise ValueError("graph(..., engine=...) supports 'auto', 'portable' or 'langgraph'.")
+    node_map = dict(nodes or {})
+    edge_list = list(edges or [])
+    conditional_list = list(conditional_edges or [])
+    if resolved_engine == "portable":
+        native = _PortableGraph(nodes=node_map, edges=edge_list, conditional_edges=conditional_list)
+        return GraphApp(native=native, engine="portable", name=name)
+    try:
+        START, END, StateGraph = _import_langgraph_graph()
+    except ImportError:
+        if resolved_engine == "langgraph":
+            raise
+        native = _PortableGraph(nodes=node_map, edges=edge_list, conditional_edges=conditional_list)
+        return GraphApp(native=native, engine="portable", name=name)
     native = StateGraph(state)
-    for node_name, node in dict(nodes or {}).items():
+    for node_name, node in node_map.items():
         native.add_node(_validate_node_name(node_name, parameter="node name"), node)
-    for start, end in list(edges or []):
-        native.add_edge(_edge_endpoint(start, start=START, end=END), _edge_endpoint(end, start=START, end=END))
-    for item in list(conditional_edges or []):
+    for edge_start, edge_end in edge_list:
+        native.add_edge(
+            _edge_endpoint(edge_start, start=START, end=END),
+            _edge_endpoint(edge_end, start=START, end=END),
+        )
+    for item in conditional_list:
         if not isinstance(item, tuple) or len(item) not in {2, 3}:
             raise TypeError("Each conditional edge must be (source, route_fn) or (source, route_fn, path_map).")
         source = _edge_endpoint(item[0], start=START, end=END)

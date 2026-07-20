@@ -40,6 +40,8 @@ import boto3
 from botocore.exceptions import ClientError
 from pydantic import BaseModel, ConfigDict, Field, create_model
 
+from ..defaults import DEFAULT_AWS_REGION
+
 
 __version__ = "1.0.3"
 

@@ -85,8 +85,8 @@ Mensaje:
 
 ```text
 Version: 1.1.0
-Tests: 361 passed
-Coverage: 100.00% / 6,089 statements
+Tests: 392 passed
+Coverage: 100.00% / 6,193 statements
 Notebooks: 18/18 ejecutados
 Wheel + sdist: twine check passed
 Wheel: instalado e importado en venv nuevo

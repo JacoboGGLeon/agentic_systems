@@ -77,8 +77,8 @@ Promote `1.1.0rc1` only after:
 ## Recorded Automated Results
 
 ```text
-pytest: 361 passed
-coverage: 100.00% (6089 statements, 0 missing)
+pytest: 392 passed
+coverage: 100.00% (6193 statements, 0 missing)
 canonical notebooks: 18/18 executed, 0 failed
 PUBLIC_API: 110 symbols
 wheel: 57 entries, clean, isolated import passed

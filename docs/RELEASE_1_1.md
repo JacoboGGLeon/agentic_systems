@@ -15,10 +15,10 @@ API == Docs == Tutorials == Pytests
 ## Verified evidence
 
 ```text
-pytest: 361 passed
-coverage: 100.00% (6,089 statements, 0 missing)
+pytest: 392 passed
+coverage: 100.00% (6,193 statements, 0 missing)
 canonical notebooks: 18/18 executed, 0 failed
-PUBLIC_API: 110 symbols
+PUBLIC_API: 111 symbols
 RunResult invariants: normative contract plus contradiction and round-trip tests
 package import: top-level toolkit surface verified
 ```

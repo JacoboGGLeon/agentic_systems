@@ -10,7 +10,7 @@ manual notebook matrix and updated automated gates passed.
 ### Closure evidence
 
 - 18 of 18 canonical notebooks executed from fresh kernels; no failures.
-- 361 tests passed with 100.00% coverage over 6,089 statements.
+- 392 tests passed with 100.00% coverage over 6,193 statements.
 - Canonical construction remains under `import agentic_systems as toolkit`.
 - Added ergonomic `toolkit.skill(...)`, `toolkit.environment(...)`, and
   `toolkit.eval()` factories over existing public types.

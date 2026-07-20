@@ -12,6 +12,8 @@ export_legacy_tests(
     'multi_agent_state_contract',
     'checkpoint_04k_user_first_tutorials',
     'checkpoint_12b_fundamentals_comparison',
+    'checkpoint_09_tutorial_output_helpers',
+    'notebook_syntax',
 )
 
 

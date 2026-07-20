@@ -341,9 +341,20 @@ Graph APIs coordinate state, nodes and edges. They do not replace tools, agents
 or systems.
 
 ```python
-node = toolkit.agent_node(agent, input_mapper=..., output_mapper=...)
-graph = toolkit.graph(state=..., nodes=[...], edges=[...])
+node = toolkit.agent_node(agent, input=..., output=...)
+graph = toolkit.graph(
+    state=dict,
+    nodes={"inspect": node},
+    edges=[("START", "inspect"), ("inspect", "END")],
+    engine="auto",
+)
 ```
+
+The default `engine="auto"` uses LangGraph when installed and falls back to the
+dependency-free portable backend. Use `engine="portable"` for deterministic
+core-only execution or `engine="langgraph"` when the native SDK is required.
+The portable backend supports sequential and conditional routes and rejects
+parallel branches explicitly instead of emulating framework behavior.
 
 Public graph names:
 
@@ -437,6 +448,7 @@ compose_result
 mask_sensitive
 aws_environment_snapshot
 boto3_session_snapshot
+vllm_environment_snapshot
 repair_ada_credential_chain
 run_result_output
 run_result_view
@@ -605,6 +617,7 @@ compose_result
 mask_sensitive
 aws_environment_snapshot
 boto3_session_snapshot
+vllm_environment_snapshot
 repair_ada_credential_chain
 run_result_output
 run_result_view

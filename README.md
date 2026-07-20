@@ -8,7 +8,7 @@
   <a href="https://pypi.org/project/agentic-systems/"><img src="https://img.shields.io/pypi/v/agentic-systems.svg" alt="PyPI version" /></a>
   <a href="https://pypi.org/project/agentic-systems/"><img src="https://img.shields.io/badge/python-%3E%3D3.10-blue.svg" alt="Python >=3.10" /></a>
   <img src="https://img.shields.io/badge/coverage-100%25-brightgreen.svg" alt="Coverage 100%" />
-  <img src="https://img.shields.io/badge/tests-361%20passed%2C%200%20skipped-brightgreen.svg" alt="Tests 361 passed, 0 skipped" />
+  <img src="https://img.shields.io/badge/tests-392%20passed%2C%200%20skipped-brightgreen.svg" alt="Tests 392 passed, 0 skipped" />
 </p>
 
 **Agentic Systems proposes a computational grammar for building, executing, observing, and evaluating intelligent systems.**
@@ -375,9 +375,9 @@ Current verified status:
 ```text
 Version: 1.1.0
 PyPI package: agentic-systems
-Tests: 361 passed, 0 skipped
+Tests: 392 passed, 0 skipped
 Coverage: 100.00%
-TOTAL statements: 6089
+TOTAL statements: 6193
 TOTAL missing: 0
 Canonical notebooks: 18/18 executed from fresh kernels
 Manual notebook execution: passed, 0 failures

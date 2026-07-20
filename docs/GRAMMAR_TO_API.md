@@ -33,7 +33,7 @@ import agentic_systems as toolkit
 | `LINEAGE_API` | 4 | Lineage records and factory |
 | `NAMESPACE_API` | 3 | `core`, `providers`, and `integrations` namespaces |
 | `ADVANCED_API` | 109 | Deduplicated union of the public groups |
-| `PUBLIC_API` | 110 | `ADVANCED_API` plus `__version__` |
+| `PUBLIC_API` | 111 | `ADVANCED_API` plus `__version__` |
 
 The 38 recommended symbols are:
 

@@ -168,6 +168,7 @@ NOTEBOOK_API = (
     "mask_sensitive",
     "aws_environment_snapshot",
     "boto3_session_snapshot",
+    "vllm_environment_snapshot",
     "repair_ada_credential_chain",
     "run_result_output",
     "run_result_view",

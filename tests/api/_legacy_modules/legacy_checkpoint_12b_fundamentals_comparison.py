@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import ast
 import json
@@ -38,12 +38,12 @@ def test_fundamentals_notebooks_are_simple_runtime_blueprints():
     notebook_dir = root / "tutorials"
     expected = {
         "01_tool_api.ipynb": ["@toolkit.tool", "toolkit.Tool", "Pydantic"],
-        "02_skill_api.ipynb": ["toolkit.skill", "Skill.check", "skills=[math_skill]"],
-        "03_agent_api.ipynb": ['engine="python-runtime"', 'provider="auto"', "Agente LM"],
-        "04_human_result_api.ipynb": ["toolkit.RunResult", "toolkit.final_answer", "toolkit.human_result"],
+        "02_skill_api.ipynb": ["toolkit.skill(", "inspection_skill.check", "skills=[inspection_skill]"],
+        "03_agent_api.ipynb": ["toolkit.runtime(", "toolkit.agent(", "agent.run("],
+        "04_human_result_api.ipynb": ["toolkit.human_result", "toolkit.run_result_output", "toolkit.run_result_summary"],
         "07_integrations_openai_runtime_api.ipynb": ['provider="auto"', 'framework="openai-agents"', "await agent.arun"],
-        "08_system_api.ipynb": ["toolkit.AgenticSystem", "system.tool", "system.skill", "system.agent", "system.inspect"],
-        "09_graph_api.ipynb": ["toolkit.graph(", "toolkit.agent_node", "agent.as_node", "graph.run"],
+        "08_system_api.ipynb": ["toolkit.system(", "system.tool", "system.skill", "system.agent", "system.inspect"],
+        "09_graph_api.ipynb": ["toolkit.graph(", "toolkit.agent_node", "app.run", "toolkit.compose_result"],
         "10_environment_eval_api.ipynb": ["toolkit.environment", "toolkit.eval().run", "reward_fn"],
     }
     paths = {path.name: path for path in notebook_dir.glob("*.ipynb")}
@@ -91,8 +91,8 @@ def test_fundamentals_notebooks_are_simple_runtime_blueprints():
         )
         assert "import agentic_systems as toolkit" in code
         if name == "04_human_result_api.ipynb":
-            assert "toolkit.normalize_output" in code and "toolkit.output_schema" in code
-            assert "toolkit.RunResult" in code and "toolkit.final_answer" in code
+            assert "toolkit.run_result_output" in code
+            assert "toolkit.run_result_summary" in code and "toolkit.run_result_view" in code
         elif name not in {"08_system_api.ipynb", "09_graph_api.ipynb", "10_environment_eval_api.ipynb"}:
             assert "@toolkit.tool" in code or "mas.make_tools" in code
         for index, cell in enumerate(nb.get("cells", [])):

@@ -50,12 +50,12 @@ def test_release_candidate_version_and_public_inventory_are_consistent():
 
     assert project["project"]["version"] == "1.1.0"
     assert agentic_systems.__version__ == "1.1.0"
-    assert len(PUBLIC_API) == 110
+    assert len(PUBLIC_API) == 111
     assert "InspectReport" in PUBLIC_API
 
     api_docs = (ROOT / "docs" / "API.md").read_text(encoding="utf-8")
     assert "InspectReport" in api_docs
-    assert "`PUBLIC_API` | 110" in (
+    assert "`PUBLIC_API` | 111" in (
         ROOT / "docs" / "GRAMMAR_TO_API.md"
     ).read_text(encoding="utf-8")
     coherence_claim = (
@@ -66,7 +66,7 @@ def test_release_candidate_version_and_public_inventory_are_consistent():
     release_candidate = (
         ROOT / "docs" / "RELEASE_CANDIDATE_1_1.md"
     ).read_text(encoding="utf-8")
-    assert "Tests: 361 passed, 0 skipped" in readme
+    assert "Tests: 392 passed, 0 skipped" in readme
     assert coherence_claim in readme
     assert "API == Docs == Tutorials == Pytests" in readme
     assert coherence_claim in release_candidate.replace("\n", " ")
@@ -88,7 +88,7 @@ def test_canonical_notebooks_are_clean_public_and_statically_executable():
             "".join(cell.get("source", []))
             for cell in notebook["cells"]
             if cell.get("cell_type") == "markdown"
-            and "".join(cell.get("source", [])).startswith("## Parámetros de ")
+            and "".join(cell.get("source", [])).startswith("## Parametros de ")
         ]
         assert len(parameter_sections) == 1
         assert "from agentic_systems." not in source
@@ -124,9 +124,9 @@ def test_tutorial_claims_match_checkpoint_1_1_contracts():
     assert 'framework_profile("strands")' in strands
     assert "style-only" in agents_style
     assert 'framework_profile("openai-agents")' in agents_style
-    assert "if result is None:" in agents_style
+    assert "result = None" in agents_style
     assert "inspection.to_dict()" in system
-    assert "inspection.human_text()" in system
+    assert "toolkit.show(inspection" in system
     assert '"models_executed": 0' in system
     assert 'determinism="deterministic"' in evals
     assert "reproducibility_conditions" in evals

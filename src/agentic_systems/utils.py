@@ -6,6 +6,7 @@ import json
 import os
 import re
 import sys
+from dataclasses import asdict, is_dataclass
 from pathlib import Path
 from typing import Any, Callable, Mapping
 
@@ -1463,11 +1464,20 @@ def _discover_repo_root(start: Path) -> Path:
 
 
 def _to_jsonable(value: Any) -> Any:
+    """Normalize supported public values without depending on provider types.
+
+    Precedence is intentional and forms the structural serialization contract:
+    Pydantic-style ``model_dump`` objects, ``to_dict`` objects, dataclasses,
+    mappings, and finally common containers. Unknown leaf values are left to
+    ``json.dumps(..., default=str)`` by the presentation layer.
+    """
     if hasattr(value, "model_dump"):
         return value.model_dump(mode="json")
     if hasattr(value, "to_dict"):
         return value.to_dict()
-    if isinstance(value, dict):
+    if is_dataclass(value) and not isinstance(value, type):
+        return _to_jsonable(asdict(value))
+    if isinstance(value, Mapping):
         return {str(key): _to_jsonable(item) for key, item in value.items()}
     if isinstance(value, (list, tuple, set)):
         return [_to_jsonable(item) for item in value]
