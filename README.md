@@ -36,6 +36,35 @@ pip install agentic-systems
 import agentic_systems as toolkit
 ```
 
+### Live Provider Notebooks (Git Bash)
+
+Export the provider configuration before starting Jupyter. Enable only the
+provider you are about to test, and start Jupyter from the same terminal so its
+kernel inherits the variables.
+
+```bash
+# OpenAI
+export OPENAI_API_KEY='...'
+export OPENAI_MODEL='gpt-4.1-mini'
+export RUN_OPENAI_LIVE=1
+
+# vLLM
+export VLLM_BASE_URL='http://127.0.0.1:8000/v1'
+export VLLM_MODEL='tu-modelo'
+export RUN_VLLM_LIVE=1
+
+# Bedrock
+export AWS_PROFILE='tu-profile'
+export AWS_REGION='us-east-1'
+export BEDROCK_MODEL_ID='tu-model-id'
+export RUN_BEDROCK_LIVE=1
+
+python -m jupyter lab
+```
+
+The notebooks expose a safe preflight and skip external calls unless their
+corresponding `RUN_*_LIVE` flag is enabled. Never commit real credentials.
+
 ## Why Agentic Systems
 
 Agent prototypes usually break when they leave the demo path because the important questions are not represented in code:

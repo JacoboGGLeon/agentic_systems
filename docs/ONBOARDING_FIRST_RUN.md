@@ -19,6 +19,31 @@ pip install -e ".[langgraph]"
 pip install -e ".[openai]"   # OpenAI client; also used by vllm-runtime
 ```
 
+Configure live provider notebooks from Git Bash before starting Jupyter:
+
+```bash
+# OpenAI
+export OPENAI_API_KEY='...'
+export OPENAI_MODEL='gpt-4.1-mini'
+export RUN_OPENAI_LIVE=1
+
+# vLLM
+export VLLM_BASE_URL='http://127.0.0.1:8000/v1'
+export VLLM_MODEL='tu-modelo'
+export RUN_VLLM_LIVE=1
+
+# Bedrock
+export AWS_PROFILE='tu-profile'
+export AWS_REGION='us-east-1'
+export BEDROCK_MODEL_ID='tu-model-id'
+export RUN_BEDROCK_LIVE=1
+
+python -m jupyter lab
+```
+
+Enable only the provider being tested. Jupyter must start from the same Git Bash
+session so the kernel inherits the exported variables.
+
 ## Smoke Test
 
 ```bash
