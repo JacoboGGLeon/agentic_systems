@@ -28,6 +28,8 @@ Here, `==` means verifiable traceability: public concepts are defined in the API
 Release status: `1.1.0` is the stable 1.1 release. Its automated and manual
 evidence is recorded in `docs/RELEASE_1_1.md`.
 
+## Installation
+
 ```bash
 pip install agentic-systems
 ```
@@ -36,36 +38,8 @@ pip install agentic-systems
 import agentic_systems as toolkit
 ```
 
-### Live Provider Notebooks (Git Bash)
-
-Export the provider configuration before starting Jupyter. Enable only the
-provider you are about to test, and start Jupyter from the same terminal so its
-kernel inherits the variables.
-
-```bash
-# OpenAI
-export OPENAI_API_KEY='...'
-export OPENAI_MODEL='gpt-4.1-mini'
-export RUN_OPENAI_LIVE=1
-
-# vLLM
-export VLLM_BASE_URL='http://127.0.0.1:8000/v1'
-export VLLM_MODEL='tu-modelo'
-export RUN_VLLM_LIVE=1
-
-# Bedrock
-export AWS_PROFILE='tu-profile'
-export AWS_REGION='us-east-1'
-export BEDROCK_MODEL_ID='tu-model-id'
-export RUN_BEDROCK_LIVE=1
-
-python -m jupyter lab
-```
-
-Live execution is enabled by default. Each notebook detects whether its provider
-is ready: configured providers execute on Run All, while unavailable providers
-show an actionable preflight skip. Set the corresponding `RUN_*_LIVE=0` only
-when you explicitly want to disable a live call. Never commit real credentials.
+For an installed-package smoke test and provider notebook setup, follow
+[First Run Onboarding](docs/ONBOARDING_FIRST_RUN.md).
 
 ## Why Agentic Systems
 
@@ -92,7 +66,7 @@ Agentic Systems represents those concerns as a computational grammar: runtime, t
 | Environments | Episodic execution over records, transitions, rewards and history. |
 | Evals | Repeatable validation cases with pass/fail reporting. |
 | Lineage Memory | Human-readable explanation of what happened and why. |
-| Integrations | A thin LangGraph adapter plus explicit profiles for declarative framework identities. |
+| Integrations | A portable Graph backend, an optional LangGraph adapter, and explicit framework identities. |
 
 ## Core Model
 
@@ -121,7 +95,7 @@ Canonical providers:
 |---|---|
 | `bedrock-runtime` | AWS Bedrock Runtime provider path. |
 | `openai-runtime` | Direct OpenAI provider path. |
-| `vllm-runtime` | OpenAI-compatible vLLM provider path for local or Colab GPU inference. |
+| `vllm-runtime` | Client path for an existing OpenAI-compatible vLLM endpoint. |
 | `python-runtime` | Local deterministic execution for tools, policies and smoke tests. |
 | `auto` | Selects a concrete provider from environment signals before execution. |
 
@@ -358,12 +332,24 @@ The CLI is for inspection, diagnostics and packaging smoke tests. It should not 
 
 The official learning path is `tutorials/`. It explains and exercises the public API directly from `import agentic_systems as toolkit`.
 
+Provider notebooks require no activation cell. Configure the external boundary,
+open the corresponding notebook, and choose **Run All**:
+
+| Provider | Readiness inputs | Notebook |
+|---|---|---|
+| OpenAI | `OPENAI_API_KEY`; optional `OPENAI_MODEL` | `00_runtime_openai_provider_api.ipynb` |
+| vLLM | `VLLM_BASE_URL` and `VLLM_MODEL` | `00_runtime_vllm_provider_api.ipynb` |
+| Bedrock | Standard AWS credential chain; optional model/region overrides | `00_runtime_bedrock_provider_api.ipynb` |
+
+Live execution is the default when readiness passes. A provider-specific
+`RUN_*_LIVE=0` is an explicit opt-out, not a prerequisite.
+
 ```text
 tutorials/00_runtime_api.ipynb
 tutorials/00_runtime_bedrock_provider_api.ipynb
 tutorials/00_runtime_openai_provider_api.ipynb
-tutorials/00_runtime_vllm_provider_api.ipynb
 tutorials/00_runtime_scheduler_api.ipynb
+tutorials/00_runtime_vllm_provider_api.ipynb
 tutorials/01_tool_api.ipynb
 tutorials/02_skill_api.ipynb
 tutorials/03_agent_api.ipynb

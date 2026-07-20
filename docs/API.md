@@ -100,7 +100,10 @@ VLLM_API_KEY
 
 `vllm-runtime` is an OpenAI-compatible client path. It expects a running vLLM
 server, usually at `http://127.0.0.1:8000/v1`, and uses the OpenAI SDK client.
-Install `agentic-systems[vllm]` for the OpenAI-compatible client plus the vLLM server dependency. Alias `agentic-systems[vll]` is also available. `agentic-systems[all]` includes vLLM as well. The server still runs as external infrastructure; Agentic Systems does not start it automatically.
+Install `agentic-systems[openai]` when Agentic Systems only connects to an
+existing endpoint. Install `agentic-systems[vllm]` (alias `vll`) only when the
+same supported Linux environment also hosts the vLLM server. The server remains
+external infrastructure; Agentic Systems never starts it implicitly.
 
 Bedrock runtime reads configuration from the environment or `.env`:
 
@@ -486,30 +489,38 @@ business logic.
 
 See `docs/CLI.md` for command details.
 
+## Provider Notebook Run All Contract
+
+Provider notebooks are top-to-bottom programs. Live execution is enabled by
+default, but an external call occurs only after public readiness diagnostics
+confirm usable configuration. Missing infrastructure produces an actionable
+skip and no fabricated `RunResult`. The `RUN_*_LIVE=0` variables are explicit
+opt-outs for demos, CI, and offline validation.
+
 ## Tutorials API Coverage
 
 Tutorials are the canonical learning path:
 
 | Notebook | API focus |
 |---|---|
-| `00_runtime_api.ipynb` | `runtime`, `scheduler`, `RuntimeConfig.describe`, provider auto y engines canonicos. |
-| `00_runtime_bedrock_provider_api.ipynb` | `bedrock-runtime`, AWS diagnostics, Converse and embeddings smoke. |
-| `00_runtime_openai_provider_api.ipynb` | `openai-runtime`, OpenAI config and native provider smoke. |
-| `00_runtime_vllm_provider_api.ipynb` | `vllm-runtime`, OpenAI-compatible vLLM config and optional Colab/GPU smoke. |
+| `00_runtime_api.ipynb` | Runtime, scheduler, provider profiles and dry provider resolution. |
+| `00_runtime_bedrock_provider_api.ipynb` | Bedrock readiness and the canonical `runtime -> system -> agent -> RunResult` route. |
+| `00_runtime_openai_provider_api.ipynb` | OpenAI readiness and the canonical `runtime -> system -> agent -> RunResult` route. |
+| `00_runtime_vllm_provider_api.ipynb` | vLLM endpoint readiness and the canonical `runtime -> system -> agent -> RunResult` route. |
 | `00_runtime_scheduler_api.ipynb` | `scheduler`, limits, retry and timeout behavior. |
 | `01_tool_api.ipynb` | `tool`, `Tool`, contracts and direct tool execution. |
 | `02_skill_api.ipynb` | `Skill`, skill validation and skill-backed agents. |
 | `03_agent_api.ipynb` | `agent`, `Agent`, contracts, policies and `RunResult`. |
-| `04_human_result_api.ipynb` | `final_answer`, `normalize_output`, `human_result`. |
-| `05_lineage_memory_api.ipynb` | `LineageMemory`, prompt context and trace explanation. |
-| `06_integrations_strands_api.ipynb` | Strands declarative identity and availability boundary. |
-| `07_integrations_openai_runtime_api.ipynb` | OpenAI Agents-style identity over the selected runtime. |
+| `04_human_result_api.ipynb` | One real `RunResult` projected through human, output, summary and view APIs. |
+| `05_lineage_memory_api.ipynb` | Lineage and composition derived from real `RunResult` evidence. |
+| `06_integrations_strands_api.ipynb` | Strands declarative identity executed over a readiness-resolved Provider. |
+| `07_integrations_openai_runtime_api.ipynb` | OpenAI Agents-style identity executed over the selected runtime. |
 | `08_system_api.ipynb` | AgenticSystem fundamentals: ownership, registration, Skills, Agents and static inspection. |
-| `09_graph_api.ipynb` | Graph fundamentals: state, nodes, edges and the LangGraph boundary. |
-| `10_environment_eval_api.ipynb` | Episodes, Environment, seeds, reproducibility and Evals. |
-| `11_single_agentic_system_api.ipynb` | End-to-end integration of a System with one required Agent and an optional LM explainer. |
-| `12_multi_agentic_system_api.ipynb` | End-to-end solver, judge and optional LM reviewer composition owned by one System. |
-| `13_multi_agentic_graph_api.ipynb` | The preceding multi-agent System orchestrated as a stateful Graph. |
+| `09_graph_api.ipynb` | Graph state and agent nodes through `engine="auto"`, including the portable backend. |
+| `10_environment_eval_api.ipynb` | Real Agent episodes, independent oracle rewards, reproducibility and Evals. |
+| `11_single_agentic_system_api.ipynb` | End-to-end System, Agent and Eval with a selectable provider. |
+| `12_multi_agentic_system_api.ipynb` | Two real Agent runs composed from their `RunResult` evidence. |
+| `13_multi_agentic_graph_api.ipynb` | Multiple real Agents orchestrated through the public Graph API. |
 
 ## Documentation Rules
 

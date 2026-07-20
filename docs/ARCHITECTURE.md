@@ -100,9 +100,13 @@ It must remain package-oriented. Do not add domain workflows to the CLI.
 Agentic Systems Graph adapters used by Environment execution. They require no
 external framework and declare `graph_kind="agentic-systems-native"`.
 
-`GraphApp`, `AgenticGraph`, and the LangGraph builders are optional integration
-objects. Their state model, compilation, and lifecycle belong to LangGraph and
-declare `graph_kind="framework-native"` where wrapped.
+`toolkit.graph(engine="auto")` returns a `GraphApp`. It uses native LangGraph
+when installed and otherwise the dependency-free portable backend. The instance
+declares `graph_kind="framework-native"` only for LangGraph and
+`graph_kind="agentic-systems-native"` for the portable backend.
+
+`AgenticGraph` and the explicit LangGraph builders always belong to the optional
+framework integration and remain `framework-native`.
 
 Only LangGraph has an SDK adapter. `openai-agents` is style-only and `strands` is
 declarative-only in the current package.

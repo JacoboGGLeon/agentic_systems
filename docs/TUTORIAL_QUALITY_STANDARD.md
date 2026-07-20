@@ -75,6 +75,27 @@ Cada notebook contiene:
 7. al menos un limite, fallo o riesgo;
 8. inventario final `api_coverage`.
 
+## Contrato Run All
+
+Un tutorial debe funcionar de arriba hacia abajo con **Run All**. No puede
+depender de que el usuario conozca una celda de activacion, ejecute un bloque
+fuera de orden o reconstruya manualmente estado intermedio.
+
+Para notebooks con Providers externos:
+
+- live esta habilitado por defecto cuando el preflight confirma readiness;
+- readiness se observa mediante API publica y variables del entorno, no mediante
+  imports directos del SDK;
+- `RUN_*_LIVE=0` es un opt-out explicito para demos, CI o ejecucion offline;
+- un Provider configurado debe recorrer
+  `runtime -> system -> agent -> RunResult`;
+- infraestructura ausente produce un skip accionable y no un resultado
+  fabricado;
+- una llamada intentada que falla conserva el error real del Provider.
+
+El criterio pedagogico es simple: despues de instalar y configurar la frontera
+externa, **Run All debe ser suficiente**.
+
 ## Evidencia de release
 
 El gate automatizado valida estructura, imports, compilacion y uso de la ruta

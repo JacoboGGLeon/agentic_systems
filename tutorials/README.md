@@ -1,15 +1,45 @@
 # Tutorials
 
-`tutorials/` es la ruta pedagogica oficial del repo.
+Esta carpeta es la demostracion ejecutable de Agentic Systems. Cada notebook
+ensena una parte de la API publica desde la perspectiva del usuario:
+
+```python
+import agentic_systems as toolkit
+```
+
+No hay una segunda implementacion escondida en los tutoriales. Tools, Skills,
+Agents, Systems, Graphs, Environments, Evals, resultados y presentacion salen de
+la libreria instalada.
+
+## Promesa De Uso
 
 ```text
-tutorials -> explora y explota la API 1:1
+instalar -> configurar el Provider -> abrir el notebook -> Run All
 ```
-Cada notebook sigue el contrato de calidad definido en
-`docs/TUTORIAL_QUALITY_STANDARD.md`: resultado para el usuario, API publica
-primero, limites visibles y evidencia ejecutable.
 
-La gramatica de construccion que se ensena es:
+**Run All es el camino principal.** Un notebook no debe exigir celdas secretas,
+orden manual alternativo, mutaciones de resultados ni helpers locales que
+dupliquen la API.
+
+En notebooks externos:
+
+- un Provider listo ejecuta live por defecto;
+- un Provider no configurado muestra un preflight accionable;
+- `RUN_*_LIVE=0` desactiva deliberadamente una llamada;
+- una ejecucion real termina en `RunResult`;
+- un skip nunca se presenta como evidencia live.
+
+La configuracion completa para Git Bash esta en
+[First Run Onboarding](../docs/ONBOARDING_FIRST_RUN.md).
+
+## Ruta Conceptual
+
+```text
+Tool -> Skill -> Agent -> System -> Graph -> Environment -> Eval
+```
+
+Runtime, Provider, contratos, lineage y human output son capas transversales.
+La construccion preferida usa una sola fachada:
 
 ```python
 toolkit.tool(...)
@@ -21,100 +51,83 @@ toolkit.environment(...)
 toolkit.eval(...)
 ```
 
+## Orden Recomendado
 
-## Ruta Conceptual
-
-La secuencia sigue el manifiesto de Agentic Systems:
-
-```text
-Tool -> Skill -> Agent -> System / Graph -> Environment -> Eval
-```
-
-Y usa estas capas transversales durante el recorrido:
-
-```text
-Memory / Lineage -> Runtime -> Provider -> Integrations
-```
-
-## Orden
-
-| Orden | Notebook | Que cubre |
+| Orden | Notebook | Aprendizaje observable |
 |---:|---|---|
-| 0.1 | `00_runtime_api.ipynb` | Runtime base y `provider="auto"`. |
-| 0.2 | `00_runtime_bedrock_provider_api.ipynb` | Bedrock Runtime: AWS diagnostics, Converse y embeddings. |
-| 0.3 | `00_runtime_openai_provider_api.ipynb` | OpenAI Runtime: provider nativo directo; la integracion `openai-agents` se declara como framework cuando aplica. |
-| 0.4 | `00_runtime_vllm_provider_api.ipynb` | `vllm-runtime`: provider OpenAI-compatible para Colab/local GPU. |
-| 0.5 | `00_runtime_scheduler_api.ipynb` | Scheduler, budgets, retries y timeout. |
-| 1 | `01_tool_api.ipynb` | Tool API e IO estructurado. |
-| 2 | `02_skill_api.ipynb` | Skill API: tools, prompts, contracts, policy y metadata. |
-| 3 | `03_agent_api.ipynb` | Agent API: contexto transformado en acciones. |
-| 4 | `04_human_result_api.ipynb` | RunResult, final answer y salida humana. |
-| 5 | `05_lineage_memory_api.ipynb` | Memory / Lineage como auditoria de ejecucion. |
-| 6 | `06_integrations_strands_api.ipynb` | Strands como identidad `declarative-only`; no SDK adapter. |
-| 7 | `07_integrations_openai_runtime_api.ipynb` | OpenAI Agents-style como identidad `style-only`; no Agents SDK adapter. |
-| 8 | `08_system_api.ipynb` | Fundamentos de `AgenticSystem`: ownership, registro, Skills, Agents e inspeccion. |
-| 9 | `09_graph_api.ipynb` | Fundamentos de Graph: estado, nodos, edges y frontera con LangGraph. |
-| 10 | `10_environment_eval_api.ipynb` | Episodios, Environment, seeds, reproducibilidad y Evals. |
-| 11 | `11_single_agentic_system_api.ipynb` | Integracion end-to-end de un System con un Agent obligatorio y un explainer LM opcional. |
-| 12 | `12_multi_agentic_system_api.ipynb` | Integracion end-to-end de solver, judge y reviewer LM opcional en un solo System. |
-| 13 | `13_multi_agentic_graph_api.ipynb` | El sistema multiagente anterior orquestado como Graph con estado, nodos y edges. |
+| 0.1 | `00_runtime_api.ipynb` | Declarar runtime, scheduler, profiles y seleccion de Provider sin ejecutar modelos. |
+| 0.2 | `00_runtime_bedrock_provider_api.ipynb` | Preflight AWS y ruta `runtime -> system -> agent -> RunResult`. |
+| 0.3 | `00_runtime_openai_provider_api.ipynb` | Preflight OpenAI y la misma ruta publica de ejecucion. |
+| 0.4 | `00_runtime_scheduler_api.ipynb` | Limites, retry y timeout observables en el envelope. |
+| 0.5 | `00_runtime_vllm_provider_api.ipynb` | Preflight del endpoint OpenAI-compatible y la misma ruta publica. |
+| 1 | `01_tool_api.ipynb` | Declaracion decorator/Pydantic, schemas y policy de Tools. |
+| 2 | `02_skill_api.ipynb` | Composicion de Tools, prompts, contracts, policy y metadata en una Skill. |
+| 3 | `03_agent_api.ipynb` | Agent, runtime seleccionable, contrato, policy y `RunResult`. |
+| 4 | `04_human_result_api.ipynb` | Proyecciones humanas y estructuradas del mismo resultado real. |
+| 5 | `05_lineage_memory_api.ipynb` | Lineage y composicion derivados de evidencia real. |
+| 6 | `06_integrations_strands_api.ipynb` | Identidad Strands declarative-only sobre un Provider resuelto. |
+| 7 | `07_integrations_openai_runtime_api.ipynb` | Identidad OpenAI Agents-style sobre el runtime seleccionado. |
+| 8 | `08_system_api.ipynb` | Ownership, registros, Skills, Agents e inspeccion estatica del System. |
+| 9 | `09_graph_api.ipynb` | Estado y agent nodes con LangGraph opcional o backend portable. |
+| 10 | `10_environment_eval_api.ipynb` | Episodios reales, reward contra oracle independiente y Eval. |
+| 11 | `11_single_agentic_system_api.ipynb` | System, Agent y Eval end-to-end con Provider seleccionable. |
+| 12 | `12_multi_agentic_system_api.ipynb` | Dos Agents reales y composicion de sus `RunResult`. |
+| 13 | `13_multi_agentic_graph_api.ipynb` | Multiples Agents reales orquestados con la API publica de Graph. |
 
-## Regla De Ejecucion
+## Readiness De Providers
 
-```python
-import agentic_systems as toolkit
+| Provider | Configuracion minima | Opt-out |
+|---|---|---|
+| OpenAI | `OPENAI_API_KEY` | `RUN_OPENAI_LIVE=0` |
+| vLLM | `VLLM_BASE_URL` y `VLLM_MODEL` | `RUN_VLLM_LIVE=0` |
+| Bedrock | Cadena AWS con credenciales utilizables | `RUN_BEDROCK_LIVE=0` |
+| Strands identity | `provider="auto"` resuelve un Provider | `RUN_STRANDS_IDENTITY_LIVE=0` |
+| OpenAI Agents-style | `provider="auto"` resuelve un Provider | `RUN_OPENAI_STYLE_LIVE=0` |
 
-runtime = toolkit.runtime(provider="auto")
-```
-
-Configura credenciales fuera del notebook, antes de abrir Jupyter/VSCode:
-
-```bash
-cp .env.example .env
-```
-
-```powershell
-$env:OPENAI_API_KEY="your_key_here"
-$env:AWS_REGION="us-east-1"
-$env:AWS_PROFILE="your_profile"
-$env:VLLM_BASE_URL="http://127.0.0.1:8000/v1"
-$env:VLLM_MODEL="Qwen/Qwen3-0.6B"
-```
-
-En Git Bash usa `export`:
+Inicia Jupyter desde la misma terminal que contiene las variables:
 
 ```bash
-export OPENAI_API_KEY="your_key_here"
-export AWS_REGION="us-east-1"
-export AWS_PROFILE="your_profile"
-export VLLM_BASE_URL="http://127.0.0.1:8000/v1"
-export VLLM_MODEL="Qwen/Qwen3-0.6B"
+python -m jupyter lab
 ```
 
-Los notebooks no piden ni guardan secretos. Verifica la seleccion efectiva con:
+Los notebooks no imprimen secretos. Usa diagnosticos seguros para confirmar la
+resolucion:
 
 ```python
-toolkit.show(toolkit.runtime(provider="auto").describe(), title="Auto runtime - describe")
+toolkit.show(
+    toolkit.runtime(provider="auto").describe(),
+    title="Resolved provider",
+)
 ```
 
-No hay rutas ocultas de negocio ni dependencias en `examples/`.
+## Contrato De Salida
 
+La presentacion tambien pertenece a la API:
 
+```python
+toolkit.human_result(result)
+toolkit.show(result)
+toolkit.show_json(toolkit.run_result_output(result))
+```
 
-## Alias publico
+Los notebooks no definen `show_json`, no fabrican `RunResult`, no mutan sus
+campos y no reemplazan Graph/Environment/Eval con loops locales.
 
-Los notebooks usan `toolkit` como alias de `agentic_systems` para subrayar que se consume la fachada publica de la libreria, no modulos internos.
-
-## Contrato De Release Candidate
+## Gate De Release
 
 Los 18 notebooks deben:
 
-- importar solo `agentic_systems as toolkit`;
+- importar `agentic_systems as toolkit`;
 - iniciar sin outputs persistidos;
-- compilar todas sus celdas de codigo;
-- registrar skips de Providers opcionales sin presentarlos como ejecucion;
-- separar Provider ejecutable de identidad Framework.
+- compilar todas sus celdas;
+- declarar parametros editables y `api_coverage`;
+- ejecutar de arriba hacia abajo con Run All;
+- usar la ruta publica correspondiente;
+- separar Provider ejecutable de identidad Framework;
+- distinguir `pass`, `explicit skip` y `fail`;
+- evitar SDKs directos, resultados fabricados y fallbacks manuales.
 
-La suite automatica verifica estructura y compilacion. La ejecucion completa
-desde kernels limpios es el gate manual posterior descrito en
-`docs/RELEASE_CANDIDATE_1_1.md`.
+El estándar normativo vive en
+[Tutorial Quality Standard](../docs/TUTORIAL_QUALITY_STANDARD.md). La evidencia
+manual y automatizada se registra en
+[Release 1.1](../docs/RELEASE_1_1.md).

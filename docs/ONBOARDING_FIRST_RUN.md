@@ -1,25 +1,77 @@
 # First Run Onboarding
 
-This guide gets a new user from install to the first tutorial run.
+This is the shortest supported path from installation to an observable
+Agentic Systems run. The user path is deliberately simple:
+
+```text
+install -> configure external boundary -> open notebook -> Run All
+```
+
+No notebook requires a hidden activation cell, a local adapter, or a manual
+result construction.
 
 ## Install
 
+From PyPI:
+
 ```bash
 python -m pip install -U pip
-pip install -e .
+python -m pip install "agentic-systems[tutorials,openai,bedrock]"
 ```
 
-Optional extras:
+From a repository checkout:
 
 ```bash
-pip install -e ".[dev]"
-pip install -e ".[tutorials]"
-pip install -e ".[bedrock]"
-pip install -e ".[langgraph]"
-pip install -e ".[openai]"   # OpenAI client; also used by vllm-runtime
+python -m pip install -U pip
+python -m pip install -e ".[tutorials,openai,bedrock]"
 ```
 
-Configure live provider notebooks from Git Bash before starting Jupyter:
+The OpenAI extra also provides the OpenAI-compatible client used by a remote
+vLLM endpoint. Install `agentic-systems[vllm]` only when the same supported
+Linux environment must also host the vLLM server. Agentic Systems never starts
+that server implicitly.
+
+For development gates:
+
+```bash
+python -m pip install -e ".[dev,tutorials,openai,bedrock,langgraph]"
+```
+
+## Verify The Local Contract First
+
+These commands do not call an external model:
+
+```bash
+agentic-systems version
+agentic-systems doctor --json
+agentic-systems api --tier public --json
+```
+
+Then verify the public Python surface:
+
+```python
+import agentic_systems as toolkit
+
+runtime = toolkit.runtime(provider="python-runtime")
+system = toolkit.system(runtime=runtime)
+
+assert toolkit.__version__ == "1.1.0"
+assert callable(toolkit.tool)
+assert callable(toolkit.skill)
+assert callable(toolkit.agent)
+assert callable(toolkit.system)
+assert callable(toolkit.graph)
+assert callable(toolkit.environment)
+assert callable(toolkit.eval)
+
+toolkit.show(runtime.describe(), title="Local runtime")
+```
+
+## Configure Provider Notebooks In Git Bash
+
+Export configuration before starting Jupyter. The explicit `RUN_*_LIVE=1`
+lines are optional because live execution is already the default when readiness
+passes; they are included to make intent visible in a demo session.
 
 ```bash
 # OpenAI
@@ -41,135 +93,45 @@ export RUN_BEDROCK_LIVE=1
 python -m jupyter lab
 ```
 
-Live execution is enabled by default. Run All executes every provider that passes
-its readiness preflight and reports an actionable skip for unavailable providers.
-Use a provider-specific `RUN_*_LIVE=0` only as an explicit opt-out. Jupyter must
-start from the same Git Bash session so the kernel inherits exported variables.
+Jupyter must start from that same terminal so the kernel inherits the exported
+variables. Never paste real credentials into notebooks, Markdown, commits, or
+screenshots.
 
-## Smoke Test
+## What Run All Does
 
-```bash
-agentic-systems doctor
-agentic-systems runtime --provider auto --json
-agentic-systems api --tier public --json
-```
+Provider notebooks evaluate readiness before crossing an external boundary:
 
-Python smoke:
+| Notebook | Ready when | Run All behavior |
+|---|---|---|
+| `00_runtime_openai_provider_api.ipynb` | `OPENAI_API_KEY` is available | Executes `runtime -> system -> agent -> RunResult`. |
+| `00_runtime_vllm_provider_api.ipynb` | `VLLM_BASE_URL` and `VLLM_MODEL` are configured | Calls the OpenAI-compatible endpoint through `vllm-runtime`. |
+| `00_runtime_bedrock_provider_api.ipynb` | The standard AWS chain resolves credentials | Calls Bedrock through `bedrock-runtime`. |
+| `06_integrations_strands_api.ipynb` | `provider="auto"` resolves a concrete provider | Executes the declarative Strands identity over that runtime. |
+| `07_integrations_openai_runtime_api.ipynb` | `provider="auto"` resolves a concrete provider | Executes the OpenAI Agents-style identity over that runtime. |
 
-```python
-import agentic_systems as toolkit
-
-assert callable(toolkit.tool)
-assert callable(toolkit.agent)
-assert callable(toolkit.runtime)
-assert callable(toolkit.scheduler)
-```
-
-## Environment Variables
-
-Configure provider credentials before opening notebooks so the Jupyter/VSCode
-kernel inherits them.
-
-Recommended local workflow:
+If readiness fails, the notebook returns an actionable preflight skip; it does
+not fabricate a `RunResult`. The pattern `RUN_*_LIVE=0` means choosing the corresponding provider-specific
+flag. To deliberately suppress a configured provider,
+set its flag to zero before starting Jupyter:
 
 ```bash
-cp .env.example .env
+export RUN_OPENAI_LIVE=0
+export RUN_VLLM_LIVE=0
+export RUN_BEDROCK_LIVE=0
+export RUN_STRANDS_IDENTITY_LIVE=0
+export RUN_OPENAI_STYLE_LIVE=0
 ```
 
-Then edit `.env` locally. The real `.env` file is ignored by git.
+## Tutorial Order
 
-PowerShell example for OpenAI:
-
-```powershell
-$env:OPENAI_API_KEY="your_key_here"
-```
-
-Git Bash example for OpenAI:
-
-```bash
-export OPENAI_API_KEY="your_key_here"
-```
-
-PowerShell example for Bedrock:
-
-```powershell
-$env:AWS_REGION="us-east-1"
-$env:AWS_PROFILE="your_profile"
-```
-
-Git Bash example for Bedrock:
-
-```bash
-export AWS_REGION="us-east-1"
-export AWS_PROFILE="your_profile"
-```
-
-Git Bash example for vLLM/OpenAI-compatible Colab or local GPU server:
-
-```bash
-export VLLM_BASE_URL="http://127.0.0.1:8000/v1"
-export VLLM_MODEL="Qwen/Qwen3-0.6B"
-export VLLM_API_KEY="EMPTY"
-```
-
-In Colab, install `agentic-systems[vllm]` or `agentic-systems[all]` when you want the vLLM server dependency available in the notebook. The server still runs separately from Agentic Systems.
-
-Do not paste API keys into notebooks or repo files. `provider="auto"` reads
-environment variables that already exist in the kernel process.
-
-The CLI and `runtime.describe()` also load a local `.env` file when present,
-without printing secret values.
-
-For OpenAI runtime, install the SDK extra:
-
-```bash
-python -m pip install -e ".[openai]"
-```
-
-Verify selection from Python:
-
-```python
-import agentic_systems as toolkit
-
-runtime = toolkit.runtime(
-    provider="auto",
-    provider_priority=["bedrock-runtime", "openai-runtime", "vllm-runtime"],
-)
-toolkit.show(runtime.describe(), title="Auto runtime - describe")
-```
-
-Expected `selected_provider` values:
-
-```text
-vllm-runtime     when VLLM_BASE_URL/vLLM config is available
-openai-runtime   when OpenAI config is available
-bedrock-runtime  when AWS config is available
-auto             when no provider signal is available
-```
-
-Bedrock selection requires a region plus an AWS authentication signal.
-It can use `BEDROCK_MODEL_ID`, `AWS_REGION`, `AWS_DEFAULT_REGION`,
-`AWS_PROFILE`, paired `AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY`, web
-identity, container credentials, or a shared credentials file. Runtime and CLI
-diagnostics show safe flags only; actual execution uses the standard boto3/AWS
-credential chain.
-
-## First Tutorial Route
-
-Open notebooks from the repo root:
-
-```bash
-jupyter lab tutorials
-```
-
-Run in order:
+Run notebooks top to bottom. Every code cell consumes the installed public API.
 
 ```text
 00_runtime_api.ipynb
 00_runtime_bedrock_provider_api.ipynb
 00_runtime_openai_provider_api.ipynb
-00_runtime_vllm_provider_api.ipynb
 00_runtime_scheduler_api.ipynb
+00_runtime_vllm_provider_api.ipynb
 01_tool_api.ipynb
 02_skill_api.ipynb
 03_agent_api.ipynb
@@ -180,42 +142,54 @@ Run in order:
 08_system_api.ipynb
 09_graph_api.ipynb
 10_environment_eval_api.ipynb
+11_single_agentic_system_api.ipynb
+12_multi_agentic_system_api.ipynb
+13_multi_agentic_graph_api.ipynb
 ```
 
-## Runtime Selection
+The deterministic notebooks run without external credentials. Graph notebooks
+use `engine="auto"`: native LangGraph when available, otherwise the portable
+backend.
 
-Use local deterministic execution first:
+## If A Provider Is Skipped Unexpectedly
+
+Confirm that the Jupyter process inherited the configuration without printing
+secrets:
+
+```bash
+python -c "import os; print('openai', bool(os.getenv('OPENAI_API_KEY')))"
+python -c "import os; print('vllm', bool(os.getenv('VLLM_BASE_URL')), bool(os.getenv('VLLM_MODEL')))"
+python -c "import os; print('aws-profile', bool(os.getenv('AWS_PROFILE')), 'region', bool(os.getenv('AWS_REGION')))"
+```
+
+Inspect provider resolution:
+
+```bash
+agentic-systems runtime --provider auto --json
+```
+
+Or from Python:
 
 ```python
-runtime = toolkit.runtime(provider="python-runtime")
+import agentic_systems as toolkit
+
+toolkit.show(
+    toolkit.runtime(provider="auto").describe(),
+    title="Resolved provider",
+)
 ```
 
-Use automatic selection when moving between local, vLLM, OpenAI and AWS environments:
+Default auto priority is Bedrock, OpenAI, then vLLM. A provider is selected only
+when its environment signals are usable; a region alone is not AWS
+authentication.
 
-```python
-runtime = toolkit.runtime(provider="auto")
-toolkit.show(runtime.describe())
-```
+## Documentation Map
 
-If no provider signal is available, `auto` should fail explicitly instead of
-silently inventing a backend.
-
-`runtime.describe()` can be used before execution to show which provider `auto`
-would select from the current environment.
-
-## Where To Look
-
-| Need | File |
+| Need | Document |
 |---|---|
-| Public API | `docs/API.md` |
-| CLI | `docs/CLI.md` |
-| Architecture | `docs/ARCHITECTURE.md` |
-| Boundaries | `docs/BOUNDARIES.md` |
-| Final answer contract | `docs/RUNRESULT_FINAL_ANSWER.md` |
-| Validation checklist | `docs/SMOKE_CHECKLIST_2_4_9.md` |
-| Tutorial order | `tutorials/README.md` |
-
-
-## Auto Provider Priority
-
-Default `provider="auto"` priority is `bedrock-runtime`, then `openai-runtime`, then `vllm-runtime`. Override it with `provider_priority=[...]` in Python or `AGENTIC_SYSTEMS_PROVIDER_PRIORITY=bedrock-runtime,openai-runtime,vllm-runtime` in `.env`. Use `allow_python_fallback=True` only for local deterministic fallback.
+| Public surface and contracts | [API](API.md) |
+| Tutorial teaching rules | [Tutorial Quality Standard](TUTORIAL_QUALITY_STANDARD.md) |
+| Architecture and boundaries | [Architecture](ARCHITECTURE.md), [Boundaries](BOUNDARIES.md) |
+| CLI diagnostics | [CLI](CLI.md) |
+| RunResult invariants | [RunResult Final Answer](RUNRESULT_FINAL_ANSWER.md) |
+| Release evidence | [Release 1.1](RELEASE_1_1.md) |

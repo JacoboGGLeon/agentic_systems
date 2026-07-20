@@ -211,3 +211,20 @@ def test_live_notebooks_are_run_all_ready_by_default():
         source = _code(_load(TUTORIALS / name))
         assert "resolved_provider" in source
         assert "resolved_provider != \"auto\"" in source
+    run_all_docs = (
+        ROOT / "README.md",
+        ROOT / "docs" / "API.md",
+        ROOT / "docs" / "ONBOARDING_FIRST_RUN.md",
+        ROOT / "docs" / "TUTORIAL_QUALITY_STANDARD.md",
+        ROOT / "tutorials" / "README.md",
+    )
+    for path in run_all_docs:
+        text = path.read_text(encoding="utf-8")
+        assert "Run All" in text, path
+        assert "RUN_*_LIVE=0" in text, path
+
+    api_docs = (ROOT / "docs" / "API.md").read_text(encoding="utf-8")
+    tutorial_docs = (ROOT / "tutorials" / "README.md").read_text(encoding="utf-8")
+    assert "Converse and embeddings smoke" not in api_docs
+    assert "optional LM explainer" not in api_docs
+    assert "reviewer LM opcional" not in tutorial_docs

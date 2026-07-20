@@ -21,6 +21,7 @@ canonical notebooks: 18/18 executed, 0 failed
 PUBLIC_API: 111 symbols
 RunResult invariants: normative contract plus contradiction and round-trip tests
 package import: top-level toolkit surface verified
+provider tutorials: Run All default plus readiness and explicit opt-out gates
 ```
 
 See `MANUAL_NOTEBOOK_MATRIX_1_1.md` for notebook and Provider evidence.
