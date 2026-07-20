@@ -15,7 +15,7 @@ API == Docs == Tutorials == Pytests
 ## Verified evidence
 
 ```text
-pytest: 392 passed
+pytest: 393 passed
 coverage: 100.00% (6,193 statements, 0 missing)
 canonical notebooks: 18/18 executed, 0 failed
 PUBLIC_API: 111 symbols

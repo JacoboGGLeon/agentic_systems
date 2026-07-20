@@ -66,7 +66,7 @@ def test_release_candidate_version_and_public_inventory_are_consistent():
     release_candidate = (
         ROOT / "docs" / "RELEASE_CANDIDATE_1_1.md"
     ).read_text(encoding="utf-8")
-    assert "Tests: 392 passed, 0 skipped" in readme
+    assert "Tests: 393 passed, 0 skipped" in readme
     assert coherence_claim in readme
     assert "API == Docs == Tutorials == Pytests" in readme
     assert coherence_claim in release_candidate.replace("\n", " ")

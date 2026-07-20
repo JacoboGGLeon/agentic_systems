@@ -85,7 +85,7 @@ Mensaje:
 
 ```text
 Version: 1.1.0
-Tests: 392 passed
+Tests: 393 passed
 Coverage: 100.00% / 6,193 statements
 Notebooks: 18/18 ejecutados
 Wheel + sdist: twine check passed

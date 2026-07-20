@@ -180,3 +180,34 @@ def test_api_coverage_is_literal_public_and_materialized():
             assert method_match, f"{path.name} has uncheckable coverage claim {claim!r}"
             method = method_match.group(1)
             assert f".{method}" in source, f"{path.name} does not materialize {claim}"
+
+
+def test_live_notebooks_are_run_all_ready_by_default():
+    live_flags = {
+        "00_runtime_openai_provider_api.ipynb": "RUN_OPENAI_LIVE",
+        "00_runtime_vllm_provider_api.ipynb": "RUN_VLLM_LIVE",
+        "00_runtime_bedrock_provider_api.ipynb": "RUN_BEDROCK_LIVE",
+        "06_integrations_strands_api.ipynb": "RUN_STRANDS_IDENTITY_LIVE",
+        "07_integrations_openai_runtime_api.ipynb": "RUN_OPENAI_STYLE_LIVE",
+    }
+    for name, flag in live_flags.items():
+        notebook = _load(TUTORIALS / name)
+        source = _source(notebook)
+        code = _code(notebook)
+        assert f'os.getenv("{flag}", "1")' in code, name
+        assert f"{flag}=0" in source, name
+
+    vllm = _code(_load(TUTORIALS / "00_runtime_vllm_provider_api.ipynb"))
+    assert 'vllm_environment.get("base_url_configured")' in vllm
+    assert 'vllm_environment.get("model_configured")' in vllm
+
+    bedrock = _code(_load(TUTORIALS / "00_runtime_bedrock_provider_api.ipynb"))
+    assert 'aws_session.get("has_credentials")' in bedrock
+
+    for name in (
+        "06_integrations_strands_api.ipynb",
+        "07_integrations_openai_runtime_api.ipynb",
+    ):
+        source = _code(_load(TUTORIALS / name))
+        assert "resolved_provider" in source
+        assert "resolved_provider != \"auto\"" in source

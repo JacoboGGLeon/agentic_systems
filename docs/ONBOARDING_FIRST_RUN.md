@@ -41,8 +41,10 @@ export RUN_BEDROCK_LIVE=1
 python -m jupyter lab
 ```
 
-Enable only the provider being tested. Jupyter must start from the same Git Bash
-session so the kernel inherits the exported variables.
+Live execution is enabled by default. Run All executes every provider that passes
+its readiness preflight and reports an actionable skip for unavailable providers.
+Use a provider-specific `RUN_*_LIVE=0` only as an explicit opt-out. Jupyter must
+start from the same Git Bash session so the kernel inherits exported variables.
 
 ## Smoke Test
 
