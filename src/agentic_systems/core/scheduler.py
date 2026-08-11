@@ -169,7 +169,7 @@ async def execute_async(
                 value = await asyncio.wait_for(fn(), timeout=float(scheduler.timeout_s))
             if success_check(value) or attempt == attempts:
                 return value, _scheduler_meta(scheduler, attempt, started, timed_out=False)
-        except TimeoutError as exc:
+        except (TimeoutError, asyncio.TimeoutError) as exc:
             last_exc = SchedulerTimeoutError(f"Execution exceeded timeout_s={scheduler.timeout_s}.")
             if attempt == attempts:
                 raise last_exc from exc
