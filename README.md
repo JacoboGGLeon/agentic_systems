@@ -31,7 +31,7 @@ API -> Docs -> Tutorials -> explicit automated or manual evidence
 
 Public concepts are defined in the API, explained in the documentation, taught through the canonical tutorials, and checked by explicit release gates.
 
-Release status: `1.1.2` completes test-infrastructure cleanup and partitions Bedrock while preserving the 111-symbol public API.
+Release status: `1.1.3` consolidates the current documentation and owner-based test architecture while preserving the 111-symbol public API and 1.1 runtime behavior.
 
 ## Installation
 
@@ -385,16 +385,16 @@ There is no active `examples/` root. Tutorials are the executable documentation.
 ## Documentation
 
 Use the [documentation map](docs/README.md) to choose the user guide,
-conceptual model, API/CLI reference, engineering gates or historical evidence.
-The current release evidence is recorded in
-[Agentic Systems 1.1.2](docs/RELEASE_1_1_2.md).
+conceptual model, API/CLI reference or current engineering contracts. Version
+history is recorded in the [changelog](CHANGELOG.md); published artifact
+evidence belongs to GitHub Releases.
 
 ## Quality Gate
 
 Current verified status:
 
 ```text
-Version: 1.1.2
+Version: 1.1.3
 PyPI package: agentic-systems
 Tests: run `python -m pytest` for the current count
 Core coverage: 100.00%

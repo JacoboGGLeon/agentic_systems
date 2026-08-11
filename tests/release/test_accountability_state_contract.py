@@ -12,7 +12,7 @@ class _Result:
         return {"answer": {"data": self.data, "text": self.text}, "blocks": {"tool_actions": [], "sql": [], "tables": []}}
 
 
-def test_2499_fundamentals_arithmetic_system_is_not_hidden_in_grouped_helper() -> None:
+def test_fundamentals_arithmetic_system_is_explicit() -> None:
     from pathlib import Path
 
     root = Path(__file__).resolve().parents[2]

@@ -1,7 +1,7 @@
 # Contributing Checklist
 
 Use this checklist before handing off changes. The documentation map defines the
-current sources of truth; historical checkpoints do not override them.
+current sources of truth; superseded work remains available through Git history.
 
 ## API And Ownership
 

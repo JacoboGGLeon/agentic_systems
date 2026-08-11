@@ -301,8 +301,6 @@ Framework, Contracts, policy, scheduler limits, state, and correlation metadata.
 Those conditions retain their existing owners: `RuntimeConfig`,
 `AgenticSystem`, `Agent`, `RunPolicy`, Graph/Environment state, and `RunResult`.
 Execution Context MUST NOT duplicate ownership or require user construction.
-The decision, compatibility impact, and reconsideration triggers are normative
-in [ADR 0009](adr/0009-execution-context-remains-conceptual.md).
 
 Existing ownership remains:
 
@@ -322,6 +320,31 @@ must cross adapter boundaries atomically. The first candidate remains an
 internal immutable value; a public class requires a separate user workflow and
 versioned contract.
 
+## Environment And Eval Reproducibility
+
+System owns capability registries, Agent bindings, runtime defaults and
+composition provenance. Graph owns transition topology and state schema.
+Environment owns episode identity, seed, local RNG, cursor, observations,
+actions, memory, reward and transition history. Eval owns cases, assertions,
+scoring, aggregation and reproducibility evidence. Convenience factories do not
+transfer that ownership.
+
+`reset(seed=...)` controls only `AgenticEnvironment.rng`. A replay claim also
+requires identical ordered inputs, actions, configuration, implementations and
+dependency versions, plus deterministic or recorded external effects,
+concurrency and time behavior. A remote Provider is not made deterministic by
+the Environment seed.
+
+`EvalReproducibility.classification` is `deterministic`, `seeded`, or
+`non_deterministic`. The first two are replayable only under their declared
+conditions; `seeded` requires a non-null seed. `run_eval` defaults conservatively
+to `non_deterministic`.
+
+For every `EvalReport`, `total == len(cases)`, `passed` is the count of successful
+cases, `failed == total - passed`, `ok == (failed == 0)`, and `pass_rate` is
+`passed / total` or `1.0` for an empty report. Structured and normalized views
+must preserve the same reproducibility block.
+
 ## Static System Inspection
 
 Static inspection is an Observation over an `AgenticSystem` definition before
@@ -333,6 +356,13 @@ actors, effects, or execution results.
 Inspection MUST be referentially stable for equivalent registered definitions
 and MUST NOT invoke Capabilities, Actors, Providers, or Framework runtimes. Its
 structured and human projections describe the same report.
+
+The report schema is `agentic_systems.inspect.v1`. Its structured sections cover
+entities, relationships, contracts, Providers, Frameworks, capabilities,
+conflicts, limits, degradation risks and normalized diagnostics. A diagnostic
+identifies `code`, `severity`, `message`, `path`, `suggestion`, and `source`;
+errors make the report fail while warnings remain inspectable. `to_dict()` must
+be JSON-compatible and `human_text()` must be deterministic.
 
 ## Legal Composition
 
@@ -382,7 +412,7 @@ The supported import is:
 import agentic_systems as toolkit
 ```
 
-`src/agentic_systems/api.py` is the inventory source of truth. The 1.1.2
+`src/agentic_systems/api.py` is the inventory source of truth. The 1.1.3
 baseline contains 111 top-level symbols; the complete checksum and signatures
 are documented in [API.md](API.md) and frozen by compatibility tests.
 

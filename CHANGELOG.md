@@ -2,19 +2,32 @@
 
 All notable changes to Agentic Systems are documented here.
 
-## 1.1.3 - Unreleased checkpoint
+## 1.1.3 - 2026-08-11
 
-Documentation-maintenance checkpoint; package version and public API remain at
-the published 1.1.2 baseline while this work is reviewed.
+Documentation-maintenance release preserving the 1.1 runtime behavior and
+111-symbol public API while consolidating current product evidence.
 
 ### Changed
 
 - Consolidated conceptual, semantic and contract documents into explicit current
   sources of truth.
-- Separated current guidance from ADRs, RFCs and historical release/checkpoint
-  evidence.
+- Removed repository-local ADRs, an unaccepted RFC, migration notes and
+  release/checkpoint narratives after consolidating every still-current
+  contract into the canonical product documentation.
 - Corrected stale Graph backend, migration, CLI inventory and release narratives.
-- Added intentional navigation for every retained documentation layer.
+- Reduced `docs/` to current product guidance; Git, this changelog and GitHub
+  Releases remain the historical evidence layers.
+- Reorganized the 66-module pytest layout into 92 owner-based modules across
+  API, unit, integration, Provider, and release layers; removed historical
+  `extended`, `branches`, `residual`, and `remaining` naming from test files and
+  test functions.
+- Removed one redundant negative wrapper-absence test. The resulting 383 tests
+  preserve the behavioral boundary through the frozen public-API and test-suite
+  architecture gates.
+- Made API/documentation coherence executable: the API index must equal the 111
+  top-level symbols in order, every documented `toolkit.*` call is checked against
+  source signatures, and each tutorial `api_coverage` inventory must equal its real
+  AST usage.
 
 ## 1.1.2 - 2026-08-10
 
@@ -32,7 +45,10 @@ the internal partition of the Bedrock runtime.
 - Added frozen public-API and Bedrock-signature contracts plus Python 3.10/3.14
   CI gates for Ruff, tests, coverage, packaging, and isolated wheel smoke.
 - Kept core coverage at 100% over 6,194 statements and introduced a separate
-  Bedrock coverage ratchet at 53.1% (measured 53.17%).
+  Bedrock coverage ratchet with `fail_under = 53.1` (measured 53.17%).
+- The tutorial gate executes 13 deterministic notebooks.
+- It checks 5 Provider notebooks statically; live OpenAI, Bedrock and vLLM
+  execution remains outside the release claim.
 - Removed four genuinely unused imports from active source.
 ## 1.1.1 - Unpublished checkpoint (2026-08-10)
 

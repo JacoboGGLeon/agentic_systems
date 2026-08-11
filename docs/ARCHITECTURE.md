@@ -122,8 +122,8 @@ System composition/configuration
 
 The arrows describe data flow, not ownership transfer. Environment owns episode
 seed and a local RNG; Graph owns transition topology; Eval owns checks and
-reports. See `SYSTEM_ENVIRONMENT_EVAL_SEMANTICS.md` for replay conditions
-and report invariants.
+reports. Replay conditions and report invariants are part of the
+[Computational Model](COMPUTATIONAL_MODEL.md).
 
 ## Execution Resolution
 

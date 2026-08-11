@@ -2,8 +2,7 @@ from __future__ import annotations
 
 from types import SimpleNamespace
 
-from agentic_systems import RunResult, run_result_summary
-from agentic_systems.providers.bedrock_runtime import BedrockRuntime
+from agentic_systems import RunResult, run_result_summary, tool
 from agentic_systems.results import RunResult as RunResultModel
 from agentic_systems.utils import chain_history_summary
 
@@ -72,21 +71,6 @@ def test_usage_totals_aggregate_tokens_and_timing_from_raw_responses() -> None:
     }
 
 
-def test_bedrock_compact_response_metadata_keeps_latency_fields() -> None:
-    response = {
-        "ResponseMetadata": {"RequestId": "abc", "HTTPStatusCode": 200},
-        "usage": {"inputTokens": 1, "outputTokens": 2, "totalTokens": 3},
-        "metrics": {"latencyMs": 123},
-        "agentic_systems": {"client_duration_ms": 130.5},
-        "stopReason": "end_turn",
-    }
-
-    compact = BedrockRuntime._compact_response_metadata(response)
-
-    assert compact["service_latency_ms"] == 123
-    assert compact["client_duration_ms"] == 130.5
-
-
 def test_chain_history_summary_includes_complete_usage() -> None:
     history = [
         {
@@ -103,3 +87,14 @@ def test_chain_history_summary_includes_complete_usage() -> None:
     rows = chain_history_summary(history)
 
     assert rows[0]["usage"] == {"requests": 1, "input_tokens": 10, "output_tokens": 4, "total_tokens": 14}
+
+
+def test_direct_tool_usage_is_reported():
+    @tool
+    def add_one(x: int) -> dict:
+        return {"operation": "add_one", "result": x + 1}
+
+    result = add_one.run({"x": 1})
+
+    assert result.usage == {"requests": 1}
+    assert result.trace("compact")["usage"] == {"requests": 1}

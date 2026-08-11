@@ -38,6 +38,6 @@ jobs:
       - if: matrix.python-version == '3.14'
         run: |
           python -m venv .tmp/wheel-smoke
-          .tmp/wheel-smoke/bin/python -m pip install dist/agentic_systems-1.1.2-py3-none-any.whl
-          .tmp/wheel-smoke/bin/python -c "import agentic_systems as a; assert a.__version__ == '1.1.2'; assert len(a.__all__) == 111"
+          .tmp/wheel-smoke/bin/python -m pip install dist/*.whl
+          .tmp/wheel-smoke/bin/python -c "import importlib.metadata as m; import agentic_systems as a; assert a.__version__ == m.version('agentic-systems'); assert len(a.__all__) == 111"
           .tmp/wheel-smoke/bin/agentic-systems version

@@ -119,7 +119,7 @@ frontera.
 
 El estándar de contribución y el contrato Run All viven en este mismo documento.
 La evidencia publicada está en
-[Release 1.1.2](../docs/RELEASE_1_1_2.md).
+[GitHub Releases](https://github.com/JacoboGGLeon/agentic_systems/releases).
 
 ## Contribution Standard
 

@@ -162,25 +162,42 @@ def test_graph_notebooks_execute_only_through_toolkit_graph():
 
 
 def test_api_claims_are_literal_public_and_materialized():
+    metadata = {"__all__", "__name__", "__version__"}
     for path in _notebooks():
         notebook = _load(path)
-        source = _code(notebook)
-        claim_groups = _api_claims(ast.parse(source, filename=path.name))
+        tree = ast.parse(_code(notebook), filename=path.name)
+        claim_groups = _api_claims(tree)
         assert len(claim_groups) == 1, path.name
         api_claims = claim_groups[0]
         assert api_claims, path.name
+
+        used_toolkit = {
+            node.attr
+            for node in ast.walk(tree)
+            if isinstance(node, ast.Attribute)
+            and isinstance(node.value, ast.Name)
+            and node.value.id == "toolkit"
+        }
+        claimed_toolkit = {
+            match.group(1)
+            for claim in api_claims
+            if (match := re.match(r"toolkit\.([A-Za-z_]\w*)", claim))
+        }
+        assert claimed_toolkit == used_toolkit - metadata, path.name
+
+        used_methods = {
+            node.attr for node in ast.walk(tree) if isinstance(node, ast.Attribute)
+        }
         for claim in api_claims:
             toolkit_match = re.match(r"toolkit\.([A-Za-z_]\w*)", claim)
             if toolkit_match:
                 name = toolkit_match.group(1)
                 assert hasattr(toolkit, name), f"{path.name} claims missing toolkit.{name}"
-                assert f"toolkit.{name}" in source, f"{path.name} does not materialize {claim}"
                 continue
             method_match = re.search(r"\.([A-Za-z_]\w*)", claim)
             assert method_match, f"{path.name} has uncheckable API claim {claim!r}"
             method = method_match.group(1)
-            assert f".{method}" in source, f"{path.name} does not materialize {claim}"
-
+            assert method in used_methods, f"{path.name} does not materialize {claim}"
 
 
 def test_every_direct_toolkit_attribute_is_in_public_api():

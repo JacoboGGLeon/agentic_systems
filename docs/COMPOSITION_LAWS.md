@@ -98,7 +98,7 @@ It MUST NOT execute Tools, call a model, expose `run`, or hide a conflicting Too
 behind `keep` during System registration.
 
 **Scope.** Runtime Skill objects. Filesystem `LoadedSkill` remains a packaging
-adapter and is not merged into the runtime object model in this checkpoint.
+adapter and is not merged into the runtime object model.
 
 **Counterexample.** Registering a Skill whose `lookup` object differs from the
 System's selected `lookup`, then letting Agents execute the System object as if
@@ -141,8 +141,8 @@ the implementation actually executed.
   that came from an older Skill package.
 - Semantic compatibility of different Tool input/output contracts remains a
   separate contract-composition problem.
-- Instructions are represented by the existing prompt mapping; this checkpoint
-  does not create an instruction-merging language.
+- Instructions are represented by the existing prompt mapping; the library does
+  not define an instruction-merging language.
 
 ## Law 7 - Provider Substitution
 
