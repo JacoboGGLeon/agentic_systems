@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 from .agents import Agent
-from .core.runtime import RuntimeConfig, _bedrock_signal_present, _load_dotenv, _openai_signal_present, normalize_provider_priority, resolve_auto_provider
+from .core.runtime import RuntimeConfig, _load_dotenv, normalize_provider_priority, resolve_auto_provider
 from .core.scheduler import SchedulerConfig
 from .defaults import DEFAULT_AWS_REGION, DEFAULT_BEDROCK_MODEL_ID, DEFAULT_OPENAI_MODEL_ID, DEFAULT_VLLM_MODEL_ID
 from .engines.names import BEDROCK_RUNTIME_ENGINE, OPENAI_RUNTIME_ENGINE, PYTHON_RUNTIME_ENGINE, VLLM_RUNTIME_ENGINE, canonical_engine_name

@@ -7,26 +7,31 @@
 <p align="center">
   <a href="https://pypi.org/project/agentic-systems/"><img src="https://img.shields.io/pypi/v/agentic-systems.svg" alt="PyPI version" /></a>
   <a href="https://pypi.org/project/agentic-systems/"><img src="https://img.shields.io/badge/python-%3E%3D3.10-blue.svg" alt="Python >=3.10" /></a>
-  <img src="https://img.shields.io/badge/coverage-100%25-brightgreen.svg" alt="Coverage 100%" />
-  <img src="https://img.shields.io/badge/tests-393%20passed%2C%200%20skipped-brightgreen.svg" alt="Tests 393 passed, 0 skipped" />
+  <img src="https://img.shields.io/badge/core%20coverage-100%25-brightgreen.svg" alt="Core coverage 100%; Bedrock separately gated" />
+  <img src="https://img.shields.io/badge/tests-passing-brightgreen.svg" alt="Tests passing" />
 </p>
 
-**Agentic Systems proposes a computational grammar for building, executing, observing, and evaluating intelligent systems.**
+**Agentic Systems gives Python applications one explicit, testable model for
+building and evaluating agentic workflows across deterministic and model-backed
+runtimes.**
+
+It does so through a computational grammar for building, executing, observing,
+and evaluating intelligent systems.
 
 Its Python API turns that grammar into explicit, composable abstractions: tools, skills, agents, systems, graphs, environments, evals, contracts, lineage memory and stable human-readable outputs. Runtime and Provider remain separate concepts, so the same computational model supports deterministic execution, OpenAI, AWS Bedrock Runtime and OpenAI-compatible vLLM endpoints through explicit runtime selection.
 
 Use it when agentic workloads need to be observable, testable, portable and ready for repeated execution, not just notebook demos.
 
-**Agentic Systems 1.1 establishes verifiable coherence between its API, documentation, tutorials, and tests.**
+Agentic Systems 1.1 keeps explicit traceability between its API,
+documentation, tutorials, and tests.
 
 ```text
-API == Docs == Tutorials == Pytests
+API -> Docs -> Tutorials -> explicit automated or manual evidence
 ```
 
-Here, `==` means verifiable traceability: public concepts are defined in the API, explained in the documentation, taught through the canonical tutorials, and enforced by tests and release gates.
+Public concepts are defined in the API, explained in the documentation, taught through the canonical tutorials, and checked by explicit release gates.
 
-Release status: `1.1.0` is the stable 1.1 release. Its automated and manual
-evidence is recorded in `docs/RELEASE_1_1.md`.
+Release status: `1.1.2` completes test-infrastructure cleanup and partitions Bedrock while preserving the 111-symbol public API.
 
 ## Installation
 
@@ -212,14 +217,24 @@ agent = system.agent(
     tools=["double"],
 )
 
-graph = toolkit.build_single_agent_step_graph(agent, input="input")
+agent_step = toolkit.agent_node(
+    agent,
+    input="input",
+    output=lambda result, _state: {"result": result},
+    trace=None,
+)
+graph = toolkit.graph(
+    nodes={"agent_step": agent_step},
+    edges=[("START", "agent_step"), ("agent_step", "END")],
+    engine="portable",
+)
 
 state = {
     "input": {"tool": "double", "input": {"value": 21}},
     "history": [],
 }
 
-next_state = graph.invoke(state)
+next_state = graph.run(state)
 toolkit.show(next_state, title="Graph state")
 ```
 
@@ -369,41 +384,30 @@ There is no active `examples/` root. Tutorials are the executable documentation.
 
 ## Documentation
 
-```text
-docs/API.md
-docs/CLI.md
-docs/ARCHITECTURE.md
-docs/BOUNDARIES.md
-docs/ONBOARDING_FIRST_RUN.md
-docs/RUNRESULT_FINAL_ANSWER.md
-docs/STATIC_SYSTEM_INSPECTION.md
-docs/MIGRATION_1_0_TO_1_1.md
-docs/RELEASE_CANDIDATE_1_1.md
-docs/PYTEST_COVERAGE_REPORT.md
-docs/CONTRIBUTING_CHECKLIST.md
-docs/ROADMAP_CHECKPOINTS.md
-CHANGELOG.md
-```
+Use the [documentation map](docs/README.md) to choose the user guide,
+conceptual model, API/CLI reference, engineering gates or historical evidence.
+The current release evidence is recorded in
+[Agentic Systems 1.1.2](docs/RELEASE_1_1_2.md).
 
 ## Quality Gate
 
 Current verified status:
 
 ```text
-Version: 1.1.0
+Version: 1.1.2
 PyPI package: agentic-systems
-Tests: 393 passed, 0 skipped
-Coverage: 100.00%
-TOTAL statements: 6193
-TOTAL missing: 0
-Canonical notebooks: 18/18 executed from fresh kernels
-Manual notebook execution: passed, 0 failures
+Tests: run `python -m pytest` for the current count
+Core coverage: 100.00%
+Coverage scope: Bedrock facade and internal package excluded from core; separately gated at 53.1%
+Canonical notebooks: 13 deterministic executed; 5 Provider notebooks checked statically
+
 ```
 
 Run validation locally:
 
 ```bash
-python -m pytest -q
+python -m pytest -q -W error::RuntimeWarning
+python -m ruff check src tests
 python -m compileall -q src tests tutorials
 agentic-systems doctor --json
 ```
@@ -412,6 +416,7 @@ For full coverage validation:
 
 ```bash
 python -m pytest --cov=agentic_systems --cov-report=term-missing -q
+python -m pytest tests/providers -q --cov-config=.coveragerc-bedrock --cov=agentic_systems.providers.bedrock_runtime --cov=agentic_systems.providers.bedrock --cov-report=term-missing
 ```
 
 ## Design Principles

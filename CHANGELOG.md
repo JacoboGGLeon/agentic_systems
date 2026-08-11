@@ -2,6 +2,40 @@
 
 All notable changes to Agentic Systems are documented here.
 
+## 1.1.2 - 2026-08-10
+
+Maintenance release completing the controlled retirement of legacy tests and
+the internal partition of the Bedrock runtime.
+
+### Changed
+
+- Migrated or retired all 52 routed legacy test modules into owner-based API,
+  unit, Provider, release, and contract suites; removed the quarantine, dynamic
+  loader, Ruff exclusion, and numeric inventory guard.
+- Split the 2,961-line Bedrock implementation behind its unchanged public
+  `providers.bedrock_runtime` facade into focused internal components; reduced
+  `run_direct` to a 37-line orchestrator.
+- Added frozen public-API and Bedrock-signature contracts plus Python 3.10/3.14
+  CI gates for Ruff, tests, coverage, packaging, and isolated wheel smoke.
+- Kept core coverage at 100% over 6,194 statements and introduced a separate
+  Bedrock coverage ratchet at 53.1% (measured 53.17%).
+- Removed four genuinely unused imports from active source.
+## 1.1.1 - 2026-08-10
+
+Maintenance release focused on coherence and surface reduction.
+
+### Changed
+
+- Removed accidental top-level `build_single_agent_step_graph` and `PUBLIC_API`
+  attributes; the canonical routes are `toolkit.graph(...)` and `toolkit.__all__`.
+- Removed the undocumented `vll` extra and the misleading `tutorials` extra.
+  Notebooks remain repository content and their dependencies now live in `dev`.
+- Scoped the 100% coverage claim to core modules because the Bedrock runtime is
+  explicitly omitted from the coverage configuration.
+- Separated deterministic notebook execution evidence from static Provider
+  notebook checks.
+- Updated stable installation and onboarding instructions.
+
 ## 1.1.0 - 2026-07-19
 
 Stable 1.1 release. The release candidate was promoted after the complete

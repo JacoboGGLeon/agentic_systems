@@ -46,6 +46,7 @@ AUTO_PROVIDER_ENV_VAR, DEFAULT_AUTO_PROVIDER_PRIORITY, RuntimeConfig,
 normalize_provider_priority, resolve_auto_provider, SchedulerConfig,
 OutputSchema, human_result, load_skill, Skill, LoadedSkill, expect, core,
 providers, integrations
+```
 
 The tier constants themselves are maintainer API in `agentic_systems.api`; they
 are not top-level exports. Documentation and tests must not imply that

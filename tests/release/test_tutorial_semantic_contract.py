@@ -54,7 +54,7 @@ def _code(notebook):
     )
 
 
-def _coverage(tree: ast.AST):
+def _api_claims(tree: ast.AST):
     values = []
     for node in ast.walk(tree):
         if not isinstance(node, (ast.Assign, ast.AnnAssign)):
@@ -161,15 +161,15 @@ def test_graph_notebooks_execute_only_through_toolkit_graph():
         assert "importlib" not in source
 
 
-def test_api_coverage_is_literal_public_and_materialized():
+def test_api_claims_are_literal_public_and_materialized():
     for path in _notebooks():
         notebook = _load(path)
         source = _code(notebook)
-        coverage_groups = _coverage(ast.parse(source, filename=path.name))
-        assert len(coverage_groups) == 1, path.name
-        coverage = coverage_groups[0]
-        assert coverage, path.name
-        for claim in coverage:
+        claim_groups = _api_claims(ast.parse(source, filename=path.name))
+        assert len(claim_groups) == 1, path.name
+        api_claims = claim_groups[0]
+        assert api_claims, path.name
+        for claim in api_claims:
             toolkit_match = re.match(r"toolkit\.([A-Za-z_]\w*)", claim)
             if toolkit_match:
                 name = toolkit_match.group(1)
@@ -177,9 +177,54 @@ def test_api_coverage_is_literal_public_and_materialized():
                 assert f"toolkit.{name}" in source, f"{path.name} does not materialize {claim}"
                 continue
             method_match = re.search(r"\.([A-Za-z_]\w*)", claim)
-            assert method_match, f"{path.name} has uncheckable coverage claim {claim!r}"
+            assert method_match, f"{path.name} has uncheckable API claim {claim!r}"
             method = method_match.group(1)
             assert f".{method}" in source, f"{path.name} does not materialize {claim}"
+
+
+
+def test_every_direct_toolkit_attribute_is_in_public_api():
+    public = set(toolkit.__all__) | {"__all__", "__name__"}
+    for path in _notebooks():
+        tree = ast.parse(_code(_load(path)), filename=path.name)
+        used = {
+            node.attr
+            for node in ast.walk(tree)
+            if isinstance(node, ast.Attribute)
+            and isinstance(node.value, ast.Name)
+            and node.value.id == "toolkit"
+        }
+        assert used <= public, f"{path.name} uses non-public names: {sorted(used - public)}"
+
+
+
+def test_tutorial_repository_layout_and_assets_are_intentional():
+    roots = sorted(
+        path.name
+        for path in TUTORIALS.iterdir()
+        if path.is_dir() and not path.name.startswith("__")
+    )
+    assert roots == ["notebooks", "skills"]
+    assert not (TUTORIALS / "human_output.py").exists()
+    assert not (TUTORIALS / "roadmap").exists()
+    assert (TUTORIALS / "skills" / "accountability_otc").exists()
+
+
+def test_tutorials_use_public_output_views_without_inlining_helpers():
+    forbidden = (
+        "def result_output(",
+        "def _tool_event_output(",
+        "def _result_dict_output(",
+        "def eval_report_output(",
+        "def maybe_show_trace(",
+        'mode="local"',
+        "mode='local'",
+        'engine="bedrock"',
+    )
+    for path in _notebooks():
+        source = _source(_load(path))
+        assert not any(needle in source for needle in forbidden), path.name
+        assert "toolkit.human_result" in source or "toolkit.show" in source, path.name
 
 
 def test_live_notebooks_are_run_all_ready_by_default():

@@ -1,53 +1,33 @@
 # Agentic Systems Roadmap
 
-## Stable Release 1.1
+Current stable maintenance target: `1.1.2`.
 
-The current repository release is `1.1.0`.
+Agentic Systems 1.1.2 closes the compatibility-preserving cleanup of the test
+architecture and the internal Bedrock partition. Completed work and measured
+release evidence belong in the changelog and release reports, not in this
+forward-looking roadmap.
 
-```text
-src/agentic_systems/  package
-tutorials/            18 canonical notebooks
-docs/                 normative and operating documentation
-tests/                API, contract, composition, integration, and release gates
-```
+## Direction After 1.1.2
 
-## Closed 1.1 Checkpoints
+Future work must earn its place through a concrete user contract and evidence.
+The preferred order is:
 
-```text
-1.1.0 grammar audit
-1.1.1 normative grammar and semantics
-1.1.2 RunResult invariants
-1.1.3 Tool and Skill composition
-1.1.4 Runtime and Provider substitution
-1.1.5 Framework and Graph boundary
-1.1.6 Systems, Environments, and Evals
-1.1.7 Execution Context decision
-1.1.8 static System inspection
-1.1.9 tutorials, migration, and release closure
-```
+1. Raise Bedrock coverage through fake-client tests while keeping the ratchet
+   monotonic and avoiding network-dependent CI.
+2. Improve documentation discoverability and tutorial accessibility without
+   introducing a second API or competing learning path.
+3. Strengthen provider conformance evidence where real integrations exist.
+4. Remove accidental complexity before considering new public symbols.
 
-## Runtime Boundary
+## Guardrails
 
-Canonical Providers:
+- Preserve the single `import agentic_systems as toolkit` teaching path.
+- Keep Runtime, Provider and Framework responsibilities explicit.
+- Keep optional SDKs lazy at base import time.
+- Add no public API without a documented contract, tutorial need and tests.
+- Treat historical checkpoints as evidence, not as the current product plan.
+- Keep releases reproducible from a clean tag and independently installable
+  wheel.
 
-```text
-python-runtime
-bedrock-runtime
-openai-runtime
-vllm-runtime
-auto
-```
-
-Framework status:
-
-```text
-langgraph       optional implemented adapter
-openai-agents   style-only metadata
-strands         declarative-only metadata
-```
-
-## Promotion Evidence
-
-Automated package gates and the 18/18 manual notebook matrix passed. External
-Provider support remains limited to the evidence recorded in
-`docs/MANUAL_NOTEBOOK_MATRIX_1_1.md`.
+No item in this roadmap is a compatibility promise or release commitment until
+it is accepted into a versioned release plan.

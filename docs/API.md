@@ -1,7 +1,9 @@
 # API - Agentic Systems
 
-This document describes the public API as a stable product surface. Tutorials
-teach the same API step by step; source modules implement it.
+This document is the complete public API reference. For an installation path,
+conceptual introduction or executable learning sequence, start with the
+[documentation map](README.md). Tutorials teach the same API step by step;
+source modules implement it.
 
 ## Import Rule
 
@@ -101,7 +103,7 @@ VLLM_API_KEY
 `vllm-runtime` is an OpenAI-compatible client path. It expects a running vLLM
 server, usually at `http://127.0.0.1:8000/v1`, and uses the OpenAI SDK client.
 Install `agentic-systems[openai]` when Agentic Systems only connects to an
-existing endpoint. Install `agentic-systems[vllm]` (alias `vll`) only when the
+existing endpoint. Install `agentic-systems[vllm]` only when the
 same supported Linux environment also hosts the vLLM server. The server remains
 external infrastructure; Agentic Systems never starts it implicitly.
 
@@ -538,7 +540,7 @@ Good API documentation in this repo follows these rules:
 
 ## Complete Public API Index
 
-This section is the documentation checksum for the public surface exported by `agentic_systems.PUBLIC_API`. If a symbol is added to the source API, it must appear here and have narrative coverage in the sections above.
+This section is the documentation checksum for `agentic_systems.__all__`. The maintainer inventory is `agentic_systems.api.PUBLIC_API`; it is not a top-level runtime attribute. If a symbol is added to the source API, it must appear here and have narrative coverage above.
 
 ```text
 agent

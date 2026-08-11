@@ -1,22 +1,24 @@
 # Notebook Walkthrough Map
 
-Los notebooks activos viven directamente en `tutorials/`. Este archivo es solo
-un indice auxiliar y no define una segunda ruta.
+Los notebooks activos viven directamente en `tutorials/`. Este archivo es un
+índice auxiliar y no define una segunda ruta de aprendizaje.
 
-## Ruta Canonica
+## Ruta Canónica
 
 La lista completa y el orden de los 18 notebooks se mantienen en
-`tutorials/README.md`. Todos usan:
+[tutorials/README.md](../README.md). Todos usan:
 
 ```python
 import agentic_systems as toolkit
 ```
 
-## Gate 1.1
+## Gate De Mantenimiento
 
-Antes de promover `1.1.0rc1`:
+Para cada release:
 
-1. la suite valida JSON, imports publicos, outputs limpios y compilacion;
-2. cada notebook se ejecuta manualmente desde un kernel limpio;
-3. los Providers ausentes producen un skip explicito;
-4. no se atribuye ejecucion a Strands u OpenAI Agents SDK.
+1. la suite valida JSON, imports públicos, outputs limpios y compilación;
+2. los 13 notebooks deterministas se ejecutan desde kernels limpios;
+3. los 5 notebooks de Provider se validan estáticamente y exponen un preflight
+   explícito;
+4. no se atribuye ejecución a Strands u OpenAI Agents SDK;
+5. un skip de infraestructura nunca cuenta como evidencia live.

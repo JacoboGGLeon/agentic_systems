@@ -1,23 +1,34 @@
 from __future__ import annotations
 
-from ._load_legacy import export_legacy_tests
 
-export_legacy_tests(
-    globals(),
-    'agentic_systems_api',
-    'agentic_systems_coverage_complete',
-    'bedrock_converse_contract',
-    'bedrock_phase7_coverage',
-    'checkpoint_00_decoupling',
-    'checkpoint_01_cleanup_preflight',
-    'checkpoint_04e_policy_and_bedrock_names',
-    'checkpoint_08_python_direct_engine',
-    'checkpoint_08b_bedrock_runtime_engine',
-    'checkpoint_08c_canonical_runtime_paths',
-    'cli',
-    'notebook_aws_utils',
-    'package_surgery_imports',
-    'phase7_residual_coverage',
-    'providers_phase1_coverage',
-    'tutorial_import_path',
-)
+def test_notebook_helpers_are_public_and_honor_explicit_root(tmp_path):
+    import agentic_systems as toolkit
+
+    assert callable(toolkit.configure_notebook_environment)
+    assert callable(toolkit.show_json)
+    assert toolkit.configure_notebook_environment(tmp_path, add_src=False) == tmp_path.resolve()
+
+
+def test_notebook_environment_and_markdown_prompt_contract(monkeypatch):
+    import inspect
+    import sys
+    from pathlib import Path
+
+    import agentic_systems as toolkit
+    from agentic_systems.bedrock_runtime_client import BedrockRuntimeClient
+
+    repo_root = Path(__file__).resolve().parents[2]
+    monkeypatch.setattr(
+        sys,
+        "path",
+        [item for item in sys.path if item not in {str(repo_root), str(repo_root / "src")}],
+    )
+    configured = toolkit.configure_notebook_environment(repo_root)
+    assert configured == repo_root
+    assert str(repo_root) in sys.path
+    assert str(repo_root / "src") in sys.path
+
+    source = inspect.getsource(BedrockRuntimeClient.answer_from_markdown)
+    assert "No copies ni reimprimas el Markdown completo" in source
+    assert "Devuelve sólo la respuesta final" in source
+    assert "no reproduzcas el documento fuente" in source

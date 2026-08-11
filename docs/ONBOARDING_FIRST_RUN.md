@@ -12,18 +12,20 @@ result construction.
 
 ## Install
 
-From PyPI:
+For library and CLI use from PyPI:
 
 ```bash
 python -m pip install -U pip
-python -m pip install "agentic-systems[tutorials,openai,bedrock]"
+python -m pip install "agentic-systems[openai,bedrock]"
 ```
 
-From a repository checkout:
+The notebooks are repository content; clone the repository before opening them:
 
 ```bash
+git clone https://github.com/JacoboGGLeon/agentic_systems.git
+cd agentic_systems
 python -m pip install -U pip
-python -m pip install -e ".[tutorials,openai,bedrock]"
+python -m pip install -e ".[dev,openai,bedrock]"
 ```
 
 The OpenAI extra also provides the OpenAI-compatible client used by a remote
@@ -34,7 +36,7 @@ that server implicitly.
 For development gates:
 
 ```bash
-python -m pip install -e ".[dev,tutorials,openai,bedrock,langgraph]"
+python -m pip install -e ".[dev,openai,bedrock,langgraph]"
 ```
 
 ## Verify The Local Contract First
@@ -55,7 +57,7 @@ import agentic_systems as toolkit
 runtime = toolkit.runtime(provider="python-runtime")
 system = toolkit.system(runtime=runtime)
 
-assert toolkit.__version__ == "1.1.0"
+assert toolkit.__version__ == "1.1.2"
 assert callable(toolkit.tool)
 assert callable(toolkit.skill)
 assert callable(toolkit.agent)
@@ -67,35 +69,52 @@ assert callable(toolkit.eval)
 toolkit.show(runtime.describe(), title="Local runtime")
 ```
 
-## Configure Provider Notebooks In Git Bash
+## Configure Provider Notebooks
 
-Export configuration before starting Jupyter. The explicit `RUN_*_LIVE=1`
-lines are optional because live execution is already the default when readiness
-passes; they are included to make intent visible in a demo session.
+Set configuration in the same shell that starts Jupyter. The explicit
+`RUN_*_LIVE=1` values are optional because live execution is already the default
+when readiness passes; they make intent visible in a demo session.
+
+### POSIX Shell Or Git Bash
 
 ```bash
-# OpenAI
 export OPENAI_API_KEY='...'
 export OPENAI_MODEL='gpt-4.1-mini'
 export RUN_OPENAI_LIVE=1
 
-# vLLM
 export VLLM_BASE_URL='http://127.0.0.1:8000/v1'
-export VLLM_MODEL='tu-modelo'
+export VLLM_MODEL='your-model'
 export RUN_VLLM_LIVE=1
 
-# Bedrock
-export AWS_PROFILE='tu-profile'
+export AWS_PROFILE='your-profile'
 export AWS_REGION='us-east-1'
-export BEDROCK_MODEL_ID='tu-model-id'
+export BEDROCK_MODEL_ID='your-model-id'
 export RUN_BEDROCK_LIVE=1
 
 python -m jupyter lab
 ```
 
-Jupyter must start from that same terminal so the kernel inherits the exported
-variables. Never paste real credentials into notebooks, Markdown, commits, or
-screenshots.
+### PowerShell
+
+```powershell
+$env:OPENAI_API_KEY = '...'
+$env:OPENAI_MODEL = 'gpt-4.1-mini'
+$env:RUN_OPENAI_LIVE = '1'
+
+$env:VLLM_BASE_URL = 'http://127.0.0.1:8000/v1'
+$env:VLLM_MODEL = 'your-model'
+$env:RUN_VLLM_LIVE = '1'
+
+$env:AWS_PROFILE = 'your-profile'
+$env:AWS_REGION = 'us-east-1'
+$env:BEDROCK_MODEL_ID = 'your-model-id'
+$env:RUN_BEDROCK_LIVE = '1'
+
+python -m jupyter lab
+```
+
+The kernel inherits variables from the Jupyter process. Never paste real
+credentials into notebooks, Markdown, commits or screenshots.
 
 ## What Run All Does
 
@@ -192,4 +211,6 @@ authentication.
 | Architecture and boundaries | [Architecture](ARCHITECTURE.md), [Boundaries](BOUNDARIES.md) |
 | CLI diagnostics | [CLI](CLI.md) |
 | RunResult invariants | [RunResult Final Answer](RUNRESULT_FINAL_ANSWER.md) |
-| Release evidence | [Release 1.1](RELEASE_1_1.md) |
+| Current release evidence | [Release 1.1.2](RELEASE_1_1_2.md) |
+| Unpublished 1.1.1 checkpoint | [Release 1.1.1](RELEASE_1_1_1.md) |
+| Historical 1.1.0 evidence | [Release 1.1](RELEASE_1_1.md) |

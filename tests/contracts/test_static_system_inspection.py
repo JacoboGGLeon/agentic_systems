@@ -103,7 +103,7 @@ def test_static_inspection_covers_entities_relations_profiles_and_risks_without_
     assert report.raise_if_errors() is report
 
 
-def test_static_inspection_preserves_legacy_errors_and_actionable_diagnostics():
+def test_static_inspection_preserves_compatibility_errors_and_diagnostics():
     system = AgenticSystem(strict=True)
 
     @system.tool

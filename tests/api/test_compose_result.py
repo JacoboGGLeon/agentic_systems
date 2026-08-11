@@ -1,13 +1,42 @@
 from __future__ import annotations
 
-from ._load_legacy import export_legacy_tests
 
-export_legacy_tests(
-    globals(),
-    'notebook_public_helpers',
-    'compare_keys_and_usage',
-    'agnostic_output_blocks',
-)
+
+def test_compose_result_preserves_runtime_metadata_usage_and_tools():
+    import agentic_systems as lab
+    from agentic_systems.tools.compat import ToolEvent
+
+    direct = lab.RunResult(
+        text="direct",
+        data={"value": 1},
+        engine="python-runtime",
+        model="python-runtime",
+        mode="eval",
+        tool_events=[ToolEvent(id="tool-1", name="sumar", input={}, output={"data": {"result": 1}}, ok=True)],
+    )
+    lm = lab.RunResult(
+        text="lm",
+        data={"review": "ok"},
+        engine="openai-runtime",
+        model="gpt-test",
+        mode="eval",
+        usage={"requests": 1, "input_tokens": 10, "output_tokens": 2, "total_tokens": 12},
+    )
+
+    result = lab.compose_result(
+        text="composed",
+        data={"answer": 42},
+        results=[direct, lm],
+        mode="multi-agentic-system",
+        input="question",
+    )
+
+    normalized = result.normalized()
+    assert normalized["runtime"]["engine"] == "openai-runtime"
+    assert normalized["runtime"]["framework"] == "agentic-systems"
+    assert normalized["usage"]["total_tokens"] == 12
+    assert normalized["tools"][0]["name"] == "sumar"
+    assert result.meta["engines_used"] == ["python-runtime", "openai-runtime"]
 
 
 def test_compose_result_usage_edge_cases():

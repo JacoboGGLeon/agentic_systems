@@ -2,7 +2,7 @@
 
 from . import core, providers, integrations
 from .agents import Agent
-from .api import PUBLIC_API
+from .api import PUBLIC_API as _PUBLIC_API
 from .factories import (
     agent,
     default_model_id,
@@ -37,7 +37,6 @@ from .environments import (
     build_agent_step_graph,
     build_dynamic_agent_router_graph,
     build_planned_agent_graph,
-    build_single_agent_step_graph,
     environment_lineage,
 )
 from .evals import EvalCaseResult, EvalReport, EvalReproducibility, Evaluator, run_eval
@@ -100,6 +99,7 @@ from .utils import (
 )
 from .providers.vllm_runtime import vllm_environment_snapshot
 
-__version__ = "1.1.0"
+__version__ = "1.1.2"
 
-__all__ = list(PUBLIC_API)
+__all__ = list(_PUBLIC_API)
+del _PUBLIC_API

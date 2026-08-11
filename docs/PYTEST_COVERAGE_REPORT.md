@@ -1,44 +1,66 @@
 # Pytest Coverage Report
 
-Cutoff: 2026-07-18, release candidate `1.1.0rc1`.
+Cutoff: 2026-08-10, release `1.1.2`.
 
-## Verified Result
+## Verified result
 
-The measurement comes from the repository virtual environment:
+Core and Bedrock are intentionally measured as separate blocking gates.
+
+### Core
 
 ```powershell
-.\.venv_agentic_systems\Scripts\python.exe -m pytest `
-  --basetemp=C:\tmp\agentic_systems_pytest_tmp `
-  -o cache_dir=C:\tmp\agentic_systems_pytest_cache `
-  --cache-clear `
+python -m pytest -q `
   --cov=agentic_systems `
-  --cov-report=term-missing `
-  --cov-report=json:C:\tmp\agentic_systems_coverage.json `
-  -q
+  --cov-config=pyproject.toml `
+  --cov-report=term-missing
 ```
 
 ```text
-359 passed, 0 skipped
-TOTAL statements: 6079
+381 passed
+TOTAL statements: 6194
 TOTAL missing: 0
 TOTAL coverage: 100.00%
 ```
 
-## Covered Surfaces
+The core configuration explicitly omits the public Bedrock facade and the
+internal `providers/bedrock/` package.
 
-- public API, CLI, Runtime, Scheduler, Tools, Skills, Agents, and Systems;
-- RunResult, contracts, output, lineage, and human rendering;
+### Bedrock
+
+```powershell
+python -m pytest -q tests/providers/bedrock `
+  --cov=agentic_systems.providers.bedrock_runtime `
+  --cov=agentic_systems.providers.bedrock `
+  --cov-config=.coveragerc-bedrock `
+  --cov-report=term-missing
+```
+
+```text
+27 passed
+TOTAL statements: 1151
+TOTAL missing: 539
+TOTAL coverage: 53.17%
+Blocking ratchet: 53.1%
+```
+
+The ratchet is upward-only. Tests use controlled clients and require no AWS
+credentials or network.
+
+## Covered surfaces
+
+- public API, CLI, Runtime, Scheduler, Tools, Skills, Agents and Systems;
+- RunResult, contracts, output, lineage and human rendering;
 - Provider conformance with controlled clients and failure paths;
 - Framework/Graph boundaries and optional dependency behavior;
 - Environment/Eval ownership and reproducibility;
 - static System inspection and non-execution;
-- RC version, documentation, and tutorial source contracts.
+- release version, documentation, tutorial, artifact and quarantine-absence gates.
 
-Coverage of adapter code with controlled clients is not evidence of live account,
-credential, endpoint, GPU, model, Strands SDK, or OpenAI Agents SDK execution.
+Coverage with controlled clients is not evidence of live account, credential,
+endpoint, GPU or model execution.
 
-## Tutorial Gate
+## Tutorial gate
 
-All 18 canonical notebooks parse, use the public import, contain no persisted
-outputs, and compile statically. Full notebook execution is the separate manual
-gate in `RELEASE_CANDIDATE_1_1.md`.
+Thirteen deterministic notebooks execute from fresh kernels under pytest. Five
+Provider notebooks are checked statically and remain outside live-provider
+claims.
