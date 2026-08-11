@@ -1,19 +1,5 @@
 from __future__ import annotations
 
-from ._load_legacy import export_legacy_tests
-
-export_legacy_tests(
-    globals(),
-    'checkpoint_02_2_human_output_declarative',
-    'checkpoint_09_tutorial_output_helpers',
-    'checkpoint_09b_output_views',
-    'checkpoint_10c_tutorial_hotfixes',
-    'checkpoint_10d_minimal_output_summaries',
-    'checkpoint_10g_usage_timing_summaries',
-    'human_output_utils_phase6b_coverage',
-    'notebook_syntax',
-    'notebook_top_level_helpers',
-)
 
 
 def _normalized_payload(*, framework="agentic-systems", tools=None, answer=None, data=None, usage=None, validation=None):

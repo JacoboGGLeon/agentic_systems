@@ -37,7 +37,7 @@ result = toolkit.RunResult(
     ),
     engine="python-runtime",
     model="python-runtime",
-    ,
+
 )
 
 toolkit.human_result(result)

@@ -1,59 +1,43 @@
 # Test Matrix
 
-The test suite is organized by public API surface under `tests/api/`. Each file
-answers one question: which Agentic Systems symbol or integration contract is it
-protecting?
+The suite is organized by the contract owner, not by migration history.
 
-| API file | Purpose |
+| Area | Responsibility |
 |---|---|
-| `test_runtime.py` | Runtime selection, providers, CLI/runtime diagnostics, python-runtime, OpenAI, Bedrock and vLLM paths. |
-| `test_scheduler.py` | Scheduler config, retries, timeout, concurrency and execution guards. |
-| `test_tool.py` | Tool class, decorators, contracts and tool expectations. |
-| `test_skill.py` | Skill loading, manifests, skill-backed agents and skill runtime contracts. |
-| `test_agent.py` | Agent construction, direct execution, contracts, runtime paths and policy behavior. |
-| `test_compose_result.py` | Canonical composed result helper and notebook output envelopes. |
-| `test_human_result.py` | Human output rendering, plain/Rich/debug/lineage/eval/environment paths. |
-| `test_lineage_memory.py` | RunResult, final answer, output contracts and Lineage Memory behavior. |
-| `test_system.py` | AgenticSystem, public tool registry, tutorial structure and system-level regressions. |
-| `test_graph.py` | Graph state, normalized graph output and multi-agent graph contracts. |
-| `test_environment_eval.py` | AgenticEnvironment, eval reports, rewards and environment summaries. |
-| `tests/contracts/test_run_result_invariants.py` | RunResult consistency, partial failure, evidence, lineage and JSON serialization invariants. |
-| `tests/contracts/test_system_environment_eval_semantics.py` | System/Graph/Environment/Eval ownership, local-seed replay, RNG isolation, Eval classification and report invariants. |
-| `tests/contracts/test_static_system_inspection.py` | Static System entities, relationships, contracts, profiles, conflicts, degradation risks, serialization, stable human output, and non-execution. |
-| `tests/release/test_release_candidate_contract.py` | RC version/API consistency, canonical notebook inventory, public imports, clean outputs, static compilation, and evidence limits. |
-| `tests/composition/` | Tool and Skill identity, conflicts, precedence, reuse, coherence and inspectable composition. |
-| `test_integrations_openai_agents.py` | OpenAI Agents-style metadata behavior; no Agents SDK adapter or live OpenAI claim. |
-| `test_integrations_langgraph.py` | LangGraph facade and optional dependency branches. |
-| `test_integrations_strands.py` | Strands declarative metadata behavior; no Strands SDK adapter claim. |
+| `tests/api/` | Public behavior for Runtime, Tool, Skill, Agent, System, Graph, Environment, Eval, results and output. |
+| `tests/unit/` | Private branches owned by individual production modules. |
+| `tests/providers/` | Provider base, OpenAI, Python Direct and Bedrock behavior with fake clients. |
+| `tests/contracts/` | Public inventory, semantic invariants, optional-import boundary and frozen Bedrock signatures. |
+| `tests/release/` | Tutorials, packaging, artifacts, documentation and quarantine-absence gates. |
+| `tests/composition/` | Tool/Skill identity, conflicts, precedence, reuse and composition coherence. |
+| `tests/integration_conformance/` | Framework and Graph boundary profiles and state projection. |
 
-`tests/api/_legacy_modules/` stores migrated historical test bodies. The public
-entrypoints are still the `tests/api/test_*.py` files above. The loader preserves
-the old `tests/test_*.py` path semantics so fixtures and repo-root calculations
-continue to work while the suite remains grouped by API.
+There is no quarantine, dynamic loader or routed historical test body. Durable
+assertions from the former modules now live with their owner; redundant and
+layout-specific assertions were removed.
 
-Coverage policy:
+## Coverage policy
+
+Core coverage is blocking at 100% and omits both the public Bedrock facade and
+its internal package:
 
 ```powershell
-.\.venv_agentic_systems\Scripts\python.exe -m pytest `
-  --basetemp=C:\tmp\agentic_systems_pytest_tmp `
-  -o cache_dir=C:\tmp\agentic_systems_pytest_cache `
-  --cache-clear `
-  --cov=agentic_systems `
-  --cov-report=term-missing `
-  --cov-report=json:C:\tmp\agentic_systems_coverage.json `
-  -q
+python -m pytest -q --cov=agentic_systems --cov-config=pyproject.toml --cov-report=term-missing
 ```
 
-Current verified status: `359 passed, 0 skipped`, `100.00%` real coverage.
+Bedrock has an independent upward-only ratchet:
 
-Provider substitution coverage:
+```powershell
+python -m pytest -q tests/providers/bedrock `
+  --cov=agentic_systems.providers.bedrock_runtime `
+  --cov=agentic_systems.providers.bedrock `
+  --cov-config=.coveragerc-bedrock `
+  --cov-report=term-missing
+```
 
-| API file | Purpose |
-|---|---|
-| `test_provider_conformance.py` | Shared base contract across python-runtime, OpenAI, vLLM, and Bedrock; capability profiles and explicit degradation. |
+Current verified status:
 
-Framework and Graph boundary coverage:
-
-| API file | Purpose |
-|---|---|
-| `tests/integration_conformance/test_framework_boundary.py` | Framework profiles, requested/actual adapter metadata, native-vs-framework Graph identity, and RunResult state-projection preservation. |
+- Full suite: 381 passed; 13 deterministic notebooks execute under pytest.
+- Core: 100.00% over 6,194 statements.
+- Bedrock: 53.17% measured; `fail_under = 53.1`.
+- Ruff: green over all `src` and `tests`.

@@ -1,0 +1,41 @@
+name: quality
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install -e ".[dev,bedrock,langgraph,openai]" build twine
+      - run: python -m ruff check src tests
+      - run: >-
+          python -m pytest --cov=agentic_systems
+          --cov-config=pyproject.toml --cov-report=term-missing -q
+      - run: >-
+          python -m pytest -o addopts="" tests/providers
+          --cov=agentic_systems.providers.bedrock_runtime
+          --cov=agentic_systems.providers.bedrock
+          --cov-config=.coveragerc-bedrock
+          --cov-report=term-missing -q
+      - if: matrix.python-version == '3.14'
+        run: python -m build --no-isolation
+      - if: matrix.python-version == '3.14'
+        run: python -m twine check dist/*
+      - if: matrix.python-version == '3.14'
+        run: |
+          python -m venv .tmp/wheel-smoke
+          .tmp/wheel-smoke/bin/python -m pip install dist/agentic_systems-1.1.2-py3-none-any.whl
+          .tmp/wheel-smoke/bin/python -c "import agentic_systems as a; assert a.__version__ == '1.1.2'; assert len(a.__all__) == 111"
+          .tmp/wheel-smoke/bin/agentic-systems version

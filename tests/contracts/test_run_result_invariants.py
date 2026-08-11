@@ -66,7 +66,7 @@ def test_validation_warning_preserves_success_without_error() -> None:
     assert result.errors == []
     assert result.validation["issues"][0]["severity"] == "warning"
 
-def test_legacy_validation_payload_is_preserved_and_still_controls_success() -> None:
+def test_compatibility_validation_payload_is_preserved_and_controls_success() -> None:
     legacy = {"ok": False, "issues": [{"code": "legacy_failure"}]}
     result = RunResult(text="legacy", validation=legacy)
 

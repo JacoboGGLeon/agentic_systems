@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from collections.abc import Iterable, Mapping, Sequence
+from collections.abc import Iterable, Mapping
 from typing import Any
 
 from .contracts import ToolExpectationValue, normalize_tool_expectation, validate_tool_expectation

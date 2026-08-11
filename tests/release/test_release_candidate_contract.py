@@ -6,8 +6,26 @@ import json
 from pathlib import Path
 import tomllib
 
+import pytest
+
 import agentic_systems
-from agentic_systems.api import PUBLIC_API, RECOMMENDED_API
+from agentic_systems.api import (
+    BEDROCK_PRIMITIVE_API,
+    CHAIN_API,
+    CORE_API,
+    ENGINE_API,
+    NOTEBOOK_API,
+    PUBLIC_API,
+    RECOMMENDED_API,
+)
+from agentic_systems.engines.names import (
+    BEDROCK_RUNTIME_ENGINE,
+    PYTHON_DIRECT_ENGINE,
+    VLLM_RUNTIME_ENGINE,
+    canonical_engine_name,
+    supported_engine_names,
+)
+from agentic_systems.providers.base import ToolRegistryRuntime
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -45,35 +63,89 @@ def _source(notebook: dict) -> str:
     )
 
 
-def test_release_candidate_version_and_public_inventory_are_consistent():
-    project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+def test_maintenance_version_surface_and_packaging_are_consistent():
+    pyproject_text = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
+    project = tomllib.loads(pyproject_text)
 
-    assert project["project"]["version"] == "1.1.0"
-    assert agentic_systems.__version__ == "1.1.0"
+    assert project["project"]["version"] == "1.1.2"
+    assert agentic_systems.__version__ == "1.1.2"
     assert len(PUBLIC_API) == 111
     assert "InspectReport" in PUBLIC_API
+    assert not hasattr(agentic_systems, "build_single_agent_step_graph")
+    assert not hasattr(agentic_systems, "PUBLIC_API")
+
+    extras = project["project"]["optional-dependencies"]
+    assert "tutorials" not in extras
+    assert "vll" not in extras
+    assert "vllm" in extras
+    assert set(extras["dev"]) <= set(extras["all"])
+    base_dependencies = project["project"]["dependencies"]
+    assert not any(name in requirement for name in ("langgraph", "awswrangler", "boto3", "vllm") for requirement in base_dependencies)
+    assert "openai-agents" not in pyproject_text
+
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    install = (ROOT / "INSTALL.md").read_text(encoding="utf-8")
+    manifest = (ROOT / "MANIFEST.in").read_text(encoding="utf-8")
+    assert "API -> Docs -> Tutorials -> explicit automated or manual evidence" in readme
+    assert "Core coverage: 100.00%" in readme
+    assert "Coverage scope: Bedrock facade and internal package excluded from core; separately gated at 53.1%" in readme
+    assert "build_single_agent_step_graph" not in readme
+    assert "agentic-systems[tutorials" not in install
+    assert "1.1.0rc1" not in install
+    assert "prune tutorials" in manifest
+    assert "include CHANGELOG.md" in manifest
 
     api_docs = (ROOT / "docs" / "API.md").read_text(encoding="utf-8")
     assert "InspectReport" in api_docs
     assert "`PUBLIC_API` | 111" in (
         ROOT / "docs" / "GRAMMAR_TO_API.md"
     ).read_text(encoding="utf-8")
-    coherence_claim = (
-        "Agentic Systems 1.1 establishes verifiable coherence between its API, "
-        "documentation, tutorials, and tests."
+
+
+def test_public_api_groups_aliases_and_compatibility_boundary():
+    assert tuple(agentic_systems.__all__) == PUBLIC_API
+    assert agentic_systems.core.RunResult is agentic_systems.RunResult
+    assert agentic_systems.providers.ToolRegistryRuntime is ToolRegistryRuntime
+    assert hasattr(agentic_systems.integrations, "__all__")
+    assert "AgenticSystem" in CORE_API
+    assert "Skill" in CORE_API
+    assert "Toolkit" not in PUBLIC_API
+    assert "BedrockRuntimeClient" in BEDROCK_PRIMITIVE_API
+    assert "Chain" in CHAIN_API
+    assert "run_result_view" in NOTEBOOK_API
+    assert "BEDROCK_RUNTIME_ENGINE" in ENGINE_API
+    assert "VLLM_RUNTIME_ENGINE" in ENGINE_API
+    assert supported_engine_names() == (
+        BEDROCK_RUNTIME_ENGINE,
+        "openai-runtime",
+        PYTHON_DIRECT_ENGINE,
+        VLLM_RUNTIME_ENGINE,
     )
-    readme = (ROOT / "README.md").read_text(encoding="utf-8")
-    release_candidate = (
-        ROOT / "docs" / "RELEASE_CANDIDATE_1_1.md"
-    ).read_text(encoding="utf-8")
-    assert "Tests: 393 passed, 0 skipped" in readme
-    assert coherence_claim in readme
-    assert "API == Docs == Tutorials == Pytests" in readme
-    assert coherence_claim in release_candidate.replace("\n", " ")
-    assert "API == Docs == Tutorials == Pytests" in release_candidate
-    assert "include CHANGELOG.md" in (
-        ROOT / "MANIFEST.in"
-    ).read_text(encoding="utf-8")
+    assert "bedrock" not in supported_engine_names(include_aliases=False)
+    assert "bedrock" not in supported_engine_names(include_aliases=True)
+    for ambiguous_name in ("local", "runtime", "python_runtime", "vllm", "vllm_runtime"):
+        with pytest.raises(ValueError, match="Unknown runtime/provider"):
+            canonical_engine_name(ambiguous_name)
+    assert not hasattr(agentic_systems, "Toolkit")
+    assert not hasattr(agentic_systems, "ToolEvent")
+
+    from agentic_systems.skills import LoadedSkill, SkillManifest, load_skill
+    from agentic_systems.tools.compat import (
+        Toolkit,
+        ToolEvent,
+        assert_dict_tool_output,
+        expand_tool_inputs,
+        now_ms,
+    )
+
+    assert Toolkit.__name__ == "Toolkit"
+    assert ToolEvent.__name__ == "ToolEvent"
+    assert assert_dict_tool_output("demo", {"ok": True}) == {"ok": True}
+    assert expand_tool_inputs(None) == ()
+    assert isinstance(now_ms(), float)
+    assert LoadedSkill.__name__ == "LoadedSkill"
+    assert SkillManifest.__name__ == "SkillManifest"
+    assert callable(load_skill)
 
 
 def test_canonical_notebooks_are_clean_public_and_statically_executable():
@@ -110,7 +182,7 @@ def test_canonical_notebooks_are_clean_public_and_statically_executable():
             )
 
 
-def test_tutorial_claims_match_checkpoint_1_1_contracts():
+def test_tutorial_claims_match_release_1_1_contracts():
     runtime = _source(_notebook("00_runtime_api.ipynb"))
     strands = _source(_notebook("06_integrations_strands_api.ipynb"))
     agents_style = _source(
@@ -132,30 +204,20 @@ def test_tutorial_claims_match_checkpoint_1_1_contracts():
     assert "reproducibility_conditions" in evals
 
 
-def test_release_documents_state_manual_and_live_evidence_limits():
-    migration = (ROOT / "docs" / "MIGRATION_1_0_TO_1_1.md").read_text(
-        encoding="utf-8"
-    )
-    release = (ROOT / "docs" / "RELEASE_CANDIDATE_1_1.md").read_text(
-        encoding="utf-8"
-    )
+def test_release_documents_separate_automated_manual_and_external_evidence():
+    release = (ROOT / "docs" / "RELEASE_1_1_2.md").read_text(encoding="utf-8")
     changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
-
-    assert "1.1.0" in migration
-    assert "Full cell execution" in release
-    assert "manual notebook matrix" in release
-    assert "Live OpenAI, Bedrock, vLLM" in changelog
-    assert "not part of 1.1" in changelog
-
-    final_release = (ROOT / "docs" / "RELEASE_1_1.md").read_text(encoding="utf-8")
     notebook_matrix = (
         ROOT / "docs" / "MANUAL_NOTEBOOK_MATRIX_1_1.md"
     ).read_text(encoding="utf-8")
-    assert "canonical notebooks: 18/18 executed, 0 failed" in final_release
-    assert "twine check: passed for both artifacts" in final_release
-    assert "notebooks: 18" in notebook_matrix
-    assert "external live Provider claims: 0" in notebook_matrix
 
+    assert "13 deterministic notebooks executed by pytest" in release
+    assert "5 Provider notebooks checked statically" in release
+    assert "Separate Bedrock coverage is 53.17%" in release
+    assert "`fail_under = 53.1`" in release
+    assert "external live Provider claims: 0" in notebook_matrix
+    assert "Live OpenAI, Bedrock and vLLM execution remains outside" in changelog
+    assert "API == Docs == Tutorials == Pytests" not in release
 
 def test_canonical_grammar_factories_delegate_to_existing_types():
     assert RECOMMENDED_API[:7] == (
@@ -230,7 +292,7 @@ def test_notebooks_follow_the_user_centered_api_first_standard():
     standard = (ROOT / "docs" / "TUTORIAL_QUALITY_STANDARD.md").read_text(
         encoding="utf-8"
     )
-    assert "API antes que codigo local" in standard
+    assert "API Antes Que Código Local" in standard
     assert "toolkit.environment(...)" in standard
     assert "La agnosticidad es obligatoria" in standard
-    assert "rutas y registries publicos" in standard
+    assert "rutas y registros públicos" in standard

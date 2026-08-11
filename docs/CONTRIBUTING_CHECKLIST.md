@@ -1,63 +1,62 @@
 # Contributing Checklist
 
-Use this checklist before handing off changes.
+Use this checklist before handing off changes. The documentation map defines the
+current sources of truth; historical checkpoints do not override them.
 
-## API
-
-```text
-[ ] New public names are added to `agentic_systems.api`.
-[ ] Recommended names are documented in `docs/API.md`.
-[ ] Advanced names are documented as advanced, not as first-step API.
-[ ] No tutorial imports from internal modules when `import agentic_systems as toolkit` works.
-[ ] Optional dependencies are not required at package import time.
-```
-
-## Code Placement
+## API And Ownership
 
 ```text
-[ ] Provider-agnostic primitives live in core.
-[ ] Backend/model execution lives in providers.
-[ ] Framework adaptation lives in integrations.
-[ ] Business/tutorial assets live outside src/agentic_systems.
-[ ] CLI changes stay diagnostic and package-oriented.
+[ ] Public names are intentional, documented in docs/API.md and covered by compatibility tests.
+[ ] Tutorials use `import agentic_systems as toolkit` when the public facade is sufficient.
+[ ] Provider-agnostic primitives live in core; backend execution lives in providers.
+[ ] Framework adaptation lives in integrations; the CLI remains diagnostic.
+[ ] Optional SDKs are not required at base package import time.
 ```
 
-## Docs
+## Documentation
 
 ```text
-[ ] README, docs and tutorials describe the same API names.
-[ ] Docs include runnable minimal examples.
-[ ] Docs explain return values and failure behavior.
-[ ] Docs do not promote removed compatibility paths.
-[ ] Notebook order in docs matches tutorials/.
+[ ] README, installation, API, CLI and tutorials use the same names and support claims.
+[ ] Runnable Python examples parse and local Markdown links resolve.
+[ ] Return values, failure behavior and external evidence boundaries are explicit.
+[ ] Removed aliases and historical paths are not presented as current guidance.
+[ ] Tutorial order agrees with tutorials/README.md.
 ```
 
-## Validation
+## Local Validation
 
 ```bash
-python -m pytest -q
+python -m ruff check src tests
+python -m pytest -q -W error::RuntimeWarning
+python -m pytest -q --cov=agentic_systems --cov-report=term-missing
+python -m pytest tests/providers -q --cov-config=.coveragerc-bedrock --cov=agentic_systems.providers.bedrock_runtime --cov=agentic_systems.providers.bedrock --cov-report=term-missing
 python -m compileall -q src tests tutorials
 agentic-systems doctor --json
 agentic-systems runtime --provider auto --json
 agentic-systems api --tier public --json
 ```
 
+The full pytest suite executes the 13 deterministic notebooks and statically
+validates the 5 provider notebooks. No separate undocumented notebook gate
+should be substituted for this evidence.
+
 ## Bundle Hygiene
 
 ```text
-[ ] No `__pycache__`, `.pytest_cache`, `.ipynb_checkpoints`, build artifacts, wheels or egg-info directories are bundled.
-[ ] No API keys, AWS credentials, local sandbox paths or notebook outputs with secrets are committed.
-[ ] Generated artifacts are either ignored or intentionally documented.
+[ ] No caches, notebook checkpoints, old distributions or egg-info directories are bundled.
+[ ] No API keys, AWS credentials, local paths or notebook outputs with secrets are committed.
+[ ] dist/ contains only artifacts rebuilt from the final source tree.
+[ ] Wheel and sdist pass twine check and their hashes are recorded.
 ```
 
 ## Release Candidate
 
 ```text
-[ ] Version agrees in pyproject, package, CLI, changelog, and RC docs.
-[ ] Canonical notebooks parse, compile, use the public import, and have no outputs.
-[ ] Provider/Framework support statements identify their evidence level.
-[ ] Wheel and sdist content are inspected.
-[ ] Wheel installs and imports outside the repository.
-[ ] twine check passes.
-[ ] Manual notebook matrix is recorded before final promotion.
+[ ] Version agrees in pyproject, package, CLI, changelog and current release docs.
+[ ] Public API count and Bedrock signatures match their frozen contracts.
+[ ] Core coverage remains 100%; the Bedrock ratchet never decreases.
+[ ] Ruff, pytest, Markdown quality and tutorial gates pass on Python 3.10 and 3.14 CI.
+[ ] Wheel installs and the CLI/import smoke passes outside the repository.
+[ ] The release is built from the reviewed clean commit/tag, not an earlier working tree.
+[ ] GitHub release and PyPI publication occur only after the tag gates pass.
 ```
