@@ -1,14 +1,11 @@
-# Computational Grammar
+# Computational Model
 
-Status: normative for Agentic Systems 1.1 terminology.
+Status: current normative conceptual model for the Agentic Systems 1.1 line.
 
-This document defines the computational grammar of Agentic Systems. It names
-the concepts users compose and the boundaries implementations must preserve.
-It does not introduce a public algebra, DSL, parser, or new runtime object.
-
-Detailed behavioral meaning is defined in [`SEMANTICS.md`](SEMANTICS.md). The
-mapping from the 1.0.7 audit baseline through the `1.1.0rc1` implementation is
-documented in [`GRAMMAR_TO_API.md`](GRAMMAR_TO_API.md).
+This document defines the computational grammar, semantic ownership and mapping
+to the current public API. It replaces the former separate grammar, semantics,
+grammar-to-API and Execution Context decision documents. It does not introduce
+a public algebra, DSL, parser or new runtime object.
 
 ## Normative Language
 
@@ -47,6 +44,25 @@ function -> Tool -> Skill -> Agent -> AgenticSystem
 This path is pedagogical, not a requirement that every system contain every
 layer. A Tool can run without a Skill. An Agent can run without a Graph. An Eval
 can verify an Agent without requiring a user-created Environment.
+
+## Semantic Properties
+
+Every public abstraction is governed by the following cross-cutting properties:
+
+| Property | Requirement |
+|---|---|
+| Identity | Names are stable inside an explicit owner; adapters preserve the represented identity. |
+| Contract | Static facts are checked before execution and runtime facts after evidence exists. |
+| State | Ownership and mutation remain attributable to the caller, System, Graph or Environment. |
+| Effects | Missing effect metadata never proves purity; retries must respect external effects. |
+| Determinism | A seed or temperature setting is evidence, not a universal replay guarantee. |
+| Requirements | Optional packages, credentials, endpoints and resource limits fail explicitly when absent. |
+| Evidence | Machine-readable evidence precedes lineage and human rendering. |
+| Failure | Provider, Tool, scheduler, validation and Eval failures remain distinguishable. |
+
+Fallback or degradation MUST identify the requested and actual execution paths.
+Human output and lineage may compact evidence but MUST NOT invent or contradict
+it.
 
 ## Grammar Layers
 
@@ -286,7 +302,25 @@ Those conditions retain their existing owners: `RuntimeConfig`,
 `AgenticSystem`, `Agent`, `RunPolicy`, Graph/Environment state, and `RunResult`.
 Execution Context MUST NOT duplicate ownership or require user construction.
 The decision, compatibility impact, and reconsideration triggers are normative
-in `EXECUTION_CONTEXT_DECISION.md` and ADR 0009.
+in [ADR 0009](adr/0009-execution-context-remains-conceptual.md).
+
+Existing ownership remains:
+
+| Concern | Owner |
+|---|---|
+| Provider, model, region and scheduler configuration | `RuntimeConfig` |
+| Tool/Skill registries, Agent binding and runtime defaults | `AgenticSystem` |
+| Actor instructions, contracts and selected capabilities | `Agent` |
+| Limits, repair, sampling and trace policy | `RunPolicy` |
+| Transition state | Graph or native Framework runtime |
+| Episode memory, seed, cursor and history | `AgenticEnvironment` |
+| Correlation, usage and execution evidence | `RunResult` |
+
+The concept may be reconsidered only when several independent adapters duplicate
+the same immutable resolution set, or when tracing, cancellation or correlation
+must cross adapter boundaries atomically. The first candidate remains an
+internal immutable value; a public class requires a separate user workflow and
+versioned contract.
 
 ## Static System Inspection
 
@@ -339,6 +373,35 @@ RunResult/Evidence   <- normalization       <- provider/framework payload
 
 Provider and Framework implementations MAY differ operationally. Their adapters
 MUST preserve the concepts and observable contracts defined here.
+
+## Public API Mapping
+
+The supported import is:
+
+```python
+import agentic_systems as toolkit
+```
+
+`src/agentic_systems/api.py` is the inventory source of truth. The 1.1.2
+baseline contains 111 top-level symbols; the complete checksum and signatures
+are documented in [API.md](API.md) and frozen by compatibility tests.
+
+| Concept | Primary public surface |
+|---|---|
+| Capability | `Tool`, `tool`, expectations and contracts |
+| Knowledge | `Skill`, `LoadedSkill`, `load_skill` |
+| Actor | `Agent`, `agent` |
+| Composition | `AgenticSystem`, `system`, `InspectReport` |
+| State transition | `graph`, `agent_node`, Graph helpers |
+| Interaction | `AgenticEnvironment`, `environment` |
+| Verification | `Evaluator`, `EvalReport`, `run_eval`, `eval` |
+| Execution selection | `RuntimeConfig`, `runtime`, Provider profiles |
+| Operational limits | `SchedulerConfig`, `scheduler`, `RunPolicy` |
+| Observation | `RunResult`, lineage and human-output helpers |
+
+Tools and Agents return `RunResult`; Graphs return state; Environments return
+Gymnasium-shaped tuples; Evals return `EvalReport`. These are deliberate
+boundaries, not gaps to erase with a second envelope.
 
 ## Extension Rule
 

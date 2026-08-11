@@ -1,12 +1,12 @@
 # Plan de implementación: álgebra computacional de sistemas inteligentes
 
-Estado: propuesta de trabajo posterior a `1.1.0`  
+Estado: RFC no aceptado; trabajo potencial posterior al checkpoint `1.1.3`
 Horizonte: `1.2` a `2.0`  
 Principio rector: semántica y leyes antes que azúcar sintáctica.
 
 ## 1. Punto de partida
 
-La versión `1.1.0` ya cierra la gramática pública y observable:
+La línea `1.1` ya cierra la gramática pública y observable:
 
 ```python
 import agentic_systems as toolkit

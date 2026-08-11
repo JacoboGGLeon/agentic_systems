@@ -1,8 +1,9 @@
 # Documentation
 
 This directory is the canonical documentation hub for Agentic Systems. Start
-with the shortest path that matches your goal; historical evidence is kept
-separate from current product guidance.
+with the shortest path that matches your goal. Current product contracts,
+architectural decisions, historical evidence and future proposals are separate
+layers.
 
 ## Start Here
 
@@ -17,10 +18,12 @@ separate from current product guidance.
 
 | Topic | Document |
 |---|---|
-| Computational model | [Computational Grammar](COMPUTATIONAL_GRAMMAR.md) |
-| Package structure and ownership | [Architecture](ARCHITECTURE.md) |
-| Provider, runtime and framework boundaries | [Boundaries](BOUNDARIES.md) |
-| Result and final-answer invariants | [RunResult Final Answer](RUNRESULT_FINAL_ANSWER.md) |
+| Computational grammar, semantics and API ownership | [Computational Model](COMPUTATIONAL_MODEL.md) |
+| Package structure, namespace ownership and placement | [Architecture](ARCHITECTURE.md) |
+| Runtime, Provider, Framework and Graph boundaries | [Runtime And Framework Contracts](RUNTIME_AND_FRAMEWORK_CONTRACTS.md) |
+| Result, final-answer and serialization invariants | [RunResult Contract](RUNRESULT_CONTRACT.md) |
+| Tool and Skill composition | [Composition Laws](COMPOSITION_LAWS.md) |
+| System, Environment and Eval ownership | [System, Environment And Eval Semantics](SYSTEM_ENVIRONMENT_EVAL_SEMANTICS.md) |
 | Static system inspection | [Static System Inspection](STATIC_SYSTEM_INSPECTION.md) |
 
 ## Reference
@@ -35,15 +38,18 @@ separate from current product guidance.
 
 | Topic | Document |
 |---|---|
+| Active maintenance checkpoint | [Checkpoint 1.1.3](CHECKPOINT_1_1_3.md) |
 | Contribution and validation gates | [Contributing Checklist](CONTRIBUTING_CHECKLIST.md) |
 | Current 1.1.2 release evidence | [Release 1.1.2](RELEASE_1_1_2.md) |
-| Test migration record | [Test Migration 1.1.2](TEST_MIGRATION_1_1_2.md) |
-| Coverage scope and measurements | [Pytest Coverage Report](PYTEST_COVERAGE_REPORT.md) |
 | Future work | [Roadmap](../ROADMAP.md) |
+| Accepted architectural decisions | [ADR Index](adr/README.md) |
+| Unaccepted design proposals | [RFC Index](rfcs/README.md) |
+| 1.1 development history | [Development Checkpoints](history/1.1-development-checkpoints.md) |
+| Earlier 1.1 release evidence | [Release History](history/RELEASE_HISTORY_1_1.md) |
 
-Checkpoint reports, ADRs and earlier release reports are historical records.
-They explain why decisions were made, but they do not override current API,
-installation or release guidance.
+ADRs explain accepted decisions, RFCs describe unaccepted proposals and history
+preserves superseded evidence. None overrides current API, installation,
+contract or release guidance.
 
 ## Sources Of Truth
 
@@ -51,10 +57,11 @@ When documents appear to disagree, use this order:
 
 1. `pyproject.toml` and `src/agentic_systems/api.py` define package metadata,
    optional extras and the public API inventory.
-2. The current README, installation guide, API reference and CLI reference
-   describe supported user behavior.
-3. The current release report records the evidence for that release.
-4. Checkpoints, ADRs and older release reports preserve historical context only.
+2. The current README, installation guide and API/CLI references describe
+   supported user behavior.
+3. Current contract documents define cross-module invariants and boundaries.
+4. The current release report records evidence for the published artifact.
+5. ADRs, RFCs and history preserve rationale or context only.
 
 Tests enforce the public inventory, compatibility signatures, Markdown
 integrity and release claims that can be checked locally.

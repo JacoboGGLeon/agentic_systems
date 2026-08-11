@@ -1,6 +1,6 @@
 # Migration Guide: Agentic Systems 1.0 to 1.1
 
-Status: stable guidance for `1.1.0`.
+Status: stable guidance for upgrading 1.0 applications to the current 1.1 line.
 
 ## Scope
 
@@ -16,7 +16,7 @@ algebraic syntax layer or promise identical behavior across model Providers.
 ## Upgrade
 
 ```bash
-python -m pip install "agentic-systems==1.1.0"
+python -m pip install "agentic-systems==1.1.2"
 ```
 
 

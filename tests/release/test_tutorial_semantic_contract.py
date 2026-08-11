@@ -260,7 +260,6 @@ def test_live_notebooks_are_run_all_ready_by_default():
         ROOT / "README.md",
         ROOT / "docs" / "API.md",
         ROOT / "docs" / "ONBOARDING_FIRST_RUN.md",
-        ROOT / "docs" / "TUTORIAL_QUALITY_STANDARD.md",
         ROOT / "tutorials" / "README.md",
     )
     for path in run_all_docs:

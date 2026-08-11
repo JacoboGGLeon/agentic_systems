@@ -8,7 +8,7 @@ This maintenance release makes Agentic Systems easier to trust and maintain
 without changing how users call it. Existing code keeps the same 111-symbol
 public API, the same `agentic_systems.providers.bedrock_runtime` import route and
 the same public `BedrockRuntime` methods and signatures. No application
-migration is required from 1.1.1-compatible code.
+migration is required for code already compatible with the 1.1 public contract.
 
 The package remains compatible with Python 3.10 through 3.14. Base imports stay
 lazy with respect to boto3, OpenAI, LangGraph and other optional providers.
@@ -26,8 +26,7 @@ validation and LangGraph responsibilities live in focused internal modules under
 `providers/bedrock/`. The facade remains the owner of the public class, and
 compatibility tests freeze its callable signatures.
 
-The detailed test mapping is recorded in
-[TEST_MIGRATION_1_1_2.md](TEST_MIGRATION_1_1_2.md).
+The durable test-ownership map and published artifact hashes are recorded below.
 
 ## Release Evidence
 
@@ -61,3 +60,27 @@ The automated suite proves deterministic behavior, packaging and adapter
 contracts without claiming live OpenAI, Bedrock or vLLM execution. Provider
 notebooks cross the external boundary only after an explicit readiness check;
 an actionable skip is not reported as live evidence.
+
+## Test Architecture Migration
+
+The 1.1.2 cleanup started with 53 physical quarantine files representing 52
+dynamically routed modules and ended with no loader, quarantine directory, Ruff
+exception or numeric legacy guardrail.
+
+| Evidence owner | Responsibility |
+|---|---|
+| `tests/api` | Public CLI, Tool, Skill, Agent and runtime behavior |
+| `tests/unit` | Scheduler, renderers, helpers, factories and private branches |
+| `tests/providers` | Base, OpenAI, Python Direct and Bedrock contracts |
+| `tests/contracts` | Public inventory, optional imports and Bedrock signatures |
+| `tests/release` | Tutorials, artifacts, packaging and quarantine absence |
+
+Coverage remained split deliberately: core is 100% over 6,194 statements;
+Bedrock is 53.17% with an upward-only blocking ratchet of 53.1%.
+
+Published artifact SHA256 values:
+
+```text
+wheel  6F6087D01E3B74D4DF78E79F03B5015302B2692949880D2C0C14FB013AABD6F6
+sdist  F46BD11632C458B74309A89152491D35C760F1F337CBD773336111BB59B4964D
+```

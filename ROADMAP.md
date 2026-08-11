@@ -1,13 +1,15 @@
 # Agentic Systems Roadmap
 
-Current stable maintenance target: `1.1.2`.
+Current stable release: `1.1.2`.
+Active maintenance checkpoint: `1.1.3` documentation architecture.
 
 Agentic Systems 1.1.2 closes the compatibility-preserving cleanup of the test
-architecture and the internal Bedrock partition. Completed work and measured
-release evidence belong in the changelog and release reports, not in this
-forward-looking roadmap.
+architecture and the internal Bedrock partition. Checkpoint 1.1.3 consolidates
+product documentation without adding API or runtime behavior. Completed work
+and measured release evidence belong in the changelog and release reports, not
+in this forward-looking roadmap.
 
-## Direction After 1.1.2
+## Direction During And After 1.1.3
 
 Future work must earn its place through a concrete user contract and evidence.
 The preferred order is:

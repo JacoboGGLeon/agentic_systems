@@ -29,7 +29,7 @@ Keep Execution Context as a normative conceptual role only.
    naming or exposing a context object.
 6. Reconsider an internal immutable value only when measured adapter or
    propagation duplication satisfies the triggers in
-   `EXECUTION_CONTEXT_DECISION.md`.
+   [the current Computational Model](../COMPUTATIONAL_MODEL.md).
 
 ## Consequences
 

@@ -1,6 +1,6 @@
-# RunResult Invariants
+# RunResult Contract
 
-Status: normative for Checkpoint 1.1.2.
+Status: current normative execution-result contract for the 1.1 line.
 
 `RunResult` is the common execution envelope for Tool and Agent runs. This
 document defines structural invariants that all producers and adapters must
@@ -103,7 +103,7 @@ success_without_answer
 
 ## Serialization Compatibility
 
-Checkpoint 1.1.2 preserves:
+The 1.1 compatibility baseline preserves:
 
 - all existing RunResult fields;
 - `agentic_systems.run.v1` normalized schema identity;
@@ -126,3 +126,31 @@ assert restored.to_dict() == payload
 
 Provider-native raw responses are retained separately and are not the portable
 serialization contract.
+
+## Final Answer And Rendering
+
+`RunResult.final` is the answer shaped for the user request. `RunResult.data` is
+reusable evidence or payload, and `RunResult.text` is a textual fallback. These
+projections may differ without contradicting one another.
+
+```python
+schema = toolkit.output_schema(["procedure", "final_result"])
+answer = toolkit.final_answer(
+    {"procedure": ["2 + 3 = 5"], "final_result": 5},
+    schema=schema,
+)
+```
+
+Normalization is stable:
+
+```text
+mapping          -> the same mapping
+list of mappings -> {"rows": [...]}
+other list       -> {"items": [...]}
+scalar           -> {"value": ...}
+None             -> {}
+```
+
+`human_result(...)` renders the answer and selected evidence but is never the
+source of truth. Graphs, Environments and Evals may contain or project a
+RunResult; they retain their own return contracts.

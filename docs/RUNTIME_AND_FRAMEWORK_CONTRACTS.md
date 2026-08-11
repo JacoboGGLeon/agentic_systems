@@ -1,6 +1,6 @@
-# Runtime and Provider Substitution Contract
+# Runtime, Provider, Framework And Graph Contracts
 
-Status: normative for Checkpoint 1.1.4.
+Status: current adapter-boundary contract for the Agentic Systems 1.1 line.
 
 This contract defines the observable guarantees of replacing one canonical
 Provider with another. It does not promise identical model behavior, text,
@@ -121,3 +121,40 @@ endpoint availability, model quality, or optional capabilities.
 - Mentioning a Tool in generated text without a corresponding Tool event.
 - Treating worker-thread delegation as native async.
 - Claiming equal token usage or deterministic text across unrelated models.
+
+## Framework And Graph Boundary
+
+Agentic Systems owns Tool, Skill, Agent, Contract, RunResult, evidence, Provider
+selection and explicit state projection. External Frameworks own native state,
+compilation, lifecycle, persistence and unsupported native capabilities.
+
+| Identity | Status | Meaning |
+|---|---|---|
+| `langgraph` | `native-adapter` | Real optional LangGraph adapter |
+| `openai-agents` | `style-only` | Core Provider execution with compatibility metadata |
+| `strands` | `declarative-only` | Accepted identity; no Strands SDK adapter |
+
+Requested Framework identity is configuration, not execution evidence.
+`framework_requested` records intent and `framework_adapter` records the adapter
+that actually ran.
+
+### Graph Backends
+
+`graph(engine="auto")` uses native LangGraph when installed and otherwise the
+dependency-free portable backend. `engine="portable"` forces the portable
+subset; `engine="langgraph"` explicitly requires the optional SDK.
+
+Portable Graphs declare `agentic-systems-native`; native LangGraph wrappers
+declare `framework-native`. Graph state is not RunResult. Callers needing the
+full result configure `result_key`, whose projection preserves:
+
+```text
+ok, final, data, tool_events, usage, engine, model, mode, validation, errors
+```
+
+A thin adapter imports optional SDKs only at its call site, invokes the existing
+Agent API, preserves result evidence and exposes the native object for behavior
+outside the portable contract.
+
+Framework substitution is not promised: compilation, concurrency, persistence,
+streaming and lifecycle may differ even when state projections conform.

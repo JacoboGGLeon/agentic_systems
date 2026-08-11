@@ -1,6 +1,6 @@
 # System, Environment, and Eval Semantics
 
-Status: normative through Checkpoint 1.1.6.
+Status: current normative lifecycle and reproducibility contract.
 
 This document fixes the ownership, state, lifecycle, and reproducibility
 boundary between `AgenticSystem`, Graph, `AgenticEnvironment`, and Eval.

@@ -1,6 +1,6 @@
 # Static System Inspection
 
-Status: normative through Checkpoint 1.1.8.
+Status: current normative static-inspection contract.
 
 ## Contract
 

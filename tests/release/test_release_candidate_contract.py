@@ -101,9 +101,8 @@ def test_maintenance_version_surface_and_packaging_are_consistent():
 
     api_docs = (ROOT / "docs" / "API.md").read_text(encoding="utf-8")
     assert "InspectReport" in api_docs
-    assert "`PUBLIC_API` | 111" in (
-        ROOT / "docs" / "GRAMMAR_TO_API.md"
-    ).read_text(encoding="utf-8")
+    model = (ROOT / "docs" / "COMPUTATIONAL_MODEL.md").read_text(encoding="utf-8")
+    assert "baseline contains 111 top-level symbols" in model
 
 
 def test_public_api_groups_aliases_and_compatibility_boundary():
@@ -211,15 +210,15 @@ def test_tutorial_claims_match_release_1_1_contracts():
 def test_release_documents_separate_automated_manual_and_external_evidence():
     release = (ROOT / "docs" / "RELEASE_1_1_2.md").read_text(encoding="utf-8")
     changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
-    notebook_matrix = (
-        ROOT / "docs" / "MANUAL_NOTEBOOK_MATRIX_1_1.md"
+    release_history = (
+        ROOT / "docs" / "history" / "RELEASE_HISTORY_1_1.md"
     ).read_text(encoding="utf-8")
 
     assert "13 deterministic notebooks executed by pytest" in release
     assert "5 Provider notebooks checked statically" in release
     assert "Separate Bedrock coverage is 53.17%" in release
     assert "`fail_under = 53.1`" in release
-    assert "external live Provider claims: 0" in notebook_matrix
+    assert "no live account/model/GPU claim" in release_history
     assert "Live OpenAI, Bedrock and vLLM execution remains outside" in changelog
     assert "API == Docs == Tutorials == Pytests" not in release
 
@@ -293,10 +292,28 @@ def test_notebooks_follow_the_user_centered_api_first_standard():
         if name in canonical_usage:
             assert canonical_usage[name] in source, name
 
-    standard = (ROOT / "docs" / "TUTORIAL_QUALITY_STANDARD.md").read_text(
-        encoding="utf-8"
-    )
-    assert "API Antes Que Código Local" in standard
+    standard = (ROOT / "tutorials" / "README.md").read_text(encoding="utf-8")
+    assert "## Contribution Standard" in standard
     assert "toolkit.environment(...)" in standard
-    assert "La agnosticidad es obligatoria" in standard
-    assert "rutas y registros públicos" in standard
+    assert "package internals" in standard
+    assert "Run All" in standard
+
+
+def test_documentation_checkpoint_has_no_retired_parallel_sources():
+    retired = {
+        "BOUNDARIES.md",
+        "COMPUTATIONAL_GRAMMAR.md",
+        "EXECUTION_CONTEXT_DECISION.md",
+        "FRAMEWORK_GRAPH_BOUNDARY.md",
+        "GRAMMAR_TO_API.md",
+        "PYTEST_COVERAGE_REPORT.md",
+        "RUNRESULT_FINAL_ANSWER.md",
+        "SEMANTICS.md",
+        "SMOKE_CHECKLIST_2_4_9.md",
+        "TEST_MIGRATION_1_1_2.md",
+        "TUTORIAL_QUALITY_STANDARD.md",
+    }
+    assert not any((ROOT / "docs" / name).exists() for name in retired)
+    assert (ROOT / "docs" / "adr" / "README.md").is_file()
+    assert (ROOT / "docs" / "rfcs" / "README.md").is_file()
+    assert (ROOT / "docs" / "history" / "RELEASE_HISTORY_1_1.md").is_file()

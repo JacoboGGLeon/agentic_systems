@@ -131,7 +131,7 @@ Execution Context is the conceptual snapshot produced while resolving System
 binding, input/mode, Runtime/Provider, policy, scheduler, state, and correlation
 metadata. It is not another container in the package architecture. Existing
 owners remain authoritative, and no ambient global or context-variable state is
-introduced. See `EXECUTION_CONTEXT_DECISION.md`.
+introduced. See [Computational Model](COMPUTATIONAL_MODEL.md).
 
 ## Static Inspection Boundary
 
@@ -145,3 +145,28 @@ The report has one canonical structured representation and a stable human
 projection. Diagnostics identify the affected entity, severity, code, message,
 and suggested action. Runtime availability remains a declared risk until actual
 execution; inspection does not claim behavioral conformance.
+
+## Namespace Ownership
+
+| Namespace | Owns | Must not own |
+|---|---|---|
+| `agentic_systems.core` | Provider-neutral contracts, results, scheduler and runtime configuration | SDK calls, framework compilation or business logic |
+| `agentic_systems.providers` | Backend/model access for canonical Providers | Framework orchestration or tutorial workflows |
+| `agentic_systems.integrations` | External Framework adapters and bridges | Core contracts or Provider implementation |
+| `agentic_systems.engines` | Internal execution mechanisms | New user-facing API design |
+| `tutorials/` | Executable public-API learning path | Library implementation |
+| `docs/` | Current behavior, contracts and operating guidance | Historical checkpoints presented as recommended behavior |
+
+Provider decides where execution happens. Integration adapts Agentic Systems to
+an external Framework. LangGraph is an implemented integration; Strands and
+OpenAI Agents-style are compatibility identities without SDK adapters.
+
+## Placement Rules
+
+1. Add to core only when behavior is Provider-independent.
+2. Put backend/model behavior under providers.
+3. Put real Framework adapters under integrations.
+4. Keep optional SDKs lazy at base import time.
+5. Keep domain teaching material in tutorials and outside package internals.
+6. Keep the CLI diagnostic and package-oriented.
+7. Document public behavior through `import agentic_systems as toolkit`.

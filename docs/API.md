@@ -338,7 +338,7 @@ selection remains in `RuntimeConfig`, composition remains in `AgenticSystem`,
 per-run limits remain in `RunPolicy`, and state/evidence remain in their Graph,
 Environment, and `RunResult` owners. Do not import or construct
 `ExecutionContext`; no such public symbol exists in 1.1.7. See
-`EXECUTION_CONTEXT_DECISION.md`.
+[Computational Model](COMPUTATIONAL_MODEL.md).
 
 ## Graph Integrations
 
@@ -700,7 +700,7 @@ profile.check(require_adapter=True).raise_if_failed()
 
 `framework_profile("openai-agents")` reports `style-only` and
 `framework_profile("strands")` reports `declarative-only`. Only LangGraph has an
-implemented external adapter in Checkpoint 1.1.5.
+implemented external adapter in the current 1.1 line.
 
 `describe_graph_boundary(...)` distinguishes portable Agentic Systems Graphs
 from framework-native wrappers. `evaluate_framework_projection(...)` verifies

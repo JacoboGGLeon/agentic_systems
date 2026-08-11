@@ -117,6 +117,18 @@ desde kernels limpios y valida estáticamente los 5 que dependen de Providers.
 La ejecución live solo se afirma cuando existe evidencia de haber cruzado esa
 frontera.
 
-El estándar normativo vive en
-[Tutorial Quality Standard](../docs/TUTORIAL_QUALITY_STANDARD.md). La evidencia
-actual está en [Release 1.1.2](../docs/RELEASE_1_1_2.md).
+El estándar de contribución y el contrato Run All viven en este mismo documento.
+La evidencia publicada está en
+[Release 1.1.2](../docs/RELEASE_1_1_2.md).
+
+## Contribution Standard
+
+Every notebook must state its goal, editable inputs, ownership model, public API
+construction, execution or explicit skip, human result, structured evidence,
+limits and final `api_coverage` inventory. A top-to-bottom Run All must not depend
+on hidden cells or fabricated results.
+
+Tutorial code may define small domain fixtures and callbacks. It must not import
+package internals, replace public contracts with hand-built dictionaries, use
+fake Providers to claim live execution, or report an infrastructure skip as a
+successful external run.

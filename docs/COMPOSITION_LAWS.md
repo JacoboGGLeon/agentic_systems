@@ -1,6 +1,6 @@
 # Composition Laws
 
-Status: normative through Checkpoint 1.1.6.
+Status: current normative composition contract for the 1.1 line.
 
 These laws govern Tool and Skill composition independently of Provider and
 Framework implementations. They apply inside one explicit composition boundary,
@@ -181,7 +181,7 @@ adapters do not count as Framework execution.
 Graphs, and Framework execution metadata.
 
 **Counterexample.** `framework="strands"` produces adapter evidence despite no
-Strands integration, or a Graph retains only answer text and claims full result
+Strands identity, or a Graph retains only answer text and claims full result
 preservation.
 
 **API implication.** Framework profiles declare integration maturity; Graph

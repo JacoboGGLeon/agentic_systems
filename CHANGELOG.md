@@ -2,6 +2,20 @@
 
 All notable changes to Agentic Systems are documented here.
 
+## 1.1.3 - Unreleased checkpoint
+
+Documentation-maintenance checkpoint; package version and public API remain at
+the published 1.1.2 baseline while this work is reviewed.
+
+### Changed
+
+- Consolidated conceptual, semantic and contract documents into explicit current
+  sources of truth.
+- Separated current guidance from ADRs, RFCs and historical release/checkpoint
+  evidence.
+- Corrected stale Graph backend, migration, CLI inventory and release narratives.
+- Added intentional navigation for every retained documentation layer.
+
 ## 1.1.2 - 2026-08-10
 
 Maintenance release completing the controlled retirement of legacy tests and
@@ -20,9 +34,9 @@ the internal partition of the Bedrock runtime.
 - Kept core coverage at 100% over 6,194 statements and introduced a separate
   Bedrock coverage ratchet at 53.1% (measured 53.17%).
 - Removed four genuinely unused imports from active source.
-## 1.1.1 - 2026-08-10
+## 1.1.1 - Unpublished checkpoint (2026-08-10)
 
-Maintenance release focused on coherence and surface reduction.
+Unpublished maintenance checkpoint focused on coherence and surface reduction; superseded by 1.1.2.
 
 ### Changed
 
