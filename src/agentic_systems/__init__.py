@@ -99,7 +99,7 @@ from .utils import (
 )
 from .providers.vllm_runtime import vllm_environment_snapshot
 
-__version__ = "1.1.2"
+__version__ = "1.1.3"
 
 __all__ = list(_PUBLIC_API)
 del _PUBLIC_API

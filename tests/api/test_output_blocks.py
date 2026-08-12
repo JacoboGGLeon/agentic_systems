@@ -67,3 +67,17 @@ def test_human_output_prints_stable_blocks(capsys):
     assert "7) Validación" in out
     assert "Evidencia normalizada desde tools" not in out
     assert "Tools esperadas: free_sql" in out
+
+
+def test_compare_accepts_keys_for_compact_traces():
+    rows = [
+        {"run_ok": True, "engine": "python-runtime", "mode": "tool", "usage": {"requests": 1}},
+        {"run_ok": True, "engine": "python-runtime", "mode": "tool", "usage": {"requests": 1}},
+    ]
+
+    compared = lab.compare(rows, keys=["run_ok", "engine", "mode", "usage"])
+
+    assert compared["ok"] is True
+    assert compared["count"] == 2
+    assert compared["same"]["engine"] is True
+    assert compared["runs"][0]["usage"] == {"requests": 1}

@@ -1,7 +1,7 @@
 # Contributing Checklist
 
 Use this checklist before handing off changes. The documentation map defines the
-current sources of truth; historical checkpoints do not override them.
+current sources of truth; superseded work remains available through Git history.
 
 ## API And Ownership
 
@@ -60,3 +60,18 @@ should be substituted for this evidence.
 [ ] The release is built from the reviewed clean commit/tag, not an earlier working tree.
 [ ] GitHub release and PyPI publication occur only after the tag gates pass.
 ```
+
+## Consumer Smoke
+
+Validate the built wheel from an isolated environment, not the editable source:
+
+```bash
+python -m venv .tmp/wheel-smoke
+.tmp/wheel-smoke/bin/python -m pip install dist/agentic_systems-*.whl
+.tmp/wheel-smoke/bin/python -c "import agentic_systems as a; assert len(a.__all__) == 111"
+.tmp/wheel-smoke/bin/agentic-systems version
+```
+
+The equivalent Windows executables live under `.tmp/wheel-smoke/Scripts/`.
+A release smoke must confirm version, CLI, 111 public symbols and lazy optional
+imports. Live Provider readiness is a separate integration boundary.

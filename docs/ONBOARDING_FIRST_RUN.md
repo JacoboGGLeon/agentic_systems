@@ -57,7 +57,7 @@ import agentic_systems as toolkit
 runtime = toolkit.runtime(provider="python-runtime")
 system = toolkit.system(runtime=runtime)
 
-assert toolkit.__version__ == "1.1.2"
+assert toolkit.__version__ == "1.1.3"
 assert callable(toolkit.tool)
 assert callable(toolkit.skill)
 assert callable(toolkit.agent)
@@ -207,10 +207,9 @@ authentication.
 | Need | Document |
 |---|---|
 | Public surface and contracts | [API](API.md) |
-| Tutorial teaching rules | [Tutorial Quality Standard](TUTORIAL_QUALITY_STANDARD.md) |
-| Architecture and boundaries | [Architecture](ARCHITECTURE.md), [Boundaries](BOUNDARIES.md) |
+| Tutorial teaching rules | [Tutorials](../tutorials/README.md) |
+| Architecture and namespace ownership | [Architecture](ARCHITECTURE.md) |
+| Runtime, Provider and Framework boundaries | [Runtime And Framework Contracts](RUNTIME_AND_FRAMEWORK_CONTRACTS.md) |
 | CLI diagnostics | [CLI](CLI.md) |
-| RunResult invariants | [RunResult Final Answer](RUNRESULT_FINAL_ANSWER.md) |
-| Current release evidence | [Release 1.1.2](RELEASE_1_1_2.md) |
-| Unpublished 1.1.1 checkpoint | [Release 1.1.1](RELEASE_1_1_1.md) |
-| Historical 1.1.0 evidence | [Release 1.1](RELEASE_1_1.md) |
+| RunResult and final-answer invariants | [RunResult Contract](RUNRESULT_CONTRACT.md) |
+| Version history | [Changelog](../CHANGELOG.md) |

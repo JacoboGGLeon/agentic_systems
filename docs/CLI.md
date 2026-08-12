@@ -249,7 +249,7 @@ The JSON form returns:
 ```json
 {
   "tier": "public",
-  "count": 101,
+  "count": 111,
   "symbols": ["agent", "runtime"]
 }
 ```

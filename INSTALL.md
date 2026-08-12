@@ -54,7 +54,7 @@ export VLLM_API_KEY="EMPTY"
 Pin the maintenance release when reproducibility matters:
 
 ```bash
-python -m pip install "agentic-systems==1.1.2"
+python -m pip install "agentic-systems==1.1.3"
 ```
 
 ## From GitHub

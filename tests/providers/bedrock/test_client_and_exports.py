@@ -60,7 +60,11 @@ class FakeBedrockRuntime:
     def run_direct(self, prompt, **kwargs):
         self.last_prompt = prompt
         self.last_kwargs = kwargs
-        return {"final_text": f"answer: {prompt}", "raw_responses": [], "tool_calls": []}
+        return {
+            "final_text": f"answer: {prompt}",
+            "raw_responses": [],
+            "tool_calls": [],
+        }
 
 
 class AwsLikeError(Exception):
@@ -79,7 +83,10 @@ def test_bedrock_runtime_client_with_fake_runtime(monkeypatch, tmp_path):
 
     assert client.runtime.model_id == "model-a"
     assert client.profile()["defaults"]["max_tokens"] == 10
-    assert client.whoami(check_language_model=True, check_embedding_model=True)["ok"] is True
+    assert (
+        client.whoami(check_language_model=True, check_embedding_model=True)["ok"]
+        is True
+    )
 
     client.runtime.raise_whoami = True
     client.runtime.raise_model_availability = True
@@ -89,7 +96,14 @@ def test_bedrock_runtime_client_with_fake_runtime(monkeypatch, tmp_path):
     assert failed["language_model_availability"]["ok"] is False
     assert failed["embedding_model_availability"]["ok"] is False
 
-    result = client.complete("hola", instructions="inst", model="model-b", max_tokens=5, temperature=0.1, mode="eval")
+    result = client.complete(
+        "hola",
+        instructions="inst",
+        model="model-b",
+        max_tokens=5,
+        temperature=0.1,
+        mode="eval",
+    )
     assert result.text == "answer: hola"
     assert result.engine == "bedrock-runtime"
     assert result.model == "model-b"
@@ -106,7 +120,9 @@ def test_bedrock_runtime_client_with_fake_runtime(monkeypatch, tmp_path):
 
 def test_bedrock_runtime_client_embeddings_and_helpers(monkeypatch):
     monkeypatch.setattr(brc, "_import_bedrock_runtime", lambda: FakeBedrockRuntime)
-    client = brc.BedrockRuntimeClient(model="model-a", embedding_model="amazon.titan-embed-text-v2:0")
+    client = brc.BedrockRuntimeClient(
+        model="model-a", embedding_model="amazon.titan-embed-text-v2:0"
+    )
 
     single = client.embed("texto")
     assert single["ok"] is True
@@ -115,7 +131,9 @@ def test_bedrock_runtime_client_embeddings_and_helpers(monkeypatch):
     assert invoked["modelId"] == "amazon.titan-embed-text-v2:0"
     assert json.loads(invoked["body"].decode("utf-8")) == {"inputText": "texto"}
 
-    client.runtime.runtime = FakeRuntimeAPI({"embeddings": [{"embedding": [1.0]}, {"bad": []}, {"embedding": [2.0]}]})
+    client.runtime.runtime = FakeRuntimeAPI(
+        {"embeddings": [{"embedding": [1.0]}, {"bad": []}, {"embedding": [2.0]}]}
+    )
     multi = client.embed(["a", "b"], model="cohere.embed", input_type="search_query")
     assert multi["embedding_count"] == 2
 
@@ -133,9 +151,17 @@ def test_bedrock_runtime_client_embeddings_and_helpers(monkeypatch):
     with pytest.raises(ValueError, match="at least one text"):
         client.embed([])
 
-    assert brc._embedding_payload("cohere.embed", ["a"], input_type=None)["input_type"] == "search_document"
-    assert brc._embedding_payload("titan.embed", ["a", "b"], input_type=None) == {"inputText": "a\n\nb"}
-    assert brc._embedding_payload("custom.embed", ["a"], input_type="query") == {"texts": ["a"], "input_type": "query"}
+    assert (
+        brc._embedding_payload("cohere.embed", ["a"], input_type=None)["input_type"]
+        == "search_document"
+    )
+    assert brc._embedding_payload("titan.embed", ["a", "b"], input_type=None) == {
+        "inputText": "a\n\nb"
+    }
+    assert brc._embedding_payload("custom.embed", ["a"], input_type="query") == {
+        "texts": ["a"],
+        "input_type": "query",
+    }
     assert brc._extract_embeddings("bad") == []
     assert brc._extract_embeddings({"embeddings": [[1.0]]}) == [[1.0]]
     assert brc._extract_embeddings({}) == []
@@ -154,3 +180,18 @@ def test_bedrock_provider_exports_runtime_implementation():
         "RuntimeToolSpec",
         "ToolEnvelope",
     }
+
+
+def test_bedrock_compact_response_metadata_keeps_latency_fields() -> None:
+    response = {
+        "ResponseMetadata": {"RequestId": "abc", "HTTPStatusCode": 200},
+        "usage": {"inputTokens": 1, "outputTokens": 2, "totalTokens": 3},
+        "metrics": {"latencyMs": 123},
+        "agentic_systems": {"client_duration_ms": 130.5},
+        "stopReason": "end_turn",
+    }
+
+    compact = bedrock_provider.BedrockRuntime._compact_response_metadata(response)
+
+    assert compact["service_latency_ms"] == 123
+    assert compact["client_duration_ms"] == 130.5

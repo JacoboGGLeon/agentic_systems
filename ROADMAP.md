@@ -1,23 +1,25 @@
 # Agentic Systems Roadmap
 
-Current stable maintenance target: `1.1.2`.
+Current stable release: `1.1.3`.
+Next major line: `2.0` Provider x Framework execution architecture.
 
-Agentic Systems 1.1.2 closes the compatibility-preserving cleanup of the test
-architecture and the internal Bedrock partition. Completed work and measured
-release evidence belong in the changelog and release reports, not in this
-forward-looking roadmap.
+Agentic Systems 1.1.3 closes the compatibility-preserving cleanup of the test
+and documentation architecture without adding API or runtime behavior.
+Completed work and measured release evidence belong in the changelog and
+release reports, not in this forward-looking roadmap.
 
-## Direction After 1.1.2
+## Direction After 1.1.3
 
 Future work must earn its place through a concrete user contract and evidence.
 The preferred order is:
 
-1. Raise Bedrock coverage through fake-client tests while keeping the ratchet
-   monotonic and avoiding network-dependent CI.
-2. Improve documentation discoverability and tutorial accessibility without
-   introducing a second API or competing learning path.
-3. Strengthen provider conformance evidence where real integrations exist.
-4. Remove accidental complexity before considering new public symbols.
+1. Make Native, LangGraph, OpenAI Agents and Strands real execution boundaries
+   over the four canonical Providers.
+2. Preserve the canonical 1.1 API while removing compatibility-only modules,
+   aliases and duplicated bridges in the 2.0 major line.
+3. Raise Provider and Framework coverage through controlled transports and
+   scheduled live evidence without making pull requests network-dependent.
+4. Keep framework SDKs optional and lazy while forwarding their native options
 
 ## Guardrails
 

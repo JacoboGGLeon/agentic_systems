@@ -325,11 +325,18 @@ PublicToolRegistry
 ### Static Inspection
 
 `AgenticSystem.inspect()` returns an `InspectReport` without executing models or
-Tools. The report preserves the legacy dictionary interface and adds stable
+Tools. The report supports its dictionary interface and exposes stable
 structured sections for entities, relationships, contracts, Providers,
 Frameworks, capabilities, conflicts, limits, degradation risks, and actionable
 diagnostics. Use `to_dict()` for JSON serialization and `human_text()` for the
-stable human view. See `STATIC_SYSTEM_INSPECTION.md`.
+stable human view. `raise_if_errors()` turns configuration errors into a gate.
+The schema is `agentic_systems.inspect.v1`.
+
+Inspection may read registries, signatures, schemas, local validation and
+declarative Provider or Framework profiles. It must not call a Tool or Agent,
+hydrate SDK clients, probe credentials, compile Graphs, perform discovery or
+make network/model calls. Structured output must survive a JSON round trip;
+relationships and diagnostics remain deterministically ordered.
 
 ### Execution Context
 
@@ -337,8 +344,8 @@ Execution Context is a conceptual resolution view, not a public object. Runtime
 selection remains in `RuntimeConfig`, composition remains in `AgenticSystem`,
 per-run limits remain in `RunPolicy`, and state/evidence remain in their Graph,
 Environment, and `RunResult` owners. Do not import or construct
-`ExecutionContext`; no such public symbol exists in 1.1.7. See
-`EXECUTION_CONTEXT_DECISION.md`.
+`ExecutionContext`; no such public symbol exists in the 1.1 line. See
+[Computational Model](COMPUTATIONAL_MODEL.md).
 
 ## Graph Integrations
 
@@ -543,7 +550,11 @@ Good API documentation in this repo follows these rules:
 This section is the documentation checksum for `agentic_systems.__all__`. The maintainer inventory is `agentic_systems.api.PUBLIC_API`; it is not a top-level runtime attribute. If a symbol is added to the source API, it must appear here and have narrative coverage above.
 
 ```text
+skill
 agent
+system
+environment
+eval
 runtime
 scheduler
 load_skill
@@ -574,7 +585,11 @@ LineageMemory
 LineageStep
 lineage_memory
 LINEAGE_SCHEMA_VERSION
+AUTO_PROVIDER_ENV_VAR
+DEFAULT_AUTO_PROVIDER_PRIORITY
 RuntimeConfig
+normalize_provider_priority
+resolve_auto_provider
 SchedulerConfig
 OutputSchema
 FINAL_ANSWER_SCHEMA_VERSION
@@ -648,19 +663,6 @@ integrations
 __version__
 ```
 
-
-
-Auto priority API symbols:
-
-```text
-DEFAULT_AUTO_PROVIDER_PRIORITY
-AUTO_PROVIDER_ENV_VAR
-normalize_provider_priority
-resolve_auto_provider
-```
-
-
-
 ## Provider Conformance API
 
 The advanced `agentic_systems.providers` namespace exposes the Runtime/Provider
@@ -700,7 +702,7 @@ profile.check(require_adapter=True).raise_if_failed()
 
 `framework_profile("openai-agents")` reports `style-only` and
 `framework_profile("strands")` reports `declarative-only`. Only LangGraph has an
-implemented external adapter in Checkpoint 1.1.5.
+implemented external adapter in the current 1.1 line.
 
 `describe_graph_boundary(...)` distinguishes portable Agentic Systems Graphs
 from framework-native wrappers. `evaluate_framework_projection(...)` verifies
