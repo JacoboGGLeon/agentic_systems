@@ -42,7 +42,6 @@ class BedrockRuntimeClient:
         region: str | None = None,
         embedding_model: str | None = DEFAULT_EMBEDDING_MODEL_ID,
         defaults: dict[str, Any] | None = None,
-        disable_framework_tracing: bool = True,
     ) -> None:
         self.model = model
         self.embedding_model = embedding_model
@@ -53,7 +52,6 @@ class BedrockRuntimeClient:
             region_name=region,
             max_tokens_default=int(self.defaults.get("max_tokens", 800)),
             temperature_default=float(self.defaults.get("temperature", 0.0)),
-            disable_openai_runtime_tracing=disable_framework_tracing,
         )
         self.region = self._runtime.region_name
 

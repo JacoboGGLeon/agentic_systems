@@ -4,7 +4,7 @@ import pytest
 
 from agentic_systems import RunResult
 from agentic_systems.contracts import ValidationResult
-from agentic_systems.tools.compat import ToolEvent
+from agentic_systems.tools import ToolEvent
 
 
 def _event(event_id: str, *, name: str = "lookup", ok: bool, error=None) -> ToolEvent:

@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from agentic_systems import (
     AgenticSystem,
 )
-from agentic_systems.tools.compat import (
+from agentic_systems.tools import (
     Toolkit,
     assert_dict_tool_output,
     expand_tool_inputs,

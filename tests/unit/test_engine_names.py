@@ -17,7 +17,7 @@ def test_contract_serialization_and_engine_name_paths(monkeypatch):
     with pytest.raises(ValueError, match="non-empty"):
         names.canonical_engine_name(None)
     assert names.canonical_engine_name("", default="python-runtime") == "python-runtime"
-    assert "bedrock" not in names.supported_engine_names(include_aliases=True)
+    assert "bedrock" not in names.supported_engine_names()
     assert "langgraph" in names.supported_engine_names(include_langgraph=True)
 
     with pytest.raises(TypeError, match="tool expectation"):

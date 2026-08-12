@@ -1,6 +1,6 @@
 # Agentic Systems Roadmap
 
-Current stable release: `1.1.3`.
+Current stable release: `1.1.3`; current development line: `2.0.0a1`.
 Next major line: `2.0` Provider x Framework execution architecture.
 
 Agentic Systems 1.1.3 closes the compatibility-preserving cleanup of the test
@@ -19,7 +19,14 @@ The preferred order is:
    aliases and duplicated bridges in the 2.0 major line.
 3. Raise Provider and Framework coverage through controlled transports and
    scheduled live evidence without making pull requests network-dependent.
-4. Keep framework SDKs optional and lazy while forwarding their native options
+4. Keep framework SDKs optional and lazy while forwarding their native options.
+
+## Direction After 2.0
+
+Open Agent Skills are intentionally deferred to the 2.1 development line. Their
+folder/ZIP contract, resources, script isolation, host runner and optional REPL
+will be designed together; 2.0 exposes no provisional parameters or scaffolding
+for that future capability.
 
 ## Guardrails
 

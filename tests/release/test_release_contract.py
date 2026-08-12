@@ -24,7 +24,7 @@ from agentic_systems.api import (
 )
 from agentic_systems.engines.names import (
     BEDROCK_RUNTIME_ENGINE,
-    PYTHON_DIRECT_ENGINE,
+    PYTHON_RUNTIME_ENGINE,
     VLLM_RUNTIME_ENGINE,
     canonical_engine_name,
     supported_engine_names,
@@ -35,24 +35,24 @@ from agentic_systems.providers.base import ToolRegistryRuntime
 ROOT = Path(__file__).resolve().parents[2]
 TUTORIALS = ROOT / "tutorials"
 EXPECTED_NOTEBOOKS = [
-    "00_runtime_api.ipynb",
-    "00_runtime_bedrock_provider_api.ipynb",
-    "00_runtime_openai_provider_api.ipynb",
-    "00_runtime_scheduler_api.ipynb",
-    "00_runtime_vllm_provider_api.ipynb",
-    "01_tool_api.ipynb",
-    "02_skill_api.ipynb",
-    "03_agent_api.ipynb",
-    "04_human_result_api.ipynb",
-    "05_lineage_memory_api.ipynb",
-    "06_integrations_strands_api.ipynb",
-    "07_integrations_openai_runtime_api.ipynb",
-    "08_system_api.ipynb",
-    "09_graph_api.ipynb",
-    "10_environment_eval_api.ipynb",
-    "11_single_agentic_system_api.ipynb",
-    "12_multi_agentic_system_api.ipynb",
-    "13_multi_agentic_graph_api.ipynb",
+    "core/00_runtime_scheduler.ipynb",
+    "core/01_tool.ipynb",
+    "core/02_skills.ipynb",
+    "core/03_agent.ipynb",
+    "core/04_results_lineage.ipynb",
+    "core/05_system.ipynb",
+    "core/06_graph_native.ipynb",
+    "core/07_environment_eval.ipynb",
+    "core/08_single_agentic_system.ipynb",
+    "core/09_multi_agentic_system.ipynb",
+    "core/10_multi_agent_graph.ipynb",
+    "frameworks/00_langgraph.ipynb",
+    "frameworks/01_openai_agents.ipynb",
+    "frameworks/02_aws_strands.ipynb",
+    "providers/00_auto.ipynb",
+    "providers/01_openai.ipynb",
+    "providers/02_bedrock.ipynb",
+    "providers/03_vllm.ipynb",
 ]
 
 
@@ -67,13 +67,13 @@ def _source(notebook: dict) -> str:
     )
 
 
-def test_maintenance_version_surface_and_packaging_are_consistent():
+def test_alpha_version_surface_and_packaging_are_consistent():
     pyproject_text = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
     project = tomllib.loads(pyproject_text)
 
-    assert project["project"]["version"] == "1.1.3"
-    assert agentic_systems.__version__ == "1.1.3"
-    assert len(PUBLIC_API) == 111
+    assert project["project"]["version"] == "2.0.0a1"
+    assert agentic_systems.__version__ == "2.0.0a1"
+    assert len(PUBLIC_API) == 112
     assert "InspectReport" in PUBLIC_API
     assert not hasattr(agentic_systems, "build_single_agent_step_graph")
     assert not hasattr(agentic_systems, "PUBLIC_API")
@@ -85,14 +85,15 @@ def test_maintenance_version_surface_and_packaging_are_consistent():
     assert set(extras["dev"]) <= set(extras["all"])
     base_dependencies = project["project"]["dependencies"]
     assert not any(name in requirement for name in ("langgraph", "awswrangler", "boto3", "vllm") for requirement in base_dependencies)
-    assert "openai-agents" not in pyproject_text
+    assert extras["openai-agents"] == ["openai-agents>=0.18.3,<0.19"]
+    assert extras["strands"] == ["strands-agents>=1.29.0,<2", "mcp>=1,<2"]
 
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     install = (ROOT / "INSTALL.md").read_text(encoding="utf-8")
     manifest = (ROOT / "MANIFEST.in").read_text(encoding="utf-8")
     assert "API -> Docs -> Tutorials -> explicit automated or manual evidence" in readme
     assert "Core coverage: 100.00%" in readme
-    assert "Coverage scope: Bedrock facade and internal package excluded from core; separately gated at 53.1%" in readme
+    assert "Coverage scope: Bedrock facade and internal package excluded from core; separately gated at 100%" in readme
     assert "build_single_agent_step_graph" not in readme
     assert "agentic-systems[tutorials" not in install
     assert "1.1.0rc1" not in install
@@ -102,10 +103,10 @@ def test_maintenance_version_surface_and_packaging_are_consistent():
     api_docs = (ROOT / "docs" / "API.md").read_text(encoding="utf-8")
     assert "InspectReport" in api_docs
     model = (ROOT / "docs" / "COMPUTATIONAL_MODEL.md").read_text(encoding="utf-8")
-    assert "baseline contains 111 top-level symbols" in model
+    assert "baseline contains 112 top-level symbols" in model
 
 
-def test_public_api_groups_aliases_and_compatibility_boundary():
+def test_public_api_groups_and_canonical_namespace_boundary():
     assert tuple(agentic_systems.__all__) == PUBLIC_API
     assert agentic_systems.core.RunResult is agentic_systems.RunResult
     assert agentic_systems.providers.ToolRegistryRuntime is ToolRegistryRuntime
@@ -121,11 +122,11 @@ def test_public_api_groups_aliases_and_compatibility_boundary():
     assert supported_engine_names() == (
         BEDROCK_RUNTIME_ENGINE,
         "openai-runtime",
-        PYTHON_DIRECT_ENGINE,
+        PYTHON_RUNTIME_ENGINE,
         VLLM_RUNTIME_ENGINE,
     )
-    assert "bedrock" not in supported_engine_names(include_aliases=False)
-    assert "bedrock" not in supported_engine_names(include_aliases=True)
+    assert "bedrock" not in supported_engine_names()
+    assert "bedrock" not in supported_engine_names()
     for ambiguous_name in ("local", "runtime", "python_runtime", "vllm", "vllm_runtime"):
         with pytest.raises(ValueError, match="Unknown runtime/provider"):
             canonical_engine_name(ambiguous_name)
@@ -133,7 +134,7 @@ def test_public_api_groups_aliases_and_compatibility_boundary():
     assert not hasattr(agentic_systems, "ToolEvent")
 
     from agentic_systems.skills import LoadedSkill, SkillManifest, load_skill
-    from agentic_systems.tools.compat import (
+    from agentic_systems.tools import (
         Toolkit,
         ToolEvent,
         assert_dict_tool_output,
@@ -152,7 +153,7 @@ def test_public_api_groups_aliases_and_compatibility_boundary():
 
 
 def test_canonical_notebooks_are_clean_public_and_statically_executable():
-    paths = sorted(path.name for path in TUTORIALS.glob("*.ipynb"))
+    paths = sorted(path.relative_to(TUTORIALS).as_posix() for path in TUTORIALS.rglob("*.ipynb"))
     assert paths == EXPECTED_NOTEBOOKS
 
     for name in paths:
@@ -169,7 +170,7 @@ def test_canonical_notebooks_are_clean_public_and_statically_executable():
         assert "from agentic_systems." not in source
         assert "import agentic_systems." not in source
         assert "python-direct" not in source
-        assert "PYTHON_DIRECT_ENGINE" not in source
+        assert "PYTHON_RUNTIME_ENGINE" not in source
 
         for index, cell in enumerate(notebook["cells"]):
             if cell["cell_type"] != "code":
@@ -186,20 +187,30 @@ def test_canonical_notebooks_are_clean_public_and_statically_executable():
 
 
 def test_tutorial_claims_match_current_product_contracts():
-    runtime = _source(_notebook("00_runtime_api.ipynb"))
-    strands = _source(_notebook("06_integrations_strands_api.ipynb"))
-    agents_style = _source(
-        _notebook("07_integrations_openai_runtime_api.ipynb")
-    )
-    system = _source(_notebook("08_system_api.ipynb"))
-    evals = _source(_notebook("10_environment_eval_api.ipynb"))
+    runtime = _source(_notebook("providers/00_auto.ipynb"))
+    skills = _source(_notebook("core/02_skills.ipynb"))
+    native_graph = _source(_notebook("core/06_graph_native.ipynb"))
+    langgraph = _source(_notebook("frameworks/00_langgraph.ipynb"))
+    strands = _source(_notebook("frameworks/02_aws_strands.ipynb"))
+    openai_agents = _source(_notebook("frameworks/01_openai_agents.ipynb"))
+    system = _source(_notebook("core/05_system.ipynb"))
+    evals = _source(_notebook("core/07_environment_eval.ipynb"))
 
     assert "provider_profiles()" in runtime
-    assert "declarative-only" in strands
+    assert 'toolkit.load_skill("tutorials/skills/accountability_otc")' in skills
+    assert 'GRAPH_ENGINE = "portable"' in native_graph
+    assert 'engine="langgraph"' in langgraph
+    assert "conditional_edges=" in langgraph
+    assert "await app.arun" in langgraph
     assert 'framework_profile("strands")' in strands
-    assert "style-only" in agents_style
-    assert 'framework_profile("openai-agents")' in agents_style
-    assert "result = None" in agents_style
+    assert "streamable_http_client" in strands
+    assert "stdio_client" in strands
+    assert "structured_output_model" in strands
+    assert 'framework_profile("openai-agents")' in openai_agents
+    assert "SQLiteSession" in openai_agents
+    assert "input_guardrail" in openai_agents
+    assert "native_handoff" in openai_agents
+    assert "await agent.arun" in openai_agents
     assert "inspection.to_dict()" in system
     assert "toolkit.show(inspection" in system
     assert '"models_executed": 0' in system
@@ -210,8 +221,8 @@ def test_tutorial_claims_match_current_product_contracts():
 def test_changelog_separates_automated_and_external_evidence():
     changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
 
-    assert "13 deterministic notebooks" in changelog
-    assert "5 Provider notebooks" in changelog
+    assert "15 deterministic notebooks" in changelog
+    assert "3 external Provider notebooks" in changelog
     assert "53.17%" in changelog
     assert "`fail_under = 53.1`" in changelog
     assert "Live OpenAI, Bedrock and vLLM execution remains outside" in changelog
@@ -249,15 +260,15 @@ def test_canonical_grammar_factories_delegate_to_existing_types():
 
 def test_notebooks_follow_the_user_centered_api_first_standard():
     canonical_usage = {
-        "01_tool_api.ipynb": "toolkit.tool",
-        "02_skill_api.ipynb": "toolkit.skill(",
-        "03_agent_api.ipynb": "toolkit.agent(",
-        "08_system_api.ipynb": "toolkit.system(",
-        "09_graph_api.ipynb": "toolkit.graph(",
-        "10_environment_eval_api.ipynb": "toolkit.environment(",
-        "11_single_agentic_system_api.ipynb": "toolkit.eval().run(",
-        "12_multi_agentic_system_api.ipynb": "toolkit.system(",
-        "13_multi_agentic_graph_api.ipynb": "toolkit.graph(",
+        "core/01_tool.ipynb": "toolkit.tool",
+        "core/02_skills.ipynb": "toolkit.skill(",
+        "core/03_agent.ipynb": "toolkit.agent(",
+        "core/05_system.ipynb": "toolkit.system(",
+        "core/06_graph_native.ipynb": "toolkit.graph(",
+        "core/07_environment_eval.ipynb": "toolkit.environment(",
+        "core/08_single_agentic_system.ipynb": "toolkit.eval().run(",
+        "core/09_multi_agentic_system.ipynb": "toolkit.system(",
+        "core/10_multi_agent_graph.ipynb": "toolkit.graph(",
     }
     narrative_markers = (
         "Objetivo",

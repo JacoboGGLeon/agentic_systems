@@ -1,6 +1,6 @@
 """Scheduler configuration and lightweight execution guards.
 
-Checkpoint 1 wires these objects into Agentic Systems execution. The scheduler is
+Agentic Systems execution consumes these scheduler objects. The scheduler is
 intentionally small: it adds notebook-friendly limits, retries and timeouts
 without replacing ``RunPolicy`` or provider-specific semantics.
 """
@@ -29,7 +29,7 @@ class SchedulerConfig:
     """Declarative execution limits used by runtimes and providers.
 
     Defaults are conservative for notebooks/sandboxes. ``max_concurrency`` is
-    stored for runtime metadata in Checkpoint 1; single sync tool calls are still
+    stored in runtime metadata; single synchronous Tool calls are still
     executed one-at-a-time by the local providers.
     """
 

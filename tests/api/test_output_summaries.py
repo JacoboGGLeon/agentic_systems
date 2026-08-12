@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from agentic_systems import RunResult, environment_summary, eval_report_summary, run_result_summary, tool, tool_result_summary
-from agentic_systems.tools.compat import ToolEvent
+from agentic_systems.tools import ToolEvent
 
 
 def test_run_result_summary_is_small_and_keeps_tool_evidence() -> None:

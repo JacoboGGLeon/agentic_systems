@@ -70,14 +70,16 @@ integration. They are not model providers:
 
 | Framework | Use |
 |---|---|
+| `native` | Agentic Systems engine owns the execution loop. |
 | `langgraph` | LangGraph graph orchestration. |
-| `openai-agents` | Style-only identity over the selected runtime; no OpenAI Agents SDK adapter is included. |
-| `strands` | Declarative compatibility identity; no Strands SDK adapter is included. |
+| `openai-agents` | OpenAI Agents `Runner`, native Tools, handoffs, guardrails, sessions and MCP. |
+| `strands` | `strands.Agent`, native Tools/MCP, hooks and lifecycle. |
 
 Do not pass provider names as `framework`: runtime providers are selected with `provider=...`, while frameworks are selected with `framework=...`.
-Use `framework="openai-agents"` to retain the existing style label and
-let `runtime(provider="auto")` or `runtime(provider="openai-runtime")` select the
-backend. This does not invoke the OpenAI Agents SDK.
+`runtime(...)` selects the Provider and `framework=...` selects the orchestration
+loop. `framework="openai-agents"`, `framework="strands"`, and
+`framework="langgraph"` invoke their real adapters; missing optional SDKs fail
+explicitly instead of falling back to Native.
 
 Best practice: keep `provider="auto"` at the boundary where code moves between
 local, vLLM, OpenAI and AWS environments. Use `runtime.describe()` in notebooks and
@@ -117,12 +119,17 @@ AWS_PROFILE
 AWS_ACCESS_KEY_ID
 AWS_SECRET_ACCESS_KEY
 AWS_SESSION_TOKEN
+AWS_BEARER_TOKEN_BEDROCK
 ```
 
 `runtime.describe()` shows safe configuration flags in `configuration.openai`,
 `configuration.vllm` and `configuration.bedrock`. It never prints API keys,
-secret keys or session tokens. Bedrock execution still uses the normal boto3/AWS
-credential chain.
+secret keys or session tokens. The canonical `bedrock-runtime` Provider always
+uses boto3. With the standard AWS credential chain, botocore signs requests with
+SigV4; with `AWS_BEARER_TOKEN_BEDROCK`, the same client sends native Bedrock
+Bearer authentication. The OpenAI-compatible Bedrock Mantle endpoint is a
+different AWS API surface, not a second Agentic Systems Bedrock Provider and not
+required for ADA/boto3 execution.
 
 Integration-specific args stay owned by the selected framework. Agentic Systems
 keeps a thin facade: `runtime(...)` selects provider/backend, `framework=...`
@@ -500,36 +507,40 @@ See `docs/CLI.md` for command details.
 
 ## Provider Notebook Run All Contract
 
-Provider notebooks are top-to-bottom programs. Live execution is enabled by
-default, but an external call occurs only after public readiness diagnostics
-confirm usable configuration. Missing infrastructure produces an actionable
-skip and no fabricated `RunResult`. The `RUN_*_LIVE=0` variables are explicit
-opt-outs for demos, CI, and offline validation.
+External Provider notebooks are top-to-bottom programs. A live call occurs only
+after public readiness diagnostics confirm usable configuration. Missing
+infrastructure produces an actionable skip and no fabricated RunResult.
+RUN_*_LIVE=0 is the explicit opt-out for demos, CI and offline validation.
+
+Bedrock SigV4 credentials and AWS_BEARER_TOKEN_BEDROCK authenticate the same
+boto3 bedrock-runtime Provider.
 
 ## Tutorials API Coverage
 
-Tutorials are the canonical learning path:
+| Layer | Notebook | API focus |
+|---|---|---|
+| core | core/00_runtime_scheduler.ipynb | Runtime Python, scheduler, retry and timeout |
+| core | core/01_tool.ipynb | Tool schemas, policy and execution |
+| core | core/02_skills.ipynb | Native Skill composition and folder loading |
+| core | core/03_agent.ipynb | Agent, contracts, policy and RunResult |
+| core | core/04_results_lineage.ipynb | Results, views, composition and lineage |
+| core | core/05_system.ipynb | System ownership and static inspection |
+| core | core/06_graph_native.ipynb | Portable Graph |
+| core | core/07_environment_eval.ipynb | Environment, reward and Eval |
+| core | core/08_single_agentic_system.ipynb | Single-agent system |
+| core | core/09_multi_agentic_system.ipynb | Multi-agent composition |
+| core | core/10_multi_agent_graph.ipynb | Multi-agent portable Graph |
+| providers | providers/00_auto.ipynb | Auto resolution without inference |
+| providers | providers/01_openai.ipynb | OpenAI readiness and live route |
+| providers | providers/02_bedrock.ipynb | boto3 Bedrock readiness and live route |
+| providers | providers/03_vllm.ipynb | OpenAI-compatible vLLM route |
+| frameworks | frameworks/00_langgraph.ipynb | StateGraph, routing, sync/async and lineage |
+| frameworks | frameworks/01_openai_agents.ipynb | Runner, mixed Tools, sessions, guardrails and handoffs |
+| frameworks | frameworks/02_aws_strands.ipynb | Agent, hooks, structured output and MCP stdio/HTTP |
 
-| Notebook | API focus |
-|---|---|
-| `00_runtime_api.ipynb` | Runtime, scheduler, provider profiles and dry provider resolution. |
-| `00_runtime_bedrock_provider_api.ipynb` | Bedrock readiness and the canonical `runtime -> system -> agent -> RunResult` route. |
-| `00_runtime_openai_provider_api.ipynb` | OpenAI readiness and the canonical `runtime -> system -> agent -> RunResult` route. |
-| `00_runtime_vllm_provider_api.ipynb` | vLLM endpoint readiness and the canonical `runtime -> system -> agent -> RunResult` route. |
-| `00_runtime_scheduler_api.ipynb` | `scheduler`, limits, retry and timeout behavior. |
-| `01_tool_api.ipynb` | `tool`, `Tool`, contracts and direct tool execution. |
-| `02_skill_api.ipynb` | `Skill`, skill validation and skill-backed agents. |
-| `03_agent_api.ipynb` | `agent`, `Agent`, contracts, policies and `RunResult`. |
-| `04_human_result_api.ipynb` | One real `RunResult` projected through human, output, summary and view APIs. |
-| `05_lineage_memory_api.ipynb` | Lineage and composition derived from real `RunResult` evidence. |
-| `06_integrations_strands_api.ipynb` | Strands declarative identity executed over a readiness-resolved Provider. |
-| `07_integrations_openai_runtime_api.ipynb` | OpenAI Agents-style identity executed over the selected runtime. |
-| `08_system_api.ipynb` | AgenticSystem fundamentals: ownership, registration, Skills, Agents and static inspection. |
-| `09_graph_api.ipynb` | Graph state and agent nodes through `engine="auto"`, including the portable backend. |
-| `10_environment_eval_api.ipynb` | Real Agent episodes, independent oracle rewards, reproducibility and Evals. |
-| `11_single_agentic_system_api.ipynb` | End-to-end System, Agent and Eval with a selectable provider. |
-| `12_multi_agentic_system_api.ipynb` | Two real Agent runs composed from their `RunResult` evidence. |
-| `13_multi_agentic_graph_api.ipynb` | Multiple real Agents orchestrated through the public Graph API. |
+The release gate executes the 11 core notebooks, providers/00_auto and all three
+Framework notebooks from clean kernels. The three external Provider notebooks
+are statically validated and run conditionally when infrastructure exists.
 
 ## Documentation Rules
 
@@ -556,6 +567,7 @@ system
 environment
 eval
 runtime
+framework
 scheduler
 load_skill
 default_model_id
@@ -700,9 +712,9 @@ profile = framework_profile("langgraph")
 profile.check(require_adapter=True).raise_if_failed()
 ```
 
-`framework_profile("openai-agents")` reports `style-only` and
-`framework_profile("strands")` reports `declarative-only`. Only LangGraph has an
-implemented external adapter in the current 1.1 line.
+`framework_profile(...)` reports `native-adapter` for all four canonical
+Frameworks. Optional SDKs remain lazy and are imported only when their adapter
+prepares or executes.
 
 `describe_graph_boundary(...)` distinguishes portable Agentic Systems Graphs
 from framework-native wrappers. `evaluate_framework_projection(...)` verifies

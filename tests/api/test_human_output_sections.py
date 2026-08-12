@@ -1,6 +1,6 @@
 import agentic_systems as lab
 from agentic_systems import RunResult
-from agentic_systems.tools.compat import ToolEvent
+from agentic_systems.tools import ToolEvent
 
 
 def test_compact_human_result_does_not_emit_empty_sql_or_table_blocks(capsys):

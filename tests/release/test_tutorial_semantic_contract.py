@@ -11,31 +11,35 @@ import agentic_systems as toolkit
 ROOT = Path(__file__).resolve().parents[2]
 TUTORIALS = ROOT / "tutorials"
 EXPECTED_NOTEBOOKS = {
-    "00_runtime_api.ipynb",
-    "00_runtime_bedrock_provider_api.ipynb",
-    "00_runtime_openai_provider_api.ipynb",
-    "00_runtime_scheduler_api.ipynb",
-    "00_runtime_vllm_provider_api.ipynb",
-    "01_tool_api.ipynb",
-    "02_skill_api.ipynb",
-    "03_agent_api.ipynb",
-    "04_human_result_api.ipynb",
-    "05_lineage_memory_api.ipynb",
-    "06_integrations_strands_api.ipynb",
-    "07_integrations_openai_runtime_api.ipynb",
-    "08_system_api.ipynb",
-    "09_graph_api.ipynb",
-    "10_environment_eval_api.ipynb",
-    "11_single_agentic_system_api.ipynb",
-    "12_multi_agentic_system_api.ipynb",
-    "13_multi_agentic_graph_api.ipynb",
+    "core/00_runtime_scheduler.ipynb",
+    "core/01_tool.ipynb",
+    "core/02_skills.ipynb",
+    "core/03_agent.ipynb",
+    "core/04_results_lineage.ipynb",
+    "core/05_system.ipynb",
+    "core/06_graph_native.ipynb",
+    "core/07_environment_eval.ipynb",
+    "core/08_single_agentic_system.ipynb",
+    "core/09_multi_agentic_system.ipynb",
+    "core/10_multi_agent_graph.ipynb",
+    "providers/00_auto.ipynb",
+    "providers/01_openai.ipynb",
+    "providers/02_bedrock.ipynb",
+    "providers/03_vllm.ipynb",
+    "frameworks/00_langgraph.ipynb",
+    "frameworks/01_openai_agents.ipynb",
+    "frameworks/02_aws_strands.ipynb",
 }
 DIRECT_SDK_ROOTS = {"boto3", "openai", "subprocess", "requests", "urllib", "httpx"}
 RUN_RESULT_FIELDS = {"final", "runtime", "usage", "validation"}
 
 
 def _notebooks():
-    return sorted(TUTORIALS.glob("*.ipynb"))
+    return sorted(TUTORIALS.rglob("*.ipynb"))
+
+
+def _relative(path: Path) -> str:
+    return path.relative_to(TUTORIALS).as_posix()
 
 
 def _load(path: Path):
@@ -71,7 +75,7 @@ def _api_claims(tree: ast.AST):
 
 def test_canonical_notebook_inventory_and_cell_integrity():
     paths = _notebooks()
-    assert {path.name for path in paths} == EXPECTED_NOTEBOOKS
+    assert {_relative(path) for path in paths} == EXPECTED_NOTEBOOKS
     for path in paths:
         notebook = _load(path)
         ids = [cell.get("id") for cell in notebook["cells"]]
@@ -80,6 +84,41 @@ def test_canonical_notebook_inventory_and_cell_integrity():
         assert all("".join(cell.get("source", [])).strip() for cell in notebook["cells"]), path.name
         first_markdown = next(cell for cell in notebook["cells"] if cell.get("cell_type") == "markdown")
         assert "Objetivo" in "".join(first_markdown.get("source", [])), path.name
+
+
+def test_notebook_metadata_matches_layer_and_literal_api_claims():
+    frameworks = {
+        "00_langgraph.ipynb": "langgraph",
+        "01_openai_agents.ipynb": "openai-agents",
+        "02_aws_strands.ipynb": "strands",
+    }
+    provider_names = {
+        "00_auto.ipynb": "auto",
+        "01_openai.ipynb": "openai-runtime",
+        "02_bedrock.ipynb": "bedrock-runtime",
+        "03_vllm.ipynb": "vllm-runtime",
+    }
+    for path in _notebooks():
+        notebook = _load(path)
+        relative = path.relative_to(TUTORIALS)
+        metadata = notebook.get("metadata", {}).get("agentic_systems", {})
+        assert set(metadata) >= {
+            "layer", "provider", "framework", "execution_mode", "api_coverage"
+        }, _relative(path)
+        assert metadata["layer"] == relative.parts[0]
+        claims = _api_claims(ast.parse(_code(notebook), filename=_relative(path)))
+        assert metadata["api_coverage"] == claims[0]
+        if metadata["layer"] == "core":
+            assert metadata["provider"] == "python-runtime"
+            assert metadata["framework"] == "native"
+            assert metadata["execution_mode"] == "offline"
+        elif metadata["layer"] == "providers":
+            assert metadata["provider"] == provider_names[path.name]
+            assert metadata["framework"] == "native"
+        else:
+            assert metadata["provider"] == "python-runtime"
+            assert metadata["framework"] == frameworks[path.name]
+            assert metadata["live_provider"] == "auto"
 
 
 def test_notebook_text_has_no_encoding_corruption_or_stale_constructor():
@@ -107,21 +146,24 @@ def test_code_cells_parse_and_do_not_shadow_public_api():
 
 def test_canonical_notebooks_do_not_bypass_provider_or_output_boundaries():
     for path in _notebooks():
-        tree = ast.parse(_code(_load(path)), filename=path.name)
+        relative = _relative(path)
+        allowed = {"subprocess"} if relative == "frameworks/02_aws_strands.ipynb" else set()
+        forbidden_roots = DIRECT_SDK_ROOTS - allowed
+        tree = ast.parse(_code(_load(path)), filename=relative)
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
                 roots = {alias.name.split(".")[0] for alias in node.names}
-                assert not roots & DIRECT_SDK_ROOTS, (path.name, roots & DIRECT_SDK_ROOTS)
+                assert not roots & forbidden_roots, (relative, roots & forbidden_roots)
             elif isinstance(node, ast.ImportFrom):
                 root = (node.module or "").split(".")[0]
-                assert root not in DIRECT_SDK_ROOTS, (path.name, root)
+                assert root not in forbidden_roots, (relative, root)
             elif isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
-                assert node.func.id != "print", path.name
+                assert node.func.id != "print", relative
             elif isinstance(node, (ast.Assign, ast.AnnAssign, ast.AugAssign)):
                 targets = node.targets if isinstance(node, ast.Assign) else [node.target]
                 for target in targets:
                     if isinstance(target, ast.Attribute):
-                        assert target.attr not in RUN_RESULT_FIELDS, (path.name, target.attr)
+                        assert target.attr not in RUN_RESULT_FIELDS, (relative, target.attr)
 
 
 def test_notebooks_do_not_fabricate_results_or_execute_manual_graph_fallbacks():
@@ -142,9 +184,9 @@ def test_notebooks_do_not_fabricate_results_or_execute_manual_graph_fallbacks():
 
 def test_provider_notebooks_use_the_same_public_execution_route():
     for name in (
-        "00_runtime_openai_provider_api.ipynb",
-        "00_runtime_vllm_provider_api.ipynb",
-        "00_runtime_bedrock_provider_api.ipynb",
+        "providers/01_openai.ipynb",
+        "providers/03_vllm.ipynb",
+        "providers/02_bedrock.ipynb",
     ):
         source = _code(_load(TUTORIALS / name))
         route = ["toolkit.runtime(", "toolkit.system(", "system.agent(", "agent.run(", "toolkit.human_result("]
@@ -154,7 +196,11 @@ def test_provider_notebooks_use_the_same_public_execution_route():
 
 
 def test_graph_notebooks_execute_only_through_toolkit_graph():
-    for name in ("09_graph_api.ipynb", "13_multi_agentic_graph_api.ipynb"):
+    for name in (
+        "core/06_graph_native.ipynb",
+        "core/10_multi_agent_graph.ipynb",
+        "frameworks/00_langgraph.ipynb",
+    ):
         source = _code(_load(TUTORIALS / name))
         assert "toolkit.graph(" in source
         assert "app.run(" in source
@@ -221,10 +267,12 @@ def test_tutorial_repository_layout_and_assets_are_intentional():
         for path in TUTORIALS.iterdir()
         if path.is_dir() and not path.name.startswith("__")
     )
-    assert roots == ["notebooks", "skills"]
+    assert roots == ["core", "frameworks", "providers", "skills"]
     assert not (TUTORIALS / "human_output.py").exists()
     assert not (TUTORIALS / "roadmap").exists()
+    assert not list(TUTORIALS.glob("*.ipynb"))
     assert (TUTORIALS / "skills" / "accountability_otc").exists()
+    assert (TUTORIALS / "frameworks" / "mcp_echo_server.py").exists()
 
 
 def test_tutorials_use_public_output_views_without_inlining_helpers():
@@ -246,33 +294,36 @@ def test_tutorials_use_public_output_views_without_inlining_helpers():
 
 def test_live_notebooks_are_run_all_ready_by_default():
     live_flags = {
-        "00_runtime_openai_provider_api.ipynb": "RUN_OPENAI_LIVE",
-        "00_runtime_vllm_provider_api.ipynb": "RUN_VLLM_LIVE",
-        "00_runtime_bedrock_provider_api.ipynb": "RUN_BEDROCK_LIVE",
-        "06_integrations_strands_api.ipynb": "RUN_STRANDS_IDENTITY_LIVE",
-        "07_integrations_openai_runtime_api.ipynb": "RUN_OPENAI_STYLE_LIVE",
+        "providers/01_openai.ipynb": "RUN_OPENAI_LIVE",
+        "providers/03_vllm.ipynb": "RUN_VLLM_LIVE",
+        "providers/02_bedrock.ipynb": "RUN_BEDROCK_LIVE",
+        "frameworks/00_langgraph.ipynb": "RUN_LANGGRAPH_LIVE",
+        "frameworks/02_aws_strands.ipynb": "RUN_STRANDS_LIVE",
+        "frameworks/01_openai_agents.ipynb": "RUN_OPENAI_AGENTS_LIVE",
     }
     for name, flag in live_flags.items():
         notebook = _load(TUTORIALS / name)
         source = _source(notebook)
         code = _code(notebook)
-        assert f'os.getenv("{flag}", "1")' in code, name
-        assert f"{flag}=0" in source, name
+        default = "0" if name.startswith("frameworks/") else "1"
+        assert f'os.getenv("{flag}", "{default}")' in code, name
+        if default == "1":
+            assert f"{flag}=0" in source, name
 
-    vllm = _code(_load(TUTORIALS / "00_runtime_vllm_provider_api.ipynb"))
+    vllm = _code(_load(TUTORIALS / "providers/03_vllm.ipynb"))
     assert 'vllm_environment.get("base_url_configured")' in vllm
     assert 'vllm_environment.get("model_configured")' in vllm
 
-    bedrock = _code(_load(TUTORIALS / "00_runtime_bedrock_provider_api.ipynb"))
+    bedrock = _code(_load(TUTORIALS / "providers/02_bedrock.ipynb"))
     assert 'aws_session.get("has_credentials")' in bedrock
+    assert 'AWS_BEARER_TOKEN_BEDROCK' in bedrock
 
     for name in (
-        "06_integrations_strands_api.ipynb",
-        "07_integrations_openai_runtime_api.ipynb",
+        "frameworks/02_aws_strands.ipynb",
+        "frameworks/01_openai_agents.ipynb",
     ):
         source = _code(_load(TUTORIALS / name))
-        assert "resolved_provider" in source
-        assert "resolved_provider != \"auto\"" in source
+        assert 'else toolkit.runtime(provider="python-runtime")' in source
     run_all_docs = (
         ROOT / "README.md",
         ROOT / "docs" / "API.md",

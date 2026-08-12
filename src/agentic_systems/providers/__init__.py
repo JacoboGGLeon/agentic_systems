@@ -21,7 +21,7 @@ from .conformance import (
     provider_profile,
     provider_profiles,
 )
-from .python_direct import PythonDirectEngine, PythonDirectProvider
+from .python_runtime import PythonRuntimeEngine, PythonRuntimeProvider
 from .openai_runtime import OpenAIRuntimeProvider
 from .vllm_runtime import VLLMRuntimeProvider
 
@@ -53,8 +53,8 @@ __all__ = [
     "provider_profile",
     "provider_profiles",
     "evaluate_provider_conformance",
-    "PythonDirectEngine",
-    "PythonDirectProvider",
+    "PythonRuntimeEngine",
+    "PythonRuntimeProvider",
     "OpenAIRuntimeProvider",
     "VLLMRuntimeProvider",
     "BedrockRuntime",

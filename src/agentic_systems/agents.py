@@ -1,31 +1,41 @@
-"""Agent object for Agentic Systems 1.0."""
+"""Canonical Agent facade for Agentic Systems 2.0."""
 
 from __future__ import annotations
 
-import asyncio
 import json
 from collections import Counter
 from collections.abc import Callable, Iterable
 from typing import Any
 
-from .contracts import AgentContract, RunPolicy, ValidationResult, resolve_policy, validate_contract_policy
+from .contracts import (
+    AgentContract,
+    RunPolicy,
+    ValidationResult,
+    resolve_policy,
+    validate_contract_policy,
+)
 from .core.runtime import RuntimeConfig
-from .core.scheduler import SchedulerConfig, SchedulerTimeoutError, execute_async, execute_sync, merge_policy_with_scheduler
+from .core.scheduler import (
+    SchedulerConfig,
+    SchedulerTimeoutError,
+    execute_async,
+    execute_sync,
+    merge_policy_with_scheduler,
+)
 from .engines.names import (
     BEDROCK_RUNTIME_ENGINE,
     LANGGRAPH_ORCHESTRATOR,
-    OPENAI_AGENTS_FRAMEWORK,
     PYTHON_RUNTIME_ENGINE,
-    STRANDS_FRAMEWORK,
     canonical_engine_name,
     normalize_engine_text,
 )
 from .errors import GraphContractError
+from .integrations.config import FrameworkConfig
 from .results import RunResult
 from .final_answer import OutputSchema, final_answer
 from .skills import LoadedSkill, Skill
 from .tools import Tool
-from .tools.compat import Toolkit, expand_tool_inputs
+from .tools.toolkit import Toolkit, expand_tool_inputs
 
 
 def _coerce_input(value: Any, input_contract: Any | None) -> Any:
@@ -45,14 +55,20 @@ def _coerce_output_data(result: RunResult, output_contract: Any | None) -> RunRe
         return result
 
     if isinstance(output_contract, OutputSchema):
-        result.final = final_answer(result.data or result.final, schema=output_contract, text=result.text)
+        result.final = final_answer(
+            result.data or result.final, schema=output_contract, text=result.text
+        )
         return result
 
-    # Backward-compatible Pydantic output contracts keep validating ``data``.
+    # Pydantic output contracts validate ``data`` and define the final payload.
     # The validated payload also becomes ``final`` because it represents the
     # user-facing structured answer requested by the output contract.
     source = result.data or result.final or _try_parse_json_object(result.text)
-    if isinstance(source, dict) and set(source) == {"text"} and source.get("text") == result.text:
+    if (
+        isinstance(source, dict)
+        and set(source) == {"text"}
+        and source.get("text") == result.text
+    ):
         source = _try_parse_json_object(result.text)
     validated = output_contract.model_validate(source)
     payload = validated.model_dump(mode="json")
@@ -69,9 +85,9 @@ def _try_parse_json_object(text: str) -> dict[str, Any]:
     return parsed if isinstance(parsed, dict) else {"value": parsed}
 
 
-
-
-def _resolve_framework_and_engine(engine: str | None, framework: str | None) -> tuple[str, str | None]:
+def _resolve_framework_and_engine(
+    engine: str | None, framework: str | None
+) -> tuple[str, str | None]:
     """Return (execution_engine, user_framework).
 
     ``engine`` describes the model/runtime provider, while ``framework``
@@ -80,21 +96,23 @@ def _resolve_framework_and_engine(engine: str | None, framework: str | None) -> 
 
     requested_engine = normalize_engine_text(engine or BEDROCK_RUNTIME_ENGINE)
     if requested_engine == LANGGRAPH_ORCHESTRATOR:
-        raise ValueError("langgraph_is_not_engine: LangGraph is an orchestrator, not an engine. Use framework='langgraph' with engine='bedrock-runtime'.")
-    resolved_engine = canonical_engine_name(requested_engine)
-    if framework is None or str(framework).strip() == "":
-        return resolved_engine, None
+        raise ValueError(
+            "langgraph_is_not_engine: LangGraph is an orchestrator, not an engine. Use framework='langgraph' with engine='bedrock-runtime'."
+        )
+    return canonical_engine_name(requested_engine), framework
 
-    fw = normalize_engine_text(framework)
-    if fw in {LANGGRAPH_ORCHESTRATOR, OPENAI_AGENTS_FRAMEWORK, STRANDS_FRAMEWORK}:
-        return resolved_engine, fw
-    raise ValueError("framework must be one of: langgraph, openai-agents, strands.")
 
 def _framework_label(framework: str | None) -> str:
-    return str(framework).strip() if framework not in (None, "", "n/a") else "agentic-systems"
+    return (
+        str(framework).strip()
+        if framework not in (None, "", "n/a")
+        else "agentic-systems"
+    )
 
 
-def _framework_metadata(framework: str | None, *, adapter: str | None = None) -> dict[str, Any]:
+def _framework_metadata(
+    framework: str | None, *, adapter: str | None = None
+) -> dict[str, Any]:
     requested = str(framework).strip() if framework not in (None, "", "n/a") else None
     return {
         "framework": requested or "agentic-systems",
@@ -128,7 +146,7 @@ class Agent:
         skills: Any = None,
         system: Any | None = None,
         engine: str | None = None,
-        framework: str | None = None,
+        framework: str | FrameworkConfig | None = None,
         model: str | None = None,
         contract: AgentContract | dict[str, Any] | None = None,
         policy: RunPolicy | dict[str, Any] | None = None,
@@ -145,21 +163,42 @@ class Agent:
         if not self.name:
             raise ValueError("Agent name must be non-empty.")
         self.instructions = str(instructions or "")
-        self.runtime_config = RuntimeConfig.coerce(runtime) if runtime is not None else getattr(system, "runtime_config", None)
+        self.runtime_config = (
+            RuntimeConfig.coerce(runtime)
+            if runtime is not None
+            else getattr(system, "runtime_config", None)
+        )
         if self.runtime_config is not None and engine is None:
             engine = self.runtime_config.provider
         self._engine_was_default = engine is None and framework is None
-        self.engine, self.framework = _resolve_framework_and_engine(engine, framework)
-        self.model = model if model is not None else (self.runtime_config.model_id if self.runtime_config else getattr(system, "model", None))
+        self.framework_config = FrameworkConfig.coerce(framework)
+        framework_name = None if framework is None else self.framework_config.name
+        self.engine, self.framework = _resolve_framework_and_engine(
+            engine, framework_name
+        )
+        self._native_agent: Any = None
+        self.model = (
+            model
+            if model is not None
+            else (
+                self.runtime_config.model_id
+                if self.runtime_config
+                else getattr(system, "model", None)
+            )
+        )
         self.contract = AgentContract.coerce(contract)
         self.policy = policy
         self.input_contract = input_contract if input_contract is not None else input
-        self.output_contract = output_contract if output_contract is not None else output
+        self.output_contract = (
+            output_contract if output_contract is not None else output
+        )
         self.defaults = defaults
         self.metadata = dict(metadata or {})
 
         explicit_tool_names, explicit_tools = _normalize_agent_tool_inputs(tools)
-        skill_tool_names, skill_names, skill_tools, skill_objects = _normalize_agent_skill_inputs(skills)
+        skill_tool_names, skill_names, skill_tools, skill_objects = (
+            _normalize_agent_skill_inputs(skills)
+        )
         self.tools = _dedupe_preserve_order([*skill_tool_names, *explicit_tool_names])
         self.skills = _dedupe_preserve_order(skill_names)
         self._direct_tools = _dedupe_tools([*skill_tools, *explicit_tools])
@@ -203,6 +242,7 @@ class Agent:
             "skills": list(self.skills),
             "engine": runtime_engine,
             "framework": _framework_label(self.framework),
+            "framework_config": self.framework_config.inspect(),
             "runtime_engine": runtime_engine,
             "execution_engine": self.engine,
             "model": self.model,
@@ -214,7 +254,9 @@ class Agent:
             "direct_tool_count": len(self._direct_tools),
             "direct_tools": [tool.info() for tool in self._direct_tools],
             "metadata": _json_like(self.metadata),
-            "runtime": self.runtime_config.to_dict() if self.runtime_config is not None else None,
+            "runtime": self.runtime_config.to_dict()
+            if self.runtime_config is not None
+            else None,
         }
 
     def describe(self) -> str:
@@ -243,9 +285,19 @@ class Agent:
             return self
 
         skills_payload: list[Any] = [*self._direct_skills]
-        known_from_skills = {tool.name for skill in self._direct_skills for tool in skill.available_tools()}
-        tools_payload: list[Any] = [tool for tool in self._direct_tools if tool.name not in known_from_skills]
-        tools_payload.extend(name for name in self.tools if name not in {tool.name for tool in self._direct_tools})
+        known_from_skills = {
+            tool.name
+            for skill in self._direct_skills
+            for tool in skill.available_tools()
+        }
+        tools_payload: list[Any] = [
+            tool for tool in self._direct_tools if tool.name not in known_from_skills
+        ]
+        tools_payload.extend(
+            name
+            for name in self.tools
+            if name not in {tool.name for tool in self._direct_tools}
+        )
 
         return system.agent(
             name=self.name,
@@ -253,7 +305,7 @@ class Agent:
             tools=tools_payload,
             skills=skills_payload or list(self.skills),
             engine=self.engine,
-            framework=self.framework,
+            framework=None if self.framework is None else self.framework_config,
             input=self.input_contract,
             output=self.output_contract,
             contract=self.contract,
@@ -263,7 +315,41 @@ class Agent:
             runtime=self.runtime_config,
         )
 
-    def run(self, input: Any = None, *, mode: str = "eval", config: RunPolicy | dict[str, Any] | None = None) -> RunResult:
+    @property
+    def native_agent(self) -> Any:
+        """Return the Framework SDK agent built by prepare() or first execution."""
+
+        return self._native_agent
+
+    def _provider_engine(self) -> Any:
+        if self.system is None:
+            if self.engine != PYTHON_RUNTIME_ENGINE:
+                raise RuntimeError(
+                    f"Direct Agent execution without AgenticSystem cannot use provider={self.engine!r}. "
+                    "Bind the agent to a system for runtime-backed execution."
+                )
+            from .providers.python_runtime import PythonRuntimeEngine
+
+            return PythonRuntimeEngine()
+        return self.system._engine(self.engine)
+
+    def prepare(self) -> "Agent":
+        """Build the native Framework agent without model or MCP execution."""
+
+        from .integrations.adapters import framework_adapter
+
+        engine = self._provider_engine()
+        adapter = framework_adapter(self.framework_config.name)
+        adapter.prepare(self, engine)
+        return self
+
+    def run(
+        self,
+        input: Any = None,
+        *,
+        mode: str = "eval",
+        config: RunPolicy | dict[str, Any] | None = None,
+    ) -> RunResult:
         """Run the agent from synchronous user code.
 
         This is the primary execution method for notebooks, scripts and tests.
@@ -274,7 +360,9 @@ class Agent:
         """
 
         clean_input = _coerce_input(input, self.input_contract)
-        policy = self._policy_for_runtime(resolve_policy(mode=mode, agent_policy=self.policy, run_config=config))
+        policy = self._policy_for_runtime(
+            resolve_policy(mode=mode, agent_policy=self.policy, run_config=config)
+        )
         scheduler = self._scheduler()
         if self.system is None:
             if self.engine != PYTHON_RUNTIME_ENGINE:
@@ -282,30 +370,59 @@ class Agent:
                     f"Direct Agent.run(...) without AgenticSystem cannot use engine={self.engine!r}. "
                     "Use `agent.bind(system)` or create the agent through `system.agent(...)` for runtime-backed execution."
                 )
-            from .providers.python_direct import PythonDirectEngine
+            from .providers.python_runtime import PythonRuntimeEngine
 
-            engine = PythonDirectEngine()
+            engine = PythonRuntimeEngine()
         else:
             engine = self.system._engine(self.engine)
+        from .integrations.adapters import framework_adapter
+
+        adapter = framework_adapter(self.framework_config.name)
 
         def _run_engine() -> RunResult:
-            return engine.run(self, clean_input, policy, mode=mode)
+            return adapter.run(self, engine, clean_input, policy, mode=mode)
 
         if scheduler is None:
             result = _run_engine()
             return self._finalize_result(result, clean_input)
 
         try:
-            result, scheduler_meta = execute_sync(_run_engine, scheduler, is_success=lambda item: bool(getattr(item, "ok", True)))
+            result, scheduler_meta = execute_sync(
+                _run_engine,
+                scheduler,
+                is_success=lambda item: bool(getattr(item, "ok", True)),
+            )
         except SchedulerTimeoutError as exc:
-            result = self._scheduler_failure_result(str(exc), clean_input, mode=mode, code="scheduler_timeout")
-            scheduler_meta = {"scheduler": scheduler.to_dict(), "attempts": int(scheduler.max_retries) + 1, "retries": int(scheduler.max_retries), "timed_out": True}
+            result = self._scheduler_failure_result(
+                str(exc), clean_input, mode=mode, code="scheduler_timeout"
+            )
+            scheduler_meta = {
+                "scheduler": scheduler.to_dict(),
+                "attempts": int(scheduler.max_retries) + 1,
+                "retries": int(scheduler.max_retries),
+                "timed_out": True,
+            }
         except Exception as exc:  # noqa: BLE001 - return scheduler/runtime failures as RunResult.
-            result = self._scheduler_failure_result(str(exc), clean_input, mode=mode, code=type(exc).__name__)
-            scheduler_meta = {"scheduler": scheduler.to_dict(), "attempts": int(scheduler.max_retries) + 1, "retries": int(scheduler.max_retries), "timed_out": False}
-        return self._finalize_result(self._attach_scheduler_meta(result, scheduler_meta), clean_input)
+            result = self._scheduler_failure_result(
+                str(exc), clean_input, mode=mode, code=type(exc).__name__
+            )
+            scheduler_meta = {
+                "scheduler": scheduler.to_dict(),
+                "attempts": int(scheduler.max_retries) + 1,
+                "retries": int(scheduler.max_retries),
+                "timed_out": False,
+            }
+        return self._finalize_result(
+            self._attach_scheduler_meta(result, scheduler_meta), clean_input
+        )
 
-    async def arun(self, input: Any = None, *, mode: str = "eval", config: RunPolicy | dict[str, Any] | None = None) -> RunResult:
+    async def arun(
+        self,
+        input: Any = None,
+        *,
+        mode: str = "eval",
+        config: RunPolicy | dict[str, Any] | None = None,
+    ) -> RunResult:
         """Run the agent from async application code.
 
         Async execution uses the engine's native async path when available. If a
@@ -314,7 +431,9 @@ class Agent:
         """
 
         clean_input = _coerce_input(input, self.input_contract)
-        policy = self._policy_for_runtime(resolve_policy(mode=mode, agent_policy=self.policy, run_config=config))
+        policy = self._policy_for_runtime(
+            resolve_policy(mode=mode, agent_policy=self.policy, run_config=config)
+        )
         scheduler = self._scheduler()
         if self.system is None:
             if self.engine != PYTHON_RUNTIME_ENGINE:
@@ -322,31 +441,51 @@ class Agent:
                     f"Direct Agent.arun(...) without AgenticSystem cannot use engine={self.engine!r}. "
                     "Use `agent.bind(system)` or create the agent through `system.agent(...)` for runtime-backed execution."
                 )
-            from .providers.python_direct import PythonDirectEngine
+            from .providers.python_runtime import PythonRuntimeEngine
 
-            engine = PythonDirectEngine()
+            engine = PythonRuntimeEngine()
         else:
             engine = self.system._engine(self.engine)
+        from .integrations.adapters import framework_adapter
+
+        adapter = framework_adapter(self.framework_config.name)
 
         async def _run_engine() -> RunResult:
-            if hasattr(engine, "arun"):
-                return await engine.arun(self, clean_input, policy, mode=mode)
-            return await asyncio.to_thread(engine.run, self, clean_input, policy, mode=mode)
+            return await adapter.arun(self, engine, clean_input, policy, mode=mode)
 
         if scheduler is None:
             result = await _run_engine()
             return self._finalize_result(result, clean_input)
 
         try:
-            result, scheduler_meta = await execute_async(_run_engine, scheduler, is_success=lambda item: bool(getattr(item, "ok", True)))
+            result, scheduler_meta = await execute_async(
+                _run_engine,
+                scheduler,
+                is_success=lambda item: bool(getattr(item, "ok", True)),
+            )
         except SchedulerTimeoutError as exc:
-            result = self._scheduler_failure_result(str(exc), clean_input, mode=mode, code="scheduler_timeout")
-            scheduler_meta = {"scheduler": scheduler.to_dict(), "attempts": int(scheduler.max_retries) + 1, "retries": int(scheduler.max_retries), "timed_out": True}
+            result = self._scheduler_failure_result(
+                str(exc), clean_input, mode=mode, code="scheduler_timeout"
+            )
+            scheduler_meta = {
+                "scheduler": scheduler.to_dict(),
+                "attempts": int(scheduler.max_retries) + 1,
+                "retries": int(scheduler.max_retries),
+                "timed_out": True,
+            }
         except Exception as exc:  # noqa: BLE001 - return scheduler/runtime failures as RunResult.
-            result = self._scheduler_failure_result(str(exc), clean_input, mode=mode, code=type(exc).__name__)
-            scheduler_meta = {"scheduler": scheduler.to_dict(), "attempts": int(scheduler.max_retries) + 1, "retries": int(scheduler.max_retries), "timed_out": False}
-        return self._finalize_result(self._attach_scheduler_meta(result, scheduler_meta), clean_input)
-
+            result = self._scheduler_failure_result(
+                str(exc), clean_input, mode=mode, code=type(exc).__name__
+            )
+            scheduler_meta = {
+                "scheduler": scheduler.to_dict(),
+                "attempts": int(scheduler.max_retries) + 1,
+                "retries": int(scheduler.max_retries),
+                "timed_out": False,
+            }
+        return self._finalize_result(
+            self._attach_scheduler_meta(result, scheduler_meta), clean_input
+        )
 
     def _scheduler(self) -> SchedulerConfig | None:
         if self.runtime_config is None:
@@ -356,7 +495,9 @@ class Agent:
     def _policy_for_runtime(self, policy: RunPolicy) -> RunPolicy:
         return merge_policy_with_scheduler(policy, self._scheduler())
 
-    def _attach_scheduler_meta(self, result: RunResult, scheduler_meta: dict[str, Any]) -> RunResult:
+    def _attach_scheduler_meta(
+        self, result: RunResult, scheduler_meta: dict[str, Any]
+    ) -> RunResult:
         if self.runtime_config is not None:
             result.meta.setdefault("runtime", self.runtime_config.to_dict())
             result.meta.setdefault("scheduler", self.runtime_config.scheduler.to_dict())
@@ -372,7 +513,9 @@ class Agent:
         )
         return result
 
-    def _scheduler_failure_result(self, message: str, clean_input: Any, *, mode: str, code: str) -> RunResult:
+    def _scheduler_failure_result(
+        self, message: str, clean_input: Any, *, mode: str, code: str
+    ) -> RunResult:
         runtime_engine = self._runtime_engine_name()
         return RunResult(
             text=message,
@@ -384,7 +527,9 @@ class Agent:
             meta={
                 "input": _json_like(clean_input),
                 "source_result_type": "SchedulerFailure",
-                **_framework_metadata(self.framework),
+                **_framework_metadata(
+                    self.framework, adapter=self.framework_config.name
+                ),
                 "runtime_engine": runtime_engine,
                 "execution_engine": self.engine,
             },
@@ -393,8 +538,12 @@ class Agent:
     def _runtime_engine_name(self) -> str:
         return self.engine
 
-    def _finalize_result(self, result: RunResult, clean_input: Any | None = None) -> RunResult:
-        result.meta.update(_framework_metadata(self.framework, adapter=result.meta.get("framework_adapter")))
+    def _finalize_result(
+        self, result: RunResult, clean_input: Any | None = None
+    ) -> RunResult:
+        adapter = result.meta.get("framework_adapter") or self.framework_config.name
+        result.meta.update(_framework_metadata(self.framework, adapter=adapter))
+        result.meta.setdefault("framework_config", self.framework_config.inspect())
         if clean_input is not None:
             result.meta.setdefault("input", _json_like(clean_input))
         runtime_engine = self._runtime_engine_name()
@@ -406,7 +555,13 @@ class Agent:
         validation = result.validate(self.contract)
         return result.apply_validation(validation)
 
-    def run_sync(self, input: Any = None, *, mode: str = "default", config: RunPolicy | dict[str, Any] | None = None) -> RunResult:
+    def run_sync(
+        self,
+        input: Any = None,
+        *,
+        mode: str = "default",
+        config: RunPolicy | dict[str, Any] | None = None,
+    ) -> RunResult:
         """Alias for ``run`` for call sites that want explicit sync naming."""
 
         return self.run(input, mode=mode, config=config)
@@ -456,7 +611,12 @@ class Agent:
             """Run this agent as a dict-returning tool."""
 
             result = self.run(prompt)
-            return {"text": result.text, "data": result.data, "ok": result.ok, "trace": result.trace("compact")}
+            return {
+                "text": result.text,
+                "data": result.data,
+                "ok": result.ok,
+                "trace": result.trace("compact"),
+            }
 
         _agent_tool.__name__ = tool_name.replace(".", "_")
         _agent_tool.__doc__ = description or f"Run agent {self.name}."
@@ -487,7 +647,9 @@ class Agent:
                     issue.code,
                     issue.message,
                     severity=issue.severity,
-                    path=f"agent.tools[{index}].{issue.path}" if issue.path else f"agent.tools[{index}]",
+                    path=f"agent.tools[{index}].{issue.path}"
+                    if issue.path
+                    else f"agent.tools[{index}]",
                     meta={"tool_name": tool.name, **issue.meta},
                 )
 
@@ -496,7 +658,9 @@ class Agent:
             system_tools = set(self.system.tool_names)
             available |= system_tools
             for name in self.tools:
-                if name not in system_tools and name not in {tool.name for tool in self._direct_tools}:
+                if name not in system_tools and name not in {
+                    tool.name for tool in self._direct_tools
+                }:
                     result.add(
                         "unknown_agent_tool",
                         f"Agent '{self.name}' references unknown tool '{name}'.",
@@ -533,11 +697,15 @@ class Agent:
 
     def eval(self, cases: list[dict[str, Any]], **kwargs: Any):
         if self.system is None:
-            raise RuntimeError("Direct Agent.eval(...) needs an attached AgenticSystem. Use `agent.bind(system)` first.")
+            raise RuntimeError(
+                "Direct Agent.eval(...) needs an attached AgenticSystem. Use `agent.bind(system)` first."
+            )
         return self.system.eval(self, cases, **kwargs)
 
 
-def _normalize_agent_tool_inputs(items: Any) -> tuple[tuple[str, ...], tuple[Tool, ...]]:
+def _normalize_agent_tool_inputs(
+    items: Any,
+) -> tuple[tuple[str, ...], tuple[Tool, ...]]:
     """Normalize direct agent tool inputs into names and concrete Tool objects."""
 
     if items is None:
@@ -565,7 +733,9 @@ def _normalize_agent_tool_inputs(items: Any) -> tuple[tuple[str, ...], tuple[Too
         raise TypeError(f"Unsupported agent tools value: {items!r}") from exc
 
 
-def _normalize_agent_skill_inputs(items: Any) -> tuple[tuple[str, ...], tuple[str, ...], tuple[Tool, ...], tuple[Skill, ...]]:
+def _normalize_agent_skill_inputs(
+    items: Any,
+) -> tuple[tuple[str, ...], tuple[str, ...], tuple[Tool, ...], tuple[Skill, ...]]:
     """Normalize runtime/loaded skills for direct Agent construction."""
 
     if items is None:
@@ -575,7 +745,12 @@ def _normalize_agent_skill_inputs(items: Any) -> tuple[tuple[str, ...], tuple[st
     if isinstance(items, LoadedSkill):
         runtime_skill = getattr(items, "runtime_skill", None)
         if isinstance(runtime_skill, Skill):
-            return runtime_skill.tool_names, (runtime_skill.name,), tuple(runtime_skill.available_tools()), (runtime_skill,)
+            return (
+                runtime_skill.tool_names,
+                (runtime_skill.name,),
+                tuple(runtime_skill.available_tools()),
+                (runtime_skill,),
+            )
         return tuple(items.manifest.tools), (items.manifest.name,), (), ()
     if isinstance(items, str):
         return (), (items,), (), ()
@@ -585,7 +760,9 @@ def _normalize_agent_skill_inputs(items: Any) -> tuple[tuple[str, ...], tuple[st
         tools: list[Tool] = []
         skills: list[Skill] = []
         for item in items:
-            item_tool_names, item_skill_names, item_tools, item_skills = _normalize_agent_skill_inputs(item)
+            item_tool_names, item_skill_names, item_tools, item_skills = (
+                _normalize_agent_skill_inputs(item)
+            )
             tool_names.extend(item_tool_names)
             skill_names.extend(item_skill_names)
             tools.extend(item_tools)
@@ -645,7 +822,9 @@ def _contract_name(value: Any) -> str | None:
     return getattr(value, "__name__", type(value).__name__)
 
 
-def _read_node_input(state: dict[str, Any], input: str | Callable[[dict[str, Any]], Any]) -> Any:
+def _read_node_input(
+    state: dict[str, Any], input: str | Callable[[dict[str, Any]], Any]
+) -> Any:
     if callable(input):
         return input(state)
     if input not in state:

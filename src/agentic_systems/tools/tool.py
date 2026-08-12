@@ -18,7 +18,8 @@ from pydantic import BaseModel
 from ..contracts import ValidationResult
 from ..engines.names import PYTHON_RUNTIME_ENGINE
 from ..errors import ToolContractError
-from .compat import ToolEvent, assert_dict_tool_output
+from .events import ToolEvent
+from .runtime import assert_dict_tool_output
 
 
 class Tool:

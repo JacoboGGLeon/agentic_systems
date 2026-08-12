@@ -39,7 +39,7 @@ def _documented_api_index(api_doc: str) -> tuple[str, ...]:
 
 def _narrative_sources() -> list[tuple[Path, str]]:
     sources = [(path, path.read_text(encoding="utf-8")) for path in _markdown_paths()]
-    for path in sorted((ROOT / "tutorials").glob("*.ipynb")):
+    for path in sorted((ROOT / "tutorials").rglob("*.ipynb")):
         notebook = json.loads(path.read_text(encoding="utf-8"))
         for cell in notebook["cells"]:
             sources.append((path, "".join(cell.get("source", []))))
@@ -52,7 +52,7 @@ def _python_examples() -> list[tuple[Path, str, str]]:
         text = path.read_text(encoding="utf-8")
         for index, source in enumerate(PYTHON_FENCE.findall(text), start=1):
             examples.append((path, f"fence-{index}", source))
-    for path in sorted((ROOT / "tutorials").glob("*.ipynb")):
+    for path in sorted((ROOT / "tutorials").rglob("*.ipynb")):
         notebook = json.loads(path.read_text(encoding="utf-8"))
         for index, cell in enumerate(notebook["cells"]):
             if cell.get("cell_type") == "code":

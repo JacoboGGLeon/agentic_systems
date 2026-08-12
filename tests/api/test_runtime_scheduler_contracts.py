@@ -6,7 +6,7 @@ import time
 import pytest
 
 import agentic_systems as lab
-from agentic_systems.engines.names import BEDROCK_RUNTIME_ENGINE, OPENAI_RUNTIME_ENGINE, PYTHON_DIRECT_ENGINE
+from agentic_systems.engines.names import BEDROCK_RUNTIME_ENGINE, OPENAI_RUNTIME_ENGINE, PYTHON_RUNTIME_ENGINE
 from agentic_systems.core import runtime as runtime_module
 from agentic_systems.results import RunResult
 system_module = importlib.import_module("agentic_systems.system")
@@ -18,7 +18,7 @@ def test_public_runtime_scheduler_factories_and_aliases() -> None:
 
     assert isinstance(sched, lab.SchedulerConfig)
     assert isinstance(runtime, lab.RuntimeConfig)
-    assert runtime.provider == PYTHON_DIRECT_ENGINE
+    assert runtime.provider == PYTHON_RUNTIME_ENGINE
     assert runtime.model_id == "m1"
     assert runtime.region_name == "r1"
     assert runtime.scheduler.max_retries == 2
@@ -44,7 +44,7 @@ def test_scheduler_rejects_invalid_limits(kwargs: dict[str, object]) -> None:
         lab.scheduler(**kwargs)
 
 
-def test_python_direct_runtime_retries_failed_agent_run() -> None:
+def test_python_runtime_runtime_retries_failed_agent_run() -> None:
     state = {"calls": 0}
 
     @lab.tool
@@ -69,7 +69,7 @@ def test_python_direct_runtime_retries_failed_agent_run() -> None:
     assert result.usage["scheduler"]["retries"] == 1
 
 
-def test_python_direct_runtime_times_out_slow_tool() -> None:
+def test_python_runtime_runtime_times_out_slow_tool() -> None:
     @lab.tool
     def slow(value: int) -> dict:
         time.sleep(0.2)
@@ -86,7 +86,7 @@ def test_python_direct_runtime_times_out_slow_tool() -> None:
     assert result.meta["scheduler"]["timeout_s"] == 0.01
 
 
-def test_scheduler_max_tool_calls_limits_python_direct_plan() -> None:
+def test_scheduler_max_tool_calls_limits_python_runtime_plan() -> None:
     @lab.tool
     def add_one(value: int) -> dict:
         return {"value": value + 1}
@@ -108,7 +108,7 @@ def test_scheduler_max_tool_calls_limits_python_direct_plan() -> None:
     assert result.meta["scheduler"]["max_tool_calls"] == 1
 
 
-def test_unbound_python_direct_agent_has_no_scheduler_meta() -> None:
+def test_unbound_python_runtime_agent_has_no_scheduler_meta() -> None:
     @lab.tool
     def add(a: int, b: int) -> dict:
         return {"result": a + b}
@@ -255,6 +255,7 @@ def test_runtime_auto_does_not_treat_region_as_bedrock_credentials(monkeypatch) 
 def test_runtime_auto_describe_reports_unresolved_without_backend_signal(monkeypatch) -> None:
     monkeypatch.setenv("VLLM_BASE_URL", "")
     monkeypatch.setenv("OPENAI_API_KEY", "")
+    monkeypatch.setenv("AWS_BEARER_TOKEN_BEDROCK", "")
     monkeypatch.setenv("OPENAI_BASE_URL", "")
     monkeypatch.setenv("AWS_ACCESS_KEY_ID", "")
     monkeypatch.setenv("AWS_SECRET_ACCESS_KEY", "")
@@ -273,8 +274,42 @@ def test_runtime_auto_describe_reports_unresolved_without_backend_signal(monkeyp
     assert "AWS" in summary["reason"]
 
 
+def test_runtime_auto_accepts_bedrock_api_key_with_region(monkeypatch) -> None:
+    monkeypatch.setenv("AWS_BEARER_TOKEN_BEDROCK", "secret-bedrock-key")
+    monkeypatch.setenv("AWS_REGION", "us-east-1")
+    monkeypatch.setenv("OPENAI_API_KEY", "")
+    monkeypatch.setenv("VLLM_BASE_URL", "")
+    monkeypatch.delenv("AWS_ACCESS_KEY_ID", raising=False)
+    monkeypatch.delenv("AWS_SECRET_ACCESS_KEY", raising=False)
+    monkeypatch.delenv("AWS_PROFILE", raising=False)
+    monkeypatch.setattr(runtime_module, "_aws_shared_credentials_present", lambda: False)
+    monkeypatch.setattr(runtime_module, "_module_available", lambda name: name == "boto3")
+
+    summary = lab.runtime(provider="auto").describe()
+
+    assert summary["selected_provider"] == BEDROCK_RUNTIME_ENGINE
+    assert summary["configuration"]["bedrock"] == {
+        "aws_region": "us-east-1",
+        "aws_profile_configured": False,
+        "bedrock_api_key_configured": True,
+        "credentials_configured": True,
+    }
+    assert "secret-bedrock-key" not in str(summary)
+
+
 def test_runtime_auto_errors_without_backend_signal(monkeypatch) -> None:
-    for key in ("VLLM_BASE_URL", "OPENAI_API_KEY", "OPENAI_BASE_URL", "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_SESSION_TOKEN", "AWS_PROFILE", "AWS_REGION", "AWS_DEFAULT_REGION"):
+    for key in (
+        "VLLM_BASE_URL",
+        "OPENAI_API_KEY",
+        "OPENAI_BASE_URL",
+        "AWS_BEARER_TOKEN_BEDROCK",
+        "AWS_ACCESS_KEY_ID",
+        "AWS_SECRET_ACCESS_KEY",
+        "AWS_SESSION_TOKEN",
+        "AWS_PROFILE",
+        "AWS_REGION",
+        "AWS_DEFAULT_REGION",
+    ):
         monkeypatch.delenv(key, raising=False)
     monkeypatch.setattr(runtime_module, "_module_available", lambda name: False)
 

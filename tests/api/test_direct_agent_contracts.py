@@ -1,4 +1,4 @@
-"""Checkpoint 7: direct Agent API without breaking AgenticSystem.agent."""
+"""Direct Agent API contracts."""
 
 from __future__ import annotations
 

@@ -43,13 +43,11 @@ def test_system_auto_provider_and_runtime_copy(monkeypatch):
             region_name,
             max_tokens_default,
             temperature_default,
-            disable_openai_runtime_tracing,
         ):
             self.model_id = model_id
             self.region_name = region_name or "us-test-1"
             self.max_tokens_default = max_tokens_default
             self.temperature_default = temperature_default
-            self.disable_openai_runtime_tracing = disable_openai_runtime_tracing
             self._tools = {}
 
     fake_bedrock.BedrockRuntime = FakeBedrockRuntime

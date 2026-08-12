@@ -29,6 +29,21 @@ current sources of truth; superseded work remains available through Git history.
 python -m ruff check src tests
 python -m pytest -q -W error::RuntimeWarning
 python -m pytest -q --cov=agentic_systems --cov-report=term-missing
+python -m pytest -q --ignore=tests/release/test_tutorial_execution.py \
+  --cov=agentic_systems \
+  --cov-config=.coveragerc-core-branches \
+  --cov-report=term-missing
+python -m pytest -q tests/providers \
+  tests/integration_conformance/test_provider_conformance.py \
+  tests/integration_conformance/test_system_runtime.py \
+  tests/frameworks/test_provider_framework_matrix.py \
+  --cov=agentic_systems.providers \
+  --cov-config=.coveragerc-providers-branches \
+  --cov-report=term-missing
+python -m pytest -q --ignore=tests/release/test_tutorial_execution.py \
+  --cov=agentic_systems.integrations \
+  --cov-config=.coveragerc-frameworks-branches \
+  --cov-report=term-missing
 python -m pytest tests/providers -q --cov-config=.coveragerc-bedrock --cov=agentic_systems.providers.bedrock_runtime --cov=agentic_systems.providers.bedrock --cov-report=term-missing
 python -m compileall -q src tests tutorials
 agentic-systems doctor --json
@@ -36,8 +51,8 @@ agentic-systems runtime --provider auto --json
 agentic-systems api --tier public --json
 ```
 
-The full pytest suite executes the 13 deterministic notebooks and statically
-validates the 5 provider notebooks. No separate undocumented notebook gate
+The full pytest suite executes the 15 deterministic notebooks and statically
+validates the 3 Provider notebooks. No separate undocumented notebook gate
 should be substituted for this evidence.
 
 ## Bundle Hygiene
@@ -68,10 +83,10 @@ Validate the built wheel from an isolated environment, not the editable source:
 ```bash
 python -m venv .tmp/wheel-smoke
 .tmp/wheel-smoke/bin/python -m pip install dist/agentic_systems-*.whl
-.tmp/wheel-smoke/bin/python -c "import agentic_systems as a; assert len(a.__all__) == 111"
+.tmp/wheel-smoke/bin/python -c "import agentic_systems as a; assert len(a.__all__) == 112"
 .tmp/wheel-smoke/bin/agentic-systems version
 ```
 
 The equivalent Windows executables live under `.tmp/wheel-smoke/Scripts/`.
-A release smoke must confirm version, CLI, 111 public symbols and lazy optional
+A release smoke must confirm version, CLI, 112 public symbols and lazy optional
 imports. Live Provider readiness is a separate integration boundary.

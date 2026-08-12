@@ -52,6 +52,35 @@ def test_aws_environment_snapshot_can_include_values(monkeypatch):
     assert snapshot["AWS_REGION"] == "us-east-1"
 
 
+def test_aws_helpers_recognize_bedrock_api_key_without_exposing_it(monkeypatch):
+    monkeypatch.setenv("AWS_BEARER_TOKEN_BEDROCK", "secret-bedrock-key")
+    snapshot = aws_environment_snapshot()
+    assert snapshot["AWS_BEARER_TOKEN_BEDROCK"] == "SET"
+    assert "secret-bedrock-key" not in str(snapshot)
+
+    import boto3
+
+    class SessionWithoutSigV4Credentials:
+        region_name = "us-east-1"
+
+        @staticmethod
+        def get_credentials():
+            return None
+
+    monkeypatch.setattr(
+        boto3,
+        "Session",
+        lambda region_name=None: SessionWithoutSigV4Credentials(),
+    )
+    session = boto3_session_snapshot("us-east-1")
+    assert session == {
+        "ok": True,
+        "session_region": "us-east-1",
+        "credential_method": "bedrock-api-key",
+        "has_credentials": True,
+    }
+
+
 def test_boto3_session_snapshot_handles_missing_boto3(monkeypatch):
     real_import = builtins.__import__
 

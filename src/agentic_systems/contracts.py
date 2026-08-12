@@ -62,15 +62,11 @@ class ValidationResult(BaseModel):
 class AgentContract(BaseModel):
     """Declarative behavioral contract for an Agent run.
 
-    Improvements over the draft plan:
-    - `failure_policy` makes failure semantics explicit with the explicit
-      `require_no_unresolved_tool_failures` switch.
-    - `expected_output` is the clearer name for result subset checks while
-      accepting the draft `output_contains` alias.
-    - `expected_tool_outputs` captures expected evidence per tool, not just final text.
+    Contract fields express failure semantics, expected output subsets, and
+    expected Tool evidence without aliases.
     """
 
-    model_config = ConfigDict(extra="forbid", populate_by_name=True)
+    model_config = ConfigDict(extra="forbid")
 
     must_call: list[str] = Field(default_factory=list)
     must_not_call: list[str] = Field(default_factory=list)
@@ -78,7 +74,7 @@ class AgentContract(BaseModel):
     completion: CompletionMode = "default"
     failure_policy: FailurePolicy = "no_unresolved"
     require_no_unresolved_tool_failures: bool = True
-    expected_output: dict[str, Any] | None = Field(default=None, alias="output_contains")
+    expected_output: dict[str, Any] | None = None
     expected_tool_outputs: dict[str, dict[str, Any]] = Field(default_factory=dict)
 
     @field_validator("completion", mode="before")

@@ -16,6 +16,7 @@ RECOMMENDED_API = (
     "environment",
     "eval",
     "runtime",
+    "framework",
     "scheduler",
     "output_schema",
     "final_answer",
@@ -55,6 +56,7 @@ CORE_API = (
     "environment",
     "eval",
     "runtime",
+    "framework",
     "scheduler",
     "load_skill",
     "default_model_id",
@@ -181,9 +183,7 @@ NOTEBOOK_API = (
     "maybe_show_trace",
 )
 
-TRACE_API = (
-    "TRACE_SCHEMA_VERSION",
-)
+TRACE_API = ("TRACE_SCHEMA_VERSION",)
 
 LINEAGE_API = (
     "LINEAGE_SCHEMA_VERSION",
@@ -198,24 +198,32 @@ NAMESPACE_API = (
     "integrations",
 )
 
-ADVANCED_API = tuple(dict.fromkeys((
-    *CORE_API,
-    *BEDROCK_PRIMITIVE_API,
-    *CHAIN_API,
-    *ENGINE_API,
-    *INTEGRATION_API,
-    *EVAL_API,
-    *ENVIRONMENT_API,
-    *NOTEBOOK_API,
-    *TRACE_API,
-    *LINEAGE_API,
-    *NAMESPACE_API,
-)))
+ADVANCED_API = tuple(
+    dict.fromkeys(
+        (
+            *CORE_API,
+            *BEDROCK_PRIMITIVE_API,
+            *CHAIN_API,
+            *ENGINE_API,
+            *INTEGRATION_API,
+            *EVAL_API,
+            *ENVIRONMENT_API,
+            *NOTEBOOK_API,
+            *TRACE_API,
+            *LINEAGE_API,
+            *NAMESPACE_API,
+        )
+    )
+)
 
-PUBLIC_API = tuple(dict.fromkeys((
-    *ADVANCED_API,
-    "__version__",
-)))
+PUBLIC_API = tuple(
+    dict.fromkeys(
+        (
+            *ADVANCED_API,
+            "__version__",
+        )
+    )
+)
 
 __all__ = [
     "RECOMMENDED_API",

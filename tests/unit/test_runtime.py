@@ -8,7 +8,7 @@ from agentic_systems.core.runtime import RuntimeConfig, _find_dotenv, _load_dote
 from agentic_systems.engines.names import (
     BEDROCK_RUNTIME_ENGINE,
     OPENAI_RUNTIME_ENGINE,
-    PYTHON_DIRECT_ENGINE,
+    PYTHON_RUNTIME_ENGINE,
 )
 
 system_module = importlib.import_module("agentic_systems.system")
@@ -22,9 +22,9 @@ def test_runtime_config_coerce_dotenv_and_describe(monkeypatch, tmp_path):
         scheduler={"timeout_s": 7},
     )
     coerced = RuntimeConfig.coerce(
-        base, model="m2", region="r2", engine="python-runtime"
+        base, model="m2", region="r2", provider="python-runtime"
     )
-    assert coerced.provider == PYTHON_DIRECT_ENGINE
+    assert coerced.provider == PYTHON_RUNTIME_ENGINE
     assert coerced.model_id == "m2"
     assert coerced.region_name == "r2"
     assert coerced.scheduler.timeout_s == 7
@@ -71,5 +71,5 @@ def test_runtime_config_coerce_dotenv_and_describe(monkeypatch, tmp_path):
             "bedrock": {"configured": True},
         },
     ).describe()
-    assert explicit["selected_provider"] == PYTHON_DIRECT_ENGINE
+    assert explicit["selected_provider"] == PYTHON_RUNTIME_ENGINE
     assert explicit["configuration"]["bedrock"]["configured"] is True

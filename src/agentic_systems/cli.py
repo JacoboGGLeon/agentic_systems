@@ -64,6 +64,7 @@ def _doctor_payload() -> dict[str, Any]:
             "has_openai_api_key": bool(os.getenv("OPENAI_API_KEY")),
             "has_aws_region": bool(os.getenv("AWS_REGION") or os.getenv("AWS_DEFAULT_REGION")),
             "has_aws_profile": bool(os.getenv("AWS_PROFILE")),
+            "has_bedrock_api_key": bool(os.getenv("AWS_BEARER_TOKEN_BEDROCK")),
         },
         "optional_dependencies": {
             "boto3": _optional_dependency("boto3"),
@@ -121,6 +122,7 @@ def _cmd_doctor(args: argparse.Namespace) -> int:
     env_table.add_row("OPENAI_API_KEY", _status(env["has_openai_api_key"]))
     env_table.add_row("AWS region", _status(env["has_aws_region"]))
     env_table.add_row("AWS profile", _status(env["has_aws_profile"]))
+    env_table.add_row("Bedrock API key", _status(env["has_bedrock_api_key"]))
 
     deps_table = Table(title="Optional Dependencies", box=None, show_header=False, padding=(0, 1))
     deps_table.add_column("Package", style="bold")

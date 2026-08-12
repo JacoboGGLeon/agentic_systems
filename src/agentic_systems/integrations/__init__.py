@@ -19,12 +19,14 @@ from .boundary import (
     framework_profile,
     framework_profiles,
 )
+from .config import FrameworkConfig
 
 __all__ = [
     "langgraph",
     "FRAMEWORK_BOUNDARY_SCHEMA_VERSION",
     "GRAPH_BOUNDARY_SCHEMA_VERSION",
     "PRESERVED_RUN_RESULT_FIELDS",
+    "FrameworkConfig",
     "FrameworkProfile",
     "FrameworkProjectionReport",
     "GraphBoundary",

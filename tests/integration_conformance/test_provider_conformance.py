@@ -1,4 +1,4 @@
-﻿"""Shared Provider substitution contract and capability-profile tests."""
+"""Shared Provider substitution contract and capability-profile tests."""
 
 from __future__ import annotations
 
@@ -22,7 +22,7 @@ from agentic_systems.providers import (
     OpenAIRuntimeProvider,
     ProviderConformanceReport,
     ProviderProfile,
-    PythonDirectProvider,
+    PythonRuntimeProvider,
     VLLMRuntimeProvider,
     evaluate_provider_conformance,
     provider_profile,
@@ -88,7 +88,7 @@ def _finalize(result):
 
 def _python_results():
     runtime = _runtime()
-    provider = PythonDirectProvider()
+    provider = PythonRuntimeProvider()
     success = provider.run(
         _agent(runtime),
         {"tool": "double", "input": {"value": 21}},
@@ -193,7 +193,7 @@ def test_profiles_declare_required_optional_and_adapter_identity() -> None:
         VLLM_RUNTIME_ENGINE,
         BEDROCK_RUNTIME_ENGINE,
     ]
-    assert PythonDirectProvider.profile() == provider_profile(PYTHON_RUNTIME_ENGINE)
+    assert PythonRuntimeProvider.profile() == provider_profile(PYTHON_RUNTIME_ENGINE)
     assert OpenAIRuntimeProvider.profile() == provider_profile(OPENAI_RUNTIME_ENGINE)
     assert VLLMRuntimeProvider.profile() == provider_profile(VLLM_RUNTIME_ENGINE)
     assert BedrockEngine.profile() == provider_profile(BEDROCK_RUNTIME_ENGINE)

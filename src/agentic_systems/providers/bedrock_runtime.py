@@ -23,21 +23,14 @@ from .bedrock.models import (
     RuntimeToolSpec,
     ToolEnvelope,
 )
-from .bedrock.openai_bridge import _OpenAIBridgeMixin
-from .bedrock.openai_compat import _OpenAICompatMixin
 from .bedrock.tools import _ToolsMixin
-from .bedrock.validation import _ValidationMixin
 
-__version__ = "1.0.3"
 
 
 class BedrockRuntime(
     _IdentityMixin,
     _ToolsMixin,
     _ConverseMixin,
-    _OpenAICompatMixin,
-    _OpenAIBridgeMixin,
-    _ValidationMixin,
     _LangGraphMixin,
 ):
     """Bedrock-first runtime with a stable public API."""
@@ -50,12 +43,10 @@ class BedrockRuntime(
         max_tokens_default: int = 800,
         temperature_default: float = 0.0,
         logger_name: str = "agentic_systems",
-        disable_openai_runtime_tracing: bool = True,
     ) -> None:
         self.model_id = model_id
         self.max_tokens_default = max_tokens_default
         self.temperature_default = temperature_default
-        self.disable_openai_runtime_tracing = disable_openai_runtime_tracing
 
         self.logger = logging.getLogger(logger_name)
         if not self.logger.handlers:

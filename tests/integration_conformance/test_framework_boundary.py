@@ -1,4 +1,4 @@
-"""Checkpoint 1.1.5 Framework and Graph boundary conformance."""
+"""Framework and Graph boundary conformance."""
 
 from __future__ import annotations
 
@@ -24,7 +24,7 @@ from agentic_systems.integrations import (
     framework_profiles,
 )
 from agentic_systems.integrations.langgraph import GraphApp, build_langgraph_agent_node
-from agentic_systems.tools.compat import ToolEvent
+from agentic_systems.tools import ToolEvent
 
 
 def _result() -> RunResult:
@@ -59,28 +59,22 @@ class ResultAgent:
         return self.result
 
 
-def test_framework_profiles_distinguish_real_and_declarative_integrations() -> None:
+def test_framework_profiles_are_canonical_native_adapters() -> None:
     profiles = framework_profiles()
 
     assert [profile.framework for profile in profiles] == [
+        "native",
         LANGGRAPH_ORCHESTRATOR,
         OPENAI_AGENTS_FRAMEWORK,
         STRANDS_FRAMEWORK,
     ]
-    assert [profile.integration_kind for profile in profiles] == [
-        "native-adapter",
-        "style-only",
-        "declarative-only",
-    ]
-    assert framework_profile(LANGGRAPH_ORCHESTRATOR).check(require_adapter=True).ok is True
-
-    for name in (OPENAI_AGENTS_FRAMEWORK, STRANDS_FRAMEWORK):
-        profile = framework_profile(name)
+    assert {profile.integration_kind for profile in profiles} == {"native-adapter"}
+    for profile in profiles:
         validation = profile.check(require_adapter=True)
-        assert profile.has_adapter is False
-        assert validation.ok is False
-        assert validation.issues[0].code == "framework_adapter_unavailable"
-        assert json.loads(json.dumps(profile.to_dict()))["framework"] == name
+        assert profile.has_adapter is True
+        assert validation.ok is True
+        assert validation.issues == []
+        assert json.loads(json.dumps(profile.to_dict()))["framework"] == profile.framework
 
     with pytest.raises(ValueError, match="Unknown framework"):
         framework_profile("unknown-framework")
@@ -115,26 +109,24 @@ def test_langgraph_node_preserves_run_result_in_explicit_state_projection() -> N
 
 
 def test_framework_projection_failures_are_structured() -> None:
-    unavailable = evaluate_framework_projection(
+    invalid = evaluate_framework_projection(
         STRANDS_FRAMEWORK,
         source_result=object(),
         projected_state=object(),
         result_key="result",
     )
-    assert unavailable.ok is False
-    assert unavailable.checks == {
-        "adapter_available": False,
+    assert invalid.ok is False
+    assert invalid.checks == {
+        "adapter_available": True,
         "source_run_result": False,
         "state_mapping": False,
     }
-    assert {issue["code"] for issue in unavailable.issues} == {
-        "adapter_available",
-        "framework_adapter_unavailable",
+    assert {issue["code"] for issue in invalid.issues} == {
         "source_run_result",
         "state_mapping",
     }
     with pytest.raises(ValueError, match="Framework projection failed"):
-        unavailable.raise_if_failed()
+        invalid.raise_if_failed()
 
     missing = evaluate_framework_projection(
         LANGGRAPH_ORCHESTRATOR,
@@ -209,7 +201,7 @@ def double(value: int) -> dict:
 
 def test_agent_metadata_separates_requested_framework_from_executed_adapter() -> None:
     agent = Agent(
-        name="styled-agent",
+        name="strands-agent",
         tools=[double],
         engine=PYTHON_RUNTIME_ENGINE,
         framework=STRANDS_FRAMEWORK,
@@ -220,6 +212,6 @@ def test_agent_metadata_separates_requested_framework_from_executed_adapter() ->
 
     assert result.meta["framework"] == STRANDS_FRAMEWORK
     assert result.meta["framework_requested"] == STRANDS_FRAMEWORK
-    assert result.meta["framework_adapter"] is None
+    assert result.meta["framework_adapter"] == STRANDS_FRAMEWORK
     assert node_state["result"]["data"]["result"] == 42
-    assert node_state["result"]["meta"]["framework_adapter"] is None
+    assert node_state["result"]["meta"]["framework_adapter"] == STRANDS_FRAMEWORK

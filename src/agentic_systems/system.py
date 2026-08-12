@@ -8,7 +8,11 @@ import os
 from functools import wraps
 from typing import Any, Callable, get_origin, get_type_hints
 
-from .composition import conflict_message, normalize_conflict_policy, same_tool_definition
+from .composition import (
+    conflict_message,
+    normalize_conflict_policy,
+    same_tool_definition,
+)
 from .core.runtime import RuntimeConfig, resolve_auto_provider
 from .providers.base import RuntimeToolSpec, ToolRegistryRuntime
 from .engines.names import (
@@ -26,15 +30,16 @@ from .contracts import AgentContract, RunPolicy
 from .engines.bedrock import BedrockEngine
 from .providers.openai_runtime import OpenAIRuntimeProvider
 from .providers.vllm_runtime import VLLMRuntimeProvider
-from .providers.python_direct import PythonDirectEngine
+from .providers.python_runtime import PythonRuntimeEngine
 from .errors import ToolContractError
+from .integrations.config import FrameworkConfig
 from .evals import run_eval
 from .environments import AgenticEnvironment
 from .integrations.langgraph import AgenticGraph
 from .inspection import InspectReport, build_inspection_report
 from .skills import LoadedSkill, Skill, load_skill
 from .tools import Tool
-from .tools.compat import Toolkit
+from .tools.toolkit import Toolkit
 
 
 class PublicToolRegistry:
@@ -90,13 +95,20 @@ class AgenticSystem:
         region: str | None = None,
         defaults: dict[str, Any] | None = None,
         strict: bool = True,
-        disable_framework_tracing: bool = True,
         runtime: RuntimeConfig | dict[str, Any] | None = None,
     ) -> None:
         os.environ.setdefault("AWS_EC2_METADATA_DISABLED", "true")
-        self.runtime_config = RuntimeConfig.coerce(runtime) if runtime is not None else None
-        self.model = model or (self.runtime_config.model_id if self.runtime_config else None) or "python-runtime"
-        self.region = region or (self.runtime_config.region_name if self.runtime_config else None)
+        self.runtime_config = (
+            RuntimeConfig.coerce(runtime) if runtime is not None else None
+        )
+        self.model = (
+            model
+            or (self.runtime_config.model_id if self.runtime_config else None)
+            or "python-runtime"
+        )
+        self.region = region or (
+            self.runtime_config.region_name if self.runtime_config else None
+        )
         self.defaults = defaults or {}
         self.strict = strict
         self._agents: list[Agent] = []
@@ -115,7 +127,6 @@ class AgenticSystem:
         if temperature_default is None:
             temperature_default = 0.0
 
-        self._disable_framework_tracing = disable_framework_tracing
         self._runtime = ToolRegistryRuntime(
             model_id=self.model,
             region_name=self.region,
@@ -174,7 +185,10 @@ class AgenticSystem:
     def skill_names(self) -> tuple[str, ...]:
         """Return names of both runtime and filesystem-loaded skills."""
 
-        names = [*self._runtime_skills.keys(), *(skill.manifest.name for skill in self._skills)]
+        names = [
+            *self._runtime_skills.keys(),
+            *(skill.manifest.name for skill in self._skills),
+        ]
         return _dedupe_preserve_order(names)
 
     def tool(
@@ -242,7 +256,9 @@ class AgenticSystem:
                 return existing_skill
             if policy == "error":
                 raise ValueError(
-                    conflict_message("Skill", skill.identity, "system registry", "incoming Skill")
+                    conflict_message(
+                        "Skill", skill.identity, "system registry", "incoming Skill"
+                    )
                 )
             if policy == "keep":
                 self._composition_events.append(
@@ -253,14 +269,18 @@ class AgenticSystem:
         source = f"skill:{skill.identity}"
         for public_tool in skill.available_tools():
             existing_tool = self._public_tools.get(public_tool.identity)
-            if existing_tool is None or same_tool_definition(existing_tool, public_tool):
+            if existing_tool is None or same_tool_definition(
+                existing_tool, public_tool
+            ):
                 continue
             if policy == "error":
                 raise ValueError(
                     conflict_message(
                         "Tool",
                         public_tool.identity,
-                        self._tool_selected_source.get(public_tool.identity, "system registry"),
+                        self._tool_selected_source.get(
+                            public_tool.identity, "system registry"
+                        ),
                         source,
                     )
                 )
@@ -274,7 +294,11 @@ class AgenticSystem:
             self._register_tool_object(public_tool, on_conflict=policy, source=source)
         self._runtime_skills[skill.name] = skill
         self._composition_events.append(
-            {"kind": "skill", "identity": skill.identity, "decision": "add" if existing_skill is None else "replace"}
+            {
+                "kind": "skill",
+                "identity": skill.identity,
+                "decision": "add" if existing_skill is None else "replace",
+            }
         )
         return skill
 
@@ -298,22 +322,40 @@ class AgenticSystem:
             raise TypeError(f"Expected Tool, got {type(public_tool).__name__}.")
         public_tool.check().raise_if_failed()
         if public_tool.function is None:
-            raise ToolContractError(f"Tool '{public_tool.name}' has no callable function.")
+            raise ToolContractError(
+                f"Tool '{public_tool.name}' has no callable function."
+            )
 
         policy = normalize_conflict_policy(on_conflict)
         existing = self._public_tools.get(public_tool.identity)
-        existing_source = self._tool_selected_source.get(public_tool.identity, "system registry")
+        existing_source = self._tool_selected_source.get(
+            public_tool.identity, "system registry"
+        )
         if existing is not None:
             if same_tool_definition(existing, public_tool):
                 _append_origin(self._tool_origins, public_tool.identity, source)
                 self._composition_events.append(
-                    {"kind": "tool", "identity": public_tool.identity, "decision": "reuse", "source": source}
+                    {
+                        "kind": "tool",
+                        "identity": public_tool.identity,
+                        "decision": "reuse",
+                        "source": source,
+                    }
                 )
                 return existing
             if policy == "error":
-                raise ValueError(conflict_message("Tool", public_tool.identity, existing_source, source))
+                raise ValueError(
+                    conflict_message(
+                        "Tool", public_tool.identity, existing_source, source
+                    )
+                )
             self._composition_events.append(
-                {"kind": "tool", "identity": public_tool.identity, "decision": policy, "source": source}
+                {
+                    "kind": "tool",
+                    "identity": public_tool.identity,
+                    "decision": policy,
+                    "source": source,
+                }
             )
             _append_origin(self._tool_origins, public_tool.identity, source)
             if policy == "keep":
@@ -324,7 +366,12 @@ class AgenticSystem:
         self._tool_selected_source[public_tool.identity] = source
         if existing is None:
             self._composition_events.append(
-                {"kind": "tool", "identity": public_tool.identity, "decision": "add", "source": source}
+                {
+                    "kind": "tool",
+                    "identity": public_tool.identity,
+                    "decision": "add",
+                    "source": source,
+                }
             )
 
         @wraps(public_tool.function)
@@ -339,7 +386,9 @@ class AgenticSystem:
             self._runtime.tool(
                 _wrapped,
                 name=public_tool.name,
-                description=runtime_description if runtime_description is not None else public_tool.description,
+                description=runtime_description
+                if runtime_description is not None
+                else public_tool.description,
                 on_conflict="replace",
             )
             return public_tool
@@ -369,7 +418,7 @@ class AgenticSystem:
         skill: Any = None,
         skills: Any = None,
         engine: str = BEDROCK_RUNTIME_ENGINE,
-        framework: str | None = None,
+        framework: str | FrameworkConfig | None = None,
         input: Any = None,
         output: Any = None,
         contract: AgentContract | dict[str, Any] | None = None,
@@ -378,20 +427,30 @@ class AgenticSystem:
         defaults: dict[str, Any] | None = None,
         runtime: RuntimeConfig | dict[str, Any] | None = None,
     ) -> Agent:
-        runtime_config = RuntimeConfig.coerce(runtime) if runtime is not None else self.runtime_config
+        runtime_config = (
+            RuntimeConfig.coerce(runtime)
+            if runtime is not None
+            else self.runtime_config
+        )
         if normalize_engine_text(engine) == LANGGRAPH_ORCHESTRATOR:
-            raise ValueError("LangGraph is an orchestrator, not an engine. Use agent.as_node(...).")
+            raise ValueError(
+                "LangGraph is an orchestrator, not an engine. Use agent.as_node(...)."
+            )
         if runtime_config is not None and engine == BEDROCK_RUNTIME_ENGINE:
             engine = runtime_config.provider
         engine = canonical_engine_name(engine)
-        skill_tool_names, skill_names = self._expand_skill_inputs(_merge_skill_inputs(skill, skills))
+        skill_tool_names, skill_names = self._expand_skill_inputs(
+            _merge_skill_inputs(skill, skills)
+        )
         explicit_tool_names, explicit_tool_objects = _normalize_agent_tool_inputs(tools)
         for public_tool in explicit_tool_objects:
             self._register_tool_object(public_tool)
         tool_names = _dedupe_preserve_order([*skill_tool_names, *explicit_tool_names])
         missing = [tool for tool in tool_names if tool not in self.tool_names]
         if missing:
-            raise KeyError(f"Unknown tools requested for agent '{name}': {missing}. Available: {list(self.tool_names)}")
+            raise KeyError(
+                f"Unknown tools requested for agent '{name}': {missing}. Available: {list(self.tool_names)}"
+            )
         agent = Agent(
             system=self,
             name=name,
@@ -411,7 +470,9 @@ class AgenticSystem:
         self._agents.append(agent)
         return agent
 
-    def _expand_skill_inputs(self, skills: Any) -> tuple[tuple[str, ...], tuple[str, ...]]:
+    def _expand_skill_inputs(
+        self, skills: Any
+    ) -> tuple[tuple[str, ...], tuple[str, ...]]:
         """Register/expand runtime and filesystem skill references for an agent."""
 
         if skills is None:
@@ -431,7 +492,9 @@ class AgenticSystem:
             for loaded in self._skills:
                 if loaded.manifest.name == skills:
                     return tuple(loaded.manifest.tools), (loaded.manifest.name,)
-            raise KeyError(f"Unknown skill '{skills}'. Available skills: {self.skill_names}")
+            raise KeyError(
+                f"Unknown skill '{skills}'. Available skills: {self.skill_names}"
+            )
         if isinstance(skills, (list, tuple, set, frozenset)):
             tool_names: list[str] = []
             skill_names: list[str] = []
@@ -439,7 +502,9 @@ class AgenticSystem:
                 item_tool_names, item_skill_names = self._expand_skill_inputs(item)
                 tool_names.extend(item_tool_names)
                 skill_names.extend(item_skill_names)
-            return _dedupe_preserve_order(tool_names), _dedupe_preserve_order(skill_names)
+            return _dedupe_preserve_order(tool_names), _dedupe_preserve_order(
+                skill_names
+            )
         raise TypeError(f"Unsupported skills value: {skills!r}")
 
     def composition(self) -> dict[str, Any]:
@@ -480,7 +545,9 @@ class AgenticSystem:
             warnings.append({"source": "runtime_registry", **issue})
         for spec in self._runtime.tools:
             if self.strict and not _return_annotation_is_dict(spec.func):
-                errors.append({"tool": spec.name, "issue": "tool_return_annotation_must_be_dict"})
+                errors.append(
+                    {"tool": spec.name, "issue": "tool_return_annotation_must_be_dict"}
+                )
         for agent in self._agents:
             validation = agent.validate()
             for issue in validation.issues:
@@ -491,7 +558,9 @@ class AgenticSystem:
     def eval(self, agent: Agent, cases: list[dict[str, Any]], **kwargs: Any):
         return run_eval(agent, cases, **kwargs)
 
-    def environment(self, records: Any, *, graph: Any, **kwargs: Any) -> AgenticEnvironment:
+    def environment(
+        self, records: Any, *, graph: Any, **kwargs: Any
+    ) -> AgenticEnvironment:
         """Create a Gymnasium-shaped episodic environment backed by a graph."""
 
         return AgenticEnvironment(records=records, graph=graph, **kwargs)
@@ -520,7 +589,6 @@ class AgenticSystem:
             region_name=self.region,
             max_tokens_default=getattr(previous_runtime, "max_tokens_default", 800),
             temperature_default=getattr(previous_runtime, "temperature_default", 0.0),
-            disable_openai_runtime_tracing=self._disable_framework_tracing,
         )
         runtime._tools.update(getattr(previous_runtime, "_tools", {}))
         if hasattr(previous_runtime, "runtime"):
@@ -536,8 +604,16 @@ class AgenticSystem:
     def _engine(self, name: str):
         name = canonical_engine_name(name)
         if name == "auto":
-            name = _resolve_auto_provider(self.model, self.region, getattr(self.runtime_config, "provider_priority", None))
-        if name == BEDROCK_RUNTIME_ENGINE and name not in self._engines and "bedrock" in self._engines:
+            name = _resolve_auto_provider(
+                self.model,
+                self.region,
+                getattr(self.runtime_config, "provider_priority", None),
+            )
+        if (
+            name == BEDROCK_RUNTIME_ENGINE
+            and name not in self._engines
+            and "bedrock" in self._engines
+        ):
             # Safe relocation for code that injected the old Bedrock key before
             # bedrock-runtime became the canonical engine name.
             self._engines[name] = self._engines["bedrock"]
@@ -548,15 +624,21 @@ class AgenticSystem:
             elif name == OPENAI_RUNTIME_ENGINE:
                 self._engines[name] = OpenAIRuntimeProvider(self)
             elif name == PYTHON_RUNTIME_ENGINE:
-                self._engines[name] = PythonDirectEngine(self)
+                self._engines[name] = PythonRuntimeEngine(self)
             elif name == VLLM_RUNTIME_ENGINE:
                 self._engines[name] = VLLMRuntimeProvider(self)
             else:  # pragma: no cover - canonical_engine_name rejects this before engine construction.
-                raise ValueError(f"Unknown engine {name!r}. Supported engines: {list(supported_engine_names())}")
+                raise ValueError(
+                    f"Unknown engine {name!r}. Supported engines: {list(supported_engine_names())}"
+                )
         return self._engines[name]
 
 
-def _resolve_auto_provider(model: str | None, region: str | None, provider_priority: tuple[str, ...] | None = None) -> str:
+def _resolve_auto_provider(
+    model: str | None,
+    region: str | None,
+    provider_priority: tuple[str, ...] | None = None,
+) -> str:
     """Resolve ``provider='auto'`` to a concrete runtime backend."""
 
     return resolve_auto_provider(region or None, provider_priority)

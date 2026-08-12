@@ -8,6 +8,7 @@ from .factories import (
     default_model_id,
     default_region,
     environment,
+    framework,
     eval,
     load_skill,
     runtime,
@@ -18,7 +19,17 @@ from .factories import (
 )
 from .bedrock_runtime_client import BedrockRuntimeClient, DEFAULT_EMBEDDING_MODEL_ID
 from .chain import Chain, ChainStep
-from .contracts import AgentContract, ContractPolicySpec, RunPolicy, ToolExpectationValue, ValidationIssue, ValidationResult, normalize_tool_expectation, validate_contract_policy, validate_tool_expectation
+from .contracts import (
+    AgentContract,
+    ContractPolicySpec,
+    RunPolicy,
+    ToolExpectationValue,
+    ValidationIssue,
+    ValidationResult,
+    normalize_tool_expectation,
+    validate_contract_policy,
+    validate_tool_expectation,
+)
 from .engines.names import (
     BEDROCK_RUNTIME_ENGINE,
     OPENAI_RUNTIME_ENGINE,
@@ -65,8 +76,19 @@ from .output_contracts import (
 )
 from .results import TRACE_SCHEMA_VERSION, RunResult
 from .lineage import LINEAGE_SCHEMA_VERSION, LineageMemory, LineageStep, lineage_memory
-from .final_answer import FINAL_ANSWER_SCHEMA_VERSION, OutputSchema, final_answer, normalize_output
-from .core.runtime import AUTO_PROVIDER_ENV_VAR, DEFAULT_AUTO_PROVIDER_PRIORITY, RuntimeConfig, normalize_provider_priority, resolve_auto_provider
+from .final_answer import (
+    FINAL_ANSWER_SCHEMA_VERSION,
+    OutputSchema,
+    final_answer,
+    normalize_output,
+)
+from .core.runtime import (
+    AUTO_PROVIDER_ENV_VAR,
+    DEFAULT_AUTO_PROVIDER_PRIORITY,
+    RuntimeConfig,
+    normalize_provider_priority,
+    resolve_auto_provider,
+)
 from .core.scheduler import SchedulerConfig
 from .skills import LoadedSkill, Skill, SkillManifest
 from .system import AgenticSystem, InspectReport, PublicToolRegistry
@@ -99,7 +121,7 @@ from .utils import (
 )
 from .providers.vllm_runtime import vllm_environment_snapshot
 
-__version__ = "1.1.3"
+__version__ = "2.0.0a1"
 
 __all__ = list(_PUBLIC_API)
 del _PUBLIC_API

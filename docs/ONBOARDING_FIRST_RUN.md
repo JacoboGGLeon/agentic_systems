@@ -57,7 +57,7 @@ import agentic_systems as toolkit
 runtime = toolkit.runtime(provider="python-runtime")
 system = toolkit.system(runtime=runtime)
 
-assert toolkit.__version__ == "1.1.3"
+assert toolkit.__version__ == "2.0.0a1"
 assert callable(toolkit.tool)
 assert callable(toolkit.skill)
 assert callable(toolkit.agent)
@@ -86,7 +86,9 @@ export VLLM_BASE_URL='http://127.0.0.1:8000/v1'
 export VLLM_MODEL='your-model'
 export RUN_VLLM_LIVE=1
 
-export AWS_PROFILE='your-profile'
+# Choose one Bedrock authentication mode:
+export AWS_PROFILE='your-profile'  # standard AWS/ADA credential chain
+# export AWS_BEARER_TOKEN_BEDROCK='...'  # native Bedrock API key
 export AWS_REGION='us-east-1'
 export BEDROCK_MODEL_ID='your-model-id'
 export RUN_BEDROCK_LIVE=1
@@ -105,7 +107,9 @@ $env:VLLM_BASE_URL = 'http://127.0.0.1:8000/v1'
 $env:VLLM_MODEL = 'your-model'
 $env:RUN_VLLM_LIVE = '1'
 
-$env:AWS_PROFILE = 'your-profile'
+# Choose one Bedrock authentication mode:
+$env:AWS_PROFILE = 'your-profile'  # standard AWS/ADA credential chain
+# $env:AWS_BEARER_TOKEN_BEDROCK = '...'  # native Bedrock API key
 $env:AWS_REGION = 'us-east-1'
 $env:BEDROCK_MODEL_ID = 'your-model-id'
 $env:RUN_BEDROCK_LIVE = '1'
@@ -120,55 +124,43 @@ credentials into notebooks, Markdown, commits or screenshots.
 
 Provider notebooks evaluate readiness before crossing an external boundary:
 
-| Notebook | Ready when | Run All behavior |
+| Notebook | Readiness | Behavior |
 |---|---|---|
-| `00_runtime_openai_provider_api.ipynb` | `OPENAI_API_KEY` is available | Executes `runtime -> system -> agent -> RunResult`. |
-| `00_runtime_vllm_provider_api.ipynb` | `VLLM_BASE_URL` and `VLLM_MODEL` are configured | Calls the OpenAI-compatible endpoint through `vllm-runtime`. |
-| `00_runtime_bedrock_provider_api.ipynb` | The standard AWS chain resolves credentials | Calls Bedrock through `bedrock-runtime`. |
-| `06_integrations_strands_api.ipynb` | `provider="auto"` resolves a concrete provider | Executes the declarative Strands identity over that runtime. |
-| `07_integrations_openai_runtime_api.ipynb` | `provider="auto"` resolves a concrete provider | Executes the OpenAI Agents-style identity over that runtime. |
+| providers/01_openai.ipynb | OPENAI_API_KEY | Executes runtime -> system -> agent -> RunResult |
+| providers/03_vllm.ipynb | VLLM_BASE_URL and VLLM_MODEL | Calls the OpenAI-compatible endpoint |
+| providers/02_bedrock.ipynb | Region plus SigV4 credentials or AWS_BEARER_TOKEN_BEDROCK | Calls the same boto3 bedrock-runtime Provider |
+| frameworks/00_langgraph.ipynb | Always ready offline | Executes real LangGraph; Provider auto is optional |
+| frameworks/01_openai_agents.ipynb | Always ready offline | Executes real OpenAI Agents; Provider auto is optional |
+| frameworks/02_aws_strands.ipynb | Always ready offline | Executes real Strands and local MCP transports |
 
-If readiness fails, the notebook returns an actionable preflight skip; it does
-not fabricate a `RunResult`. The pattern `RUN_*_LIVE=0` means choosing the corresponding provider-specific
-flag. To deliberately suppress a configured provider,
-set its flag to zero before starting Jupyter:
-
-```bash
-export RUN_OPENAI_LIVE=0
-export RUN_VLLM_LIVE=0
-export RUN_BEDROCK_LIVE=0
-export RUN_STRANDS_IDENTITY_LIVE=0
-export RUN_OPENAI_STYLE_LIVE=0
-```
+If readiness fails, the notebook returns an actionable preflight skip. A skip is
+not counted as live evidence.
 
 ## Tutorial Order
 
-Run notebooks top to bottom. Every code cell consumes the installed public API.
+Run notebooks top to bottom by layer:
 
-```text
-00_runtime_api.ipynb
-00_runtime_bedrock_provider_api.ipynb
-00_runtime_openai_provider_api.ipynb
-00_runtime_scheduler_api.ipynb
-00_runtime_vllm_provider_api.ipynb
-01_tool_api.ipynb
-02_skill_api.ipynb
-03_agent_api.ipynb
-04_human_result_api.ipynb
-05_lineage_memory_api.ipynb
-06_integrations_strands_api.ipynb
-07_integrations_openai_runtime_api.ipynb
-08_system_api.ipynb
-09_graph_api.ipynb
-10_environment_eval_api.ipynb
-11_single_agentic_system_api.ipynb
-12_multi_agentic_system_api.ipynb
-13_multi_agentic_graph_api.ipynb
-```
+    tutorials/core/00_runtime_scheduler.ipynb
+    tutorials/core/01_tool.ipynb
+    tutorials/core/02_skills.ipynb
+    tutorials/core/03_agent.ipynb
+    tutorials/core/04_results_lineage.ipynb
+    tutorials/core/05_system.ipynb
+    tutorials/core/06_graph_native.ipynb
+    tutorials/core/07_environment_eval.ipynb
+    tutorials/core/08_single_agentic_system.ipynb
+    tutorials/core/09_multi_agentic_system.ipynb
+    tutorials/core/10_multi_agent_graph.ipynb
+    tutorials/providers/00_auto.ipynb
+    tutorials/providers/01_openai.ipynb
+    tutorials/providers/02_bedrock.ipynb
+    tutorials/providers/03_vllm.ipynb
+    tutorials/frameworks/00_langgraph.ipynb
+    tutorials/frameworks/01_openai_agents.ipynb
+    tutorials/frameworks/02_aws_strands.ipynb
 
-The deterministic notebooks run without external credentials. Graph notebooks
-use `engine="auto"`: native LangGraph when available, otherwise the portable
-backend.
+The 15 deterministic notebooks run without external credentials. Start Jupyter
+with RUN_*_LIVE=0 when the machine must not cross an external boundary.
 
 ## If A Provider Is Skipped Unexpectedly
 
@@ -178,7 +170,7 @@ secrets:
 ```bash
 python -c "import os; print('openai', bool(os.getenv('OPENAI_API_KEY')))"
 python -c "import os; print('vllm', bool(os.getenv('VLLM_BASE_URL')), bool(os.getenv('VLLM_MODEL')))"
-python -c "import os; print('aws-profile', bool(os.getenv('AWS_PROFILE')), 'region', bool(os.getenv('AWS_REGION')))"
+python -c "import os; print('aws-profile', bool(os.getenv('AWS_PROFILE')), 'bedrock-api-key', bool(os.getenv('AWS_BEARER_TOKEN_BEDROCK')), 'region', bool(os.getenv('AWS_REGION')))"
 ```
 
 Inspect provider resolution:
@@ -199,8 +191,9 @@ toolkit.show(
 ```
 
 Default auto priority is Bedrock, OpenAI, then vLLM. A provider is selected only
-when its environment signals are usable; a region alone is not AWS
-authentication.
+when its environment signals are usable; a region alone is not authentication.
+For Bedrock, either the standard AWS/ADA credential chain or
+`AWS_BEARER_TOKEN_BEDROCK` satisfies the authentication signal.
 
 ## Documentation Map
 

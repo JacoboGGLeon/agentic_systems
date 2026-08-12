@@ -4,7 +4,7 @@ from agentic_systems import (
     RunResult,
 )
 from agentic_systems.results import _contains_subset
-from agentic_systems.tools.compat import ToolEvent
+from agentic_systems.tools import ToolEvent
 
 
 def test_result_trace_validate_and_subset_paths():
@@ -40,7 +40,7 @@ def test_result_trace_validate_and_subset_paths():
         {
             "must_call": ["lookup"],
             "must_not_call": ["delete"],
-            "output_contains": {"status": "missing"},
+            "expected_output": {"status": "missing"},
             "expected_tool_outputs": {
                 "missing_tool": {"id": 1},
                 "lookup": {"name": "missing"},

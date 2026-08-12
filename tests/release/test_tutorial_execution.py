@@ -13,27 +13,27 @@ ROOT = Path(__file__).resolve().parents[2]
 TUTORIALS = ROOT / "tutorials"
 
 DETERMINISTIC_NOTEBOOKS = (
-    "00_runtime_api.ipynb",
-    "00_runtime_scheduler_api.ipynb",
-    "01_tool_api.ipynb",
-    "02_skill_api.ipynb",
-    "03_agent_api.ipynb",
-    "04_human_result_api.ipynb",
-    "05_lineage_memory_api.ipynb",
-    "08_system_api.ipynb",
-    "09_graph_api.ipynb",
-    "10_environment_eval_api.ipynb",
-    "11_single_agentic_system_api.ipynb",
-    "12_multi_agentic_system_api.ipynb",
-    "13_multi_agentic_graph_api.ipynb",
+    "core/00_runtime_scheduler.ipynb",
+    "core/01_tool.ipynb",
+    "core/02_skills.ipynb",
+    "core/03_agent.ipynb",
+    "core/04_results_lineage.ipynb",
+    "core/05_system.ipynb",
+    "core/06_graph_native.ipynb",
+    "core/07_environment_eval.ipynb",
+    "core/08_single_agentic_system.ipynb",
+    "core/09_multi_agentic_system.ipynb",
+    "core/10_multi_agent_graph.ipynb",
+    "providers/00_auto.ipynb",
+    "frameworks/00_langgraph.ipynb",
+    "frameworks/01_openai_agents.ipynb",
+    "frameworks/02_aws_strands.ipynb",
 )
 
 PROVIDER_NOTEBOOKS = (
-    "00_runtime_bedrock_provider_api.ipynb",
-    "00_runtime_openai_provider_api.ipynb",
-    "00_runtime_vllm_provider_api.ipynb",
-    "06_integrations_strands_api.ipynb",
-    "07_integrations_openai_runtime_api.ipynb",
+    "providers/01_openai.ipynb",
+    "providers/02_bedrock.ipynb",
+    "providers/03_vllm.ipynb",
 )
 
 
@@ -49,8 +49,12 @@ def _execute_notebook(client: NotebookClient):
         asyncio.set_event_loop(None)
         loop.close()
 
+
 def test_execution_inventory_covers_every_canonical_notebook():
-    canonical = {path.name for path in TUTORIALS.glob("*.ipynb")}
+    canonical = {
+        path.relative_to(TUTORIALS).as_posix()
+        for path in TUTORIALS.rglob("*.ipynb")
+    }
     classified = set(DETERMINISTIC_NOTEBOOKS) | set(PROVIDER_NOTEBOOKS)
     assert classified == canonical
     assert not set(DETERMINISTIC_NOTEBOOKS) & set(PROVIDER_NOTEBOOKS)
@@ -62,11 +66,11 @@ def test_deterministic_notebook_executes_from_fresh_kernel(name, monkeypatch):
         "RUN_OPENAI_LIVE",
         "RUN_VLLM_LIVE",
         "RUN_BEDROCK_LIVE",
-        "RUN_STRANDS_IDENTITY_LIVE",
-        "RUN_OPENAI_STYLE_LIVE",
+        "RUN_LANGGRAPH_LIVE",
+        "RUN_STRANDS_LIVE",
+        "RUN_OPENAI_AGENTS_LIVE",
     ):
         monkeypatch.setenv(variable, "0")
-    monkeypatch.setenv("AGENTIC_SYSTEMS_GRAPH_ENGINE", "portable")
 
     notebook = nbformat.read(TUTORIALS / name, as_version=4)
     client = NotebookClient(

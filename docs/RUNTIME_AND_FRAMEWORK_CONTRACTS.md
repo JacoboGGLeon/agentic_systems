@@ -131,8 +131,8 @@ compilation, lifecycle, persistence and unsupported native capabilities.
 | Identity | Status | Meaning |
 |---|---|---|
 | `langgraph` | `native-adapter` | Real optional LangGraph adapter |
-| `openai-agents` | `style-only` | Core Provider execution with compatibility metadata |
-| `strands` | `declarative-only` | Accepted identity; no Strands SDK adapter |
+| `openai-agents` | `native-adapter` | OpenAI Agents Runner owns the agent loop |
+| `strands` | `native-adapter` | Strands Agent owns lifecycle, Tools and MCP |
 
 Requested Framework identity is configuration, not execution evidence.
 `framework_requested` records intent and `framework_adapter` records the adapter

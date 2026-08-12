@@ -16,7 +16,7 @@ from agentic_systems.defaults import DEFAULT_OPENAI_MODEL_ID
 from agentic_systems.engines.names import OPENAI_RUNTIME_ENGINE, canonical_engine_name
 from agentic_systems.results import RunResult
 from agentic_systems.providers.conformance import ProviderProfile, provider_profile
-from agentic_systems.tools.compat import ToolEvent
+from agentic_systems.tools.events import ToolEvent
 
 _INSTALL_HINT = "Install with: pip install openai"
 

@@ -13,10 +13,6 @@ LANGGRAPH_ORCHESTRATOR = "langgraph"
 OPENAI_AGENTS_FRAMEWORK = "openai-agents"
 STRANDS_FRAMEWORK = "strands"
 
-# Internal implementation alias. Public docs and notebooks should use
-# PYTHON_RUNTIME_ENGINE / "python-runtime".
-PYTHON_DIRECT_ENGINE = PYTHON_RUNTIME_ENGINE
-
 SUPPORTED_ENGINES = (
     BEDROCK_RUNTIME_ENGINE,
     OPENAI_RUNTIME_ENGINE,
@@ -60,11 +56,9 @@ def canonical_engine_name(value: str | None, *, default: str | None = None) -> s
     return text
 
 
-def supported_engine_names(*, include_langgraph: bool = False, include_aliases: bool = False) -> tuple[str, ...]:
+def supported_engine_names(*, include_langgraph: bool = False) -> tuple[str, ...]:
     """Return supported canonical runtime/provider names for errors and diagnostics.
 
-    ``include_aliases`` is retained as a no-op keyword for old internal callers;
-    Agentic Systems no longer exposes runtime aliases.
     """
 
     names: Iterable[str] = SUPPORTED_ENGINES

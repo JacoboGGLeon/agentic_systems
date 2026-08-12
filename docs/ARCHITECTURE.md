@@ -30,8 +30,10 @@ Contracts         declarative validation before and after execution
 ```text
 src/agentic_systems/       library package
 docs/                      current API and operating docs
-tutorials/                 executable learning path
-tutorials/skills/          tutorial skills outside the library core
+tutorials/core/            Provider-free executable fundamentals
+tutorials/providers/       inference-boundary tutorials
+tutorials/frameworks/      real external Framework tutorials
+tutorials/skills/          native tutorial Skills outside library core
 tests/                     regression and API contract tests
 ```
 
@@ -40,7 +42,7 @@ tests/                     regression and API contract tests
 ```text
 core          provider-agnostic primitives
 providers     runtime/model access: python-runtime, bedrock-runtime, openai-runtime, vllm-runtime
-integrations  optional LangGraph adapter plus framework/Graph boundary profiles
+integrations  real Native, LangGraph, OpenAI Agents and Strands adapters
 engines       internal execution implementation details
 ```
 
@@ -49,7 +51,7 @@ Rules:
 ```text
 - Core imports must not require optional framework dependencies.
 - Provider code owns model/backend calls. `vllm-runtime` owns only the OpenAI-compatible client call; the vLLM GPU server is external infrastructure.
-- Integration code owns framework adaptation only; accepted framework labels without adapters remain declarative metadata.
+- Integration code owns real Framework adaptation; canonical Framework identities never degrade to declarative metadata.
 - Business and tutorial assets stay outside src/agentic_systems.
 - `provider="auto"` must resolve to one concrete provider before execution.
 - New user code should not import from `agentic_systems.engines.*`.
@@ -78,7 +80,7 @@ Tutorials should present output in this order:
 3. raw object only when the API lesson needs it
 ```
 
-The official tutorial route is `tutorials/*.ipynb` in numeric order.
+The official tutorial route is recursive under tutorials/core, tutorials/providers and tutorials/frameworks.
 
 ## CLI Flow
 
@@ -108,8 +110,8 @@ declares `graph_kind="framework-native"` only for LangGraph and
 `AgenticGraph` and the explicit LangGraph builders always belong to the optional
 framework integration and remain `framework-native`.
 
-Only LangGraph has an SDK adapter. `openai-agents` is style-only and `strands` is
-declarative-only in the current package.
+All four canonical Frameworks have execution adapters. OpenAI Agents and Strands are
+optional SDKs imported only at the execution boundary.
 
 ## Lifecycle And Ownership
 
@@ -158,8 +160,7 @@ execution; inspection does not claim behavioral conformance.
 | `docs/` | Current behavior, contracts and operating guidance | Historical checkpoints presented as recommended behavior |
 
 Provider decides where execution happens. Integration adapts Agentic Systems to
-an external Framework. LangGraph is an implemented integration; Strands and
-OpenAI Agents-style are compatibility identities without SDK adapters.
+an external Framework. LangGraph, Strands and OpenAI Agents are implemented integrations with lazy optional SDKs.
 
 ## Placement Rules
 

@@ -1,4 +1,4 @@
-"""Checkpoint 8b: bedrock-runtime is the canonical cloud engine."""
+"""Canonical bedrock-runtime engine contracts."""
 
 from __future__ import annotations
 

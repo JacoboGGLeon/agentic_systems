@@ -8,27 +8,38 @@ from pathlib import Path
 from typing import Any, Iterable
 
 from .agents import Agent
-from .core.runtime import RuntimeConfig, _load_dotenv, normalize_provider_priority, resolve_auto_provider
+from .core.runtime import (
+    RuntimeConfig,
+    _load_dotenv,
+    normalize_provider_priority,
+    resolve_auto_provider,
+)
 from .core.scheduler import SchedulerConfig
-from .defaults import DEFAULT_AWS_REGION, DEFAULT_BEDROCK_MODEL_ID, DEFAULT_OPENAI_MODEL_ID, DEFAULT_VLLM_MODEL_ID
-from .engines.names import BEDROCK_RUNTIME_ENGINE, OPENAI_RUNTIME_ENGINE, PYTHON_RUNTIME_ENGINE, VLLM_RUNTIME_ENGINE, canonical_engine_name
+from .defaults import (
+    DEFAULT_AWS_REGION,
+    DEFAULT_BEDROCK_MODEL_ID,
+    DEFAULT_OPENAI_MODEL_ID,
+    DEFAULT_VLLM_MODEL_ID,
+)
+from .engines.names import (
+    BEDROCK_RUNTIME_ENGINE,
+    OPENAI_RUNTIME_ENGINE,
+    PYTHON_RUNTIME_ENGINE,
+    VLLM_RUNTIME_ENGINE,
+    canonical_engine_name,
+)
 from .final_answer import output_schema as make_output_schema
+from .integrations.config import FrameworkConfig
 from .environments import AgenticEnvironment
 from .evals import Evaluator
 from .system import AgenticSystem
 from .skills import Skill
 
-DEFAULT_MODEL_ENV_VARS = (
-    "BEDROCK_MODEL_ID",
-)
+DEFAULT_MODEL_ENV_VARS = ("BEDROCK_MODEL_ID",)
 
-OPENAI_MODEL_ENV_VARS = (
-    "OPENAI_MODEL",
-)
+OPENAI_MODEL_ENV_VARS = ("OPENAI_MODEL",)
 
-VLLM_MODEL_ENV_VARS = (
-    "VLLM_MODEL",
-)
+VLLM_MODEL_ENV_VARS = ("VLLM_MODEL",)
 
 
 def default_model_id() -> str:
@@ -68,9 +79,9 @@ def default_region() -> str:
     """Return the default AWS region used by notebook-first examples."""
 
     _load_dotenv()
-    return os.getenv("AWS_REGION") or os.getenv("AWS_DEFAULT_REGION") or DEFAULT_AWS_REGION
-
-
+    return (
+        os.getenv("AWS_REGION") or os.getenv("AWS_DEFAULT_REGION") or DEFAULT_AWS_REGION
+    )
 
 
 def scheduler(
@@ -97,6 +108,19 @@ def scheduler(
     )
 
 
+def framework(
+    name: str,
+    *,
+    agent_kwargs: dict[str, Any] | None = None,
+    run_kwargs: dict[str, Any] | None = None,
+) -> FrameworkConfig:
+    """Configure a real orchestration Framework with native SDK kwargs."""
+
+    return FrameworkConfig(
+        name=name, agent_kwargs=agent_kwargs or {}, run_kwargs=run_kwargs or {}
+    )
+
+
 def runtime(
     *,
     provider: str = "bedrock-runtime",
@@ -117,10 +141,20 @@ def runtime(
     """
 
     selected_provider = canonical_engine_name(provider)
-    priority = normalize_provider_priority(provider_priority, allow_python_fallback=allow_python_fallback)
-    selected_model = model_id or model or _default_runtime_model(selected_provider, region_name or region, priority)
-    selected_region = region_name or region or _default_runtime_region(selected_provider, priority)
-    merged_metadata = _runtime_metadata(selected_provider, metadata, selected_region, priority)
+    priority = normalize_provider_priority(
+        provider_priority, allow_python_fallback=allow_python_fallback
+    )
+    selected_model = (
+        model_id
+        or model
+        or _default_runtime_model(selected_provider, region_name or region, priority)
+    )
+    selected_region = (
+        region_name or region or _default_runtime_region(selected_provider, priority)
+    )
+    merged_metadata = _runtime_metadata(
+        selected_provider, metadata, selected_region, priority
+    )
 
     return RuntimeConfig(
         provider=provider,
@@ -133,7 +167,9 @@ def runtime(
     )
 
 
-def _default_runtime_model(provider: str, region: str | None, provider_priority: Iterable[str] | None = None) -> str | None:
+def _default_runtime_model(
+    provider: str, region: str | None, provider_priority: Iterable[str] | None = None
+) -> str | None:
     _load_dotenv()
     if provider == "auto":
         try:
@@ -153,7 +189,9 @@ def _default_runtime_model(provider: str, region: str | None, provider_priority:
     return None
 
 
-def _default_runtime_region(provider: str, provider_priority: Iterable[str] | None = None) -> str | None:
+def _default_runtime_region(
+    provider: str, provider_priority: Iterable[str] | None = None
+) -> str | None:
     if provider == BEDROCK_RUNTIME_ENGINE:
         return default_region()
     if provider == "auto":
@@ -166,7 +204,12 @@ def _default_runtime_region(provider: str, provider_priority: Iterable[str] | No
     return None
 
 
-def _runtime_metadata(provider: str, metadata: dict[str, Any] | None, region: str | None, provider_priority: Iterable[str] | None = None) -> dict[str, Any]:
+def _runtime_metadata(
+    provider: str,
+    metadata: dict[str, Any] | None,
+    region: str | None,
+    provider_priority: Iterable[str] | None = None,
+) -> dict[str, Any]:
     _load_dotenv()
     merged = dict(metadata or {})
     resolved = None
@@ -184,7 +227,9 @@ def _runtime_metadata(provider: str, metadata: dict[str, Any] | None, region: st
                 "base_url": os.getenv("VLLM_BASE_URL") or None,
                 "base_url_configured": _vllm_signal_present(),
                 "api_key_configured": bool(os.getenv("VLLM_API_KEY")),
-                "model_env_vars": [key for key in VLLM_MODEL_ENV_VARS if os.getenv(key)],
+                "model_env_vars": [
+                    key for key in VLLM_MODEL_ENV_VARS if os.getenv(key)
+                ],
             },
         )
     if resolved == OPENAI_RUNTIME_ENGINE:
@@ -193,17 +238,23 @@ def _runtime_metadata(provider: str, metadata: dict[str, Any] | None, region: st
             {
                 "api_key_configured": bool(os.getenv("OPENAI_API_KEY")),
                 "base_url": os.getenv("OPENAI_BASE_URL") or None,
-                "model_env_vars": [key for key in OPENAI_MODEL_ENV_VARS if os.getenv(key)],
+                "model_env_vars": [
+                    key for key in OPENAI_MODEL_ENV_VARS if os.getenv(key)
+                ],
             },
         )
     if resolved == BEDROCK_RUNTIME_ENGINE:
         merged.setdefault(
             "bedrock",
             {
-                "aws_region": os.getenv("AWS_REGION") or os.getenv("AWS_DEFAULT_REGION") or None,
+                "aws_region": os.getenv("AWS_REGION")
+                or os.getenv("AWS_DEFAULT_REGION")
+                or None,
                 "aws_profile_configured": bool(os.getenv("AWS_PROFILE")),
+                "bedrock_api_key_configured": bool(os.getenv("AWS_BEARER_TOKEN_BEDROCK")),
                 "credentials_configured": bool(
-                    os.getenv("AWS_ACCESS_KEY_ID")
+                    os.getenv("AWS_BEARER_TOKEN_BEDROCK")
+                    or os.getenv("AWS_ACCESS_KEY_ID")
                     or os.getenv("AWS_SECRET_ACCESS_KEY")
                     or os.getenv("AWS_SESSION_TOKEN")
                 ),
@@ -231,7 +282,9 @@ def output_schema(
     ``RunResult``.
     """
 
-    return make_output_schema(fields, many=many, root_key=root_key, required=required, aliases=aliases)
+    return make_output_schema(
+        fields, many=many, root_key=root_key, required=required, aliases=aliases
+    )
 
 
 def skill(
@@ -277,7 +330,6 @@ def system(
     region: str | None = None,
     defaults: dict[str, Any] | None = None,
     strict: bool = True,
-    disable_framework_tracing: bool = True,
     runtime: RuntimeConfig | dict[str, Any] | None = None,
 ) -> AgenticSystem:
     """Create a provider-agnostic system through the canonical toolkit API."""
@@ -287,7 +339,6 @@ def system(
         region=region,
         defaults=defaults,
         strict=strict,
-        disable_framework_tracing=disable_framework_tracing,
         runtime=runtime,
     )
 
@@ -359,12 +410,12 @@ def _resolve_skill_path(text: str) -> Path | None:
 def _resolve_packaged_skill_path(text: str) -> Path | None:
     """Resolve slash-style package resources such as tutorials/foo/skill."""
 
-    normalized = text.replace('\\', '/').strip('/')
+    normalized = text.replace("\\", "/").strip("/")
     if not normalized:
         return None
-    parts = [part for part in normalized.split('/') if part and part != '.']
+    parts = [part for part in normalized.split("/") if part and part != "."]
     for index in range(len(parts), 0, -1):
-        package = '.'.join(parts[:index])
+        package = ".".join(parts[:index])
         remainder = parts[index:]
         try:
             traversable = resources.files(package)
@@ -380,6 +431,7 @@ def _resolve_packaged_skill_path(text: str) -> Path | None:
             return candidate.resolve()
     return None
 
+
 def agent(
     *,
     name: str,
@@ -388,7 +440,7 @@ def agent(
     skill: Any = None,
     skills: Any = None,
     engine: str = "bedrock-runtime",
-    framework: str | None = None,
+    framework: str | FrameworkConfig | None = None,
     model: str | None = None,
     region: str | None = None,
     input: Any = None,  # noqa: A002 - public ergonomic alias.
@@ -415,11 +467,21 @@ def agent(
 
     resolved_skills = _merge_skill_inputs(skill, skills)
     runtime_config = RuntimeConfig.coerce(runtime) if runtime is not None else None
-    effective_engine = runtime_config.provider if runtime_config is not None else canonical_engine_name(engine)
-    effective_model = model or (runtime_config.model_id if runtime_config else None) or _default_agent_model(effective_engine)
+    effective_engine = (
+        runtime_config.provider
+        if runtime_config is not None
+        else canonical_engine_name(engine)
+    )
+    effective_model = (
+        model
+        or (runtime_config.model_id if runtime_config else None)
+        or _default_agent_model(effective_engine)
+    )
     workspace = AgenticSystem(
         model=effective_model,
-        region=region or (runtime_config.region_name if runtime_config else None) or default_region(),
+        region=region
+        or (runtime_config.region_name if runtime_config else None)
+        or default_region(),
         defaults=defaults,
         runtime=runtime_config,
     )

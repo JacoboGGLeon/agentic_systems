@@ -5,7 +5,7 @@ from contextlib import redirect_stdout
 
 import agentic_systems as lab
 from agentic_systems.results import RunResult
-from agentic_systems.tools.compat import ToolEvent
+from agentic_systems.tools import ToolEvent
 from tutorials.skills.accountability_otc import multi_agent_system as accountability_mas
 
 

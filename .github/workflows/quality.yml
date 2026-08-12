@@ -12,32 +12,47 @@ jobs:
       matrix:
         python-version: ["3.10", "3.14"]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
       - run: python -m pip install --upgrade pip
       - run: >-
-          python -m pip install -e ".[dev,bedrock,langgraph,openai]"
+          python -m pip install -e ".[dev,bedrock,langgraph,openai,openai-agents,strands]"
           build twine "setuptools>=69" wheel
-      - run: python -m ruff check src tests
+      - run: python -m ruff check src tests tutorials/frameworks/mcp_echo_server.py
       - run: >-
           python -m pytest --cov=agentic_systems
           --cov-config=pyproject.toml --cov-report=term-missing -q
+      - run: >-
+          python -m pytest --ignore=tests/release/test_tutorial_execution.py
+          --cov=agentic_systems
+          --cov-config=.coveragerc-core-branches
+          --cov-report=term-missing -q
       - run: >-
           python -m pytest -o addopts="" tests/providers
           --cov=agentic_systems.providers.bedrock_runtime
           --cov=agentic_systems.providers.bedrock
           --cov-config=.coveragerc-bedrock
           --cov-report=term-missing -q
-      - if: matrix.python-version == '3.14'
-        run: python -m build --no-isolation
-      - if: matrix.python-version == '3.14'
-        run: python -m twine check dist/*
-      - if: matrix.python-version == '3.14'
-        run: |
+      - run: >-
+          python -m pytest tests/providers
+          tests/integration_conformance/test_provider_conformance.py
+          tests/integration_conformance/test_system_runtime.py
+          tests/frameworks/test_provider_framework_matrix.py
+          --cov=agentic_systems.providers
+          --cov-config=.coveragerc-providers-branches
+          --cov-report=term-missing -q
+      - run: >-
+          python -m pytest --ignore=tests/release/test_tutorial_execution.py
+          --cov=agentic_systems.integrations
+          --cov-config=.coveragerc-frameworks-branches
+          --cov-report=term-missing -q
+      - run: python -m build --no-isolation
+      - run: python -m twine check dist/*
+      - run: |
           python -m venv .tmp/wheel-smoke
           .tmp/wheel-smoke/bin/python -m pip install dist/*.whl
-          .tmp/wheel-smoke/bin/python -c "import importlib.metadata as m; import agentic_systems as a; assert a.__version__ == m.version('agentic-systems'); assert len(a.__all__) == 111"
+          .tmp/wheel-smoke/bin/python -c "import importlib.metadata as m; import agentic_systems as a; assert a.__version__ == m.version('agentic-systems'); assert len(a.__all__) == 112"
           .tmp/wheel-smoke/bin/agentic-systems version

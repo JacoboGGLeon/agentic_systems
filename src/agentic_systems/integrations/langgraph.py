@@ -23,7 +23,9 @@ LangGraphState = dict[str, Any]
 StateInput = str | Callable[[LangGraphState], Any]
 NodeOutput = str | Callable[[RunResult, LangGraphState], Mapping[str, Any]] | None
 
-_LANGGRAPH_INSTALL_HINT = "Install with: pip install -e '.[langgraph]' or pip install langgraph"
+_LANGGRAPH_INSTALL_HINT = (
+    "Install with: pip install -e '.[langgraph]' or pip install langgraph"
+)
 
 
 def _import_langgraph_graph() -> tuple[Any, Any, Any]:
@@ -32,11 +34,15 @@ def _import_langgraph_graph() -> tuple[Any, Any, Any]:
     try:
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", message=r".*allowed_objects.*")
-            graph_module = __import__("langgraph.graph", fromlist=["StateGraph", "START", "END"])
+            graph_module = __import__(
+                "langgraph.graph", fromlist=["StateGraph", "START", "END"]
+            )
         StateGraph = getattr(graph_module, "StateGraph")
         START = getattr(graph_module, "START", "__start__")
         END = getattr(graph_module, "END", "__end__")
-    except Exception as exc:  # pragma: no cover - exercised when optional dependency is absent
+    except (
+        Exception
+    ) as exc:  # pragma: no cover - exercised when optional dependency is absent
         raise ImportError(
             "LangGraph integration requires the optional 'langgraph' dependency. "
             f"{_LANGGRAPH_INSTALL_HINT}."
@@ -123,13 +129,15 @@ def _call_agent_node_factory(factory: Callable[..., Any], **kwargs: Any) -> Any:
         signature = inspect.signature(factory)
     except (TypeError, ValueError):  # pragma: no cover - uncommon C-extension callables
         return factory(**kwargs)
-    if any(parameter.kind is inspect.Parameter.VAR_KEYWORD for parameter in signature.parameters.values()):
+    if any(
+        parameter.kind is inspect.Parameter.VAR_KEYWORD
+        for parameter in signature.parameters.values()
+    ):
         return factory(**kwargs)
-    accepted = {key: value for key, value in kwargs.items() if key in signature.parameters}
+    accepted = {
+        key: value for key, value in kwargs.items() if key in signature.parameters
+    }
     return factory(**accepted)
-
-
-
 
 
 def _short_text(value: Any, *, max_chars: int = 320) -> str:
@@ -181,12 +189,25 @@ def _tool_facts(tool: Mapping[str, Any]) -> dict[str, Any]:
     if isinstance(tool.get("input"), Mapping):
         facts["input"] = dict(tool.get("input") or {})
     payload = _tool_output_payload(tool)
-    for key in ("operation", "result", "number", "text", "summary", "message", "row_count", "n_rows", "route", "query_id"):
+    for key in (
+        "operation",
+        "result",
+        "number",
+        "text",
+        "summary",
+        "message",
+        "row_count",
+        "n_rows",
+        "route",
+        "query_id",
+    ):
         if key in payload:
             facts[key] = payload[key]
     rows = payload.get("rows")
     if isinstance(rows, list):
-        facts["row_count"] = payload.get("row_count") or payload.get("n_rows") or len(rows)
+        facts["row_count"] = (
+            payload.get("row_count") or payload.get("n_rows") or len(rows)
+        )
         facts["sample_rows"] = rows[:3]
     return facts
 
@@ -206,7 +227,15 @@ def _mapping(value: Any) -> dict[str, Any]:
 
 
 def _answer_from_payload(payload: Mapping[str, Any]) -> str:
-    for key in ("final_answer", "answer", "output", "result", "text", "message", "summary"):
+    for key in (
+        "final_answer",
+        "answer",
+        "output",
+        "result",
+        "text",
+        "message",
+        "summary",
+    ):
         value = payload.get(key)
         if isinstance(value, str) and value.strip():
             return value.strip()
@@ -230,7 +259,9 @@ def _run_tools(payload: Mapping[str, Any]) -> list[dict[str, Any]]:
         candidates = list(payload.get("tools") or [])
     elif isinstance(payload.get("tool_events"), list):
         candidates = list(payload.get("tool_events") or [])
-    elif isinstance(payload.get("normalized"), Mapping) and isinstance(payload["normalized"].get("tools"), list):
+    elif isinstance(payload.get("normalized"), Mapping) and isinstance(
+        payload["normalized"].get("tools"), list
+    ):
         candidates = list(payload["normalized"].get("tools") or [])
     blocks = payload.get("blocks") if isinstance(payload.get("blocks"), Mapping) else {}
     if not candidates and isinstance(blocks.get("tool_actions"), list):
@@ -264,22 +295,41 @@ def _tool_summary(tool: Mapping[str, Any]) -> str:
         return f"{name}: resultado {facts['result']}"
     if "text" in facts and "number" in facts:
         return f"{name}: {facts['number']} -> {facts['text']}"
-    row_count = facts.get("row_count") or output.get("row_count") or output.get("n_rows")
+    row_count = (
+        facts.get("row_count") or output.get("row_count") or output.get("n_rows")
+    )
     if row_count is not None:
         return f"{name} executed and returned {row_count} row(s)."
     return f"{name} executed."
 
 
-def _trace_payloads_from_state(state: Mapping[str, Any], *, trace_keys: Iterable[str] | None = None) -> list[tuple[str, dict[str, Any]]]:
+def _trace_payloads_from_state(
+    state: Mapping[str, Any], *, trace_keys: Iterable[str] | None = None
+) -> list[tuple[str, dict[str, Any]]]:
     explicit = tuple(trace_keys or ("ada_trace", "trace", "lineage_trace"))
     payloads: list[tuple[str, dict[str, Any]]] = []
     for key, value in state.items():
         key_text = str(key)
-        looks_like_trace_key = key_text in explicit or key_text.endswith("_trace") or key_text.endswith("_result") or key_text in {"result"}
+        looks_like_trace_key = (
+            key_text in explicit
+            or key_text.endswith("_trace")
+            or key_text.endswith("_result")
+            or key_text in {"result"}
+        )
         if not looks_like_trace_key:
             continue
         payload = _mapping(value)
-        if any(marker in payload for marker in ("normalized", "tool_events", "tools", "blocks", "trace_schema_version", "answer")):
+        if any(
+            marker in payload
+            for marker in (
+                "normalized",
+                "tool_events",
+                "tools",
+                "blocks",
+                "trace_schema_version",
+                "answer",
+            )
+        ):
             payloads.append((key_text, payload))
     return payloads
 
@@ -306,10 +356,16 @@ def lineage_from_langgraph_state(
     from agentic_systems.lineage import LineageMemory, LineageStep
 
     if not isinstance(state, Mapping):
-        raise TypeError("lineage_from_langgraph_state(...) expects a mapping-like graph state.")
+        raise TypeError(
+            "lineage_from_langgraph_state(...) expects a mapping-like graph state."
+        )
 
     state_dict = dict(state)
-    resolved_question = question if question is not None else str(state_dict.get("prompt") or state_dict.get("user_prompt") or "")
+    resolved_question = (
+        question
+        if question is not None
+        else str(state_dict.get("prompt") or state_dict.get("user_prompt") or "")
+    )
     answer = ""
     for key in answer_keys:
         value = state_dict.get(str(key))
@@ -321,7 +377,9 @@ def lineage_from_langgraph_state(
             if answer:
                 break
     if not answer:
-        for _key, payload in _trace_payloads_from_state(state_dict, trace_keys=trace_keys):
+        for _key, payload in _trace_payloads_from_state(
+            state_dict, trace_keys=trace_keys
+        ):
             answer = _answer_from_payload(payload)
             if answer:
                 break
@@ -331,14 +389,17 @@ def lineage_from_langgraph_state(
             step_id="input",
             kind="input",
             title="Graph input received",
-            summary=_short_text(resolved_question, max_chars=280) or "No graph input text recorded.",
+            summary=_short_text(resolved_question, max_chars=280)
+            or "No graph input text recorded.",
             source="langgraph.state",
             why="Esta es la entrada que inició la ejecución del grafo.",
             evidence={"state_keys": sorted(map(str, state_dict.keys()))},
         )
     ]
 
-    plan = state_dict.get("plan") if isinstance(state_dict.get("plan"), Mapping) else None
+    plan = (
+        state_dict.get("plan") if isinstance(state_dict.get("plan"), Mapping) else None
+    )
     if plan:
         route = plan.get("route") or state_dict.get("route")
         reason = str(plan.get("reason") or "The graph produced a routing plan.").strip()
@@ -363,9 +424,13 @@ def lineage_from_langgraph_state(
         tools_for_node = _run_tools(payload)
         if tools_for_node:
             summaries = [_tool_summary(tool) for tool in tools_for_node]
-            node_summary = f"{key}: " + "; ".join(summary for summary in summaries if summary)
+            node_summary = f"{key}: " + "; ".join(
+                summary for summary in summaries if summary
+            )
         else:
-            node_summary = _answer_from_payload(payload) or f"State payload {key} recorded."
+            node_summary = (
+                _answer_from_payload(payload) or f"State payload {key} recorded."
+            )
         steps.append(
             LineageStep(
                 step_id=f"node_{index}",
@@ -375,7 +440,10 @@ def lineage_from_langgraph_state(
                 source=key,
                 why="El nodo dejó salida estructurada para auditoría.",
                 evidence={
-                    "engine": payload.get("engine") or payload.get("runtime", {}).get("engine") if isinstance(payload.get("runtime"), Mapping) else payload.get("engine"),
+                    "engine": payload.get("engine")
+                    or payload.get("runtime", {}).get("engine")
+                    if isinstance(payload.get("runtime"), Mapping)
+                    else payload.get("engine"),
                     "model": payload.get("model"),
                     "ok": payload.get("run_ok", payload.get("ok")),
                 },
@@ -400,22 +468,34 @@ def lineage_from_langgraph_state(
                     step_id=f"node_{index}_validation",
                     kind="validation",
                     title="Graph validation",
-                    summary="Graph validation passed." if validation.get("ok", True) else "Graph validation reported issues.",
+                    summary="Graph validation passed."
+                    if validation.get("ok", True)
+                    else "Graph validation reported issues.",
                     source=str(validation.get("node") or key),
                     why="La validación del grafo conserva lo esperado y lo ejecutado.",
                     evidence={"validation": dict(validation)},
                 )
             )
 
-    graph_validation = state_dict.get("graph_validation") if isinstance(state_dict.get("graph_validation"), Mapping) else None
-    if graph_validation and not any(step.step_id.endswith("validation") for step in steps):
+    graph_validation = (
+        state_dict.get("graph_validation")
+        if isinstance(state_dict.get("graph_validation"), Mapping)
+        else None
+    )
+    if graph_validation and not any(
+        step.step_id.endswith("validation") for step in steps
+    ):
         steps.append(
             LineageStep(
                 step_id="graph_validation",
                 kind="validation",
                 title="Graph validation",
-                summary="Graph validation passed." if graph_validation.get("ok", True) else "Graph validation reported issues.",
-                source=str(graph_validation.get("node") or "langgraph.state.graph_validation"),
+                summary="Graph validation passed."
+                if graph_validation.get("ok", True)
+                else "Graph validation reported issues.",
+                source=str(
+                    graph_validation.get("node") or "langgraph.state.graph_validation"
+                ),
                 why="La validación final confirma si la ruta esperada se ejecutó.",
                 evidence={"validation": dict(graph_validation)},
             )
@@ -426,10 +506,14 @@ def lineage_from_langgraph_state(
             step_id="answer",
             kind="answer",
             title="Graph final answer",
-            summary=_short_text(answer, max_chars=520) or "No final graph answer text recorded.",
+            summary=_short_text(answer, max_chars=520)
+            or "No final graph answer text recorded.",
             source="langgraph.state",
             why="Esta es la respuesta final derivada del estado consolidado del grafo.",
-            evidence={"answer": answer, "state_keys": sorted(map(str, state_dict.keys()))},
+            evidence={
+                "answer": answer,
+                "state_keys": sorted(map(str, state_dict.keys())),
+            },
         )
     )
 
@@ -441,7 +525,11 @@ def lineage_from_langgraph_state(
         ok=bool(graph_validation.get("ok", True)) if graph_validation else True,
         steps=steps,
         tags=list(tags or ["integration", "langgraph"]),
-        metadata={"integration": "langgraph", "state_keys": sorted(map(str, state_dict.keys())), **(metadata or {})},
+        metadata={
+            "integration": "langgraph",
+            "state_keys": sorted(map(str, state_dict.keys())),
+            **(metadata or {}),
+        },
     )
 
 
@@ -481,12 +569,16 @@ def build_langgraph_agent_node(
                     mode=mode,
                     config=config,
                 )
-            raise TypeError("async_node=True requires an agent exposing arun(...) or as_async_node(...).")
+            raise TypeError(
+                "async_node=True requires an agent exposing arun(...) or as_async_node(...)."
+            )
 
         async def _async_node(state: LangGraphState) -> dict[str, Any]:
             prompt = _read_state_input(state, input)
             result = await agent.arun(prompt, mode=mode, config=config)
-            return _map_node_update(result, state, output=output, trace=trace, result_key=result_key)
+            return _map_node_update(
+                result, state, output=output, trace=trace, result_key=result_key
+            )
 
         return _async_node
 
@@ -501,16 +593,18 @@ def build_langgraph_agent_node(
                 mode=mode,
                 config=config,
             )
-        raise TypeError("build_langgraph_agent_node expects an agent exposing run(...) or as_node(...).")
+        raise TypeError(
+            "build_langgraph_agent_node expects an agent exposing run(...) or as_node(...)."
+        )
 
     def _node(state: LangGraphState) -> dict[str, Any]:
         prompt = _read_state_input(state, input)
         result = agent.run(prompt, mode=mode, config=config)
-        return _map_node_update(result, state, output=output, trace=trace, result_key=result_key)
+        return _map_node_update(
+            result, state, output=output, trace=trace, result_key=result_key
+        )
 
     return _node
-
-
 
 
 def agent_node(
@@ -586,7 +680,6 @@ class GraphApp:
         return lineage_from_langgraph_state(state, **kwargs)
 
 
-
 class _PortableGraph:
     """Dependency-free backend for the portable ``graph`` contract."""
 
@@ -617,14 +710,20 @@ class _PortableGraph:
             return None
         item = matches[0]
         if len(item) not in {2, 3} or not callable(item[1]):
-            raise TypeError("Each conditional edge must be (source, route_fn) or (source, route_fn, path_map).")
+            raise TypeError(
+                "Each conditional edge must be (source, route_fn) or (source, route_fn, path_map)."
+            )
         route = str(item[1](state))
         if len(item) == 3:
             path_map = item[2]
             if not isinstance(path_map, Mapping):
-                raise TypeError("conditional edge path_map must be a mapping of route -> node name.")
+                raise TypeError(
+                    "conditional edge path_map must be a mapping of route -> node name."
+                )
             if route not in path_map:
-                raise GraphContractError(f"Conditional route {route!r} is not present in path_map.")
+                raise GraphContractError(
+                    f"Conditional route {route!r} is not present in path_map."
+                )
             return str(path_map[route])
         return route
 
@@ -632,7 +731,9 @@ class _PortableGraph:
         conditional = self._conditional_target(source, state)
         if conditional is not None:
             return conditional
-        targets = [target for edge_source, target in self.edges if edge_source == source]
+        targets = [
+            target for edge_source, target in self.edges if edge_source == source
+        ]
         if not targets:
             return "END"
         if len(targets) > 1:
@@ -665,7 +766,9 @@ class _PortableGraph:
             current = self._next_target(current, result)
             steps += 1
             if steps > step_limit:
-                raise GraphContractError("Portable graph exceeded its cycle safety limit.")
+                raise GraphContractError(
+                    "Portable graph exceeded its cycle safety limit."
+                )
         return result
 
     async def ainvoke(self, state: Any) -> Any:
@@ -683,8 +786,11 @@ class _PortableGraph:
             current = self._next_target(current, result)
             steps += 1
             if steps > step_limit:
-                raise GraphContractError("Portable graph exceeded its cycle safety limit.")
+                raise GraphContractError(
+                    "Portable graph exceeded its cycle safety limit."
+                )
         return result
+
 
 def _edge_endpoint(value: str, *, start: Any, end: Any) -> Any:
     text = str(value)
@@ -695,12 +801,19 @@ def _edge_endpoint(value: str, *, start: Any, end: Any) -> Any:
     return text
 
 
-def _normalize_conditional_path_map(path_map: Mapping[str, str] | None, *, start: Any, end: Any) -> dict[str, Any] | None:
+def _normalize_conditional_path_map(
+    path_map: Mapping[str, str] | None, *, start: Any, end: Any
+) -> dict[str, Any] | None:
     if path_map is None:
         return None
     if not isinstance(path_map, Mapping):
-        raise TypeError("conditional edge path_map must be a mapping of route -> node name.")
-    return {str(route): _edge_endpoint(target, start=start, end=end) for route, target in path_map.items()}
+        raise TypeError(
+            "conditional edge path_map must be a mapping of route -> node name."
+        )
+    return {
+        str(route): _edge_endpoint(target, start=start, end=end)
+        for route, target in path_map.items()
+    }
 
 
 def graph(
@@ -711,7 +824,8 @@ def graph(
     conditional_edges: Iterable[
         tuple[str, Callable[[LangGraphState], str]]
         | tuple[str, Callable[[LangGraphState], str], Mapping[str, str]]
-    ] | None = None,
+    ]
+    | None = None,
     engine: str = "auto",
     name: str = "graph",
     compile_graph: bool = True,
@@ -726,19 +840,25 @@ def graph(
 
     resolved_engine = str(engine).strip().lower().replace("_", "-")
     if resolved_engine not in {"auto", "portable", "langgraph"}:
-        raise ValueError("graph(..., engine=...) supports 'auto', 'portable' or 'langgraph'.")
+        raise ValueError(
+            "graph(..., engine=...) supports 'auto', 'portable' or 'langgraph'."
+        )
     node_map = dict(nodes or {})
     edge_list = list(edges or [])
     conditional_list = list(conditional_edges or [])
     if resolved_engine == "portable":
-        native = _PortableGraph(nodes=node_map, edges=edge_list, conditional_edges=conditional_list)
+        native = _PortableGraph(
+            nodes=node_map, edges=edge_list, conditional_edges=conditional_list
+        )
         return GraphApp(native=native, engine="portable", name=name)
     try:
         START, END, StateGraph = _import_langgraph_graph()
     except ImportError:
         if resolved_engine == "langgraph":
             raise
-        native = _PortableGraph(nodes=node_map, edges=edge_list, conditional_edges=conditional_list)
+        native = _PortableGraph(
+            nodes=node_map, edges=edge_list, conditional_edges=conditional_list
+        )
         return GraphApp(native=native, engine="portable", name=name)
     native = StateGraph(state)
     for node_name, node in node_map.items():
@@ -750,12 +870,18 @@ def graph(
         )
     for item in conditional_list:
         if not isinstance(item, tuple) or len(item) not in {2, 3}:
-            raise TypeError("Each conditional edge must be (source, route_fn) or (source, route_fn, path_map).")
+            raise TypeError(
+                "Each conditional edge must be (source, route_fn) or (source, route_fn, path_map)."
+            )
         source = _edge_endpoint(item[0], start=START, end=END)
         route_fn = item[1]
         if not callable(route_fn):
             raise TypeError("conditional edge route_fn must be callable.")
-        path_map = _normalize_conditional_path_map(item[2], start=START, end=END) if len(item) == 3 else None
+        path_map = (
+            _normalize_conditional_path_map(item[2], start=START, end=END)
+            if len(item) == 3
+            else None
+        )
         if path_map is None:
             native.add_conditional_edges(source, route_fn)
         else:
@@ -781,7 +907,9 @@ def build_langgraph_agent_graph(
     """Build a one-node native LangGraph app for an Agent-like object."""
 
     START, END, StateGraph = _import_langgraph_graph()
-    resolved_node_name = _validate_node_name(node_name or getattr(agent, "name", "agent"))
+    resolved_node_name = _validate_node_name(
+        node_name or getattr(agent, "name", "agent")
+    )
     graph = StateGraph(state_schema)
     graph.add_node(
         resolved_node_name,
@@ -801,17 +929,23 @@ def build_langgraph_agent_graph(
     return graph.compile() if compile_graph else graph
 
 
-def _coerce_planned_graph(planned_graph: Any | None, agents: Mapping[str, Any] | None, kwargs: dict[str, Any]) -> Any:
+def _coerce_planned_graph(
+    planned_graph: Any | None, agents: Mapping[str, Any] | None, kwargs: dict[str, Any]
+) -> Any:
     if planned_graph is not None:
         if not hasattr(planned_graph, "invoke"):
             raise TypeError("planned_graph must expose invoke(state).")
         if agents is not None:
             raise TypeError("Pass either planned_graph=... or agents=..., not both.")
         if kwargs:
-            raise TypeError("Planner execution kwargs are only valid when building from agents=....")
+            raise TypeError(
+                "Planner execution kwargs are only valid when building from agents=...."
+            )
         return planned_graph
     if agents is None:
-        raise TypeError("build_langgraph_planned_graph requires planned_graph=... or agents=....")
+        raise TypeError(
+            "build_langgraph_planned_graph requires planned_graph=... or agents=...."
+        )
     return PlannedAgentGraph(agents, **kwargs)
 
 
@@ -832,13 +966,17 @@ def build_langgraph_planned_graph(
     """
 
     START, END, StateGraph = _import_langgraph_graph()
-    graph_runner = _coerce_planned_graph(planned_graph, agents, dict(planned_graph_kwargs))
+    graph_runner = _coerce_planned_graph(
+        planned_graph, agents, dict(planned_graph_kwargs)
+    )
     resolved_node_name = _validate_node_name(node_name)
 
     def _node(state: LangGraphState) -> dict[str, Any]:
         result = graph_runner.invoke(state)
         if not isinstance(result, dict):
-            raise TypeError("Planned graph LangGraph node must return a dict state update.")
+            raise TypeError(
+                "Planned graph LangGraph node must return a dict state update."
+            )
         return result
 
     graph = StateGraph(state_schema)

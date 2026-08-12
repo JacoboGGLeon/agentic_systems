@@ -10,6 +10,7 @@ Releases, and superseded plans remain available through Git history.
 |---|---|
 | Understand the product and its public model | [Project README](../README.md) |
 | Install the package and optional backends | [Installation](../INSTALL.md) |
+| Migrate an existing 1.1 project | [Migration From 1.1 To 2.0](MIGRATION_1_1_TO_2_0.md) |
 | Run the first provider-backed notebook | [First Run Onboarding](ONBOARDING_FIRST_RUN.md) |
 | Learn through executable notebooks | [Tutorials](../tutorials/README.md) |
 

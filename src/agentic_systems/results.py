@@ -4,12 +4,12 @@ from __future__ import annotations
 
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, PrivateAttr, model_validator
 
 from .contracts import AgentContract, ValidationResult, validate_tool_expectation
 from .engines.names import BEDROCK_RUNTIME_ENGINE
 from .final_answer import final_answer
-from .tools.compat import ToolEvent
+from .tools.events import ToolEvent
 
 TRACE_SCHEMA_VERSION = "agentic_systems.trace.v1"
 RUN_SCHEMA_VERSION = "agentic_systems.run.v1"
@@ -20,18 +20,24 @@ def _contains_subset(actual: Any, expected: Any) -> bool:
     if isinstance(expected, dict):
         if not isinstance(actual, dict):
             return False
-        return all(key in actual and _contains_subset(actual[key], value) for key, value in expected.items())
+        return all(
+            key in actual and _contains_subset(actual[key], value)
+            for key, value in expected.items()
+        )
     if isinstance(expected, list):
         if not isinstance(actual, list):
             return False
-        return all(any(_contains_subset(item, exp) for item in actual) for exp in expected)
+        return all(
+            any(_contains_subset(item, exp) for item in actual) for exp in expected
+        )
     if isinstance(actual, str) and isinstance(expected, str):
         return expected in actual
     return actual == expected
 
 
-
-def _classify_tool_failures(tool_events: list[ToolEvent]) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+def _classify_tool_failures(
+    tool_events: list[ToolEvent],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     recovered: list[dict[str, Any]] = []
     unresolved: list[dict[str, Any]] = []
     for index, event in enumerate(tool_events):
@@ -39,7 +45,11 @@ def _classify_tool_failures(tool_events: list[ToolEvent]) -> tuple[list[dict[str
             continue
         payload = event.model_dump(mode="json")
         recovery = next(
-            (later for later in tool_events[index + 1 :] if later.name == event.name and later.ok),
+            (
+                later
+                for later in tool_events[index + 1 :]
+                if later.name == event.name and later.ok
+            ),
             None,
         )
         if recovery is None:
@@ -50,9 +60,20 @@ def _classify_tool_failures(tool_events: list[ToolEvent]) -> tuple[list[dict[str
 
 
 def _append_unique_error(errors: list[dict[str, Any]], error: dict[str, Any]) -> None:
-    identity = (error.get("code"), error.get("message"), error.get("path"), error.get("tool_event_id"))
+    identity = (
+        error.get("code"),
+        error.get("message"),
+        error.get("path"),
+        error.get("tool_event_id"),
+    )
     if not any(
-        (item.get("code"), item.get("message"), item.get("path"), item.get("tool_event_id")) == identity
+        (
+            item.get("code"),
+            item.get("message"),
+            item.get("path"),
+            item.get("tool_event_id"),
+        )
+        == identity
         for item in errors
     ):
         errors.append(error)
@@ -63,11 +84,17 @@ def _result_errors(result: "RunResult") -> list[dict[str, Any]]:
     if not result.ok and result.text:
         errors.append({"code": "run_failed", "message": result.text})
     recovered, _unresolved = _classify_tool_failures(result.tool_events)
-    recovered_by_id = {item.get("id"): item.get("recovered_by_tool_event_id") for item in recovered}
+    recovered_by_id = {
+        item.get("id"): item.get("recovered_by_tool_event_id") for item in recovered
+    }
     for event in result.tool_events:
         if event.ok:
             continue
-        payload = event.model_dump(mode="json") if hasattr(event, "model_dump") else dict(event)
+        payload = (
+            event.model_dump(mode="json")
+            if hasattr(event, "model_dump")
+            else dict(event)
+        )
         error = payload.get("error") or payload.get("output") or {}
         recovered_by = recovered_by_id.get(payload.get("id"))
         entry = {
@@ -81,6 +108,7 @@ def _result_errors(result: "RunResult") -> list[dict[str, Any]]:
             entry["recovered_by_tool_event_id"] = recovered_by
         errors.append(entry)
     return errors
+
 
 class RunResult(BaseModel):
     """Normalized result returned by every Agentic Systems engine."""
@@ -103,6 +131,12 @@ class RunResult(BaseModel):
     errors: list[dict[str, Any]] = Field(default_factory=list)
     meta: dict[str, Any] = Field(default_factory=dict)
 
+    _native_result: Any = PrivateAttr(default=None)
+
+    @property
+    def native_result(self) -> Any:
+        """Return the original Framework SDK result without serializing it."""
+        return self._native_result
 
     @model_validator(mode="after")
     def _ensure_final_answer(self) -> "RunResult":
@@ -132,7 +166,11 @@ class RunResult(BaseModel):
         data: dict[str, Any] | None = None,
         contract: AgentContract | dict[str, Any] | None = None,
     ) -> "RunResult":
-        raw = runtime_result.model_dump(mode="json") if hasattr(runtime_result, "model_dump") else dict(runtime_result)
+        raw = (
+            runtime_result.model_dump(mode="json")
+            if hasattr(runtime_result, "model_dump")
+            else dict(runtime_result)
+        )
         raw_responses = raw.get("raw_responses") or []
         usage = _usage_totals(raw_responses)
         result = cls(
@@ -140,7 +178,10 @@ class RunResult(BaseModel):
             data=data or {},
             ok=bool(raw.get("final_text") or raw.get("text")),
             messages=raw.get("messages") or [],
-            tool_events=[ToolEvent.from_runtime_record(item) for item in raw.get("tool_calls") or []],
+            tool_events=[
+                ToolEvent.from_runtime_record(item)
+                for item in raw.get("tool_calls") or []
+            ],
             raw_responses=raw_responses,
             usage=usage,
             engine=engine,
@@ -150,7 +191,9 @@ class RunResult(BaseModel):
         )
         return result.apply_validation(result.validate(contract))
 
-    def apply_validation(self, validation: ValidationResult | dict[str, Any]) -> "RunResult":
+    def apply_validation(
+        self, validation: ValidationResult | dict[str, Any]
+    ) -> "RunResult":
         """Apply contract validation without allowing success to contradict it."""
 
         if isinstance(validation, ValidationResult):
@@ -211,7 +254,9 @@ class RunResult(BaseModel):
             )
 
         event_ids = [event.id for event in self.tool_events if event.id]
-        duplicate_ids = sorted({event_id for event_id in event_ids if event_ids.count(event_id) > 1})
+        duplicate_ids = sorted(
+            {event_id for event_id in event_ids if event_ids.count(event_id) > 1}
+        )
         if duplicate_ids:
             result.add(
                 "duplicate_tool_event_id",
@@ -243,7 +288,12 @@ class RunResult(BaseModel):
                 severity="warning",
                 path="errors",
             )
-        if not self.ok and not self.errors and not unresolved and not validation_has_errors:
+        if (
+            not self.ok
+            and not self.errors
+            and not unresolved
+            and not validation_has_errors
+        ):
             result.add(
                 "failure_without_error_evidence",
                 "RunResult.ok is false but no error, failed validation, or unresolved Tool failure explains it.",
@@ -252,7 +302,11 @@ class RunResult(BaseModel):
             )
 
         for key, value in self.usage.items():
-            if isinstance(value, (int, float)) and not isinstance(value, bool) and value < 0:
+            if (
+                isinstance(value, (int, float))
+                and not isinstance(value, bool)
+                and value < 0
+            ):
                 result.add(
                     "negative_usage_value",
                     f"Usage metric '{key}' cannot be negative; received {value}.",
@@ -289,7 +343,6 @@ class RunResult(BaseModel):
 
         self.check_invariants().raise_if_failed()
         return self
-
 
     def normalized(self) -> dict[str, Any]:
         """Return the framework-agnostic run schema used by traces and notebooks.
@@ -342,9 +395,17 @@ class RunResult(BaseModel):
                     }
                     for tool in tools
                 ],
-                "sql": [{"tool": tool.get("name"), "sql": tool.get("sql")} for tool in tools if tool.get("sql")],
+                "sql": [
+                    {"tool": tool.get("name"), "sql": tool.get("sql")}
+                    for tool in tools
+                    if tool.get("sql")
+                ],
                 "tables": [
-                    {"tool": tool.get("name"), "row_count": tool.get("row_count"), "rows": tool.get("rows")}
+                    {
+                        "tool": tool.get("name"),
+                        "row_count": tool.get("row_count"),
+                        "rows": tool.get("rows"),
+                    }
                     for tool in tools
                     if tool.get("rows")
                 ],
@@ -381,11 +442,15 @@ class RunResult(BaseModel):
             "turns": len(self.raw_responses),
             "message_count": len(self.messages),
             "tool_event_count": len(self.tool_events),
-            "successful_tool_count": len([event for event in self.tool_events if event.ok]),
+            "successful_tool_count": len(
+                [event for event in self.tool_events if event.ok]
+            ),
             "failed_tool_event_count": len(failed),
             "recovered_tool_error_count": len(recovered),
             "unresolved_failed_tool_count": len(unresolved),
-            "tool_events": [event.model_dump(mode="json") for event in self.tool_events],
+            "tool_events": [
+                event.model_dump(mode="json") for event in self.tool_events
+            ],
             "normalized": self.normalized(),
             "recovered_tool_errors": recovered,
             "unresolved_failed_tools": unresolved,
@@ -402,7 +467,9 @@ class RunResult(BaseModel):
             return full
         raise ValueError("mode must be 'compact' or 'full'")
 
-    def validate(self, contract: AgentContract | dict[str, Any] | None = None) -> ValidationResult:
+    def validate(
+        self, contract: AgentContract | dict[str, Any] | None = None
+    ) -> ValidationResult:
         contract_obj = AgentContract.coerce(contract)
         result = ValidationResult(ok=True)
         called = [event.name for event in self.tool_events]
@@ -424,22 +491,30 @@ class RunResult(BaseModel):
                     path="contract.must_not_call",
                 )
 
-
         if contract_obj.tool_expectation:
-            tool_check = validate_tool_expectation(called, contract_obj.tool_expectation)
+            tool_check = validate_tool_expectation(
+                called, contract_obj.tool_expectation
+            )
             for issue in tool_check.get("issues", []):
                 result.add(
                     str(issue.get("code") or "tool_expectation_failed"),
                     str(issue.get("message") or "Tool expectation failed."),
                     path="contract.tool_expectation",
-                    meta={"called_tools": called, "expectation": tool_check.get("expectation"), "issue": issue},
+                    meta={
+                        "called_tools": called,
+                        "expectation": tool_check.get("expectation"),
+                        "issue": issue,
+                    },
                 )
 
         if contract_obj.failure_policy in {"no_unresolved", "fail_fast"}:
             for idx, event in enumerate(self.tool_events):
                 if event.ok:
                     continue
-                recovered = any(later.name == event.name and later.ok for later in self.tool_events[idx + 1 :])
+                recovered = any(
+                    later.name == event.name and later.ok
+                    for later in self.tool_events[idx + 1 :]
+                )
                 if not recovered:
                     result.add(
                         "unresolved_tool_failure",
@@ -448,7 +523,9 @@ class RunResult(BaseModel):
                         meta={"tool_event_id": event.id, "error": event.error or {}},
                     )
 
-        if contract_obj.expected_output is not None and not _contains_subset(self.data or {"text": self.text}, contract_obj.expected_output):
+        if contract_obj.expected_output is not None and not _contains_subset(
+            self.data or {"text": self.text}, contract_obj.expected_output
+        ):
             result.add(
                 "expected_output_mismatch",
                 "Run output does not contain the expected subset.",
@@ -457,7 +534,11 @@ class RunResult(BaseModel):
             )
 
         for tool_name, expected_subset in contract_obj.expected_tool_outputs.items():
-            matching = [event for event in self.tool_events if event.name == tool_name and event.ok]
+            matching = [
+                event
+                for event in self.tool_events
+                if event.name == tool_name and event.ok
+            ]
             if not matching:
                 result.add(
                     "expected_tool_output_missing_tool",
@@ -465,7 +546,12 @@ class RunResult(BaseModel):
                     path="contract.expected_tool_outputs",
                 )
                 continue
-            if not any(_contains_subset(event.output.get("data", event.output), expected_subset) for event in matching):
+            if not any(
+                _contains_subset(
+                    event.output.get("data", event.output), expected_subset
+                )
+                for event in matching
+            ):
                 result.add(
                     "expected_tool_output_mismatch",
                     f"Tool '{tool_name}' output does not contain expected subset.",
@@ -490,9 +576,15 @@ def _usage_totals(raw_responses: list[dict[str, Any]]) -> dict[str, Any]:
 
     for raw in raw_responses:
         usage = raw.get("usage", {}) or {}
-        totals["input_tokens"] += int(usage.get("inputTokens", usage.get("input_tokens", 0)) or 0)
-        totals["output_tokens"] += int(usage.get("outputTokens", usage.get("output_tokens", 0)) or 0)
-        totals["total_tokens"] += int(usage.get("totalTokens", usage.get("total_tokens", 0)) or 0)
+        totals["input_tokens"] += int(
+            usage.get("inputTokens", usage.get("input_tokens", 0)) or 0
+        )
+        totals["output_tokens"] += int(
+            usage.get("outputTokens", usage.get("output_tokens", 0)) or 0
+        )
+        totals["total_tokens"] += int(
+            usage.get("totalTokens", usage.get("total_tokens", 0)) or 0
+        )
 
         service_value = _coerce_number(raw.get("service_latency_ms"))
         if service_value is not None:
@@ -527,7 +619,9 @@ def _tool_summary(payload: dict[str, Any]) -> str:
         return str(payload["error"])
     if payload.get("text"):
         return str(payload["text"])
-    important = {key: payload[key] for key in ("operation", "result", "value") if key in payload}
+    important = {
+        key: payload[key] for key in ("operation", "result", "value") if key in payload
+    }
     if important:
         import json
 
@@ -542,7 +636,11 @@ def _tool_summary(payload: dict[str, Any]) -> str:
 def _normalize_tool_event(event: ToolEvent) -> dict[str, Any]:
     raw = event.model_dump(mode="json")
     output = raw.get("output") or {}
-    payload = output.get("data") if isinstance(output, dict) and isinstance(output.get("data"), dict) else output
+    payload = (
+        output.get("data")
+        if isinstance(output, dict) and isinstance(output.get("data"), dict)
+        else output
+    )
     if not isinstance(payload, dict):
         payload = {"value": payload}
     table = payload.get("table") if isinstance(payload.get("table"), dict) else {}

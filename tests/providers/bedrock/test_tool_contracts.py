@@ -1,6 +1,4 @@
 import os
-import sys
-import types
 from dataclasses import dataclass
 
 from pydantic import BaseModel
@@ -53,7 +51,7 @@ def test_registered_tools_return_canonical_dict_payloads():
 
     @runtime.tool
     def sumar(a: int, b: int) -> dict:
-        """Suma dos números."""
+        """Suma dos numeros."""
         return {"operation": "sumar", "result": a + b}
 
     @runtime.tool
@@ -79,7 +77,7 @@ def test_validation_errors_are_dict_payloads():
 
     @runtime.tool
     def dividir(a: float, b: float) -> dict:
-        """Divide dos números."""
+        """Divide dos numeros."""
         if b == 0:
             raise ZeroDivisionError("division by zero")
         return {"operation": "dividir", "result": a / b}
@@ -133,141 +131,6 @@ def test_parse_framework_tool_output_requires_valid_envelope_dict():
     assert parsed["ok"] is False
     assert parsed["tool_name"] == "sumar"
     assert parsed["data"]["error_type"] == "MalformedToolEnvelope"
-
-
-def test_openai_history_conversion_marks_non_envelope_output_as_tool_error():
-    runtime = build_runtime()
-
-    messages, _ = runtime._openai_input_to_bedrock_messages(
-        [
-            {
-                "type": "function_call",
-                "call_id": "call_1",
-                "name": "dividir",
-                "arguments": "{}",
-            },
-            {
-                "type": "function_call_output",
-                "call_id": "call_1",
-                "output": "An error occurred while running the tool.",
-            },
-        ]
-    )
-
-    assert messages[0]["role"] == "assistant"
-    assert messages[1]["role"] == "user"
-    tool_result = messages[1]["content"][0]["toolResult"]
-    assert tool_result["status"] == "error"
-    payload = tool_result["content"][0]["json"]
-    assert payload["tool_name"] == "dividir"
-    assert payload["ok"] is False
-    assert payload["data"]["error_type"] == "NonEnvelopeToolOutput"
-
-
-def test_coerce_framework_tool_arguments_accepts_dict_and_json_string():
-    assert BedrockRuntime._coerce_framework_tool_arguments({"a": 1}) == {"a": 1}
-    assert BedrockRuntime._coerce_framework_tool_arguments('{"a": 1}') == {"a": 1}
-    assert BedrockRuntime._coerce_framework_tool_arguments(None) == {}
-
-
-def test_openai_function_tool_accepts_dict_raw_args_without_json_string_assumption(monkeypatch):
-    import asyncio
-    import json
-
-    class FakeFunctionTool:
-        def __init__(self, **kwargs):
-            self.__dict__.update(kwargs)
-
-    fake_agents = types.SimpleNamespace(FunctionTool=FakeFunctionTool)
-    monkeypatch.setitem(sys.modules, "agents", fake_agents)
-
-    runtime = build_runtime()
-
-    @runtime.tool
-    def sumar(a: int, b: int) -> dict:
-        """Suma dos números."""
-        return {"result": a + b}
-
-    tool = runtime.as_openai_runtime_tools(["sumar"])[0]
-    raw = asyncio.run(tool.on_invoke_tool(None, {"a": 17, "b": 25}))
-    parsed = json.loads(raw)
-
-    assert parsed["ok"] is True
-    assert parsed["tool_name"] == "sumar"
-    assert parsed["kind"] == "object"
-    assert parsed["data"] == {"result": 42}
-
-
-def test_contains_subset_uses_substring_for_nested_strings():
-    actual = {"content": "# Tabla\n| 2 | azul |\n"}
-    expected = {"content": "| 2 | azul |"}
-    assert BedrockRuntime._contains_subset(actual, expected) is True
-
-
-def test_openai_strict_json_schema_adds_additional_properties_false():
-    schema = {
-        "type": "object",
-        "properties": {
-            "a": {"type": "number"},
-            "nested": {"type": "object", "properties": {"x": {"type": "string"}}},
-        },
-        "required": ["a"],
-    }
-    strict = BedrockRuntime._ensure_openai_strict_json_schema(schema)
-    assert strict["additionalProperties"] is False
-    assert strict["properties"]["nested"]["additionalProperties"] is False
-
-
-def test_openai_unresolved_failed_tools_from_input_detects_recovered_failure():
-    runtime = build_runtime()
-    failed = runtime.to_envelope(
-        {"error_type": "ValidationError", "message": "missing args"},
-        tool_name="restar",
-        ok=False,
-    ).model_dump_json()
-    ok = runtime.to_envelope(
-        {"operation": "restar", "result": 21},
-        tool_name="restar",
-        ok=True,
-    ).model_dump_json()
-
-    unresolved_first = runtime._openai_unresolved_failed_tools_from_input([
-        {"type": "function_call", "call_id": "c1", "name": "restar", "arguments": "{}"},
-        {"type": "function_call_output", "call_id": "c1", "output": failed},
-    ])
-    assert len(unresolved_first) == 1
-    assert unresolved_first[0]["tool_name"] == "restar"
-
-    unresolved_after_repair = runtime._openai_unresolved_failed_tools_from_input([
-        {"type": "function_call", "call_id": "c1", "name": "restar", "arguments": "{}"},
-        {"type": "function_call_output", "call_id": "c1", "output": failed},
-        {"type": "function_call", "call_id": "c2", "name": "restar", "arguments": '{"a": 30, "b": 9}'},
-        {"type": "function_call_output", "call_id": "c2", "output": ok},
-    ])
-    assert unresolved_after_repair == []
-
-
-def test_openai_history_conversion_skips_orphan_tool_outputs():
-    runtime = build_runtime()
-    ok = runtime.to_envelope(
-        {"operation": "sumar", "result": 42},
-        tool_name="sumar",
-        ok=True,
-    ).model_dump_json()
-
-    messages, extra_system = runtime._openai_input_to_bedrock_messages(
-        [
-            {"role": "user", "content": "calcula"},
-            {"type": "function_call_output", "call_id": "orphan", "output": ok},
-        ]
-    )
-
-    assert all(
-        "toolResult" not in block
-        for message in messages
-        for block in message.get("content", [])
-    )
-    assert any("orphan" in block.get("text", "") for block in extra_system)
 
 
 def test_agent_contract_completion_aliases_are_normalized():

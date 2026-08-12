@@ -16,12 +16,13 @@ from ..engines.names import (
     normalize_engine_text,
 )
 from ..results import RunResult
+from .config import NATIVE_FRAMEWORK
 
 
 FRAMEWORK_BOUNDARY_SCHEMA_VERSION = "agentic_systems.framework-boundary.v1"
 GRAPH_BOUNDARY_SCHEMA_VERSION = "agentic_systems.graph-boundary.v1"
 
-FrameworkIntegrationKind = Literal["native-adapter", "style-only", "declarative-only"]
+FrameworkIntegrationKind = Literal["native-adapter"]
 GraphBoundaryKind = Literal["agentic-systems-native", "framework-native"]
 
 PRESERVED_RUN_RESULT_FIELDS = (
@@ -52,7 +53,10 @@ class FrameworkProfile(BaseModel):
 
     @property
     def has_adapter(self) -> bool:
-        return self.integration_kind == "native-adapter" and self.adapter_module is not None
+        return (
+            self.integration_kind == "native-adapter"
+            and self.adapter_module is not None
+        )
 
     def check(self, *, require_adapter: bool = False) -> ValidationResult:
         result = ValidationResult(ok=True)
@@ -100,7 +104,9 @@ class FrameworkProjectionReport(BaseModel):
 
     def raise_if_failed(self) -> "FrameworkProjectionReport":
         if not self.ok:
-            raise ValueError(f"Framework projection failed for {self.framework!r}: {self.issues}")
+            raise ValueError(
+                f"Framework projection failed for {self.framework!r}: {self.issues}"
+            )
         return self
 
     def to_dict(self) -> dict[str, Any]:
@@ -115,7 +121,9 @@ def framework_profile(framework: str) -> FrameworkProfile:
         return _FRAMEWORK_PROFILES[name]
     except KeyError as exc:
         available = ", ".join(_FRAMEWORK_PROFILES)
-        raise ValueError(f"Unknown framework {framework!r}. Use one of: {available}.") from exc
+        raise ValueError(
+            f"Unknown framework {framework!r}. Use one of: {available}."
+        ) from exc
 
 
 def framework_profiles() -> tuple[FrameworkProfile, ...]:
@@ -133,7 +141,9 @@ def describe_graph_boundary(graph: Any) -> GraphBoundary:
         )
     framework = getattr(graph, "framework", None)
     if kind == "framework-native" and not framework:
-        raise ValueError("A framework-native Graph must declare its framework identity.")
+        raise ValueError(
+            "A framework-native Graph must declare its framework identity."
+        )
     native = getattr(graph, "native", graph)
     owns = (
         ("portable_state_transition", "agent_invocation", "result_projection")
@@ -169,19 +179,41 @@ def evaluate_framework_projection(
             validation.add(name, message, path=name)
 
     adapter_check = selected.check(require_adapter=True)
-    record("adapter_available", adapter_check.ok, "A real Framework adapter is required for conformance.")
+    record(
+        "adapter_available",
+        adapter_check.ok,
+        "A real Framework adapter is required for conformance.",
+    )
     for issue in adapter_check.issues:
-        validation.add(issue.code, issue.message, severity=issue.severity, path=issue.path, meta=issue.meta)
+        validation.add(
+            issue.code,
+            issue.message,
+            severity=issue.severity,
+            path=issue.path,
+            meta=issue.meta,
+        )
 
     source_is_result = isinstance(source_result, RunResult)
     state_is_mapping = isinstance(projected_state, Mapping)
-    record("source_run_result", source_is_result, "Framework projection source must be RunResult.")
-    record("state_mapping", state_is_mapping, "Framework projection must return mapping-shaped state.")
+    record(
+        "source_run_result",
+        source_is_result,
+        "Framework projection source must be RunResult.",
+    )
+    record(
+        "state_mapping",
+        state_is_mapping,
+        "Framework projection must return mapping-shaped state.",
+    )
 
     if source_is_result and state_is_mapping:
         projected = projected_state.get(result_key)
         projected_is_mapping = isinstance(projected, Mapping)
-        record("result_projection", projected_is_mapping, f"State must contain serialized RunResult at {result_key!r}.")
+        record(
+            "result_projection",
+            projected_is_mapping,
+            f"State must contain serialized RunResult at {result_key!r}.",
+        )
         if projected_is_mapping:
             expected = source_result.to_dict()
             for field in PRESERVED_RUN_RESULT_FIELDS:
@@ -190,7 +222,11 @@ def evaluate_framework_projection(
                     projected.get(field) == expected.get(field),
                     f"Framework projection changed central RunResult field {field!r}.",
                 )
-            meta = projected.get("meta") if isinstance(projected.get("meta"), Mapping) else {}
+            meta = (
+                projected.get("meta")
+                if isinstance(projected.get("meta"), Mapping)
+                else {}
+            )
             record(
                 "adapter_identity",
                 meta.get("framework_adapter") == selected.framework,
@@ -199,17 +235,33 @@ def evaluate_framework_projection(
         if trace_key is not None:
             trace = projected_state.get(trace_key)
             trace_is_mapping = isinstance(trace, Mapping)
-            record("trace_projection", trace_is_mapping, f"State must contain compact trace at {trace_key!r}.")
+            record(
+                "trace_projection",
+                trace_is_mapping,
+                f"State must contain compact trace at {trace_key!r}.",
+            )
             if trace_is_mapping:
-                record("trace_status", trace.get("run_ok") == source_result.ok, "Compact trace changed result status.")
-                record("trace_engine", trace.get("engine") == source_result.engine, "Compact trace changed engine identity.")
+                record(
+                    "trace_status",
+                    trace.get("run_ok") == source_result.ok,
+                    "Compact trace changed result status.",
+                )
+                record(
+                    "trace_engine",
+                    trace.get("engine") == source_result.engine,
+                    "Compact trace changed engine identity.",
+                )
 
         try:
             json.dumps(dict(projected_state))
             serializable = True
         except (TypeError, ValueError):
             serializable = False
-        record("json_serialization", serializable, "Projected Framework state must serialize to JSON.")
+        record(
+            "json_serialization",
+            serializable,
+            "Projected Framework state must serialize to JSON.",
+        )
 
     return FrameworkProjectionReport(
         framework=selected.framework,
@@ -220,26 +272,33 @@ def evaluate_framework_projection(
 
 
 _FRAMEWORK_PROFILES = {
+    NATIVE_FRAMEWORK: FrameworkProfile(
+        framework=NATIVE_FRAMEWORK,
+        integration_kind="native-adapter",
+        adapter_module="agentic_systems.integrations.adapters.native",
+        native_object_access=True,
+        detail="Agentic Systems executes the selected Provider directly.",
+    ),
     LANGGRAPH_ORCHESTRATOR: FrameworkProfile(
         framework=LANGGRAPH_ORCHESTRATOR,
         integration_kind="native-adapter",
-        adapter_module="agentic_systems.integrations.langgraph",
+        adapter_module="agentic_systems.integrations.adapters.langgraph",
         native_object_access=True,
-        detail="The integration builds and exposes LangGraph nodes, StateGraph objects, and compiled apps.",
+        detail="A compiled one-node StateGraph owns Framework execution.",
     ),
     OPENAI_AGENTS_FRAMEWORK: FrameworkProfile(
         framework=OPENAI_AGENTS_FRAMEWORK,
-        integration_kind="style-only",
-        adapter_module=None,
-        native_object_access=False,
-        detail="The label describes an Agent workflow style; the OpenAI Agents SDK is not adapted by this package.",
+        integration_kind="native-adapter",
+        adapter_module="agentic_systems.integrations.adapters.openai_agents",
+        native_object_access=True,
+        detail="OpenAI Agents Runner owns turns, tools, handoffs, guardrails, sessions, and MCP.",
     ),
     STRANDS_FRAMEWORK: FrameworkProfile(
         framework=STRANDS_FRAMEWORK,
-        integration_kind="declarative-only",
-        adapter_module=None,
-        native_object_access=False,
-        detail="The compatibility label is accepted on Agent metadata; no Strands SDK adapter is implemented.",
+        integration_kind="native-adapter",
+        adapter_module="agentic_systems.integrations.adapters.strands",
+        native_object_access=True,
+        detail="Strands Agent owns its loop, hooks, interventions, tools, and MCP lifecycle.",
     ),
 }
 

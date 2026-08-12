@@ -75,4 +75,4 @@ def test_core_and_bedrock_quality_gates_remain_separate_and_blocking():
         "agentic_systems.providers.bedrock",
     }
     assert bedrock.getint("report", "precision") == 2
-    assert bedrock.getfloat("report", "fail_under") == 53.1
+    assert bedrock.getfloat("report", "fail_under") == 100

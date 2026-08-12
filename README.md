@@ -31,7 +31,7 @@ API -> Docs -> Tutorials -> explicit automated or manual evidence
 
 Public concepts are defined in the API, explained in the documentation, taught through the canonical tutorials, and checked by explicit release gates.
 
-Release status: `1.1.3` consolidates the current documentation and owner-based test architecture while preserving the 111-symbol public API and 1.1 runtime behavior.
+Release status: `2.0.0a1` is the provisional Provider x Framework architecture: 112 top-level symbols, four real Framework adapters, and no silent fallback.
 
 ## Installation
 
@@ -71,7 +71,7 @@ Agentic Systems represents those concerns as a computational grammar: runtime, t
 | Environments | Episodic execution over records, transitions, rewards and history. |
 | Evals | Repeatable validation cases with pass/fail reporting. |
 | Lineage Memory | Human-readable explanation of what happened and why. |
-| Integrations | A portable Graph backend, an optional LangGraph adapter, and explicit framework identities. |
+| Integrations | Native, LangGraph, OpenAI Agents, and Strands execution over explicit Providers. |
 
 ## Core Model
 
@@ -104,17 +104,17 @@ Canonical providers:
 | `python-runtime` | Local deterministic execution for tools, policies and smoke tests. |
 | `auto` | Selects a concrete provider from environment signals before execution. |
 
-Default `provider="auto"` priority is `bedrock-runtime`, then `openai-runtime`, then `vllm-runtime`. Override it with `provider_priority=[...]` or `AGENTIC_SYSTEMS_PROVIDER_PRIORITY=...`. Bedrock is considered configured only when both a region and an AWS authentication signal are present; a region alone does not outrank a usable OpenAI or vLLM configuration.
+Default `provider="auto"` priority is `bedrock-runtime`, then `openai-runtime`, then `vllm-runtime`. Override it with `provider_priority=[...]` or `AGENTIC_SYSTEMS_PROVIDER_PRIORITY=...`. Bedrock is considered configured only when both a region and an AWS authentication signal are present. That signal may be the standard AWS credential chain (signed with SigV4) or the native `AWS_BEARER_TOKEN_BEDROCK` API key; both use the same boto3 `bedrock-runtime` Provider and a region alone does not outrank a usable OpenAI or vLLM configuration.
 
 Canonical framework facades:
 
 | Framework | Use |
 |---|---|
 | `langgraph` | LangGraph graph orchestration. |
-| `openai-agents` | Style-only identity over the selected runtime; no OpenAI Agents SDK adapter. |
-| `strands` | Declarative compatibility identity; no Strands SDK adapter. |
+| `openai-agents` | OpenAI Agents `Runner`, native Tools, handoffs, guardrails, sessions and MCP. |
+| `strands` | `strands.Agent`, native Tools/MCP, hooks and lifecycle. |
 
-Providers decide where execution runs. A real Framework adapter may own the outer orchestration loop; an accepted framework label alone does not prove adapter execution. Configuration details live in `docs/ONBOARDING_FIRST_RUN.md`, `docs/CLI.md` and the `tutorials/00_runtime_*` notebooks.
+Providers decide where inference runs. The selected Framework always owns its orchestration loop, and `RunResult.meta["framework_adapter"]` records the adapter that executed. Configuration details live in docs/ONBOARDING_FIRST_RUN.md, docs/CLI.md and the layered tutorials/core, tutorials/providers and tutorials/frameworks paths.
 
 ## From Zero-to-Hero
 
@@ -345,42 +345,29 @@ The CLI is for inspection, diagnostics and packaging smoke tests. It should not 
 
 ## Tutorials
 
-The official learning path is `tutorials/`. It explains and exercises the public API directly from `import agentic_systems as toolkit`.
+The canonical learning path is layered by responsibility:
 
-Provider notebooks require no activation cell. Configure the external boundary,
-open the corresponding notebook, and choose **Run All**:
+| Layer | Purpose | Default execution |
+|---|---|---|
+| tutorials/core | Agentic Systems grammar and composition | Python Runtime, Native Framework, portable Graph |
+| tutorials/providers | Inference boundary | Explicit preflight; external execution when configured |
+| tutorials/frameworks | Native orchestration SDK | Real SDK offline; Provider auto is optional |
+
+Provider notebooks use one public route and choose Run All:
 
 | Provider | Readiness inputs | Notebook |
 |---|---|---|
-| OpenAI | `OPENAI_API_KEY`; optional `OPENAI_MODEL` | `00_runtime_openai_provider_api.ipynb` |
-| vLLM | `VLLM_BASE_URL` and `VLLM_MODEL` | `00_runtime_vllm_provider_api.ipynb` |
-| Bedrock | Standard AWS credential chain; optional model/region overrides | `00_runtime_bedrock_provider_api.ipynb` |
+| OpenAI | OPENAI_API_KEY; OPENAI_MODEL optional | tutorials/providers/01_openai.ipynb |
+| vLLM | VLLM_BASE_URL and VLLM_MODEL | tutorials/providers/03_vllm.ipynb |
+| Bedrock | Region plus SigV4 credentials or AWS_BEARER_TOKEN_BEDROCK | tutorials/providers/02_bedrock.ipynb |
 
-Live execution is the default when readiness passes. A provider-specific
-`RUN_*_LIVE=0` is an explicit opt-out, not a prerequisite.
+The Framework notebooks execute LangGraph, OpenAI Agents and Strands SDKs for
+real with python-runtime. Optional RUN_*_LIVE=1 changes only the Provider.
+RUN_*_LIVE=0 forces a fully offline validation.
 
-```text
-tutorials/00_runtime_api.ipynb
-tutorials/00_runtime_bedrock_provider_api.ipynb
-tutorials/00_runtime_openai_provider_api.ipynb
-tutorials/00_runtime_scheduler_api.ipynb
-tutorials/00_runtime_vllm_provider_api.ipynb
-tutorials/01_tool_api.ipynb
-tutorials/02_skill_api.ipynb
-tutorials/03_agent_api.ipynb
-tutorials/04_human_result_api.ipynb
-tutorials/05_lineage_memory_api.ipynb
-tutorials/06_integrations_strands_api.ipynb
-tutorials/07_integrations_openai_runtime_api.ipynb
-tutorials/08_system_api.ipynb
-tutorials/09_graph_api.ipynb
-tutorials/10_environment_eval_api.ipynb
-tutorials/11_single_agentic_system_api.ipynb
-tutorials/12_multi_agentic_system_api.ipynb
-tutorials/13_multi_agentic_graph_api.ipynb
-```
-
-There is no active `examples/` root. Tutorials are the executable documentation.
+The full ordered inventory of 18 notebooks and its evidence contract lives in
+tutorials/README.md. There is no active examples/ root or duplicate notebook
+route.
 
 ## Documentation
 
@@ -394,12 +381,12 @@ evidence belongs to GitHub Releases.
 Current verified status:
 
 ```text
-Version: 1.1.3
+Version: 2.0.0a1
 PyPI package: agentic-systems
 Tests: run `python -m pytest` for the current count
 Core coverage: 100.00%
-Coverage scope: Bedrock facade and internal package excluded from core; separately gated at 53.1%
-Canonical notebooks: 13 deterministic executed; 5 Provider notebooks checked statically
+Coverage scope: Bedrock facade and internal package excluded from core; separately gated at 100%
+Canonical notebooks: 15 deterministic executed; 3 live Provider notebooks checked statically
 
 ```
 

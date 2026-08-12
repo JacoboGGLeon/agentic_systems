@@ -154,7 +154,7 @@ def test_agent_validation_error_paths_direct_construction():
 
     openai_agent = Agent(
         system=system,
-        name="openai_bridge",
+        name="openai_framework_agent",
         instructions="x",
         tools=(),
         engine="openai-runtime",

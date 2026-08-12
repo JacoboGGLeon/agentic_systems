@@ -1,6 +1,6 @@
 import agentic_systems as lab
 from agentic_systems import RunResult
-from agentic_systems.tools.compat import ToolEvent
+from agentic_systems.tools import ToolEvent
 
 
 def _sample_result() -> RunResult:

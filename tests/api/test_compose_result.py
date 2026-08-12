@@ -4,7 +4,7 @@ from __future__ import annotations
 
 def test_compose_result_preserves_runtime_metadata_usage_and_tools():
     import agentic_systems as lab
-    from agentic_systems.tools.compat import ToolEvent
+    from agentic_systems.tools import ToolEvent
 
     direct = lab.RunResult(
         text="direct",

@@ -36,13 +36,11 @@ class FakeBedrockRuntime:
         region_name,
         max_tokens_default,
         temperature_default,
-        disable_openai_runtime_tracing,
     ):
         self.model_id = model_id
         self.region_name = region_name or "us-test-1"
         self.max_tokens_default = max_tokens_default
         self.temperature_default = temperature_default
-        self.disable_openai_runtime_tracing = disable_openai_runtime_tracing
         self.runtime = FakeRuntimeAPI()
         self.raise_whoami = False
         self.raise_model_availability = False
@@ -78,7 +76,6 @@ def test_bedrock_runtime_client_with_fake_runtime(monkeypatch, tmp_path):
         model="model-a",
         region="us-east-1",
         defaults={"max_tokens": 10, "temperature": 0.25},
-        disable_framework_tracing=False,
     )
 
     assert client.runtime.model_id == "model-a"

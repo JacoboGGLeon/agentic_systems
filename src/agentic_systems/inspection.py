@@ -103,7 +103,9 @@ def build_inspection_report(
         agent_count=len(agents),
         agents=[agent.name for agent in agents],
         toolkit_count=len(system._toolkits),
-        toolkits={name: list(toolkit.tool_names) for name, toolkit in system._toolkits.items()},
+        toolkits={
+            name: list(toolkit.tool_names) for name, toolkit in system._toolkits.items()
+        },
         skill_count=len(system._skills) + len(system._runtime_skills),
         skills=[skill.manifest.model_dump(mode="json") for skill in system._skills],
         runtime_skill_count=len(system._runtime_skills),
@@ -136,7 +138,11 @@ def _entities(system: Any, agents: list[Any]) -> dict[str, Any]:
                 "identity": name,
                 "name": name,
                 "description": next(
-                    (spec.description for spec in system._runtime.tools if spec.name == name),
+                    (
+                        spec.description
+                        for spec in system._runtime.tools
+                        if spec.name == name
+                    ),
                     "",
                 ),
                 "registry": "runtime-only",
@@ -210,7 +216,9 @@ def _relationships(system: Any, agents: list[Any]) -> list[dict[str, str]]:
             add(source, "requests", f"provider:{agent.engine}")
         if getattr(agent, "framework", None):
             add(source, "requests", f"framework:{agent.framework}")
-    return sorted(items, key=lambda item: (item["source"], item["relation"], item["target"]))
+    return sorted(
+        items, key=lambda item: (item["source"], item["relation"], item["target"])
+    )
 
 
 def _contracts(system: Any, agents: list[Any]) -> dict[str, Any]:
@@ -253,7 +261,9 @@ def _contracts(system: Any, agents: list[Any]) -> dict[str, Any]:
     }
 
 
-def _providers(system: Any, agents: list[Any]) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+def _providers(
+    system: Any, agents: list[Any]
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     users: dict[str, list[str]] = {}
     runtime_config = getattr(system, "runtime_config", None)
     if runtime_config is not None:
@@ -314,19 +324,6 @@ def _frameworks(agents: list[Any]) -> tuple[list[dict[str, Any]], list[dict[str,
         selected_by = sorted(users.get(profile.framework, ()))
         payload["selected_by"] = selected_by
         profiles.append(payload)
-        if selected_by and not profile.has_adapter:
-            risks.append(
-                _risk(
-                    code="framework_adapter_unavailable",
-                    message=(
-                        f"Framework {profile.framework!r} is {profile.integration_kind}; "
-                        f"{profile.detail}"
-                    ),
-                    path=f"frameworks.{profile.framework}",
-                    suggestion="Use LangGraph for a native adapter or treat this value as metadata only.",
-                    source=profile.framework,
-                )
-            )
     return profiles, risks
 
 
@@ -410,7 +407,9 @@ def _suggestion(code: str) -> str:
         ),
         "missing_description": "Add a non-empty Tool description for model-facing registries.",
     }
-    return suggestions.get(code, "Review the referenced entity and update its static configuration.")
+    return suggestions.get(
+        code, "Review the referenced entity and update its static configuration."
+    )
 
 
 def _payload(value: Any) -> Any:

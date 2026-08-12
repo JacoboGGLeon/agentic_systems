@@ -19,7 +19,7 @@ from agentic_systems.core.runtime import (
 from agentic_systems.engines.names import (
     BEDROCK_RUNTIME_ENGINE,
     OPENAI_RUNTIME_ENGINE,
-    PYTHON_DIRECT_ENGINE,
+    PYTHON_RUNTIME_ENGINE,
 )
 import agentic_systems.factories as factories_module
 import agentic_systems.utils as utils_module
@@ -104,21 +104,21 @@ def test_system_bedrock_hydration_auto_resolution_and_skill_merge(monkeypatch):
     ) == (OPENAI_RUNTIME_ENGINE, BEDROCK_RUNTIME_ENGINE)
     assert (
         normalize_provider_priority(None, allow_python_fallback=True)[-1]
-        == PYTHON_DIRECT_ENGINE
+        == PYTHON_RUNTIME_ENGINE
     )
     with pytest.raises(ValueError, match="provider_priority"):
         normalize_provider_priority(["auto"])
-    assert resolve_auto_provider(None, [PYTHON_DIRECT_ENGINE]) == PYTHON_DIRECT_ENGINE
+    assert resolve_auto_provider(None, [PYTHON_RUNTIME_ENGINE]) == PYTHON_RUNTIME_ENGINE
     assert (
         RuntimeConfig(provider="auto", allow_python_fallback=True).describe()[
             "selected_provider"
         ]
-        == PYTHON_DIRECT_ENGINE
+        == PYTHON_RUNTIME_ENGINE
     )
     assert (
         _auto_reason("unexpected-runtime") == "provider selected by configured priority"
     )
-    assert "python-runtime fallback" in _auto_unresolved_reason([PYTHON_DIRECT_ENGINE])
+    assert "python-runtime fallback" in _auto_unresolved_reason([PYTHON_RUNTIME_ENGINE])
     assert _module_available("definitely_missing_agentic_systems_module") is False
     monkeypatch.setattr(
         runtime_core_module.importlib.util,

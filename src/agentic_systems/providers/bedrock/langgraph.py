@@ -47,6 +47,7 @@ class _LangGraphMixin:
                 str(prompt),
                 instructions=instructions,
                 tool_choice=tool_choice,
+                max_tool_calls=max_tool_calls,
                 tool_names=tool_names,
                 max_turns=max_turns,
                 max_tokens=max_tokens,

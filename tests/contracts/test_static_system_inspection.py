@@ -96,7 +96,7 @@ def test_static_inspection_covers_entities_relations_profiles_and_risks_without_
     assert payload["conflicts"]["resolved"][0]["decision"] == "replace"
     assert payload["conflicts"]["unresolved"] == []
     assert payload["limits"]["agents"][0]["policy"]["max_turns"] == 2
-    assert any(item["code"] == "framework_adapter_unavailable" for item in payload["degradation_risks"])
+    assert not any(item["code"] == "framework_adapter_unavailable" for item in payload["degradation_risks"])
     assert all(item["suggestion"] for item in payload["diagnostics"])
     assert report.human_text() == report.human_text()
     assert report.human_text().startswith("Agentic Systems static inspection\nStatus: OK")

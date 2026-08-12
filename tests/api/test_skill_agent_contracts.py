@@ -1,4 +1,4 @@
-"""Checkpoint 6: skill-backed agents with the canonical API."""
+"""Skill-backed Agent contracts."""
 
 from __future__ import annotations
 

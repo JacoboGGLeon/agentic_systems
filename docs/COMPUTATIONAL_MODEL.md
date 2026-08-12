@@ -255,8 +255,8 @@ portable consumers depend on it.
 ### Framework
 
 A Framework is an external composition or orchestration system adapted by an
-integration. LangGraph, OpenAI Agents-style integration, and Strands are
-framework identities; they are not Providers.
+integration. Native, LangGraph, OpenAI Agents, and Strands are executable
+Framework identities; they are not Providers.
 
 A Framework adapter MUST preserve core contracts and SHOULD expose its native
 object for framework-specific capabilities.
@@ -412,8 +412,7 @@ The supported import is:
 import agentic_systems as toolkit
 ```
 
-`src/agentic_systems/api.py` is the inventory source of truth. The 1.1.3
-baseline contains 111 top-level symbols; the complete checksum and signatures
+`src/agentic_systems/api.py` is the inventory source of truth. The 2.0 baseline contains 112 top-level symbols; the complete checksum and signatures
 are documented in [API.md](API.md) and frozen by compatibility tests.
 
 | Concept | Primary public surface |
@@ -470,8 +469,7 @@ Framework integration maturity is an adapter fact, not a new core grammar role:
 
 ```text
 native-adapter   -> external Framework code is invoked
-style-only       -> configuration describes a workflow style; core execution remains active
-declarative-only -> compatibility identity is recorded; no adapter executes
+native-adapter -> the selected Framework owns its real orchestration loop
 ```
 
 Graphs have two boundary categories:

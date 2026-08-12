@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from agentic_systems import RunResult, run_result_view
-from agentic_systems.tools.compat import ToolEvent
+from agentic_systems.tools import ToolEvent
 
 
 def test_run_result_view_extracts_bullet_fields_without_case_hardcoding() -> None:

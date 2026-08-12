@@ -23,6 +23,7 @@ _AWS_ENV_KEYS = (
     "AWS_PROFILE",
     "AWS_REGION",
     "AWS_DEFAULT_REGION",
+    "AWS_BEARER_TOKEN_BEDROCK",
     "AWS_ACCESS_KEY_ID",
     "AWS_SECRET_ACCESS_KEY",
     "AWS_SESSION_TOKEN",
@@ -615,11 +616,17 @@ def boto3_session_snapshot(region_name: str | None = None, *, mask: bool | None 
 
     session = boto3.Session(region_name=region_name)
     credentials = session.get_credentials()
+    bedrock_api_key = bool(os.getenv("AWS_BEARER_TOKEN_BEDROCK"))
+    has_credentials = credentials is not None or bedrock_api_key
     return {
-        "ok": credentials is not None,
+        "ok": has_credentials,
         "session_region": session.region_name,
-        "credential_method": getattr(credentials, "method", None) if credentials else None,
-        "has_credentials": credentials is not None,
+        "credential_method": (
+            getattr(credentials, "method", None)
+            if credentials
+            else "bedrock-api-key" if bedrock_api_key else None
+        ),
+        "has_credentials": has_credentials,
     }
 
 

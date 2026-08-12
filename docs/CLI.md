@@ -113,8 +113,9 @@ This command constructs `RuntimeConfig` and prints `runtime.describe()` without
 executing a model. For `provider="auto"`, it reads environment signals such as
 `VLLM_BASE_URL`, `OPENAI_API_KEY`, `OPENAI_BASE_URL`, and paired
 AWS region/authentication signals to show the effective provider selection.
-For Bedrock, a region must be accompanied by static credentials, an AWS
-profile, web identity, container credentials, or a shared credentials file.
+For Bedrock, a region must be accompanied by `AWS_BEARER_TOKEN_BEDROCK` or by
+static credentials, an AWS profile, web identity, container credentials, or a
+shared credentials file.
 
 Default auto priority is `bedrock-runtime`, then `openai-runtime`, then `vllm-runtime`. Override it with `--provider-priority bedrock-runtime,openai-runtime,vllm-runtime` or `AGENTIC_SYSTEMS_PROVIDER_PRIORITY`. Add `--allow-python-fallback` only when deterministic local fallback is intentional.
 
@@ -124,9 +125,9 @@ vLLM runtime also reads `VLLM_MODEL` and `VLLM_API_KEY`. It uses the
 OpenAI-compatible vLLM server API; it does not start the server.
 
 Bedrock runtime reads `BEDROCK_MODEL_ID`, `AWS_REGION`, `AWS_DEFAULT_REGION`,
-`AWS_PROFILE`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and
-`AWS_SESSION_TOKEN`. CLI output only reports safe availability flags; it never
-prints secret values.
+`AWS_PROFILE`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN`
+and `AWS_BEARER_TOKEN_BEDROCK`. CLI output only reports safe availability flags;
+it never prints secret values.
 
 Important fields:
 
@@ -249,7 +250,7 @@ The JSON form returns:
 ```json
 {
   "tier": "public",
-  "count": 111,
+  "count": 112,
   "symbols": ["agent", "runtime"]
 }
 ```

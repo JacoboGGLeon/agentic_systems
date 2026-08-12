@@ -30,7 +30,7 @@ python -m pip install "agentic-systems[dev]"
 | Extra | Purpose |
 |---|---|
 | `openai` | OpenAI and existing OpenAI-compatible endpoints, including remote vLLM. |
-| `bedrock` | boto3/botocore support for AWS Bedrock Runtime. |
+| `bedrock` | boto3/botocore >=1.39 support for AWS Bedrock Runtime with SigV4 credentials or a native Bedrock API key. |
 | `langgraph` | Native LangGraph orchestration adapter. |
 | `vllm` | The vLLM server stack plus OpenAI client; intended for supported GPU/Linux hosts. |
 | `dev` | Test, coverage, lint and notebook tooling for this repository. |
@@ -54,7 +54,7 @@ export VLLM_API_KEY="EMPTY"
 Pin the maintenance release when reproducibility matters:
 
 ```bash
-python -m pip install "agentic-systems==1.1.3"
+python -m pip install "agentic-systems==2.0.0a1"
 ```
 
 ## From GitHub

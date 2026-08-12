@@ -55,7 +55,6 @@ class RuntimeConfig:
         aliases = {
             "model": "model_id",
             "region": "region_name",
-            "engine": "provider",
         }
         normalized: dict[str, Any] = {}
         for key, item in {**base, **overrides}.items():
@@ -179,7 +178,8 @@ def resolve_auto_provider(region: str | None, provider_priority: Iterable[str] |
     raise ValueError(
         "provider='auto' could not resolve a backend. "
         f"Configured priority: {', '.join(priority)}. "
-        "Set AWS credentials/region for bedrock-runtime, OPENAI_API_KEY for openai-runtime, "
+        "Set an AWS region plus AWS credentials or AWS_BEARER_TOKEN_BEDROCK "
+        "for bedrock-runtime, OPENAI_API_KEY for openai-runtime, "
         "VLLM_BASE_URL for vllm-runtime, or include python-runtime explicitly for deterministic fallback."
     )
 
@@ -206,7 +206,7 @@ def _provider_available(provider: str, region: str | None) -> bool:
 
 def _auto_reason(provider: str) -> str:
     if provider == BEDROCK_RUNTIME_ENGINE:
-        return "AWS credentials and region detected"
+        return "AWS authentication and region detected"
     if provider == OPENAI_RUNTIME_ENGINE:
         return "OPENAI_API_KEY/OPENAI config detected"
     if provider == VLLM_RUNTIME_ENGINE:
@@ -220,7 +220,7 @@ def _auto_unresolved_reason(priority: Iterable[str]) -> str:
     hints = []
     for provider in priority:
         if provider == BEDROCK_RUNTIME_ENGINE:
-            hints.append("AWS credentials and region")
+            hints.append("AWS credentials or AWS_BEARER_TOKEN_BEDROCK plus region")
         elif provider == OPENAI_RUNTIME_ENGINE:
             hints.append("OPENAI_API_KEY/OpenAI config")
         elif provider == VLLM_RUNTIME_ENGINE:
@@ -283,6 +283,7 @@ def _aws_shared_credentials_present() -> bool:
 def _bedrock_signal_present(region: str | None) -> bool:
     region_present = bool(region or os.getenv("AWS_REGION") or os.getenv("AWS_DEFAULT_REGION"))
     static_credentials = bool(os.getenv("AWS_ACCESS_KEY_ID") and os.getenv("AWS_SECRET_ACCESS_KEY"))
+    bedrock_api_key = bool(os.getenv("AWS_BEARER_TOKEN_BEDROCK"))
     profile_credentials = bool(os.getenv("AWS_PROFILE"))
     web_identity = bool(os.getenv("AWS_ROLE_ARN") and os.getenv("AWS_WEB_IDENTITY_TOKEN_FILE"))
     container_credentials = bool(
@@ -290,7 +291,8 @@ def _bedrock_signal_present(region: str | None) -> bool:
         or os.getenv("AWS_CONTAINER_CREDENTIALS_RELATIVE_URI")
     )
     authentication_present = (
-        static_credentials
+        bedrock_api_key
+        or static_credentials
         or profile_credentials
         or web_identity
         or container_credentials

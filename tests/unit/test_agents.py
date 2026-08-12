@@ -14,7 +14,7 @@ from agentic_systems.agents import (
 )
 from agentic_systems.contracts import RunPolicy
 from agentic_systems.core.runtime import RuntimeConfig
-from agentic_systems.engines.names import PYTHON_DIRECT_ENGINE
+from agentic_systems.engines.names import PYTHON_RUNTIME_ENGINE
 from agentic_systems.results import RunResult
 from agentic_systems.system import AgenticSystem
 from agentic_systems.tools import Tool
@@ -70,7 +70,7 @@ def test_agent_bind_describe_async_scheduler_and_validation():
         provider="python-runtime", scheduler={"timeout_s": None, "max_retries": 0}
     )
     runtime_agent = Agent(name="runtime", tools=[add_tool], runtime=runtime)
-    assert runtime_agent.engine == PYTHON_DIRECT_ENGINE
+    assert runtime_agent.engine == PYTHON_RUNTIME_ENGINE
 
     system = AgenticSystem(
         model="m",
@@ -80,7 +80,7 @@ def test_agent_bind_describe_async_scheduler_and_validation():
             "scheduler": {"timeout_s": None, "max_retries": 0},
         },
     )
-    system._engines[PYTHON_DIRECT_ENGINE] = EchoEngine()
+    system._engines[PYTHON_RUNTIME_ENGINE] = EchoEngine()
     sys_agent = system.agent(
         name="sys", instructions="x", tools=[add_tool], engine="python-runtime"
     )
@@ -92,7 +92,7 @@ def test_agent_bind_describe_async_scheduler_and_validation():
     default_mode_result = sys_agent.run({"tool": "add", "input": {"a": 1, "b": 2}})
     assert default_mode_result.mode == "eval"
 
-    system._engines[PYTHON_DIRECT_ENGINE] = SyncOnlyEngine()
+    system._engines[PYTHON_RUNTIME_ENGINE] = SyncOnlyEngine()
     sync_only = system.agent(
         name="sync_only", instructions="x", tools=[add_tool], engine="python-runtime"
     )
@@ -106,7 +106,7 @@ def test_agent_bind_describe_async_scheduler_and_validation():
             "scheduler": {"timeout_s": None, "max_retries": 0},
         },
     )
-    failing_system._engines[PYTHON_DIRECT_ENGINE] = EchoEngine(fail=True)
+    failing_system._engines[PYTHON_RUNTIME_ENGINE] = EchoEngine(fail=True)
     failing_agent = failing_system.agent(
         name="fail", instructions="x", tools=[add_tool], engine="python-runtime"
     )
@@ -133,7 +133,7 @@ def test_agent_bind_describe_async_scheduler_and_validation():
             "scheduler": {"timeout_s": 0.001, "max_retries": 0},
         },
     )
-    slow_system._engines[PYTHON_DIRECT_ENGINE] = SlowAsyncEngine()
+    slow_system._engines[PYTHON_RUNTIME_ENGINE] = SlowAsyncEngine()
     slow_agent = slow_system.agent(
         name="slow", instructions="x", tools=[add_tool], engine="python-runtime"
     )
