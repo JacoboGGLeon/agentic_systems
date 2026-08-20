@@ -165,12 +165,21 @@ CONTRACT_SCENARIOS = (
 
 def _signature(value: Any) -> str | None:
     try:
-        return re.sub(r" at 0x[0-9A-Fa-f]+", "", str(inspect.signature(value)))
+        signature = re.sub(
+            r" at 0x[0-9A-Fa-f]+", "", str(inspect.signature(value))
+        )
+        signature = re.sub(r"\btyping\.", "", signature)
+        signature = re.sub(
+            r"\bagentic_systems(?:\.[A-Za-z_][A-Za-z0-9_]*)+\.", "", signature
+        )
+        return re.sub(r"'([A-Z][A-Za-z0-9_]*)'", r"\1", signature)
     except (TypeError, ValueError):
         return None
 
 
 def _summary(value: Any, kind: str, identifier: str) -> str:
+    if kind == "field":
+        return f"Public field contract for {identifier}."
     documentation = inspect.getdoc(value) if value is not None else None
     if documentation:
         paragraph = documentation.split("\n\n", 1)[0]

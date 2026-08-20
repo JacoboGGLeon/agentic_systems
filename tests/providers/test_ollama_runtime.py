@@ -203,6 +203,10 @@ def test_ollama_environment_clients_defaults_and_engine(monkeypatch) -> None:
     assert created["sync"] == expected
     assert created["async"] == expected
 
+    untagged = toolkit.RunResult(text="ok", meta={"source_result_type": "custom"})
+    normalized = ollama_module._as_ollama_result(untagged)
+    assert normalized.meta["source_result_type"] == "custom"
+
     system = toolkit.system(runtime=toolkit.runtime(provider="ollama-runtime"))
     assert isinstance(system._engine("ollama-runtime"), OllamaRuntimeProvider)
 
