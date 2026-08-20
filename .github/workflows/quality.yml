@@ -22,6 +22,9 @@ jobs:
       - run: >-
           python -m pip install -e ".[dev,bedrock,langgraph,openai,openai-agents,strands]"
           build twine "setuptools>=69" wheel
+      - run: >-
+          python -m pip install -e
+          "examples/agentic_systems_studio[ui,notebook,test]"
       - run: python -m ruff check src tests tutorials/frameworks/mcp_echo_server.py
       - run: >-
           python -m pytest --cov=agentic_systems
@@ -52,11 +55,6 @@ jobs:
           --cov-report=term-missing -q
       - run: python -m build --no-isolation
       - run: python -m twine check dist/*
-      - name: Install Studio release gates
-        if: matrix.python-version == '3.14'
-        run: >-
-          python -m pip install -e
-          "examples/agentic_systems_studio[test,notebook]"
       - name: Lint Studio and release builder
         if: matrix.python-version == '3.14'
         run: >-

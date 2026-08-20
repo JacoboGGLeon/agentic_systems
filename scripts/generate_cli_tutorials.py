@@ -337,7 +337,9 @@ def run_cli_json(*args: str) -> dict:
 
 def assert_rich(output: str, title: str) -> None:
     assert title in output
-    assert "+" in output and "|" in output
+    ascii_box = "+" in output and "|" in output
+    unicode_box = "─" in output and "│" in output
+    assert ascii_box or unicode_box
 """
 
 
