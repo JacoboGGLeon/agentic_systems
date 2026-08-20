@@ -53,6 +53,9 @@ Both launch surfaces call the same public server API.
 
 - agentic-studio serve started Streamlit on 127.0.0.1:8765, returned health
   status ok, recorded its PID and log, and printed the Jupyter proxy URL.
+- jupyter-server-proxy 4.5.0 was tested with an authenticated Jupyter Server:
+  /proxy/8765/_stcore/health returned HTTP 200 and body ok while both services
+  were bound exclusively to loopback.
 - notebooks/02_launch_studio.ipynb executed from a fresh kernel, returned health
   status ok, saved a real HTML button output for the proxy URL, and stopped its
   validation server cleanly.

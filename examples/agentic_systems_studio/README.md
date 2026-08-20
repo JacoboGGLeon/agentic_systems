@@ -24,7 +24,7 @@ tests, Mermaid, manifest, assets and SQLite database.
 From the repository root:
 
     python -m pip install -e .
-    python -m pip install -e examples/agentic_systems_studio[ui]
+    python -m pip install -e examples/agentic_systems_studio[ui,notebook]
     agentic-studio list
     agentic-studio diagram agentic-systems-creator
     agentic-studio init ./my_app --name my_app
@@ -34,6 +34,9 @@ The equivalent notebook launcher is notebooks/02_launch_studio.ipynb. It starts
 the same loopback-only server, waits for the Streamlit health endpoint and shows
 an HTML button targeting /jupyterlab/default/proxy/8501/. The CLI also prints
 that proxy URL for JupyterLab environments.
+For the ADA-style JupyterLab route, keep the default proxy prefix. Standard
+local Jupyter installations usually use /proxy instead; set PROXY_PREFIX in the
+launch notebook accordingly.
 
 Live execution is explicit:
 
