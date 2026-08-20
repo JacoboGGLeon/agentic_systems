@@ -16,10 +16,14 @@ from agentic_systems_studio.components import (
     SKILL_ASSETS,
     TOOL_ASSETS,
 )
-from agentic_systems_studio.scaffolder import scaffold_application
+from agentic_systems_studio.creator import create_application
+from agentic_systems_studio.scaffolder import ScaffoldReport, scaffold_application
 from agentic_systems_studio.store import StudioStore
 from agentic_systems_studio.systems import StudioConfig, build_system, compose_systems
 
+
+PROJECT_ROOT = Path(__file__).resolve().parent
+DEFAULT_DB_PATH = PROJECT_ROOT / "data" / "studio.db"
 
 st.set_page_config(page_title="Agentic Systems Studio", page_icon="??", layout="wide")
 
@@ -54,6 +58,75 @@ def result_payload(result):
     return result.model_dump(mode="json") if hasattr(result, "model_dump") else result
 
 
+def render_creator_result(result) -> None:
+    artifact = result.data.get("artifact") if isinstance(result.data, dict) else None
+    if not artifact:
+        st.error(result.text or "The Creator did not produce an artifact.")
+        st.json(result_payload(result), expanded=False)
+        return
+
+    if result.ok:
+        st.success(result.text)
+    else:
+        st.error(result.text)
+    metric_columns = st.columns(3)
+    metric_columns[0].metric("Generated files", artifact["file_count"])
+    metric_columns[1].metric(
+        "Contract checks",
+        sum(bool(value) for value in artifact["validation"]["checks"].values()),
+    )
+    metric_columns[2].metric(
+        "Validation",
+        "PASSED" if artifact["validation"]["ok"] else "FAILED",
+    )
+    st.caption("Generated project")
+    st.code(artifact["root"])
+
+    output_tabs = st.tabs(
+        ["Files", "Validation", "Manifest", "Mermaid", "Run", "Normalized result"]
+    )
+    with output_tabs[0]:
+        st.code("\n".join(artifact["files"]), language="text")
+        root = Path(artifact["root"])
+        report = ScaffoldReport(
+            root=root,
+            package_name=artifact["package_name"],
+            system_id=artifact["system_id"],
+            files=tuple(root / relative for relative in artifact["files"]),
+        )
+        st.download_button(
+            "Download generated Agentic System (.zip)",
+            data=report.archive_bytes(),
+            file_name=artifact["archive_name"],
+            mime="application/zip",
+            key="download-created-agentic-system",
+        )
+    with output_tabs[1]:
+        st.dataframe(
+            [
+                {"check": name, "passed": passed}
+                for name, passed in artifact["validation"]["checks"].items()
+            ],
+            use_container_width=True,
+            hide_index=True,
+        )
+        if artifact["validation"]["issues"]:
+            st.json(artifact["validation"]["issues"], expanded=True)
+    with output_tabs[2]:
+        st.json(artifact["manifest"], expanded=True)
+    with output_tabs[3]:
+        render_mermaid(artifact["mermaid"], height=340)
+    with output_tabs[4]:
+        st.code(
+            f"cd {artifact['root']}\n"
+            "python -m pip install -e .\n"
+            f"{artifact['run_command']}",
+            language="bash",
+        )
+    with output_tabs[5]:
+        st.json(result_payload(result), expanded=False)
+
+
 st.title("Agentic Systems Studio")
 st.write(
     "A portable market of computation units and complete systems. "
@@ -72,8 +145,15 @@ with st.sidebar:
     )
     model = st.text_input("Model override", value="")
     timeout = st.number_input("Timeout seconds", min_value=5, value=120)
-    max_tokens = st.number_input("Maximum output tokens per reasoning turn", min_value=64, value=1024)
-    db_path = Path(st.text_input("SQLite evidence path", value="examples/agentic_systems_studio/data/studio.db"))
+    max_tokens = st.number_input(
+        "Maximum output tokens per reasoning turn", min_value=64, value=1024
+    )
+    db_path = Path(
+        st.text_input(
+            "SQLite evidence path",
+            value=str(DEFAULT_DB_PATH),
+        )
+    )
     config = StudioConfig(
         provider=provider,
         framework=framework,
@@ -101,7 +181,9 @@ with tabs[0]:
     system_id = st.selectbox(
         "Reusable system",
         [spec.id for spec in SYSTEM_SPECS],
-        format_func=lambda value: next(spec.name for spec in SYSTEM_SPECS if spec.id == value),
+        format_func=lambda value: next(
+            spec.name for spec in SYSTEM_SPECS if spec.id == value
+        ),
     )
     spec = next(item for item in SYSTEM_SPECS if item.id == system_id)
     left, right = st.columns((2, 1))
@@ -115,11 +197,60 @@ with tabs[0]:
         st.write("Runtime skill:", spec.runtime_skill)
         st.write("Assets:", len(spec.assets))
     run_input = st.text_area("Input", value=spec.sample_input, height=150)
-    if st.button("Run selected system", type="primary"):
-        with st.spinner("Executing system..."):
+    is_creator = system_id == "agentic-systems-creator"
+    if is_creator:
+        st.subheader("Generation contract")
+        creator_left, creator_right = st.columns(2)
+        with creator_left:
+            creator_name = st.text_input(
+                "Generated application name",
+                value="incident_response_application",
+            )
+            creator_template = st.selectbox(
+                "Executable topology template",
+                [
+                    item.id
+                    for item in SYSTEM_SPECS
+                    if item.id != "agentic-systems-creator"
+                ],
+                index=2,
+            )
+        with creator_right:
+            creator_target = st.text_input(
+                "Generated project directory",
+                value="dist/incident_response_application",
+            )
+            creator_overwrite = st.checkbox(
+                "Overwrite only files at the exact generated target",
+                key="creator-overwrite",
+            )
+        st.caption(
+            "Success requires blueprint reasoning, physical project generation and "
+            "artifact validation. A plan without files is a failed Creator run."
+        )
+
+    action_label = (
+        "Generate and validate Agentic System" if is_creator else "Run selected system"
+    )
+    if st.button(action_label, type="primary"):
+        with st.spinner(
+            "Designing, generating and validating application..."
+            if is_creator
+            else "Executing system..."
+        ):
             try:
-                system = build_system(system_id, config)
-                result = system.run(run_input)
+                if is_creator:
+                    result = create_application(
+                        run_input,
+                        creator_target,
+                        name=creator_name,
+                        template_system_id=creator_template,
+                        config=config,
+                        overwrite=creator_overwrite,
+                    )
+                else:
+                    system = build_system(system_id, config)
+                    result = system.run(run_input)
                 run_id = StudioStore(db_path).record_run(
                     system_id=system_id,
                     provider=provider,
@@ -127,11 +258,24 @@ with tabs[0]:
                     input=run_input,
                     result=result,
                 )
-                st.success(f"Run {run_id} recorded. ok={result.ok}")
-                st.write(result.text or result.data)
-                st.json(result_payload(result), expanded=False)
+                st.session_state["latest_system_id"] = system_id
+                st.session_state["latest_system_result"] = result
+                st.session_state["latest_run_id"] = run_id
             except Exception as exc:
                 st.exception(exc)
+
+    if (
+        st.session_state.get("latest_system_id") == system_id
+        and "latest_system_result" in st.session_state
+    ):
+        latest_result = st.session_state["latest_system_result"]
+        st.caption(f"Recorded run: {st.session_state['latest_run_id']}")
+        if is_creator:
+            render_creator_result(latest_result)
+        else:
+            st.success(f"ok={latest_result.ok}")
+            st.write(latest_result.text or latest_result.data)
+            st.json(result_payload(latest_result), expanded=False)
 
 with tabs[1]:
     selected_ids = st.multiselect(
@@ -202,7 +346,9 @@ with tabs[7]:
         [spec.id for spec in SYSTEM_SPECS],
         key="scaffold-system",
     )
-    scaffold_target = st.text_input("Target directory", value="dist/my_agentic_application")
+    scaffold_target = st.text_input(
+        "Target directory", value="dist/my_agentic_application"
+    )
     overwrite = st.checkbox("Overwrite files generated at the exact target paths")
     if st.button("Generate application"):
         try:

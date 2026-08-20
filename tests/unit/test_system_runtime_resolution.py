@@ -5,6 +5,7 @@ import sys
 from types import ModuleType, SimpleNamespace
 
 
+import agentic_systems as toolkit
 import agentic_systems.core.runtime as runtime_core_mod
 
 system_mod = importlib.import_module("agentic_systems.system")
@@ -72,3 +73,29 @@ def test_system_auto_provider_and_runtime_copy(monkeypatch):
     assert hydrated.runtime == "runtime-client"
     assert hydrated.bedrock == "bedrock-client"
     assert hydrated.sts == "sts-client"
+
+
+def test_agent_prepare_materializes_auto_provider_identity(monkeypatch):
+    monkeypatch.setenv("OPENAI_API_KEY", "test-key")
+    monkeypatch.setattr(
+        runtime_core_mod, "_module_available", lambda name: name == "openai"
+    )
+    runtime = toolkit.runtime(provider="auto", provider_priority=["openai-runtime"])
+    system = toolkit.system(runtime=runtime)
+
+    @toolkit.tool
+    def echo(value: str) -> dict[str, str]:
+        return {"value": value}
+
+    agent = system.agent(
+        name="auto_langgraph",
+        instructions="Execute echo.",
+        tools=[echo],
+        framework="langgraph",
+    )
+    system._engines["openai-runtime"] = SimpleNamespace(name="openai-runtime")
+
+    agent.prepare()
+
+    assert agent.engine == "openai-runtime"
+    assert agent.metadata["requested_engine"] == "auto"

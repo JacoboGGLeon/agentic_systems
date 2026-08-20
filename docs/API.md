@@ -646,10 +646,10 @@ integrations
 __version__
 ```
 
-Contract entries including public members: 370
+Contract entries including public members: 369
 Shared contract scenarios: 10
 
-Contract checksum: `19f9fbebedf87f526bbaf7fbfc1abea0dffed121bdc5a83bfccf893cf7037705`
+Contract checksum: `ec09332dc12edf61448b549171d3a8c386e4cbe15075bfefcc2cff6d36a3cdad`
 ## Provider Conformance API
 
 The advanced `agentic_systems.providers` namespace exposes the Runtime/Provider

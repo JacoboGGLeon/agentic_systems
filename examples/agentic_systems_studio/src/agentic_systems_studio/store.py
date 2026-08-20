@@ -196,7 +196,9 @@ class StudioStore:
         self.initialize()
         with self.connect() as connection:
             return {
-                table: int(connection.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0])
+                table: int(
+                    connection.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
+                )
                 for table in ("systems", "stages", "assets", "runs", "compositions")
             }
 

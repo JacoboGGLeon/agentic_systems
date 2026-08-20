@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib
 
+import agentic_systems.core.runtime as runtime_module
 import pytest
 
 from agentic_systems.core.runtime import RuntimeConfig, _find_dotenv, _load_dotenv
@@ -73,3 +74,7 @@ def test_runtime_config_coerce_dotenv_and_describe(monkeypatch, tmp_path):
     ).describe()
     assert explicit["selected_provider"] == PYTHON_RUNTIME_ENGINE
     assert explicit["configuration"]["bedrock"]["configured"] is True
+    assert (
+        runtime_module._auto_reason("ollama-runtime")
+        == "OLLAMA_MODEL/OLLAMA_BASE_URL config detected"
+    )

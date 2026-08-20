@@ -37,12 +37,33 @@ def test_chain_expectations_and_factories(monkeypatch, tmp_path):
 
     monkeypatch.setenv("BEDROCK_MODEL_ID", "bedrock-model")
     monkeypatch.setenv("OPENAI_MODEL", "openai-model")
+    monkeypatch.setenv("OLLAMA_MODEL", "ollama-model")
+    monkeypatch.setenv("VLLM_MODEL", "vllm-model")
     monkeypatch.setenv("AWS_REGION", "mx-test-1")
     assert factories_module.default_model_id() == "bedrock-model"
     assert factories_module.default_openai_model_id() == "openai-model"
+    assert factories_module.default_ollama_model_id() == "ollama-model"
+    assert factories_module.default_vllm_model_id() == "vllm-model"
     assert factories_module.default_region() == "mx-test-1"
+    assert factories_module._ollama_signal_present() is True
     assert factories_module._default_agent_model("python-runtime") == "python-runtime"
     assert factories_module._default_agent_model("openai-runtime") == "openai-model"
+    assert factories_module._default_agent_model("ollama-runtime") == "ollama-model"
+    assert factories_module._default_agent_model("vllm-runtime") == "vllm-model"
+
+    monkeypatch.setattr(factories_module, "_load_dotenv", lambda: None)
+    model_env_vars = (
+        *factories_module.DEFAULT_MODEL_ENV_VARS,
+        *factories_module.OLLAMA_MODEL_ENV_VARS,
+    )
+    for key in model_env_vars:
+        monkeypatch.delenv(key, raising=False)
+    assert (
+        factories_module.default_model_id() == factories_module.DEFAULT_BEDROCK_MODEL_ID
+    )
+    assert (
+        factories_module.default_ollama_model_id() == factories_module.DEFAULT_OLLAMA_MODEL_ID
+    )
 
     assert factories_module._merge_skill_inputs(None, "skills") == "skills"
     assert factories_module._merge_skill_inputs("skill", None) == ["skill"]

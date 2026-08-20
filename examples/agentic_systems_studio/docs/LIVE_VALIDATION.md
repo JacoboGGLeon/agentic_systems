@@ -70,3 +70,23 @@ Both launch surfaces call the same public server API.
 
 Those two gates do not invalidate the OpenAI/Ollama evidence above, but they are
 required before claiming the complete multi-provider release candidate is zero.
+
+## Complete ten-system Ollama gate
+
+All ten catalog systems were executed with ollama-runtime, the native
+agentic-systems framework and qwen3:4b-instruct after fixing provider tool
+event identity. The result was 10/10 systems, 34/34 stages, 26 tool events,
+13,593 total tokens, zero errors and 10/10 hierarchical RunResult invariant
+checks passing. The credential-free machine-readable evidence is stored in
+evidence/ollama-native.json.
+
+OpenAI-compatible provider tool events now receive globally unique execution
+IDs. The provider's original tool-call ID remains in
+meta.provider_tool_call_id, preserving correlation without violating
+hierarchical result invariants when the same tool is called more than once.
+
+## Reproduce the external gates
+
+Run scripts/validate_sandbox.py in ADA and Colab. Exact IAM, Bedrock API-key
+and vLLM commands plus the 40-system-execution passing contract are documented
+in docs/SANDBOX_VALIDATION.md.

@@ -28,20 +28,27 @@ From the repository root:
     agentic-studio list
     agentic-studio diagram agentic-systems-creator
     agentic-studio init ./my_app --name my_app
+    agentic-studio create ./generated_app --name generated_app --template incident-response --input "Create an incident response system."
     agentic-studio serve --open-browser
 
 The equivalent notebook launcher is notebooks/02_launch_studio.ipynb. It starts
 the same loopback-only server, waits for the Streamlit health endpoint and shows
-an HTML button targeting /jupyterlab/default/proxy/8501/. The CLI also prints
-that proxy URL for JupyterLab environments.
-For the ADA-style JupyterLab route, keep the default proxy prefix. Standard
-local Jupyter installations usually use /proxy instead; set PROXY_PREFIX in the
-launch notebook accordingly.
+two explicit buttons. The primary button uses the absolute URL reported by the
+live StudioServer (http://localhost:<port>/) for VS Code and local notebooks.
+The secondary button uses /jupyterlab/default/proxy/<port>/ only for ADA-style
+JupyterLab. Standard local Jupyter installations usually use /proxy; set
+PROXY_PREFIX in the launch notebook accordingly.
 
 Live execution is explicit:
 
     agentic-studio run data-quality --provider ollama-runtime --framework agentic-systems
     agentic-studio compose data-quality decision-intelligence --mode sequential --provider openai-runtime
+    agentic-studio validate --provider ollama-runtime --framework agentic-systems --model qwen3:4b-instruct --output evidence/ollama-native.json
+
+ADA and Colab can exercise all ten systems through every installed framework
+with the bundled scripts/validate_sandbox.py runner. See
+docs/SANDBOX_VALIDATION.md for the exact IAM, Bedrock API-key and vLLM
+commands and the expected evidence files.
 
 Provider credentials are read from the environment and are never copied into
 SQLite, manifests or bundles.
@@ -58,6 +65,16 @@ spends a much larger completion budget on internal reasoning and can exhaust the
 limit before producing a final answer. Lower-bit Q3 or Q2 builds can be faster
 or smaller, but are not the reference default because instruction following and
 tool selection are more fragile. See docs/LIVE_VALIDATION.md for measured runs.
+
+## Creator output contract
+
+Selecting Agentic Systems Creator in the Systems tab runs one public
+create_application(...) operation shared with agentic-studio create.
+A successful run must produce both a reasoning blueprint and a deterministic
+artifact-materialization child. The UI then displays the generated directory,
+file tree, contract checks, manifest, Mermaid, run commands, normalized
+RunResult and a downloadable ZIP. A blueprint without physical files is not a
+successful Creator run.
 
 ## Composition model
 

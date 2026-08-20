@@ -53,7 +53,9 @@ AGENT_ASSETS = tuple(
             "system_id": spec.id,
             "kind": stage.kind,
             "tool": stage.tool_key,
-            "runtime": "python-runtime" if stage.kind == "operator" else "selected-provider",
+            "runtime": "python-runtime"
+            if stage.kind == "operator"
+            else "selected-provider",
         },
     )
     for spec in SYSTEM_SPECS
@@ -61,23 +63,107 @@ AGENT_ASSETS = tuple(
 )
 
 ENVIRONMENT_ASSETS = (
-    ComponentAsset("incident-game-day", "Incident Game Day", "Timed incident records with escalating signals.", "episodic-operations", {"episodes": 5, "step": "incident update"}),
-    ComponentAsset("support-queue", "Support Queue", "Ticket arrivals, SLAs and escalation transitions.", "queue-simulation", {"episodes": 10, "step": "ticket"}),
-    ComponentAsset("data-drift-lab", "Data Drift Lab", "Data-quality snapshots that change through time.", "data-drift", {"episodes": 6, "step": "snapshot"}),
-    ComponentAsset("prompt-red-team", "Prompt Red Team", "Benign and adversarial prompt rounds.", "security-simulation", {"episodes": 8, "step": "attack round"}),
-    ComponentAsset("delivery-sprint", "Delivery Sprint", "Requirements and constraints revealed by iteration.", "planning-simulation", {"episodes": 4, "step": "sprint"}),
-    ComponentAsset("research-corpus", "Research Corpus", "Evidence batches with disagreement and uncertainty.", "evidence-over-time", {"episodes": 5, "step": "source batch"}),
+    ComponentAsset(
+        "incident-game-day",
+        "Incident Game Day",
+        "Timed incident records with escalating signals.",
+        "episodic-operations",
+        {"episodes": 5, "step": "incident update"},
+    ),
+    ComponentAsset(
+        "support-queue",
+        "Support Queue",
+        "Ticket arrivals, SLAs and escalation transitions.",
+        "queue-simulation",
+        {"episodes": 10, "step": "ticket"},
+    ),
+    ComponentAsset(
+        "data-drift-lab",
+        "Data Drift Lab",
+        "Data-quality snapshots that change through time.",
+        "data-drift",
+        {"episodes": 6, "step": "snapshot"},
+    ),
+    ComponentAsset(
+        "prompt-red-team",
+        "Prompt Red Team",
+        "Benign and adversarial prompt rounds.",
+        "security-simulation",
+        {"episodes": 8, "step": "attack round"},
+    ),
+    ComponentAsset(
+        "delivery-sprint",
+        "Delivery Sprint",
+        "Requirements and constraints revealed by iteration.",
+        "planning-simulation",
+        {"episodes": 4, "step": "sprint"},
+    ),
+    ComponentAsset(
+        "research-corpus",
+        "Research Corpus",
+        "Evidence batches with disagreement and uncertainty.",
+        "evidence-over-time",
+        {"episodes": 5, "step": "source batch"},
+    ),
 )
 
 EVAL_ASSETS = (
-    ComponentAsset("tool-contract", "Tool Contract", "Checks deterministic tool schemas and return contracts.", "contract-eval", {"targets": ["tool", "agent", "system"]}),
-    ComponentAsset("groundedness", "Groundedness", "Scores whether claims remain supported by supplied evidence.", "quality-eval", {"targets": ["agent", "system"]}),
-    ComponentAsset("deterministic-boundary", "Deterministic Boundary", "Verifies arithmetic, parsing and rules happen in operators.", "architecture-eval", {"targets": ["system"]}),
-    ComponentAsset("task-success", "Task Success", "Measures domain acceptance criteria.", "outcome-eval", {"targets": ["agent", "system"]}),
-    ComponentAsset("latency-budget", "Latency Budget", "Checks elapsed time and turn budgets.", "performance-eval", {"targets": ["agent", "system", "environment"]}),
-    ComponentAsset("provider-parity", "Provider Parity", "Compares normalized RunResult behavior across providers.", "portability-eval", {"targets": ["system"]}),
-    ComponentAsset("framework-parity", "Framework Parity", "Compares normalized behavior across frameworks.", "portability-eval", {"targets": ["system"]}),
-    ComponentAsset("composition-lineage", "Composition Lineage", "Checks nested RunResult children and execution identities.", "composition-eval", {"targets": ["system-of-systems"]}),
+    ComponentAsset(
+        "tool-contract",
+        "Tool Contract",
+        "Checks deterministic tool schemas and return contracts.",
+        "contract-eval",
+        {"targets": ["tool", "agent", "system"]},
+    ),
+    ComponentAsset(
+        "groundedness",
+        "Groundedness",
+        "Scores whether claims remain supported by supplied evidence.",
+        "quality-eval",
+        {"targets": ["agent", "system"]},
+    ),
+    ComponentAsset(
+        "deterministic-boundary",
+        "Deterministic Boundary",
+        "Verifies arithmetic, parsing and rules happen in operators.",
+        "architecture-eval",
+        {"targets": ["system"]},
+    ),
+    ComponentAsset(
+        "task-success",
+        "Task Success",
+        "Measures domain acceptance criteria.",
+        "outcome-eval",
+        {"targets": ["agent", "system"]},
+    ),
+    ComponentAsset(
+        "latency-budget",
+        "Latency Budget",
+        "Checks elapsed time and turn budgets.",
+        "performance-eval",
+        {"targets": ["agent", "system", "environment"]},
+    ),
+    ComponentAsset(
+        "provider-parity",
+        "Provider Parity",
+        "Compares normalized RunResult behavior across providers.",
+        "portability-eval",
+        {"targets": ["system"]},
+    ),
+    ComponentAsset(
+        "framework-parity",
+        "Framework Parity",
+        "Compares normalized behavior across frameworks.",
+        "portability-eval",
+        {"targets": ["system"]},
+    ),
+    ComponentAsset(
+        "composition-lineage",
+        "Composition Lineage",
+        "Checks nested RunResult children and execution identities.",
+        "composition-eval",
+        {"targets": ["system-of-systems"]},
+    ),
 )
 
 

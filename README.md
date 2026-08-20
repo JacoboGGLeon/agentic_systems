@@ -43,6 +43,31 @@ pip install agentic-systems
 import agentic_systems as toolkit
 ```
 
+### Install the Agentic Systems skill
+
+The `v2.0.0` GitHub release includes a credential-free skill ZIP whose archive
+root is `agentic-systems/`.
+
+```powershell
+Expand-Archive .\agentic-systems-skill-2.0.0.zip `
+  -DestinationPath "$env:USERPROFILE\.codex\skills" -Force
+```
+
+```bash
+unzip agentic-systems-skill-2.0.0.zip -d ~/.codex/skills
+```
+
+Restart or reload Codex, then invoke `$agentic-systems`. OpenAI Skills upload
+surfaces that accept a ZIP can consume the same artifact. Download the
+standalone skill and the complete ten-system Studio from the
+[v2.0.0 release](https://github.com/JacoboGGLeon/agentic_systems/releases/tag/v2.0.0).
+
+Release assets:
+
+- `agentic-systems-skill-2.0.0.zip`: Codex/OpenAI skill package.
+- `agentic-systems-studio-2.0.0.zip`: portable Studio with ten nested systems.
+- `SHA256SUMS-2.0.0.txt`: hashes for the Python and product artifacts.
+
 For an installed-package smoke test and provider notebook setup, follow
 [First Run Onboarding](docs/ONBOARDING_FIRST_RUN.md).
 

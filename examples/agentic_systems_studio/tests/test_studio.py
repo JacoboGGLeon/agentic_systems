@@ -6,12 +6,15 @@ from pathlib import Path
 
 import pytest
 
+import agentic_systems as toolkit
+
 from agentic_systems_studio import (
     SYSTEM_SPECS,
     StudioConfig,
     StudioStore,
     build_system,
     compose_systems,
+    create_application,
     scaffold_application,
 )
 from agentic_systems_studio.components import (
@@ -53,6 +56,7 @@ def test_deterministic_operators_execute_for_every_system():
         result = OPERATOR_TOOLS[spec.id].run({"text": spec.sample_input})
         assert result.ok, (spec.id, result)
         assert result.data
+
 
 def test_data_quality_operator_extracts_csv_from_natural_language_prompt():
     result = OPERATOR_TOOLS["data-quality"].run(
@@ -144,14 +148,85 @@ def test_scaffolder_generates_complete_non_destructive_application(tmp_path: Pat
         "notebooks/00_walkthrough.ipynb",
         "skills/codex-agentic-application/SKILL.md",
         "tests/test_contract.py",
+        "tests/test_execution.py",
+        "src/reference_application/tools.py",
+        "src/reference_application/skills.py",
+        "src/reference_application/agents.py",
+        "src/reference_application/settings.py",
     } <= relative
-    assert json.loads((target / "manifest.json").read_text(encoding="utf-8"))["id"] == "incident-response"
+    manifest = json.loads((target / "manifest.json").read_text(encoding="utf-8"))
+    assert manifest["id"] == "incident-response"
+    assert set(manifest["assets"]) == relative
+    assert manifest["execution"]["plan"] == "sequential"
+    assert "python-runtime" not in manifest["runtime_policy"]["reasoning_providers"]
+    source = (target / "src/reference_application/tools.py").read_text(encoding="utf-8")
+    for stage in manifest["stages"]:
+        assert f"def {stage['tool_key']}" in source
+    validation = report.validate()
+    assert validation["ok"] is True
+    assert all(validation["checks"].values())
+    with sqlite3.connect(target / "data/app.db") as connection:
+        assert connection.execute("SELECT COUNT(*) FROM stages").fetchone()[0] == 5
+        assert connection.execute("SELECT COUNT(*) FROM tools").fetchone()[0] == 3
     with pytest.raises(FileExistsError):
         scaffold_application(
             target,
             name="Reference Application",
             system_id="incident-response",
         )
+
+
+def test_scaffold_validation_rejects_a_missing_declared_tool(tmp_path: Path):
+    target = tmp_path / "tampered"
+    report = scaffold_application(
+        target,
+        name="Tampered Application",
+        system_id="prompt-security",
+    )
+    tools_path = target / "src/tampered_application/tools.py"
+    source = tools_path.read_text(encoding="utf-8")
+    tools_path.write_text(
+        source.replace("def scan_prompt_security", "def removed_prompt_security"),
+        encoding="utf-8",
+    )
+    validation = report.validate()
+    assert validation["ok"] is False
+    assert validation["checks"]["manifest_tools_resolve"] is False
+
+
+def test_creator_materializes_validated_portable_application(
+    monkeypatch, tmp_path: Path
+):
+    class FakeCreator:
+        def run(self, request, **_kwargs):
+            return toolkit.RunResult(
+                text="Blueprint ready.",
+                data={"request": request},
+                engine="openai-runtime",
+                model="test-model",
+                mode="create",
+            )
+
+    monkeypatch.setattr(
+        "agentic_systems_studio.creator.build_system",
+        lambda *_args, **_kwargs: FakeCreator(),
+    )
+    result = create_application(
+        "Create an incident response system.",
+        tmp_path / "created",
+        name="Created Incident System",
+        template_system_id="incident-response",
+    )
+
+    assert result.ok is True
+    assert result.mode == "create"
+    assert result.data["generated"] is True
+    assert len(result.children) == 2
+    artifact = result.data["artifact"]
+    assert artifact["validation"]["ok"] is True
+    assert artifact["file_count"] >= 10
+    assert Path(artifact["root"], "manifest.json").is_file()
+    assert "Agentic System generated successfully" in result.text
 
 
 def test_python_runtime_is_rejected_for_reasoning_catalog():

@@ -82,12 +82,25 @@ def test_ollama_runtime_provider_runs_openai_compatible_tool_loop() -> None:
     assert result.meta["runtime_engine"] == OLLAMA_RUNTIME_ENGINE
     assert result.meta["execution_engine"] == OLLAMA_RUNTIME_ENGINE
     assert result.tool_events[0].name == "duplicar"
+    assert result.tool_events[0].id.startswith("tool-")
+    assert result.tool_events[0].id != result.tool_events[0].name
+    assert result.tool_events[0].meta["provider_tool_call_id"] == "call_1"
     assert result.tool_events[0].output["result"] == 42
     assert result.usage["total_tokens"] == 15
     assert (
-        result.meta["source_result_type"]
-        == "ollama.openai_compatible.chat.completions"
+        result.meta["source_result_type"] == "ollama.openai_compatible.chat.completions"
     )
+
+    repeated_provider = OllamaRuntimeProvider(system, client=FakeOllamaClient())
+    repeated = repeated_provider.run(
+        agent,
+        "Duplica 21 otra vez usando la tool.",
+        toolkit.RunPolicy(max_turns=4),
+        mode="eval",
+    )
+    event_ids = [result.tool_events[0].id, repeated.tool_events[0].id]
+    assert len(event_ids) == len(set(event_ids))
+    assert repeated.check_invariants().ok is True
 
 
 def test_ollama_missing_tools_and_async_execution() -> None:
@@ -107,6 +120,15 @@ def test_ollama_missing_tools_and_async_execution() -> None:
     assert missing.ok is False
     assert missing.engine == OLLAMA_RUNTIME_ENGINE
     assert missing.data["error"]["code"] == "missing_tools"
+
+    missing_async = asyncio.run(
+        provider.arun(
+            missing_agent,
+            "Hola async",
+            toolkit.RunPolicy(max_turns=1),
+        )
+    )
+    assert missing_async.data["error"]["code"] == "missing_tools"
 
     system = toolkit.system(runtime=runtime, model="qwen3:4b")
     agent = system.agent(
@@ -181,16 +203,20 @@ def test_ollama_environment_clients_defaults_and_engine(monkeypatch) -> None:
     assert created["sync"] == expected
     assert created["async"] == expected
 
+    untagged = toolkit.RunResult(text="ok", meta={"source_result_type": "custom"})
+    normalized = ollama_module._as_ollama_result(untagged)
+    assert normalized.meta["source_result_type"] == "custom"
+
     system = toolkit.system(runtime=toolkit.runtime(provider="ollama-runtime"))
     assert isinstance(system._engine("ollama-runtime"), OllamaRuntimeProvider)
-
-
 
 
 class FakeEmptyChatCompletions:
     def create(self, **kwargs):
         message = SimpleNamespace(content="", tool_calls=[])
-        usage = SimpleNamespace(prompt_tokens=12, completion_tokens=1024, total_tokens=1036)
+        usage = SimpleNamespace(
+            prompt_tokens=12, completion_tokens=1024, total_tokens=1036
+        )
         return SimpleNamespace(
             choices=[SimpleNamespace(message=message)],
             usage=usage,

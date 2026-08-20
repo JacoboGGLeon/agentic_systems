@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 
 
 def main() -> int:
@@ -24,8 +25,9 @@ def main() -> int:
         system_id=args.system,
         overwrite=args.overwrite,
     )
-    print(report.to_dict())
-    return 0
+    payload = report.to_dict()
+    print(json.dumps(payload, indent=2))
+    return 0 if payload["validation"]["ok"] else 1
 
 
 if __name__ == "__main__":

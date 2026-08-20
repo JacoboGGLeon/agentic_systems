@@ -197,6 +197,10 @@ def test_vllm_runtime_provider_environment_clients_and_defaults(monkeypatch) -> 
     assert created["sync"] == {"base_url": "http://127.0.0.1:8000/v1", "api_key": "EMPTY"}
     assert created["async"] == {"base_url": "http://127.0.0.1:8000/v1", "api_key": "EMPTY"}
 
+    untagged = toolkit.RunResult(text="ok", meta={"source_result_type": "custom"})
+    normalized = vllm_module._as_vllm_result(untagged)
+    assert normalized.meta["source_result_type"] == "custom"
+
     monkeypatch.setenv("VLLM_API_KEY", "configured")
     assert vllm_module._vllm_api_key() == "configured"
 

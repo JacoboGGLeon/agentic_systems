@@ -27,7 +27,11 @@ class StudioConfig:
 
     @property
     def framework_value(self) -> str | None:
-        return None if self.framework in {"agentic-systems", "native", ""} else self.framework
+        return (
+            None
+            if self.framework in {"agentic-systems", "native", ""}
+            else self.framework
+        )
 
     def runtime(self):
         return toolkit.runtime(
@@ -62,7 +66,9 @@ class StudioSystem:
     skills: tuple[Any, ...] = field(default_factory=tuple)
 
     def run(self, input: Any = None, **kwargs: Any) -> toolkit.RunResult:
-        result = self.compiled.run(self.spec.sample_input if input is None else input, **kwargs)
+        result = self.compiled.run(
+            self.spec.sample_input if input is None else input, **kwargs
+        )
         result.meta.update(
             {
                 "studio_system_id": self.spec.id,
@@ -76,7 +82,11 @@ class StudioSystem:
 
     def inspect(self) -> dict[str, Any]:
         report = self.system.inspect()
-        payload = report.model_dump(mode="json") if hasattr(report, "model_dump") else dict(report)
+        payload = (
+            report.model_dump(mode="json")
+            if hasattr(report, "model_dump")
+            else dict(report)
+        )
         payload["compiled"] = self.compiled.inspect()
         payload["catalog"] = self.spec.to_dict()
         return payload
@@ -202,11 +212,15 @@ def build_system(
     )
 
 
-def build_all(config: StudioConfig | None = None, *, validate: bool = True) -> tuple[StudioSystem, ...]:
+def build_all(
+    config: StudioConfig | None = None, *, validate: bool = True
+) -> tuple[StudioSystem, ...]:
     selected = config or StudioConfig()
     from .catalog import SYSTEM_SPECS
 
-    return tuple(build_system(spec.id, selected, validate=validate) for spec in SYSTEM_SPECS)
+    return tuple(
+        build_system(spec.id, selected, validate=validate) for spec in SYSTEM_SPECS
+    )
 
 
 def compose_systems(
@@ -224,7 +238,9 @@ def compose_systems(
     if mode not in {"sequential", "parallel"}:
         raise ValueError("mode must be 'sequential' or 'parallel'.")
 
-    systems = tuple(build_system(system_id, config, validate=validate) for system_id in ids)
+    systems = tuple(
+        build_system(system_id, config, validate=validate) for system_id in ids
+    )
     boundary = toolkit.system(runtime=toolkit.runtime(provider="python-runtime"))
     for system in systems:
         boundary.add(system.compiled)

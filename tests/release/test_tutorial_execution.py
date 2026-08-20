@@ -39,6 +39,27 @@ PROVIDER_NOTEBOOKS = (
     "providers/04_ollama.ipynb",
 )
 
+CLI_NOTEBOOKS = tuple(
+    f"cli/{name}" for name in (*DETERMINISTIC_NOTEBOOKS, *PROVIDER_NOTEBOOKS)
+)
+EXAMPLE_ROOT = ROOT / "examples" / "agentic_systems_studio" / "notebooks"
+EXAMPLE_NOTEBOOKS = (
+    "00_studio_catalog.ipynb",
+    "01_system_composition.ipynb",
+    "02_launch_studio.ipynb",
+)
+LIVE_NOTEBOOKS = (
+    ("providers/01_openai.ipynb", "RUN_OPENAI_LIVE"),
+    ("providers/02_bedrock.ipynb", "RUN_BEDROCK_LIVE"),
+    ("providers/04_ollama.ipynb", "RUN_OLLAMA_LIVE"),
+    ("frameworks/00_langgraph.ipynb", "RUN_LANGGRAPH_LIVE"),
+    ("frameworks/01_openai_agents.ipynb", "RUN_OPENAI_AGENTS_LIVE"),
+    ("frameworks/02_aws_strands.ipynb", "RUN_STRANDS_LIVE"),
+)
+
+
+LIVE_NOTEBOOK_GATE = "AGENTIC_SYSTEMS_RUN_LIVE_NOTEBOOKS"
+
 
 def _execute_notebook(client: NotebookClient):
     if sys.platform != "win32":
@@ -111,11 +132,84 @@ def test_provider_notebook_executes_as_not_run_from_fresh_kernel(name, monkeypat
         resources={"metadata": {"path": str(ROOT)}},
     )
     executed = _execute_notebook(client)
-    outputs = [
-        output
-        for cell in executed.cells
-        for output in cell.get("outputs", [])
-    ]
+    outputs = [output for cell in executed.cells for output in cell.get("outputs", [])]
 
     assert all(output.get("output_type") != "error" for output in outputs)
     assert "not-run" in repr(outputs)
+
+
+def test_cli_execution_inventory_covers_every_cli_notebook():
+    actual = {
+        path.relative_to(TUTORIALS).as_posix()
+        for path in (TUTORIALS / "cli").rglob("*.ipynb")
+    }
+    assert set(CLI_NOTEBOOKS) == actual
+
+
+@pytest.mark.parametrize("name", CLI_NOTEBOOKS)
+def test_cli_notebook_executes_from_fresh_kernel(name, monkeypatch):
+    monkeypatch.setenv("RUN_CLI_LIVE", "0")
+    notebook = nbformat.read(TUTORIALS / name, as_version=4)
+    client = NotebookClient(
+        notebook,
+        timeout=180,
+        kernel_name="python3",
+        resources={"metadata": {"path": str(ROOT)}},
+    )
+    executed = _execute_notebook(client)
+    outputs = [output for cell in executed.cells for output in cell.get("outputs", [])]
+    assert all(output.get("output_type") != "error" for output in outputs)
+    assert "$ " in repr(outputs)
+
+
+def test_example_execution_inventory_covers_every_studio_notebook():
+    actual = {path.name for path in EXAMPLE_ROOT.glob("*.ipynb")}
+    assert set(EXAMPLE_NOTEBOOKS) == actual
+
+
+@pytest.mark.parametrize("name", EXAMPLE_NOTEBOOKS)
+def test_studio_example_notebook_executes_from_fresh_kernel(name, monkeypatch):
+    import socket
+
+    monkeypatch.setenv("RUN_LIVE", "0")
+    monkeypatch.setenv("AGENTIC_SYSTEMS_NOTEBOOK_TEST", "1")
+    with socket.socket() as listener:
+        listener.bind(("127.0.0.1", 0))
+        monkeypatch.setenv(
+            "AGENTIC_SYSTEMS_STUDIO_PORT", str(listener.getsockname()[1])
+        )
+
+    notebook = nbformat.read(EXAMPLE_ROOT / name, as_version=4)
+    client = NotebookClient(
+        notebook,
+        timeout=180,
+        kernel_name="python3",
+        resources={"metadata": {"path": str(ROOT)}},
+    )
+    executed = _execute_notebook(client)
+    outputs = [output for cell in executed.cells for output in cell.get("outputs", [])]
+    assert all(output.get("output_type") != "error" for output in outputs)
+    if name == "02_launch_studio.ipynb":
+        assert "Test cleanup: studio server stopped" in repr(outputs)
+
+
+@pytest.mark.parametrize(("name", "flag"), LIVE_NOTEBOOKS)
+def test_live_notebook_executes_when_explicitly_enabled(name, flag):
+    import os
+
+    if os.getenv(LIVE_NOTEBOOK_GATE) != "1" or os.getenv(flag) != "1":
+        pytest.skip(
+            f"Set {LIVE_NOTEBOOK_GATE}=1 and {flag}=1 to execute this live notebook."
+        )
+
+    notebook = nbformat.read(TUTORIALS / name, as_version=4)
+    client = NotebookClient(
+        notebook,
+        timeout=300,
+        kernel_name="python3",
+        resources={"metadata": {"path": str(ROOT)}},
+    )
+    executed = _execute_notebook(client)
+    outputs = [output for cell in executed.cells for output in cell.get("outputs", [])]
+    assert all(output.get("output_type") != "error" for output in outputs)
+    assert "not-run" not in repr(outputs)

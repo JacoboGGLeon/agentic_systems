@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import errno
 import html
 import os
 import signal
@@ -30,7 +31,10 @@ class StudioServer:
 
     @property
     def local_url(self) -> str:
-        return f"http://127.0.0.1:{self.port}/"
+        browser_host = (
+            "localhost" if self.host in {"127.0.0.1", "0.0.0.0", "::"} else self.host
+        )
+        return f"http://{browser_host}:{self.port}/"
 
     def stop(self, *, timeout_s: float = 5.0) -> None:
         if self.process.poll() is None:
@@ -67,9 +71,7 @@ def resolve_studio_app(app_path: str | Path | None = None) -> Path:
     rendered = os.linesep.join(f"- {candidate}" for candidate in candidates)
     raise FileNotFoundError(
         "Could not locate the Agentic Systems Studio Streamlit app. "
-        "Pass --app or set AGENTIC_STUDIO_APP. Checked:"
-        + os.linesep
-        + rendered
+        "Pass --app or set AGENTIC_STUDIO_APP. Checked:" + os.linesep + rendered
     )
 
 
@@ -127,6 +129,9 @@ def stop_recorded_studio(pid_path: Path) -> None:
         os.kill(pid, signal.SIGTERM)
     except (ProcessLookupError, ValueError):
         pass
+    except OSError as exc:
+        if exc.errno != errno.ESRCH and getattr(exc, "winerror", None) != 87:
+            raise
     finally:
         pid_path.unlink(missing_ok=True)
 
@@ -164,12 +169,7 @@ def start_studio_server(
         tail = log_path.read_text(encoding="utf-8", errors="replace")[-8000:]
         handle = StudioServer(process, app, log_path, pid_path, host, port)
         handle.stop()
-        raise RuntimeError(
-            "Studio did not become ready: "
-            + detail
-            + os.linesep
-            + tail
-        )
+        raise RuntimeError("Studio did not become ready: " + detail + os.linesep + tail)
     return StudioServer(process, app, log_path, pid_path, host, port)
 
 
@@ -187,17 +187,33 @@ def studio_proxy_url(port: int = DEFAULT_PORT, *, prefix: str | None = None) -> 
     return f"{selected.rstrip('/')}/{port}/"
 
 
-def studio_button_html(url: str, *, label: str = "Open Agentic Systems Studio") -> str:
-    safe_url = html.escape(url, quote=True)
-    safe_label = html.escape(label)
+def studio_button_html(
+    url: str,
+    *,
+    label: str = "Open Agentic Systems Studio",
+    alternate_url: str | None = None,
+    alternate_label: str = "Open through Jupyter proxy",
+) -> str:
+    def render_link(target: str, text: str, *, secondary: bool = False) -> str:
+        safe_url = html.escape(target, quote=True)
+        safe_label = html.escape(text)
+        background = "#6c757d" if secondary else "#ff4b4b"
+        return (
+            f"<a href='{safe_url}' target='_blank' rel='noopener noreferrer' "
+            "style='display:inline-block;padding:11px 18px;border-radius:9px;"
+            f"background:{background};color:white;text-decoration:none;"
+            "font-weight:700;margin-right:10px;margin-bottom:6px'>"
+            f"{safe_label}</a>"
+        )
+
+    links = render_link(url, label)
+    if alternate_url and alternate_url != url:
+        links += render_link(alternate_url, alternate_label, secondary=True)
     return (
         "<div style='padding:18px 20px;border:1px solid rgba(128,128,128,.28);"
         "border-radius:14px;margin-top:12px'>"
         "<h3 style='margin:0 0 12px 0'>Agentic Systems Studio is ready</h3>"
-        f"<a href='{safe_url}' target='_blank' rel='noopener noreferrer' "
-        "style='display:inline-block;padding:11px 18px;border-radius:9px;"
-        "background:#ff4b4b;color:white;text-decoration:none;font-weight:700'>"
-        f"{safe_label}</a></div>"
+        f"{links}</div>"
     )
 
 

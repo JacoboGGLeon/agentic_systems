@@ -43,9 +43,7 @@ def test_system_is_executable_and_compiles_registered_units():
     system._agents.extend(
         [
             CallableExecutable(lambda value: {"value": value + 1}),
-            CallableExecutable(
-                lambda value: {"value": value["value"] * 2}
-            ),
+            CallableExecutable(lambda value: {"value": value["value"] * 2}),
         ]
     )
 
@@ -62,14 +60,15 @@ def test_top_level_filesystem_skill_load_is_pure():
         Path(__file__).resolve().parents[2]
         / "tutorials"
         / "skills"
-        / "accountability_otc"
+        / "tutorial_api_inspection"
     )
 
     loaded = toolkit.load_skill(path)
 
     assert isinstance(loaded, toolkit.Skill)
-    assert loaded.name == "accountability_otc"
+    assert loaded.name == "tutorial_api_inspection"
     assert loaded.metadata["source"] == "filesystem_loader"
+
 
 def test_provider_config_binds_to_runtime_without_becoming_framework():
     model_provider = toolkit.provider(
@@ -89,9 +88,7 @@ def test_public_compatibility_matrix_covers_every_pair():
     cases = toolkit.compatibility_matrix()
 
     assert len(cases) == 20
-    actual = {
-        (case.provider, case.framework) for case in cases
-    }
+    actual = {(case.provider, case.framework) for case in cases}
     expected = {
         (provider, framework)
         for provider in PROVIDER_NAMES

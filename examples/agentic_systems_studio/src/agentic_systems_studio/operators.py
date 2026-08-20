@@ -16,7 +16,11 @@ def _lines(text: str) -> list[str]:
 
 
 def _sentences(text: str) -> list[str]:
-    return [item.strip() for item in re.split(r"(?<=[.!?])\s+|\n+", str(text)) if item.strip()]
+    return [
+        item.strip()
+        for item in re.split(r"(?<=[.!?])\s+|\n+", str(text))
+        if item.strip()
+    ]
 
 
 @toolkit.tool
@@ -24,15 +28,27 @@ def inspect_creator_request(text: str) -> dict:
     """Extract explicit requirements and architecture signals from a creator request."""
 
     lowered = text.lower()
-    providers = [name for name in ("openai", "ollama", "bedrock", "vllm", "python") if name in lowered]
-    frameworks = [name for name in ("native", "langgraph", "openai-agents", "strands") if name in lowered]
+    providers = [
+        name
+        for name in ("openai", "ollama", "bedrock", "vllm", "python")
+        if name in lowered
+    ]
+    frameworks = [
+        name
+        for name in ("native", "langgraph", "openai-agents", "strands")
+        if name in lowered
+    ]
     return {
         "summary": "Creator request inspected deterministically.",
         "requirements": _lines(text),
         "provider_signals": providers,
         "framework_signals": frameworks,
-        "needs_tools": any(word in lowered for word in ("tool", "api", "database", "file")),
-        "needs_environment": any(word in lowered for word in ("episode", "environment", "simulation")),
+        "needs_tools": any(
+            word in lowered for word in ("tool", "api", "database", "file")
+        ),
+        "needs_environment": any(
+            word in lowered for word in ("episode", "environment", "simulation")
+        ),
         "needs_evals": "eval" in lowered or "test" in lowered,
     }
 
@@ -48,7 +64,14 @@ def extract_research_evidence(text: str) -> dict:
         "urls": re.findall(r"https?://[^\s)]+", text),
         "numbers": re.findall(r"(?<!\w)[+-]?(?:\d+[.,]?\d*|\.\d+)%?", text),
         "uncertainty_markers": [
-            marker for marker in ("quizá", "tal vez", "posiblemente", "aproximadamente", "maybe")
+            marker
+            for marker in (
+                "quizá",
+                "tal vez",
+                "posiblemente",
+                "aproximadamente",
+                "maybe",
+            )
             if marker in text.lower()
         ],
     }
@@ -61,10 +84,30 @@ def normalize_decision_context(text: str) -> dict:
     lines = _lines(text)
     return {
         "summary": "Decision context normalized.",
-        "options": [line for line in lines if re.search(r"\b(opci[oó]n|alternativa|vs\.?|versus)\b", line, re.I)],
-        "criteria": [line for line in lines if re.search(r"\b(costo|tiempo|riesgo|calidad|latencia|seguridad)\b", line, re.I)],
-        "constraints": [line for line in lines if re.search(r"\b(debe|l[ií]mite|m[aá]ximo|no puede|restricci[oó]n)\b", line, re.I)],
-        "assumptions": [line for line in lines if re.search(r"\b(asum|supong|hip[oó]tesis)\b", line, re.I)],
+        "options": [
+            line
+            for line in lines
+            if re.search(r"\b(opci[oó]n|alternativa|vs\.?|versus)\b", line, re.I)
+        ],
+        "criteria": [
+            line
+            for line in lines
+            if re.search(
+                r"\b(costo|tiempo|riesgo|calidad|latencia|seguridad)\b", line, re.I
+            )
+        ],
+        "constraints": [
+            line
+            for line in lines
+            if re.search(
+                r"\b(debe|l[ií]mite|m[aá]ximo|no puede|restricci[oó]n)\b", line, re.I
+            )
+        ],
+        "assumptions": [
+            line
+            for line in lines
+            if re.search(r"\b(asum|supong|hip[oó]tesis)\b", line, re.I)
+        ],
     }
 
 
@@ -88,7 +131,15 @@ def triage_incident_signals(text: str) -> dict:
     }
     hits = {signal: score for signal, score in weights.items() if signal in lowered}
     score = min(10, sum(hits.values()))
-    severity = "critical" if score >= 8 else "high" if score >= 5 else "medium" if score >= 2 else "low"
+    severity = (
+        "critical"
+        if score >= 8
+        else "high"
+        if score >= 5
+        else "medium"
+        if score >= 2
+        else "low"
+    )
     return {
         "summary": f"Incident signals indicate {severity} heuristic severity.",
         "severity": severity,
@@ -111,14 +162,28 @@ def inspect_python_source(text: str) -> dict:
             "valid": False,
             "error": {"line": exc.lineno, "offset": exc.offset, "message": exc.msg},
         }
-    calls = [node.func.id for node in ast.walk(tree) if isinstance(node, ast.Call) and isinstance(node.func, ast.Name)]
+    calls = [
+        node.func.id
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Call) and isinstance(node.func, ast.Name)
+    ]
     risky = sorted(set(calls) & {"eval", "exec", "compile", "open", "__import__"})
     return {
         "summary": "Python source inspected without execution.",
         "valid": True,
-        "functions": [node.name for node in ast.walk(tree) if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))],
-        "classes": [node.name for node in ast.walk(tree) if isinstance(node, ast.ClassDef)],
-        "imports": [ast.unparse(node) for node in ast.walk(tree) if isinstance(node, (ast.Import, ast.ImportFrom))],
+        "functions": [
+            node.name
+            for node in ast.walk(tree)
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+        ],
+        "classes": [
+            node.name for node in ast.walk(tree) if isinstance(node, ast.ClassDef)
+        ],
+        "imports": [
+            ast.unparse(node)
+            for node in ast.walk(tree)
+            if isinstance(node, (ast.Import, ast.ImportFrom))
+        ],
         "risky_calls": risky,
         "node_count": sum(1 for _ in ast.walk(tree)),
     }
@@ -126,7 +191,9 @@ def inspect_python_source(text: str) -> dict:
 
 def _extract_csv_payload(text: str) -> str:
     raw = str(text).strip()
-    fenced = re.search(r"\x60\x60\x60(?:csv)?\s*(.*?)\x60\x60\x60", raw, flags=re.I | re.S)
+    fenced = re.search(
+        r"\x60\x60\x60(?:csv)?\s*(.*?)\x60\x60\x60", raw, flags=re.I | re.S
+    )
     if fenced:
         raw = fenced.group(1).strip()
 
@@ -153,7 +220,10 @@ def profile_csv_text(text: str) -> dict:
 
     rows = list(csv.DictReader(io.StringIO(_extract_csv_payload(text))))
     columns = list(rows[0]) if rows else []
-    null_counts = {column: sum(not str(row.get(column, "")).strip() for row in rows) for column in columns}
+    null_counts = {
+        column: sum(not str(row.get(column, "")).strip() for row in rows)
+        for column in columns
+    }
     fingerprints = [tuple(row.get(column, "") for column in columns) for row in rows]
     return {
         "summary": "CSV profile calculated deterministically.",
@@ -176,7 +246,9 @@ def scan_prompt_security(text: str) -> dict:
         "tool_abuse": r"call (?:the )?tool|ejecuta (?:la )?herramienta|run shell",
         "exfiltration": r"send .* to https?://|env[ií]a .* a https?://",
     }
-    hits = {name: re.findall(pattern, text, flags=re.I) for name, pattern in rules.items()}
+    hits = {
+        name: re.findall(pattern, text, flags=re.I) for name, pattern in rules.items()
+    }
     hits = {name: values for name, values in hits.items() if values}
     return {
         "summary": "Prompt security rules evaluated.",
@@ -193,8 +265,18 @@ def extract_meeting_actions(text: str) -> dict:
     lines = _lines(text)
     return {
         "summary": "Meeting evidence extracted.",
-        "actions": [line for line in lines if re.search(r"\b(todo|action|acci[oó]n|har[aá]|debe|follow.?up)\b", line, re.I)],
-        "decisions": [line for line in lines if re.search(r"\b(decid|acord|approved|aprob)\b", line, re.I)],
+        "actions": [
+            line
+            for line in lines
+            if re.search(
+                r"\b(todo|action|acci[oó]n|har[aá]|debe|follow.?up)\b", line, re.I
+            )
+        ],
+        "decisions": [
+            line
+            for line in lines
+            if re.search(r"\b(decid|acord|approved|aprob)\b", line, re.I)
+        ],
         "dates": re.findall(r"\b(?:\d{4}-\d{2}-\d{2}|\d{1,2}/\d{1,2}/\d{2,4})\b", text),
         "owners": re.findall(r"@([A-Za-z0-9_.-]+)", text),
     }
@@ -204,7 +286,10 @@ def extract_meeting_actions(text: str) -> dict:
 def calculate_quant_evidence(text: str) -> dict:
     """Extract numeric values and calculate basic descriptive evidence."""
 
-    numbers = [float(value.replace(",", "")) for value in re.findall(r"[+-]?\d+(?:,\d{3})*(?:\.\d+)?", text)]
+    numbers = [
+        float(value.replace(",", ""))
+        for value in re.findall(r"[+-]?\d+(?:,\d{3})*(?:\.\d+)?", text)
+    ]
     return {
         "summary": "Quantitative evidence calculated.",
         "values": numbers,
@@ -227,9 +312,22 @@ def classify_support_ticket(text: str) -> dict:
         "incident": ("down", "error", "failed", "caído", "falla"),
         "feature": ("feature", "request", "funcionalidad", "mejora"),
     }
-    scores = {name: sum(word in lowered for word in words) for name, words in categories.items()}
+    scores = {
+        name: sum(word in lowered for word in words)
+        for name, words in categories.items()
+    }
     category = max(scores, key=scores.get) if any(scores.values()) else "general"
-    urgent = any(word in lowered for word in ("urgent", "urgente", "production", "producción", "blocked", "bloqueado"))
+    urgent = any(
+        word in lowered
+        for word in (
+            "urgent",
+            "urgente",
+            "production",
+            "producción",
+            "blocked",
+            "bloqueado",
+        )
+    )
     return {
         "summary": "Support ticket classified deterministically.",
         "category": category,
@@ -255,7 +353,9 @@ def validate_review_claim(answer: str) -> dict:
         "summary": "Review claim validated at the deterministic boundary.",
         "non_empty": bool(text),
         "length": len(text),
-        "contains_unqualified_guarantee": bool(re.search(r"\b(always|never fails|guaranteed|100%)\b", text, re.I)),
+        "contains_unqualified_guarantee": bool(
+            re.search(r"\b(always|never fails|guaranteed|100%)\b", text, re.I)
+        ),
     }
 
 

@@ -22,6 +22,9 @@ jobs:
       - run: >-
           python -m pip install -e ".[dev,bedrock,langgraph,openai,openai-agents,strands]"
           build twine "setuptools>=69" wheel
+      - run: >-
+          python -m pip install -e
+          "examples/agentic_systems_studio[ui,notebook,test]"
       - run: python -m ruff check src tests tutorials/frameworks/mcp_echo_server.py
       - run: >-
           python -m pytest --cov=agentic_systems
@@ -52,8 +55,25 @@ jobs:
           --cov-report=term-missing -q
       - run: python -m build --no-isolation
       - run: python -m twine check dist/*
+      - name: Lint Studio and release builder
+        if: matrix.python-version == '3.14'
+        run: >-
+          python -m ruff check examples/agentic_systems_studio/src
+          examples/agentic_systems_studio/tests
+          examples/agentic_systems_studio/scripts
+          scripts/build_release_assets.py
+      - name: Test Studio and generated projects
+        if: matrix.python-version == '3.14'
+        run: python -m pytest -q examples/agentic_systems_studio/tests
+      - name: Build Studio bundle
+        if: matrix.python-version == '3.14'
+        run: >-
+          python examples/agentic_systems_studio/scripts/build_bundle.py
+      - name: Audit downloadable release assets
+        if: matrix.python-version == '3.14'
+        run: python scripts/build_release_assets.py
       - run: |
           python -m venv .tmp/wheel-smoke
           .tmp/wheel-smoke/bin/python -m pip install dist/*.whl
-          .tmp/wheel-smoke/bin/python -c "import importlib.metadata as m; import agentic_systems as a; assert a.__version__ == m.version('agentic-systems'); assert len(a.__all__) == 112"
+          .tmp/wheel-smoke/bin/python -c "import importlib.metadata as m; import agentic_systems as a; assert a.__version__ == m.version('agentic-systems'); assert len(a.__all__) == 78"
           .tmp/wheel-smoke/bin/agentic-systems version
