@@ -130,6 +130,9 @@ class RunResult(BaseModel):
     validation: dict[str, Any] | None = None
     errors: list[dict[str, Any]] = Field(default_factory=list)
     meta: dict[str, Any] = Field(default_factory=dict)
+    execution_id: str | None = None
+    parent_execution_id: str | None = None
+    children: list["RunResult"] = Field(default_factory=list)
 
     _native_result: Any = PrivateAttr(default=None)
 
@@ -137,6 +140,23 @@ class RunResult(BaseModel):
     def native_result(self) -> Any:
         """Return the original Framework SDK result without serializing it."""
         return self._native_result
+
+    def add_child(self, child: "RunResult") -> "RunResult":
+        """Attach a child execution and preserve explicit parent lineage."""
+
+        if not isinstance(child, RunResult):
+            raise TypeError(f"Expected RunResult, got {type(child).__name__}.")
+        if self.execution_id and child.parent_execution_id is None:
+            child.parent_execution_id = self.execution_id
+        self.children.append(child)
+        return self
+
+    def walk(self):
+        """Yield this result and every descendant depth-first."""
+
+        yield self
+        for child in self.children:
+            yield from child.walk()
 
     @model_validator(mode="after")
     def _ensure_final_answer(self) -> "RunResult":

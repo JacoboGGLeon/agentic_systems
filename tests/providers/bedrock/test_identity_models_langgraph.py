@@ -55,11 +55,14 @@ class IdentityRuntime(_IdentityMixin):
         return {"summary": value.get("modelDetails", value)}
 
 
-def test_identity_masking_and_redaction_contracts():
+def test_identity_masking_and_redaction_contracts(monkeypatch):
+    monkeypatch.setenv("AWS_BEARER_TOKEN_BEDROCK", "")
     runtime = IdentityRuntime(SimpleNamespace())
     plain = runtime.whoami()
     assert plain["account"] == "123456789012"
     assert plain["region"] == "us-test-1"
+    assert plain["auth_mode"] == "aws-credential-chain"
+    assert plain["identity_available"] is True
 
     masked = runtime.whoami(mask=True)
     assert masked["account"] == "123456******"
@@ -76,6 +79,20 @@ def test_identity_masking_and_redaction_contracts():
     assert short["account"] == "***"
     assert short["arn"] == "arn:short"
     assert runtime.redact_aws_identity({}) == {"redacted": True}
+
+def test_bearer_identity_does_not_call_sts():
+    runtime = IdentityRuntime(SimpleNamespace())
+    runtime.auth_mode = "bedrock-api-key"
+    runtime.sts = SimpleNamespace(
+        get_caller_identity=lambda: pytest.fail("STS must not be called for a Bedrock bearer token")
+    )
+
+    identity = runtime.whoami(mask=True)
+    assert identity["auth_mode"] == "bedrock-api-key"
+    assert identity["identity_available"] is False
+    assert identity["account"] is None
+    assert identity["redacted"] is True
+
 
 
 def test_model_availability_exact_lookup_and_iam_denial():

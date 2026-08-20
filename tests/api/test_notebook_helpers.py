@@ -1,12 +1,14 @@
 from __future__ import annotations
 
+from agentic_systems.utils import configure_notebook_environment
+
 
 def test_notebook_helpers_are_public_and_honor_explicit_root(tmp_path):
     import agentic_systems as toolkit
 
-    assert callable(toolkit.configure_notebook_environment)
+    assert callable(configure_notebook_environment)
     assert callable(toolkit.show_json)
-    assert toolkit.configure_notebook_environment(tmp_path, add_src=False) == tmp_path.resolve()
+    assert configure_notebook_environment(tmp_path, add_src=False) == tmp_path.resolve()
 
 
 def test_notebook_environment_and_markdown_prompt_contract(monkeypatch):
@@ -14,7 +16,6 @@ def test_notebook_environment_and_markdown_prompt_contract(monkeypatch):
     import sys
     from pathlib import Path
 
-    import agentic_systems as toolkit
     from agentic_systems.bedrock_runtime_client import BedrockRuntimeClient
 
     repo_root = Path(__file__).resolve().parents[2]
@@ -23,7 +24,7 @@ def test_notebook_environment_and_markdown_prompt_contract(monkeypatch):
         "path",
         [item for item in sys.path if item not in {str(repo_root), str(repo_root / "src")}],
     )
-    configured = toolkit.configure_notebook_environment(repo_root)
+    configured = configure_notebook_environment(repo_root)
     assert configured == repo_root
     assert str(repo_root) in sys.path
     assert str(repo_root / "src") in sys.path

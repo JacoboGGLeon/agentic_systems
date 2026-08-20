@@ -15,14 +15,17 @@ from .core.runtime import (
     resolve_auto_provider,
 )
 from .core.scheduler import SchedulerConfig
+from .core.provider import ModelProviderConfig
 from .defaults import (
     DEFAULT_AWS_REGION,
     DEFAULT_BEDROCK_MODEL_ID,
     DEFAULT_OPENAI_MODEL_ID,
+    DEFAULT_OLLAMA_MODEL_ID,
     DEFAULT_VLLM_MODEL_ID,
 )
 from .engines.names import (
     BEDROCK_RUNTIME_ENGINE,
+    OLLAMA_RUNTIME_ENGINE,
     OPENAI_RUNTIME_ENGINE,
     PYTHON_RUNTIME_ENGINE,
     VLLM_RUNTIME_ENGINE,
@@ -34,10 +37,14 @@ from .environments import AgenticEnvironment
 from .evals import Evaluator
 from .system import AgenticSystem
 from .skills import Skill
+from .skills.loader import load_skill_definition
+from .tools import ToolSet
 
 DEFAULT_MODEL_ENV_VARS = ("BEDROCK_MODEL_ID",)
 
 OPENAI_MODEL_ENV_VARS = ("OPENAI_MODEL",)
+OLLAMA_MODEL_ENV_VARS = ("OLLAMA_MODEL",)
+
 
 VLLM_MODEL_ENV_VARS = ("VLLM_MODEL",)
 
@@ -62,6 +69,17 @@ def default_openai_model_id() -> str:
         if value:
             return value
     return DEFAULT_OPENAI_MODEL_ID
+
+
+def default_ollama_model_id() -> str:
+    """Return the default Ollama model id from environment configuration."""
+
+    _load_dotenv()
+    for key in OLLAMA_MODEL_ENV_VARS:
+        value = os.getenv(key)
+        if value:
+            return value
+    return DEFAULT_OLLAMA_MODEL_ID
 
 
 def default_vllm_model_id() -> str:
@@ -121,9 +139,38 @@ def framework(
     )
 
 
+def provider(
+    name: str = "auto",
+    *,
+    model: str | None = None,
+    model_id: str | None = None,
+    region: str | None = None,
+    region_name: str | None = None,
+    endpoint: str | None = None,
+    metadata: dict[str, Any] | None = None,
+) -> ModelProviderConfig:
+    """Describe a model provider independently from its execution framework."""
+
+    return ModelProviderConfig(
+        name=name,
+        model_id=model_id or model,
+        region_name=region_name or region,
+        endpoint=endpoint,
+        metadata=metadata or {},
+    )
+
+
+
+def toolset(system: AgenticSystem, name: str) -> ToolSet:
+    """Create a named ToolSet owned by an explicit AgenticSystem."""
+
+    if not isinstance(system, AgenticSystem):
+        raise TypeError("toolset(system, name) requires an AgenticSystem owner.")
+    return system.toolset(name)
+
 def runtime(
     *,
-    provider: str = "bedrock-runtime",
+    provider: str | ModelProviderConfig = "bedrock-runtime",
     model: str | None = None,
     model_id: str | None = None,
     region: str | None = None,
@@ -139,6 +186,19 @@ def runtime(
     ``model_id``/``region_name`` fields. ``provider_priority`` controls
     ``provider="auto"`` without requiring YAML or hidden global state.
     """
+
+    if isinstance(provider, ModelProviderConfig):
+        provider_config = provider
+        provider = provider_config.name
+        model_id = model_id or provider_config.model_id
+        region_name = region_name or provider_config.region_name
+        metadata = {
+            **provider_config.metadata,
+            **(metadata or {}),
+            "model_provider": provider_config.to_dict(),
+        }
+        if provider_config.endpoint:
+            metadata.setdefault("endpoint", provider_config.endpoint)
 
     selected_provider = canonical_engine_name(provider)
     priority = normalize_provider_priority(
@@ -182,6 +242,8 @@ def _default_runtime_model(
         return default_vllm_model_id()
     if resolved == OPENAI_RUNTIME_ENGINE:
         return default_openai_model_id()
+    if resolved == OLLAMA_RUNTIME_ENGINE:
+        return default_ollama_model_id()
     if resolved == BEDROCK_RUNTIME_ENGINE:
         return default_model_id()
     if resolved == PYTHON_RUNTIME_ENGINE:
@@ -232,6 +294,18 @@ def _runtime_metadata(
                 ],
             },
         )
+    if resolved == OLLAMA_RUNTIME_ENGINE:
+        merged.setdefault(
+            "ollama",
+            {
+                "base_url": os.getenv("OLLAMA_BASE_URL") or None,
+                "base_url_configured": bool(os.getenv("OLLAMA_BASE_URL")),
+                "api_key_configured": bool(os.getenv("OLLAMA_API_KEY")),
+                "model_env_vars": [
+                    key for key in OLLAMA_MODEL_ENV_VARS if os.getenv(key)
+                ],
+            },
+        )
     if resolved == OPENAI_RUNTIME_ENGINE:
         merged.setdefault(
             "openai",
@@ -265,6 +339,10 @@ def _runtime_metadata(
 
 def _vllm_signal_present() -> bool:
     return bool(os.getenv("VLLM_BASE_URL"))
+
+
+def _ollama_signal_present() -> bool:
+    return bool(os.getenv("OLLAMA_BASE_URL") or os.getenv("OLLAMA_MODEL"))
 
 
 def output_schema(
@@ -364,13 +442,7 @@ def load_skill(name_or_path: Any, **kwargs: Any) -> Any:
     text = str(name_or_path or "").strip()
     path = _resolve_skill_path(text)
     if path is not None:
-        workspace = AgenticSystem(
-            model=kwargs.pop("model", None) or default_model_id(),
-            region=kwargs.pop("region", None) or default_region(),
-            defaults=kwargs.pop("defaults", None),
-        )
-        loaded = workspace.load_skill(path)
-        return loaded.runtime_skill if loaded.runtime_skill is not None else loaded
+        return load_skill_definition(path)
 
     raise ValueError(
         f"Unknown skill path {text!r}. Pass a Skill object or a valid filesystem skill directory "
@@ -519,4 +591,8 @@ def _default_agent_model(engine: str) -> str:
         return "python-runtime"
     if engine == OPENAI_RUNTIME_ENGINE:
         return default_openai_model_id()
+    if engine == OLLAMA_RUNTIME_ENGINE:
+        return default_ollama_model_id()
+    if engine == VLLM_RUNTIME_ENGINE:
+        return default_vllm_model_id()
     return default_model_id()

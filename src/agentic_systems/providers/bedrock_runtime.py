@@ -55,6 +55,7 @@ class BedrockRuntime(
             )
 
         self.session = boto3.Session(region_name=region_name)
+        self.auth_mode = "bedrock-api-key" if os.getenv("AWS_BEARER_TOKEN_BEDROCK") else "aws-credential-chain"
         self.region_name = (
             self.session.region_name
             or os.getenv("AWS_REGION")
@@ -64,7 +65,7 @@ class BedrockRuntime(
 
         self.runtime = boto3.client("bedrock-runtime", region_name=self.region_name)
         self.bedrock = boto3.client("bedrock", region_name=self.region_name)
-        self.sts = boto3.client("sts", region_name=self.region_name)
+        self.sts = None if self.auth_mode == "bedrock-api-key" else boto3.client("sts", region_name=self.region_name)
 
         self._tools: Dict[str, RuntimeToolSpec] = {}
 

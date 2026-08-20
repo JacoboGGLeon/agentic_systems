@@ -591,6 +591,10 @@ def aws_environment_snapshot(*, include_values: bool = False, mask: bool | None 
     callers should still pass the result through :func:`show_json` with masking.
     """
 
+    from agentic_systems.core.runtime import _load_dotenv
+
+    _load_dotenv()
+
     env: dict[str, Any] = {}
     for key in _AWS_ENV_KEYS:
         raw_value = os.getenv(key)
@@ -603,6 +607,10 @@ def aws_environment_snapshot(*, include_values: bool = False, mask: bool | None 
 
 def boto3_session_snapshot(region_name: str | None = None, *, mask: bool | None = None) -> dict[str, Any]:
     """Describe the active boto3 credential provider without exposing secrets."""
+    from agentic_systems.core.runtime import _load_dotenv
+
+    _load_dotenv()
+
 
     try:
         import boto3
@@ -615,18 +623,22 @@ def boto3_session_snapshot(region_name: str | None = None, *, mask: bool | None 
         }
 
     session = boto3.Session(region_name=region_name)
-    credentials = session.get_credentials()
     bedrock_api_key = bool(os.getenv("AWS_BEARER_TOKEN_BEDROCK"))
+    credentials = None if bedrock_api_key else session.get_credentials()
     has_credentials = credentials is not None or bedrock_api_key
+    authentication_mode = (
+        "bedrock-api-key"
+        if bedrock_api_key
+        else "aws-credential-chain" if credentials is not None else None
+    )
     return {
         "ok": has_credentials,
         "session_region": session.region_name,
-        "credential_method": (
-            getattr(credentials, "method", None)
-            if credentials
-            else "bedrock-api-key" if bedrock_api_key else None
-        ),
+        "credential_method": authentication_mode if bedrock_api_key else getattr(credentials, "method", None),
+        "authentication_mode": authentication_mode,
+        "bedrock_api_key_configured": bedrock_api_key,
         "has_credentials": has_credentials,
+        "sts_identity_available": credentials is not None,
     }
 
 

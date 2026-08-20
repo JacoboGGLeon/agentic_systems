@@ -54,7 +54,7 @@ export VLLM_API_KEY="EMPTY"
 Pin the maintenance release when reproducibility matters:
 
 ```bash
-python -m pip install "agentic-systems==2.0.0a1"
+python -m pip install "agentic-systems==2.0.0"
 ```
 
 ## From GitHub
@@ -76,7 +76,7 @@ python -m pip install -U pip
 python -m pip install -e ".[dev,bedrock,langgraph,openai]"
 ```
 
-Install `.[vllm]` separately only on a host that will actually run vLLM.
+Install `.[vllm-server]` separately only on a host that will actually run vLLM.
 
 ## Smoke Test
 

@@ -117,7 +117,7 @@ For Bedrock, a region must be accompanied by `AWS_BEARER_TOKEN_BEDROCK` or by
 static credentials, an AWS profile, web identity, container credentials, or a
 shared credentials file.
 
-Default auto priority is `bedrock-runtime`, then `openai-runtime`, then `vllm-runtime`. Override it with `--provider-priority bedrock-runtime,openai-runtime,vllm-runtime` or `AGENTIC_SYSTEMS_PROVIDER_PRIORITY`. Add `--allow-python-fallback` only when deterministic local fallback is intentional.
+Default auto priority is `bedrock-runtime`, then `openai-runtime`, `vllm-runtime`, and `ollama-runtime`. Override it with `--provider-priority bedrock-runtime,openai-runtime,vllm-runtime,ollama-runtime` or `AGENTIC_SYSTEMS_PROVIDER_PRIORITY`. Add `--allow-python-fallback` only when deterministic local fallback is intentional.
 
 OpenAI runtime also reads `OPENAI_MODEL`.
 
@@ -226,7 +226,8 @@ Expected Bedrock output includes:
 
 ## API Inventory
 
-Use `api` to inspect the API tiers from `agentic_systems.api`.
+Use `api` to inspect the canonical contract projected from
+`agentic_systems.api_contract()`.
 
 ```bash
 agentic-systems api
@@ -241,22 +242,22 @@ Tiers:
 
 | Tier | Meaning |
 |---|---|
-| `recommended` | Names to teach and use first. |
-| `advanced` | Public advanced names, including systems, evals and notebook utilities. |
-| `public` | 100 percent of `PUBLIC_API`. |
+| `recommended` | Recommended exports and all their public members. |
+| `advanced` | Advanced exports and all their public members. |
+| `public` | 100 percent of the export/member contract IDs. |
 
 The JSON form returns:
 
 ```json
 {
   "tier": "public",
-  "count": 112,
-  "symbols": ["agent", "runtime"]
+  "count": 370,
+  "ids": ["agent", "Agent.run", "runtime"]
 }
 ```
 
-The example above is shortened; the actual `symbols` list contains the complete
-selected tier.
+The example above is shortened. `ids` contains contract IDs for both
+exports and members; `recommended` and `advanced` form a disjoint partition.
 
 ## Public API Compatibility Command
 
@@ -267,8 +268,8 @@ agentic-systems public-api
 agentic-systems public-api --all --json
 ```
 
-Prefer `agentic-systems api --tier public --json` when validating 100 percent
-of the API surface.
+Prefer `agentic-systems api --tier public --json` when validating the exact
+export/member surface.
 
 ## What The CLI Should Not Do
 
@@ -286,3 +287,42 @@ long-running model execution as a default command
 
 Model execution belongs in Python code and notebooks where contracts, runtime,
 lineage and human output are explicit.
+
+## Executable 2.0 workflows
+
+The CLI exposes the same public grammar taught by the notebooks. Every workflow
+runs through agentic_systems public factories; it is not a parallel
+implementation.
+
+| Concept | Command | Offline evidence |
+|---|---|---|
+| Tool | agentic-systems tool run --value ok --json | RunResult from Tool.run |
+| Skill | agentic-systems skill inspect --json | Skill.describe |
+| Agent | agentic-systems agent run --value ok --json | Python Runtime RunResult |
+| System | agentic-systems system run --value ok --json | Compiled system RunResult |
+| Graph | agentic-systems graph run --value ok --json | Portable Graph final state |
+| Environment | agentic-systems environment run --value ok --json | One episode and summary |
+| Eval | agentic-systems eval run --value ok --json | One deterministic EvalReport |
+| Matrix | agentic-systems matrix check --json | Four offline passes and sixteen not-run rows |
+
+Each workflow JSON includes `scenario` and `scenario_api_ids`, projected from
+the shared Source manifest rather than maintained as a second CLI registry.
+
+The API registry resolves every stable export and public member:
+
+    agentic-systems api list --tier public --json
+    agentic-systems api describe Agent.run --json
+    agentic-systems api exercise Agent.run --json
+    agentic-systems api exercise --all --json
+
+To cross external Provider boundaries explicitly:
+
+    agentic-systems matrix check --live --json
+    agentic-systems matrix check --provider bedrock-runtime --live --require-pass --json
+
+Without --live, external rows are not-run and include a reason. With --live,
+configured rows are passed only after a real RunResult; Provider errors are
+reported as failed. Add `--require-pass` in CI or live notebooks: the command
+still emits its complete Rich/JSON evidence, but returns exit code 1 if any
+selected row is failed or not-run. Credentials are read from the environment
+and never printed.

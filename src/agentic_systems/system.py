@@ -18,6 +18,7 @@ from .providers.base import RuntimeToolSpec, ToolRegistryRuntime
 from .engines.names import (
     BEDROCK_RUNTIME_ENGINE,
     LANGGRAPH_ORCHESTRATOR,
+    OLLAMA_RUNTIME_ENGINE,
     OPENAI_RUNTIME_ENGINE,
     PYTHON_RUNTIME_ENGINE,
     VLLM_RUNTIME_ENGINE,
@@ -27,8 +28,10 @@ from .engines.names import (
 )
 from .agents import Agent, _normalize_agent_tool_inputs
 from .contracts import AgentContract, RunPolicy
+from .execution import CompiledSystem, ExecutionPlan, SequentialPlan
 from .engines.bedrock import BedrockEngine
 from .providers.openai_runtime import OpenAIRuntimeProvider
+from .providers.ollama_runtime import OllamaRuntimeProvider
 from .providers.vllm_runtime import VLLMRuntimeProvider
 from .providers.python_runtime import PythonRuntimeEngine
 from .errors import ToolContractError
@@ -40,6 +43,7 @@ from .inspection import InspectReport, build_inspection_report
 from .skills import LoadedSkill, Skill, load_skill
 from .tools import Tool
 from .tools.toolkit import Toolkit
+from .tools.toolset import ToolSet
 
 
 class PublicToolRegistry:
@@ -112,7 +116,11 @@ class AgenticSystem:
         self.defaults = defaults or {}
         self.strict = strict
         self._agents: list[Agent] = []
+        self._units = self._agents
         self._toolkits: dict[str, Toolkit] = {}
+        # Agentic Systems 2.0 spelling; the legacy view remains the same object.
+        self._toolsets: dict[str, ToolSet] = self._toolkits
+
         self._public_tools: dict[str, Tool] = {}
         self._skills: list[LoadedSkill] = []
         self._runtime_skills: dict[str, Skill] = {}
@@ -234,6 +242,15 @@ class AgenticSystem:
             toolkit = Toolkit(self, name)
             self._toolkits[name] = toolkit
         return toolkit
+
+    def toolset(self, name: str) -> ToolSet:
+        """Return or create a named collection of Tools."""
+
+        toolset = self._toolsets.get(name)
+        if toolset is None or not isinstance(toolset, ToolSet):
+            toolset = ToolSet(self, name)
+            self._toolsets[name] = toolset
+        return toolset
 
     def skill(self, skill: Skill, *, on_conflict: str = "error") -> Skill:
         """Register a runtime ``Skill`` and its tools in this system.
@@ -408,6 +425,15 @@ class AgenticSystem:
             is_async=inspect.iscoroutinefunction(public_tool.function),
         )
         return public_tool
+    def add(self, executable: Any) -> Any:
+        """Register any Executable as a system computation unit."""
+
+        if not callable(getattr(executable, "run", None)):
+            raise TypeError("system.add(...) expects an object with run(...).")
+        if executable not in self._agents:
+            self._agents.append(executable)
+        return executable
+
 
     def agent(
         self,
@@ -537,6 +563,40 @@ class AgenticSystem:
     def load_skill(self, path: str) -> LoadedSkill:
         return load_skill(self, path)
 
+    def compile(
+        self,
+        *,
+        execution: ExecutionPlan | None = None,
+        name: str = "system",
+    ) -> CompiledSystem:
+        """Freeze registered Agents and their external execution plan."""
+
+        return CompiledSystem(
+            name=name,
+            units=tuple(self._agents),
+            plan=execution or SequentialPlan(),
+        )
+
+    def run(
+        self,
+        input: Any = None,
+        *,
+        execution: ExecutionPlan | None = None,
+        **kwargs: Any,
+    ):
+        """Execute all registered Agents through the system plan."""
+
+        return self.compile(execution=execution).run(input, **kwargs)
+
+    async def arun(
+        self,
+        input: Any = None,
+        *,
+        execution: ExecutionPlan | None = None,
+        **kwargs: Any,
+    ):
+        return await self.compile(execution=execution).arun(input, **kwargs)
+
     def inspect(self) -> InspectReport:
         warnings: list[dict[str, Any]] = []
         errors: list[dict[str, Any]] = []
@@ -623,6 +683,8 @@ class AgenticSystem:
                 self._engines[name] = BedrockEngine(self)
             elif name == OPENAI_RUNTIME_ENGINE:
                 self._engines[name] = OpenAIRuntimeProvider(self)
+            elif name == OLLAMA_RUNTIME_ENGINE:
+                self._engines[name] = OllamaRuntimeProvider(self)
             elif name == PYTHON_RUNTIME_ENGINE:
                 self._engines[name] = PythonRuntimeEngine(self)
             elif name == VLLM_RUNTIME_ENGINE:

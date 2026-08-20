@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from agentic_systems.engines.names import BEDROCK_RUNTIME_ENGINE
+
 
 def test_agent_default_is_cloud_configuration_until_bound_to_a_system():
     import pytest
@@ -12,6 +14,6 @@ def test_agent_default_is_cloud_configuration_until_bound_to_a_system():
 
     agent = lab.Agent(name="portable_agent", tools=[sumar])
 
-    assert agent.engine == lab.BEDROCK_RUNTIME_ENGINE
+    assert agent.engine == BEDROCK_RUNTIME_ENGINE
     with pytest.raises(RuntimeError, match=r"bind\(system\)"):
         agent.run({"a": 1, "b": 2}, mode="eval")

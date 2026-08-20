@@ -9,6 +9,14 @@ from __future__ import annotations
 import importlib
 
 from .loader import LoadedSkill, SkillManifest, load_skill
+from .loader import load_skill_definition
 from .skill import Skill
 
-__all__ = ["Skill", "SkillManifest", "LoadedSkill", "load_skill", "importlib"]
+__all__ = [
+    "Skill",
+    "SkillManifest",
+    "LoadedSkill",
+    "load_skill",
+    "load_skill_definition",
+    "importlib",
+]

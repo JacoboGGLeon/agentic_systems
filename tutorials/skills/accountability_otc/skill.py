@@ -19,7 +19,7 @@ from .prompts import (
     build_accountability_plan,
     free_sql_example,
 )
-from .nl2sql_agent import BedrockNL2SQLPlanner, NL2SQLPlanner, StaticSemanticNL2SQLPlanner
+from .nl2sql_agent import NL2SQLPlanner
 from .runtime import run_free_sql, run_nl2sql
 from .contracts import ACCOUNTABILITY_SKILL_AGENT_SPEC, ACCOUNTABILITY_SKILL_CONTRACTS
 

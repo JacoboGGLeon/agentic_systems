@@ -51,7 +51,7 @@ agentic-systems runtime --provider auto --json
 agentic-systems api --tier public --json
 ```
 
-The full pytest suite executes the 15 deterministic notebooks and statically
+The full pytest suite executes the 17 deterministic notebooks and statically
 validates the 3 Provider notebooks. No separate undocumented notebook gate
 should be substituted for this evidence.
 
@@ -83,10 +83,10 @@ Validate the built wheel from an isolated environment, not the editable source:
 ```bash
 python -m venv .tmp/wheel-smoke
 .tmp/wheel-smoke/bin/python -m pip install dist/agentic_systems-*.whl
-.tmp/wheel-smoke/bin/python -c "import agentic_systems as a; assert len(a.__all__) == 112"
+.tmp/wheel-smoke/bin/python -c "import agentic_systems as a; m=a.api_contract(); assert len(a.__all__) == 78; assert m['entry_count'] == 370; assert m['scenario_count'] == 10"
 .tmp/wheel-smoke/bin/agentic-systems version
 ```
 
 The equivalent Windows executables live under `.tmp/wheel-smoke/Scripts/`.
-A release smoke must confirm version, CLI, 112 public symbols and lazy optional
-imports. Live Provider readiness is a separate integration boundary.
+A release smoke must confirm version, CLI, 78 exports, 370 export/member IDs,
+10 shared scenarios and lazy optional imports. Live Provider readiness is separate.

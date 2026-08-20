@@ -11,6 +11,7 @@ from agentic_systems.contracts import AgentContract, RunPolicy
 from agentic_systems.engines.bedrock import BedrockEngine
 from agentic_systems.engines.names import (
     BEDROCK_RUNTIME_ENGINE,
+    OLLAMA_RUNTIME_ENGINE,
     OPENAI_RUNTIME_ENGINE,
     PYTHON_RUNTIME_ENGINE,
     VLLM_RUNTIME_ENGINE,
@@ -19,6 +20,7 @@ from agentic_systems.providers import (
     OPTIONAL_PROVIDER_CAPABILITIES,
     REQUIRED_PROVIDER_CAPABILITIES,
     CapabilityDeclaration,
+    OllamaRuntimeProvider,
     OpenAIRuntimeProvider,
     ProviderConformanceReport,
     ProviderProfile,
@@ -116,6 +118,10 @@ def _openai_results(provider_class=OpenAIRuntimeProvider):
 
 def _vllm_results():
     return _openai_results(VLLMRuntimeProvider)
+def _ollama_results():
+    return _openai_results(OllamaRuntimeProvider)
+
+
 
 
 class FakeBedrockRuntime:
@@ -166,8 +172,20 @@ def _bedrock_results():
 
 @pytest.mark.parametrize(
     "result_factory",
-    [_python_results, _openai_results, _vllm_results, _bedrock_results],
-    ids=[PYTHON_RUNTIME_ENGINE, OPENAI_RUNTIME_ENGINE, VLLM_RUNTIME_ENGINE, BEDROCK_RUNTIME_ENGINE],
+    [
+        _python_results,
+        _openai_results,
+        _ollama_results,
+        _vllm_results,
+        _bedrock_results,
+    ],
+    ids=[
+        PYTHON_RUNTIME_ENGINE,
+        OPENAI_RUNTIME_ENGINE,
+        OLLAMA_RUNTIME_ENGINE,
+        VLLM_RUNTIME_ENGINE,
+        BEDROCK_RUNTIME_ENGINE,
+    ],
 )
 def test_primary_providers_pass_the_same_base_conformance_suite(result_factory) -> None:
     profile, success, failure = result_factory()
@@ -190,17 +208,23 @@ def test_profiles_declare_required_optional_and_adapter_identity() -> None:
     assert [profile.provider for profile in profiles] == [
         PYTHON_RUNTIME_ENGINE,
         OPENAI_RUNTIME_ENGINE,
+        OLLAMA_RUNTIME_ENGINE,
         VLLM_RUNTIME_ENGINE,
         BEDROCK_RUNTIME_ENGINE,
     ]
     assert PythonRuntimeProvider.profile() == provider_profile(PYTHON_RUNTIME_ENGINE)
     assert OpenAIRuntimeProvider.profile() == provider_profile(OPENAI_RUNTIME_ENGINE)
+    assert OllamaRuntimeProvider.profile() == provider_profile(OLLAMA_RUNTIME_ENGINE)
     assert VLLMRuntimeProvider.profile() == provider_profile(VLLM_RUNTIME_ENGINE)
     assert BedrockEngine.profile() == provider_profile(BEDROCK_RUNTIME_ENGINE)
 
     for profile in profiles:
-        assert {item.name for item in profile.required} == set(REQUIRED_PROVIDER_CAPABILITIES)
-        assert {item.name for item in profile.optional} == set(OPTIONAL_PROVIDER_CAPABILITIES)
+        assert {item.name for item in profile.required} == set(
+            REQUIRED_PROVIDER_CAPABILITIES
+        )
+        assert {item.name for item in profile.optional} == set(
+            OPTIONAL_PROVIDER_CAPABILITIES
+        )
         assert all(item.status == "supported" for item in profile.required)
         assert json.loads(json.dumps(profile.to_dict()))["provider"] == profile.provider
 

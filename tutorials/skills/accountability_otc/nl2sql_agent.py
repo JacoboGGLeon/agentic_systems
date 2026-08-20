@@ -22,7 +22,7 @@ import re
 from dataclasses import dataclass, field
 from typing import Any, Protocol
 
-from agentic_systems import BedrockRuntimeClient
+from agentic_systems.bedrock_runtime_client import BedrockRuntimeClient
 
 from .catalog import SemanticSQLPlan, compile_nl2sql_plan, load_catalog
 from .config import AccountabilitySettings

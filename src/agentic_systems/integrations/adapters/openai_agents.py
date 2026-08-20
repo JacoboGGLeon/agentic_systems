@@ -11,6 +11,7 @@ from typing import Any
 from ...contracts import RunPolicy
 from ...engines.names import (
     BEDROCK_RUNTIME_ENGINE,
+    OLLAMA_RUNTIME_ENGINE,
     OPENAI_RUNTIME_ENGINE,
     PYTHON_RUNTIME_ENGINE,
     VLLM_RUNTIME_ENGINE,
@@ -74,7 +75,7 @@ class OpenAIAgentsFrameworkAdapter(FrameworkAdapter):
             ) from exc
         native_agent = self.prepare(agent, engine)
         _configure_model(native_agent.model, policy, mode)
-        kwargs = dict(agent.framework_config.run_kwargs)
+        kwargs = _runner_kwargs(agent, agent.framework_config.run_kwargs)
         max_turns = effective_max_turns(policy, kwargs)
         try:
             native_result = Runner.run_sync(
@@ -107,7 +108,7 @@ class OpenAIAgentsFrameworkAdapter(FrameworkAdapter):
             ) from exc
         native_agent = self.prepare(agent, engine)
         _configure_model(native_agent.model, policy, mode)
-        kwargs = dict(agent.framework_config.run_kwargs)
+        kwargs = _runner_kwargs(agent, agent.framework_config.run_kwargs)
         max_turns = effective_max_turns(policy, kwargs)
         try:
             native_result = await Runner.run(
@@ -127,22 +128,32 @@ class OpenAIAgentsFrameworkAdapter(FrameworkAdapter):
 def _materialize_model(agent: Any, engine: Any) -> Any:
     if agent.engine == OPENAI_RUNTIME_ENGINE:
         return agent.model
-    if agent.engine == VLLM_RUNTIME_ENGINE:
+    if agent.engine in {OLLAMA_RUNTIME_ENGINE, VLLM_RUNTIME_ENGINE}:
         from agents import OpenAIChatCompletionsModel
         from openai import AsyncOpenAI
 
         metadata = getattr(agent.runtime_config, "metadata", {}) or {}
-        vllm = metadata.get("vllm") or {}
-        base_url = vllm.get("base_url") or os.getenv("VLLM_BASE_URL")
-        if not base_url:
-            raise ValueError(
-                "vLLM requires VLLM_BASE_URL or runtime metadata vllm.base_url."
+        if agent.engine == VLLM_RUNTIME_ENGINE:
+            vllm = metadata.get("vllm") or {}
+            base_url = vllm.get("base_url") or os.getenv("VLLM_BASE_URL")
+            if not base_url:
+                raise ValueError(
+                    "vLLM requires VLLM_BASE_URL or runtime metadata vllm.base_url."
+                )
+            api_key = os.getenv("VLLM_API_KEY") or "vllm"
+        else:
+            ollama = metadata.get("ollama") or {}
+            base_url = (
+                ollama.get("base_url")
+                or os.getenv("OLLAMA_BASE_URL")
+                or "http://127.0.0.1:11434/v1"
             )
-        client = AsyncOpenAI(
-            base_url=base_url,
-            api_key=os.getenv("VLLM_API_KEY") or "vllm",
+            api_key = os.getenv("OLLAMA_API_KEY") or "ollama"
+        client = AsyncOpenAI(base_url=base_url, api_key=api_key)
+        return OpenAIChatCompletionsModel(
+            model=agent.model,
+            openai_client=client,
         )
-        return OpenAIChatCompletionsModel(model=agent.model, openai_client=client)
     from .openai_models import ScriptedOpenAIModel
 
     if agent.engine == PYTHON_RUNTIME_ENGINE:
@@ -150,7 +161,10 @@ def _materialize_model(agent: Any, engine: Any) -> Any:
     if agent.engine == BEDROCK_RUNTIME_ENGINE:
         from .bedrock_openai import BedrockOpenAIModel
 
-        return BedrockOpenAIModel(engine.system._runtime, agent.model or engine.system.model)
+        return BedrockOpenAIModel(
+            engine.system._runtime,
+            agent.model or engine.system.model,
+        )
     raise ValueError(f"Unsupported Provider for OpenAI Agents: {agent.engine!r}.")
 
 
@@ -158,6 +172,18 @@ def _configure_model(model: Any, policy: RunPolicy, mode: str) -> None:
     configure = getattr(model, "configure", None)
     if callable(configure):
         configure(policy, mode)
+
+
+def _runner_kwargs(agent: Any, configured: Mapping[str, Any]) -> dict[str, Any]:
+    """Apply safe per-run SDK defaults without changing global tracing state."""
+
+    kwargs = dict(configured)
+    if agent.engine == OPENAI_RUNTIME_ENGINE or kwargs.get("run_config") is not None:
+        return kwargs
+    from agents import RunConfig
+
+    kwargs["run_config"] = RunConfig(tracing_disabled=True)
+    return kwargs
 
 
 def _normalize_result(

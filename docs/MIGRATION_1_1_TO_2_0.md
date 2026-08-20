@@ -1,7 +1,8 @@
 # Migration From 1.1 To 2.0
 
-Agentic Systems 2.0 keeps the 111 top-level names published by 1.1.3 and adds
-only `toolkit.framework`. The resulting top-level inventory has 112 names.
+Agentic Systems 2.0 depurates the stable namespace to 78 top-level exports and
+adds a generated contract of 370 export/member IDs and 10 shared scenarios.
+Retired 1.1.3 names remain available through defining modules or compatibility attributes.
 
 This is a clean major-version boundary. Removed routes do not emit warnings,
 silently fall back, or remain available through compatibility modules. Projects
@@ -89,7 +90,11 @@ removed without aliases or shims:
 
 Framework tracing is owned by each native SDK. Configure it through that SDK's
 documented environment or tracing API; Agentic Systems no longer exposes a
-parallel tracing switch.
+parallel tracing switch. The OpenAI Agents adapter disables its vendor tracing
+per run by default for non-OpenAI Providers (Bedrock, Ollama, vLLM and Python),
+so merely configuring `OPENAI_API_KEY` cannot export another Provider's prompts
+or tool data to OpenAI. Supply an explicit SDK `RunConfig` in `run_kwargs` to
+opt in deliberately.
 
 ```python
 agent = toolkit.agent(
@@ -122,4 +127,4 @@ OpenAI, OpenAI Agents, Strands, LangGraph, boto3 or vLLM.
 4. Replace the Bedrock-specific OpenAI bridge with the general Agent route.
 5. Assert `RunResult.meta["framework_adapter"]` equals the requested Framework.
 6. Keep serialized persistence on `RunResult`; never serialize native objects.
-7. Run the project's tests against `2.0.0a1`, then the release candidate.
+7. Run the project's tests against `2.0.0`.

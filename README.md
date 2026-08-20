@@ -22,7 +22,7 @@ Its Python API turns that grammar into explicit, composable abstractions: tools,
 
 Use it when agentic workloads need to be observable, testable, portable and ready for repeated execution, not just notebook demos.
 
-Agentic Systems 1.1 keeps explicit traceability between its API,
+Agentic Systems 2.0 keeps explicit traceability between its API,
 documentation, tutorials, and tests.
 
 ```text
@@ -31,7 +31,7 @@ API -> Docs -> Tutorials -> explicit automated or manual evidence
 
 Public concepts are defined in the API, explained in the documentation, taught through the canonical tutorials, and checked by explicit release gates.
 
-Release status: `2.0.0a1` is the provisional Provider x Framework architecture: 112 top-level symbols, four real Framework adapters, and no silent fallback.
+Release status: `2.0.0` is the Provider x Framework architecture: 78 stable top-level exports, 370 traced export/member IDs, 10 shared contract scenarios, four real Framework adapters, and no silent fallback.
 
 ## Installation
 
@@ -104,7 +104,7 @@ Canonical providers:
 | `python-runtime` | Local deterministic execution for tools, policies and smoke tests. |
 | `auto` | Selects a concrete provider from environment signals before execution. |
 
-Default `provider="auto"` priority is `bedrock-runtime`, then `openai-runtime`, then `vllm-runtime`. Override it with `provider_priority=[...]` or `AGENTIC_SYSTEMS_PROVIDER_PRIORITY=...`. Bedrock is considered configured only when both a region and an AWS authentication signal are present. That signal may be the standard AWS credential chain (signed with SigV4) or the native `AWS_BEARER_TOKEN_BEDROCK` API key; both use the same boto3 `bedrock-runtime` Provider and a region alone does not outrank a usable OpenAI or vLLM configuration.
+Default `provider="auto"` priority is `bedrock-runtime`, then `openai-runtime`, `vllm-runtime`, and `ollama-runtime`. Override it with `provider_priority=[...]` or `AGENTIC_SYSTEMS_PROVIDER_PRIORITY=...`. Bedrock is considered configured only when both a region and an AWS authentication signal are present. That signal may be the standard AWS credential chain (signed with SigV4) or the native `AWS_BEARER_TOKEN_BEDROCK` API key; both use the same boto3 `bedrock-runtime` Provider and a region alone does not outrank another usable Provider.
 
 Canonical framework facades:
 
@@ -352,6 +352,7 @@ The canonical learning path is layered by responsibility:
 | tutorials/core | Agentic Systems grammar and composition | Python Runtime, Native Framework, portable Graph |
 | tutorials/providers | Inference boundary | Explicit preflight; external execution when configured |
 | tutorials/frameworks | Native orchestration SDK | Real SDK offline; Provider auto is optional |
+| tutorials/api | Exact public contract | Generated manifest, documentation and CLI/Pytest traceability |
 
 Provider notebooks use one public route and choose Run All:
 
@@ -360,12 +361,14 @@ Provider notebooks use one public route and choose Run All:
 | OpenAI | OPENAI_API_KEY; OPENAI_MODEL optional | tutorials/providers/01_openai.ipynb |
 | vLLM | VLLM_BASE_URL and VLLM_MODEL | tutorials/providers/03_vllm.ipynb |
 | Bedrock | Region plus SigV4 credentials or AWS_BEARER_TOKEN_BEDROCK | tutorials/providers/02_bedrock.ipynb |
+| Ollama | OLLAMA_MODEL; OLLAMA_BASE_URL optional | tutorials/providers/04_ollama.ipynb |
 
 The Framework notebooks execute LangGraph, OpenAI Agents and Strands SDKs for
-real with python-runtime. Optional RUN_*_LIVE=1 changes only the Provider.
+real with python-runtime; the matrix notebook covers all 20 declared pairs.
+Optional RUN_*_LIVE=1 changes only the Provider.
 RUN_*_LIVE=0 forces a fully offline validation.
 
-The full ordered inventory of 18 notebooks and its evidence contract lives in
+The full ordered inventory of 21 Python notebooks and their 21 CLI mirrors lives in
 tutorials/README.md. There is no active examples/ root or duplicate notebook
 route.
 
@@ -381,12 +384,12 @@ evidence belongs to GitHub Releases.
 Current verified status:
 
 ```text
-Version: 2.0.0a1
+Version: 2.0.0
 PyPI package: agentic-systems
 Tests: run `python -m pytest` for the current count
 Core coverage: 100.00%
 Coverage scope: Bedrock facade and internal package excluded from core; separately gated at 100%
-Canonical notebooks: 15 deterministic executed; 3 live Provider notebooks checked statically
+Canonical notebooks: 17 deterministic executed; 3 live Provider notebooks checked statically
 
 ```
 

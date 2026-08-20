@@ -9,13 +9,15 @@ import pytest
 from agentic_systems import (
     Agent,
     AgenticGraph,
+    tool,
+)
+from agentic_systems.environments import build_planned_agent_graph
+from agentic_systems.integrations import langgraph as langgraph_bridge
+from agentic_systems.integrations.langgraph import (
     build_langgraph_agent_graph,
     build_langgraph_agent_node,
     build_langgraph_planned_graph,
-    build_planned_agent_graph,
-    tool,
 )
-from agentic_systems.integrations import langgraph as langgraph_bridge
 from agentic_systems.errors import GraphContractError
 
 

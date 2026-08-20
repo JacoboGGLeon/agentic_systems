@@ -1,24 +1,43 @@
 # Changelog
 
 All notable changes to Agentic Systems are documented here.
-## 2.0.0a1 - Unreleased
+## 2.0.0 - 2026-08-19
 
-Provisional Provider x Framework architecture. The 111 names from 1.1.3 remain
-canonical and toolkit.framework is the only top-level addition.
+Stable release of the unified computation model. The stable API contains 78
+top-level exports, 370 traced export/member IDs, and 10 shared contract scenarios.
 
 ### Added
 
+- `Executable`, `ExecutionPlan`, `SequentialPlan`, and `ParallelPlan` as the
+  common contract for tools, agents, pipelines, and systems.
+- Hierarchical `RunResult` values with execution and parent identity, child
+  results, and tree traversal.
+- `ToolSet` as the public name for a namespaced collection of tools.
+- Pure `toolkit.skill(path=...)` loading without a hidden `AgenticSystem`.
+- `ModelProviderConfig` and `toolkit.provider(...)`, separating provider
+  configuration from runtime execution.
+- `Agent.pipeline(...)`, `AgenticSystem.add(...)`, `compile(...)`, and direct
+  system `run`/`arun` execution.
+- Generic `Evaluator.evaluate(...)` support for any executable agent or system.
+- A public 5 Provider x 4 Framework compatibility report and matrix notebook
+  covering all 20 combinations.
+- Portable `vllm`/`vllm-client` extras and a separate `vllm-server` extra.
 - Real Native, LangGraph, OpenAI Agents, and Strands adapter dispatch.
 - FrameworkConfig, exact native kwargs forwarding, Agent.prepare,
   Agent.native_agent, and RunResult.native_result.
-- Offline 4 Provider x 4 Framework certification with fake transports and real
+- Offline 5 Provider x 4 Framework certification with fake transports and real
   Framework SDK loops.
-- Layered 18-notebook curriculum: 11 core, 4 Provider and 3 real Framework notebooks.
-- Deterministic LangGraph, OpenAI Agents and Strands tutorials executed from clean kernels.
+- Layered 21-notebook Python curriculum mirrored by 21 preserved-output CLI notebooks.
+- Deterministic Framework and matrix tutorials executed from clean kernels.
 - OpenAI Agents offline certification for mixed Tools, typed output, sessions, guardrails and handoffs.
 - Strands offline certification for mixed Tools, hooks, structured output and sync/async execution.
 - Native Strands MCP certification over local stdio and Streamable HTTP
   transports, executed through the deterministic Python Provider.
+- Non-secret Provider environment snapshots now load the nearest `.env`
+  consistently with runtime factories and the CLI; OpenAI gains the symmetric
+  `openai_environment_snapshot()` public helper.
+- OpenAI Agents tracing is disabled per run by default for non-OpenAI Providers,
+  preventing cross-provider trace export when several credentials coexist.
 - Native Bedrock API-key recognition across auto resolution, diagnostics, and
   notebook readiness. `AWS_BEARER_TOKEN_BEDROCK` and the standard AWS credential
   chain are two authentication modes of the same boto3 `bedrock-runtime`
@@ -33,17 +52,25 @@ canonical and toolkit.framework is the only top-level addition.
 - The Bedrock-specific OpenAI Agents bridge, its nine public helper methods and
   its `disable_openai_runtime_tracing` constructor option. OpenAI Agents over
   Bedrock now uses the general Framework adapter exclusively.
-- All disable_framework_tracing parameters. Framework tracing is owned by each native SDK; 2.0 has no parallel switch or shim.
+- All disable_framework_tracing parameters. 2.0 has no parallel public switch
+  or shim; native SDK configuration remains available, with a safe no-egress
+  default for OpenAI Agents runs backed by non-OpenAI Providers.
 
-The tutorial gate executes 15 deterministic notebooks and statically validates 3 external Provider notebooks.
+The tutorial gate executes 17 deterministic notebooks, validates 4 Provider notebooks
+offline, and verifies 21 preserved-output CLI notebooks mapped 1:1 to the Python curriculum.
 
+Live OpenAI and local Ollama `qwen3:4b` evidence passed all four Frameworks
+through the strict matrix gate with real tool calls and normalized `RunResult`
+values; Ollama executed 100% on an NVIDIA GPU. Bedrock bearer authentication and
+inference-profile discovery passed, but live agent execution is not certified
+because the account returned its daily-token `ThrottlingException`. Bedrock IAM
+and vLLM server evidence remain external until their environments execute the
+same `--live --require-pass` route.
 The Bedrock ratchet rises to 100% over all 620 remaining statements.
 Branch ratchets are fixed at Core 98.1%, Providers 97.7%, and Frameworks 98.8%;
 each threshold is the measured alpha result truncated to one decimal and may
 only increase.
 
-This alpha is not a stable release. The public signatures remain provisional
-until 2.0.0rc1.
 
 ## 1.1.3 - 2026-08-11
 

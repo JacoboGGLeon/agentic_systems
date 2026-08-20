@@ -13,6 +13,7 @@ from agentic_systems.integrations.adapters.strands_scripted import ScriptedStran
 PROVIDERS = (
     "python-runtime",
     "openai-runtime",
+    "ollama-runtime",
     "vllm-runtime",
     "bedrock-runtime",
 )

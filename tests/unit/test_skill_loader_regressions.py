@@ -1,6 +1,7 @@
 import os
 
 import pytest
+import agentic_systems.skills as skills_module
 
 from agentic_systems import (
     AgenticSystem,
@@ -66,7 +67,8 @@ def test_skill_loader_error_paths(tmp_path, monkeypatch):
         "def register(system):\n    return {}\n", encoding="utf-8"
     )
     monkeypatch.setattr(
-        "agentic_systems.skills.importlib.util.spec_from_file_location",
+        skills_module.importlib.util,
+        "spec_from_file_location",
         lambda *a, **k: None,
     )
     with pytest.raises(Exception, match="Cannot import"):

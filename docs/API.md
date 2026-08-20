@@ -105,7 +105,7 @@ VLLM_API_KEY
 `vllm-runtime` is an OpenAI-compatible client path. It expects a running vLLM
 server, usually at `http://127.0.0.1:8000/v1`, and uses the OpenAI SDK client.
 Install `agentic-systems[openai]` when Agentic Systems only connects to an
-existing endpoint. Install `agentic-systems[vllm]` only when the
+existing endpoint. Install `agentic-systems[vllm-server]` only when the
 same supported Linux environment also hosts the vLLM server. The server remains
 external infrastructure; Agentic Systems never starts it implicitly.
 
@@ -451,7 +451,7 @@ DEFAULT_EMBEDDING_MODEL_ID
 ```
 
 Use `BedrockRuntimeClient` only when you need direct Bedrock Runtime primitives.
-Most user code should use `toolkit.runtime(provider="bedrock-runtime")`, `toolkit.runtime(provider="openai-runtime")`, `toolkit.runtime(provider="vllm-runtime")` or `toolkit.runtime(provider="auto")`.
+Most user code should use `toolkit.runtime(provider="bedrock-runtime")`, `toolkit.runtime(provider="openai-runtime")`, `toolkit.runtime(provider="vllm-runtime")`, `toolkit.runtime(provider="ollama-runtime")` or `toolkit.runtime(provider="auto")`.
 
 ## Notebook Utilities
 
@@ -468,6 +468,8 @@ mask_sensitive
 aws_environment_snapshot
 boto3_session_snapshot
 vllm_environment_snapshot
+ollama_environment_snapshot
+openai_environment_snapshot
 repair_ada_credential_chain
 run_result_output
 run_result_view
@@ -537,10 +539,12 @@ boto3 bedrock-runtime Provider.
 | frameworks | frameworks/00_langgraph.ipynb | StateGraph, routing, sync/async and lineage |
 | frameworks | frameworks/01_openai_agents.ipynb | Runner, mixed Tools, sessions, guardrails and handoffs |
 | frameworks | frameworks/02_aws_strands.ipynb | Agent, hooks, structured output and MCP stdio/HTTP |
+| frameworks | frameworks/03_provider_framework_matrix.ipynb | Complete 5 x 4 execution evidence |
+| api | api/14_api_contract_matrix.ipynb | Exact export/member contract traceability |
 
-The release gate executes the 11 core notebooks, providers/00_auto and all three
-Framework notebooks from clean kernels. The three external Provider notebooks
-are statically validated and run conditionally when infrastructure exists.
+The release gate executes 11 core notebooks, providers/00_auto, four Framework
+notebooks and the API contract notebook from clean kernels. The three external
+Provider notebooks are statically validated and run conditionally when infrastructure exists.
 
 ## Documentation Rules
 
@@ -558,7 +562,8 @@ Good API documentation in this repo follows these rules:
 
 ## Complete Public API Index
 
-This section is the documentation checksum for `agentic_systems.__all__`. The maintainer inventory is `agentic_systems.api.PUBLIC_API`; it is not a top-level runtime attribute. If a symbol is added to the source API, it must appear here and have narrative coverage above.
+This block is generated from `agentic_systems.api_contract()`.
+It is the exact stable top-level API; CI rejects any difference.
 
 ```text
 skill
@@ -567,31 +572,32 @@ system
 environment
 eval
 runtime
+provider
 framework
 scheduler
 load_skill
-default_model_id
-default_region
 AgenticSystem
-InspectReport
-PublicToolRegistry
 Agent
 Tool
+ToolSet
+Executable
+AsyncExecutable
+toolset
+api_contract
+exercise_api
+ExecutionPlan
+CompiledSystem
+SequentialPlan
+ParallelPlan
 tool
 expect
 human_result
 Skill
-SkillManifest
 LoadedSkill
 AgentContract
 ContractPolicySpec
 RunPolicy
-ToolExpectationValue
-ValidationIssue
-ValidationResult
-normalize_tool_expectation
 validate_contract_policy
-validate_tool_expectation
 RunResult
 LineageMemory
 LineageStep
@@ -600,81 +606,50 @@ LINEAGE_SCHEMA_VERSION
 AUTO_PROVIDER_ENV_VAR
 DEFAULT_AUTO_PROVIDER_PRIORITY
 RuntimeConfig
+ModelProviderConfig
+compatibility_matrix
+compatibility_report
 normalize_provider_priority
 resolve_auto_provider
 SchedulerConfig
 OutputSchema
-FINAL_ANSWER_SCHEMA_VERSION
 final_answer
 normalize_output
 output_schema
-AgenticOutput
-RuntimeInfo
-UsageInfo
-OutputToolEvent
-OutputValidation
-TraceEvent
-GraphStateOutput
-EpisodeResult
-BedrockRuntimeClient
-DEFAULT_EMBEDDING_MODEL_ID
-Chain
-ChainStep
-BEDROCK_RUNTIME_ENGINE
-OPENAI_RUNTIME_ENGINE
-PYTHON_RUNTIME_ENGINE
-VLLM_RUNTIME_ENGINE
-SUPPORTED_ENGINES
-canonical_engine_name
-supported_engine_names
+FrameworkConfig
+GraphApp
+AgenticGraph
 agent_node
 graph
-EvalCaseResult
 EvalReport
-EvalReproducibility
 Evaluator
 run_eval
 AgenticEnvironment
-EnvironmentTransition
-AgentStepGraph
-DynamicAgentRouterGraph
-PlannedAgentGraph
 build_agent_step_graph
-build_dynamic_agent_router_graph
-build_planned_agent_graph
-environment_lineage
-AGENT_OUTPUT_SCHEMA_VERSION
-OUTPUT_SCHEMA_VERSION
-AGENTIC_OUTPUT_SCHEMA_VERSION
 agent_output
-agent_output_mapper
-make_agent_output_mapper
-configure_notebook_environment
 show_json
 show
-compare
 compose_result
-mask_sensitive
 aws_environment_snapshot
 boto3_session_snapshot
+ollama_environment_snapshot
+openai_environment_snapshot
 vllm_environment_snapshot
-repair_ada_credential_chain
 run_result_output
 run_result_view
 run_result_summary
-tool_result_summary
-chain_history_summary
 environment_summary
-eval_report_output
 eval_report_summary
-maybe_show_trace
-TRACE_SCHEMA_VERSION
 core
 providers
 integrations
 __version__
 ```
 
+Contract entries including public members: 370
+Shared contract scenarios: 10
+
+Contract checksum: `19f9fbebedf87f526bbaf7fbfc1abea0dffed121bdc5a83bfccf893cf7037705`
 ## Provider Conformance API
 
 The advanced `agentic_systems.providers` namespace exposes the Runtime/Provider

@@ -10,6 +10,7 @@ from pydantic import BaseModel, ConfigDict
 from ..contracts import ValidationResult
 from ..engines.names import (
     BEDROCK_RUNTIME_ENGINE,
+    OLLAMA_RUNTIME_ENGINE,
     OPENAI_RUNTIME_ENGINE,
     PYTHON_RUNTIME_ENGINE,
     VLLM_RUNTIME_ENGINE,
@@ -324,6 +325,19 @@ _PROVIDER_PROFILES = {
             _optional("streaming", "unsupported", "Streaming is not exposed through RunResult execution."),
             _optional("cancellation", "unsupported", "The adapter does not expose cooperative cancellation."),
             _optional("offline_execution", "unsupported", "Execution requires an OpenAI-compatible remote endpoint."),
+        ),
+    ),
+    OLLAMA_RUNTIME_ENGINE: ProviderProfile(
+        provider=OLLAMA_RUNTIME_ENGINE,
+        capabilities=_REQUIRED
+        + (
+            _optional("model_generation", "supported", "A local Ollama OpenAI-compatible endpoint performs generation."),
+            _optional("deterministic_execution", "unsupported", "Generated output is not promised to be deterministic."),
+            _optional("native_async", "supported", "The async OpenAI-compatible client is used by arun."),
+            _optional("token_usage", "degraded", "Usage is normalized only when the configured Ollama model reports it."),
+            _optional("streaming", "unsupported", "Streaming is not exposed through RunResult execution."),
+            _optional("cancellation", "unsupported", "The adapter does not expose cooperative cancellation."),
+            _optional("offline_execution", "supported", "Execution can remain local after Ollama and the model are installed."),
         ),
     ),
     VLLM_RUNTIME_ENGINE: ProviderProfile(

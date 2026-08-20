@@ -94,9 +94,9 @@ def test_python_provider_frameworks_support_async_execution(framework: str | Non
     assert result.native_result is not None
 
 
-def test_public_surface_adds_only_framework_factory():
-    assert toolkit.__version__ == "2.0.0a1"
-    assert len(toolkit.__all__) == 112
+def test_public_surface_is_frozen_for_2_0():
+    assert toolkit.__version__ == "2.0.0"
+    assert len(toolkit.__all__) == 78
     assert toolkit.__all__.count("framework") == 1
 
 

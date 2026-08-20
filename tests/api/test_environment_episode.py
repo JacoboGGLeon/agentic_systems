@@ -4,8 +4,8 @@ import types
 import pandas as pd
 import pytest
 
-from agentic_systems import AgenticEnvironment, AgenticSystem, EnvironmentTransition
-from agentic_systems.environments import build_single_agent_step_graph
+from agentic_systems import AgenticEnvironment, AgenticSystem
+from agentic_systems.environments import EnvironmentTransition, build_single_agent_step_graph
 from agentic_systems.environments import _compile_graph, _records_to_dicts
 
 

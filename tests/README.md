@@ -8,7 +8,7 @@ The suite is organized by the contract owner, not by migration history.
 | `tests/unit/` | Private branches owned by individual production modules. |
 | `tests/providers/` | Provider base, OpenAI, Python Runtime, vLLM and Bedrock behavior with fake clients. |
 | `tests/contracts/` | Public inventory, semantic invariants, optional-import boundary and frozen Bedrock signatures. |
-| `tests/frameworks/` | Real Framework SDK execution, the 4 x 4 matrix, forwarding and local MCP transports. |
+| `tests/frameworks/` | Real Framework SDK execution, the 5 x 4 matrix, forwarding and local MCP transports. |
 | `tests/release/` | Tutorials, packaging, artifacts, documentation and quarantine-absence gates. |
 | `tests/composition/` | Tool/Skill identity, conflicts, precedence, reuse and composition coherence. |
 | `tests/integration_conformance/` | Framework and Graph boundary profiles and state projection. |

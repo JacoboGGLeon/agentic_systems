@@ -32,6 +32,7 @@ from .engines.names import (
 from .errors import GraphContractError
 from .integrations.config import FrameworkConfig
 from .results import RunResult
+from .execution import CompiledSystem, ExecutionPlan, SequentialPlan
 from .final_answer import OutputSchema, final_answer
 from .skills import LoadedSkill, Skill
 from .tools import Tool
@@ -211,6 +212,24 @@ class Agent:
         """Return this agent's resolved tool names."""
 
         return self.tools
+    def pipeline(
+        self,
+        *steps: Any,
+        execution: ExecutionPlan | None = None,
+        name: str | None = None,
+    ) -> CompiledSystem:
+        """Compile this Agent and optional stages as its internal pipeline."""
+
+        units = (self, *steps)
+        invalid = [unit for unit in units if not callable(getattr(unit, "run", None))]
+        if invalid:
+            raise TypeError("Agent.pipeline(...) stages must implement run(...).")
+        return CompiledSystem(
+            name=name or f"agent:{self.name}:pipeline",
+            units=units,
+            plan=execution or SequentialPlan(),
+        )
+
 
     def available_tools(self) -> list[Tool]:
         """Return concrete Tool objects known by this agent.

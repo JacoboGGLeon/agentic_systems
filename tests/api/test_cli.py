@@ -7,7 +7,7 @@ from agentic_systems.cli import main
 
 
 def test_cli_runtime_json_and_rich_output(capsys, monkeypatch):
-    from agentic_systems import cli
+    import agentic_systems.cli as cli
 
     monkeypatch.delenv("VLLM_BASE_URL", raising=False)
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
@@ -28,7 +28,7 @@ def test_cli_runtime_json_and_rich_output(capsys, monkeypatch):
 
 
 def test_cli_doctor_and_api_inventory(capsys):
-    from agentic_systems import cli
+    import agentic_systems.cli as cli
 
     assert cli.main(["doctor", "--json"]) == 0
     doctor = json.loads(capsys.readouterr().out)
@@ -36,15 +36,31 @@ def test_cli_doctor_and_api_inventory(capsys):
     assert "supported_engines" in doctor
     assert "vllm-runtime" in doctor["supported_engines"]
     assert "has_vllm_base_url" in doctor["environment"]
+    assert {row["name"] for row in doctor["providers"]} == {
+        "python-runtime",
+        "openai-runtime",
+        "ollama-runtime",
+        "vllm-runtime",
+        "bedrock-runtime",
+    }
+    assert {row["name"] for row in doctor["frameworks"]} == {
+        "native",
+        "langgraph",
+        "openai-agents",
+        "strands",
+    }
+    assert next(
+        row for row in doctor["providers"] if row["name"] == "python-runtime"
+    )["ready"] is True
 
     assert cli.main(["api", "--tier", "public", "--contains", "runtime", "--json"]) == 0
     api = json.loads(capsys.readouterr().out)
     assert api["tier"] == "public"
-    assert any("runtime" in symbol.lower() for symbol in api["symbols"])
+    assert any("runtime" in identifier.lower() for identifier in api["ids"])
 
 
 def test_cli_public_api_plain_json_and_runtime_safe_configuration(capsys, monkeypatch):
-    from agentic_systems import cli
+    import agentic_systems.cli as cli
 
     class FakeRuntime:
         def describe(self):
@@ -79,7 +95,7 @@ def test_cli_public_api_plain_json_and_runtime_safe_configuration(capsys, monkey
 
 
 def test_cli_contact_plain_and_json(capsys):
-    from agentic_systems import cli
+    import agentic_systems.cli as cli
 
     assert cli.main(["contact", "--json"]) == 0
     payload = json.loads(capsys.readouterr().out)
@@ -97,7 +113,7 @@ def test_cli_contact_plain_and_json(capsys):
 
 def test_cli_runtime_auto_resolves_vllm_json(capsys, monkeypatch):
     import agentic_systems.core.runtime as runtime_module
-    from agentic_systems import cli
+    import agentic_systems.cli as cli
 
     monkeypatch.setenv("VLLM_BASE_URL", "http://127.0.0.1:8000/v1")
     monkeypatch.setenv("VLLM_MODEL", "Qwen/Qwen3-0.6B")
@@ -164,13 +180,13 @@ def test_cli_api_public_tier_exposes_complete_public_api(capsys) -> None:
 
     payload = json.loads(capsys.readouterr().out)
     assert payload["tier"] == "public"
-    assert payload["count"] == len(lab.__all__)
-    assert payload["symbols"] == list(lab.__all__)
+    assert payload["count"] == lab.api_contract()["entry_count"]
+    assert payload["ids"] == lab.api_contract()["ids"]
 
 
-def test_cli_api_can_filter_symbols(capsys) -> None:
+def test_cli_api_can_filter_contract_ids(capsys) -> None:
     assert main(["api", "--tier", "public", "--contains", "runtime", "--json"]) == 0
 
     payload = json.loads(capsys.readouterr().out)
     assert payload["count"] >= 1
-    assert all("runtime" in name.lower() for name in payload["symbols"])
+    assert all("runtime" in identifier.lower() for identifier in payload["ids"])

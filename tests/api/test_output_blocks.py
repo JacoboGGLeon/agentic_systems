@@ -1,6 +1,7 @@
 import agentic_systems as lab
 from agentic_systems import RunResult
 from agentic_systems.tools import ToolEvent
+from agentic_systems.utils import compare
 
 
 def _sample_result() -> RunResult:
@@ -46,7 +47,7 @@ def test_compare_accepts_runresult_and_serialized_langgraph_result():
     serialized = result.to_dict()
     serialized["normalized"] = result.normalized()
 
-    compared = lab.compare([result, serialized], keys=["run_ok", "engine", "framework", "mode", "tool_event_count", "usage"])
+    compared = compare([result, serialized], keys=["run_ok", "engine", "framework", "mode", "tool_event_count", "usage"])
 
     assert compared["ok"] is True
     assert compared["runs"][0]["tool_event_count"] == 1
@@ -75,7 +76,7 @@ def test_compare_accepts_keys_for_compact_traces():
         {"run_ok": True, "engine": "python-runtime", "mode": "tool", "usage": {"requests": 1}},
     ]
 
-    compared = lab.compare(rows, keys=["run_ok", "engine", "mode", "usage"])
+    compared = compare(rows, keys=["run_ok", "engine", "mode", "usage"])
 
     assert compared["ok"] is True
     assert compared["count"] == 2

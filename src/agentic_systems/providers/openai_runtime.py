@@ -8,6 +8,7 @@ Systems tool registry and normalizes the response into ``RunResult``.
 from __future__ import annotations
 
 import json
+import os
 from collections.abc import Mapping
 from typing import Any
 
@@ -27,6 +28,22 @@ def _openai_module() -> Any:
     except Exception as exc:  # pragma: no cover - optional dependency path
         raise ImportError(f"OpenAI runtime provider requires the official openai SDK. {_INSTALL_HINT}.") from exc
     return openai
+
+
+def openai_environment_snapshot() -> dict[str, Any]:
+    """Return non-secret OpenAI runtime configuration for diagnostics."""
+
+    from agentic_systems.core.runtime import _load_dotenv
+
+    _load_dotenv()
+    model = os.getenv("OPENAI_MODEL")
+    return {
+        "base_url": os.getenv("OPENAI_BASE_URL") or None,
+        "base_url_configured": bool(os.getenv("OPENAI_BASE_URL")),
+        "model": model,
+        "model_configured": bool(model),
+        "api_key_configured": bool(os.getenv("OPENAI_API_KEY")),
+    }
 
 
 class OpenAIRuntimeProvider:
@@ -241,6 +258,21 @@ def _framework_meta(agent: Any) -> dict[str, Any]:
 
 
 def _finalize_run_result(text: str, tool_events: list[ToolEvent], ok: bool, usage: dict[str, Any], *, agent: Any, mode: str, runtime_engine: str, source: str) -> RunResult:
+    if ok and not str(text or "").strip():
+        result = _failure(
+            "Provider returned an empty model output.",
+            agent,
+            mode,
+            "empty_model_output",
+            meta={
+                "source_result_type": source,
+                "runtime_engine": runtime_engine,
+            },
+        )
+        result.engine = runtime_engine
+        result.tool_events = tool_events
+        result.usage = usage
+        return result
     result = RunResult(
         text=text,
         data={"final_output": text} if text else {},
@@ -357,4 +389,4 @@ def _jsonable(value: Any) -> Any:
     return value
 
 
-__all__ = ["OpenAIRuntimeProvider", "_input_to_prompt"]
+__all__ = ["OpenAIRuntimeProvider", "openai_environment_snapshot", "_input_to_prompt"]

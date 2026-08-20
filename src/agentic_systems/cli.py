@@ -15,9 +15,17 @@ from rich.panel import Panel
 from rich.table import Table
 from rich.text import Text
 
+from .api_contract import api_contract, exercise_api
 from . import __version__
-from .api import ADVANCED_API, PUBLIC_API, RECOMMENDED_API
-from .core.runtime import _load_dotenv
+from .api import PUBLIC_API, RECOMMENDED_API
+from .compatibility import FRAMEWORK_NAMES, PROVIDER_NAMES
+from .core.runtime import (
+    _bedrock_signal_present,
+    _load_dotenv,
+    _ollama_signal_present,
+    _openai_signal_present,
+    _vllm_signal_present,
+)
 from .factories import runtime
 from .engines.names import supported_engine_names
 
@@ -53,24 +61,107 @@ def _write_json(payload: dict[str, Any] | list[Any]) -> None:
 
 def _doctor_payload() -> dict[str, Any]:
     dotenv_loaded = _load_dotenv()
+    environment = {
+        "has_vllm_base_url": bool(os.getenv("VLLM_BASE_URL")),
+        "has_ollama_base_url": bool(os.getenv("OLLAMA_BASE_URL")),
+        "has_ollama_model": bool(os.getenv("OLLAMA_MODEL")),
+        "has_openai_api_key": bool(os.getenv("OPENAI_API_KEY")),
+        "has_openai_base_url": bool(os.getenv("OPENAI_BASE_URL")),
+        "has_aws_region": bool(os.getenv("AWS_REGION") or os.getenv("AWS_DEFAULT_REGION")),
+        "has_aws_profile": bool(os.getenv("AWS_PROFILE")),
+        "has_aws_static_credentials": bool(
+            os.getenv("AWS_ACCESS_KEY_ID") and os.getenv("AWS_SECRET_ACCESS_KEY")
+        ),
+        "has_aws_session_token": bool(os.getenv("AWS_SESSION_TOKEN")),
+        "has_bedrock_api_key": bool(os.getenv("AWS_BEARER_TOKEN_BEDROCK")),
+    }
+    optional_dependencies = {
+        "boto3": _optional_dependency("boto3"),
+        "langgraph": _optional_dependency("langgraph"),
+        "openai": _optional_dependency("openai"),
+        "openai-agents": _optional_dependency("agents"),
+        "strands-agents": _optional_dependency("strands"),
+    }
+    framework_modules = {
+        "native": None,
+        "langgraph": "langgraph",
+        "openai-agents": "agents",
+        "strands": "strands",
+    }
+    frameworks = [
+        {
+            "name": name,
+            "module": module,
+            "installed": module is None or _optional_dependency(module),
+        }
+        for name, module in framework_modules.items()
+    ]
+    bedrock_auth = (
+        "bedrock-api-key"
+        if environment["has_bedrock_api_key"]
+        else "aws-credential-chain" if _bedrock_signal_present(None) else None
+    )
+    providers = [
+        {
+            "name": "python-runtime",
+            "configured": True,
+            "dependency_installed": True,
+            "authentication": "local",
+        },
+        {
+            "name": "openai-runtime",
+            "configured": _openai_signal_present(),
+            "dependency_installed": optional_dependencies["openai"],
+            "authentication": (
+                "api-key"
+                if environment["has_openai_api_key"]
+                else "custom-endpoint" if environment["has_openai_base_url"] else None
+            ),
+        },
+        {
+            "name": "vllm-runtime",
+            "configured": _vllm_signal_present(),
+            "dependency_installed": optional_dependencies["openai"],
+            "authentication": "openai-compatible-endpoint",
+        },
+        {
+            "name": "ollama-runtime",
+            "configured": _ollama_signal_present(),
+            "dependency_installed": optional_dependencies["openai"],
+            "authentication": "local-openai-compatible-endpoint",
+        },
+        {
+            "name": "bedrock-runtime",
+            "configured": _bedrock_signal_present(None),
+            "dependency_installed": optional_dependencies["boto3"],
+            "authentication": bedrock_auth,
+        },
+    ]
+    for provider in providers:
+        provider["ready"] = bool(
+            provider["configured"] and provider["dependency_installed"]
+        )
+        provider["status"] = (
+            "ready-to-attempt"
+            if provider["ready"]
+            else "missing-dependency"
+            if not provider["dependency_installed"]
+            else "needs-configuration"
+        )
     return {
         "package": "agentic-systems",
         "version": __version__,
         "python": platform.python_version(),
         "supported_engines": supported_engine_names(),
         "dotenv_loaded": dotenv_loaded,
-        "environment": {
-            "has_vllm_base_url": bool(os.getenv("VLLM_BASE_URL")),
-            "has_openai_api_key": bool(os.getenv("OPENAI_API_KEY")),
-            "has_aws_region": bool(os.getenv("AWS_REGION") or os.getenv("AWS_DEFAULT_REGION")),
-            "has_aws_profile": bool(os.getenv("AWS_PROFILE")),
-            "has_bedrock_api_key": bool(os.getenv("AWS_BEARER_TOKEN_BEDROCK")),
-        },
-        "optional_dependencies": {
-            "boto3": _optional_dependency("boto3"),
-            "langgraph": _optional_dependency("langgraph"),
-            "openai": _optional_dependency("openai"),
-        },
+        "readiness_semantics": (
+            "ready means configuration signals plus dependencies are present; "
+            "only a live command verifies credentials, permissions, endpoint and model"
+        ),
+        "environment": environment,
+        "optional_dependencies": optional_dependencies,
+        "providers": providers,
+        "frameworks": frameworks,
     }
 
 
@@ -107,6 +198,8 @@ def _cmd_doctor(args: argparse.Namespace) -> int:
     console = _console()
     env = payload["environment"]
     deps = payload["optional_dependencies"]
+    providers = payload["providers"]
+    frameworks = payload["frameworks"]
 
     summary = Text()
     summary.append(f"Agentic Systems {payload['version']}\n", style="bold cyan")
@@ -120,6 +213,8 @@ def _cmd_doctor(args: argparse.Namespace) -> int:
     env_table.add_column("Status")
     env_table.add_row("VLLM_BASE_URL", _status(env["has_vllm_base_url"]))
     env_table.add_row("OPENAI_API_KEY", _status(env["has_openai_api_key"]))
+    env_table.add_row("OLLAMA_BASE_URL", _status(env["has_ollama_base_url"]))
+    env_table.add_row("OLLAMA_MODEL", _status(env["has_ollama_model"]))
     env_table.add_row("AWS region", _status(env["has_aws_region"]))
     env_table.add_row("AWS profile", _status(env["has_aws_profile"]))
     env_table.add_row("Bedrock API key", _status(env["has_bedrock_api_key"]))
@@ -130,17 +225,52 @@ def _cmd_doctor(args: argparse.Namespace) -> int:
     for name, available in deps.items():
         deps_table.add_row(name, _availability(available))
 
+    providers_table = Table(title="Providers", box=None, padding=(0, 1))
+    providers_table.add_column("Provider", style="bold")
+    providers_table.add_column("Config")
+    providers_table.add_column("Dependency")
+    providers_table.add_column("Ready")
+    providers_table.add_column("Authentication")
+    for provider in providers:
+        providers_table.add_row(
+            provider["name"],
+            _status(provider["configured"]),
+            _availability(provider["dependency_installed"]),
+            "yes" if provider["ready"] else "no",
+            provider["authentication"] or "-",
+        )
+
+    frameworks_table = Table(title="Frameworks", box=None, padding=(0, 1))
+    frameworks_table.add_column("Framework", style="bold")
+    frameworks_table.add_column("Module")
+    frameworks_table.add_column("Installed")
+    for framework in frameworks:
+        frameworks_table.add_row(
+            framework["name"],
+            framework["module"] or "built-in",
+            "yes" if framework["installed"] else "no",
+        )
+
     # Keep plain key/value lines inside the rich output so existing smoke tests
     # and human copy/paste diagnostics stay stable.
     compatibility_lines = "\n".join([
         f"VLLM_BASE_URL: {_status(env['has_vllm_base_url'])}",
         f"OPENAI_API_KEY: {_status(env['has_openai_api_key'])}",
+        f"OLLAMA_BASE_URL: {_status(env['has_ollama_base_url'])}",
+        f"OLLAMA_MODEL: {_status(env['has_ollama_model'])}",
         f"AWS region: {_status(env['has_aws_region'])}",
         f"AWS profile: {_status(env['has_aws_profile'])}",
+        f"Bedrock auth: {next(row['authentication'] or 'missing' for row in providers if row['name'] == 'bedrock-runtime')}",
         *[f"{name}: {_availability(available)}" for name, available in deps.items()],
+        *[f"{row['name']}: {row['status']}" for row in providers],
+        *[
+            f"{row['name']}: {'installed' if row['installed'] else 'missing'}"
+            for row in frameworks
+        ],
     ])
 
     console.print(Columns([env_table, deps_table], equal=True, expand=True))
+    console.print(Columns([providers_table, frameworks_table], equal=True, expand=True))
     console.print(Panel(compatibility_lines, title="Copy/Paste Summary", border_style="green"))
     return 0
 
@@ -193,34 +323,356 @@ def _cmd_public_api(args: argparse.Namespace) -> int:
     return 0
 
 
-def _api_symbols(tier: str) -> list[str]:
-    tiers = {
-        "recommended": RECOMMENDED_API,
-        "advanced": ADVANCED_API,
-        "public": PUBLIC_API,
-    }
-    return list(tiers[tier])
+def _api_ids(tier: str) -> list[str]:
+    manifest = api_contract()
+    if tier == "public":
+        return list(manifest["ids"])
+
+    return [
+        entry["id"]
+        for entry in manifest["entries"]
+        if entry["tier"] == tier
+    ]
 
 
 def _cmd_api(args: argparse.Namespace) -> int:
-    names = _api_symbols(args.tier)
-    if args.contains:
-        needle = args.contains.lower()
-        names = [name for name in names if needle in name.lower()]
+    if args.api_action == "describe":
+        if not args.identifier:
+            raise ValueError("api describe requires an export or member id.")
+        manifest = api_contract()
+        entries = [
+            entry for entry in manifest["entries"] if entry["id"] == args.identifier
+        ]
+        if not entries:
+            raise KeyError(f"Unknown public API contract id {args.identifier!r}.")
+        payload: dict[str, Any] = entries[0]
+        title = "API Contract"
+    elif args.api_action == "exercise":
+        if not args.identifier and not args.all_entries:
+            raise ValueError("api exercise requires an id or --all.")
+        payload = exercise_api(None if args.all_entries else args.identifier)
+        title = "API Exercise"
+    else:
+        names = _api_ids(args.tier)
+        if args.contains:
+            needle = args.contains.lower()
+            names = [name for name in names if needle in name.lower()]
+        payload = {
+            "tier": args.tier,
+            "count": len(names),
+            "ids": names,
+        }
+        title = "API Inventory"
 
-    payload = {
-        "tier": args.tier,
-        "count": len(names),
-        "symbols": names,
-    }
     if args.json:
         _write_json(payload)
         return 0
 
     console = _console()
-    console.print(Panel(f"tier: {payload['tier']}\ncount: {payload['count']}", title="API Inventory", border_style="magenta"))
-    console.print(Columns([Text(name, style="cyan") for name in names], equal=True, expand=True))
+    if args.api_action == "list":
+        console.print(
+            Panel(
+                f"tier: {payload['tier']}\ncount: {payload['count']}",
+                title=title,
+                border_style="magenta",
+            )
+        )
+        console.print(
+            Columns(
+                [Text(name, style="cyan") for name in payload["ids"]],
+                equal=True,
+                expand=True,
+            )
+        )
+    else:
+        console.print(
+            Panel(
+                json.dumps(payload, indent=2, sort_keys=True),
+                title=title,
+                border_style="magenta",
+            )
+        )
     return 0
+
+
+def _emit_workflow(payload: dict[str, Any], *, title: str, as_json: bool) -> int:
+    if as_json:
+        _write_json(payload)
+    else:
+        _console().print(
+            Panel(
+                json.dumps(payload, indent=2, sort_keys=True),
+                title=title,
+                border_style="green",
+            )
+        )
+    return 0
+
+
+def _cli_echo(value: str) -> dict:
+    """Return a deterministic CLI workflow marker."""
+
+    return {"value": value}
+
+
+def _cli_agent(toolkit: Any, *, provider_name: str = "python-runtime", framework_name: str = "native"):
+    echo = toolkit.tool(_cli_echo, name="cli_echo")
+    runtime_config = toolkit.runtime(provider=provider_name)
+    agent = toolkit.agent(
+        name=f"cli_{provider_name}_{framework_name}",
+        instructions="Execute cli_echo with the requested value.",
+        tools=[echo],
+        runtime=runtime_config,
+        framework=toolkit.framework(framework_name),
+        contract=toolkit.AgentContract(must_call=["cli_echo"]),
+        policy=toolkit.RunPolicy(
+            max_turns=2,
+            max_tool_calls=1,
+            temperature=0.0,
+            strict=True,
+        ),
+    )
+    return echo, agent
+
+
+def _matrix_workflow(
+    toolkit: Any,
+    *,
+    live: bool,
+    provider: str | None = None,
+    framework: str | None = None,
+) -> dict[str, Any]:
+    results: list[dict[str, Any]] = []
+    for case in toolkit.compatibility_matrix():
+        if provider is not None and case.provider != provider:
+            continue
+        if framework is not None and case.framework != framework:
+            continue
+        if case.provider != "python-runtime" and not live:
+            results.append(
+                {
+                    **case.to_dict(),
+                    "execution": "not-run",
+                    "execution_reason": "Pass --live to cross an external provider boundary.",
+                }
+            )
+            continue
+        if not case.ready:
+            results.append(
+                {
+                    **case.to_dict(),
+                    "execution": "not-run",
+                    "execution_reason": case.reason,
+                }
+            )
+            continue
+        try:
+            _echo, agent = _cli_agent(
+                toolkit,
+                provider_name=case.provider,
+                framework_name=case.framework,
+            )
+            result = agent.run(
+                {"tool": "cli_echo", "input": {"value": "ok"}},
+                mode="eval",
+            )
+            results.append(
+                {
+                    **case.to_dict(),
+                    "execution": "passed" if result.ok else "failed",
+                    "result": toolkit.run_result_output(result),
+                }
+            )
+        except Exception as exc:
+            results.append(
+                {
+                    **case.to_dict(),
+                    "execution": "failed",
+                    "error": {
+                        "type": type(exc).__name__,
+                        "message": str(exc),
+                    },
+                }
+            )
+    return {
+        "workflow": "matrix",
+        "live": live,
+        "combination_count": len(results),
+        "provider_filter": provider,
+        "framework_filter": framework,
+        "passed": sum(item["execution"] == "passed" for item in results),
+        "failed": sum(item["execution"] == "failed" for item in results),
+        "not_run": sum(item["execution"] == "not-run" for item in results),
+        "results": results,
+    }
+
+
+def _workflow_payload(name: str, args: argparse.Namespace) -> dict[str, Any]:
+    import agentic_systems as toolkit
+
+    value = getattr(args, "value", "ok")
+    if name == "tool":
+        echo = toolkit.tool(_cli_echo, name="cli_echo")
+        return {
+            "workflow": name,
+            "result": toolkit.run_result_output(echo.run({"value": value})),
+        }
+    if name == "skill":
+        echo = toolkit.tool(_cli_echo, name="cli_echo")
+        capability = toolkit.skill(
+            name="cli_echo_skill",
+            description="Deterministic CLI skill.",
+            tools=[echo],
+        )
+        return {"workflow": name, "skill": capability.describe()}
+    if name == "agent":
+        _echo, agent = _cli_agent(toolkit)
+        result = agent.run(
+            {"tool": "cli_echo", "input": {"value": value}},
+            mode="eval",
+        )
+        return {"workflow": name, "result": toolkit.run_result_output(result)}
+    if name == "system":
+        echo = toolkit.tool(_cli_echo, name="cli_echo")
+        runtime_config = toolkit.runtime(provider="python-runtime")
+        current = toolkit.system(runtime=runtime_config)
+        current.agent(
+            name="cli_system_agent",
+            instructions="Execute cli_echo with the requested value.",
+            tools=[echo],
+            runtime=runtime_config,
+            contract=toolkit.AgentContract(must_call=["cli_echo"]),
+            policy=toolkit.RunPolicy(max_turns=2, max_tool_calls=1, temperature=0.0),
+        )
+        result = current.run({"tool": "cli_echo", "input": {"value": value}})
+        return {"workflow": name, "result": toolkit.run_result_output(result)}
+    if name == "graph":
+        def mark(state: dict) -> dict:
+            return {**state, "visited": True}
+
+        app = toolkit.graph(
+            name="cli_graph",
+            engine="portable",
+            state=dict,
+            nodes={"mark": mark},
+            edges=[("START", "mark"), ("mark", "END")],
+        )
+        return {"workflow": name, "state": app.run({"value": value})}
+    if name == "environment":
+        def transition(row: dict, action: Any, _info: dict) -> dict:
+            return {"output": {"row": row, "action": action}}
+
+        current = toolkit.environment(
+            [{"value": value}],
+            name="cli_environment",
+            transition_fn=transition,
+            reward_fn=lambda *_args: 1.0,
+        )
+        observation, reset_info = current.reset(seed=0)
+        _next, reward, terminated, truncated, step_info = current.step(value)
+        return {
+            "workflow": name,
+            "observation": observation,
+            "reset": reset_info,
+            "reward": reward,
+            "terminated": terminated,
+            "truncated": truncated,
+            "step": step_info,
+            "summary": toolkit.environment_summary(current),
+        }
+    if name == "eval":
+        _echo, agent = _cli_agent(toolkit)
+        report = toolkit.eval().run(
+            agent,
+            [
+                {
+                    "name": "cli_echo",
+                    "input": {"tool": "cli_echo", "input": {"value": value}},
+                    "expected": {
+                        "must_call": ["cli_echo"],
+                        "data_contains": {"value": value},
+                    },
+                }
+            ],
+            determinism="deterministic",
+            seed=0,
+        )
+        return {"workflow": name, "report": report.to_dict()}
+    if name == "matrix":
+        return _matrix_workflow(
+            toolkit,
+            live=bool(args.live),
+            provider=args.provider,
+            framework=args.framework,
+        )
+    raise ValueError(f"Unknown workflow {name!r}.")
+
+
+def _cmd_workflow(args: argparse.Namespace) -> int:
+    payload = _workflow_payload(args.workflow, args)
+    scenario = next(
+        item
+        for item in api_contract()["scenarios"]
+        if item["id"] == args.workflow
+    )
+    payload["scenario"] = scenario["id"]
+    payload["scenario_api_ids"] = scenario["api_ids"]
+    exit_code = 0
+    if (
+        args.workflow == "matrix"
+        and getattr(args, "require_pass", False)
+        and (payload["failed"] or payload["not_run"])
+    ):
+        exit_code = 1
+    _emit_workflow(
+        payload,
+        title=f"{args.workflow.title()} Workflow",
+        as_json=args.json,
+    )
+    return exit_code
+
+
+def _add_workflow_parsers(subparsers: Any) -> None:
+    definitions = (
+        ("tool", "run", "Execute a deterministic Tool."),
+        ("skill", "inspect", "Construct and inspect a Skill."),
+        ("agent", "run", "Execute an Agent on python-runtime."),
+        ("system", "run", "Compile and execute a System."),
+        ("environment", "run", "Execute one Environment episode."),
+        ("graph", "run", "Build and execute a portable Graph."),
+        ("eval", "run", "Evaluate an Agent with one deterministic case."),
+        ("matrix", "check", "Check or execute the Provider x Framework matrix."),
+    )
+    for name, action, help_text in definitions:
+        current = subparsers.add_parser(name, help=help_text)
+        current.add_argument("action", choices=(action,))
+        if name not in {"skill", "matrix"}:
+            current.add_argument("--value", default="ok")
+        if name == "matrix":
+            current.add_argument(
+                "--live",
+                action="store_true",
+                help="Execute configured external Provider combinations.",
+            )
+            current.add_argument(
+                "--require-pass",
+                action="store_true",
+                help="Exit non-zero unless every selected matrix row passes.",
+            )
+            current.add_argument(
+                "--provider",
+                choices=PROVIDER_NAMES,
+                default=None,
+                help="Filter the matrix to one Provider.",
+            )
+            current.add_argument(
+                "--framework",
+                choices=FRAMEWORK_NAMES,
+                default=None,
+                help="Filter the matrix to one Framework.",
+            )
+        current.add_argument("--json", action="store_true")
+        current.set_defaults(func=_cmd_workflow, workflow=name)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -242,7 +694,7 @@ def build_parser() -> argparse.ArgumentParser:
     runtime_parser.add_argument("--provider", default="auto", help="Runtime provider, for example auto, python-runtime, vllm-runtime, bedrock-runtime or openai-runtime.")
     runtime_parser.add_argument("--model", default=None, help="Optional model identifier.")
     runtime_parser.add_argument("--region", default=None, help="Optional provider region.")
-    runtime_parser.add_argument("--provider-priority", default=None, help="Comma-separated auto priority, for example bedrock-runtime,openai-runtime,vllm-runtime.")
+    runtime_parser.add_argument("--provider-priority", default=None, help="Comma-separated auto priority, for example bedrock-runtime,openai-runtime,vllm-runtime,ollama-runtime.")
     runtime_parser.add_argument("--allow-python-fallback", action="store_true", help="Append python-runtime as deterministic fallback for provider=auto.")
     runtime_parser.add_argument("--json", action="store_true", help="Emit machine-readable JSON.")
     runtime_parser.set_defaults(func=_cmd_runtime)
@@ -252,16 +704,21 @@ def build_parser() -> argparse.ArgumentParser:
     api_parser.add_argument("--json", action="store_true", help="Emit machine-readable JSON.")
     api_parser.set_defaults(func=_cmd_public_api)
 
-    api_inventory_parser = subparsers.add_parser("api", help="Inspect API tiers and symbols.")
+    api_inventory_parser = subparsers.add_parser("api", help="Inspect API tiers and contract IDs.")
+    api_inventory_parser.add_argument("api_action", nargs="?", choices=("list", "describe", "exercise"), default="list")
+    api_inventory_parser.add_argument("identifier", nargs="?", default=None)
+    api_inventory_parser.add_argument("--all", dest="all_entries", action="store_true", help="Exercise every public export and member.")
     api_inventory_parser.add_argument(
         "--tier",
         choices=("recommended", "advanced", "public"),
         default="recommended",
-        help="API tier to list. Use 'public' for 100 percent of PUBLIC_API.",
+        help="API tier to list. Use 'public' for all exports and public members.",
     )
-    api_inventory_parser.add_argument("--contains", default=None, help="Filter symbols by case-insensitive substring.")
+    api_inventory_parser.add_argument("--contains", default=None, help="Filter contract IDs by case-insensitive substring.")
     api_inventory_parser.add_argument("--json", action="store_true", help="Emit machine-readable JSON.")
     api_inventory_parser.set_defaults(func=_cmd_api)
+
+    _add_workflow_parsers(subparsers)
 
     return parser
 

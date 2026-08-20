@@ -412,8 +412,7 @@ The supported import is:
 import agentic_systems as toolkit
 ```
 
-`src/agentic_systems/api.py` is the inventory source of truth. The 2.0 baseline contains 112 top-level symbols; the complete checksum and signatures
-are documented in [API.md](API.md) and frozen by compatibility tests.
+`src/agentic_systems/api.py` is the inventory source of truth. The 2.0 baseline contains 78 top-level exports, 370 export/member IDs, and 10 shared scenarios; the complete checksum and signatures are documented in [API_CONTRACT.md](API_CONTRACT.md) and frozen by compatibility tests.
 
 | Concept | Primary public surface |
 |---|---|

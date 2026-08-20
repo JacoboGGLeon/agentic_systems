@@ -288,6 +288,35 @@ def _case_actual_summary(case: EvalCaseResult) -> str:
 class Evaluator:
     """Small public evaluation facade."""
 
+    def evaluate(
+        self,
+        executable: Any,
+        cases: list[dict[str, Any]],
+        *,
+        mode: str = "eval",
+        environment_kwargs: dict[str, Any] | None = None,
+        determinism: Literal[
+            "deterministic", "seeded", "non_deterministic"
+        ] = "non_deterministic",
+        seed: int | None = 0,
+        reproducibility_conditions: list[str] | None = None,
+    ) -> EvalReport:
+        """Evaluate any Executable over cases and return an EvalReport."""
+
+        if not callable(getattr(executable, "run", None)):
+            raise TypeError(
+                "Evaluator.evaluate(...) expects an object with run(input, **kwargs)."
+            )
+        return run_eval(
+            executable,
+            cases,
+            mode=mode,
+            environment_kwargs=environment_kwargs,
+            determinism=determinism,
+            seed=seed,
+            reproducibility_conditions=reproducibility_conditions,
+        )
+
     def evaluate_agent(
         self,
         agent: Any,

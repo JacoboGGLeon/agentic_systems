@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[2]
 TUTORIALS = ROOT / "tutorials"
 
 DETERMINISTIC_NOTEBOOKS = (
+    "api/14_api_contract_matrix.ipynb",
     "core/00_runtime_scheduler.ipynb",
     "core/01_tool.ipynb",
     "core/02_skills.ipynb",
@@ -27,6 +28,7 @@ DETERMINISTIC_NOTEBOOKS = (
     "providers/00_auto.ipynb",
     "frameworks/00_langgraph.ipynb",
     "frameworks/01_openai_agents.ipynb",
+    "frameworks/03_provider_framework_matrix.ipynb",
     "frameworks/02_aws_strands.ipynb",
 )
 
@@ -34,6 +36,7 @@ PROVIDER_NOTEBOOKS = (
     "providers/01_openai.ipynb",
     "providers/02_bedrock.ipynb",
     "providers/03_vllm.ipynb",
+    "providers/04_ollama.ipynb",
 )
 
 
@@ -54,6 +57,7 @@ def test_execution_inventory_covers_every_canonical_notebook():
     canonical = {
         path.relative_to(TUTORIALS).as_posix()
         for path in TUTORIALS.rglob("*.ipynb")
+        if path.relative_to(TUTORIALS).parts[0] != "cli"
     }
     classified = set(DETERMINISTIC_NOTEBOOKS) | set(PROVIDER_NOTEBOOKS)
     assert classified == canonical
@@ -65,7 +69,9 @@ def test_deterministic_notebook_executes_from_fresh_kernel(name, monkeypatch):
     for variable in (
         "RUN_OPENAI_LIVE",
         "RUN_VLLM_LIVE",
+        "RUN_OLLAMA_LIVE",
         "RUN_BEDROCK_LIVE",
+        "RUN_MATRIX_LIVE",
         "RUN_LANGGRAPH_LIVE",
         "RUN_STRANDS_LIVE",
         "RUN_OPENAI_AGENTS_LIVE",
@@ -85,3 +91,31 @@ def test_deterministic_notebook_executes_from_fresh_kernel(name, monkeypatch):
         for cell in executed.cells
         for output in cell.get("outputs", [])
     )
+
+
+@pytest.mark.parametrize("name", PROVIDER_NOTEBOOKS)
+def test_provider_notebook_executes_as_not_run_from_fresh_kernel(name, monkeypatch):
+    for variable in (
+        "RUN_OPENAI_LIVE",
+        "RUN_VLLM_LIVE",
+        "RUN_OLLAMA_LIVE",
+        "RUN_BEDROCK_LIVE",
+    ):
+        monkeypatch.setenv(variable, "0")
+
+    notebook = nbformat.read(TUTORIALS / name, as_version=4)
+    client = NotebookClient(
+        notebook,
+        timeout=120,
+        kernel_name="python3",
+        resources={"metadata": {"path": str(ROOT)}},
+    )
+    executed = _execute_notebook(client)
+    outputs = [
+        output
+        for cell in executed.cells
+        for output in cell.get("outputs", [])
+    ]
+
+    assert all(output.get("output_type") != "error" for output in outputs)
+    assert "not-run" in repr(outputs)

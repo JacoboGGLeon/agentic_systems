@@ -118,6 +118,10 @@ def _vllm_api_key() -> str:
 def vllm_environment_snapshot() -> dict[str, Any]:
     """Return non-secret vLLM runtime configuration for diagnostics."""
 
+    from agentic_systems.core.runtime import _load_dotenv
+
+    _load_dotenv()
+
     base_url = _vllm_base_url()
     model = os.getenv("VLLM_MODEL")
     return {

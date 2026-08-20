@@ -3,8 +3,8 @@ from __future__ import annotations
 import builtins
 
 
-from agentic_systems import configure_notebook_environment
 from agentic_systems.utils import (
+    configure_notebook_environment,
     _clear_dummy_aws_test_credentials,
     _mask_sensitive,
     _mask_string,
@@ -77,6 +77,9 @@ def test_aws_helpers_recognize_bedrock_api_key_without_exposing_it(monkeypatch):
         "ok": True,
         "session_region": "us-east-1",
         "credential_method": "bedrock-api-key",
+        "authentication_mode": "bedrock-api-key",
+        "bedrock_api_key_configured": True,
+        "sts_identity_available": False,
         "has_credentials": True,
     }
 
@@ -115,12 +118,13 @@ def test_show_json_prints_explanations(capsys):
 
 def test_boto3_session_snapshot_success_path():
     snapshot = boto3_session_snapshot("us-east-1")
-    assert set(snapshot) == {"ok", "session_region", "credential_method", "has_credentials"}
+    assert set(snapshot) == {"ok", "session_region", "credential_method", "authentication_mode", "bedrock_api_key_configured", "has_credentials", "sts_identity_available"}
 
 
 def test_repair_ada_credential_chain_reports_and_repairs_env_shadowing(monkeypatch):
     monkeypatch.setenv("AWS_ACCESS_KEY_ID", "abc")
     monkeypatch.setenv("AWS_SECRET_ACCESS_KEY", "def")
+    monkeypatch.setenv("AWS_BEARER_TOKEN_BEDROCK", "")
     monkeypatch.delenv("AWS_SESSION_TOKEN", raising=False)
 
     report = repair_ada_credential_chain("us-east-1", force=False)

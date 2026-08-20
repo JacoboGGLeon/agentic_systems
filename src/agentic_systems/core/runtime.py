@@ -8,12 +8,24 @@ from pathlib import Path
 from dataclasses import asdict, dataclass, field
 from typing import Any, Iterable
 
-from agentic_systems.engines.names import BEDROCK_RUNTIME_ENGINE, OPENAI_RUNTIME_ENGINE, PYTHON_RUNTIME_ENGINE, VLLM_RUNTIME_ENGINE, canonical_engine_name
+from agentic_systems.engines.names import (
+    BEDROCK_RUNTIME_ENGINE,
+    OLLAMA_RUNTIME_ENGINE,
+    OPENAI_RUNTIME_ENGINE,
+    PYTHON_RUNTIME_ENGINE,
+    VLLM_RUNTIME_ENGINE,
+    canonical_engine_name,
+)
 from agentic_systems.providers.base import RuntimeToolSpec, ToolEnvelope, ToolRegistryRuntime
 from agentic_systems.core.scheduler import DEFAULT_SCHEDULER_CONFIG, SchedulerConfig
 
 
-DEFAULT_AUTO_PROVIDER_PRIORITY = (BEDROCK_RUNTIME_ENGINE, OPENAI_RUNTIME_ENGINE, VLLM_RUNTIME_ENGINE)
+DEFAULT_AUTO_PROVIDER_PRIORITY = (
+    BEDROCK_RUNTIME_ENGINE,
+    OPENAI_RUNTIME_ENGINE,
+    VLLM_RUNTIME_ENGINE,
+    OLLAMA_RUNTIME_ENGINE,
+)
 AUTO_PROVIDER_ENV_VAR = "AGENTIC_SYSTEMS_PROVIDER_PRIORITY"
 
 
@@ -180,7 +192,8 @@ def resolve_auto_provider(region: str | None, provider_priority: Iterable[str] |
         f"Configured priority: {', '.join(priority)}. "
         "Set an AWS region plus AWS credentials or AWS_BEARER_TOKEN_BEDROCK "
         "for bedrock-runtime, OPENAI_API_KEY for openai-runtime, "
-        "VLLM_BASE_URL for vllm-runtime, or include python-runtime explicitly for deterministic fallback."
+        "VLLM_BASE_URL for vllm-runtime, OLLAMA_MODEL or OLLAMA_BASE_URL for "
+        "ollama-runtime, or include python-runtime explicitly for deterministic fallback."
     )
 
 
@@ -199,6 +212,8 @@ def _provider_available(provider: str, region: str | None) -> bool:
         return _openai_signal_present() and _module_available("openai")
     if provider == VLLM_RUNTIME_ENGINE:
         return _vllm_signal_present() and _module_available("openai")
+    if provider == OLLAMA_RUNTIME_ENGINE:
+        return _ollama_signal_present() and _module_available("openai")
     if provider == PYTHON_RUNTIME_ENGINE:
         return True
     return False
@@ -211,6 +226,8 @@ def _auto_reason(provider: str) -> str:
         return "OPENAI_API_KEY/OPENAI config detected"
     if provider == VLLM_RUNTIME_ENGINE:
         return "VLLM_BASE_URL/vLLM config detected"
+    if provider == OLLAMA_RUNTIME_ENGINE:
+        return "OLLAMA_MODEL/OLLAMA_BASE_URL config detected"
     if provider == PYTHON_RUNTIME_ENGINE:
         return "python-runtime deterministic fallback enabled"
     return "provider selected by configured priority"
@@ -225,6 +242,8 @@ def _auto_unresolved_reason(priority: Iterable[str]) -> str:
             hints.append("OPENAI_API_KEY/OpenAI config")
         elif provider == VLLM_RUNTIME_ENGINE:
             hints.append("VLLM_BASE_URL/vLLM config")
+        elif provider == OLLAMA_RUNTIME_ENGINE:
+            hints.append("OLLAMA_MODEL/OLLAMA_BASE_URL config")
         elif provider == PYTHON_RUNTIME_ENGINE:
             hints.append("python-runtime fallback")
     return "no " + ", ".join(hints) + " detected"
@@ -267,6 +286,10 @@ def _vllm_signal_present() -> bool:
     return bool(os.getenv("VLLM_BASE_URL"))
 
 
+def _ollama_signal_present() -> bool:
+    return bool(os.getenv("OLLAMA_BASE_URL") or os.getenv("OLLAMA_MODEL"))
+
+
 def _openai_signal_present() -> bool:
     return bool(
         os.getenv("OPENAI_API_KEY")
@@ -305,7 +328,7 @@ def _safe_configuration(metadata: dict[str, Any]) -> dict[str, Any]:
     """Return runtime configuration metadata that is safe to print."""
 
     configuration: dict[str, Any] = {}
-    for key in ("vllm", "openai", "bedrock"):
+    for key in ("vllm", "ollama", "openai", "bedrock"):
         value = metadata.get(key)
         if isinstance(value, dict):
             configuration[key] = dict(value)

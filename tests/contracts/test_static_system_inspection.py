@@ -7,8 +7,9 @@ from types import SimpleNamespace
 import pytest
 from pydantic import BaseModel
 
-from agentic_systems import AgenticSystem, InspectReport, Skill, Tool, runtime
+from agentic_systems import AgenticSystem, Skill, Tool, runtime
 from agentic_systems.inspection import _payload, _schema
+from agentic_systems.system import InspectReport
 
 
 class LookupInput(BaseModel):

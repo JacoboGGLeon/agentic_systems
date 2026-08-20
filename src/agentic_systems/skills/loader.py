@@ -35,6 +35,42 @@ class LoadedSkill(BaseModel):
     registry: dict[str, Any] = Field(default_factory=dict)
     runtime_skill: Skill | None = Field(default=None, exclude=True)
 
+def load_skill_definition(path: str | Path) -> Skill:
+    """Load a portable Skill without constructing or mutating a system."""
+
+    skill_path = Path(path).resolve()
+    if not skill_path.exists() or not skill_path.is_dir():
+        raise SkillLoadError(
+            f"Skill path does not exist or is not a directory: {skill_path}"
+        )
+    skill_md = skill_path / "SKILL.md"
+    skill_py = skill_path / "skill.py"
+    if not skill_md.exists():
+        raise SkillLoadError(f"Skill '{skill_path.name}' is missing SKILL.md")
+    if not skill_py.exists():
+        raise SkillLoadError(f"Skill '{skill_path.name}' is missing skill.py")
+
+    module_name = f"agentic_skill_{skill_path.name}_{abs(hash(str(skill_path)))}"
+    module = _load_skill_module(skill_path, module_name)
+    for builder_name in ("build_skill", "build"):
+        builder = getattr(module, builder_name, None)
+        if not callable(builder):
+            continue
+        built = builder()
+        if not isinstance(built, Skill):
+            raise SkillLoadError(
+                f"{builder_name}() must return a Skill, got {type(built).__name__}."
+            )
+        built.metadata.setdefault("source", "filesystem_loader")
+        built.metadata.setdefault("path", str(skill_path))
+        return built
+
+    raise SkillLoadError(
+        f"Skill '{skill_path.name}' must expose build_skill() -> Skill for pure "
+        "loading. Legacy register(system) skills can be loaded explicitly with "
+        "system.load_skill(path)."
+    )
+
 
 def load_skill(system: Any, path: str | Path) -> LoadedSkill:
     skill_path = Path(path).resolve()

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from typing import Any, Dict, Optional
 
 from botocore.exceptions import ClientError
@@ -7,11 +8,29 @@ from botocore.exceptions import ClientError
 
 class _IdentityMixin:
     def whoami(self, *, mask: bool = False) -> Dict[str, Any]:
-        """Return the active AWS identity and Bedrock region.
+        """Return AWS identity metadata or bearer-token authentication mode.
 
         Set ``mask=True`` when the notebook output may be copied to docs, tickets,
         or commits. Set ``mask=False`` when debugging IAM/role assumptions.
         """
+
+        auth_mode = getattr(self, "auth_mode", None) or (
+            "bedrock-api-key"
+            if os.getenv("AWS_BEARER_TOKEN_BEDROCK")
+            else "aws-credential-chain"
+        )
+        if auth_mode == "bedrock-api-key":
+            result = {
+                "account": None,
+                "arn": None,
+                "user_id": None,
+                "region": self.region_name,
+                "model_id": self.model_id,
+                "auth_mode": auth_mode,
+                "identity_available": False,
+                "note": "Bearer tokens authenticate Bedrock calls but cannot call STS GetCallerIdentity.",
+            }
+            return self.redact_aws_identity(result) if mask else result
 
         identity = self.sts.get_caller_identity()
         result = {
@@ -20,6 +39,8 @@ class _IdentityMixin:
             "user_id": identity.get("UserId"),
             "region": self.region_name,
             "model_id": self.model_id,
+            "auth_mode": auth_mode,
+            "identity_available": True,
         }
         return self.redact_aws_identity(result) if mask else result
 

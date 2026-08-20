@@ -6,11 +6,14 @@ import re
 from pathlib import Path
 
 import agentic_systems as toolkit
+from scripts.update_tutorial_contract import CURRICULUM_ORDER
 
 
 ROOT = Path(__file__).resolve().parents[2]
 TUTORIALS = ROOT / "tutorials"
+SHARED_SCENARIOS = tuple(toolkit.api_contract()["scenarios"])
 EXPECTED_NOTEBOOKS = {
+    "api/14_api_contract_matrix.ipynb",
     "core/00_runtime_scheduler.ipynb",
     "core/01_tool.ipynb",
     "core/02_skills.ipynb",
@@ -26,16 +29,22 @@ EXPECTED_NOTEBOOKS = {
     "providers/01_openai.ipynb",
     "providers/02_bedrock.ipynb",
     "providers/03_vllm.ipynb",
+    "providers/04_ollama.ipynb",
     "frameworks/00_langgraph.ipynb",
     "frameworks/01_openai_agents.ipynb",
     "frameworks/02_aws_strands.ipynb",
+    "frameworks/03_provider_framework_matrix.ipynb",
 }
 DIRECT_SDK_ROOTS = {"boto3", "openai", "subprocess", "requests", "urllib", "httpx"}
 RUN_RESULT_FIELDS = {"final", "runtime", "usage", "validation"}
 
 
 def _notebooks():
-    return sorted(TUTORIALS.rglob("*.ipynb"))
+    return sorted(
+        path
+        for path in TUTORIALS.rglob("*.ipynb")
+        if path.relative_to(TUTORIALS).parts[0] != "cli"
+    )
 
 
 def _relative(path: Path) -> str:
@@ -86,17 +95,53 @@ def test_canonical_notebook_inventory_and_cell_integrity():
         assert "Objetivo" in "".join(first_markdown.get("source", [])), path.name
 
 
+def test_curriculum_order_and_reviewed_narrative_are_1_to_1():
+    assert set(CURRICULUM_ORDER) == EXPECTED_NOTEBOOKS
+    guide = (TUTORIALS / "README.md").read_text(encoding="utf-8")
+
+    for index, relative in enumerate(CURRICULUM_ORDER):
+        notebook = _load(TUTORIALS / relative)
+        metadata = notebook["metadata"]["agentic_systems"]
+        source = _source(notebook)
+
+        assert metadata["curriculum_order"] == index, relative
+        assert metadata["narrative_reviewed"] == "2.0.0", relative
+        expected_scenarios = [
+            scenario["id"]
+            for scenario in SHARED_SCENARIOS
+            if relative in scenario["notebooks"]
+        ]
+        assert metadata["contract_scenarios"] == expected_scenarios, relative
+        assert expected_scenarios, relative
+        assert "Objetivo" in source, relative
+        assert "## Parametros de " in source, relative
+        assert "## Resultado e interpretacion" in source, relative
+        numbered_sections = [
+            int(value) for value in re.findall(r"^## (\d+)\)", source, re.M)
+        ]
+        assert numbered_sections == list(range(1, len(numbered_sections) + 1)), relative
+        assert f"| {index:02d} | {relative} |" in guide, relative
+
+        for cell in notebook["cells"]:
+            if cell.get("cell_type") != "code":
+                continue
+            assert cell.get("execution_count") is None, relative
+            assert cell.get("outputs", []) == [], relative
+
+
 def test_notebook_metadata_matches_layer_and_literal_api_claims():
     frameworks = {
         "00_langgraph.ipynb": "langgraph",
         "01_openai_agents.ipynb": "openai-agents",
         "02_aws_strands.ipynb": "strands",
+        "03_provider_framework_matrix.ipynb": "all",
     }
     provider_names = {
         "00_auto.ipynb": "auto",
         "01_openai.ipynb": "openai-runtime",
         "02_bedrock.ipynb": "bedrock-runtime",
         "03_vllm.ipynb": "vllm-runtime",
+        "04_ollama.ipynb": "ollama-runtime",
     }
     for path in _notebooks():
         notebook = _load(path)
@@ -115,6 +160,10 @@ def test_notebook_metadata_matches_layer_and_literal_api_claims():
         elif metadata["layer"] == "providers":
             assert metadata["provider"] == provider_names[path.name]
             assert metadata["framework"] == "native"
+        elif metadata["layer"] == "api":
+            assert metadata["provider"] == "python-runtime"
+            assert metadata["framework"] == "native"
+            assert metadata["execution_mode"] == "offline"
         else:
             assert metadata["provider"] == "python-runtime"
             assert metadata["framework"] == frameworks[path.name]
@@ -127,6 +176,7 @@ def test_notebook_text_has_no_encoding_corruption_or_stale_constructor():
         source = _source(_load(path))
         assert not broken.search(source), path.name
         assert "toolkit.AgenticSystem(" not in source, path.name
+        assert "skip" not in source.lower(), path.name
         assert "default arithmetic prompt" not in source, path.name
         assert "Empieza con 10, suma 20" not in source, path.name
 
@@ -187,6 +237,7 @@ def test_provider_notebooks_use_the_same_public_execution_route():
         "providers/01_openai.ipynb",
         "providers/03_vllm.ipynb",
         "providers/02_bedrock.ipynb",
+        "providers/04_ollama.ipynb",
     ):
         source = _code(_load(TUTORIALS / name))
         route = ["toolkit.runtime(", "toolkit.system(", "system.agent(", "agent.run(", "toolkit.human_result("]
@@ -267,7 +318,7 @@ def test_tutorial_repository_layout_and_assets_are_intentional():
         for path in TUTORIALS.iterdir()
         if path.is_dir() and not path.name.startswith("__")
     )
-    assert roots == ["core", "frameworks", "providers", "skills"]
+    assert roots == ["api", "cli", "core", "frameworks", "providers", "skills"]
     assert not (TUTORIALS / "human_output.py").exists()
     assert not (TUTORIALS / "roadmap").exists()
     assert not list(TUTORIALS.glob("*.ipynb"))
@@ -292,12 +343,108 @@ def test_tutorials_use_public_output_views_without_inlining_helpers():
         assert "toolkit.human_result" in source or "toolkit.show" in source, path.name
 
 
+def test_every_notebook_states_model_evidence_and_evidence_limit():
+    markers = (
+        "**Lugar en el modelo:**",
+        "**Evidencia exigida:**",
+        "**L\u00edmite de la evidencia:**",
+    )
+    for path in _notebooks():
+        first_markdown = "".join(_load(path)["cells"][0].get("source", []))
+        for marker in markers:
+            assert marker in first_markdown, (_relative(path), marker)
+
+
+def test_reviewed_narrative_freezes_the_2_0_conceptual_boundaries():
+    requirements = {
+        "providers/00_auto.ipynb": (
+            "provider_priority", "OpenAI y Bedrock", "configured", "passed",
+        ),
+        "core/01_tool.ipynb": ("ToolSet", "caja completa", "colecci"),
+        "core/02_skills.ipynb": (
+            "Anthropic/Claude", "ChatGPT/OpenAI", "no se considera intercambiable",
+        ),
+        "core/03_agent.ipynb": (
+            "pipeline propio", "System m", "ownership/registry",
+        ),
+        "core/04_results_lineage.ipynb": (
+            "mismo esquema e invariantes", "native_result", "pueden variar",
+        ),
+        "core/05_system.ipynb": (
+            "plan de ejecuci", "ToolSet", "algebra composicional",
+        ),
+        "core/07_environment_eval.ipynb": (
+            "Environment a", "Agent como un System", "correcci",
+        ),
+        "frameworks/03_provider_framework_matrix.ipynb": (
+            "declared", "not-run", "passed",
+        ),
+    }
+    for relative, fragments in requirements.items():
+        source = _source(_load(TUTORIALS / relative))
+        normalized = (
+            source.replace("\u00f1", "n")
+            .replace("\u00e1", "a")
+            .replace("\u00e9", "e")
+            .replace("\u00ed", "i")
+            .replace("\u00f3", "o")
+            .replace("\u00fa", "u")
+        )
+        for fragment in fragments:
+            assert fragment in normalized, (relative, fragment)
+
+
+def test_reported_notebook_claims_are_enforced_by_executable_assertions():
+    requirements = {
+        "providers/01_openai.ipynb": (
+            "assert result.ok", 'assert result.engine == "openai-runtime"',
+        ),
+        "providers/02_bedrock.ipynb": (
+            "assert result.ok", 'assert result.engine == "bedrock-runtime"',
+        ),
+        "providers/03_vllm.ipynb": (
+            "assert result.ok", 'assert result.engine == "vllm-runtime"',
+        ),
+        "providers/04_ollama.ipynb": (
+            "assert result.ok", 'assert result.engine == "ollama-runtime"',
+        ),
+        "core/00_runtime_scheduler.ipynb": (
+            'assert retry_result.usage["scheduler"]["retries"] == 1',
+            'assert timeout_result.usage["scheduler"]["timed_out"] is True',
+        ),
+        "core/03_agent.ipynb": (
+            "agent.pipeline(", "assert pipeline_inspection ==",
+        ),
+        "core/05_system.ipynb": (
+            "system.compile(", "system.run(", "assert len(system_result.children) == 1",
+        ),
+        "core/07_environment_eval.ipynb": (
+            "toolkit.eval().run(\n    agent,",
+            "toolkit.eval().run(\n    system,",
+            "assert agent_report.ok and system_report.ok",
+        ),
+        "core/09_multi_agentic_system.ipynb": (
+            "toolkit.SequentialPlan(", "system.run(", "assert len(result.children) == 2",
+        ),
+        "frameworks/03_provider_framework_matrix.ipynb": (
+            "assert len(matrix_cases) == len(matrix_results) == 20",
+            "assert not failed_rows",
+            'status_counts["passed"] == len(matrix_results)',
+        ),
+    }
+    for relative, fragments in requirements.items():
+        code = _code(_load(TUTORIALS / relative))
+        for fragment in fragments:
+            assert fragment in code, (relative, fragment)
+
+
 def test_live_notebooks_are_run_all_ready_by_default():
     live_flags = {
         "providers/01_openai.ipynb": "RUN_OPENAI_LIVE",
         "providers/03_vllm.ipynb": "RUN_VLLM_LIVE",
         "providers/02_bedrock.ipynb": "RUN_BEDROCK_LIVE",
         "frameworks/00_langgraph.ipynb": "RUN_LANGGRAPH_LIVE",
+        "providers/04_ollama.ipynb": "RUN_OLLAMA_LIVE",
         "frameworks/02_aws_strands.ipynb": "RUN_STRANDS_LIVE",
         "frameworks/01_openai_agents.ipynb": "RUN_OPENAI_AGENTS_LIVE",
     }
@@ -315,6 +462,10 @@ def test_live_notebooks_are_run_all_ready_by_default():
     assert 'vllm_environment.get("model_configured")' in vllm
 
     bedrock = _code(_load(TUTORIALS / "providers/02_bedrock.ipynb"))
+    ollama = _code(_load(TUTORIALS / "providers/04_ollama.ipynb"))
+    assert "toolkit.ollama_environment_snapshot()" in ollama
+    assert 'os.getenv("OLLAMA_MODEL")' in ollama
+
     assert 'aws_session.get("has_credentials")' in bedrock
     assert 'AWS_BEARER_TOKEN_BEDROCK' in bedrock
 

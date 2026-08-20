@@ -5,7 +5,8 @@ import random
 import pytest
 from pydantic import ValidationError
 
-from agentic_systems import AgenticEnvironment, EvalReport, EvalReproducibility, run_eval
+from agentic_systems import AgenticEnvironment, EvalReport, run_eval
+from agentic_systems.evals import EvalReproducibility
 from agentic_systems.results import RunResult
 
 

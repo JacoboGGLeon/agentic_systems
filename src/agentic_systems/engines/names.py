@@ -6,6 +6,7 @@ from typing import Iterable
 
 BEDROCK_RUNTIME_ENGINE = "bedrock-runtime"
 OPENAI_RUNTIME_ENGINE = "openai-runtime"
+OLLAMA_RUNTIME_ENGINE = "ollama-runtime"
 PYTHON_RUNTIME_ENGINE = "python-runtime"
 VLLM_RUNTIME_ENGINE = "vllm-runtime"
 AUTO_RUNTIME_SELECTOR = "auto"
@@ -16,6 +17,7 @@ STRANDS_FRAMEWORK = "strands"
 SUPPORTED_ENGINES = (
     BEDROCK_RUNTIME_ENGINE,
     OPENAI_RUNTIME_ENGINE,
+    OLLAMA_RUNTIME_ENGINE,
     PYTHON_RUNTIME_ENGINE,
     VLLM_RUNTIME_ENGINE,
 )
@@ -42,7 +44,7 @@ def canonical_engine_name(value: str | None, *, default: str | None = None) -> s
     """Return a supported runtime/provider identifier.
 
     Use canonical names in new code: ``python-runtime``, ``bedrock-runtime``,
-    ``openai-runtime``, ``vllm-runtime`` or ``auto``.
+    ``openai-runtime``, ``ollama-runtime``, ``vllm-runtime`` or ``auto``.
     """
 
     if value is None or str(value).strip() == "":

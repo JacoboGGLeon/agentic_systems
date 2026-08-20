@@ -22,7 +22,8 @@ from .conformance import (
     provider_profiles,
 )
 from .python_runtime import PythonRuntimeEngine, PythonRuntimeProvider
-from .openai_runtime import OpenAIRuntimeProvider
+from .openai_runtime import OpenAIRuntimeProvider, openai_environment_snapshot
+from .ollama_runtime import OllamaRuntimeProvider
 from .vllm_runtime import VLLMRuntimeProvider
 
 _LAZY = {
@@ -56,6 +57,8 @@ __all__ = [
     "PythonRuntimeEngine",
     "PythonRuntimeProvider",
     "OpenAIRuntimeProvider",
+    "openai_environment_snapshot",
+    "OllamaRuntimeProvider",
     "VLLMRuntimeProvider",
     "BedrockRuntime",
     "BedrockRunResult",

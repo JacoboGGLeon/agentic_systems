@@ -11,7 +11,7 @@ import agentic_systems as lab
 
 ROOT = Path(__file__).resolve().parents[2]
 PUBLIC_TOOLKIT_METADATA = {"__all__", "__name__", "__version__"}
-TOOLKIT_REFERENCE = re.compile(r"\btoolkit\.([A-Za-z_]\w*)")
+TOOLKIT_REFERENCE = re.compile(r"(?<![\\/])\btoolkit\.([A-Za-z_]\w*)")
 PYTHON_FENCE = re.compile(r"```(?:python|py)\n(.*?)```", flags=re.DOTALL)
 
 
@@ -79,6 +79,23 @@ def test_documentation_and_tutorials_only_reference_public_toolkit_names() -> No
     assert invalid == []
 
 
+def test_documented_top_level_imports_match_public_api() -> None:
+    invalid: list[str] = []
+
+    for path, label, source in _python_examples():
+        tree = ast.parse(source, filename=f"{path.relative_to(ROOT)}:{label}")
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.ImportFrom) or node.module != "agentic_systems":
+                continue
+            for imported in node.names:
+                if imported.name != "*" and imported.name not in lab.__all__:
+                    invalid.append(
+                        f"{path.relative_to(ROOT)}:{label}: {imported.name}"
+                    )
+
+    assert invalid == []
+
+
 def test_documented_toolkit_calls_match_source_signatures() -> None:
     invalid: list[str] = []
 
@@ -114,3 +131,48 @@ def test_documented_toolkit_calls_match_source_signatures() -> None:
                 )
 
     assert invalid == []
+
+
+def _repository_python_paths() -> list[Path]:
+    return sorted(
+        path
+        for root_name in ("src", "tests", "tutorials")
+        for path in (ROOT / root_name).rglob("*.py")
+        if "__pycache__" not in path.parts
+    )
+
+
+def test_repository_only_uses_stable_top_level_api() -> None:
+    allowed = set(lab.__all__) | PUBLIC_TOOLKIT_METADATA
+    invalid: list[str] = []
+
+    for path in _repository_python_paths():
+        tree = ast.parse(
+            path.read_text(encoding="utf-8-sig"),
+            filename=str(path.relative_to(ROOT)),
+        )
+        aliases: set[str] = set()
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                aliases.update(
+                    imported.asname or "agentic_systems"
+                    for imported in node.names
+                    if imported.name == "agentic_systems"
+                )
+            elif isinstance(node, ast.ImportFrom) and node.module == "agentic_systems":
+                invalid.extend(
+                    f"{path.relative_to(ROOT)}: {imported.name}"
+                    for imported in node.names
+                    if imported.name != "*" and imported.name not in allowed
+                )
+
+        invalid.extend(
+            f"{path.relative_to(ROOT)}: {node.value.id}.{node.attr}"
+            for node in ast.walk(tree)
+            if isinstance(node, ast.Attribute)
+            and isinstance(node.value, ast.Name)
+            and node.value.id in aliases
+            and node.attr not in allowed
+        )
+
+    assert not invalid, "\n".join(invalid)

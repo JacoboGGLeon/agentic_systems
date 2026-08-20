@@ -103,6 +103,11 @@ def test_factories_loader_and_tool_error_paths(monkeypatch, tmp_path):
 
     skill_dir = tmp_path / "runtime_skill"
     skill_dir.mkdir()
+    monkeypatch.setattr(
+        factories_module,
+        "load_skill_definition",
+        lambda path: Skill(name="runtime_loaded"),
+    )
 
     class Loaded:
         runtime_skill = Skill(name="runtime_loaded")

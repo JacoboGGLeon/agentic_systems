@@ -11,6 +11,7 @@ from typing import Any
 from ...contracts import RunPolicy
 from ...engines.names import (
     BEDROCK_RUNTIME_ENGINE,
+    OLLAMA_RUNTIME_ENGINE,
     OPENAI_RUNTIME_ENGINE,
     PYTHON_RUNTIME_ENGINE,
     VLLM_RUNTIME_ENGINE,
@@ -106,7 +107,11 @@ def _materialize_model(agent: Any, engine: Any) -> Any:
             model_id=agent.model,
             region_name=getattr(agent.runtime_config, "region_name", None),
         )
-    if agent.engine in {OPENAI_RUNTIME_ENGINE, VLLM_RUNTIME_ENGINE}:
+    if agent.engine in {
+        OPENAI_RUNTIME_ENGINE,
+        OLLAMA_RUNTIME_ENGINE,
+        VLLM_RUNTIME_ENGINE,
+    }:
         from strands.models.openai import OpenAIModel
 
         client_args: dict[str, Any] = {}
@@ -121,6 +126,17 @@ def _materialize_model(agent: Any, engine: Any) -> Any:
             client_args.update(
                 base_url=base_url,
                 api_key=os.getenv("VLLM_API_KEY") or "vllm",
+            )
+        elif agent.engine == OLLAMA_RUNTIME_ENGINE:
+            metadata = getattr(agent.runtime_config, "metadata", {}) or {}
+            ollama = metadata.get("ollama") or {}
+            client_args.update(
+                base_url=(
+                    ollama.get("base_url")
+                    or os.getenv("OLLAMA_BASE_URL")
+                    or "http://127.0.0.1:11434/v1"
+                ),
+                api_key=os.getenv("OLLAMA_API_KEY") or "ollama",
             )
         elif os.getenv("OPENAI_API_KEY"):
             client_args["api_key"] = os.environ["OPENAI_API_KEY"]

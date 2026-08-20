@@ -34,6 +34,7 @@ tutorials/core/            Provider-free executable fundamentals
 tutorials/providers/       inference-boundary tutorials
 tutorials/frameworks/      real external Framework tutorials
 tutorials/skills/          native tutorial Skills outside library core
+tutorials/api/             generated 1:1 public contract notebook
 tests/                     regression and API contract tests
 ```
 
@@ -41,7 +42,7 @@ tests/                     regression and API contract tests
 
 ```text
 core          provider-agnostic primitives
-providers     runtime/model access: python-runtime, bedrock-runtime, openai-runtime, vllm-runtime
+providers     runtime/model access: python-runtime, bedrock-runtime, openai-runtime, vllm-runtime, ollama-runtime
 integrations  real Native, LangGraph, OpenAI Agents and Strands adapters
 engines       internal execution implementation details
 ```
@@ -80,7 +81,7 @@ Tutorials should present output in this order:
 3. raw object only when the API lesson needs it
 ```
 
-The official tutorial route is recursive under tutorials/core, tutorials/providers and tutorials/frameworks.
+The official tutorial route is recursive under tutorials/core, tutorials/providers, tutorials/frameworks and tutorials/api.
 
 ## CLI Flow
 

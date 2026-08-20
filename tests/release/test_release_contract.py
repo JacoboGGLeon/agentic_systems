@@ -4,6 +4,8 @@ import ast
 import importlib
 import json
 from pathlib import Path
+import subprocess
+import sys
 
 try:
     import tomllib
@@ -24,6 +26,7 @@ from agentic_systems.api import (
 )
 from agentic_systems.engines.names import (
     BEDROCK_RUNTIME_ENGINE,
+    OLLAMA_RUNTIME_ENGINE,
     PYTHON_RUNTIME_ENGINE,
     VLLM_RUNTIME_ENGINE,
     canonical_engine_name,
@@ -35,6 +38,7 @@ from agentic_systems.providers.base import ToolRegistryRuntime
 ROOT = Path(__file__).resolve().parents[2]
 TUTORIALS = ROOT / "tutorials"
 EXPECTED_NOTEBOOKS = [
+    "api/14_api_contract_matrix.ipynb",
     "core/00_runtime_scheduler.ipynb",
     "core/01_tool.ipynb",
     "core/02_skills.ipynb",
@@ -49,10 +53,12 @@ EXPECTED_NOTEBOOKS = [
     "frameworks/00_langgraph.ipynb",
     "frameworks/01_openai_agents.ipynb",
     "frameworks/02_aws_strands.ipynb",
+    "frameworks/03_provider_framework_matrix.ipynb",
     "providers/00_auto.ipynb",
     "providers/01_openai.ipynb",
     "providers/02_bedrock.ipynb",
     "providers/03_vllm.ipynb",
+    "providers/04_ollama.ipynb",
 ]
 
 
@@ -71,10 +77,10 @@ def test_alpha_version_surface_and_packaging_are_consistent():
     pyproject_text = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
     project = tomllib.loads(pyproject_text)
 
-    assert project["project"]["version"] == "2.0.0a1"
-    assert agentic_systems.__version__ == "2.0.0a1"
-    assert len(PUBLIC_API) == 112
-    assert "InspectReport" in PUBLIC_API
+    assert project["project"]["version"] == "2.0.0"
+    assert agentic_systems.__version__ == "2.0.0"
+    assert len(PUBLIC_API) == 78
+    assert "InspectReport" not in PUBLIC_API
     assert not hasattr(agentic_systems, "build_single_agent_step_graph")
     assert not hasattr(agentic_systems, "PUBLIC_API")
 
@@ -91,7 +97,26 @@ def test_alpha_version_surface_and_packaging_are_consistent():
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     install = (ROOT / "INSTALL.md").read_text(encoding="utf-8")
     manifest = (ROOT / "MANIFEST.in").read_text(encoding="utf-8")
+    assert "78 stable top-level exports" in readme
+    assert "370 traced export/member IDs" in readme
+    assert "all 20 declared pairs" in readme
+    assert "tutorials/providers/04_ollama.ipynb" in readme
+    cli_docs = (ROOT / "docs" / "CLI.md").read_text(encoding="utf-8")
+    assert "Four offline passes and sixteen not-run rows" in cli_docs
+    assert "--live --require-pass --json" in cli_docs
+    assert '"count": 370' in cli_docs
+    contributing = (ROOT / "docs" / "CONTRIBUTING_CHECKLIST.md").read_text(
+        encoding="utf-8"
+    )
+    assert "len(a.__all__) == 78" in contributing
+    assert "m['entry_count'] == 370" in contributing
+    roadmap = (ROOT / "ROADMAP.md").read_text(encoding="utf-8")
+    assert "Next development line: `2.1`" in roadmap
+    migration = (ROOT / "docs" / "MIGRATION_1_1_TO_2_0.md").read_text(
+        encoding="utf-8"
+    )
     assert "API -> Docs -> Tutorials -> explicit automated or manual evidence" in readme
+    assert "78 top-level exports" in migration and "370 export/member IDs" in migration
     assert "Core coverage: 100.00%" in readme
     assert "Coverage scope: Bedrock facade and internal package excluded from core; separately gated at 100%" in readme
     assert "build_single_agent_step_graph" not in readme
@@ -103,11 +128,25 @@ def test_alpha_version_surface_and_packaging_are_consistent():
     api_docs = (ROOT / "docs" / "API.md").read_text(encoding="utf-8")
     assert "InspectReport" in api_docs
     model = (ROOT / "docs" / "COMPUTATIONAL_MODEL.md").read_text(encoding="utf-8")
-    assert "baseline contains 112 top-level symbols" in model
+    assert "baseline contains 78 top-level exports" in model
 
 
 def test_public_api_groups_and_canonical_namespace_boundary():
     assert tuple(agentic_systems.__all__) == PUBLIC_API
+    code = (
+        "import json, agentic_systems as package; "
+        "visible=sorted(name for name in vars(package) "
+        "if not name.startswith('_') or name == '__version__'); "
+        "print(json.dumps(visible))"
+    )
+    completed = subprocess.run(
+        [sys.executable, "-c", code],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    assert json.loads(completed.stdout) == sorted(PUBLIC_API)
     assert agentic_systems.core.RunResult is agentic_systems.RunResult
     assert agentic_systems.providers.ToolRegistryRuntime is ToolRegistryRuntime
     assert hasattr(agentic_systems.integrations, "__all__")
@@ -118,10 +157,12 @@ def test_public_api_groups_and_canonical_namespace_boundary():
     assert "Chain" in CHAIN_API
     assert "run_result_view" in NOTEBOOK_API
     assert "BEDROCK_RUNTIME_ENGINE" in ENGINE_API
+    assert "OLLAMA_RUNTIME_ENGINE" in ENGINE_API
     assert "VLLM_RUNTIME_ENGINE" in ENGINE_API
     assert supported_engine_names() == (
         BEDROCK_RUNTIME_ENGINE,
         "openai-runtime",
+        OLLAMA_RUNTIME_ENGINE,
         PYTHON_RUNTIME_ENGINE,
         VLLM_RUNTIME_ENGINE,
     )
@@ -153,7 +194,11 @@ def test_public_api_groups_and_canonical_namespace_boundary():
 
 
 def test_canonical_notebooks_are_clean_public_and_statically_executable():
-    paths = sorted(path.relative_to(TUTORIALS).as_posix() for path in TUTORIALS.rglob("*.ipynb"))
+    paths = sorted(
+        path.relative_to(TUTORIALS).as_posix()
+        for path in TUTORIALS.rglob("*.ipynb")
+        if path.relative_to(TUTORIALS).parts[0] != "cli"
+    )
     assert paths == EXPECTED_NOTEBOOKS
 
     for name in paths:
@@ -198,7 +243,7 @@ def test_tutorial_claims_match_current_product_contracts():
 
     assert "provider_profiles()" in runtime
     assert 'toolkit.load_skill("tutorials/skills/accountability_otc")' in skills
-    assert 'GRAPH_ENGINE = "portable"' in native_graph
+    assert 'GRAPH_ENGINE = os.getenv("AGENTIC_SYSTEMS_GRAPH_ENGINE", "portable")' in native_graph
     assert 'engine="langgraph"' in langgraph
     assert "conditional_edges=" in langgraph
     assert "await app.arun" in langgraph
@@ -221,8 +266,9 @@ def test_tutorial_claims_match_current_product_contracts():
 def test_changelog_separates_automated_and_external_evidence():
     changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
 
-    assert "15 deterministic notebooks" in changelog
-    assert "3 external Provider notebooks" in changelog
+    assert "17 deterministic notebooks" in changelog
+    assert "4 Provider notebooks" in changelog
+    assert "21 preserved-output CLI notebooks" in changelog
     assert "53.17%" in changelog
     assert "`fail_under = 53.1`" in changelog
     assert "Live OpenAI, Bedrock and vLLM execution remains outside" in changelog

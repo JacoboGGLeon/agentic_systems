@@ -1,6 +1,13 @@
 """Agentic Systems public API."""
 
 from . import core, providers, integrations
+from .compatibility import (
+    CompatibilityCase,
+    FRAMEWORK_NAMES,
+    PROVIDER_NAMES,
+    compatibility_matrix,
+    compatibility_report,
+)
 from .agents import Agent
 from .api import PUBLIC_API as _PUBLIC_API
 from .factories import (
@@ -12,11 +19,14 @@ from .factories import (
     eval,
     load_skill,
     runtime,
+    provider,
     scheduler,
     skill,
     system,
+    toolset,
     output_schema,
 )
+from .api_contract import api_contract, exercise_api
 from .bedrock_runtime_client import BedrockRuntimeClient, DEFAULT_EMBEDDING_MODEL_ID
 from .chain import Chain, ChainStep
 from .contracts import (
@@ -32,6 +42,7 @@ from .contracts import (
 )
 from .engines.names import (
     BEDROCK_RUNTIME_ENGINE,
+    OLLAMA_RUNTIME_ENGINE,
     OPENAI_RUNTIME_ENGINE,
     PYTHON_RUNTIME_ENGINE,
     VLLM_RUNTIME_ENGINE,
@@ -63,6 +74,7 @@ from .integrations.langgraph import (
     lineage_from_langgraph_result,
     lineage_from_langgraph_state,
 )
+from .integrations.config import FrameworkConfig
 from .output_contracts import (
     AGENTIC_OUTPUT_SCHEMA_VERSION,
     AgenticOutput,
@@ -75,6 +87,17 @@ from .output_contracts import (
     UsageInfo,
 )
 from .results import TRACE_SCHEMA_VERSION, RunResult
+from .execution import (
+    AsyncExecutable,
+    CallableExecutable,
+    Executable,
+    ExecutionPlan,
+    CompiledSystem,
+    SequentialPlan,
+    ParallelPlan,
+    coerce_run_result,
+    is_executable,
+)
 from .lineage import LINEAGE_SCHEMA_VERSION, LineageMemory, LineageStep, lineage_memory
 from .final_answer import (
     FINAL_ANSWER_SCHEMA_VERSION,
@@ -82,6 +105,7 @@ from .final_answer import (
     final_answer,
     normalize_output,
 )
+from .core.provider import ModelProviderConfig
 from .core.runtime import (
     AUTO_PROVIDER_ENV_VAR,
     DEFAULT_AUTO_PROVIDER_PRIORITY,
@@ -93,6 +117,7 @@ from .core.scheduler import SchedulerConfig
 from .skills import LoadedSkill, Skill, SkillManifest
 from .system import AgenticSystem, InspectReport, PublicToolRegistry
 from .tools import Tool, tool
+from .tools import ToolSet, ToolSetRef
 from .human_output import human_result
 from .utils import (
     AGENT_OUTPUT_SCHEMA_VERSION,
@@ -119,9 +144,15 @@ from .utils import (
     compose_result,
     tool_result_summary,
 )
+from .providers.openai_runtime import openai_environment_snapshot
+from .providers.ollama_runtime import ollama_environment_snapshot
 from .providers.vllm_runtime import vllm_environment_snapshot
 
-__version__ = "2.0.0a1"
+__version__ = "2.0.0"
 
 __all__ = list(_PUBLIC_API)
 del _PUBLIC_API
+for _name in tuple(globals()):
+    if not _name.startswith("_") and _name not in __all__:
+        del globals()[_name]
+del _name
