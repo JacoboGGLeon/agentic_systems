@@ -8,6 +8,7 @@ from agentic_systems_studio import studio_button_html, studio_proxy_url
 from agentic_systems_studio.server import (
     DEFAULT_HOST,
     resolve_studio_app,
+    stop_recorded_studio,
     streamlit_command,
 )
 
@@ -26,15 +27,34 @@ def test_server_defaults_are_loopback_and_proxy_compatible():
     assert studio_proxy_url(8765) == "/jupyterlab/default/proxy/8765/"
 
 
-def test_html_button_escapes_url_and_opens_new_tab():
+def test_html_button_escapes_urls_and_opens_two_explicit_targets():
     payload = studio_button_html(
-        "/jupyterlab/default/proxy/8501/?a=1&b=2",
-        label="Abrir Studio",
+        "http://localhost:8501/?a=1&b=2",
+        label="Abrir local",
+        alternate_url="/jupyterlab/default/proxy/8501/?a=1&b=2",
+        alternate_label="Abrir mediante proxy",
     )
+    assert "href='http://localhost:8501/?a=1&amp;b=2'" in payload
     assert "href='/jupyterlab/default/proxy/8501/?a=1&amp;b=2'" in payload
-    assert "target='_blank'" in payload
-    assert "rel='noopener noreferrer'" in payload
-    assert "Abrir Studio" in payload
+    assert payload.count("target='_blank'") == 2
+    assert payload.count("rel='noopener noreferrer'") == 2
+    assert "Abrir local" in payload
+    assert "Abrir mediante proxy" in payload
+
+
+def test_stop_recorded_studio_ignores_stale_windows_pid(monkeypatch, tmp_path):
+    pid_path = tmp_path / "streamlit.pid"
+    pid_path.write_text("999999", encoding="utf-8")
+
+    error = OSError("The parameter is incorrect")
+    error.winerror = 87
+
+    def stale_pid(*_args):
+        raise error
+
+    monkeypatch.setattr("agentic_systems_studio.server.os.kill", stale_pid)
+    stop_recorded_studio(pid_path)
+    assert not pid_path.exists()
 
 
 def test_cli_serve_delegates_to_shared_launcher(monkeypatch):
@@ -45,16 +65,19 @@ def test_cli_serve_delegates_to_shared_launcher(monkeypatch):
         return 0
 
     monkeypatch.setattr(studio_cli, "serve_studio", fake_serve)
-    assert studio_cli.main(
-        [
-            "serve",
-            "--port",
-            "8765",
-            "--proxy-prefix",
-            "/jupyterlab/default/proxy",
-            "--detach",
-        ]
-    ) == 0
+    assert (
+        studio_cli.main(
+            [
+                "serve",
+                "--port",
+                "8765",
+                "--proxy-prefix",
+                "/jupyterlab/default/proxy",
+                "--detach",
+            ]
+        )
+        == 0
+    )
     assert captured["host"] == "127.0.0.1"
     assert captured["port"] == 8765
     assert captured["proxy_prefix"] == "/jupyterlab/default/proxy"
@@ -72,6 +95,10 @@ def test_launch_notebook_uses_same_public_launcher_and_html_proxy_button():
     assert "start_studio_server(" in code
     assert "studio_proxy_url(" in code
     assert "studio_button_html(" in code
+    assert "direct_url = studio_server.local_url" in code
+    assert "studio_button_html(\n    direct_url" in code
+    assert "alternate_url=proxy_url" in code
+    assert "Abrir en navegador (VS Code / local)" in code
     assert "display(HTML(" in code
     assert "/jupyterlab/default/proxy" in code
     assert notebook["metadata"]["agentic_systems"]["cli_equivalent"] == (

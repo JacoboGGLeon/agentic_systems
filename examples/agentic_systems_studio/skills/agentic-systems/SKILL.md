@@ -42,6 +42,11 @@ the request.
 
        python scripts/scaffold.py TARGET --name APPLICATION --system SYSTEM_ID
 
+   Treat the scaffold as provisional until its manifest Tool identities resolve
+   to decorated functions, its runtime Skill resolves the same functions, both
+   generated test files pass and its deterministic notebook cells execute from
+   a fresh kernel. A green shape/syntax report alone is not acceptance evidence.
+
 5. Assemble through the public toolkit grammar: toolkit.tool, toolkit.skill,
    toolkit.agent or system.agent, toolkit.system, toolkit.environment and
    toolkit.eval. Keep execution composition on the System.
@@ -50,7 +55,9 @@ the request.
    RunResult and its child lineage.
 7. Update the declaration first when topology changes, then regenerate Mermaid,
    manifests and derived assets. Read references/project-contract.md for the
-   required application structure.
+   required application structure. Reject python-runtime when any declared stage
+   is a reasoner or reviewer; it is an operator runtime, not a language-model
+   provider.
 8. Use references/testing.md for contract, notebook, CLI, provider/framework and
    bundle acceptance gates.
 

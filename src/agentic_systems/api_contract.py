@@ -37,6 +37,7 @@ class ApiContractEntry:
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
+
 @dataclass(frozen=True, slots=True)
 class ContractScenario:
     """One shared executable story across API, notebook, CLI, and pytest."""
@@ -162,7 +163,6 @@ CONTRACT_SCENARIOS = (
 )
 
 
-
 def _signature(value: Any) -> str | None:
     try:
         return re.sub(r" at 0x[0-9A-Fa-f]+", "", str(inspect.signature(value)))
@@ -207,6 +207,8 @@ def _member_value(owner: type[Any], name: str) -> Any:
     if isinstance(raw, property):
         return raw.fget
     return raw
+
+
 def _member_source(owner: type[Any], name: str) -> str:
     """Locate the defining library class while preserving the public API ID."""
 
@@ -218,6 +220,8 @@ def _member_source(owner: type[Any], name: str) -> str:
             return _source(value)
         return f"{_source(base)}.{name}"
     return f"{_source(owner)}.{name}"
+
+
 def _field_exists(owner: type[Any], name: str) -> bool:
     """Resolve a declared field without constructing its owner."""
 
@@ -235,15 +239,12 @@ def _field_exists(owner: type[Any], name: str) -> bool:
     return static_member or annotated or model_field or dataclass_field
 
 
-
-
-
-
 def _public_member_names(owner: type[Any]) -> tuple[str, ...]:
     """Return the library-owned public surface visible on one exported class."""
 
     names: set[str] = set()
     owner_module = getattr(owner, "__module__", "")
+    library_owner = owner_module.startswith("agentic_systems")
     for base in owner.__mro__:
         base_module = getattr(base, "__module__", "")
         if (
@@ -262,6 +263,14 @@ def _public_member_names(owner: type[Any]) -> tuple[str, ...]:
                 continue
             if inspect.ismodule(value) or inspect.isclass(value):
                 continue
+            member_value = _member_value(base, name)
+            member_module = getattr(member_value, "__module__", "")
+            if (
+                library_owner
+                and callable(member_value)
+                and not member_module.startswith("agentic_systems")
+            ):
+                continue
             names.add(name)
 
     model_fields = getattr(owner, "model_fields", {})
@@ -269,7 +278,9 @@ def _public_member_names(owner: type[Any]) -> tuple[str, ...]:
         names.update(name for name in model_fields if not name.startswith("_"))
 
     if is_dataclass(owner):
-        names.update(field.name for field in fields(owner) if not field.name.startswith("_"))
+        names.update(
+            field.name for field in fields(owner) if not field.name.startswith("_")
+        )
 
     return tuple(sorted(names))
 
@@ -324,7 +335,9 @@ def contract_entries(
                     kind=_member_kind(value, member),
                     tier=tier,
                     source=_member_source(value, member),
-                    summary=_summary(member_value, _member_kind(value, member), f"{name}.{member}"),
+                    summary=_summary(
+                        member_value, _member_kind(value, member), f"{name}.{member}"
+                    ),
                     signature=_signature(member_value),
                 )
             )

@@ -212,6 +212,7 @@ class Agent:
         """Return this agent's resolved tool names."""
 
         return self.tools
+
     def pipeline(
         self,
         *steps: Any,
@@ -229,7 +230,6 @@ class Agent:
             units=units,
             plan=execution or SequentialPlan(),
         )
-
 
     def available_tools(self) -> list[Tool]:
         """Return concrete Tool objects known by this agent.
@@ -350,7 +350,16 @@ class Agent:
             from .providers.python_runtime import PythonRuntimeEngine
 
             return PythonRuntimeEngine()
-        return self.system._engine(self.engine)
+        return self._bind_resolved_engine(self.system._engine(self.engine))
+
+    def _bind_resolved_engine(self, engine: Any) -> Any:
+        if self.engine != "auto":
+            return engine
+        resolved = canonical_engine_name(getattr(engine, "name", self.engine))
+        if resolved != "auto":
+            self.metadata.setdefault("requested_engine", "auto")
+            self.engine = resolved
+        return engine
 
     def prepare(self) -> "Agent":
         """Build the native Framework agent without model or MCP execution."""
@@ -393,7 +402,7 @@ class Agent:
 
             engine = PythonRuntimeEngine()
         else:
-            engine = self.system._engine(self.engine)
+            engine = self._bind_resolved_engine(self.system._engine(self.engine))
         from .integrations.adapters import framework_adapter
 
         adapter = framework_adapter(self.framework_config.name)
@@ -464,7 +473,7 @@ class Agent:
 
             engine = PythonRuntimeEngine()
         else:
-            engine = self.system._engine(self.engine)
+            engine = self._bind_resolved_engine(self.system._engine(self.engine))
         from .integrations.adapters import framework_adapter
 
         adapter = framework_adapter(self.framework_config.name)
@@ -566,6 +575,9 @@ class Agent:
         if clean_input is not None:
             result.meta.setdefault("input", _json_like(clean_input))
         runtime_engine = self._runtime_engine_name()
+        result.meta.setdefault(
+            "requested_engine", self.metadata.get("requested_engine", runtime_engine)
+        )
         result.meta.setdefault("runtime_engine", runtime_engine)
         result.meta.setdefault("execution_engine", self.engine)
         if result.engine == self.engine:

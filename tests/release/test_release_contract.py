@@ -67,10 +67,7 @@ def _notebook(name: str) -> dict:
 
 
 def _source(notebook: dict) -> str:
-    return "\n".join(
-        "".join(cell.get("source", []))
-        for cell in notebook["cells"]
-    )
+    return "\n".join("".join(cell.get("source", [])) for cell in notebook["cells"])
 
 
 def test_alpha_version_surface_and_packaging_are_consistent():
@@ -90,7 +87,11 @@ def test_alpha_version_surface_and_packaging_are_consistent():
     assert "vllm" in extras
     assert set(extras["dev"]) <= set(extras["all"])
     base_dependencies = project["project"]["dependencies"]
-    assert not any(name in requirement for name in ("langgraph", "awswrangler", "boto3", "vllm") for requirement in base_dependencies)
+    assert not any(
+        name in requirement
+        for name in ("langgraph", "awswrangler", "boto3", "vllm")
+        for requirement in base_dependencies
+    )
     assert extras["openai-agents"] == ["openai-agents>=0.18.3,<0.19"]
     assert extras["strands"] == ["strands-agents>=1.29.0,<2", "mcp>=1,<2"]
 
@@ -112,13 +113,14 @@ def test_alpha_version_surface_and_packaging_are_consistent():
     assert "m['entry_count'] == 370" in contributing
     roadmap = (ROOT / "ROADMAP.md").read_text(encoding="utf-8")
     assert "Next development line: `2.1`" in roadmap
-    migration = (ROOT / "docs" / "MIGRATION_1_1_TO_2_0.md").read_text(
-        encoding="utf-8"
-    )
+    migration = (ROOT / "docs" / "MIGRATION_1_1_TO_2_0.md").read_text(encoding="utf-8")
     assert "API -> Docs -> Tutorials -> explicit automated or manual evidence" in readme
     assert "78 top-level exports" in migration and "370 export/member IDs" in migration
     assert "Core coverage: 100.00%" in readme
-    assert "Coverage scope: Bedrock facade and internal package excluded from core; separately gated at 100%" in readme
+    assert (
+        "Coverage scope: Bedrock facade and internal package excluded from core; separately gated at 100%"
+        in readme
+    )
     assert "build_single_agent_step_graph" not in readme
     assert "agentic-systems[tutorials" not in install
     assert "1.1.0rc1" not in install
@@ -168,7 +170,13 @@ def test_public_api_groups_and_canonical_namespace_boundary():
     )
     assert "bedrock" not in supported_engine_names()
     assert "bedrock" not in supported_engine_names()
-    for ambiguous_name in ("local", "runtime", "python_runtime", "vllm", "vllm_runtime"):
+    for ambiguous_name in (
+        "local",
+        "runtime",
+        "python_runtime",
+        "vllm",
+        "vllm_runtime",
+    ):
         with pytest.raises(ValueError, match="Unknown runtime/provider"):
             canonical_engine_name(ambiguous_name)
     assert not hasattr(agentic_systems, "Toolkit")
@@ -242,8 +250,11 @@ def test_tutorial_claims_match_current_product_contracts():
     evals = _source(_notebook("core/07_environment_eval.ipynb"))
 
     assert "provider_profiles()" in runtime
-    assert 'toolkit.load_skill("tutorials/skills/accountability_otc")' in skills
-    assert 'GRAPH_ENGINE = os.getenv("AGENTIC_SYSTEMS_GRAPH_ENGINE", "portable")' in native_graph
+    assert 'toolkit.load_skill("tutorials/skills/tutorial_api_inspection")' in skills
+    assert (
+        'GRAPH_ENGINE = os.getenv("AGENTIC_SYSTEMS_GRAPH_ENGINE", "portable")'
+        in native_graph
+    )
     assert 'engine="langgraph"' in langgraph
     assert "conditional_edges=" in langgraph
     assert "await app.arun" in langgraph
@@ -251,6 +262,11 @@ def test_tutorial_claims_match_current_product_contracts():
     assert "streamable_http_client" in strands
     assert "stdio_client" in strands
     assert "structured_output_model" in strands
+    assert "def locate_repo_file" in strands
+    assert "Path.cwd().parents" in strands
+    assert 'open(os.devnull, "w", encoding="utf-8")' in strands
+    assert "stdio_client(parameters, errlog=errlog)" in strands
+    assert 'Path("tutorials/frameworks/mcp_echo_server.py").resolve()' not in strands
     assert 'framework_profile("openai-agents")' in openai_agents
     assert "SQLiteSession" in openai_agents
     assert "input_guardrail" in openai_agents
@@ -272,6 +288,7 @@ def test_changelog_separates_automated_and_external_evidence():
     assert "53.17%" in changelog
     assert "`fail_under = 53.1`" in changelog
     assert "Live OpenAI, Bedrock and vLLM execution remains outside" in changelog
+
 
 def test_canonical_grammar_factories_delegate_to_existing_types():
     assert RECOMMENDED_API[:7] == (
@@ -303,6 +320,7 @@ def test_canonical_grammar_factories_delegate_to_existing_types():
     assert isinstance(composition, agentic_systems.AgenticSystem)
     assert isinstance(episode, agentic_systems.AgenticEnvironment)
     assert isinstance(evaluation, agentic_systems.Evaluator)
+
 
 def test_notebooks_follow_the_user_centered_api_first_standard():
     canonical_usage = {
@@ -339,7 +357,9 @@ def test_notebooks_follow_the_user_centered_api_first_standard():
         assert "toolkit.AgenticSystem(" not in source, name
         if "toolkit.system(" in source:
             assert "toolkit.runtime(" in source, name
-            assert source.index("toolkit.runtime(") < source.index("toolkit.system("), name
+            assert source.index("toolkit.runtime(") < source.index("toolkit.system("), (
+                name
+            )
         if name in canonical_usage:
             assert canonical_usage[name] in source, name
 

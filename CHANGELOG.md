@@ -42,6 +42,10 @@ top-level exports, 370 traced export/member IDs, and 10 shared contract scenario
   notebook readiness. `AWS_BEARER_TOKEN_BEDROCK` and the standard AWS credential
   chain are two authentication modes of the same boto3 `bedrock-runtime`
   Provider; boto3/botocore >=1.39 is required for the Bearer mode.
+- Agentic Systems Studio as a portable product bundle with ten independently
+  reusable system bundles, a system creator, SQLite catalog, Mermaid topology,
+  notebooks, CLI, tests and sandbox validation.
+- A standalone, reproducible `agentic-systems-skill-2.0.0.zip` skill artifact.
 
 ### Removed
 
@@ -55,6 +59,10 @@ top-level exports, 370 traced export/member IDs, and 10 shared contract scenario
 - All disable_framework_tracing parameters. 2.0 has no parallel public switch
   or shim; native SDK configuration remains available, with a safe no-egress
   default for OpenAI Agents runs backed by non-OpenAI Providers.
+- The domain-specific `tutorials/skills/accountability_otc` legacy tutorial and
+  its private-data-shaped tests. The neutral `tutorial_api_inspection` filesystem
+  Skill now teaches the 2.0 runtime Skill contract; OTC assets are absent from
+  release bundles.
 
 The tutorial gate executes 17 deterministic notebooks, validates 4 Provider notebooks
 offline, and verifies 21 preserved-output CLI notebooks mapped 1:1 to the Python curriculum.

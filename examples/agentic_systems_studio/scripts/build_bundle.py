@@ -14,9 +14,9 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
-from agentic_systems_studio.catalog import SYSTEM_SPECS
-from agentic_systems_studio.scaffolder import scaffold_application
-from agentic_systems_studio.store import StudioStore
+from agentic_systems_studio.catalog import SYSTEM_SPECS  # noqa: E402
+from agentic_systems_studio.scaffolder import scaffold_application  # noqa: E402
+from agentic_systems_studio.store import StudioStore  # noqa: E402
 
 
 def _sha256(path: Path) -> str:
@@ -41,7 +41,9 @@ def _copy(source: Path, target: Path) -> None:
 
 def _zip_tree(source: Path, destination: Path) -> Path:
     destination.parent.mkdir(parents=True, exist_ok=True)
-    with zipfile.ZipFile(destination, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
+    with zipfile.ZipFile(
+        destination, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9
+    ) as archive:
         for path in sorted(item for item in source.rglob("*") if item.is_file()):
             relative = path.relative_to(source).as_posix()
             info = zipfile.ZipInfo(relative, date_time=(2026, 1, 1, 0, 0, 0))
@@ -79,6 +81,8 @@ def build_bundle(output_dir: str | Path | None = None) -> Path:
             "skills",
             "notebooks",
             "docs",
+            "scripts",
+            "evidence",
         ):
             source = PROJECT_ROOT / relative
             if source.exists():
@@ -122,7 +126,9 @@ def build_bundle(output_dir: str | Path | None = None) -> Path:
             json.dumps(manifest, indent=2, ensure_ascii=False),
             encoding="utf-8",
         )
-        (bundle_root / "SHA256SUMS").write_text(_checksums(bundle_root), encoding="utf-8")
+        (bundle_root / "SHA256SUMS").write_text(
+            _checksums(bundle_root), encoding="utf-8"
+        )
         _zip_tree(bundle_root, destination)
 
     return destination
@@ -135,7 +141,11 @@ def main() -> int:
     path = build_bundle(args.output)
     print(
         json.dumps(
-            {"bundle": str(path.resolve()), "sha256": _sha256(path), "systems": len(SYSTEM_SPECS)},
+            {
+                "bundle": str(path.resolve()),
+                "sha256": _sha256(path),
+                "systems": len(SYSTEM_SPECS),
+            },
             indent=2,
         )
     )

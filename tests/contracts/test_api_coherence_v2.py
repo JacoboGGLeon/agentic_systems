@@ -26,9 +26,7 @@ CONTRACT_IDS = tuple(MANIFEST["ids"])
 
 def test_source_api_and_manifest_are_the_same_surface():
     export_ids = tuple(
-        entry["id"]
-        for entry in MANIFEST["entries"]
-        if entry["member"] is None
+        entry["id"] for entry in MANIFEST["entries"] if entry["member"] is None
     )
 
     assert tuple(toolkit.__all__) == PUBLIC_API
@@ -36,6 +34,7 @@ def test_source_api_and_manifest_are_the_same_surface():
     assert MANIFEST["export_count"] == len(PUBLIC_API)
     assert MANIFEST["entry_count"] == len(CONTRACT_IDS)
     assert len(CONTRACT_IDS) == len(set(CONTRACT_IDS))
+
 
 def test_manifest_contains_every_library_owned_visible_class_member():
     contracted = set(CONTRACT_IDS)
@@ -63,6 +62,10 @@ def test_manifest_contains_every_library_owned_visible_class_member():
             value = inspect.getattr_static(defining_owner, member)
             if inspect.ismodule(value) or inspect.isclass(value):
                 continue
+            if callable(value) and not getattr(value, "__module__", "").startswith(
+                "agentic_systems"
+            ):
+                continue
             identifier = f"{export}.{member}"
             if identifier not in contracted:
                 missing.append(identifier)
@@ -86,6 +89,25 @@ def test_manifest_contains_every_library_owned_visible_class_member():
     assert entries["AsyncExecutable.run"]["source"] == (
         "agentic_systems.execution:Executable.run"
     )
+    assert "RunResult.model_post_init" not in entries
+    assert all(
+        entry["source"].startswith("agentic_systems")
+        for entry in entries.values()
+        if entry["member"] is not None and entry["kind"] == "method"
+    )
+
+
+def test_api_checksum_ignores_dependency_injected_member_docs(monkeypatch):
+    before = toolkit.api_contract()["checksum"]
+    monkeypatch.setattr(
+        toolkit.RunResult.model_post_init,
+        "__doc__",
+        "Dependency-owned documentation changed between environments.",
+    )
+    after = toolkit.api_contract()["checksum"]
+
+    assert after == before
+    assert "RunResult.model_post_init" not in toolkit.api_contract()["ids"]
 
 
 def test_shared_scenario_registry_is_complete_and_resolvable():
@@ -113,13 +135,12 @@ def test_shared_scenario_registry_is_complete_and_resolvable():
         parsed = build_parser().parse_args(argv)
         assert callable(parsed.func)
         assert scenario["notebooks"]
-        assert all((ROOT / "tutorials" / path).exists() for path in scenario["notebooks"])
+        assert all(
+            (ROOT / "tutorials" / path).exists() for path in scenario["notebooks"]
+        )
         pytest_path, selector = scenario["pytest"].split("::", 1)
         assert (ROOT / pytest_path).exists()
-        assert selector == (
-            f"test_shared_scenario_cli_executes[{scenario['id']}]"
-        )
-
+        assert selector == (f"test_shared_scenario_cli_executes[{scenario['id']}]")
 
 
 @pytest.mark.parametrize("scenario", SHARED_SCENARIOS, ids=SCENARIO_IDS)

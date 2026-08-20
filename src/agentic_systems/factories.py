@@ -160,13 +160,13 @@ def provider(
     )
 
 
-
 def toolset(system: AgenticSystem, name: str) -> ToolSet:
     """Create a named ToolSet owned by an explicit AgenticSystem."""
 
     if not isinstance(system, AgenticSystem):
         raise TypeError("toolset(system, name) requires an AgenticSystem owner.")
     return system.toolset(name)
+
 
 def runtime(
     *,
@@ -325,7 +325,9 @@ def _runtime_metadata(
                 or os.getenv("AWS_DEFAULT_REGION")
                 or None,
                 "aws_profile_configured": bool(os.getenv("AWS_PROFILE")),
-                "bedrock_api_key_configured": bool(os.getenv("AWS_BEARER_TOKEN_BEDROCK")),
+                "bedrock_api_key_configured": bool(
+                    os.getenv("AWS_BEARER_TOKEN_BEDROCK")
+                ),
                 "credentials_configured": bool(
                     os.getenv("AWS_BEARER_TOKEN_BEDROCK")
                     or os.getenv("AWS_ACCESS_KEY_ID")
@@ -428,7 +430,7 @@ def load_skill(name_or_path: Any, **kwargs: Any) -> Any:
 
     .. code-block:: python
 
-        accountability = lab.load_skill("tutorials/skills/accountability_otc")
+        inspection = lab.load_skill("tutorials/skills/tutorial_api_inspection")
 
     The path is resolved relative to the current directory and its parents, so it
     works whether Jupyter starts in the repository root or inside a tutorial
@@ -455,7 +457,7 @@ def _resolve_skill_path(text: str) -> Path | None:
 
     Examples that should work after ``pip install -e .`` or ``pip install .``:
 
-    - ``tutorials/skills/accountability_otc``
+    - ``tutorials/skills/tutorial_api_inspection``
     - an absolute filesystem path
     """
 

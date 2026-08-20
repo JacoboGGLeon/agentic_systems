@@ -73,11 +73,19 @@ def _api_claims(tree: ast.AST):
         if not isinstance(node, (ast.Assign, ast.AnnAssign)):
             continue
         targets = node.targets if isinstance(node, ast.Assign) else [node.target]
-        if not any(isinstance(target, ast.Name) and target.id == "api_coverage" for target in targets):
+        if not any(
+            isinstance(target, ast.Name) and target.id == "api_coverage"
+            for target in targets
+        ):
             continue
         value = node.value
-        assert isinstance(value, (ast.List, ast.Tuple)), "api_coverage must be a literal list or tuple."
-        assert all(isinstance(item, ast.Constant) and isinstance(item.value, str) for item in value.elts)
+        assert isinstance(value, (ast.List, ast.Tuple)), (
+            "api_coverage must be a literal list or tuple."
+        )
+        assert all(
+            isinstance(item, ast.Constant) and isinstance(item.value, str)
+            for item in value.elts
+        )
         values.append([item.value for item in value.elts])
     return values
 
@@ -90,8 +98,12 @@ def test_canonical_notebook_inventory_and_cell_integrity():
         ids = [cell.get("id") for cell in notebook["cells"]]
         assert all(ids), path.name
         assert len(ids) == len(set(ids)), path.name
-        assert all("".join(cell.get("source", [])).strip() for cell in notebook["cells"]), path.name
-        first_markdown = next(cell for cell in notebook["cells"] if cell.get("cell_type") == "markdown")
+        assert all(
+            "".join(cell.get("source", [])).strip() for cell in notebook["cells"]
+        ), path.name
+        first_markdown = next(
+            cell for cell in notebook["cells"] if cell.get("cell_type") == "markdown"
+        )
         assert "Objetivo" in "".join(first_markdown.get("source", [])), path.name
 
 
@@ -148,7 +160,11 @@ def test_notebook_metadata_matches_layer_and_literal_api_claims():
         relative = path.relative_to(TUTORIALS)
         metadata = notebook.get("metadata", {}).get("agentic_systems", {})
         assert set(metadata) >= {
-            "layer", "provider", "framework", "execution_mode", "api_coverage"
+            "layer",
+            "provider",
+            "framework",
+            "execution_mode",
+            "api_coverage",
         }, _relative(path)
         assert metadata["layer"] == relative.parts[0]
         claims = _api_claims(ast.parse(_code(notebook), filename=_relative(path)))
@@ -190,14 +206,20 @@ def test_code_cells_parse_and_do_not_shadow_public_api():
             source = "".join(cell.get("source", []))
             tree = ast.parse(source, filename=f"{path.name}:cell-{index}")
             for node in ast.walk(tree):
-                if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
-                    assert not hasattr(toolkit, node.name), f"{path.name}:{index} shadows toolkit.{node.name}"
+                if isinstance(
+                    node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)
+                ):
+                    assert not hasattr(toolkit, node.name), (
+                        f"{path.name}:{index} shadows toolkit.{node.name}"
+                    )
 
 
 def test_canonical_notebooks_do_not_bypass_provider_or_output_boundaries():
     for path in _notebooks():
         relative = _relative(path)
-        allowed = {"subprocess"} if relative == "frameworks/02_aws_strands.ipynb" else set()
+        allowed = (
+            {"subprocess"} if relative == "frameworks/02_aws_strands.ipynb" else set()
+        )
         forbidden_roots = DIRECT_SDK_ROOTS - allowed
         tree = ast.parse(_code(_load(path)), filename=relative)
         for node in ast.walk(tree):
@@ -210,10 +232,15 @@ def test_canonical_notebooks_do_not_bypass_provider_or_output_boundaries():
             elif isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
                 assert node.func.id != "print", relative
             elif isinstance(node, (ast.Assign, ast.AnnAssign, ast.AugAssign)):
-                targets = node.targets if isinstance(node, ast.Assign) else [node.target]
+                targets = (
+                    node.targets if isinstance(node, ast.Assign) else [node.target]
+                )
                 for target in targets:
                     if isinstance(target, ast.Attribute):
-                        assert target.attr not in RUN_RESULT_FIELDS, (relative, target.attr)
+                        assert target.attr not in RUN_RESULT_FIELDS, (
+                            relative,
+                            target.attr,
+                        )
 
 
 def test_notebooks_do_not_fabricate_results_or_execute_manual_graph_fallbacks():
@@ -240,7 +267,13 @@ def test_provider_notebooks_use_the_same_public_execution_route():
         "providers/04_ollama.ipynb",
     ):
         source = _code(_load(TUTORIALS / name))
-        route = ["toolkit.runtime(", "toolkit.system(", "system.agent(", "agent.run(", "toolkit.human_result("]
+        route = [
+            "toolkit.runtime(",
+            "toolkit.system(",
+            "system.agent(",
+            "agent.run(",
+            "toolkit.human_result(",
+        ]
         positions = [source.index(item) for item in route]
         assert positions == sorted(positions), name
         assert "toolkit.run_result_output(" in source, name
@@ -289,7 +322,9 @@ def test_api_claims_are_literal_public_and_materialized():
             toolkit_match = re.match(r"toolkit\.([A-Za-z_]\w*)", claim)
             if toolkit_match:
                 name = toolkit_match.group(1)
-                assert hasattr(toolkit, name), f"{path.name} claims missing toolkit.{name}"
+                assert hasattr(toolkit, name), (
+                    f"{path.name} claims missing toolkit.{name}"
+                )
                 continue
             method_match = re.search(r"\.([A-Za-z_]\w*)", claim)
             assert method_match, f"{path.name} has uncheckable API claim {claim!r}"
@@ -308,8 +343,9 @@ def test_every_direct_toolkit_attribute_is_in_public_api():
             and isinstance(node.value, ast.Name)
             and node.value.id == "toolkit"
         }
-        assert used <= public, f"{path.name} uses non-public names: {sorted(used - public)}"
-
+        assert used <= public, (
+            f"{path.name} uses non-public names: {sorted(used - public)}"
+        )
 
 
 def test_tutorial_repository_layout_and_assets_are_intentional():
@@ -322,7 +358,7 @@ def test_tutorial_repository_layout_and_assets_are_intentional():
     assert not (TUTORIALS / "human_output.py").exists()
     assert not (TUTORIALS / "roadmap").exists()
     assert not list(TUTORIALS.glob("*.ipynb"))
-    assert (TUTORIALS / "skills" / "accountability_otc").exists()
+    assert (TUTORIALS / "skills" / "tutorial_api_inspection").exists()
     assert (TUTORIALS / "frameworks" / "mcp_echo_server.py").exists()
 
 
@@ -358,26 +394,41 @@ def test_every_notebook_states_model_evidence_and_evidence_limit():
 def test_reviewed_narrative_freezes_the_2_0_conceptual_boundaries():
     requirements = {
         "providers/00_auto.ipynb": (
-            "provider_priority", "OpenAI y Bedrock", "configured", "passed",
+            "provider_priority",
+            "OpenAI y Bedrock",
+            "configured",
+            "passed",
         ),
         "core/01_tool.ipynb": ("ToolSet", "caja completa", "colecci"),
         "core/02_skills.ipynb": (
-            "Anthropic/Claude", "ChatGPT/OpenAI", "no se considera intercambiable",
+            "Anthropic/Claude",
+            "ChatGPT/OpenAI",
+            "no se considera intercambiable",
         ),
         "core/03_agent.ipynb": (
-            "pipeline propio", "System m", "ownership/registry",
+            "pipeline propio",
+            "System m",
+            "ownership/registry",
         ),
         "core/04_results_lineage.ipynb": (
-            "mismo esquema e invariantes", "native_result", "pueden variar",
+            "mismo esquema e invariantes",
+            "native_result",
+            "pueden variar",
         ),
         "core/05_system.ipynb": (
-            "plan de ejecuci", "ToolSet", "algebra composicional",
+            "plan de ejecuci",
+            "ToolSet",
+            "algebra composicional",
         ),
         "core/07_environment_eval.ipynb": (
-            "Environment a", "Agent como un System", "correcci",
+            "Environment a",
+            "Agent como un System",
+            "correcci",
         ),
         "frameworks/03_provider_framework_matrix.ipynb": (
-            "declared", "not-run", "passed",
+            "declared",
+            "not-run",
+            "passed",
         ),
     }
     for relative, fragments in requirements.items():
@@ -397,26 +448,33 @@ def test_reviewed_narrative_freezes_the_2_0_conceptual_boundaries():
 def test_reported_notebook_claims_are_enforced_by_executable_assertions():
     requirements = {
         "providers/01_openai.ipynb": (
-            "assert result.ok", 'assert result.engine == "openai-runtime"',
+            "assert result.ok",
+            'assert result.engine == "openai-runtime"',
         ),
         "providers/02_bedrock.ipynb": (
-            "assert result.ok", 'assert result.engine == "bedrock-runtime"',
+            "assert result.ok",
+            'assert result.engine == "bedrock-runtime"',
         ),
         "providers/03_vllm.ipynb": (
-            "assert result.ok", 'assert result.engine == "vllm-runtime"',
+            "assert result.ok",
+            'assert result.engine == "vllm-runtime"',
         ),
         "providers/04_ollama.ipynb": (
-            "assert result.ok", 'assert result.engine == "ollama-runtime"',
+            "assert result.ok",
+            'assert result.engine == "ollama-runtime"',
         ),
         "core/00_runtime_scheduler.ipynb": (
             'assert retry_result.usage["scheduler"]["retries"] == 1',
             'assert timeout_result.usage["scheduler"]["timed_out"] is True',
         ),
         "core/03_agent.ipynb": (
-            "agent.pipeline(", "assert pipeline_inspection ==",
+            "agent.pipeline(",
+            "assert pipeline_inspection ==",
         ),
         "core/05_system.ipynb": (
-            "system.compile(", "system.run(", "assert len(system_result.children) == 1",
+            "system.compile(",
+            "system.run(",
+            "assert len(system_result.children) == 1",
         ),
         "core/07_environment_eval.ipynb": (
             "toolkit.eval().run(\n    agent,",
@@ -424,7 +482,9 @@ def test_reported_notebook_claims_are_enforced_by_executable_assertions():
             "assert agent_report.ok and system_report.ok",
         ),
         "core/09_multi_agentic_system.ipynb": (
-            "toolkit.SequentialPlan(", "system.run(", "assert len(result.children) == 2",
+            "toolkit.SequentialPlan(",
+            "system.run(",
+            "assert len(result.children) == 2",
         ),
         "frameworks/03_provider_framework_matrix.ipynb": (
             "assert len(matrix_cases) == len(matrix_results) == 20",
@@ -467,7 +527,7 @@ def test_live_notebooks_are_run_all_ready_by_default():
     assert 'os.getenv("OLLAMA_MODEL")' in ollama
 
     assert 'aws_session.get("has_credentials")' in bedrock
-    assert 'AWS_BEARER_TOKEN_BEDROCK' in bedrock
+    assert "AWS_BEARER_TOKEN_BEDROCK" in bedrock
 
     for name in (
         "frameworks/02_aws_strands.ipynb",

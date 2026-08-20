@@ -8,10 +8,12 @@ from pathlib import Path
 from typing import Any
 
 from .catalog import SYSTEM_SPECS, composition_mermaid, get_system_spec
+from .creator import create_application
 from .scaffolder import scaffold_application
 from .server import DEFAULT_HOST, DEFAULT_PORT, serve_studio
 from .store import StudioStore
 from .systems import StudioConfig, build_system, compose_systems
+from .validation import validate_catalog, write_validation_report
 
 
 def _dump(value: Any) -> None:
@@ -36,7 +38,9 @@ def _list() -> None:
         from rich.table import Table
     except ImportError:
         for spec in SYSTEM_SPECS:
-            print(f"{spec.id:28} {spec.size:6} {len(spec.stages)} agents  {spec.summary}")
+            print(
+                f"{spec.id:28} {spec.size:6} {len(spec.stages)} agents  {spec.summary}"
+            )
         return
     table = Table(title="Agentic Systems Studio")
     table.add_column("System")
@@ -44,7 +48,9 @@ def _list() -> None:
     table.add_column("Agents", justify="right")
     table.add_column("Capabilities")
     for spec in SYSTEM_SPECS:
-        table.add_row(spec.id, spec.size, str(len(spec.stages)), ", ".join(spec.capabilities))
+        table.add_row(
+            spec.id, spec.size, str(len(spec.stages)), ", ".join(spec.capabilities)
+        )
     Console().print(table)
 
 
@@ -56,15 +62,35 @@ def _parser() -> argparse.ArgumentParser:
     describe = sub.add_parser("describe", help="Show one manifest.")
     describe.add_argument("system_id")
 
-    diagram = sub.add_parser("diagram", help="Print Mermaid from the executable catalog.")
+    diagram = sub.add_parser(
+        "diagram", help="Print Mermaid from the executable catalog."
+    )
     diagram.add_argument("system_ids", nargs="+")
-    diagram.add_argument("--mode", choices=("sequential", "parallel"), default="sequential")
+    diagram.add_argument(
+        "--mode", choices=("sequential", "parallel"), default="sequential"
+    )
 
     init = sub.add_parser("init", help="Scaffold a complete agentic application.")
     init.add_argument("target", type=Path)
     init.add_argument("--name", required=True)
     init.add_argument("--system", default="agentic-systems-creator")
     init.add_argument("--overwrite", action="store_true")
+
+    create = sub.add_parser(
+        "create",
+        help="Reason, generate and validate a complete agentic application.",
+    )
+    create.add_argument("target", type=Path)
+    create.add_argument("--name", required=True)
+    create.add_argument("--template", default="incident-response")
+    create.add_argument("--input")
+    create.add_argument("--provider", default="openai-runtime")
+    create.add_argument("--framework", default="agentic-systems")
+    create.add_argument("--model")
+    create.add_argument("--timeout", type=float, default=120.0)
+    create.add_argument("--max-tokens", type=int, default=1024)
+    create.add_argument("--overwrite", action="store_true")
+    create.add_argument("--db", type=Path, default=Path(".agentic-studio/studio.db"))
 
     for name in ("run", "compose"):
         command = sub.add_parser(name)
@@ -75,12 +101,32 @@ def _parser() -> argparse.ArgumentParser:
         command.add_argument("--model")
         command.add_argument("--timeout", type=float, default=120.0)
         command.add_argument("--max-tokens", type=int, default=1024)
-        command.add_argument("--db", type=Path, default=Path(".agentic-studio/studio.db"))
+        command.add_argument(
+            "--db", type=Path, default=Path(".agentic-studio/studio.db")
+        )
         if name == "compose":
-            command.add_argument("--mode", choices=("sequential", "parallel"), default="sequential")
+            command.add_argument(
+                "--mode", choices=("sequential", "parallel"), default="sequential"
+            )
 
-    database = sub.add_parser("db", help="Initialize and inspect the local catalog database.")
-    database.add_argument("--path", type=Path, default=Path(".agentic-studio/studio.db"))
+    validate = sub.add_parser(
+        "validate", help="Execute catalog systems and write non-secret live evidence."
+    )
+    validate.add_argument("system_ids", nargs="*")
+    validate.add_argument("--provider", default="openai-runtime")
+    validate.add_argument("--framework", default="agentic-systems")
+    validate.add_argument("--model")
+    validate.add_argument("--timeout", type=float, default=120.0)
+    validate.add_argument("--max-tokens", type=int, default=1024)
+    validate.add_argument("--output", type=Path)
+    validate.add_argument("--fail-fast", action="store_true")
+
+    database = sub.add_parser(
+        "db", help="Initialize and inspect the local catalog database."
+    )
+    database.add_argument(
+        "--path", type=Path, default=Path(".agentic-studio/studio.db")
+    )
 
     serve = sub.add_parser("serve", help="Launch the Streamlit Studio.")
     serve.add_argument("--app", type=Path)
@@ -104,7 +150,11 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     if args.command == "diagram":
         ids = tuple(args.system_ids)
-        print(get_system_spec(ids[0]).mermaid() if len(ids) == 1 else composition_mermaid(ids, mode=args.mode))
+        print(
+            get_system_spec(ids[0]).mermaid()
+            if len(ids) == 1
+            else composition_mermaid(ids, mode=args.mode)
+        )
         return 0
     if args.command == "init":
         report = scaffold_application(
@@ -115,11 +165,40 @@ def main(argv: list[str] | None = None) -> int:
         )
         _dump(report.to_dict())
         return 0
+    if args.command == "create":
+        request = args.input or get_system_spec("agentic-systems-creator").sample_input
+        result = create_application(
+            request,
+            args.target,
+            name=args.name,
+            template_system_id=args.template,
+            config=_config(args),
+            overwrite=args.overwrite,
+        )
+        StudioStore(args.db).record_run(
+            system_id="agentic-systems-creator",
+            provider=args.provider,
+            framework=args.framework,
+            input=request,
+            result=result,
+        )
+        _dump(result)
+        return 0 if result.ok else 1
     if args.command == "db":
         store = StudioStore(args.path)
         store.initialize()
         _dump({"path": str(store.path.resolve()), "inventory": store.inventory()})
         return 0
+    if args.command == "validate":
+        report = validate_catalog(
+            _config(args),
+            args.system_ids or None,
+            fail_fast=args.fail_fast,
+        )
+        if args.output is not None:
+            write_validation_report(report, args.output)
+        _dump(report)
+        return 0 if report["ok"] else 1
     if args.command == "serve":
         return serve_studio(
             app_path=args.app,
