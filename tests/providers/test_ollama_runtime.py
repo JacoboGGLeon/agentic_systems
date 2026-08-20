@@ -121,6 +121,15 @@ def test_ollama_missing_tools_and_async_execution() -> None:
     assert missing.engine == OLLAMA_RUNTIME_ENGINE
     assert missing.data["error"]["code"] == "missing_tools"
 
+    missing_async = asyncio.run(
+        provider.arun(
+            missing_agent,
+            "Hola async",
+            toolkit.RunPolicy(max_turns=1),
+        )
+    )
+    assert missing_async.data["error"]["code"] == "missing_tools"
+
     system = toolkit.system(runtime=runtime, model="qwen3:4b")
     agent = system.agent(
         name="qwen_async",

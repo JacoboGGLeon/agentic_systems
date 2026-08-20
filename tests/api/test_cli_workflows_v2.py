@@ -95,3 +95,8 @@ def test_cli_matrix_require_pass_uses_process_exit_semantics(capsys):
     )
     not_run = json.loads(capsys.readouterr().out)
     assert not_run["not_run"] == 4
+
+    assert main(["matrix", "check", "--framework", "langgraph", "--json"]) == 0
+    framework = json.loads(capsys.readouterr().out)
+    assert framework["combination_count"] == 5
+    assert {item["framework"] for item in framework["results"]} == {"langgraph"}
