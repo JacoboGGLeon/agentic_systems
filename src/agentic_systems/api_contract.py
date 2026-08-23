@@ -163,6 +163,28 @@ CONTRACT_SCENARIOS = (
 )
 
 
+def _normalize_optional_annotations(signature: str) -> str:
+    """Render ``Optional[T]`` as ``T | None`` across supported Pythons."""
+
+    marker = "Optional["
+    while marker in signature:
+        start = signature.rfind(marker)
+        content_start = start + len(marker)
+        depth = 1
+        end = content_start
+        while end < len(signature) and depth:
+            if signature[end] == "[":
+                depth += 1
+            elif signature[end] == "]":
+                depth -= 1
+            end += 1
+        if depth:
+            break
+        content = signature[content_start : end - 1]
+        signature = signature[:start] + content + " | None" + signature[end:]
+    return signature
+
+
 def _signature(value: Any) -> str | None:
     try:
         signature = re.sub(r" at 0x[0-9A-Fa-f]+", "", str(inspect.signature(value)))
@@ -170,7 +192,8 @@ def _signature(value: Any) -> str | None:
         signature = re.sub(
             r"\bagentic_systems(?:\.[A-Za-z_][A-Za-z0-9_]*)+\.", "", signature
         )
-        return re.sub(r"'([A-Z][A-Za-z0-9_]*)'", r"\1", signature)
+        signature = re.sub(r"'([A-Z][A-Za-z0-9_]*)'", r"\1", signature)
+        return _normalize_optional_annotations(signature)
     except (TypeError, ValueError):
         return None
 

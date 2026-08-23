@@ -26,21 +26,18 @@ import agentic_systems as toolkit
 
 os.environ.setdefault("OPENAI_AGENTS_DISABLE_TRACING", "1")
 
-# OPENAI_AGENTS_DEPENDENCY: resolve the install target from the canonical registry.
+# OPENAI_AGENTS_DEPENDENCY: resolve availability and installation from the registry.
+framework_name = "openai-agents"
+install_target = toolkit.dependency_target(framework_name, kind="framework")
+if install_target is None:
+    raise RuntimeError(f"{framework_name!r} has no registered install target.")
 if importlib.util.find_spec("agents") is None:
-    install_target = toolkit.dependency_target(
-        "openai-agents", kind="framework"
-    )
-    if install_target is None:
-        raise RuntimeError("OpenAI Agents has no registered install target.")
-    get_ipython().run_line_magic(
-        "pip", f'install -q "{install_target}"'
-    )
+    get_ipython().run_line_magic("pip", f'install -q "{install_target}"')
 importlib.invalidate_caches()
 if importlib.util.find_spec("agents") is None:
     raise ImportError(
-        'OpenAI Agents is unavailable. Install "agentic-systems[openai-agents]" '
-        "and restart the kernel."
+        f"{framework_name!r} remains unavailable after installing "
+        f'"{install_target}". Restart this kernel and run the notebook again.'
     )
 
 """

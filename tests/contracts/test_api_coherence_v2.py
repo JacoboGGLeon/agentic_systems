@@ -12,6 +12,7 @@ import pytest
 
 import agentic_systems as toolkit
 from agentic_systems.api import PUBLIC_API
+from agentic_systems.api_contract import _normalize_optional_annotations
 from agentic_systems.cli import build_parser, main
 
 
@@ -108,6 +109,19 @@ def test_api_checksum_ignores_dependency_injected_member_docs(monkeypatch):
 
     assert after == before
     assert "RunResult.model_post_init" not in toolkit.api_contract()["ids"]
+
+
+def test_contract_signatures_use_one_cross_python_optional_notation() -> None:
+    signatures = [
+        entry["signature"] or "" for entry in toolkit.api_contract()["entries"]
+    ]
+
+    assert all("Optional[" not in signature for signature in signatures)
+    assert (
+        _normalize_optional_annotations("Optional[list[Optional[str]]]")
+        == "list[str | None] | None"
+    )
+    assert _normalize_optional_annotations("Optional[str") == "Optional[str"
 
 
 def test_shared_scenario_registry_is_complete_and_resolvable():

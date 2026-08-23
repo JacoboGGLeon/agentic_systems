@@ -567,6 +567,8 @@ def test_framework_notebooks_bootstrap_optional_dependencies_safely():
     assert 'importlib.util.find_spec("agents")' in openai_agents
     assert "toolkit.dependency_target(" in openai_agents
     assert '"openai-agents>=0.18.3,<0.19"' not in openai_agents
+    assert "agentic-systems[openai-agents]" not in openai_agents
+    assert "Restart this kernel" in openai_agents
     assert "importlib.invalidate_caches()" in openai_agents
 
     strands = _code(_load(TUTORIALS / "frameworks/02_aws_strands.ipynb"))
