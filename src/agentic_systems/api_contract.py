@@ -271,9 +271,14 @@ def _public_member_names(owner: type[Any]) -> tuple[str, ...]:
             if inspect.ismodule(value) or inspect.isclass(value):
                 continue
             member_value = _member_value(base, name)
-            member_module = getattr(member_value, "__module__", "")
+            declared_value = (
+                inspect.unwrap(member_value) if callable(member_value) else member_value
+            )
+            member_module = getattr(declared_value, "__module__", "")
             member_source = (
-                inspect.getsourcefile(member_value) if callable(member_value) else None
+                inspect.getsourcefile(declared_value)
+                if callable(declared_value)
+                else None
             )
             if (
                 library_owner

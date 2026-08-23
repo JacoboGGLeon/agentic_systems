@@ -2,7 +2,7 @@
 
 The distributable is deliberately recursive.
 
-    agentic-systems-studio-2.0.1.zip
+    agentic-systems-studio-2.1.0.zip
       manifest.json
       SHA256SUMS
       app.py

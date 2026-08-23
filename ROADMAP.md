@@ -1,7 +1,7 @@
 # Agentic Systems Roadmap
 
 Current stable release: `2.0.0`.
-Next development line: `2.1`.
+Current release line: `2.1`. Next development line: `2.2`.
 
 Agentic Systems 2.0 establishes the five-Provider by four-Framework execution
 architecture, the common RunResult contract, dual Bedrock authentication,

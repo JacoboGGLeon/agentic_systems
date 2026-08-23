@@ -1,11 +1,11 @@
 ---
 name: agentic-systems
-description: Design, scaffold, implement or audit portable Agentic Systems 2.0 applications, including deterministic tools, runtime Skills, agents, system composition, environments, evals, provider/framework selection and normalized RunResult contracts.
+description: Design, scaffold, implement or audit portable Agentic Systems 2.1 applications, including deterministic tools, runtime Skills, agents, system composition, environments, evals, provider/framework selection and normalized RunResult contracts.
 metadata:
-  short-description: Build industrial Agentic Systems 2.0 apps
+  short-description: Build industrial Agentic Systems 2.1 apps
 ---
 
-# Agentic Systems 2.0
+# Agentic Systems 2.1
 
 Build the requested application from one explicit system declaration. Use that
 declaration to keep source, API usage, Mermaid, CLI, notebooks, tests,

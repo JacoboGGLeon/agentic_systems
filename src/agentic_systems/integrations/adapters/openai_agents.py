@@ -8,6 +8,8 @@ import os
 from collections.abc import Mapping
 from typing import Any, cast
 
+from pydantic import SecretStr
+
 from ...contracts import RunPolicy
 from ...engines.names import (
     BEDROCK_RUNTIME_ENGINE,
@@ -173,20 +175,35 @@ def _materialize_model(agent: Any, engine: Any) -> Any:
         metadata = getattr(agent.runtime_config, "metadata", {}) or {}
         if agent.engine == VLLM_RUNTIME_ENGINE:
             vllm = metadata.get("vllm") or {}
-            base_url = vllm.get("base_url") or os.getenv("VLLM_BASE_URL")
+            base_url = (
+                getattr(agent.runtime_config, "endpoint", None)
+                or vllm.get("base_url")
+                or os.getenv("VLLM_BASE_URL")
+            )
             if not base_url:
                 raise ValueError(
                     "vLLM requires VLLM_BASE_URL or runtime metadata vllm.base_url."
                 )
-            api_key = os.getenv("VLLM_API_KEY") or "vllm"
+            secret = getattr(agent.runtime_config, "api_key", None)
+            api_key = (
+                secret.get_secret_value()
+                if isinstance(secret, SecretStr)
+                else secret or os.getenv("VLLM_API_KEY") or "vllm"
+            )
         else:
             ollama = metadata.get("ollama") or {}
             base_url = (
-                ollama.get("base_url")
+                getattr(agent.runtime_config, "endpoint", None)
+                or ollama.get("base_url")
                 or os.getenv("OLLAMA_BASE_URL")
                 or "http://127.0.0.1:11434/v1"
             )
-            api_key = os.getenv("OLLAMA_API_KEY") or "ollama"
+            secret = getattr(agent.runtime_config, "api_key", None)
+            api_key = (
+                secret.get_secret_value()
+                if isinstance(secret, SecretStr)
+                else secret or os.getenv("OLLAMA_API_KEY") or "ollama"
+            )
         client = AsyncOpenAI(base_url=base_url, api_key=api_key)
         return OpenAIChatCompletionsModel(
             model=agent.model,

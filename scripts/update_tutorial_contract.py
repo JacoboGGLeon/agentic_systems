@@ -64,13 +64,12 @@ def _scenario_ids(relative: str) -> list[str]:
         if relative in scenario["notebooks"]
     ]
 
+
 def _api_coverage(notebook: dict) -> list[str]:
     """Read the one literal api_coverage assignment from notebook code."""
 
     code = "\n\n".join(
-        _source(cell)
-        for cell in notebook["cells"]
-        if cell.get("cell_type") == "code"
+        _source(cell) for cell in notebook["cells"] if cell.get("cell_type") == "code"
     )
     tree = ast.parse(code)
     claims: list[list[str]] = []
@@ -95,8 +94,14 @@ def _api_coverage(notebook: dict) -> list[str]:
 def _normalize(relative: str, notebook: dict) -> dict:
     metadata = notebook.setdefault("metadata", {}).setdefault("agentic_systems", {})
     metadata["curriculum_order"] = CURRICULUM_ORDER.index(relative)
-    metadata["curriculum_origin"] = "2.0" if relative in V2_INSERTIONS else "v1.1.3"
-    metadata["narrative_reviewed"] = "2.0.0"
+    metadata["curriculum_origin"] = (
+        "v1.0.7"
+        if relative == "providers/03_vllm.ipynb"
+        else "2.0"
+        if relative in V2_INSERTIONS
+        else "v1.1.3"
+    )
+    metadata["narrative_reviewed"] = "2.1.0"
     metadata["contract_scenarios"] = _scenario_ids(relative)
     metadata["api_coverage"] = _api_coverage(notebook)
 
@@ -155,10 +160,10 @@ def _normalize(relative: str, notebook: dict) -> dict:
                 "cuyo runtime reporta `vllm-runtime`",
             )
             _set_source(cell, source)
-        execution_cell = notebook["cells"][8]
-        source = _source(execution_cell)
-        if not source.startswith("## 3)"):
-            _set_source(cell=execution_cell, source="## 3) Ejecutar o reportar not-run\n\n" + source)
+        if not any(_source(cell).startswith("## 3)") for cell in notebook["cells"]):
+            raise ValueError(
+                f"Provider tutorial {relative} has no section 3 execution gate."
+            )
 
     if relative == "providers/02_bedrock.ipynb":
         _set_source(
@@ -208,10 +213,10 @@ inferencia. Solo una fila `passed` contiene evidencia live.
         preflight_code = _source(preflight)
         if "AUTH_MODE =" not in preflight_code:
             preflight_code = preflight_code.replace(
-                "HAS_BEARER = bool(os.getenv(\"AWS_BEARER_TOKEN_BEDROCK\"))\n",
-                "HAS_BEARER = bool(os.getenv(\"AWS_BEARER_TOKEN_BEDROCK\"))\n"
-                "AUTH_MODE = aws_session.get(\"authentication_mode\")\n"
-                "assert AUTH_MODE in {None, \"aws-credential-chain\", \"bedrock-api-key\"}\n",
+                'HAS_BEARER = bool(os.getenv("AWS_BEARER_TOKEN_BEDROCK"))\n',
+                'HAS_BEARER = bool(os.getenv("AWS_BEARER_TOKEN_BEDROCK"))\n'
+                'AUTH_MODE = aws_session.get("authentication_mode")\n'
+                'assert AUTH_MODE in {None, "aws-credential-chain", "bedrock-api-key"}\n',
             )
         _set_source(preflight, preflight_code)
         _set_source(
@@ -251,13 +256,13 @@ ejecucion y nunca exponen secretos.
         code = _source(execution)
         code = code.replace(
             'matrix_results.append({**case.to_dict(), "execution": "skipped"})',
-            'matrix_results.append({\n'
-            '            **case.to_dict(),\n'
+            "matrix_results.append({\n"
+            "            **case.to_dict(),\n"
             '            "execution": "not-run",\n'
             '            "execution_reason": (\n'
             '                case.reason if not case.ready else "RUN_MATRIX_LIVE=0"\n'
-            '            ),\n'
-            '        })',
+            "            ),\n"
+            "        })",
         )
         _set_source(execution, code)
         if not any(

@@ -7,6 +7,7 @@ credential, endpoint, model, or external attestation before live execution.
 
 from __future__ import annotations
 
+from importlib.metadata import PackageNotFoundError, version as distribution_version
 from itertools import product
 from typing import Literal
 from .schemas.attestation import (
@@ -201,6 +202,29 @@ def framework_definition(name: str) -> FrameworkDefinition:
         ) from exc
 
 
+def dependency_target(
+    name: str,
+    *,
+    kind: Literal["provider", "framework"],
+    package_version: str | None = None,
+) -> str | None:
+    """Return the canonical package extra target for one optional boundary."""
+
+    definition = (
+        provider_definition(name) if kind == "provider" else framework_definition(name)
+    )
+    if definition.extra is None:
+        return None
+    resolved_version = package_version
+    if resolved_version is None:
+        try:
+            resolved_version = distribution_version("agentic-systems")
+        except PackageNotFoundError:
+            resolved_version = None
+    suffix = f"=={resolved_version}" if resolved_version else ""
+    return f"agentic-systems[{definition.extra}]{suffix}"
+
+
 def matrix_contract(provider: str, framework: str) -> MatrixContract:
     """Return the declared contract for a provider/framework pair."""
 
@@ -236,6 +260,7 @@ __all__ = [
     "FrameworkDefinition",
     "MatrixContract",
     "ProviderDefinition",
+    "dependency_target",
     "framework_definition",
     "matrix_contract",
     "provider_definition",

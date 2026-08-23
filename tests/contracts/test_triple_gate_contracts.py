@@ -16,6 +16,7 @@ from agentic_systems.registry import (
     FRAMEWORK_NAMES,
     MATRIX_CONTRACTS,
     PROVIDER_NAMES,
+    dependency_target,
     framework_definition,
     matrix_contract,
     provider_definition,
@@ -42,6 +43,20 @@ from agentic_systems.schemas import (
     UsageInfo,
     VLLMRuntimeSpec,
 )
+
+
+def test_dependency_targets_come_from_the_canonical_registry() -> None:
+    assert (
+        dependency_target("openai-agents", kind="framework", package_version="2.1.0")
+        == "agentic-systems[openai-agents]==2.1.0"
+    )
+    assert (
+        dependency_target("vllm-runtime", kind="provider", package_version="2.1.0")
+        == "agentic-systems[vllm-client]==2.1.0"
+    )
+    assert (
+        dependency_target("native", kind="framework", package_version="2.1.0") is None
+    )
 
 
 @given(
@@ -285,3 +300,24 @@ def test_small_protocols_support_structural_substitution() -> None:
     assert isinstance(Runner(), SyncRunner)
     assert isinstance(Runner(), AsyncRunner)
     assert isinstance(Adapter(), FrameworkAdapter)
+
+
+def test_dependency_target_resolves_installed_version_or_source_checkout(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import agentic_systems.registry as registry
+
+    monkeypatch.setattr(registry, "distribution_version", lambda name: "2.1.0")
+    assert (
+        registry.dependency_target("openai-agents", kind="framework")
+        == "agentic-systems[openai-agents]==2.1.0"
+    )
+
+    def missing(name: str) -> str:
+        raise registry.PackageNotFoundError(name)
+
+    monkeypatch.setattr(registry, "distribution_version", missing)
+    assert (
+        registry.dependency_target("openai-agents", kind="framework")
+        == "agentic-systems[openai-agents]"
+    )

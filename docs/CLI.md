@@ -122,7 +122,21 @@ Default auto priority is `bedrock-runtime`, then `openai-runtime`, `vllm-runtime
 OpenAI runtime also reads `OPENAI_MODEL`.
 
 vLLM runtime also reads `VLLM_MODEL` and `VLLM_API_KEY`. It uses the
-OpenAI-compatible vLLM server API; it does not start the server.
+OpenAI-compatible vLLM server API; the `runtime` command does not start the server.
+
+Inspect the exact managed-server declaration without starting a process:
+
+```bash
+agentic-systems model-server inspect \
+  --model unsloth/Qwen3-0.6B \
+  --profile fast \
+  --reasoning-parser qwen3 \
+  --json
+```
+
+The JSON is the same `VLLMServerSpec` consumed by `toolkit.model_server(...)`.
+Process mutation remains explicit in Python through `server.start()` and
+`server.stop()`; the CLI `inspect` subcommand is read-only.
 
 Bedrock runtime reads `BEDROCK_MODEL_ID`, `AWS_REGION`, `AWS_DEFAULT_REGION`,
 `AWS_PROFILE`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN`
@@ -251,7 +265,7 @@ The JSON form returns:
 ```json
 {
   "tier": "public",
-  "count": 373,
+  "count": 437,
   "ids": ["agent", "Agent.run", "runtime"]
 }
 ```

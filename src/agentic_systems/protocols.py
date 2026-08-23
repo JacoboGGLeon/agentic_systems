@@ -7,6 +7,7 @@ from typing import Any, Protocol, TypeVar, runtime_checkable
 
 from .results import RunResult
 from .tools import Tool
+from .schemas.serving import EndpointInfo, ServerHealth
 
 
 InputT = TypeVar("InputT", contravariant=True)
@@ -62,11 +63,23 @@ class FrameworkAdapter(Protocol):
     ) -> RunResult: ...
 
 
+@runtime_checkable
+class ModelServer(Protocol):
+    """Explicit lifecycle boundary for a model-serving process."""
+
+    def start(self) -> EndpointInfo: ...
+
+    def health(self) -> ServerHealth: ...
+
+    def stop(self) -> None: ...
+
+
 __all__ = [
     "AsyncRunner",
     "AsyncStreamingProvider",
     "EmbeddingProvider",
     "FrameworkAdapter",
+    "ModelServer",
     "StreamingProvider",
     "SyncRunner",
     "ToolCallingProvider",

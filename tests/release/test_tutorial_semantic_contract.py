@@ -117,7 +117,7 @@ def test_curriculum_order_and_reviewed_narrative_are_1_to_1():
         source = _source(notebook)
 
         assert metadata["curriculum_order"] == index, relative
-        assert metadata["narrative_reviewed"] == "2.0.0", relative
+        assert metadata["narrative_reviewed"] == "2.1.0", relative
         expected_scenarios = [
             scenario["id"]
             for scenario in SHARED_SCENARIOS
@@ -218,7 +218,13 @@ def test_canonical_notebooks_do_not_bypass_provider_or_output_boundaries():
     for path in _notebooks():
         relative = _relative(path)
         allowed = (
-            {"subprocess"} if relative == "frameworks/02_aws_strands.ipynb" else set()
+            {"subprocess"}
+            if relative
+            in {
+                "frameworks/02_aws_strands.ipynb",
+                "providers/03_vllm.ipynb",
+            }
+            else set()
         )
         forbidden_roots = DIRECT_SDK_ROOTS - allowed
         tree = ast.parse(_code(_load(path)), filename=relative)
@@ -518,8 +524,10 @@ def test_live_notebooks_are_run_all_ready_by_default():
             assert f"{flag}=0" in source, name
 
     vllm = _code(_load(TUTORIALS / "providers/03_vllm.ipynb"))
-    assert 'vllm_environment.get("base_url_configured")' in vllm
-    assert 'vllm_environment.get("model_configured")' in vllm
+    assert "toolkit.model_artifact(" in vllm
+    assert "toolkit.model_server(" in vllm
+    assert "server.start()" in vllm
+    assert "server.runtime(" in vllm
 
     bedrock = _code(_load(TUTORIALS / "providers/02_bedrock.ipynb"))
     ollama = _code(_load(TUTORIALS / "providers/04_ollama.ipynb"))
@@ -551,3 +559,15 @@ def test_live_notebooks_are_run_all_ready_by_default():
     assert "Converse and embeddings smoke" not in api_docs
     assert "optional LM explainer" not in api_docs
     assert "reviewer LM opcional" not in tutorial_docs
+
+
+def test_framework_notebooks_bootstrap_optional_dependencies_safely():
+    openai_agents = _code(_load(TUTORIALS / "frameworks/01_openai_agents.ipynb"))
+    assert "OPENAI_AGENTS_DEPENDENCY" in openai_agents
+    assert 'importlib.util.find_spec("agents")' in openai_agents
+    assert "toolkit.dependency_target(" in openai_agents
+    assert '"openai-agents>=0.18.3,<0.19"' not in openai_agents
+    assert "importlib.invalidate_caches()" in openai_agents
+
+    strands = _code(_load(TUTORIALS / "frameworks/02_aws_strands.ipynb"))
+    assert "def record_after_invocation(event: AfterInvocationEvent)" in strands

@@ -1,6 +1,6 @@
 # Agentic Systems Studio
 
-This is the first portable reference product built on Agentic Systems 2.0. It is
+This is the first portable reference product built on Agentic Systems 2.1. It is
 both a reusable local component market and a system-of-systems demonstration.
 
 The catalog contains ten systems of different sizes. Every system combines a

@@ -106,8 +106,7 @@ VLLM_API_KEY
 server, usually at `http://127.0.0.1:8000/v1`, and uses the OpenAI SDK client.
 Install `agentic-systems[openai]` when Agentic Systems only connects to an
 existing endpoint. Install `agentic-systems[vllm-server]` only when the
-same supported Linux environment also hosts the vLLM server. The server remains
-external infrastructure; Agentic Systems never starts it implicitly.
+same supported Linux environment also hosts the vLLM server. The server remains an explicit infrastructure boundary. `model_server(...)` only declares it; `server.start()` opts into process ownership and `server.stop()` terminates only that owned process.
 
 Bedrock runtime reads configuration from the environment or `.env`:
 
@@ -572,6 +571,8 @@ system
 environment
 eval
 runtime
+model_artifact
+model_server
 provider
 framework
 scheduler
@@ -606,8 +607,15 @@ LINEAGE_SCHEMA_VERSION
 AUTO_PROVIDER_ENV_VAR
 DEFAULT_AUTO_PROVIDER_PRIORITY
 RuntimeConfig
+ModelArtifact
+ModelServer
+VLLMServerSpec
+VLLMServer
+EndpointInfo
+ServerHealth
 ModelProviderConfig
 compatibility_matrix
+dependency_target
 compatibility_report
 normalize_provider_priority
 resolve_auto_provider
@@ -646,10 +654,10 @@ integrations
 __version__
 ```
 
-Contract entries including public members: 373
+Contract entries including public members: 437
 Shared contract scenarios: 10
 
-Contract checksum: `9149ece6b4f94fe7c36ad6fcb489ba33158e12202ebd24c8b1543fad217f8a29`
+Contract checksum: `602095a3d27e1fa03852f27ee9a8d4bd8e6c864dce3067ee83976c3cafe285b7`
 ## Provider Conformance API
 
 The advanced `agentic_systems.providers` namespace exposes the Runtime/Provider

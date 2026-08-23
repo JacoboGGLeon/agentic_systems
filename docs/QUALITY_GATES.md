@@ -1,6 +1,6 @@
 # Triple Quality Gate
 
-Agentic Systems 2.0.1 uses three blocking gates over the same release candidate.
+Agentic Systems 2.1.0 uses three blocking gates over the same release candidate.
 Passing unit tests alone is not a release certification.
 
 ## Sources of truth
@@ -82,7 +82,7 @@ silent fallback; actual runtime identity is part of every result and live case.
 Nightly and release jobs run OpenAI, Bedrock and Ollama from protected
 credentials/services. Deterministic Python pairs run in the offline matrix.
 vLLM is certified by the official Colab notebook in
-`release/vllm_live_attestation_colab.ipynb`.
+`tutorials/providers/03_vllm.ipynb` (mirrored at `release/notebooks/vllm_attestation.ipynb`).
 
 Each live case executes `inspect`, completion, agent, tool calling, structured
 error and `RunResult` JSON round-trip scenarios. Text is not compared exactly;

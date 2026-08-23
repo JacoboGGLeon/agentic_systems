@@ -8,6 +8,7 @@ from .compatibility import (
     compatibility_matrix,
     compatibility_report,
 )
+from .registry import dependency_target
 from .agents import Agent
 from .api import PUBLIC_API as _PUBLIC_API
 from .factories import (
@@ -18,6 +19,8 @@ from .factories import (
     framework,
     eval,
     load_skill,
+    model_artifact,
+    model_server,
     runtime,
     provider,
     scheduler,
@@ -86,6 +89,9 @@ from .output_contracts import (
     TraceEvent,
     UsageInfo,
 )
+from .protocols import ModelServer
+from .schemas.serving import EndpointInfo, ModelArtifact, ServerHealth, VLLMServerSpec
+from .serving.vllm import VLLMServer
 from .results import TRACE_SCHEMA_VERSION, RunResult
 from .execution import (
     AsyncExecutable,
@@ -148,7 +154,7 @@ from .providers.openai_runtime import openai_environment_snapshot
 from .providers.ollama_runtime import ollama_environment_snapshot
 from .providers.vllm_runtime import vllm_environment_snapshot
 
-__version__ = "2.0.1"
+__version__ = "2.1.0"
 
 __all__ = list(_PUBLIC_API)
 del _PUBLIC_API

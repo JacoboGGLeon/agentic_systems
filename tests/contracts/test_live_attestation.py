@@ -44,7 +44,7 @@ def _attestation(cases: tuple[LiveMatrixCase, ...]) -> LiveAttestation:
         created_at=NOW,
         commit_sha=COMMIT.upper(),
         wheel_sha256=WHEEL.upper(),
-        wheel_filename="agentic_systems-2.0.1-py3-none-any.whl",
+        wheel_filename="agentic_systems-2.1.0-py3-none-any.whl",
         python_version="3.12.5",
         environment={"cuda": "12.4", "gpu": "T4", "vllm": "0.9"},
         cases=cases,

@@ -8,6 +8,8 @@ from pathlib import Path
 from dataclasses import dataclass, field
 from typing import Any, Iterable, cast
 
+from pydantic import SecretStr
+
 from agentic_systems.engines.names import (
     BEDROCK_RUNTIME_ENGINE,
     OLLAMA_RUNTIME_ENGINE,
@@ -41,6 +43,8 @@ class RuntimeConfig:
     provider: str = BEDROCK_RUNTIME_ENGINE
     model_id: str | None = None
     region_name: str | None = None
+    endpoint: str | None = None
+    api_key: SecretStr | str | None = field(default=None, repr=False)
     scheduler: SchedulerConfig = field(default_factory=lambda: DEFAULT_SCHEDULER_CONFIG)
     metadata: dict[str, Any] = field(default_factory=dict)
     provider_priority: tuple[str, ...] | None = None
@@ -53,10 +57,19 @@ class RuntimeConfig:
             self.provider_priority,
             allow_python_fallback=self.allow_python_fallback,
         )
+        secret = (
+            self.api_key
+            if isinstance(self.api_key, SecretStr)
+            else SecretStr(self.api_key)
+            if self.api_key is not None
+            else None
+        )
         schema = RuntimeConfigSchema(
             provider=cast(RuntimeProviderName, provider),
             model_id=self.model_id,
             region_name=self.region_name,
+            endpoint=self.endpoint,
+            api_key=secret,
             limits=scheduler.execution_limits(),
             metadata=dict(self.metadata or {}),
             provider_priority=priority,
@@ -65,6 +78,8 @@ class RuntimeConfig:
         object.__setattr__(self, "provider", schema.provider)
         object.__setattr__(self, "model_id", schema.model_id)
         object.__setattr__(self, "region_name", schema.region_name)
+        object.__setattr__(self, "endpoint", schema.endpoint)
+        object.__setattr__(self, "api_key", secret)
         object.__setattr__(self, "scheduler", scheduler)
         object.__setattr__(self, "metadata", dict(schema.metadata))
         object.__setattr__(self, "provider_priority", schema.provider_priority)
@@ -102,6 +117,8 @@ class RuntimeConfig:
             provider=cast(RuntimeProviderName, self.provider),
             model_id=self.model_id,
             region_name=self.region_name,
+            endpoint=self.endpoint,
+            api_key=cast(SecretStr | None, self.api_key),
             limits=self.scheduler.execution_limits(),
             metadata=self.metadata,
             provider_priority=self.provider_priority,
@@ -131,6 +148,8 @@ class RuntimeConfig:
             "reason": resolved["reason"],
             "model": self.model_id,
             "region": self.region_name,
+            "endpoint": self.endpoint,
+            "api_key_configured": self.api_key is not None,
             "scheduler": self.scheduler.to_dict(),
             "provider_priority": list(
                 resolved.get("provider_priority") or self.provider_priority or ()

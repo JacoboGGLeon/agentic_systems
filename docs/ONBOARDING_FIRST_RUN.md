@@ -16,7 +16,7 @@ For library and CLI use from PyPI:
 
 ```bash
 python -m pip install -U pip
-python -m pip install "agentic-systems[openai,bedrock]"
+python -m pip install "agentic-systems[all]==2.1.0"
 ```
 
 The notebooks are repository content; clone the repository before opening them:
@@ -25,18 +25,17 @@ The notebooks are repository content; clone the repository before opening them:
 git clone https://github.com/JacoboGGLeon/agentic_systems.git
 cd agentic_systems
 python -m pip install -U pip
-python -m pip install -e ".[dev,openai,bedrock]"
+python -m pip install -e ".[all]"
 ```
 
 The OpenAI extra also provides the OpenAI-compatible client used by a remote
 vLLM endpoint. Install `agentic-systems[vllm-server]` only when the same supported
-Linux environment must also host the vLLM server. Agentic Systems never starts
-that server implicitly.
+Linux environment must also host the vLLM server. Agentic Systems can own that process only through an explicit `model_server(...).start()` call; constructing the server or runtime never starts it.
 
 For development gates:
 
 ```bash
-python -m pip install -e ".[dev,openai,bedrock,langgraph]"
+python -m pip install -e ".[all]"
 ```
 
 ## Verify The Local Contract First

@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.0.1 - 2026-08-22
+## 2.1.0 - 2026-08-22
 
 Compatible hardening release. The 2.0 public facade remains stable while three
 blocking gates now certify production readiness, Pydantic contracts and
@@ -19,6 +19,10 @@ provider/framework substitutability.
   Colab attestation contract with 24-hour freshness validation.
 - Reproducible skill, Studio and release asset builds with secret auditing,
   hashes, SBOM generation and PyPI Trusted Publishing.
+- Versioned `ModelArtifact`, `VLLMServerSpec`, `EndpointInfo` and `ServerHealth`
+  schemas plus the `ModelServer` Protocol and explicit `model_server(...)` facade.
+- One Colab tutorial that installs a CUDA-compatible vLLM stack, serves an
+  Unsloth/Qwen artifact and certifies native, LangGraph, OpenAI Agents and Strands.
 
 ### Changed
 
@@ -31,8 +35,12 @@ provider/framework substitutability.
   carry structured category, runtime identity, code and retryability.
 - Provider/Framework lists in compatibility, CLI and Studio derive from the
   canonical registry instead of parallel hardcoded inventories.
-- API checksums ignore methods injected by Pydantic and fingerprint only the
-  declared public contract.
+- API checksums ignore methods injected by Pydantic, unwrap declared decorated
+  methods and fingerprint only the public contract.
+- Strands callbacks with typed event parameters are normalized into HookProvider
+  objects, preserving compatibility across Strands 1.29 through the current 1.x.
+- The OpenAI Agents tutorial bootstraps its optional SDK dependency idempotently
+  in a fresh Jupyter kernel instead of failing with a raw ModuleNotFoundError.
 
 ### Compatibility
 

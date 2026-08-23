@@ -26,7 +26,7 @@ from .core.runtime import (
     _openai_signal_present,
     _vllm_signal_present,
 )
-from .factories import runtime
+from .factories import model_server, runtime
 from .engines.names import supported_engine_names
 from .registry import FRAMEWORKS, PROVIDERS, registry_manifest
 
@@ -330,6 +330,34 @@ def _cmd_runtime(args: argparse.Namespace) -> int:
                 border_style="green",
             )
         )
+    return 0
+
+
+def _cmd_model_server(args: argparse.Namespace) -> int:
+    server = model_server(
+        args.model,
+        backend="vllm",
+        profile=args.profile,
+        served_model_name=args.served_model_name,
+        host=args.host,
+        port=args.port,
+        tool_call_parser=args.tool_call_parser,
+        reasoning_parser=args.reasoning_parser,
+        enable_auto_tool_choice=not args.disable_tool_calling,
+        startup_timeout_s=args.startup_timeout,
+        log_path=args.log_path,
+    )
+    payload = server.inspect()
+    if args.json:
+        _write_json(payload)
+        return 0
+    _console().print(
+        Panel(
+            json.dumps(payload, indent=2, sort_keys=True),
+            title="Model Server",
+            border_style="cyan",
+        )
+    )
     return 0
 
 
@@ -756,6 +784,24 @@ def build_parser() -> argparse.ArgumentParser:
     )
     runtime_parser.set_defaults(func=_cmd_runtime)
 
+    server_parser = subparsers.add_parser(
+        "model-server", help="Inspect an explicit local model-server declaration."
+    )
+    server_parser.add_argument("action", choices=("inspect",))
+    server_parser.add_argument("--model", required=True)
+    server_parser.add_argument(
+        "--profile", choices=("fast", "medium", "power", "custom"), default="fast"
+    )
+    server_parser.add_argument("--served-model-name", default=None)
+    server_parser.add_argument("--host", default="127.0.0.1")
+    server_parser.add_argument("--port", type=int, default=8000)
+    server_parser.add_argument("--tool-call-parser", default="hermes")
+    server_parser.add_argument("--reasoning-parser", default=None)
+    server_parser.add_argument("--disable-tool-calling", action="store_true")
+    server_parser.add_argument("--startup-timeout", type=float, default=600.0)
+    server_parser.add_argument("--log-path", default="vllm-server.log")
+    server_parser.add_argument("--json", action="store_true")
+    server_parser.set_defaults(func=_cmd_model_server)
     api_parser = subparsers.add_parser(
         "public-api", help="List the documented public API symbols."
     )

@@ -22,7 +22,7 @@ Its Python API turns that grammar into explicit, composable abstractions: tools,
 
 Use it when agentic workloads need to be observable, testable, portable and ready for repeated execution, not just notebook demos.
 
-Agentic Systems 2.0 keeps explicit traceability between its API,
+Agentic Systems 2.1 keeps explicit traceability between its API,
 documentation, tutorials, and tests.
 
 ```text
@@ -31,12 +31,26 @@ API -> Docs -> Tutorials -> explicit automated or manual evidence
 
 Public concepts are defined in the API, explained in the documentation, taught through the canonical tutorials, and checked by explicit release gates.
 
-Release status: `2.0.1` hardens the Provider x Framework architecture with a canonical 20-pair registry, strict versioned schemas, normalized reasoning-safe results, polymorphic adapter contracts and blocking production/Pydantic/POO gates. The 78 stable top-level exports, 373 traced export/member IDs and 2.0 serialization views remain compatible.
+Release status: `2.1.0` hardens the Provider x Framework architecture with a canonical 20-pair registry, strict versioned schemas, normalized reasoning-safe results, polymorphic adapter contracts and blocking production/Pydantic/POO gates. The 2.1 surface contains 87 stable top-level exports and 437 traced export/member IDs; all 2.0 serialization views remain compatible.
 
 ## Installation
 
 ```bash
 pip install agentic-systems
+```
+
+OpenAI Agents is optional and uses a different distribution/import name:
+
+```bash
+pip install "agentic-systems[openai-agents]==2.1.0"
+# PyPI distribution: openai-agents; Python import: agents
+```
+
+For the complete portable Provider/Framework tutorial stack (excluding the
+platform-specific vLLM GPU server):
+
+```bash
+pip install "agentic-systems[all]==2.1.0"
 ```
 
 ```python
@@ -45,28 +59,28 @@ import agentic_systems as toolkit
 
 ### Install the Agentic Systems skill
 
-The `v2.0.1` GitHub release includes a credential-free skill ZIP whose archive
+The `v2.1.0` GitHub release includes a credential-free skill ZIP whose archive
 root is `agentic-systems/`.
 
 ```powershell
-Expand-Archive .\agentic-systems-skill-2.0.1.zip `
+Expand-Archive .\agentic-systems-skill-2.1.0.zip `
   -DestinationPath "$env:USERPROFILE\.codex\skills" -Force
 ```
 
 ```bash
-unzip agentic-systems-skill-2.0.1.zip -d ~/.codex/skills
+unzip agentic-systems-skill-2.1.0.zip -d ~/.codex/skills
 ```
 
 Restart or reload Codex, then invoke `$agentic-systems`. OpenAI Skills upload
 surfaces that accept a ZIP can consume the same artifact. Download the
 standalone skill and the complete ten-system Studio from the
-[v2.0.1 release](https://github.com/JacoboGGLeon/agentic_systems/releases/tag/v2.0.1).
+[v2.1.0 release](https://github.com/JacoboGGLeon/agentic_systems/releases/tag/v2.1.0).
 
 Release assets:
 
-- `agentic-systems-skill-2.0.1.zip`: Codex/OpenAI skill package.
-- `agentic-systems-studio-2.0.1.zip`: portable Studio with ten nested systems.
-- `SHA256SUMS-2.0.1.txt`: hashes for the Python and product artifacts.
+- `agentic-systems-skill-2.1.0.zip`: Codex/OpenAI skill package.
+- `agentic-systems-studio-2.1.0.zip`: portable Studio with ten nested systems.
+- `SHA256SUMS-2.1.0.txt`: hashes for the Python and product artifacts.
 
 For an installed-package smoke test and provider notebook setup, follow
 [First Run Onboarding](docs/ONBOARDING_FIRST_RUN.md).
@@ -125,9 +139,22 @@ Canonical providers:
 |---|---|
 | `bedrock-runtime` | AWS Bedrock Runtime provider path. |
 | `openai-runtime` | Direct OpenAI provider path. |
-| `vllm-runtime` | Client path for an existing OpenAI-compatible vLLM endpoint. |
+| `vllm-runtime` | Client path for an existing or explicitly managed OpenAI-compatible vLLM endpoint. |
 | `python-runtime` | Local deterministic execution for tools, policies and smoke tests. |
 | `auto` | Selects a concrete provider from environment signals before execution. |
+
+For local/Colab GPU serving, 2.1 adds an explicit lifecycle boundary:
+
+```python
+artifact = toolkit.model_artifact("unsloth/Qwen3-4B-Instruct-2507")
+server = toolkit.model_server(artifact, profile="medium")
+endpoint = server.start()       # explicit; construction never starts a process
+runtime = server.runtime()      # vllm-runtime bound to the real endpoint/model
+server.stop()                   # stops only the process owned by this object
+```
+
+The canonical walkthrough and four-Framework attestation are in
+`tutorials/providers/03_vllm.ipynb`.
 
 Default `provider="auto"` priority is `bedrock-runtime`, then `openai-runtime`, `vllm-runtime`, and `ollama-runtime`. Override it with `provider_priority=[...]` or `AGENTIC_SYSTEMS_PROVIDER_PRIORITY=...`. Bedrock is considered configured only when both a region and an AWS authentication signal are present. That signal may be the standard AWS credential chain (signed with SigV4) or the native `AWS_BEARER_TOKEN_BEDROCK` API key; both use the same boto3 `bedrock-runtime` Provider and a region alone does not outrank another usable Provider.
 
@@ -409,12 +436,12 @@ evidence belongs to GitHub Releases.
 Current verified status:
 
 ```text
-Version: 2.0.1
+Version: 2.1.0
 PyPI package: agentic-systems
 Tests: run `python -m pytest` for the current count
 Core coverage: 100.00%
 Coverage scope: Bedrock facade and internal package excluded from core; separately gated at 100%
-Canonical notebooks: 17 deterministic executed; 3 live Provider notebooks checked statically
+Canonical notebooks: 17 deterministic executed; 4 Provider notebooks execute their explicit not-run path offline
 
 ```
 

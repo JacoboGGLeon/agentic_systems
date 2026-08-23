@@ -385,11 +385,30 @@ CURRICULUM = (
     {
         "path": "providers/03_vllm.ipynb",
         "python": "providers/03_vllm.ipynb",
-        "title": "Providers 03 - vLLM (CLI)",
-        "concept": "Inspeccionar readiness y los cuatro cruces Framework de vLLM.",
-        "rich": ("doctor",),
-        "rich_title": "Agentic Systems Doctor",
-        "matrix_provider": "vllm-runtime",
+        "title": "Providers 03 - vLLM ModelServer (CLI)",
+        "concept": "Inspeccionar el comando exacto de vLLM + Unsloth sin iniciar procesos.",
+        "rich": (
+            "model-server",
+            "inspect",
+            "--model",
+            "unsloth/Qwen3-0.6B",
+            "--profile",
+            "fast",
+            "--reasoning-parser",
+            "qwen3",
+        ),
+        "rich_title": "Model Server",
+        "json": (
+            "model-server",
+            "inspect",
+            "--model",
+            "unsloth/Qwen3-0.6B",
+            "--profile",
+            "fast",
+            "--reasoning-parser",
+            "qwen3",
+        ),
+        "assertion": 'assert payload["backend"] == "vllm" and payload["spec"]["profile"] == "fast"',
     },
     {
         "path": "providers/04_ollama.ipynb",
@@ -576,7 +595,11 @@ payload
 
 
 def _json_code(entry: dict[str, Any]) -> str:
-    if entry.get("matrix_provider") or entry.get("matrix_framework") or entry.get("matrix_all"):
+    if (
+        entry.get("matrix_provider")
+        or entry.get("matrix_framework")
+        or entry.get("matrix_all")
+    ):
         return _matrix_code(entry)
     args = repr(list(entry["json"]))
     assertion = entry["assertion"]
@@ -675,7 +698,7 @@ def _ollama_notebook() -> dict[str, Any]:
         {
             "curriculum_origin": "2.0",
             "curriculum_order": 5,
-            "narrative_reviewed": "2.0.0",
+            "narrative_reviewed": "2.1.0",
             "contract_scenarios": ["runtime"],
             "layer": "providers",
             "provider": "ollama-runtime",
@@ -734,6 +757,7 @@ def _contract_view(notebook: dict[str, Any], *, cli: bool) -> dict[str, Any]:
         "nbformat_minor": notebook["nbformat_minor"],
     }
 
+
 def _preserve_cli_outputs(path: Path, notebook: dict[str, Any]) -> dict[str, Any]:
     if not path.exists():
         return notebook
@@ -753,7 +777,6 @@ def _preserve_cli_outputs(path: Path, notebook: dict[str, Any]) -> dict[str, Any
         cell["execution_count"] = previous.get("execution_count")
         cell["outputs"] = previous.get("outputs", [])
     return notebook
-
 
 
 def generate(*, check: bool = False) -> int:

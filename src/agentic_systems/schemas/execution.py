@@ -85,6 +85,8 @@ class RuntimeConfigSchema(ContractModel):
     provider: RuntimeProviderName = "bedrock-runtime"
     model_id: StrictStr | None = None
     region_name: StrictStr | None = None
+    endpoint: StrictStr | None = None
+    api_key: SecretStr | None = Field(default=None, exclude=True, repr=False)
     limits: ExecutionLimits = Field(default_factory=ExecutionLimits)
     metadata: dict[str, JsonValue] = Field(default_factory=dict)
     provider_priority: tuple[StrictStr, ...] | None = None

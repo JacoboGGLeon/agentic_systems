@@ -6,7 +6,7 @@ import inspect
 import json
 import os
 from collections.abc import Mapping
-from typing import Any, cast
+from typing import Any, cast, get_type_hints
 
 from ...contracts import RunPolicy
 from ...engines.names import (
@@ -38,6 +38,8 @@ class StrandsFrameworkAdapter(FrameworkAdapter):
 
             kwargs = dict(agent.framework_config.agent_kwargs)
             kwargs.setdefault("callback_handler", None)
+            if "hooks" in kwargs:
+                kwargs["hooks"] = [_strands_hook(hook) for hook in kwargs["hooks"]]
             native_tools = kwargs.pop("tools", None)
             canonical_tools = agent.available_tools()
             aliases = tool_name_aliases(canonical_tools)
@@ -149,34 +151,94 @@ def _materialize_model(agent: Any, engine: Any) -> Any:
         if agent.engine == VLLM_RUNTIME_ENGINE:
             metadata = getattr(agent.runtime_config, "metadata", {}) or {}
             vllm = metadata.get("vllm") or {}
-            base_url = vllm.get("base_url") or os.getenv("VLLM_BASE_URL")
+            base_url = (
+                getattr(agent.runtime_config, "endpoint", None)
+                or vllm.get("base_url")
+                or os.getenv("VLLM_BASE_URL")
+            )
             if not base_url:
                 raise ValueError(
                     "vLLM requires VLLM_BASE_URL or runtime metadata vllm.base_url."
                 )
             client_args.update(
                 base_url=base_url,
-                api_key=os.getenv("VLLM_API_KEY") or "vllm",
+                api_key=(
+                    _runtime_api_key(agent) or os.getenv("VLLM_API_KEY") or "vllm"
+                ),
             )
         elif agent.engine == OLLAMA_RUNTIME_ENGINE:
             metadata = getattr(agent.runtime_config, "metadata", {}) or {}
             ollama = metadata.get("ollama") or {}
             client_args.update(
                 base_url=(
-                    ollama.get("base_url")
+                    getattr(agent.runtime_config, "endpoint", None)
+                    or ollama.get("base_url")
                     or os.getenv("OLLAMA_BASE_URL")
                     or "http://127.0.0.1:11434/v1"
                 ),
-                api_key=os.getenv("OLLAMA_API_KEY") or "ollama",
+                api_key=(
+                    _runtime_api_key(agent) or os.getenv("OLLAMA_API_KEY") or "ollama"
+                ),
             )
-        elif os.getenv("OPENAI_API_KEY"):
-            client_args["api_key"] = os.environ["OPENAI_API_KEY"]
+        else:
+            endpoint = getattr(agent.runtime_config, "endpoint", None)
+            api_key = _runtime_api_key(agent) or os.getenv("OPENAI_API_KEY")
+            if endpoint:
+                client_args["base_url"] = endpoint
+            if api_key:
+                client_args["api_key"] = api_key
         return OpenAIModel(model_id=agent.model, client_args=client_args or None)
     if agent.engine == PYTHON_RUNTIME_ENGINE:
         from .strands_scripted import ScriptedStrandsModel
 
         return ScriptedStrandsModel(agent.model or agent.engine)
     raise ValueError(f"Unsupported Provider for Strands: {agent.engine!r}.")
+
+
+class _CallbackHookProvider:
+    """Compatibility adapter for Strands versions that reject plain callbacks."""
+
+    def __init__(self, callback: Any, event_type: type[Any]) -> None:
+        self.callback = callback
+        self.event_type = event_type
+
+    def register_hooks(self, registry: Any, **_: Any) -> None:
+        registry.add_callback(self.event_type, self.callback)
+
+
+def _strands_hook(hook: Any) -> Any:
+    """Preserve HookProviders and lift a typed callback into one explicitly."""
+
+    if callable(getattr(hook, "register_hooks", None)):
+        return hook
+    if not callable(hook):
+        raise TypeError(
+            "Strands hooks must be HookProvider objects or callables with one "
+            "typed event parameter."
+        )
+    parameters = tuple(inspect.signature(hook).parameters.values())
+    if len(parameters) != 1:
+        raise TypeError(
+            "A Strands hook callback must declare exactly one event parameter."
+        )
+    try:
+        annotation = get_type_hints(hook).get(parameters[0].name)
+    except (NameError, TypeError):
+        annotation = parameters[0].annotation
+    if annotation is inspect.Signature.empty or not isinstance(annotation, type):
+        raise TypeError(
+            "A Strands hook callback must type its event parameter, for example "
+            "AfterInvocationEvent."
+        )
+    return _CallbackHookProvider(hook, annotation)
+
+
+def _runtime_api_key(agent: Any) -> str | None:
+    value = getattr(agent.runtime_config, "api_key", None)
+    reveal = getattr(value, "get_secret_value", None)
+    if callable(reveal):
+        return str(reveal())
+    return str(value) if value is not None else None
 
 
 def _strands_tool(tool: Any, native_name: str | None = None) -> Any:

@@ -3,6 +3,8 @@ from __future__ import annotations
 import importlib
 from types import SimpleNamespace
 
+from pydantic import SecretStr
+
 import agentic_systems as toolkit
 from agentic_systems.engines.names import VLLM_RUNTIME_ENGINE
 from agentic_systems.providers.vllm_runtime import (
@@ -315,3 +317,18 @@ def test_system_module_available_real_lookup() -> None:
         system_module._module_available("definitely_missing_agentic_systems_module")
         is False
     )
+
+
+def test_vllm_runtime_prefers_explicit_endpoint_and_api_key() -> None:
+    import agentic_systems.providers.vllm_runtime as vllm_module
+
+    secret_runtime = SimpleNamespace(
+        endpoint="http://127.0.0.1:8123/v1",
+        metadata={},
+        api_key=SecretStr("secret"),
+    )
+    plain_runtime = SimpleNamespace(endpoint=None, metadata={}, api_key="plain")
+
+    assert vllm_module._runtime_base_url(secret_runtime).endswith(":8123/v1")
+    assert vllm_module._runtime_api_key(secret_runtime) == "secret"
+    assert vllm_module._runtime_api_key(plain_runtime) == "plain"

@@ -7,6 +7,8 @@ from importlib import resources
 from pathlib import Path
 from typing import Any, Iterable
 
+from pydantic import SecretStr
+
 from .agents import Agent
 from .core.runtime import (
     RuntimeConfig,
@@ -39,6 +41,8 @@ from .system import AgenticSystem
 from .skills import Skill
 from .skills.loader import load_skill_definition
 from .tools import ToolSet
+from .schemas.serving import ModelArtifact, VLLMServerSpec
+from .serving.vllm import VLLMServer, vllm_server_spec
 
 DEFAULT_MODEL_ENV_VARS = ("BEDROCK_MODEL_ID",)
 
@@ -160,6 +164,53 @@ def provider(
     )
 
 
+def model_artifact(
+    model: str,
+    *,
+    base_model: str | None = None,
+    adapter_path: str | None = None,
+    tokenizer: str | None = None,
+    revision: str | None = None,
+    quantization: str | None = None,
+    metadata: dict[str, Any] | None = None,
+) -> ModelArtifact:
+    """Declare portable model identity and future fine-tuning provenance."""
+
+    return ModelArtifact(
+        model_id=model,
+        base_model_id=base_model,
+        adapter_path=adapter_path,
+        tokenizer_id=tokenizer,
+        revision=revision,
+        quantization=quantization,
+        metadata=metadata or {},
+    )
+
+
+def model_server(
+    model: str | ModelArtifact | None = None,
+    *,
+    backend: str = "vllm",
+    spec: VLLMServerSpec | None = None,
+    **configuration: Any,
+) -> VLLMServer:
+    """Create an explicit model-server lifecycle adapter.
+
+    Starting a server is never implicit; call start(), use running(), or enter
+    the returned object as a context manager.
+    """
+
+    if backend != "vllm":
+        raise ValueError(f"Unknown model-server backend {backend!r}; expected 'vllm'.")
+    if spec is not None:
+        if model is not None or configuration:
+            raise ValueError("spec cannot be combined with model or configuration.")
+        return VLLMServer(spec)
+    if model is None:
+        raise ValueError("model_server requires model or spec.")
+    return VLLMServer(vllm_server_spec(model, **configuration))
+
+
 def toolset(system: AgenticSystem, name: str) -> ToolSet:
     """Create a named ToolSet owned by an explicit AgenticSystem."""
 
@@ -176,6 +227,8 @@ def runtime(
     region: str | None = None,
     region_name: str | None = None,
     scheduler: SchedulerConfig | dict[str, Any] | None = None,
+    endpoint: str | None = None,
+    api_key: str | SecretStr | None = None,
     metadata: dict[str, Any] | None = None,
     provider_priority: Iterable[str] | str | None = None,
     allow_python_fallback: bool = False,
@@ -198,7 +251,7 @@ def runtime(
             "model_provider": provider_config.to_dict(),
         }
         if provider_config.endpoint:
-            metadata.setdefault("endpoint", provider_config.endpoint)
+            endpoint = endpoint or provider_config.endpoint
 
     selected_provider = canonical_engine_name(provider)
     priority = normalize_provider_priority(
@@ -220,6 +273,8 @@ def runtime(
         provider=provider,
         model_id=selected_model,
         region_name=selected_region,
+        endpoint=endpoint,
+        api_key=api_key,
         scheduler=SchedulerConfig.coerce(scheduler),
         metadata=merged_metadata,
         provider_priority=priority,

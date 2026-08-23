@@ -117,7 +117,7 @@ SYSTEM_SPECS = (
     SystemSpec(
         "agentic-systems-creator",
         "Agentic Systems Creator",
-        "Reference system that designs and scaffolds a portable Agentic Systems 2.0 application.",
+        "Reference system that designs and scaffolds a portable Agentic Systems 2.1 application.",
         ("creator", "architecture", "scaffolding", "reference"),
         (
             _s(

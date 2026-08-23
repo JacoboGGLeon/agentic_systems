@@ -11,6 +11,8 @@ import os
 from collections.abc import Mapping
 from typing import Any
 
+from pydantic import SecretStr
+
 from agentic_systems.contracts import RunPolicy
 from agentic_systems.defaults import DEFAULT_VLLM_API_KEY, DEFAULT_VLLM_BASE_URL
 from agentic_systems.core.results import RunResult
@@ -51,7 +53,7 @@ class VLLMRuntimeProvider:
         messages = _build_messages(agent, input)
         runtime = self._runtime(agent)
         tool_defs = _openai_tools(runtime, agent)
-        client = self._client or self._client_from_environment()
+        client = self._client or self._client_from_environment(runtime)
         result = _run_chat_loop(
             client,
             messages,
@@ -70,7 +72,7 @@ class VLLMRuntimeProvider:
         runtime = self._runtime(agent)
         messages = _build_messages(agent, input)
         tool_defs = _openai_tools(runtime, agent)
-        client = self._async_client or self._async_client_from_environment()
+        client = self._async_client or self._async_client_from_environment(runtime)
         result = await _run_chat_loop_async(
             client,
             messages,
@@ -91,19 +93,37 @@ class VLLMRuntimeProvider:
         )
         return getattr(runtime, "_runtime", runtime)
 
-    def _client_from_environment(self) -> Any:
+    def _client_from_environment(self, runtime: Any | None = None) -> Any:
         openai = _openai_module()
         return openai.OpenAI(
-            base_url=_vllm_base_url(),
-            api_key=_vllm_api_key(),
+            base_url=_runtime_base_url(runtime),
+            api_key=_runtime_api_key(runtime),
         )
 
-    def _async_client_from_environment(self) -> Any:
+    def _async_client_from_environment(self, runtime: Any | None = None) -> Any:
         openai = _openai_module()
         return openai.AsyncOpenAI(
-            base_url=_vllm_base_url(),
-            api_key=_vllm_api_key(),
+            base_url=_runtime_base_url(runtime),
+            api_key=_runtime_api_key(runtime),
         )
+
+
+def _runtime_base_url(runtime: Any | None) -> str:
+    endpoint = getattr(runtime, "endpoint", None)
+    if endpoint:
+        return str(endpoint)
+    metadata = getattr(runtime, "metadata", {}) or {}
+    vllm = metadata.get("vllm") or {}
+    return str(vllm.get("base_url") or metadata.get("endpoint") or _vllm_base_url())
+
+
+def _runtime_api_key(runtime: Any | None) -> str:
+    value = getattr(runtime, "api_key", None)
+    if isinstance(value, SecretStr):
+        return value.get_secret_value()
+    if value:
+        return str(value)
+    return _vllm_api_key()
 
 
 def _vllm_base_url() -> str:

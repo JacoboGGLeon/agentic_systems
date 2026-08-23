@@ -49,9 +49,12 @@ def test_cli_doctor_and_api_inventory(capsys):
         "openai-agents",
         "strands",
     }
-    assert next(
-        row for row in doctor["providers"] if row["name"] == "python-runtime"
-    )["ready"] is True
+    assert (
+        next(row for row in doctor["providers"] if row["name"] == "python-runtime")[
+            "ready"
+        ]
+        is True
+    )
 
     assert cli.main(["api", "--tier", "public", "--contains", "runtime", "--json"]) == 0
     api = json.loads(capsys.readouterr().out)
@@ -103,7 +106,9 @@ def test_cli_contact_plain_and_json(capsys):
     assert payload["email_1"] == "jacobogerardo.gonzalez@bbva.com"
     assert payload["email_2"] == "jacoboggleon@gmail..com"
     assert payload["linkedin"] == "https://www.linkedin.com/in/jacoboggleon/"
-    assert payload["github_repo"] == "https://www.github.com/JacoboGGLeon/agentic_systems"
+    assert (
+        payload["github_repo"] == "https://www.github.com/JacoboGGLeon/agentic_systems"
+    )
 
     assert cli.main(["contact"]) == 0
     out = capsys.readouterr().out
@@ -117,14 +122,29 @@ def test_cli_runtime_auto_resolves_vllm_json(capsys, monkeypatch):
 
     monkeypatch.setenv("VLLM_BASE_URL", "http://127.0.0.1:8000/v1")
     monkeypatch.setenv("VLLM_MODEL", "Qwen/Qwen3-0.6B")
-    monkeypatch.setattr(runtime_module, "_module_available", lambda name: name == "openai")
+    monkeypatch.setattr(
+        runtime_module, "_module_available", lambda name: name == "openai"
+    )
 
-    assert cli.main(["runtime", "--provider", "auto", "--provider-priority", "vllm-runtime,openai-runtime,bedrock-runtime", "--json"]) == 0
+    assert (
+        cli.main(
+            [
+                "runtime",
+                "--provider",
+                "auto",
+                "--provider-priority",
+                "vllm-runtime,openai-runtime,bedrock-runtime",
+                "--json",
+            ]
+        )
+        == 0
+    )
     payload = json.loads(capsys.readouterr().out)
 
     assert payload["selected_provider"] == "vllm-runtime"
     assert payload["model"] == "Qwen/Qwen3-0.6B"
     assert payload["configuration"]["vllm"]["base_url"] == "http://127.0.0.1:8000/v1"
+
 
 def test_cli_version_prints_package_version(capsys) -> None:
     assert main(["version"]) == 0
@@ -143,10 +163,14 @@ def test_cli_doctor_json_reports_engines(capsys) -> None:
     assert "optional_dependencies" in payload
 
 
-def test_cli_doctor_loads_local_dotenv_without_printing_secret(tmp_path, monkeypatch, capsys) -> None:
+def test_cli_doctor_loads_local_dotenv_without_printing_secret(
+    tmp_path, monkeypatch, capsys
+) -> None:
     monkeypatch.chdir(tmp_path)
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
-    (tmp_path / ".env").write_text("OPENAI_API_KEY=secret-from-dotenv\n", encoding="utf-8")
+    (tmp_path / ".env").write_text(
+        "OPENAI_API_KEY=secret-from-dotenv\n", encoding="utf-8"
+    )
 
     assert main(["doctor", "--json"]) == 0
 
@@ -190,3 +214,39 @@ def test_cli_api_can_filter_contract_ids(capsys) -> None:
     payload = json.loads(capsys.readouterr().out)
     assert payload["count"] >= 1
     assert all("runtime" in identifier.lower() for identifier in payload["ids"])
+
+
+def test_cli_model_server_inspect_is_read_only_and_secret_safe(capsys):
+    assert (
+        main(
+            [
+                "model-server",
+                "inspect",
+                "--model",
+                "unsloth/Qwen3-0.6B",
+                "--profile",
+                "fast",
+                "--reasoning-parser",
+                "qwen3",
+                "--json",
+            ]
+        )
+        == 0
+    )
+
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["backend"] == "vllm"
+    assert payload["spec"]["profile"] == "fast"
+    assert payload["endpoint"]["owned"] is False
+    assert payload["endpoint"]["pid"] is None
+    assert "--reasoning-parser" in payload["command"]
+    assert "api_key" not in payload["spec"]
+    assert payload["endpoint"]["api_key_configured"] is True
+
+
+def test_cli_model_server_inspect_renders_rich_panel(capsys) -> None:
+    assert main(["model-server", "inspect", "--model", "served"]) == 0
+
+    output = capsys.readouterr().out
+    assert "Model Server" in output
+    assert '"backend": "vllm"' in output

@@ -84,3 +84,18 @@ __all__ = [
     "VLLMRuntimeSpec",
     "validate_live_attestation",
 ]
+from .serving import (
+    SERVING_SCHEMA_VERSION,
+    EndpointInfo,
+    ModelArtifact,
+    ServerHealth,
+    VLLMServerSpec,
+)
+
+__all__ += [
+    "SERVING_SCHEMA_VERSION",
+    "EndpointInfo",
+    "ModelArtifact",
+    "ServerHealth",
+    "VLLMServerSpec",
+]

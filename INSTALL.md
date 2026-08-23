@@ -21,23 +21,30 @@ Install only the boundaries you use:
 
 ```bash
 python -m pip install "agentic-systems[openai]"
+python -m pip install "agentic-systems[openai-agents]"
 python -m pip install "agentic-systems[bedrock]"
 python -m pip install "agentic-systems[langgraph]"
-python -m pip install "agentic-systems[vllm]"
+python -m pip install "agentic-systems[strands]"
+python -m pip install "agentic-systems[vllm-client]"
+python -m pip install "agentic-systems[vllm-server]"  # GPU/Linux host only
 python -m pip install "agentic-systems[dev]"
 ```
 
 | Extra | Purpose |
 |---|---|
-| `openai` | OpenAI and existing OpenAI-compatible endpoints, including remote vLLM. |
-| `bedrock` | boto3/botocore >=1.39 support for AWS Bedrock Runtime with SigV4 credentials or a native Bedrock API key. |
+| `openai` | OpenAI provider and existing OpenAI-compatible endpoints. |
+| `openai-agents` | OpenAI Agents SDK; installed package is `openai-agents`, import name is `agents`. |
+| `bedrock` | boto3/botocore support for Bedrock SigV4 or native API key authentication. |
 | `langgraph` | Native LangGraph orchestration adapter. |
-| `vllm` | The vLLM server stack plus OpenAI client; intended for supported GPU/Linux hosts. |
+| `strands` | AWS Strands Agents and MCP support. |
+| `vllm` / `vllm-client` | Lightweight OpenAI-compatible client for an existing vLLM endpoint. |
+| `vllm-server` | vLLM GPU/server stack; supported GPU/Linux hosts only. |
 | `dev` | Test, coverage, lint and notebook tooling for this repository. |
 
-The exhaustive `all` extra includes vLLM and therefore its GPU/server dependency
-stack. It is not recommended for general library use or routine CI. Agentic
-Systems never starts a vLLM server implicitly.
+The `all` extra installs the portable Provider/Framework SDKs and development
+gates, but deliberately excludes the platform-specific vLLM GPU server. Install
+`vllm-server` only on the machine that serves the model. Agentic Systems never
+starts it implicitly; process ownership begins only at `server.start()`.
 
 To connect to an already running vLLM endpoint, the lighter OpenAI extra is
 sufficient:
@@ -54,7 +61,7 @@ export VLLM_API_KEY="EMPTY"
 Pin the maintenance release when reproducibility matters:
 
 ```bash
-python -m pip install "agentic-systems==2.0.0"
+python -m pip install "agentic-systems==2.1.0"
 ```
 
 ## From GitHub
@@ -73,7 +80,7 @@ CI:
 
 ```bash
 python -m pip install -U pip
-python -m pip install -e ".[dev,bedrock,langgraph,openai]"
+python -m pip install -e ".[dev,bedrock,langgraph,openai,openai-agents,strands]"
 ```
 
 Install `.[vllm-server]` separately only on a host that will actually run vLLM.
