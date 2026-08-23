@@ -12,7 +12,9 @@ from agentic_systems.results import RunResult
 
 class _DeterministicAgent:
     def run(self, input_value, mode="eval", config=None):
-        return RunResult(text=str(input_value), data={"value": input_value}, ok=True, mode=mode)
+        return RunResult(
+            text=str(input_value), data={"value": input_value}, ok=True, mode=mode
+        )
 
 
 def _run_episode(env: AgenticEnvironment, seed: int) -> tuple[list[float], dict]:
@@ -65,22 +67,32 @@ def test_eval_reports_classification_seed_conditions_and_consistent_serializatio
         seed=41,
         reproducibility_conditions=["same fixture snapshot"],
     )
-    second = run_eval(_DeterministicAgent(), cases, determinism="deterministic", seed=41)
+    second = run_eval(
+        _DeterministicAgent(), cases, determinism="deterministic", seed=41
+    )
 
     assert first.cases == second.cases
     assert first.reproducibility.classification == "deterministic"
     assert first.reproducibility.seed == 41
     assert first.reproducibility.replayable is True
     assert "same fixture snapshot" in first.reproducibility.conditions
-    assert first.to_dict()["reproducibility"] == first.normalized()["input"]["reproducibility"]
+    assert (
+        first.to_dict()["reproducibility"]
+        == first.normalized()["input"]["reproducibility"]
+    )
 
     default_report = run_eval(_DeterministicAgent(), cases)
     assert default_report.reproducibility.classification == "non_deterministic"
     assert default_report.reproducibility.replayable is False
 
-    seeded_report = run_eval(_DeterministicAgent(), cases, determinism="seeded", seed=41)
+    seeded_report = run_eval(
+        _DeterministicAgent(), cases, determinism="seeded", seed=41
+    )
     assert seeded_report.reproducibility.classification == "seeded"
-    assert any("consume the declared seed" in item for item in seeded_report.reproducibility.conditions)
+    assert any(
+        "consume the declared seed" in item
+        for item in seeded_report.reproducibility.conditions
+    )
 
 
 def test_eval_reproducibility_and_report_aggregates_reject_contradictions():

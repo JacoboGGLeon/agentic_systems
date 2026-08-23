@@ -31,7 +31,7 @@ API -> Docs -> Tutorials -> explicit automated or manual evidence
 
 Public concepts are defined in the API, explained in the documentation, taught through the canonical tutorials, and checked by explicit release gates.
 
-Release status: `2.0.0` is the Provider x Framework architecture: 78 stable top-level exports, 370 traced export/member IDs, 10 shared contract scenarios, four real Framework adapters, and no silent fallback.
+Release status: `2.0.1` hardens the Provider x Framework architecture with a canonical 20-pair registry, strict versioned schemas, normalized reasoning-safe results, polymorphic adapter contracts and blocking production/Pydantic/POO gates. The 78 stable top-level exports, 373 traced export/member IDs and 2.0 serialization views remain compatible.
 
 ## Installation
 
@@ -45,28 +45,28 @@ import agentic_systems as toolkit
 
 ### Install the Agentic Systems skill
 
-The `v2.0.0` GitHub release includes a credential-free skill ZIP whose archive
+The `v2.0.1` GitHub release includes a credential-free skill ZIP whose archive
 root is `agentic-systems/`.
 
 ```powershell
-Expand-Archive .\agentic-systems-skill-2.0.0.zip `
+Expand-Archive .\agentic-systems-skill-2.0.1.zip `
   -DestinationPath "$env:USERPROFILE\.codex\skills" -Force
 ```
 
 ```bash
-unzip agentic-systems-skill-2.0.0.zip -d ~/.codex/skills
+unzip agentic-systems-skill-2.0.1.zip -d ~/.codex/skills
 ```
 
 Restart or reload Codex, then invoke `$agentic-systems`. OpenAI Skills upload
 surfaces that accept a ZIP can consume the same artifact. Download the
 standalone skill and the complete ten-system Studio from the
-[v2.0.0 release](https://github.com/JacoboGGLeon/agentic_systems/releases/tag/v2.0.0).
+[v2.0.1 release](https://github.com/JacoboGGLeon/agentic_systems/releases/tag/v2.0.1).
 
 Release assets:
 
-- `agentic-systems-skill-2.0.0.zip`: Codex/OpenAI skill package.
-- `agentic-systems-studio-2.0.0.zip`: portable Studio with ten nested systems.
-- `SHA256SUMS-2.0.0.txt`: hashes for the Python and product artifacts.
+- `agentic-systems-skill-2.0.1.zip`: Codex/OpenAI skill package.
+- `agentic-systems-studio-2.0.1.zip`: portable Studio with ten nested systems.
+- `SHA256SUMS-2.0.1.txt`: hashes for the Python and product artifacts.
 
 For an installed-package smoke test and provider notebook setup, follow
 [First Run Onboarding](docs/ONBOARDING_FIRST_RUN.md).
@@ -409,7 +409,7 @@ evidence belongs to GitHub Releases.
 Current verified status:
 
 ```text
-Version: 2.0.0
+Version: 2.0.1
 PyPI package: agentic-systems
 Tests: run `python -m pytest` for the current count
 Core coverage: 100.00%
@@ -423,9 +423,17 @@ Run validation locally:
 ```bash
 python -m pytest -q -W error::RuntimeWarning
 python -m ruff check src tests
+python -m pyright --project pyrightconfig.json
+python scripts/check_pyright_baseline.py
+lint-imports
+python scripts/check_architecture.py
+python scripts/check_secrets.py
 python -m compileall -q src tests tutorials
 agentic-systems doctor --json
 ```
+
+The complete production, Pydantic and POO/polymorphism certification is
+documented in [Triple Quality Gate](docs/QUALITY_GATES.md).
 
 For full coverage validation:
 

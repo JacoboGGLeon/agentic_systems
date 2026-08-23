@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "agentic-systems"
-version = "2.0.0"
+version = "2.0.1"
 description = "Agentic Systems: a computational grammar for building, executing, observing, and evaluating intelligent systems."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -50,6 +50,13 @@ dev = [
     "jupyterlab>=4.0.0",
     "nbclient>=0.10.0",
     "nbformat>=5.10.0",
+    "hypothesis>=6.100.0",
+    "pyright>=1.1.390",
+    "import-linter>=2.0.0",
+    "pip-audit>=2.7.0",
+    "radon>=6.0.1",
+    "cyclonedx-bom>=5.0.0",
+    "mutmut>=3.7,<4",
 ]
 all = [
     "boto3>=1.39.0",
@@ -66,6 +73,13 @@ all = [
     "pytest>=8.0.0",
     "pytest-cov>=5.0.0",
     "ruff==0.15.22",
+    "hypothesis>=6.100.0",
+    "pyright>=1.1.390",
+    "import-linter>=2.0.0",
+    "pip-audit>=2.7.0",
+    "radon>=6.0.1",
+    "cyclonedx-bom>=5.0.0",
+    "mutmut>=3.7,<4",
     "tomli>=2.0.1; python_version < '3.11'",
 ]
 
@@ -106,3 +120,8 @@ exclude_lines = [
     "if TYPE_CHECKING:",
     "\\.\\.\\.",
 ]
+
+[tool.mutmut]
+source_paths = ["src/agentic_systems/schemas", "src/agentic_systems/registry.py", "src/agentic_systems/normalization.py", "src/agentic_systems/errors.py"]
+pytest_add_cli_args_test_selection = ["tests/contracts"]
+mutate_only_covered_lines = true

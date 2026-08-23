@@ -9,7 +9,9 @@ from __future__ import annotations
 
 import json
 import os
+import re
 from collections.abc import Mapping
+from hashlib import sha256
 from typing import Any
 from uuid import uuid4
 
@@ -21,6 +23,7 @@ from agentic_systems.providers.conformance import ProviderProfile, provider_prof
 from agentic_systems.tools.events import ToolEvent
 
 _INSTALL_HINT = "Install with: pip install openai"
+_OPENAI_TOOL_NAME = re.compile(r"^[a-zA-Z0-9_-]{1,64}$")
 
 
 def _openai_module() -> Any:
@@ -74,14 +77,6 @@ class OpenAIRuntimeProvider:
     ) -> RunResult:
         messages = _build_messages(agent, input)
         tool_defs = _openai_tools(self._runtime(agent), agent)
-        if not tool_defs:
-            return _failure(
-                "OpenAIRuntimeProvider needs at least one concrete Tool on the agent.",
-                agent,
-                mode,
-                "missing_tools",
-            )
-
         client = self._client or _openai_module().OpenAI()
         return _run_chat_loop(
             client,
@@ -104,13 +99,6 @@ class OpenAIRuntimeProvider:
             client = openai.AsyncOpenAI()
         messages = _build_messages(agent, input)
         tool_defs = _openai_tools(self._runtime(agent), agent)
-        if not tool_defs:
-            return _failure(
-                "OpenAIRuntimeProvider needs at least one concrete Tool on the agent.",
-                agent,
-                mode,
-                "missing_tools",
-            )
         return await _run_chat_loop_async(
             client,
             messages,
@@ -197,15 +185,23 @@ def _openai_tools(runtime: Any, agent: Any) -> list[dict[str, Any]]:
                 },
             )()
     defs: list[dict[str, Any]] = []
+    provider_names: set[str] = set()
     for name in tool_names:
         spec = specs.get(name)
         if spec is None:
             continue
+        provider_name = _provider_tool_name(spec.name)
+        if provider_name in provider_names:
+            raise ValueError(
+                "Tool names are not unique after OpenAI-compatible normalization: "
+                f"{provider_name!r}."
+            )
+        provider_names.add(provider_name)
         defs.append(
             {
                 "type": "function",
                 "function": {
-                    "name": spec.name,
+                    "name": provider_name,
                     "description": spec.description,
                     "parameters": spec.input_schema,
                 },
@@ -245,7 +241,7 @@ def _run_chat_loop(
             or DEFAULT_OPENAI_MODEL_ID,
             messages=messages,
             tools=tools or None,
-            tool_choice=_tool_choice(policy.tool_choice),
+            tool_choice=_tool_choice(policy.tool_choice) if tools else None,
             temperature=policy.temperature,
             max_tokens=policy.max_tokens,
         )
@@ -275,7 +271,7 @@ def _run_chat_loop(
             }
         )
         for tc in tool_calls:
-            name = tc.function.name
+            name = _canonical_tool_name(runtime, agent, tc.function.name)
             args = _json_loads(getattr(tc.function, "arguments", "") or "{}")
             result = _execute_tool(
                 runtime,
@@ -338,7 +334,7 @@ async def _run_chat_loop_async(
             or DEFAULT_OPENAI_MODEL_ID,
             messages=messages,
             tools=tools or None,
-            tool_choice=_tool_choice(policy.tool_choice),
+            tool_choice=_tool_choice(policy.tool_choice) if tools else None,
             temperature=policy.temperature,
             max_tokens=policy.max_tokens,
         )
@@ -368,7 +364,7 @@ async def _run_chat_loop_async(
             }
         )
         for tc in tool_calls:
-            name = tc.function.name
+            name = _canonical_tool_name(runtime, agent, tc.function.name)
             args = _json_loads(getattr(tc.function, "arguments", "") or "{}")
             result = _execute_tool(
                 runtime,
@@ -546,7 +542,46 @@ def _tool_choice(choice: Any) -> Any:
         return "auto"
     if choice in {"required", "any"}:
         return "required"
-    return {"type": "function", "function": {"name": choice}}
+    return {
+        "type": "function",
+        "function": {"name": _provider_tool_name(choice)},
+    }
+
+
+def _provider_tool_name(name: str) -> str:
+    """Return a stable OpenAI-compatible alias without changing public identity."""
+
+    canonical = str(name)
+    if _OPENAI_TOOL_NAME.fullmatch(canonical):
+        return canonical
+    slug = re.sub(r"[^a-zA-Z0-9_-]+", "_", canonical).strip("_-") or "tool"
+    digest = sha256(canonical.encode("utf-8")).hexdigest()[:16]
+    return f"as_{slug[:44]}_{digest}"
+
+
+def _canonical_tool_name(runtime: Any, agent: Any, provider_name: str) -> str:
+    """Resolve a provider alias back to the registered canonical tool name."""
+
+    candidates: list[str] = []
+    effective_runtime = getattr(runtime, "_runtime", runtime)
+    for spec in list(getattr(effective_runtime, "tools", []) or []):
+        name = getattr(spec, "name", None)
+        if name:
+            candidates.append(str(name))
+    if hasattr(agent, "available_tools"):
+        for tool in agent.available_tools():
+            name = getattr(tool, "name", None)
+            if name and str(name) not in candidates:
+                candidates.append(str(name))
+    matches = [
+        name for name in candidates if _provider_tool_name(name) == provider_name
+    ]
+    if len(matches) > 1:
+        raise ValueError(
+            "Ambiguous OpenAI-compatible tool alias "
+            f"{provider_name!r}: {sorted(matches)!r}."
+        )
+    return matches[0] if matches else provider_name
 
 
 def _tool_call_dict(tc: Any) -> dict[str, Any]:

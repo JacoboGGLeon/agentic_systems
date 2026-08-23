@@ -8,11 +8,21 @@ import json
 import re
 import shutil
 import tarfile
+
+try:
+    import tomllib
+except ModuleNotFoundError:  # pragma: no cover - Python 3.10 only.
+    import tomli as tomllib
+
 import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "2.0.0"
+VERSION = str(
+    tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))["project"][
+        "version"
+    ]
+)
 DIST = ROOT / "dist"
 SKILL_SOURCE = (
     ROOT / "examples" / "agentic_systems_studio" / "skills" / "agentic-systems"
@@ -22,7 +32,7 @@ STUDIO_SOURCE = (
     / "examples"
     / "agentic_systems_studio"
     / "dist"
-    / "agentic-systems-studio-2.0.zip"
+    / f"agentic-systems-studio-{VERSION}.zip"
 )
 FORBIDDEN_PATH_PARTS = ("accountability_otc", "accountability-otc")
 SECRET_PREFIXES = (

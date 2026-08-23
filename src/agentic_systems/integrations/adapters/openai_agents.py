@@ -6,7 +6,7 @@ import dataclasses
 import json
 import os
 from collections.abc import Mapping
-from typing import Any
+from typing import Any, cast
 
 from ...contracts import RunPolicy
 from ...engines.names import (
@@ -16,10 +16,18 @@ from ...engines.names import (
     PYTHON_RUNTIME_ENGINE,
     VLLM_RUNTIME_ENGINE,
 )
+from ...protocols import AsyncRunner, SyncRunner
+from ...registry import provider_capability
 from ...results import RunResult
 from ...tools.events import ToolEvent
 from .base import FrameworkAdapter, attach_native_result, effective_max_turns
-from .tools import merge_tools
+from .tools import (
+    ToolNameAliases,
+    canonical_tool_callable,
+    decode_tool_output,
+    merge_tools,
+    tool_name_aliases,
+)
 
 
 class OpenAIAgentsFrameworkAdapter(FrameworkAdapter):
@@ -37,14 +45,16 @@ class OpenAIAgentsFrameworkAdapter(FrameworkAdapter):
 
             kwargs = dict(agent.framework_config.agent_kwargs)
             native_tools = kwargs.pop("tools", None)
+            canonical_tools = agent.available_tools()
+            aliases = tool_name_aliases(canonical_tools)
             converted = [
                 function_tool(
-                    tool.function,
-                    name_override=tool.name,
+                    canonical_tool_callable(tool),
+                    name_override=aliases.native(tool.name),
                     description_override=tool.description or None,
                     strict_mode=tool.strict,
                 )
-                for tool in agent.available_tools()
+                for tool in canonical_tools
             ]
             tools = merge_tools(converted, native_tools)
             model = _materialize_model(agent, engine)
@@ -67,6 +77,19 @@ class OpenAIAgentsFrameworkAdapter(FrameworkAdapter):
         *,
         mode: str,
     ) -> RunResult:
+        if (
+            isinstance(engine, SyncRunner)
+            and not agent.available_tools()
+            and not any(
+                agent.framework_config.agent_kwargs.get(key)
+                for key in ("tools", "handoffs")
+            )
+            and provider_capability(agent.engine, "model_generation").status
+            == "unsupported"
+        ):
+            result = cast(Any, engine).run(agent, input_value, policy, mode=mode)
+            result.meta["framework_adapter"] = self.name
+            return result
         try:
             from agents import Runner
         except ImportError as exc:
@@ -77,10 +100,11 @@ class OpenAIAgentsFrameworkAdapter(FrameworkAdapter):
         _configure_model(native_agent.model, policy, mode)
         kwargs = _runner_kwargs(agent, agent.framework_config.run_kwargs)
         max_turns = effective_max_turns(policy, kwargs)
+        aliases = tool_name_aliases(agent.available_tools())
         try:
             native_result = Runner.run_sync(
                 native_agent,
-                _input_text(input_value),
+                _input_text(aliases.map_input(input_value)),
                 max_turns=max_turns,
                 **kwargs,
             )
@@ -88,7 +112,7 @@ class OpenAIAgentsFrameworkAdapter(FrameworkAdapter):
             raise
         except Exception as exc:  # noqa: BLE001 - operational SDK failures normalize.
             return _failure(agent, input_value, mode, exc)
-        result = _normalize_result(agent, native_result, input_value, mode)
+        result = _normalize_result(agent, native_result, input_value, mode, aliases)
         return attach_native_result(result, native_result)
 
     async def arun(
@@ -100,6 +124,19 @@ class OpenAIAgentsFrameworkAdapter(FrameworkAdapter):
         *,
         mode: str,
     ) -> RunResult:
+        if (
+            isinstance(engine, AsyncRunner)
+            and not agent.available_tools()
+            and not any(
+                agent.framework_config.agent_kwargs.get(key)
+                for key in ("tools", "handoffs")
+            )
+            and provider_capability(agent.engine, "model_generation").status
+            == "unsupported"
+        ):
+            result = await cast(Any, engine).arun(agent, input_value, policy, mode=mode)
+            result.meta["framework_adapter"] = self.name
+            return result
         try:
             from agents import Runner
         except ImportError as exc:
@@ -110,10 +147,11 @@ class OpenAIAgentsFrameworkAdapter(FrameworkAdapter):
         _configure_model(native_agent.model, policy, mode)
         kwargs = _runner_kwargs(agent, agent.framework_config.run_kwargs)
         max_turns = effective_max_turns(policy, kwargs)
+        aliases = tool_name_aliases(agent.available_tools())
         try:
             native_result = await Runner.run(
                 native_agent,
-                _input_text(input_value),
+                _input_text(aliases.map_input(input_value)),
                 max_turns=max_turns,
                 **kwargs,
             )
@@ -121,7 +159,7 @@ class OpenAIAgentsFrameworkAdapter(FrameworkAdapter):
             raise
         except Exception as exc:  # noqa: BLE001 - operational SDK failures normalize.
             return _failure(agent, input_value, mode, exc)
-        result = _normalize_result(agent, native_result, input_value, mode)
+        result = _normalize_result(agent, native_result, input_value, mode, aliases)
         return attach_native_result(result, native_result)
 
 
@@ -191,6 +229,7 @@ def _normalize_result(
     native_result: Any,
     input_value: Any,
     mode: str,
+    aliases: ToolNameAliases | None = None,
 ) -> RunResult:
     bridged = getattr(getattr(native_result, "last_agent", None), "model", None)
     provider_result = getattr(bridged, "last_result", None)
@@ -205,17 +244,27 @@ def _normalize_result(
     raw_responses = [
         _jsonable(item) for item in getattr(native_result, "raw_responses", ())
     ]
+    events = _tool_events(native_result, aliases)
+    failed = [event for event in events if not event.ok]
+    if failed:
+        failure_error = failed[0].error or {
+            "code": "tool_execution_failed",
+            "message": f"Tool {failed[0].name!r} failed.",
+        }
+        text = str(failure_error.get("message") or "Tool execution failed.")
+        data = {"ok": False, "error": failure_error}
     return RunResult(
         text=text,
         data=data,
-        ok=True,
+        ok=not failed,
         messages=[_jsonable(item) for item in native_result.to_input_list()],
-        tool_events=_tool_events(native_result),
+        tool_events=events,
         raw_responses=raw_responses,
         usage=_usage(native_result),
         engine=agent.engine,
         model=agent.model or "",
         mode=mode,
+        errors=[event.error for event in failed if event.error],
         meta={
             "source_result_type": type(native_result).__name__,
             "framework_adapter": "openai-agents",
@@ -224,7 +273,11 @@ def _normalize_result(
     )
 
 
-def _tool_events(native_result: Any) -> list[ToolEvent]:
+def _tool_events(
+    native_result: Any,
+    aliases: ToolNameAliases | None = None,
+) -> list[ToolEvent]:
+    aliases = aliases or tool_name_aliases(())
     pending: dict[str, dict[str, Any]] = {}
     events: list[ToolEvent] = []
     for item in getattr(native_result, "new_items", ()):
@@ -242,14 +295,17 @@ def _tool_events(native_result: Any) -> list[ToolEvent]:
             }
         elif "ToolCallOutputItem" in kind and isinstance(raw, Mapping):
             original = pending.get(call_id, {})
-            output = raw.get("output")
+            output, ok, error = decode_tool_output(_jsonable(raw.get("output")))
             events.append(
                 ToolEvent(
                     id=call_id,
-                    name=str(original.get("name") or raw.get("name") or ""),
+                    name=aliases.canonical(
+                        str(original.get("name") or raw.get("name") or "")
+                    ),
                     input=dict(original.get("input") or {}),
                     output={"data": _jsonable(output)},
-                    ok=True,
+                    ok=ok,
+                    error=error,
                     meta={"source": "openai-agents"},
                 )
             )

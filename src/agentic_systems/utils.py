@@ -10,6 +10,8 @@ from dataclasses import asdict, is_dataclass
 from pathlib import Path
 from typing import Any, Callable, Mapping
 
+from .registry import provider_capability
+
 
 _DEFAULT_SENSITIVE_KEY_PATTERN = re.compile(
     r"(secret|token|password|passwd|credential|access[_-]?key|session[_-]?key|private[_-]?key|api[_-]?key)",
@@ -33,7 +35,6 @@ _AWS_ENV_KEYS = (
     "AWS_CONTAINER_CREDENTIALS_FULL_URI",
     "AWS_CONTAINER_CREDENTIALS_RELATIVE_URI",
 )
-
 
 
 AGENT_OUTPUT_SCHEMA_VERSION = "agentic_systems.agent_output.v1"
@@ -90,8 +91,12 @@ def compose_result(
 
     real_results = [item for item in results if item is not None]
     selected_runtime = _select_representative_result(real_results)
-    resolved_engine = engine or getattr(selected_runtime, "engine", None) or PYTHON_RUNTIME_ENGINE
-    resolved_model = model or getattr(selected_runtime, "model", None) or "python-runtime"
+    resolved_engine = (
+        engine or getattr(selected_runtime, "engine", None) or PYTHON_RUNTIME_ENGINE
+    )
+    resolved_model = (
+        model or getattr(selected_runtime, "model", None) or "python-runtime"
+    )
     tool_events: list[Any] = []
     raw_responses: list[dict[str, Any]] = []
     messages: list[dict[str, Any]] = []
@@ -117,7 +122,9 @@ def compose_result(
         text=text,
         data=dict(data),
         final=dict(data),
-        ok=all(bool(getattr(item, "ok", True)) for item in real_results) if real_results else True,
+        ok=all(bool(getattr(item, "ok", True)) for item in real_results)
+        if real_results
+        else True,
         messages=messages,
         tool_events=tool_events,
         raw_responses=raw_responses,
@@ -177,7 +184,9 @@ def agent_output(
     if answer_preview:
         summary = {**summary, "answer_preview": answer_preview}
 
-    meta = result_dict.get("meta") if isinstance(result_dict.get("meta"), Mapping) else {}
+    meta = (
+        result_dict.get("meta") if isinstance(result_dict.get("meta"), Mapping) else {}
+    )
     runtime_engine = meta.get("runtime_engine") or result_dict.get("engine")
     framework = meta.get("framework") or result_dict.get("framework")
     output: dict[str, Any] = {
@@ -199,7 +208,9 @@ def agent_output(
         "validation_ok": validation.get("ok"),
         "validation": {
             "ok": validation.get("ok"),
-            "issues": _maybe_bound_json(validation.get("issues") or [], max_string_chars=max_string_chars),
+            "issues": _maybe_bound_json(
+                validation.get("issues") or [], max_string_chars=max_string_chars
+            ),
         },
     }
     if include_trace:
@@ -235,7 +246,9 @@ def make_agent_output_mapper(
     return _mapper
 
 
-def agent_output_mapper(result: Any, state: Mapping[str, Any] | None = None) -> dict[str, Any]:
+def agent_output_mapper(
+    result: Any, state: Mapping[str, Any] | None = None
+) -> dict[str, Any]:
     """Default graph output mapper that writes the canonical ``agent_output``.
 
     The ``state`` argument is accepted for compatibility with mapper call sites;
@@ -243,6 +256,7 @@ def agent_output_mapper(result: Any, state: Mapping[str, Any] | None = None) -> 
     """
 
     return {"agent_output": agent_output(result)}
+
 
 def configure_notebook_environment(
     repo_root: str | Path | None = None,
@@ -288,7 +302,6 @@ def configure_notebook_environment(
     return root
 
 
-
 def _clear_dummy_aws_test_credentials() -> list[str]:
     """Remove known dummy AWS credentials that can shadow managed roles.
 
@@ -319,7 +332,12 @@ def _clear_dummy_aws_test_credentials() -> list[str]:
     return removed
 
 
-def compare(outputs: Any, *, key: str = "fields", keys: list[str] | tuple[str, ...] | None = None) -> dict[str, Any]:
+def compare(
+    outputs: Any,
+    *,
+    key: str = "fields",
+    keys: list[str] | tuple[str, ...] | None = None,
+) -> dict[str, Any]:
     """Compare normalized outputs and keep notebook display compact.
 
     ``outputs`` may contain ``RunResult`` objects, compact traces, normalized
@@ -327,10 +345,16 @@ def compare(outputs: Any, *, key: str = "fields", keys: list[str] | tuple[str, .
     to the same compact run shape before selecting fields.
     """
 
-    runs = [_coerce_compare_item(item) for item in list(outputs if isinstance(outputs, (list, tuple)) else [outputs])]
+    runs = [
+        _coerce_compare_item(item)
+        for item in list(outputs if isinstance(outputs, (list, tuple)) else [outputs])
+    ]
     if keys is not None:
         selected = list(keys)
-        rows = [_compact_run_for_keys(item, selected, index=index) for index, item in enumerate(runs, start=1)]
+        rows = [
+            _compact_run_for_keys(item, selected, index=index)
+            for index, item in enumerate(runs, start=1)
+        ]
         same = {name: _all_equal([row.get(name) for row in rows]) for name in selected}
         return {
             "ok": all(bool(row.get("run_ok", row.get("ok", False))) for row in rows),
@@ -349,10 +373,16 @@ def compare(outputs: Any, *, key: str = "fields", keys: list[str] | tuple[str, .
         shared_value = first if same else None
 
     return {
-        "ok": all(isinstance(item, Mapping) and item.get("ok", item.get("run_ok")) is True for item in runs),
+        "ok": all(
+            isinstance(item, Mapping) and item.get("ok", item.get("run_ok")) is True
+            for item in runs
+        ),
         f"same_{key}": same,
         key: shared_value,
-        "runs": [_compact_run_for_compare(item, key=key, include_key=not bool(same)) for item in runs],
+        "runs": [
+            _compact_run_for_compare(item, key=key, include_key=not bool(same))
+            for item in runs
+        ],
     }
 
 
@@ -373,12 +403,25 @@ def _coerce_compare_item(item: Any) -> dict[str, Any]:
 
     if "trace_schema_version" in value or "run_ok" in value:
         compact = dict(value)
-        normalized = compact.get("normalized") if isinstance(compact.get("normalized"), Mapping) else None
-        runtime = normalized.get("runtime") if isinstance(normalized, Mapping) and isinstance(normalized.get("runtime"), Mapping) else {}
+        normalized = (
+            compact.get("normalized")
+            if isinstance(compact.get("normalized"), Mapping)
+            else None
+        )
+        runtime = (
+            normalized.get("runtime")
+            if isinstance(normalized, Mapping)
+            and isinstance(normalized.get("runtime"), Mapping)
+            else {}
+        )
         compact.setdefault("framework", runtime.get("framework"))
         return compact
 
-    normalized = value.get("normalized") if isinstance(value.get("normalized"), Mapping) else None
+    normalized = (
+        value.get("normalized")
+        if isinstance(value.get("normalized"), Mapping)
+        else None
+    )
     if normalized is None and isinstance(value.get("compact"), Mapping):
         compact = value["compact"]
         if isinstance(compact.get("normalized"), Mapping):
@@ -394,8 +437,12 @@ def _coerce_compare_item(item: Any) -> dict[str, Any]:
 
 
 def _compact_from_serialized_run(value: Mapping[str, Any]) -> dict[str, Any]:
-    events = value.get("tool_events") if isinstance(value.get("tool_events"), list) else []
-    failed = [event for event in events if isinstance(event, Mapping) and not event.get("ok")]
+    events = (
+        value.get("tool_events") if isinstance(value.get("tool_events"), list) else []
+    )
+    failed = [
+        event for event in events if isinstance(event, Mapping) and not event.get("ok")
+    ]
     meta = value.get("meta") if isinstance(value.get("meta"), Mapping) else {}
     normalized = {
         "schema_version": "agentic_systems.run.v1",
@@ -409,7 +456,11 @@ def _compact_from_serialized_run(value: Mapping[str, Any]) -> dict[str, Any]:
         },
         "input": meta.get("input") or value.get("input") or value.get("prompt"),
         "answer": {"text": value.get("text") or "", "data": value.get("data") or {}},
-        "tools": [_normalize_compare_event(event) for event in events if isinstance(event, Mapping)],
+        "tools": [
+            _normalize_compare_event(event)
+            for event in events
+            if isinstance(event, Mapping)
+        ],
         "usage": value.get("usage") or {},
         "validation": value.get("validation"),
     }
@@ -420,21 +471,35 @@ def _compact_from_serialized_run(value: Mapping[str, Any]) -> dict[str, Any]:
     return compact
 
 
-def _compact_from_normalized(normalized: Mapping[str, Any], source: Mapping[str, Any] | None = None) -> dict[str, Any]:
-    runtime = normalized.get("runtime") if isinstance(normalized.get("runtime"), Mapping) else {}
+def _compact_from_normalized(
+    normalized: Mapping[str, Any], source: Mapping[str, Any] | None = None
+) -> dict[str, Any]:
+    runtime = (
+        normalized.get("runtime")
+        if isinstance(normalized.get("runtime"), Mapping)
+        else {}
+    )
     tools = normalized.get("tools") if isinstance(normalized.get("tools"), list) else []
-    failed = [tool for tool in tools if isinstance(tool, Mapping) and not tool.get("ok")]
+    failed = [
+        tool for tool in tools if isinstance(tool, Mapping) and not tool.get("ok")
+    ]
     source = source or {}
     return {
-        "trace_schema_version": source.get("trace_schema_version", "agentic_systems.trace.v1"),
+        "trace_schema_version": source.get(
+            "trace_schema_version", "agentic_systems.trace.v1"
+        ),
         "run_ok": bool(normalized.get("ok", source.get("ok", False))),
         "ok": bool(normalized.get("ok", source.get("ok", False))),
         "engine": runtime.get("engine") or source.get("engine"),
         "framework": runtime.get("framework") or source.get("framework"),
         "model": runtime.get("model") or source.get("model"),
         "mode": runtime.get("mode") or source.get("mode"),
-        "text": (normalized.get("answer") or {}).get("text") if isinstance(normalized.get("answer"), Mapping) else source.get("text"),
-        "data": (normalized.get("answer") or {}).get("data") if isinstance(normalized.get("answer"), Mapping) else source.get("data"),
+        "text": (normalized.get("answer") or {}).get("text")
+        if isinstance(normalized.get("answer"), Mapping)
+        else source.get("text"),
+        "data": (normalized.get("answer") or {}).get("data")
+        if isinstance(normalized.get("answer"), Mapping)
+        else source.get("data"),
         "tool_event_count": len(tools),
         "successful_tool_count": len(tools) - len(failed),
         "failed_tool_event_count": len(failed),
@@ -446,7 +511,11 @@ def _compact_from_normalized(normalized: Mapping[str, Any], source: Mapping[str,
 
 def _normalize_compare_event(event: Mapping[str, Any]) -> dict[str, Any]:
     output = event.get("output") or {}
-    payload = output.get("data") if isinstance(output, Mapping) and isinstance(output.get("data"), Mapping) else output
+    payload = (
+        output.get("data")
+        if isinstance(output, Mapping) and isinstance(output.get("data"), Mapping)
+        else output
+    )
     payload = payload if isinstance(payload, Mapping) else {"value": payload}
     table = payload.get("table") if isinstance(payload.get("table"), Mapping) else {}
     query = payload.get("query") if isinstance(payload.get("query"), Mapping) else {}
@@ -455,7 +524,9 @@ def _normalize_compare_event(event: Mapping[str, Any]) -> dict[str, Any]:
         "ok": bool(event.get("ok")),
         "input": event.get("input") or {},
         "output": dict(payload),
-        "summary": payload.get("summary") or payload.get("error") or payload.get("text"),
+        "summary": payload.get("summary")
+        or payload.get("error")
+        or payload.get("text"),
         "sql": payload.get("sql"),
         "rows": table.get("rows") or [],
         "row_count": table.get("n_rows"),
@@ -494,7 +565,9 @@ def _compact_run_for_keys(item: Any, keys: list[str], *, index: int) -> dict[str
     return row
 
 
-def _compact_run_for_compare(item: Any, *, key: str, include_key: bool) -> dict[str, Any]:
+def _compact_run_for_compare(
+    item: Any, *, key: str, include_key: bool
+) -> dict[str, Any]:
     if not isinstance(item, Mapping):
         return {"ok": False, "value": _to_jsonable(item)}
 
@@ -523,6 +596,7 @@ def _compact_run_for_compare(item: Any, *, key: str, include_key: bool) -> dict[
     if include_key and key in item:
         row[key] = item.get(key)
     return {k: v for k, v in row.items() if v is not None}
+
 
 def show_json(
     value: Any,
@@ -583,7 +657,9 @@ def mask_sensitive(value: Any) -> Any:
     return _mask_sensitive(value, parent_key="")
 
 
-def aws_environment_snapshot(*, include_values: bool = False, mask: bool | None = None) -> dict[str, Any]:
+def aws_environment_snapshot(
+    *, include_values: bool = False, mask: bool | None = None
+) -> dict[str, Any]:
     """Return a small AWS-related environment snapshot for notebooks.
 
     By default values are represented as ``"SET"``/``None`` to avoid exposing
@@ -605,12 +681,13 @@ def aws_environment_snapshot(*, include_values: bool = False, mask: bool | None 
     return env
 
 
-def boto3_session_snapshot(region_name: str | None = None, *, mask: bool | None = None) -> dict[str, Any]:
+def boto3_session_snapshot(
+    region_name: str | None = None, *, mask: bool | None = None
+) -> dict[str, Any]:
     """Describe the active boto3 credential provider without exposing secrets."""
     from agentic_systems.core.runtime import _load_dotenv
 
     _load_dotenv()
-
 
     try:
         import boto3
@@ -629,12 +706,16 @@ def boto3_session_snapshot(region_name: str | None = None, *, mask: bool | None 
     authentication_mode = (
         "bedrock-api-key"
         if bedrock_api_key
-        else "aws-credential-chain" if credentials is not None else None
+        else "aws-credential-chain"
+        if credentials is not None
+        else None
     )
     return {
         "ok": has_credentials,
         "session_region": session.region_name,
-        "credential_method": authentication_mode if bedrock_api_key else getattr(credentials, "method", None),
+        "credential_method": authentication_mode
+        if bedrock_api_key
+        else getattr(credentials, "method", None),
         "authentication_mode": authentication_mode,
         "bedrock_api_key_configured": bedrock_api_key,
         "has_credentials": has_credentials,
@@ -663,10 +744,14 @@ def repair_ada_credential_chain(
     before_env = aws_environment_snapshot(include_values=False)
     before_session = boto3_session_snapshot(region_name=region_name)
 
-    has_static_pair = bool(os.getenv("AWS_ACCESS_KEY_ID") and os.getenv("AWS_SECRET_ACCESS_KEY"))
+    has_static_pair = bool(
+        os.getenv("AWS_ACCESS_KEY_ID") and os.getenv("AWS_SECRET_ACCESS_KEY")
+    )
     missing_session_token = not bool(os.getenv("AWS_SESSION_TOKEN"))
     credential_method = before_session.get("credential_method")
-    repair_candidate = bool(has_static_pair and missing_session_token and credential_method == "env")
+    repair_candidate = bool(
+        has_static_pair and missing_session_token and credential_method == "env"
+    )
     should_repair = bool(force and repair_candidate)
 
     removed: list[str] = []
@@ -696,7 +781,6 @@ def repair_ada_credential_chain(
             "session": boto3_session_snapshot(region_name=region_name),
         },
     }
-
 
 
 def run_result_output(result: Any, *, include_trace: bool = False) -> dict[str, Any]:
@@ -755,8 +839,14 @@ def run_result_view(
     runtime_engine = meta.get("runtime_engine") or result_dict.get("engine")
     framework = meta.get("framework")
 
-    final_is_plain_text = isinstance(final, dict) and set(final) == {"text"} and final.get("text") == text
-    final_fields = final if isinstance(final, dict) and final and not final_is_plain_text else _parse_answer_fields(text)
+    final_is_plain_text = (
+        isinstance(final, dict) and set(final) == {"text"} and final.get("text") == text
+    )
+    final_fields = (
+        final
+        if isinstance(final, dict) and final and not final_is_plain_text
+        else _parse_answer_fields(text)
+    )
 
     view: dict[str, Any] = {
         "status": {
@@ -764,10 +854,25 @@ def run_result_view(
             "validation_ok": validation.get("ok"),
             "issue_count": len(validation.get("issues") or []),
         },
-        "answer": _summarize_json(final if final and not final_is_plain_text else text, max_string_chars=max_string_chars, max_items=max_items, max_depth=max_depth),
+        "answer": _summarize_json(
+            final if final and not final_is_plain_text else text,
+            max_string_chars=max_string_chars,
+            max_items=max_items,
+            max_depth=max_depth,
+        ),
         "fields": final_fields,
-        "final": _summarize_json(final, max_string_chars=max_string_chars, max_items=max_items, max_depth=max_depth),
-        "data": _summarize_json(data, max_string_chars=max_string_chars, max_items=max_items, max_depth=max_depth),
+        "final": _summarize_json(
+            final,
+            max_string_chars=max_string_chars,
+            max_items=max_items,
+            max_depth=max_depth,
+        ),
+        "data": _summarize_json(
+            data,
+            max_string_chars=max_string_chars,
+            max_items=max_items,
+            max_depth=max_depth,
+        ),
         "runtime": {
             "engine": runtime_engine,
             "framework": framework,
@@ -790,7 +895,6 @@ def run_result_view(
     return view
 
 
-
 def tool_result_summary(result: Any, *, max_string_chars: int = 120) -> dict[str, Any]:
     """Return the smallest useful view of a direct ``Tool.run`` result.
 
@@ -802,14 +906,21 @@ def tool_result_summary(result: Any, *, max_string_chars: int = 120) -> dict[str
     result_dict = _to_jsonable(result)
     events = _result_events(result_dict)
     primary = events[-1] if events else {}
-    output = _compact_tool_event(primary).get("output") if primary else (result_dict.get("data") or {})
+    output = (
+        _compact_tool_event(primary).get("output")
+        if primary
+        else (result_dict.get("data") or {})
+    )
     summary: dict[str, Any] = {
         "ok": result_dict.get("ok"),
         "tool": primary.get("name") if primary else None,
         "output": _minimal_json(output, max_string_chars=max_string_chars),
     }
     if not result_dict.get("ok"):
-        summary["error"] = _minimal_json(result_dict.get("data") or result_dict.get("text"), max_string_chars=max_string_chars)
+        summary["error"] = _minimal_json(
+            result_dict.get("data") or result_dict.get("text"),
+            max_string_chars=max_string_chars,
+        )
     return summary
 
 
@@ -837,7 +948,9 @@ def run_result_summary(
     events = _result_events(result_dict)
     answer_text = _user_facing_answer_text(text, data, result_dict)
     tools = [
-        _tool_event_summary(event, include_input=include_tool_inputs, max_string_chars=max_string_chars)
+        _tool_event_summary(
+            event, include_input=include_tool_inputs, max_string_chars=max_string_chars
+        )
         for event in events
     ]
     fields = _extract_output_fields(
@@ -879,13 +992,21 @@ def run_result_summary(
         summary["usage"] = _usage_summary(result_dict.get("usage") or {})
     return summary
 
-def chain_history_summary(history: Any, *, max_string_chars: int = 120) -> list[dict[str, Any]]:
+
+def chain_history_summary(
+    history: Any, *, max_string_chars: int = 120
+) -> list[dict[str, Any]]:
     """Return a compact step list for ``Chain.history()``."""
 
     rows: list[dict[str, Any]] = []
     for index, item in enumerate(_to_jsonable(history) or [], start=1):
         if not isinstance(item, dict):
-            rows.append({"step": index, "value": _minimal_json(item, max_string_chars=max_string_chars)})
+            rows.append(
+                {
+                    "step": index,
+                    "value": _minimal_json(item, max_string_chars=max_string_chars),
+                }
+            )
             continue
         output = item.get("output") or {}
         row = {
@@ -893,7 +1014,9 @@ def chain_history_summary(history: Any, *, max_string_chars: int = 120) -> list[
             "name": item.get("name"),
             "kind": item.get("kind"),
             "ok": output.get("ok"),
-            "answer": _summarize_string(str(output.get("text") or ""), max_chars=max_string_chars),
+            "answer": _summarize_string(
+                str(output.get("text") or ""), max_chars=max_string_chars
+            ),
         }
         usage = output.get("usage") or {}
         if usage:
@@ -902,7 +1025,9 @@ def chain_history_summary(history: Any, *, max_string_chars: int = 120) -> list[
     return rows
 
 
-def environment_summary(environment_or_render: Any, *, max_string_chars: int = 120) -> dict[str, Any]:
+def environment_summary(
+    environment_or_render: Any, *, max_string_chars: int = 120
+) -> dict[str, Any]:
     """Return a minimal episode view for ``AgenticEnvironment`` outputs.
 
     The full environment render contains graph state, memory and embedded
@@ -910,7 +1035,11 @@ def environment_summary(environment_or_render: Any, *, max_string_chars: int = 1
     compact row per transition.
     """
 
-    payload = environment_or_render.render() if hasattr(environment_or_render, "render") else _to_jsonable(environment_or_render)
+    payload = (
+        environment_or_render.render()
+        if hasattr(environment_or_render, "render")
+        else _to_jsonable(environment_or_render)
+    )
     payload = _to_jsonable(payload)
     history = payload.get("history") or [] if isinstance(payload, dict) else []
     steps: list[dict[str, Any]] = []
@@ -918,8 +1047,14 @@ def environment_summary(environment_or_render: Any, *, max_string_chars: int = 1
         if not isinstance(item, dict):
             continue
         graph_state = item.get("graph_state") or {}
-        agent_output_payload = graph_state.get("agent_output") if isinstance(graph_state.get("agent_output"), dict) else {}
-        agent_result = graph_state.get("agent_result") or graph_state.get("eval", {}).get("result")
+        agent_output_payload = (
+            graph_state.get("agent_output")
+            if isinstance(graph_state.get("agent_output"), dict)
+            else {}
+        )
+        agent_result = graph_state.get("agent_result") or graph_state.get(
+            "eval", {}
+        ).get("result")
         answer = agent_output_payload.get("answer") or graph_state.get("agent_text")
         if not answer and isinstance(agent_result, dict):
             answer = agent_result.get("text")
@@ -939,23 +1074,37 @@ def environment_summary(environment_or_render: Any, *, max_string_chars: int = 1
             if plan.get("step_id"):
                 step["plan_step"] = plan.get("step_id")
             if plan.get("reason"):
-                step["reason"] = _summarize_string(str(plan.get("reason")), max_chars=max_string_chars)
+                step["reason"] = _summarize_string(
+                    str(plan.get("reason")), max_chars=max_string_chars
+                )
             if plan.get("expected_tools"):
                 step["expected_tools"] = list(plan.get("expected_tools") or [])
         if answer:
-            step["answer"] = _answer_string(str(answer), max_string_chars=max_string_chars)
+            step["answer"] = _answer_string(
+                str(answer), max_string_chars=max_string_chars
+            )
         if agent_output_payload:
             fields = agent_output_payload.get("fields") or {}
             if fields:
-                step["fields"] = _minimal_json(fields, max_string_chars=max_string_chars)
-            tool_names = [event.get("name") for event in agent_output_payload.get("tools") or [] if isinstance(event, dict)]
+                step["fields"] = _minimal_json(
+                    fields, max_string_chars=max_string_chars
+                )
+            tool_names = [
+                event.get("name")
+                for event in agent_output_payload.get("tools") or []
+                if isinstance(event, dict)
+            ]
             if tool_names:
                 step["tools"] = tool_names
             validation = agent_output_payload.get("validation") or {}
             if validation:
                 step["validation_ok"] = validation.get("ok")
         if isinstance(agent_result, dict):
-            tool_names = [event.get("name") for event in agent_result.get("tool_events") or [] if isinstance(event, dict)]
+            tool_names = [
+                event.get("name")
+                for event in agent_result.get("tool_events") or []
+                if isinstance(event, dict)
+            ]
             if tool_names and "tools" not in step:
                 step["tools"] = tool_names
             validation = agent_result.get("validation") or {}
@@ -968,7 +1117,9 @@ def environment_summary(environment_or_render: Any, *, max_string_chars: int = 1
         "name": payload.get("name") if isinstance(payload, dict) else None,
         "episode_id": payload.get("episode_id") if isinstance(payload, dict) else None,
         "steps_done": payload.get("step") if isinstance(payload, dict) else None,
-        "total_records": payload.get("total_records") if isinstance(payload, dict) else None,
+        "total_records": payload.get("total_records")
+        if isinstance(payload, dict)
+        else None,
         "reward_total": sum(float(step.get("reward") or 0.0) for step in steps),
         "steps": steps,
     }
@@ -985,8 +1136,14 @@ def eval_report_summary(report: Any, *, max_string_chars: int = 120) -> dict[str
             {
                 "name": case.get("name"),
                 "ok": case.get("ok"),
-                "answer": _summarize_string(str(result.get("text") or ""), max_chars=max_string_chars),
-                "tools": [event.get("name") for event in result.get("tool_events") or [] if isinstance(event, dict)],
+                "answer": _summarize_string(
+                    str(result.get("text") or ""), max_chars=max_string_chars
+                ),
+                "tools": [
+                    event.get("name")
+                    for event in result.get("tool_events") or []
+                    if isinstance(event, dict)
+                ],
                 "validation_ok": (case.get("validation") or {}).get("ok"),
             }
         )
@@ -997,6 +1154,7 @@ def eval_report_summary(report: Any, *, max_string_chars: int = 120) -> dict[str
         "pass_rate": payload.get("pass_rate"),
         "cases": cases,
     }
+
 
 def eval_report_output(report: Any, *, include_trace: bool = False) -> dict[str, Any]:
     """Return a compact, output-first view of an ``EvalReport``."""
@@ -1022,7 +1180,9 @@ def eval_report_output(report: Any, *, include_trace: bool = False) -> dict[str,
     }
 
 
-def maybe_show_trace(result: Any, *, show_trace: bool = False, title: str = "Trace", mask: bool = True) -> None:
+def maybe_show_trace(
+    result: Any, *, show_trace: bool = False, title: str = "Trace", mask: bool = True
+) -> None:
     """Display compact trace only when a notebook toggles ``SHOW_TRACE=True``."""
 
     if not show_trace:
@@ -1068,16 +1228,28 @@ def _tool_event_view(
     view = {
         "tool": event.get("name"),
         "ok": event.get("ok"),
-        "input": _summarize_json(event.get("input") or {}, max_string_chars=max_string_chars, max_items=max_items, max_depth=max_depth),
-        "output": _summarize_json(output_data, max_string_chars=max_string_chars, max_items=max_items, max_depth=max_depth),
+        "input": _summarize_json(
+            event.get("input") or {},
+            max_string_chars=max_string_chars,
+            max_items=max_items,
+            max_depth=max_depth,
+        ),
+        "output": _summarize_json(
+            output_data,
+            max_string_chars=max_string_chars,
+            max_items=max_items,
+            max_depth=max_depth,
+        ),
     }
     error = event.get("error")
     if error:
-        view["error"] = _summarize_json(error, max_string_chars=max_string_chars, max_items=max_items, max_depth=max_depth)
+        view["error"] = _summarize_json(
+            error,
+            max_string_chars=max_string_chars,
+            max_items=max_items,
+            max_depth=max_depth,
+        )
     return view
-
-
-
 
 
 def _extract_output_fields(
@@ -1095,13 +1267,24 @@ def _extract_output_fields(
     fields.update(_parse_answer_fields(answer_text))
 
     if isinstance(data, dict) and isinstance(data.get("fields"), Mapping):
-        fields.update({str(key): _to_jsonable(value) for key, value in data["fields"].items()})
+        fields.update(
+            {str(key): _to_jsonable(value) for key, value in data["fields"].items()}
+        )
     elif not fields and isinstance(data, dict):
-        reserved_data_keys = {"ok", "tool", "tools", "steps", "last", "operation", "schema_version"}
+        reserved_data_keys = {
+            "ok",
+            "tool",
+            "tools",
+            "steps",
+            "last",
+            "operation",
+            "schema_version",
+        }
         simple_data = {
             str(key): _to_jsonable(value)
             for key, value in data.items()
-            if str(key) not in reserved_data_keys and not isinstance(value, (dict, list, tuple, set))
+            if str(key) not in reserved_data_keys
+            and not isinstance(value, (dict, list, tuple, set))
         }
         if simple_data and len(simple_data) <= 12:
             fields.update(simple_data)
@@ -1155,12 +1338,23 @@ def _user_facing_answer_text(text: str, data: Any, result_dict: dict[str, Any]) 
     if not text:
         return ""
     engine = str(result_dict.get("engine") or "")
-    if engine == "python-runtime":
+    deterministic_only = False
+    try:
+        deterministic_only = (
+            provider_capability(engine, "model_generation").status == "unsupported"
+        )
+    except ValueError:
+        pass
+    if deterministic_only:
         # python-runtime is a deterministic tool runner. Its text is an execution
         # artifact (for example JSON of tool steps), not a synthesized business
         # answer. Keep the data visible under ``data``/``summary`` instead.
         return ""
-    if isinstance(data, dict) and isinstance(data.get("steps"), list) and _looks_like_json_object(text):
+    if (
+        isinstance(data, dict)
+        and isinstance(data.get("steps"), list)
+        and _looks_like_json_object(text)
+    ):
         return ""
     return text
 
@@ -1182,7 +1376,9 @@ def _agent_data_summary(data: Any, text: str, *, max_string_chars: int | None) -
         return {
             "kind": "tool_plan",
             "step_count": len(steps),
-            "last": _maybe_bound_json(data.get("last") or {}, max_string_chars=max_string_chars),
+            "last": _maybe_bound_json(
+                data.get("last") or {}, max_string_chars=max_string_chars
+            ),
         }
     if isinstance(data, dict) and data:
         return {
@@ -1219,19 +1415,25 @@ def _result_answer_summary(text: str, data: Any, *, max_string_chars: int) -> An
     return _summarize_string(text, max_chars=max_string_chars) if text else ""
 
 
-def _tool_event_summary(event: dict[str, Any], *, include_input: bool, max_string_chars: int) -> dict[str, Any]:
+def _tool_event_summary(
+    event: dict[str, Any], *, include_input: bool, max_string_chars: int
+) -> dict[str, Any]:
     compact = _compact_tool_event(event)
     summary: dict[str, Any] = {
         "name": compact.get("tool"),
         "ok": compact.get("ok"),
     }
     if include_input and compact.get("input"):
-        summary["input"] = _minimal_json(compact.get("input"), max_string_chars=max_string_chars)
+        summary["input"] = _minimal_json(
+            compact.get("input"), max_string_chars=max_string_chars
+        )
     output = compact.get("output")
     if output not in ({}, None, ""):
         summary["output"] = _minimal_json(output, max_string_chars=max_string_chars)
     if compact.get("error"):
-        summary["error"] = _minimal_json(compact.get("error"), max_string_chars=max_string_chars)
+        summary["error"] = _minimal_json(
+            compact.get("error"), max_string_chars=max_string_chars
+        )
     return summary
 
 
@@ -1280,24 +1482,34 @@ def _minimal_json(value: Any, *, max_string_chars: int, _depth: int = 0) -> Any:
 
     value = _to_jsonable(value)
     if _depth >= 2:
-        return _shape_summary(value) if isinstance(value, (dict, list, tuple, set, str)) else value
+        return (
+            _shape_summary(value)
+            if isinstance(value, (dict, list, tuple, set, str))
+            else value
+        )
     if isinstance(value, dict):
         items = list(value.items())
         result: dict[str, Any] = {}
         for key, item in items[:6]:
-            result[str(key)] = _minimal_json(item, max_string_chars=max_string_chars, _depth=_depth + 1)
+            result[str(key)] = _minimal_json(
+                item, max_string_chars=max_string_chars, _depth=_depth + 1
+            )
         if len(items) > 6:
             result["__more__"] = len(items) - 6
         return result
     if isinstance(value, (list, tuple, set)):
         items = list(value)
-        result = [_minimal_json(item, max_string_chars=max_string_chars, _depth=_depth + 1) for item in items[:6]]
+        result = [
+            _minimal_json(item, max_string_chars=max_string_chars, _depth=_depth + 1)
+            for item in items[:6]
+        ]
         if len(items) > 6:
             result.append({"__more__": len(items) - 6})
         return result
     if isinstance(value, str):
         return _summarize_string(value, max_chars=max_string_chars)
     return value
+
 
 def _summarize_json(
     value: Any,
@@ -1325,7 +1537,10 @@ def _summarize_json(
             for key, item in items[:max_items]
         }
         if len(items) > max_items:
-            summarized["__truncated__"] = {"omitted_items": len(items) - max_items, "total_items": len(items)}
+            summarized["__truncated__"] = {
+                "omitted_items": len(items) - max_items,
+                "total_items": len(items),
+            }
         return summarized
     if isinstance(value, (list, tuple, set)):
         items = list(value)
@@ -1340,7 +1555,14 @@ def _summarize_json(
             for item in items[:max_items]
         ]
         if len(items) > max_items:
-            summarized_items.append({"__truncated__": {"omitted_items": len(items) - max_items, "total_items": len(items)}})
+            summarized_items.append(
+                {
+                    "__truncated__": {
+                        "omitted_items": len(items) - max_items,
+                        "total_items": len(items),
+                    }
+                }
+            )
         return summarized_items
     if isinstance(value, str):
         return _summarize_string(value, max_chars=max_string_chars)
@@ -1423,7 +1645,11 @@ def _parse_json_object_fields(text: str) -> dict[str, Any]:
 
 def _strip_markdown_code_fence(text: str) -> str:
     lines = text.strip().splitlines()
-    if len(lines) >= 2 and lines[0].lstrip().startswith("```") and lines[-1].strip() == "```":
+    if (
+        len(lines) >= 2
+        and lines[0].lstrip().startswith("```")
+        and lines[-1].strip() == "```"
+    ):
         return "\n".join(lines[1:-1]).strip()
     return text.strip()
 
@@ -1471,6 +1697,7 @@ def _coerce_field_value(value: str) -> Any:
     except Exception:
         return cleaned
     return cleaned
+
 
 def _discover_repo_root(start: Path) -> Path:
     current = start.resolve()

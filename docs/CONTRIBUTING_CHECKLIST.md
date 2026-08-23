@@ -1,5 +1,8 @@
 # Contributing Checklist
 
+The authoritative commands, live evidence rules and release ownership are in
+[Triple Quality Gate](QUALITY_GATES.md).
+
 Use this checklist before handing off changes. The documentation map defines the
 current sources of truth; superseded work remains available through Git history.
 
@@ -36,6 +39,15 @@ python -m pytest -q --ignore=tests/release/test_tutorial_execution.py \
 python -m pytest -q tests/providers \
   tests/integration_conformance/test_provider_conformance.py \
   tests/integration_conformance/test_system_runtime.py \
+python -m ruff format --check src tests scripts
+python -m pyright --project pyrightconfig.json
+python scripts/check_pyright_baseline.py
+lint-imports
+python scripts/check_architecture.py
+python scripts/check_complexity.py
+python scripts/check_benchmarks.py
+python scripts/check_licenses.py
+python scripts/check_secrets.py
   tests/frameworks/test_provider_framework_matrix.py \
   --cov=agentic_systems.providers \
   --cov-config=.coveragerc-providers-branches \
@@ -83,10 +95,10 @@ Validate the built wheel from an isolated environment, not the editable source:
 ```bash
 python -m venv .tmp/wheel-smoke
 .tmp/wheel-smoke/bin/python -m pip install dist/agentic_systems-*.whl
-.tmp/wheel-smoke/bin/python -c "import agentic_systems as a; m=a.api_contract(); assert len(a.__all__) == 78; assert m['entry_count'] == 370; assert m['scenario_count'] == 10"
+.tmp/wheel-smoke/bin/python -c "import agentic_systems as a; m=a.api_contract(); assert len(a.__all__) == 78; assert m['entry_count'] == 373; assert m['scenario_count'] == 10"
 .tmp/wheel-smoke/bin/agentic-systems version
 ```
 
 The equivalent Windows executables live under `.tmp/wheel-smoke/Scripts/`.
-A release smoke must confirm version, CLI, 78 exports, 370 export/member IDs,
+A release smoke must confirm version, CLI, 78 exports, 373 export/member IDs,
 10 shared scenarios and lazy optional imports. Live Provider readiness is separate.

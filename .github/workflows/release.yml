@@ -1,0 +1,269 @@
+name: release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Exact package version to publish (for example 2.0.1)
+        required: true
+        type: string
+      vllm_attestation_url:
+        description: HTTPS URL for the fresh Colab vLLM attestation JSON
+        required: true
+        type: string
+
+concurrency:
+  group: release-${{ inputs.version }}
+  cancel-in-progress: false
+
+jobs:
+  candidate:
+    runs-on: ubuntu-latest
+    outputs:
+      wheel_sha256: ${{ steps.identity.outputs.wheel_sha256 }}
+      wheel_filename: ${{ steps.identity.outputs.wheel_filename }}
+      cloud_matrix: ${{ steps.matrix.outputs.cloud }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - run: >-
+          python -m pip install -e
+          ".[dev,bedrock,langgraph,openai,openai-agents,strands]"
+          build twine "setuptools>=69" wheel
+      - run: >-
+          python -m pip install -e
+          "examples/agentic_systems_studio[ui,notebook,test]"
+      - name: Verify requested version
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: >-
+          python -c "import os; import agentic_systems as a;
+          expected=os.environ['RELEASE_VERSION'];
+          assert a.__version__ == expected, (a.__version__, expected)"
+      - run: python -m ruff check src tests scripts
+      - run: python scripts/check_format.py
+      - run: python -m pyright --project pyrightconfig.json
+      - run: python scripts/check_pyright_baseline.py
+      - run: lint-imports
+      - run: python scripts/check_architecture.py
+      - run: python scripts/check_complexity.py
+      - run: python scripts/check_benchmarks.py
+      - run: python scripts/check_licenses.py
+      - run: python scripts/check_secrets.py
+      - run: python -m pip_audit --local --skip-editable
+      - name: Derive cloud matrix from canonical registry
+        id: matrix
+        run: echo "cloud=$(python scripts/print_live_matrix.py --profile cloud)" >> "$GITHUB_OUTPUT"
+      - run: >-
+          python -m pytest --cov=agentic_systems
+          --cov-config=pyproject.toml --cov-report=term-missing -q
+      - run: python -m pytest -q examples/agentic_systems_studio/tests
+      - run: python -m build --no-isolation
+      - run: python -m twine check dist/*.whl dist/*.tar.gz
+      - run: python examples/agentic_systems_studio/scripts/build_bundle.py
+      - run: python scripts/build_release_assets.py
+      - run: >-
+          cyclonedx-py environment --output-format JSON
+          --output-file release-sbom.json
+      - name: Record candidate identity
+        id: identity
+        run: |
+          wheel=$(ls dist/*.whl)
+          echo "wheel_filename=$(basename "$wheel")" >> "$GITHUB_OUTPUT"
+          echo "wheel_sha256=$(sha256sum "$wheel" | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+          sha256sum dist/* > SHA256SUMS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: certified-release-candidate
+          path: |
+            dist/*.whl
+            dist/*.tar.gz
+            dist/*.zip
+            dist/SHA256SUMS-*.txt
+            SHA256SUMS
+            release-sbom.json
+          if-no-files-found: error
+      - run: git diff --exit-code
+
+  wheel-smoke:
+    needs: candidate
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+    steps:
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: actions/download-artifact@v5
+        with:
+          name: certified-release-candidate
+          path: candidate
+      - run: python -m pip install candidate/*.whl
+      - run: >-
+          python -c "import importlib.metadata as m; import agentic_systems as a;
+          assert a.__version__ == m.version('agentic-systems')"
+      - run: agentic-systems version
+
+  vllm-attestation:
+    needs: candidate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+      - uses: actions/download-artifact@v5
+        with:
+          name: certified-release-candidate
+          path: candidate
+      - run: python -m pip install candidate/*.whl
+      - name: Download exact-wheel vLLM attestation
+        env:
+          VLLM_ATTESTATION_URL: ${{ inputs.vllm_attestation_url }}
+        run: >-
+          curl --fail --location --proto '=https' --tlsv1.2
+          "$VLLM_ATTESTATION_URL" --output vllm-attestation.json
+      - run: >-
+          python scripts/validate_live_attestation.py vllm-attestation.json
+          --commit "$GITHUB_SHA"
+          --wheel-sha256 "${{ needs.candidate.outputs.wheel_sha256 }}"
+          --provider vllm-runtime
+      - uses: actions/upload-artifact@v4
+        with:
+          name: live-vllm-runtime
+          path: vllm-attestation.json
+          if-no-files-found: error
+          retention-days: 30
+
+  cloud-live:
+    needs: candidate
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.candidate.outputs.cloud_matrix) }}
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      OPENAI_MODEL: ${{ vars.OPENAI_MODEL }}
+      AWS_BEARER_TOKEN_BEDROCK: ${{ secrets.AWS_BEARER_TOKEN_BEDROCK }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      AWS_DEFAULT_REGION: ${{ vars.AWS_REGION }}
+      BEDROCK_MODEL_ID: ${{ vars.BEDROCK_MODEL_ID }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+      - uses: actions/download-artifact@v5
+        with:
+          name: certified-release-candidate
+          path: candidate
+      - run: >-
+          python -m pip install candidate/*.whl
+          "boto3>=1.39" "botocore>=1.39" "openai>=2.45,<3"
+          "openai-agents>=0.18.3,<0.19" "langgraph>=0.2"
+          "strands-agents>=1.29,<2" "mcp>=1,<2"
+      - run: >-
+          python scripts/run_live_matrix.py
+          --wheel candidate/${{ needs.candidate.outputs.wheel_filename }}
+          --output live.json
+          --providers ${{ matrix.provider }}
+          --frameworks ${{ matrix.framework }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: live-${{ matrix.provider }}-${{ matrix.framework }}
+          path: live.json
+          if-no-files-found: warn
+          retention-days: 30
+
+  ollama-live:
+    needs: candidate
+    runs-on: ubuntu-latest
+    env:
+      OLLAMA_MODEL: qwen3:4b
+      OLLAMA_BASE_URL: http://127.0.0.1:11434/v1
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+      - uses: actions/download-artifact@v5
+        with:
+          name: certified-release-candidate
+          path: candidate
+      - run: >-
+          python -m pip install candidate/*.whl "openai>=2.45,<3"
+          "openai-agents>=0.18.3,<0.19" "langgraph>=0.2"
+          "strands-agents>=1.29,<2" "mcp>=1,<2"
+      - name: Install and start Ollama
+        run: |
+          curl -fsSL https://ollama.com/install.sh | sh
+          ollama serve > /tmp/ollama.log 2>&1 &
+          for attempt in {1..30}; do
+            curl --fail --silent http://127.0.0.1:11434/api/tags && break
+            sleep 2
+          done
+          ollama pull "$OLLAMA_MODEL"
+      - run: >-
+          python scripts/run_live_matrix.py
+          --wheel candidate/${{ needs.candidate.outputs.wheel_filename }}
+          --output live-ollama.json
+          --profile ollama
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: live-ollama-runtime
+          path: live-ollama.json
+          if-no-files-found: warn
+          retention-days: 30
+
+  publish:
+    needs: [candidate, wheel-smoke, vllm-attestation, cloud-live, ollama-live]
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v5
+        with:
+          name: certified-release-candidate
+          path: candidate
+      - run: mkdir publish-dist
+      - run: cp candidate/*.whl candidate/*.tar.gz publish-dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: publish-dist
+          attestations: true
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ inputs.version }}
+          generate_release_notes: true
+          files: |
+            candidate/*.whl
+            candidate/*.tar.gz
+            candidate/*.zip
+            candidate/SHA256SUMS
+            candidate/SHA256SUMS-*.txt
+            candidate/release-sbom.json
+
+  post-publish-smoke:
+    needs: publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+      - run: python -m pip install --no-cache-dir "agentic-systems==${{ inputs.version }}"
+      - run: agentic-systems version

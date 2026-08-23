@@ -117,7 +117,7 @@ la API pública estable, compilar, comenzar sin outputs y declarar metadata.
 La suite los ejecuta desde kernels limpios: 17 producen evidencia determinista
 y 4 prueban not-run de Providers. Los 21 notebooks CLI deben mapear 1:1, invocar
 el CLI real y preservar salida Rich integra. El notebook API verifica
-369 IDs y 10 escenarios compartidos.
+373 IDs y 10 escenarios compartidos.
 
 ## Contribution Standard
 

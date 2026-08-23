@@ -251,7 +251,7 @@ The JSON form returns:
 ```json
 {
   "tier": "public",
-  "count": 370,
+  "count": 373,
   "ids": ["agent", "Agent.run", "runtime"]
 }
 ```

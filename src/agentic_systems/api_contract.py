@@ -165,9 +165,7 @@ CONTRACT_SCENARIOS = (
 
 def _signature(value: Any) -> str | None:
     try:
-        signature = re.sub(
-            r" at 0x[0-9A-Fa-f]+", "", str(inspect.signature(value))
-        )
+        signature = re.sub(r" at 0x[0-9A-Fa-f]+", "", str(inspect.signature(value)))
         signature = re.sub(r"\btyping\.", "", signature)
         signature = re.sub(
             r"\bagentic_systems(?:\.[A-Za-z_][A-Za-z0-9_]*)+\.", "", signature
@@ -274,10 +272,17 @@ def _public_member_names(owner: type[Any]) -> tuple[str, ...]:
                 continue
             member_value = _member_value(base, name)
             member_module = getattr(member_value, "__module__", "")
+            member_source = (
+                inspect.getsourcefile(member_value) if callable(member_value) else None
+            )
             if (
                 library_owner
                 and callable(member_value)
-                and not member_module.startswith("agentic_systems")
+                and (
+                    not member_module.startswith("agentic_systems")
+                    or not member_source
+                    or "agentic_systems" not in member_source.replace("\\", "/")
+                )
             ):
                 continue
             names.add(name)

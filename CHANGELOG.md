@@ -1,5 +1,45 @@
 # Changelog
 
+## 2.0.1 - 2026-08-22
+
+Compatible hardening release. The 2.0 public facade remains stable while three
+blocking gates now certify production readiness, Pydantic contracts and
+provider/framework substitutability.
+
+### Added
+
+- A canonical registry for five Providers, four Frameworks, capabilities,
+  dependencies, environment inputs, six scenarios and all 20 declared pairs.
+- Strict versioned Pydantic schemas for execution limits, runtime discriminators,
+  public specs, normalized outputs, errors and live attestations.
+- Hypothesis boundary/round-trip coverage, Protocol conformance tests, Import
+  Linter layer contracts, architecture branch checks, complexity and benchmark
+  ratchets, dependency/license/secret audits and weekly mutation testing.
+- Protected OpenAI, Bedrock and Ollama live workflows plus an exact-wheel vLLM
+  Colab attestation contract with 24-hour freshness validation.
+- Reproducible skill, Studio and release asset builds with secret auditing,
+  hashes, SBOM generation and PyPI Trusted Publishing.
+
+### Changed
+
+- `SchedulerConfig`, `RuntimeConfig` and `RunPolicy` share `ExecutionLimits`;
+  `max_tool_calls=0` now consistently means that tools are prohibited.
+- `RunResult` uses one public projection across API, CLI, notebooks, Studio and
+  evals. A balanced leading native reasoning block is removed from public text
+  while raw evidence remains available explicitly.
+- Retries are limited to classified transient failures; SDK and tool failures
+  carry structured category, runtime identity, code and retryability.
+- Provider/Framework lists in compatibility, CLI and Studio derive from the
+  canonical registry instead of parallel hardcoded inventories.
+- API checksums ignore methods injected by Pydantic and fingerprint only the
+  declared public contract.
+
+### Compatibility
+
+- No top-level 2.0 export is removed.
+- Existing `text`, `final`, `engine`, `model`, `usage` and `meta` result views
+  remain available; typed projections are additive.
+
 All notable changes to Agentic Systems are documented here.
 ## 2.0.0 - 2026-08-19
 

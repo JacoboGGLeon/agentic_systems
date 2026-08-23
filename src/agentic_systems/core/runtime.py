@@ -5,8 +5,8 @@ from __future__ import annotations
 import importlib.util
 import os
 from pathlib import Path
-from dataclasses import asdict, dataclass, field
-from typing import Any, Iterable
+from dataclasses import dataclass, field
+from typing import Any, Iterable, cast
 
 from agentic_systems.engines.names import (
     BEDROCK_RUNTIME_ENGINE,
@@ -16,7 +16,12 @@ from agentic_systems.engines.names import (
     VLLM_RUNTIME_ENGINE,
     canonical_engine_name,
 )
-from agentic_systems.providers.base import RuntimeToolSpec, ToolEnvelope, ToolRegistryRuntime
+from agentic_systems.providers.base import (
+    RuntimeToolSpec,
+    ToolEnvelope,
+    ToolRegistryRuntime,
+)
+from agentic_systems.schemas.execution import RuntimeConfigSchema, RuntimeProviderName
 from agentic_systems.core.scheduler import DEFAULT_SCHEDULER_CONFIG, SchedulerConfig
 
 
@@ -42,17 +47,32 @@ class RuntimeConfig:
     allow_python_fallback: bool = False
 
     def __post_init__(self) -> None:
-        object.__setattr__(self, "provider", canonical_engine_name(self.provider))
-        object.__setattr__(self, "scheduler", SchedulerConfig.coerce(self.scheduler))
-        object.__setattr__(self, "metadata", dict(self.metadata or {}))
-        object.__setattr__(
-            self,
-            "provider_priority",
-            normalize_provider_priority(self.provider_priority, allow_python_fallback=self.allow_python_fallback),
+        provider = canonical_engine_name(self.provider)
+        scheduler = SchedulerConfig.coerce(self.scheduler)
+        priority = normalize_provider_priority(
+            self.provider_priority,
+            allow_python_fallback=self.allow_python_fallback,
         )
+        schema = RuntimeConfigSchema(
+            provider=cast(RuntimeProviderName, provider),
+            model_id=self.model_id,
+            region_name=self.region_name,
+            limits=scheduler.execution_limits(),
+            metadata=dict(self.metadata or {}),
+            provider_priority=priority,
+            allow_python_fallback=self.allow_python_fallback,
+        )
+        object.__setattr__(self, "provider", schema.provider)
+        object.__setattr__(self, "model_id", schema.model_id)
+        object.__setattr__(self, "region_name", schema.region_name)
+        object.__setattr__(self, "scheduler", scheduler)
+        object.__setattr__(self, "metadata", dict(schema.metadata))
+        object.__setattr__(self, "provider_priority", schema.provider_priority)
 
     @classmethod
-    def coerce(cls, value: "RuntimeConfig | dict[str, Any] | None", **overrides: Any) -> "RuntimeConfig":
+    def coerce(
+        cls, value: "RuntimeConfig | dict[str, Any] | None", **overrides: Any
+    ) -> "RuntimeConfig":
         """Return a runtime config from an object, dict, or keyword overrides."""
 
         if isinstance(value, cls):
@@ -78,7 +98,16 @@ class RuntimeConfig:
     def to_dict(self) -> dict[str, Any]:
         """Return a JSON-friendly representation."""
 
-        payload = asdict(self)
+        payload = RuntimeConfigSchema(
+            provider=cast(RuntimeProviderName, self.provider),
+            model_id=self.model_id,
+            region_name=self.region_name,
+            limits=self.scheduler.execution_limits(),
+            metadata=self.metadata,
+            provider_priority=self.provider_priority,
+            allow_python_fallback=self.allow_python_fallback,
+        ).model_dump(mode="json")
+        payload.pop("limits")
         payload["scheduler"] = self.scheduler.to_dict()
         return payload
 
@@ -91,7 +120,9 @@ class RuntimeConfig:
         """
 
         resolution = dict(self.metadata.get("resolution") or {})
-        resolved = _describe_resolution(self.provider, self.region_name, resolution, self.provider_priority)
+        resolved = _describe_resolution(
+            self.provider, self.region_name, resolution, self.provider_priority
+        )
         return {
             "selected_provider": resolved["selected_provider"],
             "mode": resolved["mode"],
@@ -101,12 +132,19 @@ class RuntimeConfig:
             "model": self.model_id,
             "region": self.region_name,
             "scheduler": self.scheduler.to_dict(),
-            "provider_priority": list(resolved.get("provider_priority") or self.provider_priority or ()),
+            "provider_priority": list(
+                resolved.get("provider_priority") or self.provider_priority or ()
+            ),
             "configuration": _safe_configuration(self.metadata),
         }
 
 
-def _describe_resolution(provider: str, region: str | None, resolution: dict[str, Any], provider_priority: Iterable[str] | None = None) -> dict[str, Any]:
+def _describe_resolution(
+    provider: str,
+    region: str | None,
+    resolution: dict[str, Any],
+    provider_priority: Iterable[str] | None = None,
+) -> dict[str, Any]:
     _load_dotenv()
     priority = normalize_provider_priority(provider_priority)
     if resolution:
@@ -149,7 +187,9 @@ def _describe_resolution(provider: str, region: str | None, resolution: dict[str
     }
 
 
-def normalize_provider_priority(priority: Iterable[str] | str | None, *, allow_python_fallback: bool = False) -> tuple[str, ...]:
+def normalize_provider_priority(
+    priority: Iterable[str] | str | None, *, allow_python_fallback: bool = False
+) -> tuple[str, ...]:
     """Return canonical provider priority for ``provider='auto'``.
 
     Priority can be passed explicitly or through AGENTIC_SYSTEMS_PROVIDER_PRIORITY
@@ -180,7 +220,9 @@ def normalize_provider_priority(priority: Iterable[str] | str | None, *, allow_p
     return tuple(normalized)
 
 
-def resolve_auto_provider(region: str | None, provider_priority: Iterable[str] | None = None) -> str:
+def resolve_auto_provider(
+    region: str | None, provider_priority: Iterable[str] | None = None
+) -> str:
     """Resolve ``provider='auto'`` to a concrete provider using priority order."""
 
     priority = normalize_provider_priority(provider_priority)
@@ -248,6 +290,7 @@ def _auto_unresolved_reason(priority: Iterable[str]) -> str:
             hints.append("python-runtime fallback")
     return "no " + ", ".join(hints) + " detected"
 
+
 def _module_available(name: str) -> bool:
     try:
         return importlib.util.find_spec(name) is not None
@@ -291,24 +334,31 @@ def _ollama_signal_present() -> bool:
 
 
 def _openai_signal_present() -> bool:
-    return bool(
-        os.getenv("OPENAI_API_KEY")
-        or os.getenv("OPENAI_BASE_URL")
-    )
+    return bool(os.getenv("OPENAI_API_KEY") or os.getenv("OPENAI_BASE_URL"))
 
 
 def _aws_shared_credentials_present() -> bool:
     configured_path = os.getenv("AWS_SHARED_CREDENTIALS_FILE")
-    credentials_path = Path(configured_path).expanduser() if configured_path else Path.home() / ".aws" / "credentials"
+    credentials_path = (
+        Path(configured_path).expanduser()
+        if configured_path
+        else Path.home() / ".aws" / "credentials"
+    )
     return credentials_path.is_file()
 
 
 def _bedrock_signal_present(region: str | None) -> bool:
-    region_present = bool(region or os.getenv("AWS_REGION") or os.getenv("AWS_DEFAULT_REGION"))
-    static_credentials = bool(os.getenv("AWS_ACCESS_KEY_ID") and os.getenv("AWS_SECRET_ACCESS_KEY"))
+    region_present = bool(
+        region or os.getenv("AWS_REGION") or os.getenv("AWS_DEFAULT_REGION")
+    )
+    static_credentials = bool(
+        os.getenv("AWS_ACCESS_KEY_ID") and os.getenv("AWS_SECRET_ACCESS_KEY")
+    )
     bedrock_api_key = bool(os.getenv("AWS_BEARER_TOKEN_BEDROCK"))
     profile_credentials = bool(os.getenv("AWS_PROFILE"))
-    web_identity = bool(os.getenv("AWS_ROLE_ARN") and os.getenv("AWS_WEB_IDENTITY_TOKEN_FILE"))
+    web_identity = bool(
+        os.getenv("AWS_ROLE_ARN") and os.getenv("AWS_WEB_IDENTITY_TOKEN_FILE")
+    )
     container_credentials = bool(
         os.getenv("AWS_CONTAINER_CREDENTIALS_FULL_URI")
         or os.getenv("AWS_CONTAINER_CREDENTIALS_RELATIVE_URI")

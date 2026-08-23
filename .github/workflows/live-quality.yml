@@ -1,0 +1,118 @@
+name: live-quality
+
+on:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: live-quality-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  candidate:
+    runs-on: ubuntu-latest
+    outputs:
+      cloud_matrix: ${{ steps.matrix.outputs.cloud }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+          cache: pip
+      - run: python -m pip install --upgrade pip build
+      - run: python -m pip install .
+      - name: Derive cloud matrix from canonical registry
+        id: matrix
+        run: echo "cloud=$(python scripts/print_live_matrix.py --profile cloud)" >> "$GITHUB_OUTPUT"
+      - run: python -m build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-candidate
+          path: dist/*
+          if-no-files-found: error
+
+  cloud-live:
+    needs: candidate
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.candidate.outputs.cloud_matrix) }}
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      OPENAI_MODEL: ${{ vars.OPENAI_MODEL }}
+      AWS_BEARER_TOKEN_BEDROCK: ${{ secrets.AWS_BEARER_TOKEN_BEDROCK }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      AWS_DEFAULT_REGION: ${{ vars.AWS_REGION }}
+      BEDROCK_MODEL_ID: ${{ vars.BEDROCK_MODEL_ID }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+          cache: pip
+      - uses: actions/download-artifact@v5
+        with:
+          name: release-candidate
+          path: dist
+      - run: >-
+          python -m pip install dist/*.whl
+          "boto3>=1.39" "botocore>=1.39" "openai>=2.45,<3"
+          "openai-agents>=0.18.3,<0.19" "langgraph>=0.2"
+          "strands-agents>=1.29,<2" "mcp>=1,<2"
+      - run: >-
+          python scripts/run_live_matrix.py
+          --wheel $(ls dist/*.whl)
+          --output live-${{ matrix.provider }}-${{ matrix.framework }}.json
+          --providers ${{ matrix.provider }}
+          --frameworks ${{ matrix.framework }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: live-${{ matrix.provider }}-${{ matrix.framework }}
+          path: live-*.json
+          if-no-files-found: warn
+
+  ollama-live:
+    needs: candidate
+    runs-on: ubuntu-latest
+    env:
+      OLLAMA_MODEL: qwen3:4b
+      OLLAMA_BASE_URL: http://127.0.0.1:11434/v1
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+          cache: pip
+      - uses: actions/download-artifact@v5
+        with:
+          name: release-candidate
+          path: dist
+      - run: >-
+          python -m pip install dist/*.whl "openai>=2.45,<3"
+          "openai-agents>=0.18.3,<0.19" "langgraph>=0.2"
+          "strands-agents>=1.29,<2" "mcp>=1,<2"
+      - name: Install and start Ollama
+        run: |
+          curl -fsSL https://ollama.com/install.sh | sh
+          ollama serve > /tmp/ollama.log 2>&1 &
+          for attempt in {1..30}; do
+            curl --fail --silent http://127.0.0.1:11434/api/tags && break
+            sleep 2
+          done
+          ollama pull "$OLLAMA_MODEL"
+      - run: >-
+          python scripts/run_live_matrix.py
+          --wheel $(ls dist/*.whl)
+          --output live-ollama-runtime.json
+          --profile ollama
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: live-ollama-runtime
+          path: live-ollama-runtime.json
+          if-no-files-found: warn

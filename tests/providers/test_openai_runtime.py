@@ -5,6 +5,7 @@ import sys
 import types
 from types import SimpleNamespace
 
+import pytest
 from pydantic import BaseModel
 
 from agentic_systems.contracts import AgentContract, RunPolicy
@@ -12,12 +13,14 @@ from agentic_systems.providers import OpenAIRuntimeProvider
 from agentic_systems.providers.base import ToolRegistryRuntime
 import agentic_systems.providers.openai_runtime as openai_runtime_module
 from agentic_systems.providers.openai_runtime import (
+    _canonical_tool_name,
     _canonical_runtime_engine,
     _execute_tool,
     _input_to_prompt,
     _json_loads,
     _openai_module,
     _openai_tools,
+    _provider_tool_name,
     _tool_choice,
     _tool_result_text,
 )
@@ -188,13 +191,64 @@ def test_openai_provider_tool_success_failure_async_and_max_turns():
     assert async_result.text == "async final"
 
 
+def test_openai_provider_aliases_namespaced_tools_without_public_identity_loss():
+    runtime = ToolRegistryRuntime(model_id="runtime-model")
+
+    @runtime.tool(name="quality.echo", description="Echo a value")
+    def quality_echo(value: str) -> dict[str, str]:
+        return {"value": value}
+
+    alias = _provider_tool_name("quality.echo")
+    client = FakeClient(
+        [
+            FakeResponse(
+                FakeMessage(tool_calls=[FakeToolCall(alias, '{"value": "ok"}')])
+            ),
+            FakeResponse(FakeMessage(content="done")),
+        ]
+    )
+    agent = build_agent(runtime, tools=("quality.echo",))
+    result = OpenAIRuntimeProvider(
+        SimpleNamespace(_runtime=runtime), client=client
+    ).run(agent, "echo", RunPolicy(tool_choice="quality.echo"))
+
+    assert alias.startswith("as_quality_echo_")
+    assert len(alias) <= 64
+    assert client.calls[0]["tools"][0]["function"]["name"] == alias
+    assert client.calls[0]["tool_choice"]["function"]["name"] == alias
+    assert result.tool_events[0].name == "quality.echo"
+    assert result.ok is True
+    assert _provider_tool_name("already_valid") == "already_valid"
+    assert _provider_tool_name(".").startswith("as_tool_")
+    assert _provider_tool_name("x" * 65).startswith("as_")
+    assert _canonical_tool_name(None, SimpleNamespace(), "unknown") == "unknown"
+
+
+def test_openai_provider_rejects_ambiguous_provider_aliases(monkeypatch):
+    runtime = build_runtime()
+    agent = build_agent(runtime, tools=("add", "fail"))
+    monkeypatch.setattr(
+        openai_runtime_module, "_provider_tool_name", lambda name: "same"
+    )
+
+    with pytest.raises(ValueError, match="not unique"):
+        _openai_tools(runtime, agent)
+    with pytest.raises(ValueError, match="Ambiguous"):
+        _canonical_tool_name(runtime, agent, "same")
+
+
 def test_openai_provider_helpers_and_import_paths(monkeypatch):
     runtime = build_runtime()
     empty_runtime = ToolRegistryRuntime(model_id="empty")
     agent = build_agent(empty_runtime, tools=())
-    provider = OpenAIRuntimeProvider(SimpleNamespace(_runtime=empty_runtime))
-    missing = provider.run(agent, "x", RunPolicy(), mode="eval")
-    assert missing.data["error"]["code"] == "missing_tools"
+    completion_client = FakeClient([FakeResponse(FakeMessage(content="complete"))])
+    provider = OpenAIRuntimeProvider(
+        SimpleNamespace(_runtime=empty_runtime), client=completion_client
+    )
+    completion = provider.run(agent, "x", RunPolicy(), mode="eval")
+    assert completion.text == "complete"
+    assert completion_client.calls[0]["tools"] is None
+    assert completion_client.calls[0]["tool_choice"] is None
 
     assert _tool_choice(None) == "auto"
     assert _tool_choice("auto") == "auto"
@@ -250,6 +304,7 @@ def test_openai_provider_helpers_and_import_paths(monkeypatch):
     )
     defs = _openai_tools(None, available_agent)
     assert defs[0]["function"]["name"] == "available"
+    assert _canonical_tool_name(None, available_agent, "available") == "available"
 
     class MappingTool:
         name = "mapping"
@@ -300,12 +355,13 @@ def test_openai_provider_handles_client_import_and_response_errors(monkeypatch):
         AsyncOpenAI=lambda: FakeAsyncClient(FakeClient([]))
     )
     monkeypatch.setitem(sys.modules, "openai", fake_openai_missing)
-    missing = asyncio.run(
+    completion = asyncio.run(
         OpenAIRuntimeProvider(SimpleNamespace(_runtime=empty_runtime)).arun(
             build_agent(empty_runtime, tools=()), "x", RunPolicy()
         )
     )
-    assert missing.data["error"]["code"] == "missing_tools"
+    assert completion.ok is True
+    assert completion.text == "fallback final"
 
     async_loop_client = FakeClient(
         [

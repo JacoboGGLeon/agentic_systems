@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from typing import Any, Literal
 
 import agentic_systems as toolkit
+from agentic_systems.registry import provider_capability
 
 from .catalog import SystemSpec, composition_mermaid, get_system_spec
 from .operators import TOOLS
@@ -143,7 +144,7 @@ def _stage_skill(spec: SystemSpec, stage: Any, tool: Any):
             "stage_kind": stage.kind,
             "capability": stage.capability,
         },
-        version="2.0.0",
+        version=toolkit.__version__,
     )
 
 
@@ -157,7 +158,10 @@ def build_system(
 
     spec = get_system_spec(system_id)
     selected = config or StudioConfig()
-    if selected.provider == "python-runtime":
+    if selected.provider != "auto" and (
+        provider_capability(selected.provider, "model_generation").status
+        == "unsupported"
+    ):
         raise ValueError(
             "Studio systems contain reasoning agents. Choose openai-runtime, "
             "ollama-runtime, bedrock-runtime, vllm-runtime or auto."

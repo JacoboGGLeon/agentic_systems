@@ -74,8 +74,8 @@ def test_alpha_version_surface_and_packaging_are_consistent():
     pyproject_text = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
     project = tomllib.loads(pyproject_text)
 
-    assert project["project"]["version"] == "2.0.0"
-    assert agentic_systems.__version__ == "2.0.0"
+    assert project["project"]["version"] == "2.0.1"
+    assert agentic_systems.__version__ == "2.0.1"
     assert len(PUBLIC_API) == 78
     assert "InspectReport" not in PUBLIC_API
     assert not hasattr(agentic_systems, "build_single_agent_step_graph")
@@ -99,18 +99,18 @@ def test_alpha_version_surface_and_packaging_are_consistent():
     install = (ROOT / "INSTALL.md").read_text(encoding="utf-8")
     manifest = (ROOT / "MANIFEST.in").read_text(encoding="utf-8")
     assert "78 stable top-level exports" in readme
-    assert "370 traced export/member IDs" in readme
+    assert "373 traced export/member IDs" in readme
     assert "all 20 declared pairs" in readme
     assert "tutorials/providers/04_ollama.ipynb" in readme
     cli_docs = (ROOT / "docs" / "CLI.md").read_text(encoding="utf-8")
     assert "Four offline passes and sixteen not-run rows" in cli_docs
     assert "--live --require-pass --json" in cli_docs
-    assert '"count": 370' in cli_docs
+    assert '"count": 373' in cli_docs
     contributing = (ROOT / "docs" / "CONTRIBUTING_CHECKLIST.md").read_text(
         encoding="utf-8"
     )
     assert "len(a.__all__) == 78" in contributing
-    assert "m['entry_count'] == 370" in contributing
+    assert "m['entry_count'] == 373" in contributing
     roadmap = (ROOT / "ROADMAP.md").read_text(encoding="utf-8")
     assert "Next development line: `2.1`" in roadmap
     migration = (ROOT / "docs" / "MIGRATION_1_1_TO_2_0.md").read_text(encoding="utf-8")

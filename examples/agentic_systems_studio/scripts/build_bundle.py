@@ -16,6 +16,7 @@ sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 from agentic_systems_studio.catalog import SYSTEM_SPECS  # noqa: E402
 from agentic_systems_studio.scaffolder import scaffold_application  # noqa: E402
+from agentic_systems import __version__ as AGENTIC_SYSTEMS_VERSION  # noqa: E402
 from agentic_systems_studio.store import StudioStore  # noqa: E402
 
 
@@ -65,7 +66,7 @@ def _checksums(root: Path) -> str:
 def build_bundle(output_dir: str | Path | None = None) -> Path:
     output = Path(output_dir) if output_dir is not None else PROJECT_ROOT / "dist"
     output.mkdir(parents=True, exist_ok=True)
-    destination = output / "agentic-systems-studio-2.0.zip"
+    destination = output / f"agentic-systems-studio-{AGENTIC_SYSTEMS_VERSION}.zip"
 
     with tempfile.TemporaryDirectory(prefix="agentic-systems-studio-") as temporary:
         temporary_root = Path(temporary)
@@ -116,7 +117,7 @@ def build_bundle(output_dir: str | Path | None = None) -> Path:
         manifest = {
             "schema_version": "agentic-systems.studio-bundle/v1",
             "product": "Agentic Systems Studio",
-            "agentic_systems_version": "2.0.0",
+            "agentic_systems_version": AGENTIC_SYSTEMS_VERSION,
             "systems": nested_manifest,
             "composition_plans": ["sequential", "parallel"],
             "normalized_result": "RunResult",

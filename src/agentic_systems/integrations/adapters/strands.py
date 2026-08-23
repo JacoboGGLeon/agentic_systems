@@ -6,7 +6,7 @@ import inspect
 import json
 import os
 from collections.abc import Mapping
-from typing import Any
+from typing import Any, cast
 
 from ...contracts import RunPolicy
 from ...engines.names import (
@@ -16,10 +16,12 @@ from ...engines.names import (
     PYTHON_RUNTIME_ENGINE,
     VLLM_RUNTIME_ENGINE,
 )
+from ...protocols import AsyncRunner, SyncRunner
+from ...registry import provider_capability
 from ...results import RunResult
 from ...tools.events import ToolEvent
 from .base import FrameworkAdapter, attach_native_result, effective_max_turns
-from .tools import merge_tools
+from .tools import ToolNameAliases, merge_tools, tool_name_aliases
 
 
 class StrandsFrameworkAdapter(FrameworkAdapter):
@@ -37,7 +39,12 @@ class StrandsFrameworkAdapter(FrameworkAdapter):
             kwargs = dict(agent.framework_config.agent_kwargs)
             kwargs.setdefault("callback_handler", None)
             native_tools = kwargs.pop("tools", None)
-            converted = [_strands_tool(tool) for tool in agent.available_tools()]
+            canonical_tools = agent.available_tools()
+            aliases = tool_name_aliases(canonical_tools)
+            converted = [
+                _strands_tool(tool, aliases.native(tool.name))
+                for tool in canonical_tools
+            ]
             tools = merge_tools(converted, native_tools)
             return NativeAgent(
                 model=_materialize_model(agent, engine),
@@ -58,17 +65,30 @@ class StrandsFrameworkAdapter(FrameworkAdapter):
         *,
         mode: str,
     ) -> RunResult:
+        if (
+            isinstance(engine, SyncRunner)
+            and not agent.available_tools()
+            and not agent.framework_config.agent_kwargs.get("tools")
+            and provider_capability(agent.engine, "model_generation").status
+            == "unsupported"
+        ):
+            result = cast(Any, engine).run(agent, input_value, policy, mode=mode)
+            result.meta["framework_adapter"] = self.name
+            return result
         native_agent = self.prepare(agent, engine)
         _configure_model(native_agent.model, policy, mode)
         kwargs = _run_kwargs(agent, policy)
+        aliases = tool_name_aliases(agent.available_tools())
         try:
-            native_result = native_agent(_input_text(input_value), **kwargs)
+            native_result = native_agent(
+                _input_text(aliases.map_input(input_value)), **kwargs
+            )
         except (TypeError, ValueError, ImportError):
             raise
         except Exception as exc:  # noqa: BLE001 - operational SDK failures normalize.
             return _failure(agent, input_value, mode, exc)
         result = _normalize_result(
-            agent, native_agent, native_result, input_value, mode
+            agent, native_agent, native_result, input_value, mode, aliases
         )
         return attach_native_result(result, native_result)
 
@@ -81,12 +101,23 @@ class StrandsFrameworkAdapter(FrameworkAdapter):
         *,
         mode: str,
     ) -> RunResult:
+        if (
+            isinstance(engine, AsyncRunner)
+            and not agent.available_tools()
+            and not agent.framework_config.agent_kwargs.get("tools")
+            and provider_capability(agent.engine, "model_generation").status
+            == "unsupported"
+        ):
+            result = await cast(Any, engine).arun(agent, input_value, policy, mode=mode)
+            result.meta["framework_adapter"] = self.name
+            return result
         native_agent = self.prepare(agent, engine)
         _configure_model(native_agent.model, policy, mode)
         kwargs = _run_kwargs(agent, policy)
+        aliases = tool_name_aliases(agent.available_tools())
         try:
             native_result = await native_agent.invoke_async(
-                _input_text(input_value),
+                _input_text(aliases.map_input(input_value)),
                 **kwargs,
             )
         except (TypeError, ValueError, ImportError):
@@ -94,7 +125,7 @@ class StrandsFrameworkAdapter(FrameworkAdapter):
         except Exception as exc:  # noqa: BLE001 - operational SDK failures normalize.
             return _failure(agent, input_value, mode, exc)
         result = _normalize_result(
-            agent, native_agent, native_result, input_value, mode
+            agent, native_agent, native_result, input_value, mode, aliases
         )
         return attach_native_result(result, native_result)
 
@@ -148,7 +179,7 @@ def _materialize_model(agent: Any, engine: Any) -> Any:
     raise ValueError(f"Unsupported Provider for Strands: {agent.engine!r}.")
 
 
-def _strands_tool(tool: Any) -> Any:
+def _strands_tool(tool: Any, native_name: str | None = None) -> Any:
     function = tool.function
     if function is None:
         raise ValueError(f"Tool {tool.name!r} has no function.")
@@ -168,9 +199,9 @@ def _strands_tool(tool: Any) -> Any:
                 if parameter.default is inspect.Signature.empty
             ],
         }
-    return strands_tool(
+    return cast(Any, strands_tool)(
         function,
-        name=tool.name,
+        name=native_name or tool.name,
         description=tool.description or None,
         inputSchema=schema,
     )
@@ -198,6 +229,7 @@ def _normalize_result(
     native_result: Any,
     input_value: Any,
     mode: str,
+    aliases: ToolNameAliases | None = None,
 ) -> RunResult:
     provider_result = getattr(native_agent.model, "last_result", None)
     if isinstance(provider_result, RunResult):
@@ -214,7 +246,7 @@ def _normalize_result(
         data=data,
         ok=True,
         messages=messages,
-        tool_events=_tool_events(messages),
+        tool_events=_tool_events(messages, aliases),
         raw_responses=[_jsonable(getattr(native_result, "message", {}))],
         usage=_json_dict(getattr(native_result, "metrics", {})),
         engine=agent.engine,
@@ -229,7 +261,11 @@ def _normalize_result(
     )
 
 
-def _tool_events(messages: list[Any]) -> list[ToolEvent]:
+def _tool_events(
+    messages: list[Any],
+    aliases: ToolNameAliases | None = None,
+) -> list[ToolEvent]:
+    aliases = aliases or tool_name_aliases(())
     calls: dict[str, dict[str, Any]] = {}
     events: list[ToolEvent] = []
     for message in messages:
@@ -253,7 +289,7 @@ def _tool_events(messages: list[Any]) -> list[ToolEvent]:
                 events.append(
                     ToolEvent(
                         id=call_id,
-                        name=str(original.get("name") or ""),
+                        name=aliases.canonical(str(original.get("name") or "")),
                         input=dict(original.get("input") or {}),
                         output={"data": _jsonable(result.get("content"))},
                         ok=status == "success",

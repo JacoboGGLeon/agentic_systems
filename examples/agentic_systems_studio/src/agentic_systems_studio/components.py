@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
+import agentic_systems as toolkit
+
 from typing import Any
 
 from .catalog import SYSTEM_SPECS
@@ -38,7 +40,11 @@ SKILL_ASSETS = tuple(
         name=spec.runtime_skill.replace("-", " ").title(),
         description=f"Runtime skill family for {spec.name}.",
         capability=", ".join(spec.capabilities),
-        metadata={"system_id": spec.id, "tools": list(spec.tools), "version": "2.0.0"},
+        metadata={
+            "system_id": spec.id,
+            "tools": list(spec.tools),
+            "version": toolkit.__version__,
+        },
     )
     for spec in SYSTEM_SPECS
 )

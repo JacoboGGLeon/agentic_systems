@@ -148,7 +148,7 @@ from .providers.openai_runtime import openai_environment_snapshot
 from .providers.ollama_runtime import ollama_environment_snapshot
 from .providers.vllm_runtime import vllm_environment_snapshot
 
-__version__ = "2.0.0"
+__version__ = "2.0.1"
 
 __all__ = list(_PUBLIC_API)
 del _PUBLIC_API

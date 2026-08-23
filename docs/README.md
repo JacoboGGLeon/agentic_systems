@@ -30,6 +30,7 @@ Releases, and superseded plans remain available through Git history.
 |---|---|
 | Complete public Python surface | [API Reference](API.md) |
 | Diagnostics and inspection commands | [CLI Reference](CLI.md) |
+| Production, Pydantic and polymorphism release gates | [Triple Quality Gate](QUALITY_GATES.md) |
 
 ## Engineering
 
@@ -43,12 +44,14 @@ Releases, and superseded plans remain available through Git history.
 
 When documents appear to disagree, use this order:
 
-1. `pyproject.toml` and `src/agentic_systems/api.py` define package metadata,
+1. `src/agentic_systems/registry.py` defines Provider/Framework compatibility,
+   capabilities and the 20 test contracts.
+2. `pyproject.toml` and `src/agentic_systems/api.py` define package metadata,
    optional extras and the public API inventory.
-2. The current README, installation guide and API/CLI references describe
+3. The current README, installation guide and API/CLI references describe
    supported user behavior.
-3. Current contract documents define cross-module invariants and boundaries.
-4. `CHANGELOG.md` records version history; GitHub Releases record published
+4. Current contract documents define cross-module invariants and boundaries.
+5. `CHANGELOG.md` records version history; GitHub Releases record published
    artifact evidence.
 
 Tests enforce the public inventory, compatibility signatures, Markdown

@@ -11,6 +11,13 @@ import zipfile
 from dataclasses import dataclass
 from pathlib import Path
 from textwrap import dedent
+from agentic_systems import __version__ as AGENTIC_SYSTEMS_VERSION
+
+from agentic_systems.registry import (
+    FRAMEWORK_NAMES,
+    PROVIDER_NAMES,
+    provider_capability,
+)
 
 from .catalog import SystemSpec, get_system_spec
 
@@ -371,15 +378,10 @@ def _settings_source() -> str:
         import os
 
         import agentic_systems as toolkit
+        from agentic_systems.registry import FRAMEWORK_NAMES, PROVIDER_NAMES, provider_capability
 
-        REASONING_PROVIDERS = {
-            "auto",
-            "openai-runtime",
-            "ollama-runtime",
-            "bedrock-runtime",
-            "vllm-runtime",
-        }
-        FRAMEWORKS = {"agentic-systems", "native", "langgraph", "openai-agents", "strands"}
+        REASONING_PROVIDERS = {"auto", *(name for name in PROVIDER_NAMES if provider_capability(name, "model_generation").status != "unsupported")}
+        APPLICATION_FRAMEWORKS = {"agentic-systems", *FRAMEWORK_NAMES}
 
 
         @dataclass(frozen=True)
@@ -400,7 +402,7 @@ def _settings_source() -> str:
                     )
                 if self.provider not in REASONING_PROVIDERS:
                     raise ValueError(f"Unsupported reasoning provider: {self.provider}")
-                if self.framework not in FRAMEWORKS:
+                if self.framework not in APPLICATION_FRAMEWORKS:
                     raise ValueError(f"Unsupported framework: {self.framework}")
 
             @classmethod
@@ -460,7 +462,7 @@ def _skills_source() -> str:
                     "capability": stage["capability"],
                     "tool_key": stage["tool_key"],
                 },
-                version="2.0.0",
+                version=toolkit.__version__,
             )
         '''
     )
@@ -577,7 +579,7 @@ def _files(spec: SystemSpec, package: str) -> dict[str, str]:
         "schema_version": "agentic-systems.studio/v1",
         "id": spec.id,
         "name": spec.name,
-        "agentic_systems_version": "2.0.0",
+        "agentic_systems_version": AGENTIC_SYSTEMS_VERSION,
         "size": spec.size,
         "stages": [stage.to_dict() for stage in spec.stages],
         "capabilities": list(spec.capabilities),
@@ -586,17 +588,14 @@ def _files(spec: SystemSpec, package: str) -> dict[str, str]:
             "operator_provider": "python-runtime",
             "reasoning_providers": [
                 "auto",
-                "openai-runtime",
-                "ollama-runtime",
-                "bedrock-runtime",
-                "vllm-runtime",
+                *[
+                    name
+                    for name in PROVIDER_NAMES
+                    if provider_capability(name, "model_generation").status
+                    != "unsupported"
+                ],
             ],
-            "frameworks": [
-                "agentic-systems",
-                "langgraph",
-                "openai-agents",
-                "strands",
-            ],
+            "frameworks": ["agentic-systems", *FRAMEWORK_NAMES],
             "default_provider": "openai-runtime",
             "default_framework": "agentic-systems",
         },
@@ -614,7 +613,7 @@ def _files(spec: SystemSpec, package: str) -> dict[str, str]:
             name = "{package.replace("_", "-")}"
             version = "0.1.0"
             requires-python = ">=3.11"
-            dependencies = ["agentic-systems==2.0.0"]
+            dependencies = ["agentic-systems=={AGENTIC_SYSTEMS_VERSION}"]
 
             [project.optional-dependencies]
             test = ["pytest>=8", "nbclient>=0.10", "nbformat>=5.10", "ipykernel>=6"]
@@ -730,7 +729,7 @@ def _files(spec: SystemSpec, package: str) -> dict[str, str]:
         f"skills/runtime/{spec.runtime_skill}.json": json.dumps(
             {
                 "name": spec.runtime_skill,
-                "version": "2.0.0",
+                "version": AGENTIC_SYSTEMS_VERSION,
                 "capabilities": list(spec.capabilities),
                 "stage_tools": stage_tools,
                 "stages": [

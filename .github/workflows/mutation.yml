@@ -1,0 +1,33 @@
+name: mutation-quality
+
+on:
+  schedule:
+    - cron: "41 5 * * 1"
+  workflow_dispatch:
+
+jobs:
+  mutation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install -e ".[dev]" "mutmut>=3.7,<4"
+      - run: mutmut run
+      - name: Enforce mutation result
+        run: |
+          mutmut results > mutation-results.txt
+          cat mutation-results.txt
+          if grep -E ': (survived|no tests|suspicious|timeout|not checked)' mutation-results.txt; then
+            echo "Mutation gate failed"
+            exit 1
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mutation-results
+          path: mutation-results.txt
+          if-no-files-found: warn

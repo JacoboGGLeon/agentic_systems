@@ -9,6 +9,7 @@ import re
 from statistics import mean
 
 import agentic_systems as toolkit
+from agentic_systems.registry import FRAMEWORK_NAMES, PROVIDER_NAMES
 
 
 def _lines(text: str) -> list[str]:
@@ -30,14 +31,10 @@ def inspect_creator_request(text: str) -> dict:
     lowered = text.lower()
     providers = [
         name
-        for name in ("openai", "ollama", "bedrock", "vllm", "python")
+        for name in (item.removesuffix("-runtime") for item in PROVIDER_NAMES)
         if name in lowered
     ]
-    frameworks = [
-        name
-        for name in ("native", "langgraph", "openai-agents", "strands")
-        if name in lowered
-    ]
+    frameworks = [name for name in FRAMEWORK_NAMES if name in lowered]
     return {
         "summary": "Creator request inspected deterministically.",
         "requirements": _lines(text),

@@ -7,8 +7,10 @@ from typing import Any
 from pydantic import BaseModel, ConfigDict, Field, PrivateAttr, model_validator
 
 from .contracts import AgentContract, ValidationResult, validate_tool_expectation
+from .errors import is_retryable_error_payload
 from .engines.names import BEDROCK_RUNTIME_ENGINE
 from .final_answer import final_answer
+from .normalization import contains_leading_reasoning, project_public_text
 from .tools.events import ToolEvent
 
 TRACE_SCHEMA_VERSION = "agentic_systems.trace.v1"
@@ -136,6 +138,29 @@ class RunResult(BaseModel):
 
     _native_result: Any = PrivateAttr(default=None)
 
+    @model_validator(mode="before")
+    @classmethod
+    def _project_public_answer(cls, value: Any) -> Any:
+        if not isinstance(value, dict):
+            return value
+        payload = dict(value)
+        projection = project_public_text(payload.get("text", ""))
+        payload["text"] = projection.text
+        meta = dict(payload.get("meta") or {})
+        if projection.reasoning_present:
+            meta["reasoning"] = {
+                "present": True,
+                "format": projection.reasoning_format,
+                "removed_from_public_text": projection.removed,
+            }
+        payload["meta"] = meta
+        final = payload.get("final")
+        if isinstance(final, dict) and isinstance(final.get("text"), str):
+            projected_final = project_public_text(final["text"])
+            if projected_final.reasoning_present:
+                payload["final"] = {**final, "text": projected_final.text}
+        return payload
+
     @property
     def native_result(self) -> Any:
         """Return the original Framework SDK result without serializing it."""
@@ -173,6 +198,32 @@ class RunResult(BaseModel):
             self.errors = _result_errors(self)
         if self.validation is not None:
             self.apply_validation(self.validation)
+        return self._apply_public_projection()
+
+    def _apply_public_projection(self) -> "RunResult":
+        """Remove provider reasoning from every public answer boundary."""
+
+        projection = project_public_text(self.text)
+        self.text = projection.text
+        if projection.reasoning_present:
+            self.meta["reasoning"] = {
+                "present": True,
+                "format": projection.reasoning_format,
+                "removed_from_public_text": projection.removed,
+            }
+        final_text = self.final.get("text")
+        if isinstance(final_text, str):
+            final_projection = project_public_text(final_text)
+            if final_projection.reasoning_present:
+                self.final = {**self.final, "text": final_projection.text}
+        projected_errors: list[dict[str, Any]] = []
+        for error in self.errors:
+            projected = dict(error)
+            message = projected.get("message")
+            if isinstance(message, str):
+                projected["message"] = project_public_text(message).text
+            projected_errors.append(projected)
+        self.errors = projected_errors
         return self
 
     @classmethod
@@ -248,7 +299,7 @@ class RunResult(BaseModel):
                     "meta": issue_payload.get("meta") or {},
                 },
             )
-        return self
+        return self._apply_public_projection()
 
     def check_invariants(self) -> ValidationResult:
         """Return structural consistency issues without changing this result."""
@@ -339,6 +390,16 @@ class RunResult(BaseModel):
                 "Successful RunResult has no final, data, or text answer projection.",
                 severity="warning",
                 path="final",
+            )
+
+        if contains_leading_reasoning(self.text) or (
+            isinstance(self.final.get("text"), str)
+            and contains_leading_reasoning(self.final["text"])
+        ):
+            result.add(
+                "reasoning_exposed_in_public_answer",
+                "RunResult public projections cannot begin with native reasoning blocks.",
+                path="text",
             )
 
         try:
@@ -437,6 +498,26 @@ class RunResult(BaseModel):
     def to_dict(self) -> dict[str, Any]:
         return self.model_dump(mode="json")
 
+    def should_retry(self) -> bool:
+        """Return whether normalized failure evidence permits another attempt."""
+
+        if self.ok:
+            return False
+        if any(is_retryable_error_payload(error) for error in self.errors):
+            return True
+        for event in self.tool_events:
+            if not event.ok and (
+                is_retryable_error_payload(event.error)
+                or event.meta.get("retryable") is True
+            ):
+                return True
+        if isinstance(self.data, dict):
+            if is_retryable_error_payload(self.data.get("error")):
+                return True
+            if is_retryable_error_payload(self.data):
+                return True
+        return False
+
     def lineage(self, **kwargs: Any):
         """Project this run into compact, explainable Lineage Memory."""
 
@@ -487,7 +568,7 @@ class RunResult(BaseModel):
             return full
         raise ValueError("mode must be 'compact' or 'full'")
 
-    def validate(
+    def validate(  # type: ignore[override]
         self, contract: AgentContract | dict[str, Any] | None = None
     ) -> ValidationResult:
         contract_obj = AgentContract.coerce(contract)
@@ -663,8 +744,10 @@ def _normalize_tool_event(event: ToolEvent) -> dict[str, Any]:
     )
     if not isinstance(payload, dict):
         payload = {"value": payload}
-    table = payload.get("table") if isinstance(payload.get("table"), dict) else {}
-    query = payload.get("query") if isinstance(payload.get("query"), dict) else {}
+    table_value = payload.get("table")
+    table: dict[str, Any] = table_value if isinstance(table_value, dict) else {}
+    query_value = payload.get("query")
+    query: dict[str, Any] = query_value if isinstance(query_value, dict) else {}
     return {
         "schema_version": TOOL_RESULT_SCHEMA_VERSION,
         "id": event.id,

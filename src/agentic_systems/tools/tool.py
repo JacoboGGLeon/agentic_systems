@@ -17,7 +17,7 @@ from pydantic import BaseModel
 
 from ..contracts import ValidationResult
 from ..engines.names import PYTHON_RUNTIME_ENGINE
-from ..errors import ToolContractError
+from ..errors import ToolContractError, execution_error_payload
 from .events import ToolEvent
 from .runtime import assert_dict_tool_output
 
@@ -63,12 +63,22 @@ class Tool:
     ) -> None:
         if function is not None and not callable(function):
             raise TypeError("Tool function must be callable.")
-        inferred_name = getattr(function, "__name__", None) if function is not None else None
-        self.name = (name or inferred_name or "").strip() if isinstance(name or inferred_name, str) else ""
+        inferred_name = (
+            getattr(function, "__name__", None) if function is not None else None
+        )
+        self.name = (
+            (name or inferred_name or "").strip()
+            if isinstance(name or inferred_name, str)
+            else ""
+        )
         if not self.name:
-            raise ValueError("Tool name must be non-empty. Pass name=... when no function is provided.")
+            raise ValueError(
+                "Tool name must be non-empty. Pass name=... when no function is provided."
+            )
         self.function = function
-        self.description, self.description_source = _resolve_description(description, function)
+        self.description, self.description_source = _resolve_description(
+            description, function
+        )
         self.input_schema = _resolve_schema_alias(
             "input",
             input_schema=input_schema,
@@ -116,7 +126,11 @@ class Tool:
 
         result = ValidationResult(ok=True)
         if self.function is None:
-            result.add("missing_function", f"Tool '{self.name}' has no callable function.", path="function")
+            result.add(
+                "missing_function",
+                f"Tool '{self.name}' has no callable function.",
+                path="function",
+            )
             return result
 
         if self.strict:
@@ -156,7 +170,13 @@ class Tool:
             payload = self._validate_input(input_payload)
             raw_output = self._call(payload)
             output = self._validate_output(raw_output)
-            event = ToolEvent(id=event_id, name=self.name, input=_payload_to_dict(payload), output={"data": output}, ok=True)
+            event = ToolEvent(
+                id=event_id,
+                name=self.name,
+                input=_payload_to_dict(payload),
+                output={"data": output},
+                ok=True,
+            )
             return RunResult(
                 text="",
                 data=output,
@@ -168,10 +188,27 @@ class Tool:
                 meta=_result_meta(context, input_payload),
             )
         except Exception as exc:  # noqa: BLE001 - tool runs return structured failures.
-            error = {"error_type": type(exc).__name__, "message": str(exc)}
-            event = ToolEvent(id=event_id, name=self.name, input=_payload_to_dict(input_payload), output={"data": error}, ok=False, error=error)
+            explicit_retryable = self.metadata.get("retryable")
+            error = execution_error_payload(
+                exc,
+                provider=PYTHON_RUNTIME_ENGINE,
+                framework="native",
+                retryable=(
+                    bool(explicit_retryable) if explicit_retryable is not None else None
+                ),
+            )
+            error["error_type"] = type(exc).__name__
+            event = ToolEvent(
+                id=event_id,
+                name=self.name,
+                input=_payload_to_dict(input_payload),
+                output={"data": error},
+                ok=False,
+                error=error,
+                meta={"retryable": error["retryable"]},
+            )
             return RunResult(
-                text=str(exc),
+                text=error["message"],
                 data=error,
                 ok=False,
                 tool_events=[event],
@@ -205,7 +242,9 @@ class Tool:
 
     def _call(self, payload: Any) -> Any:
         if self.function is None:
-            raise ToolContractError(f"Tool '{self.name}' has no callable function.")  # pragma: no cover
+            raise ToolContractError(
+                f"Tool '{self.name}' has no callable function."
+            )  # pragma: no cover
         signature = inspect.signature(self.function)
         parameters = list(signature.parameters.values())
         if not parameters:
@@ -224,7 +263,9 @@ class Tool:
         if len(parameters) == 1:
             signature.bind(payload)
             return self.function(payload)
-        raise TypeError(f"Tool '{self.name}' expected dict input for parameters {[param.name for param in parameters]}.")
+        raise TypeError(
+            f"Tool '{self.name}' expected dict input for parameters {[param.name for param in parameters]}."
+        )
 
 
 CheckResult = ValidationResult
@@ -234,7 +275,9 @@ def _function_doc(function: Callable[..., Any] | None) -> str | None:
     return inspect.getdoc(function) if function is not None else None
 
 
-def _resolve_description(description: str | None, function: Callable[..., Any] | None) -> tuple[str, str]:
+def _resolve_description(
+    description: str | None, function: Callable[..., Any] | None
+) -> tuple[str, str]:
     """Resolve description and expose where it came from for tool catalogs."""
 
     if description is not None and description.strip():
@@ -252,7 +295,9 @@ def _resolve_schema_alias(kind: str, **values: Any) -> type[BaseModel] | None:
     first_name, first_value = provided[0]
     for name, value in provided[1:]:
         if value is not first_value:
-            raise ValueError(f"Conflicting {kind} schema aliases: {first_name} and {name}.")
+            raise ValueError(
+                f"Conflicting {kind} schema aliases: {first_name} and {name}."
+            )
     return _ensure_model_schema(first_value, f"{kind}_schema")
 
 
@@ -272,7 +317,9 @@ def _schema_info(schema: type[BaseModel] | None) -> dict[str, Any] | None:
 
 def _return_annotation_is_dict(function: Callable[..., Any]) -> bool:
     try:
-        annotation = get_type_hints(function).get("return", inspect.signature(function).return_annotation)
+        annotation = get_type_hints(function).get(
+            "return", inspect.signature(function).return_annotation
+        )
     except Exception:
         annotation = inspect.signature(function).return_annotation
     if annotation is inspect.Signature.empty:
@@ -284,7 +331,9 @@ def _return_annotation_is_dict(function: Callable[..., Any]) -> bool:
 
 def _function_param_annotation(function: Callable[..., Any], param_name: str) -> Any:
     try:
-        return get_type_hints(function).get(param_name, inspect.signature(function).parameters[param_name].annotation)
+        return get_type_hints(function).get(
+            param_name, inspect.signature(function).parameters[param_name].annotation
+        )
     except Exception:
         return inspect.signature(function).parameters[param_name].annotation
 

@@ -1,0 +1,32 @@
+[importlinter]
+root_package = agentic_systems
+
+[importlinter:contract:schemas_are_independent]
+name = Schemas do not depend on executable or presentation layers
+type = forbidden
+source_modules =
+    agentic_systems.schemas
+forbidden_modules =
+    agentic_systems.agents
+    agentic_systems.system
+    agentic_systems.providers
+    agentic_systems.integrations
+    agentic_systems.cli
+
+[importlinter:contract:providers_do_not_import_presentation]
+name = Provider adapters do not depend on presentation
+type = forbidden
+source_modules =
+    agentic_systems.providers
+forbidden_modules =
+    agentic_systems.cli
+    agentic_systems.human_output
+
+[importlinter:contract:integrations_do_not_import_presentation]
+name = Framework adapters do not depend on presentation
+type = forbidden
+source_modules =
+    agentic_systems.integrations
+forbidden_modules =
+    agentic_systems.cli
+    agentic_systems.human_output

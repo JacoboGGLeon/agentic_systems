@@ -158,7 +158,7 @@ def test_streamlit_creator_exposes_generated_artifact_evidence():
 def test_bundle_contains_ten_independent_nested_bundles(tmp_path: Path):
     module = _load_bundle_builder()
     bundle = module.build_bundle(tmp_path)
-    assert bundle.name == "agentic-systems-studio-2.0.zip"
+    assert bundle.name == "agentic-systems-studio-2.0.1.zip"
 
     with zipfile.ZipFile(bundle) as archive:
         names = set(archive.namelist())

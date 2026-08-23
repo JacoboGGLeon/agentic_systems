@@ -1,0 +1,21 @@
+{
+  "schema_version": "agentic_systems.live-profiles.v1",
+  "profiles": {
+    "cloud": {
+      "providers": ["openai-runtime", "bedrock-runtime"],
+      "frameworks": ["native", "langgraph", "openai-agents", "strands"]
+    },
+    "ollama": {
+      "providers": ["ollama-runtime"],
+      "frameworks": ["native", "langgraph", "openai-agents", "strands"]
+    },
+    "python": {
+      "providers": ["python-runtime"],
+      "frameworks": ["native", "langgraph", "openai-agents", "strands"]
+    },
+    "vllm": {
+      "providers": ["vllm-runtime"],
+      "frameworks": ["native", "langgraph", "openai-agents", "strands"]
+    }
+  }
+}

@@ -14,6 +14,8 @@ jobs:
         python-version: ["3.10", "3.14"]
     steps:
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
@@ -26,6 +28,46 @@ jobs:
           python -m pip install -e
           "examples/agentic_systems_studio[ui,notebook,test]"
       - run: python -m ruff check src tests tutorials/frameworks/mcp_echo_server.py
+      - name: Formatting gate
+        if: matrix.python-version == '3.14'
+        run: python scripts/check_format.py
+      - name: Pyright strict contracts
+        if: matrix.python-version == '3.14'
+        run: python -m pyright --project pyrightconfig.json
+      - name: Pyright legacy ratchet
+        if: matrix.python-version == '3.14'
+        run: python scripts/check_pyright_baseline.py
+      - name: Architecture dependency gate
+        if: matrix.python-version == '3.14'
+        run: lint-imports
+      - name: Architecture branch gate
+        if: matrix.python-version == '3.14'
+        run: python scripts/check_architecture.py
+      - name: Performance ratchet
+        if: matrix.python-version == '3.14'
+        run: python scripts/check_benchmarks.py
+      - name: Contract and offline 20-pair matrix
+        if: matrix.python-version == '3.14'
+        run: >-
+          python -m pytest -q tests/contracts
+          tests/frameworks/test_provider_framework_matrix.py
+      - name: Complexity gate
+        if: matrix.python-version == '3.14'
+        run: python scripts/check_complexity.py
+      - name: Dependency vulnerability audit
+        if: matrix.python-version == '3.14'
+        run: python -m pip_audit --local --skip-editable
+      - name: Direct dependency license gate
+        if: matrix.python-version == '3.14'
+        run: python scripts/check_licenses.py
+      - name: Secret material gate
+        if: matrix.python-version == '3.14'
+        run: python scripts/check_secrets.py
+      - name: Generate dependency SBOM
+        if: matrix.python-version == '3.14'
+        run: >-
+          cyclonedx-py environment --output-format JSON
+          --output-file .tmp/agentic-systems-sbom.json
       - run: >-
           python -m pytest --cov=agentic_systems
           --cov-config=pyproject.toml --cov-report=term-missing -q
@@ -77,3 +119,6 @@ jobs:
           .tmp/wheel-smoke/bin/python -m pip install dist/*.whl
           .tmp/wheel-smoke/bin/python -c "import importlib.metadata as m; import agentic_systems as a; assert a.__version__ == m.version('agentic-systems'); assert len(a.__all__) == 78"
           .tmp/wheel-smoke/bin/agentic-systems version
+      - name: Generated-file cleanliness
+        if: matrix.python-version == '3.14'
+        run: git diff --exit-code

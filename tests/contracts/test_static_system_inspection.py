@@ -83,24 +83,49 @@ def test_static_inspection_covers_entities_relations_profiles_and_risks_without_
     assert report["inspection_kind"] == "static"
     assert report["side_effects"] == {"models_executed": 0, "tools_executed": 0}
     assert json.loads(json.dumps(payload)) == payload
-    assert {item["name"] for item in payload["entities"]["tools"]} == {"lookup", "ops.health"}
+    assert {item["name"] for item in payload["entities"]["tools"]} == {
+        "lookup",
+        "ops.health",
+    }
     assert payload["entities"]["skills"][0]["identity"] == "research"
-    assert any(item["identity"] == "loaded_research" for item in payload["entities"]["skills"])
+    assert any(
+        item["identity"] == "loaded_research" for item in payload["entities"]["skills"]
+    )
     assert payload["entities"]["agents"][0]["name"] == "worker"
-    assert {"source": "agent:worker", "relation": "uses", "target": "tool:lookup"} in payload["relationships"]
-    assert {"source": "skill:research", "relation": "packages", "target": "tool:lookup"} in payload["relationships"]
-    assert payload["contracts"]["skills"][0]["tools"][0]["input_schema"]["title"] == "LookupInput"
+    assert {
+        "source": "agent:worker",
+        "relation": "uses",
+        "target": "tool:lookup",
+    } in payload["relationships"]
+    assert {
+        "source": "skill:research",
+        "relation": "packages",
+        "target": "tool:lookup",
+    } in payload["relationships"]
+    assert (
+        payload["contracts"]["skills"][0]["tools"][0]["input_schema"]["title"]
+        == "LookupInput"
+    )
     assert payload["contracts"]["agents"][0]["contract"]["must_call"] == ["lookup"]
-    assert next(item for item in payload["providers"] if item["provider"] == "python-runtime")["selected_by"]
-    assert next(item for item in payload["frameworks"] if item["framework"] == "strands")["selected_by"]
+    assert next(
+        item for item in payload["providers"] if item["provider"] == "python-runtime"
+    )["selected_by"]
+    assert next(
+        item for item in payload["frameworks"] if item["framework"] == "strands"
+    )["selected_by"]
     assert payload["capabilities"]["providers"]
     assert payload["conflicts"]["resolved"][0]["decision"] == "replace"
     assert payload["conflicts"]["unresolved"] == []
     assert payload["limits"]["agents"][0]["policy"]["max_turns"] == 2
-    assert not any(item["code"] == "framework_adapter_unavailable" for item in payload["degradation_risks"])
+    assert not any(
+        item["code"] == "framework_adapter_unavailable"
+        for item in payload["degradation_risks"]
+    )
     assert all(item["suggestion"] for item in payload["diagnostics"])
     assert report.human_text() == report.human_text()
-    assert report.human_text().startswith("Agentic Systems static inspection\nStatus: OK")
+    assert report.human_text().startswith(
+        "Agentic Systems static inspection\nStatus: OK"
+    )
     assert report.raise_if_errors() is report
 
 

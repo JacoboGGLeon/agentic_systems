@@ -38,6 +38,22 @@ class FakeOllamaClient:
         self.chat = SimpleNamespace(completions=FakeChatCompletions())
 
 
+class FakeCompletionChatCompletions:
+    def __init__(self) -> None:
+        self.calls = []
+
+    def create(self, **kwargs):
+        self.calls.append(kwargs)
+        message = SimpleNamespace(content="Respuesta Ollama.", tool_calls=[])
+        usage = SimpleNamespace(prompt_tokens=3, completion_tokens=2, total_tokens=5)
+        return SimpleNamespace(choices=[SimpleNamespace(message=message)], usage=usage)
+
+
+class FakeCompletionOllamaClient:
+    def __init__(self) -> None:
+        self.chat = SimpleNamespace(completions=FakeCompletionChatCompletions())
+
+
 class FakeAsyncChatCompletions:
     async def create(self, **kwargs):
         message = SimpleNamespace(content="Respuesta async Ollama.", tool_calls=[])
@@ -103,32 +119,32 @@ def test_ollama_runtime_provider_runs_openai_compatible_tool_loop() -> None:
     assert repeated.check_invariants().ok is True
 
 
-def test_ollama_missing_tools_and_async_execution() -> None:
+def test_ollama_completion_without_tools_and_async_execution() -> None:
     runtime = toolkit.runtime(provider="ollama-runtime", model="qwen3:4b")
     provider = OllamaRuntimeProvider(
-        client=FakeOllamaClient(),
+        client=FakeCompletionOllamaClient(),
         async_client=FakeAsyncOllamaClient(),
     )
-    missing_agent = toolkit.Agent(name="empty", tools=[], runtime=runtime)
+    completion_agent = toolkit.Agent(name="empty", tools=[], runtime=runtime)
 
-    missing = provider.run(
-        missing_agent,
+    completion = provider.run(
+        completion_agent,
         "Hola",
         toolkit.RunPolicy(max_turns=1),
     )
 
-    assert missing.ok is False
-    assert missing.engine == OLLAMA_RUNTIME_ENGINE
-    assert missing.data["error"]["code"] == "missing_tools"
+    assert completion.ok is True
+    assert completion.engine == OLLAMA_RUNTIME_ENGINE
+    assert completion.text == "Respuesta Ollama."
 
-    missing_async = asyncio.run(
+    completion_async = asyncio.run(
         provider.arun(
-            missing_agent,
+            completion_agent,
             "Hola async",
             toolkit.RunPolicy(max_turns=1),
         )
     )
-    assert missing_async.data["error"]["code"] == "missing_tools"
+    assert completion_async.text == "Respuesta async Ollama."
 
     system = toolkit.system(runtime=runtime, model="qwen3:4b")
     agent = system.agent(

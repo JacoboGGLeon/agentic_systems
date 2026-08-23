@@ -29,7 +29,7 @@ from .engines.names import (
     canonical_engine_name,
     normalize_engine_text,
 )
-from .errors import GraphContractError
+from .errors import GraphContractError, is_transient_exception
 from .integrations.config import FrameworkConfig
 from .results import RunResult
 from .execution import CompiledSystem, ExecutionPlan, SequentialPlan
@@ -419,6 +419,8 @@ class Agent:
                 _run_engine,
                 scheduler,
                 is_success=lambda item: bool(getattr(item, "ok", True)),
+                should_retry_value=lambda item: item.should_retry(),
+                should_retry_exception=is_transient_exception,
             )
         except SchedulerTimeoutError as exc:
             result = self._scheduler_failure_result(
@@ -434,10 +436,11 @@ class Agent:
             result = self._scheduler_failure_result(
                 str(exc), clean_input, mode=mode, code=type(exc).__name__
             )
+            actual_attempts = int(getattr(exc, "_agentic_scheduler_attempts", 1))
             scheduler_meta = {
                 "scheduler": scheduler.to_dict(),
-                "attempts": int(scheduler.max_retries) + 1,
-                "retries": int(scheduler.max_retries),
+                "attempts": actual_attempts,
+                "retries": max(0, actual_attempts - 1),
                 "timed_out": False,
             }
         return self._finalize_result(
@@ -490,6 +493,8 @@ class Agent:
                 _run_engine,
                 scheduler,
                 is_success=lambda item: bool(getattr(item, "ok", True)),
+                should_retry_value=lambda item: item.should_retry(),
+                should_retry_exception=is_transient_exception,
             )
         except SchedulerTimeoutError as exc:
             result = self._scheduler_failure_result(
@@ -505,10 +510,11 @@ class Agent:
             result = self._scheduler_failure_result(
                 str(exc), clean_input, mode=mode, code=type(exc).__name__
             )
+            actual_attempts = int(getattr(exc, "_agentic_scheduler_attempts", 1))
             scheduler_meta = {
                 "scheduler": scheduler.to_dict(),
-                "attempts": int(scheduler.max_retries) + 1,
-                "retries": int(scheduler.max_retries),
+                "attempts": actual_attempts,
+                "retries": max(0, actual_attempts - 1),
                 "timed_out": False,
             }
         return self._finalize_result(

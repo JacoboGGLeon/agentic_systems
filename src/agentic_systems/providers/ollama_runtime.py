@@ -17,7 +17,6 @@ from agentic_systems.engines.names import OLLAMA_RUNTIME_ENGINE
 from agentic_systems.providers.conformance import ProviderProfile, provider_profile
 from agentic_systems.providers.openai_runtime import (
     _build_messages,
-    _failure,
     _openai_module,
     _openai_tools,
     _run_chat_loop,
@@ -56,14 +55,6 @@ class OllamaRuntimeProvider:
         messages = _build_messages(agent, input)
         runtime = self._runtime(agent)
         tool_defs = _openai_tools(runtime, agent)
-        if not tool_defs:
-            return self._failure(
-                "OllamaRuntimeProvider needs at least one concrete Tool on the agent.",
-                agent,
-                mode,
-                "missing_tools",
-            )
-
         client = self._client or self._client_from_environment()
         result = _run_chat_loop(
             client,
@@ -88,14 +79,6 @@ class OllamaRuntimeProvider:
         runtime = self._runtime(agent)
         messages = _build_messages(agent, input)
         tool_defs = _openai_tools(runtime, agent)
-        if not tool_defs:
-            return self._failure(
-                "OllamaRuntimeProvider needs at least one concrete Tool on the agent.",
-                agent,
-                mode,
-                "missing_tools",
-            )
-
         client = self._async_client or self._async_client_from_environment()
         result = await _run_chat_loop_async(
             client,
@@ -127,31 +110,6 @@ class OllamaRuntimeProvider:
             base_url=_ollama_base_url(),
             api_key=_ollama_api_key(),
         )
-
-    def _failure(
-        self,
-        message: str,
-        agent: Any,
-        mode: str,
-        code: str,
-    ) -> RunResult:
-        result = _failure(
-            message,
-            agent,
-            mode,
-            code,
-            meta={"execution_engine": OLLAMA_RUNTIME_ENGINE},
-        )
-        result.engine = OLLAMA_RUNTIME_ENGINE
-        result.meta["runtime_engine"] = OLLAMA_RUNTIME_ENGINE
-        result.meta.update(
-            {
-                "framework": getattr(agent, "framework", None),
-                "framework_requested": getattr(agent, "framework", None),
-                "framework_adapter": None,
-            }
-        )
-        return result
 
 
 def _ollama_base_url() -> str:

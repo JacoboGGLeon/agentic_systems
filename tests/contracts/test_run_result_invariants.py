@@ -37,14 +37,18 @@ def test_final_data_and_text_are_compatible_projections() -> None:
 
 def test_failed_validation_forces_failure_and_adds_deduplicated_error() -> None:
     validation = ValidationResult(ok=True)
-    validation.add("missing_evidence", "Required evidence was not produced.", path="data.evidence")
+    validation.add(
+        "missing_evidence", "Required evidence was not produced.", path="data.evidence"
+    )
 
     result = RunResult(text="answer", validation=validation.to_dict())
     result.apply_validation(validation)
 
     assert result.ok is False
     assert result.validation["ok"] is False
-    validation_errors = [error for error in result.errors if error["code"] == "validation_failed"]
+    validation_errors = [
+        error for error in result.errors if error["code"] == "validation_failed"
+    ]
     assert validation_errors == [
         {
             "code": "validation_failed",
@@ -66,6 +70,7 @@ def test_validation_warning_preserves_success_without_error() -> None:
     assert result.errors == []
     assert result.validation["issues"][0]["severity"] == "warning"
 
+
 def test_compatibility_validation_payload_is_preserved_and_controls_success() -> None:
     legacy = {"ok": False, "issues": [{"code": "legacy_failure"}]}
     result = RunResult(text="legacy", validation=legacy)
@@ -79,6 +84,7 @@ def test_compatibility_validation_payload_is_preserved_and_controls_success() ->
     assert unstructured.ok is False
     assert unstructured.errors[-1]["message"] == "plain failure"
 
+
 def test_mutated_validation_contradictions_are_reported_clearly() -> None:
     result = RunResult(text="answer")
     result.validation = {"ok": False, "issues": []}
@@ -87,7 +93,15 @@ def test_mutated_validation_contradictions_are_reported_clearly() -> None:
 
     result.validation = {
         "ok": True,
-        "issues": [{"code": "bad", "message": "bad", "severity": "error", "path": None, "meta": {}}],
+        "issues": [
+            {
+                "code": "bad",
+                "message": "bad",
+                "severity": "error",
+                "path": None,
+                "meta": {},
+            }
+        ],
     }
     assert "validation_status_mismatch" in _codes(result.check_invariants())
 
@@ -100,7 +114,9 @@ def test_partial_tool_failure_distinguishes_recovered_and_unresolved() -> None:
             _event("recovery", ok=True),
         ],
     )
-    recovered_error = next(error for error in recovered.errors if error["code"] == "tool_failed")
+    recovered_error = next(
+        error for error in recovered.errors if error["code"] == "tool_failed"
+    )
     assert recovered_error["resolved"] is True
     assert recovered_error["recovered_by_tool_event_id"] == "recovery"
     assert recovered.trace()["recovered_tool_error_count"] == 1
@@ -108,7 +124,9 @@ def test_partial_tool_failure_distinguishes_recovered_and_unresolved() -> None:
 
     unresolved = RunResult(
         text="partial answer",
-        tool_events=[_event("unresolved", ok=False, error={"message": "allowed partial failure"})],
+        tool_events=[
+            _event("unresolved", ok=False, error={"message": "allowed partial failure"})
+        ],
     )
     invariant_check = unresolved.check_invariants()
     assert invariant_check.ok is True
@@ -127,7 +145,9 @@ def test_error_and_tool_event_contradictions_are_detected() -> None:
     validation = result.check_invariants()
 
     assert validation.ok is False
-    assert {"duplicate_tool_event_id", "successful_tool_event_with_error"} <= _codes(validation)
+    assert {"duplicate_tool_event_id", "successful_tool_event_with_error"} <= _codes(
+        validation
+    )
     with pytest.raises(ValueError, match="duplicate_tool_event_id"):
         result.raise_if_inconsistent()
 
@@ -169,6 +189,36 @@ def test_serialization_invariant_and_json_round_trip() -> None:
     assert "not_json_serializable" in _codes(serialization_check)
 
 
+def test_reasoning_is_removed_before_first_public_projection_and_round_trip() -> None:
+    raw = "<thinking>private chain</thinking>\n\nPublic answer"
+    result = RunResult(
+        text=raw,
+        final={"text": raw},
+        ok=False,
+        errors=[{"code": "run_failed", "message": raw}],
+    )
+
+    assert result.text == "Public answer"
+    assert result.final["text"] == "Public answer"
+    assert result.errors[0]["message"] == "Public answer"
+    assert result.meta["reasoning"] == {
+        "present": True,
+        "format": "<thinking>",
+        "removed_from_public_text": True,
+    }
+    restored = RunResult.model_validate_json(result.model_dump_json())
+    assert restored.normalized() == result.normalized()
+    assert "private chain" not in result.model_dump_json()
+
+    result.text = raw
+    result.final = {"text": raw}
+    result.apply_validation({"ok": True, "issues": []})
+
+    assert result.text == "Public answer"
+    assert result.final["text"] == "Public answer"
+    assert "private chain" not in result.model_dump_json()
+
+
 def test_lineage_preserves_status_usage_validation_and_evidence() -> None:
     result = RunResult(
         text="answer",
@@ -184,4 +234,7 @@ def test_lineage_preserves_status_usage_validation_and_evidence() -> None:
     assert payload["ok"] is True
     assert payload["usage"] == {"total_tokens": 4}
     assert payload["validation"] == {"ok": True, "issues": []}
-    assert any(step["kind"] == "tool" and step["evidence"]["ok"] is True for step in payload["steps"])
+    assert any(
+        step["kind"] == "tool" and step["evidence"]["ok"] is True
+        for step in payload["steps"]
+    )

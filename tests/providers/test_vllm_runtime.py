@@ -5,7 +5,11 @@ from types import SimpleNamespace
 
 import agentic_systems as toolkit
 from agentic_systems.engines.names import VLLM_RUNTIME_ENGINE
-from agentic_systems.providers.vllm_runtime import VLLMRuntimeProvider, vllm_environment_snapshot, vllm_signal_present
+from agentic_systems.providers.vllm_runtime import (
+    VLLMRuntimeProvider,
+    vllm_environment_snapshot,
+    vllm_signal_present,
+)
 
 
 class FakeChatCompletions:
@@ -14,7 +18,9 @@ class FakeChatCompletions:
 
     def create(self, **kwargs):
         self.calls += 1
-        if self.calls == 1:
+        if not kwargs.get("tools"):
+            message = SimpleNamespace(content="Respuesta vLLM.", tool_calls=[])
+        elif self.calls == 1:
             tool_call = SimpleNamespace(
                 id="call_1",
                 function=SimpleNamespace(name="duplicar", arguments='{"value": 21}'),
@@ -40,9 +46,17 @@ def test_vllm_runtime_provider_runs_openai_compatible_tool_loop() -> None:
     runtime = toolkit.runtime(provider="vllm-runtime", model="Qwen/Qwen3-0.6B")
     system = toolkit.system(runtime=runtime, model="Qwen/Qwen3-0.6B")
     provider = VLLMRuntimeProvider(system, client=FakeVLLMClient())
-    agent = system.agent(name="qwen", instructions="Usa tools cuando sea necesario.", tools=[duplicar], engine="vllm-runtime", runtime=runtime)
+    agent = system.agent(
+        name="qwen",
+        instructions="Usa tools cuando sea necesario.",
+        tools=[duplicar],
+        engine="vllm-runtime",
+        runtime=runtime,
+    )
 
-    result = provider.run(agent, "Duplica 21 usando la tool.", toolkit.RunPolicy(max_turns=4), mode="eval")
+    result = provider.run(
+        agent, "Duplica 21 usando la tool.", toolkit.RunPolicy(max_turns=4), mode="eval"
+    )
 
     assert result.ok is True
     assert result.engine == VLLM_RUNTIME_ENGINE
@@ -51,24 +65,28 @@ def test_vllm_runtime_provider_runs_openai_compatible_tool_loop() -> None:
     assert result.tool_events[0].name == "duplicar"
     assert result.tool_events[0].output["result"] == 42
     assert result.usage["total_tokens"] == 15
-    assert result.meta["source_result_type"] == "vllm.openai_compatible.chat.completions"
+    assert (
+        result.meta["source_result_type"] == "vllm.openai_compatible.chat.completions"
+    )
 
 
-def test_vllm_runtime_provider_reports_missing_tools_with_vllm_engine() -> None:
+def test_vllm_runtime_provider_completes_without_tools_with_vllm_engine() -> None:
     runtime = toolkit.runtime(provider="vllm-runtime", model="Qwen/Qwen3-0.6B")
     provider = VLLMRuntimeProvider(client=FakeVLLMClient())
     agent = toolkit.Agent(name="qwen", tools=[], runtime=runtime)
 
     result = provider.run(agent, "Hola", toolkit.RunPolicy(max_turns=1))
 
-    assert result.ok is False
+    assert result.ok is True
     assert result.engine == VLLM_RUNTIME_ENGINE
-    assert result.data["error"]["code"] == "missing_tools"
+    assert result.text == "Respuesta vLLM."
     assert result.meta["runtime_engine"] == VLLM_RUNTIME_ENGINE
 
 
 def test_agentic_system_can_create_vllm_runtime_engine() -> None:
-    system = toolkit.system(model="Qwen/Qwen3-0.6B", runtime=toolkit.runtime(provider="vllm-runtime"))
+    system = toolkit.system(
+        model="Qwen/Qwen3-0.6B", runtime=toolkit.runtime(provider="vllm-runtime")
+    )
 
     assert isinstance(system._engine("vllm-runtime"), VLLMRuntimeProvider)
 
@@ -90,16 +108,24 @@ def test_vllm_environment_snapshot_is_non_secret(monkeypatch) -> None:
 
 def test_runtime_auto_resolves_vllm_when_base_url_is_configured(monkeypatch) -> None:
     import agentic_systems.core.runtime as runtime_module
+
     system_module = importlib.import_module("agentic_systems.system")
 
     monkeypatch.setenv("VLLM_BASE_URL", "http://127.0.0.1:8000/v1")
     monkeypatch.setenv("VLLM_MODEL", "Qwen/Qwen3-0.6B")
     monkeypatch.setenv("OPENAI_API_KEY", "openai-should-be-fallback")
     monkeypatch.setenv("AWS_REGION", "us-east-1")
-    monkeypatch.setattr(runtime_module, "_module_available", lambda name: name in {"openai", "boto3"})
-    monkeypatch.setattr(system_module, "_module_available", lambda name: name == "openai")
+    monkeypatch.setattr(
+        runtime_module, "_module_available", lambda name: name in {"openai", "boto3"}
+    )
+    monkeypatch.setattr(
+        system_module, "_module_available", lambda name: name == "openai"
+    )
 
-    runtime = toolkit.runtime(provider="auto", provider_priority=["vllm-runtime", "openai-runtime", "bedrock-runtime"])
+    runtime = toolkit.runtime(
+        provider="auto",
+        provider_priority=["vllm-runtime", "openai-runtime", "bedrock-runtime"],
+    )
     summary = runtime.describe()
     system = toolkit.system(model="Qwen/Qwen3-0.6B", runtime=runtime)
 
@@ -108,7 +134,11 @@ def test_runtime_auto_resolves_vllm_when_base_url_is_configured(monkeypatch) -> 
     assert summary["mode"] == "auto"
     assert summary["preferred_provider"] == VLLM_RUNTIME_ENGINE
     assert summary["fallback_provider"] == "openai-runtime"
-    assert summary["provider_priority"] == ["vllm-runtime", "openai-runtime", "bedrock-runtime"]
+    assert summary["provider_priority"] == [
+        "vllm-runtime",
+        "openai-runtime",
+        "bedrock-runtime",
+    ]
     assert summary["configuration"]["vllm"]["base_url"] == "http://127.0.0.1:8000/v1"
     assert isinstance(system._engine("auto"), VLLMRuntimeProvider)
 
@@ -149,23 +179,35 @@ class FakeAsyncVLLMClient:
         self.chat = SimpleNamespace(completions=FakeAsyncChatCompletions())
 
 
-def test_vllm_runtime_provider_async_missing_tools_and_success() -> None:
+def test_vllm_runtime_provider_async_completion_and_success() -> None:
     import asyncio
 
     runtime = toolkit.runtime(provider="vllm-runtime", model="Qwen/Qwen3-0.6B")
     provider = VLLMRuntimeProvider(async_client=FakeAsyncVLLMClient())
-    missing_agent = toolkit.Agent(name="empty", tools=[], runtime=runtime)
+    completion_agent = toolkit.Agent(name="empty", tools=[], runtime=runtime)
 
-    missing = asyncio.run(provider.arun(missing_agent, "Hola", toolkit.RunPolicy(max_turns=1)))
+    completion = asyncio.run(
+        provider.arun(completion_agent, "Hola", toolkit.RunPolicy(max_turns=1))
+    )
 
-    assert missing.ok is False
-    assert missing.engine == VLLM_RUNTIME_ENGINE
-    assert missing.meta["runtime_engine"] == VLLM_RUNTIME_ENGINE
+    assert completion.ok is True
+    assert completion.engine == VLLM_RUNTIME_ENGINE
+    assert completion.meta["runtime_engine"] == VLLM_RUNTIME_ENGINE
 
     system = toolkit.system(runtime=runtime, model="Qwen/Qwen3-0.6B")
-    agent = system.agent(name="qwen_async", instructions="Responde.", tools=[duplicar], engine="vllm-runtime", runtime=runtime)
+    agent = system.agent(
+        name="qwen_async",
+        instructions="Responde.",
+        tools=[duplicar],
+        engine="vllm-runtime",
+        runtime=runtime,
+    )
 
-    result = asyncio.run(provider.arun(agent, "Contesta sin tools.", toolkit.RunPolicy(max_turns=1), mode="eval"))
+    result = asyncio.run(
+        provider.arun(
+            agent, "Contesta sin tools.", toolkit.RunPolicy(max_turns=1), mode="eval"
+        )
+    )
 
     assert result.ok is True
     assert result.engine == VLLM_RUNTIME_ENGINE
@@ -188,14 +230,24 @@ def test_vllm_runtime_provider_environment_clients_and_defaults(monkeypatch) -> 
 
     monkeypatch.delenv("VLLM_BASE_URL", raising=False)
     monkeypatch.delenv("VLLM_API_KEY", raising=False)
-    monkeypatch.setattr(vllm_module, "_openai_module", lambda: SimpleNamespace(OpenAI=FakeOpenAI, AsyncOpenAI=FakeAsyncOpenAI))
+    monkeypatch.setattr(
+        vllm_module,
+        "_openai_module",
+        lambda: SimpleNamespace(OpenAI=FakeOpenAI, AsyncOpenAI=FakeAsyncOpenAI),
+    )
 
     provider = VLLMRuntimeProvider()
 
     assert provider._client_from_environment().__class__ is FakeOpenAI
     assert provider._async_client_from_environment().__class__ is FakeAsyncOpenAI
-    assert created["sync"] == {"base_url": "http://127.0.0.1:8000/v1", "api_key": "EMPTY"}
-    assert created["async"] == {"base_url": "http://127.0.0.1:8000/v1", "api_key": "EMPTY"}
+    assert created["sync"] == {
+        "base_url": "http://127.0.0.1:8000/v1",
+        "api_key": "EMPTY",
+    }
+    assert created["async"] == {
+        "base_url": "http://127.0.0.1:8000/v1",
+        "api_key": "EMPTY",
+    }
 
     untagged = toolkit.RunResult(text="ok", meta={"source_result_type": "custom"})
     normalized = vllm_module._as_vllm_result(untagged)
@@ -209,7 +261,9 @@ def test_system_unknown_engine_and_auto_vllm_priority(monkeypatch) -> None:
     import pytest
     import agentic_systems.core.runtime as runtime_module
 
-    system = toolkit.system(model="python-runtime", runtime=toolkit.runtime(provider="python-runtime"))
+    system = toolkit.system(
+        model="python-runtime", runtime=toolkit.runtime(provider="python-runtime")
+    )
     with pytest.raises(ValueError, match="Unknown runtime/provider"):
         system._engine("unknown-runtime")
 
@@ -217,18 +271,21 @@ def test_system_unknown_engine_and_auto_vllm_priority(monkeypatch) -> None:
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
     monkeypatch.delenv("AWS_REGION", raising=False)
     monkeypatch.delenv("AWS_DEFAULT_REGION", raising=False)
-    monkeypatch.setattr(runtime_module, "_module_available", lambda name: name == "openai")
+    monkeypatch.setattr(
+        runtime_module, "_module_available", lambda name: name == "openai"
+    )
 
     runtime = toolkit.runtime(provider="auto", provider_priority=["vllm-runtime"])
     system = toolkit.system(model="python-runtime", runtime=runtime)
     assert isinstance(system._engine("auto"), VLLMRuntimeProvider)
 
 
-
 def test_openai_tool_def_builder_skips_missing_tool_specs() -> None:
     from agentic_systems.providers.openai_runtime import _openai_tools
 
-    runtime = SimpleNamespace(tool_names=lambda: ["missing"], tool_specs=lambda names: {})
+    runtime = SimpleNamespace(
+        tool_names=lambda: ["missing"], tool_specs=lambda names: {}
+    )
     agent = SimpleNamespace(system=None, tools=[])
 
     assert _openai_tools(runtime, agent) == []
@@ -243,11 +300,18 @@ def test_openai_tool_def_builder_uses_default_schema_for_schema_less_tools() -> 
     defs = _openai_tools(None, agent)
 
     assert defs[0]["function"]["name"] == "plain"
-    assert defs[0]["function"]["parameters"] == {"type": "object", "properties": {}, "additionalProperties": True}
+    assert defs[0]["function"]["parameters"] == {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": True,
+    }
 
 
 def test_system_module_available_real_lookup() -> None:
     system_module = importlib.import_module("agentic_systems.system")
 
     assert system_module._module_available("sys") is True
-    assert system_module._module_available("definitely_missing_agentic_systems_module") is False
+    assert (
+        system_module._module_available("definitely_missing_agentic_systems_module")
+        is False
+    )

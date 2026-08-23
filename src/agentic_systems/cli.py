@@ -28,6 +28,7 @@ from .core.runtime import (
 )
 from .factories import runtime
 from .engines.names import supported_engine_names
+from .registry import FRAMEWORKS, PROVIDERS, registry_manifest
 
 
 CONTACT_INFO = {
@@ -67,7 +68,9 @@ def _doctor_payload() -> dict[str, Any]:
         "has_ollama_model": bool(os.getenv("OLLAMA_MODEL")),
         "has_openai_api_key": bool(os.getenv("OPENAI_API_KEY")),
         "has_openai_base_url": bool(os.getenv("OPENAI_BASE_URL")),
-        "has_aws_region": bool(os.getenv("AWS_REGION") or os.getenv("AWS_DEFAULT_REGION")),
+        "has_aws_region": bool(
+            os.getenv("AWS_REGION") or os.getenv("AWS_DEFAULT_REGION")
+        ),
         "has_aws_profile": bool(os.getenv("AWS_PROFILE")),
         "has_aws_static_credentials": bool(
             os.getenv("AWS_ACCESS_KEY_ID") and os.getenv("AWS_SECRET_ACCESS_KEY")
@@ -75,67 +78,56 @@ def _doctor_payload() -> dict[str, Any]:
         "has_aws_session_token": bool(os.getenv("AWS_SESSION_TOKEN")),
         "has_bedrock_api_key": bool(os.getenv("AWS_BEARER_TOKEN_BEDROCK")),
     }
-    optional_dependencies = {
+    optional_dependencies: dict[str, bool] = {
         "boto3": _optional_dependency("boto3"),
         "langgraph": _optional_dependency("langgraph"),
         "openai": _optional_dependency("openai"),
         "openai-agents": _optional_dependency("agents"),
         "strands-agents": _optional_dependency("strands"),
     }
-    framework_modules = {
-        "native": None,
-        "langgraph": "langgraph",
-        "openai-agents": "agents",
-        "strands": "strands",
-    }
     frameworks = [
         {
-            "name": name,
-            "module": module,
-            "installed": module is None or _optional_dependency(module),
+            "name": definition.name,
+            "module": definition.dependency,
+            "installed": definition.dependency is None
+            or _optional_dependency(definition.dependency),
         }
-        for name, module in framework_modules.items()
+        for definition in FRAMEWORKS
     ]
     bedrock_auth = (
         "bedrock-api-key"
         if environment["has_bedrock_api_key"]
-        else "aws-credential-chain" if _bedrock_signal_present(None) else None
+        else "aws-credential-chain"
+        if _bedrock_signal_present(None)
+        else None
     )
+    configured = {
+        "python-runtime": True,
+        "openai-runtime": _openai_signal_present(),
+        "vllm-runtime": _vllm_signal_present(),
+        "ollama-runtime": _ollama_signal_present(),
+        "bedrock-runtime": _bedrock_signal_present(None),
+    }
+    authentication = {
+        "python-runtime": "local",
+        "openai-runtime": "api-key"
+        if environment["has_openai_api_key"]
+        else "custom-endpoint"
+        if environment["has_openai_base_url"]
+        else None,
+        "vllm-runtime": "openai-compatible-endpoint",
+        "ollama-runtime": "local-openai-compatible-endpoint",
+        "bedrock-runtime": bedrock_auth,
+    }
     providers = [
         {
-            "name": "python-runtime",
-            "configured": True,
-            "dependency_installed": True,
-            "authentication": "local",
-        },
-        {
-            "name": "openai-runtime",
-            "configured": _openai_signal_present(),
-            "dependency_installed": optional_dependencies["openai"],
-            "authentication": (
-                "api-key"
-                if environment["has_openai_api_key"]
-                else "custom-endpoint" if environment["has_openai_base_url"] else None
-            ),
-        },
-        {
-            "name": "vllm-runtime",
-            "configured": _vllm_signal_present(),
-            "dependency_installed": optional_dependencies["openai"],
-            "authentication": "openai-compatible-endpoint",
-        },
-        {
-            "name": "ollama-runtime",
-            "configured": _ollama_signal_present(),
-            "dependency_installed": optional_dependencies["openai"],
-            "authentication": "local-openai-compatible-endpoint",
-        },
-        {
-            "name": "bedrock-runtime",
-            "configured": _bedrock_signal_present(None),
-            "dependency_installed": optional_dependencies["boto3"],
-            "authentication": bedrock_auth,
-        },
+            "name": definition.name,
+            "configured": configured[definition.name],
+            "dependency_installed": definition.dependency is None
+            or _optional_dependency(definition.dependency),
+            "authentication": authentication[definition.name],
+        }
+        for definition in PROVIDERS
     ]
     for provider in providers:
         provider["ready"] = bool(
@@ -162,6 +154,7 @@ def _doctor_payload() -> dict[str, Any]:
         "optional_dependencies": optional_dependencies,
         "providers": providers,
         "frameworks": frameworks,
+        "contract_registry": registry_manifest(),
     }
 
 
@@ -219,7 +212,9 @@ def _cmd_doctor(args: argparse.Namespace) -> int:
     env_table.add_row("AWS profile", _status(env["has_aws_profile"]))
     env_table.add_row("Bedrock API key", _status(env["has_bedrock_api_key"]))
 
-    deps_table = Table(title="Optional Dependencies", box=None, show_header=False, padding=(0, 1))
+    deps_table = Table(
+        title="Optional Dependencies", box=None, show_header=False, padding=(0, 1)
+    )
     deps_table.add_column("Package", style="bold")
     deps_table.add_column("Status")
     for name, available in deps.items():
@@ -253,25 +248,32 @@ def _cmd_doctor(args: argparse.Namespace) -> int:
 
     # Keep plain key/value lines inside the rich output so existing smoke tests
     # and human copy/paste diagnostics stay stable.
-    compatibility_lines = "\n".join([
-        f"VLLM_BASE_URL: {_status(env['has_vllm_base_url'])}",
-        f"OPENAI_API_KEY: {_status(env['has_openai_api_key'])}",
-        f"OLLAMA_BASE_URL: {_status(env['has_ollama_base_url'])}",
-        f"OLLAMA_MODEL: {_status(env['has_ollama_model'])}",
-        f"AWS region: {_status(env['has_aws_region'])}",
-        f"AWS profile: {_status(env['has_aws_profile'])}",
-        f"Bedrock auth: {next(row['authentication'] or 'missing' for row in providers if row['name'] == 'bedrock-runtime')}",
-        *[f"{name}: {_availability(available)}" for name, available in deps.items()],
-        *[f"{row['name']}: {row['status']}" for row in providers],
-        *[
-            f"{row['name']}: {'installed' if row['installed'] else 'missing'}"
-            for row in frameworks
-        ],
-    ])
+    compatibility_lines = "\n".join(
+        [
+            f"VLLM_BASE_URL: {_status(env['has_vllm_base_url'])}",
+            f"OPENAI_API_KEY: {_status(env['has_openai_api_key'])}",
+            f"OLLAMA_BASE_URL: {_status(env['has_ollama_base_url'])}",
+            f"OLLAMA_MODEL: {_status(env['has_ollama_model'])}",
+            f"AWS region: {_status(env['has_aws_region'])}",
+            f"AWS profile: {_status(env['has_aws_profile'])}",
+            f"Bedrock auth: {next(row['authentication'] or 'missing' for row in providers if row['name'] == 'bedrock-runtime')}",
+            *[
+                f"{name}: {_availability(available)}"
+                for name, available in deps.items()
+            ],
+            *[f"{row['name']}: {row['status']}" for row in providers],
+            *[
+                f"{row['name']}: {'installed' if row['installed'] else 'missing'}"
+                for row in frameworks
+            ],
+        ]
+    )
 
     console.print(Columns([env_table, deps_table], equal=True, expand=True))
     console.print(Columns([providers_table, frameworks_table], equal=True, expand=True))
-    console.print(Panel(compatibility_lines, title="Copy/Paste Summary", border_style="green"))
+    console.print(
+        Panel(compatibility_lines, title="Copy/Paste Summary", border_style="green")
+    )
     return 0
 
 
@@ -290,23 +292,44 @@ def _cmd_runtime(args: argparse.Namespace) -> int:
         return 0
 
     console = _console()
-    summary = Table(title="Runtime Resolution", box=None, show_header=False, padding=(0, 1))
+    summary = Table(
+        title="Runtime Resolution", box=None, show_header=False, padding=(0, 1)
+    )
     summary.add_column("Field", style="bold")
     summary.add_column("Value")
-    for key in ("selected_provider", "mode", "preferred_provider", "fallback_provider", "provider_priority", "reason", "model", "region"):
+    for key in (
+        "selected_provider",
+        "mode",
+        "preferred_provider",
+        "fallback_provider",
+        "provider_priority",
+        "reason",
+        "model",
+        "region",
+    ):
         summary.add_row(key, str(payload.get(key)))
 
-    scheduler_table = Table(title="Scheduler", box=None, show_header=False, padding=(0, 1))
+    scheduler_table = Table(
+        title="Scheduler", box=None, show_header=False, padding=(0, 1)
+    )
     scheduler_table.add_column("Limit", style="bold")
     scheduler_table.add_column("Value")
     for key, value in (payload.get("scheduler") or {}).items():
         scheduler_table.add_row(str(key), str(value))
 
-    console.print(Panel("agentic-systems runtime", title="Agentic Systems", border_style="cyan"))
+    console.print(
+        Panel("agentic-systems runtime", title="Agentic Systems", border_style="cyan")
+    )
     console.print(Columns([summary, scheduler_table], equal=True, expand=True))
     configuration = payload.get("configuration") or {}
     if configuration:
-        console.print(Panel(json.dumps(configuration, indent=2, sort_keys=True), title="Safe Configuration", border_style="green"))
+        console.print(
+            Panel(
+                json.dumps(configuration, indent=2, sort_keys=True),
+                title="Safe Configuration",
+                border_style="green",
+            )
+        )
     return 0
 
 
@@ -328,11 +351,7 @@ def _api_ids(tier: str) -> list[str]:
     if tier == "public":
         return list(manifest["ids"])
 
-    return [
-        entry["id"]
-        for entry in manifest["entries"]
-        if entry["tier"] == tier
-    ]
+    return [entry["id"] for entry in manifest["entries"] if entry["tier"] == tier]
 
 
 def _cmd_api(args: argparse.Namespace) -> int:
@@ -415,7 +434,12 @@ def _cli_echo(value: str) -> dict:
     return {"value": value}
 
 
-def _cli_agent(toolkit: Any, *, provider_name: str = "python-runtime", framework_name: str = "native"):
+def _cli_agent(
+    toolkit: Any,
+    *,
+    provider_name: str = "python-runtime",
+    framework_name: str = "native",
+):
     echo = toolkit.tool(_cli_echo, name="cli_echo")
     runtime_config = toolkit.runtime(provider=provider_name)
     agent = toolkit.agent(
@@ -547,6 +571,7 @@ def _workflow_payload(name: str, args: argparse.Namespace) -> dict[str, Any]:
         result = current.run({"tool": "cli_echo", "input": {"value": value}})
         return {"workflow": name, "result": toolkit.run_result_output(result)}
     if name == "graph":
+
         def mark(state: dict) -> dict:
             return {**state, "visited": True}
 
@@ -559,6 +584,7 @@ def _workflow_payload(name: str, args: argparse.Namespace) -> dict[str, Any]:
         )
         return {"workflow": name, "state": app.run({"value": value})}
     if name == "environment":
+
         def transition(row: dict, action: Any, _info: dict) -> dict:
             return {"output": {"row": row, "action": action}}
 
@@ -611,9 +637,7 @@ def _workflow_payload(name: str, args: argparse.Namespace) -> dict[str, Any]:
 def _cmd_workflow(args: argparse.Namespace) -> int:
     payload = _workflow_payload(args.workflow, args)
     scenario = next(
-        item
-        for item in api_contract()["scenarios"]
-        if item["id"] == args.workflow
+        item for item in api_contract()["scenarios"] if item["id"] == args.workflow
     )
     payload["scenario"] = scenario["id"]
     payload["scenario_api_ids"] = scenario["api_ids"]
@@ -676,46 +700,105 @@ def _add_workflow_parsers(subparsers: Any) -> None:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="agentic-systems", description="Agentic Systems diagnostics and package utilities.")
+    parser = argparse.ArgumentParser(
+        prog="agentic-systems",
+        description="Agentic Systems diagnostics and package utilities.",
+    )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    version_parser = subparsers.add_parser("version", help="Print the installed Agentic Systems version.")
+    version_parser = subparsers.add_parser(
+        "version", help="Print the installed Agentic Systems version."
+    )
     version_parser.set_defaults(func=_cmd_version)
 
-    contact_parser = subparsers.add_parser("contact", help="Print Agentic Systems author and project contact information.")
-    contact_parser.add_argument("--json", action="store_true", help="Emit machine-readable JSON.")
+    contact_parser = subparsers.add_parser(
+        "contact", help="Print Agentic Systems author and project contact information."
+    )
+    contact_parser.add_argument(
+        "--json", action="store_true", help="Emit machine-readable JSON."
+    )
     contact_parser.set_defaults(func=_cmd_contact)
 
-    doctor_parser = subparsers.add_parser("doctor", help="Inspect local package health and optional dependencies.")
-    doctor_parser.add_argument("--json", action="store_true", help="Emit machine-readable JSON.")
+    doctor_parser = subparsers.add_parser(
+        "doctor", help="Inspect local package health and optional dependencies."
+    )
+    doctor_parser.add_argument(
+        "--json", action="store_true", help="Emit machine-readable JSON."
+    )
     doctor_parser.set_defaults(func=_cmd_doctor)
 
-    runtime_parser = subparsers.add_parser("runtime", help="Describe a RuntimeConfig without executing a model.")
-    runtime_parser.add_argument("--provider", default="auto", help="Runtime provider, for example auto, python-runtime, vllm-runtime, bedrock-runtime or openai-runtime.")
-    runtime_parser.add_argument("--model", default=None, help="Optional model identifier.")
-    runtime_parser.add_argument("--region", default=None, help="Optional provider region.")
-    runtime_parser.add_argument("--provider-priority", default=None, help="Comma-separated auto priority, for example bedrock-runtime,openai-runtime,vllm-runtime,ollama-runtime.")
-    runtime_parser.add_argument("--allow-python-fallback", action="store_true", help="Append python-runtime as deterministic fallback for provider=auto.")
-    runtime_parser.add_argument("--json", action="store_true", help="Emit machine-readable JSON.")
+    runtime_parser = subparsers.add_parser(
+        "runtime", help="Describe a RuntimeConfig without executing a model."
+    )
+    runtime_parser.add_argument(
+        "--provider",
+        default="auto",
+        help="Runtime provider, for example auto, python-runtime, vllm-runtime, bedrock-runtime or openai-runtime.",
+    )
+    runtime_parser.add_argument(
+        "--model", default=None, help="Optional model identifier."
+    )
+    runtime_parser.add_argument(
+        "--region", default=None, help="Optional provider region."
+    )
+    runtime_parser.add_argument(
+        "--provider-priority",
+        default=None,
+        help="Comma-separated auto priority, for example bedrock-runtime,openai-runtime,vllm-runtime,ollama-runtime.",
+    )
+    runtime_parser.add_argument(
+        "--allow-python-fallback",
+        action="store_true",
+        help="Append python-runtime as deterministic fallback for provider=auto.",
+    )
+    runtime_parser.add_argument(
+        "--json", action="store_true", help="Emit machine-readable JSON."
+    )
     runtime_parser.set_defaults(func=_cmd_runtime)
 
-    api_parser = subparsers.add_parser("public-api", help="List the documented public API symbols.")
-    api_parser.add_argument("--all", action="store_true", help="Include advanced public symbols, not only recommended names.")
-    api_parser.add_argument("--json", action="store_true", help="Emit machine-readable JSON.")
+    api_parser = subparsers.add_parser(
+        "public-api", help="List the documented public API symbols."
+    )
+    api_parser.add_argument(
+        "--all",
+        action="store_true",
+        help="Include advanced public symbols, not only recommended names.",
+    )
+    api_parser.add_argument(
+        "--json", action="store_true", help="Emit machine-readable JSON."
+    )
     api_parser.set_defaults(func=_cmd_public_api)
 
-    api_inventory_parser = subparsers.add_parser("api", help="Inspect API tiers and contract IDs.")
-    api_inventory_parser.add_argument("api_action", nargs="?", choices=("list", "describe", "exercise"), default="list")
+    api_inventory_parser = subparsers.add_parser(
+        "api", help="Inspect API tiers and contract IDs."
+    )
+    api_inventory_parser.add_argument(
+        "api_action",
+        nargs="?",
+        choices=("list", "describe", "exercise"),
+        default="list",
+    )
     api_inventory_parser.add_argument("identifier", nargs="?", default=None)
-    api_inventory_parser.add_argument("--all", dest="all_entries", action="store_true", help="Exercise every public export and member.")
+    api_inventory_parser.add_argument(
+        "--all",
+        dest="all_entries",
+        action="store_true",
+        help="Exercise every public export and member.",
+    )
     api_inventory_parser.add_argument(
         "--tier",
         choices=("recommended", "advanced", "public"),
         default="recommended",
         help="API tier to list. Use 'public' for all exports and public members.",
     )
-    api_inventory_parser.add_argument("--contains", default=None, help="Filter contract IDs by case-insensitive substring.")
-    api_inventory_parser.add_argument("--json", action="store_true", help="Emit machine-readable JSON.")
+    api_inventory_parser.add_argument(
+        "--contains",
+        default=None,
+        help="Filter contract IDs by case-insensitive substring.",
+    )
+    api_inventory_parser.add_argument(
+        "--json", action="store_true", help="Emit machine-readable JSON."
+    )
     api_inventory_parser.set_defaults(func=_cmd_api)
 
     _add_workflow_parsers(subparsers)

@@ -7,7 +7,12 @@ from typing import Any, Literal
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
-CompletionMode = Literal["default", "when_contract_satisfied", "when_required_tools_satisfied", "always_finalize"]
+CompletionMode = Literal[
+    "default",
+    "when_contract_satisfied",
+    "when_required_tools_satisfied",
+    "always_finalize",
+]
 FailurePolicy = Literal["allow", "no_unresolved", "fail_fast"]
 ToolExpectationValue = list[str] | tuple[str, ...] | set[str] | dict[str, Any] | None
 
@@ -98,7 +103,10 @@ class AgentContract(BaseModel):
         return value
 
     def model_post_init(self, __context: Any) -> None:
-        if not self.require_no_unresolved_tool_failures and self.failure_policy == "no_unresolved":
+        if (
+            not self.require_no_unresolved_tool_failures
+            and self.failure_policy == "no_unresolved"
+        ):
             self.failure_policy = "allow"
         if self.require_no_unresolved_tool_failures and self.failure_policy == "allow":
             self.require_no_unresolved_tool_failures = False
@@ -156,7 +164,9 @@ def normalize_tool_expectation(value: ToolExpectationValue = None) -> dict[str, 
     return expectation
 
 
-def validate_tool_expectation(actual_tools: list[str] | tuple[str, ...], expectation: ToolExpectationValue = None) -> dict[str, Any]:
+def validate_tool_expectation(
+    actual_tools: list[str] | tuple[str, ...], expectation: ToolExpectationValue = None
+) -> dict[str, Any]:
     """Validate actual tool names against a flexible expectation schema."""
 
     expected = normalize_tool_expectation(expectation)
@@ -173,7 +183,13 @@ def validate_tool_expectation(actual_tools: list[str] | tuple[str, ...], expecta
     else:
         extra = []
     if extra:
-        issues.append({"code": "unexpected_tool", "message": "Unexpected tool call(s).", "tools": extra})
+        issues.append(
+            {
+                "code": "unexpected_tool",
+                "message": "Unexpected tool call(s).",
+                "tools": extra,
+            }
+        )
 
     missing: list[str] = []
     all_of = expected.get("all_of") or []
@@ -181,25 +197,57 @@ def validate_tool_expectation(actual_tools: list[str] | tuple[str, ...], expecta
         if name not in actual_set:
             missing.append(name)
     if missing:
-        issues.append({"code": "missing_required_tool", "message": "Required tool call(s) missing.", "tools": missing})
+        issues.append(
+            {
+                "code": "missing_required_tool",
+                "message": "Required tool call(s) missing.",
+                "tools": missing,
+            }
+        )
 
     any_of = expected.get("any_of") or []
     if any_of and not any(name in actual_set for name in any_of):
-        issues.append({"code": "missing_any_tool", "message": "At least one expected tool must be called.", "tools": list(any_of)})
+        issues.append(
+            {
+                "code": "missing_any_tool",
+                "message": "At least one expected tool must be called.",
+                "tools": list(any_of),
+            }
+        )
 
     exactly = expected.get("exactly") or []
     exactly_missing = [name for name in exactly if name not in actual_set]
     if exactly_missing:
-        issues.append({"code": "missing_exact_tool", "message": "Exact tool set is incomplete.", "tools": exactly_missing})
+        issues.append(
+            {
+                "code": "missing_exact_tool",
+                "message": "Exact tool set is incomplete.",
+                "tools": exactly_missing,
+            }
+        )
 
     min_count = expected.get("min_count")
     if min_count is not None:
-        pool = set(expected.get("allowed") or expected.get("any_of") or expected.get("all_of") or actual)
+        pool = set(
+            expected.get("allowed")
+            or expected.get("any_of")
+            or expected.get("all_of")
+            or actual
+        )
         matching_count = sum(1 for name in actual if name in pool)
         if matching_count < int(min_count):
-            issues.append({"code": "tool_min_count_not_met", "message": "Minimum expected tool count was not met.", "expected": int(min_count), "actual": matching_count})
+            issues.append(
+                {
+                    "code": "tool_min_count_not_met",
+                    "message": "Minimum expected tool count was not met.",
+                    "expected": int(min_count),
+                    "actual": matching_count,
+                }
+            )
     else:
-        matching_count = sum(1 for name in actual if not allowed or name in set(allowed))
+        matching_count = sum(
+            1 for name in actual if not allowed or name in set(allowed)
+        )
 
     if not expected:
         rule = "unspecified"
@@ -259,9 +307,24 @@ class RunPolicy(BaseModel):
             raise ValueError("max_turns must be >= 1")
         return int(value)
 
-    @field_validator("max_tool_calls", "max_tokens")
+    @field_validator("max_tool_calls")
+    @classmethod
+    def validate_optional_tool_limit(cls, value: int | None) -> int | None:
+        if value is not None and int(value) < 0:
+            raise ValueError("max_tool_calls must be >= 0 when provided")
+        return int(value) if value is not None else None
+
+    @field_validator("max_tokens")
+    @classmethod
+    def validate_optional_token_limit(cls, value: int | None) -> int | None:
+        if value is not None and int(value) < 1:
+            raise ValueError("max_tokens must be >= 1 when provided")
+        return int(value) if value is not None else None
+
     @classmethod
     def validate_optional_positive_ints(cls, value: int | None) -> int | None:
+        """Retain the 2.0 validation helper while field validators specialize bounds."""
+
         if value is not None and int(value) < 1:
             raise ValueError("value must be >= 1 when provided")
         return int(value) if value is not None else None
@@ -303,14 +366,37 @@ class RunPolicy(BaseModel):
     def for_mode(cls, mode: str = "default") -> "RunPolicy":
         presets: dict[str, dict[str, Any]] = {
             "default": {},
-            "fast": {"max_turns": 4, "max_tokens": 500, "repair": False, "trace": "compact"},
+            "fast": {
+                "max_turns": 4,
+                "max_tokens": 500,
+                "repair": False,
+                "trace": "compact",
+            },
             "audit": {"max_turns": 10, "repair": True, "trace": "full", "strict": True},
-            "debug": {"max_turns": 10, "repair": True, "trace": "full", "strict": False},
-            "eval": {"max_turns": 8, "temperature": 0.0, "repair": True, "trace": "compact"},
-            "prod": {"max_turns": 8, "repair": True, "max_repairs": 1, "trace": "compact", "strict": True},
+            "debug": {
+                "max_turns": 10,
+                "repair": True,
+                "trace": "full",
+                "strict": False,
+            },
+            "eval": {
+                "max_turns": 8,
+                "temperature": 0.0,
+                "repair": True,
+                "trace": "compact",
+            },
+            "prod": {
+                "max_turns": 8,
+                "repair": True,
+                "max_repairs": 1,
+                "trace": "compact",
+                "strict": True,
+            },
         }
         if mode not in presets:
-            raise ValueError(f"Unknown run mode '{mode}'. Use one of: {sorted(presets)}")
+            raise ValueError(
+                f"Unknown run mode '{mode}'. Use one of: {sorted(presets)}"
+            )
         return cls(**presets[mode])
 
     def merge(self, overrides: "RunPolicy | dict[str, Any] | None") -> "RunPolicy":
@@ -369,7 +455,9 @@ class ContractPolicySpec(BaseModel):
         return clean
 
     @classmethod
-    def coerce(cls, value: "ContractPolicySpec | dict[str, Any]") -> "ContractPolicySpec":
+    def coerce(
+        cls, value: "ContractPolicySpec | dict[str, Any]"
+    ) -> "ContractPolicySpec":
         if isinstance(value, cls):
             return value
         return cls.model_validate(value)
@@ -379,7 +467,9 @@ class ContractPolicySpec(BaseModel):
         *,
         available_tools: list[str] | tuple[str, ...] | set[str] | None = None,
     ) -> ValidationResult:
-        return validate_contract_policy(self.contract, self.policy, available_tools=available_tools)
+        return validate_contract_policy(
+            self.contract, self.policy, available_tools=available_tools
+        )
 
     def raise_if_failed(
         self,
@@ -427,7 +517,11 @@ def validate_contract_policy(
     contract_obj = AgentContract.coerce(contract)
     policy_obj = RunPolicy.coerce(policy)
     result = ValidationResult(ok=True)
-    available = {str(name) for name in available_tools or [] if str(name)} if available_tools is not None else None
+    available = (
+        {str(name) for name in available_tools or [] if str(name)}
+        if available_tools is not None
+        else None
+    )
 
     must_call = _clean_tool_names(contract_obj.must_call)
     must_not_call = _clean_tool_names(contract_obj.must_not_call)
@@ -442,7 +536,10 @@ def validate_contract_policy(
             meta={"tools": overlap},
         )
 
-    for field_name, names in (("must_call", must_call), ("must_not_call", must_not_call)):
+    for field_name, names in (
+        ("must_call", must_call),
+        ("must_not_call", must_not_call),
+    ):
         duplicates = sorted({name for name in names if names.count(name) > 1})
         if duplicates:
             result.add(
@@ -468,7 +565,9 @@ def validate_contract_policy(
 
     allowed = set(expectation.get("allowed") or expectation.get("exactly") or [])
     if allowed:
-        required_outside_allowed = sorted(name for name in must_call_set if name not in allowed)
+        required_outside_allowed = sorted(
+            name for name in must_call_set if name not in allowed
+        )
         if required_outside_allowed:
             result.add(
                 "required_tool_not_allowed",
@@ -477,7 +576,11 @@ def validate_contract_policy(
                 meta={"tools": required_outside_allowed, "allowed": sorted(allowed)},
             )
 
-        forbidden_inside_exact = sorted(name for name in must_not_call_set if name in set(expectation.get("exactly") or []))
+        forbidden_inside_exact = sorted(
+            name
+            for name in must_not_call_set
+            if name in set(expectation.get("exactly") or [])
+        )
         if forbidden_inside_exact:
             result.add(
                 "forbidden_tool_in_exact_expectation",
@@ -487,16 +590,27 @@ def validate_contract_policy(
             )
 
     required_min = _minimum_required_tool_calls(contract_obj, expectation)
-    if policy_obj.max_tool_calls is not None and required_min > policy_obj.max_tool_calls:
+    if (
+        policy_obj.max_tool_calls is not None
+        and required_min > policy_obj.max_tool_calls
+    ):
         result.add(
             "policy_tool_budget_too_small",
             "RunPolicy.max_tool_calls is smaller than the contract's minimum required tool calls.",
             path="policy.max_tool_calls",
-            meta={"minimum_required": required_min, "max_tool_calls": policy_obj.max_tool_calls},
+            meta={
+                "minimum_required": required_min,
+                "max_tool_calls": policy_obj.max_tool_calls,
+            },
         )
 
-    has_required_tools = required_min > 0 or bool(must_call_set) or bool(expectation.get("any_of"))
-    if contract_obj.completion == "when_required_tools_satisfied" and not has_required_tools:
+    has_required_tools = (
+        required_min > 0 or bool(must_call_set) or bool(expectation.get("any_of"))
+    )
+    if (
+        contract_obj.completion == "when_required_tools_satisfied"
+        and not has_required_tools
+    ):
         result.add(
             "completion_without_required_tools",
             "Contract completion waits for required tools, but no required tool rule is declared.",
@@ -510,7 +624,10 @@ def validate_contract_policy(
             severity="warning",
             path="policy.finalize",
         )
-    if policy_obj.repair is False and contract_obj.failure_policy in {"no_unresolved", "fail_fast"}:
+    if policy_obj.repair is False and contract_obj.failure_policy in {
+        "no_unresolved",
+        "fail_fast",
+    }:
         result.add(
             "strict_failure_without_repair",
             "Failure policy requires no unresolved tool failures while repair is disabled.",
@@ -528,7 +645,9 @@ def _tool_names_from_expectation(expectation: dict[str, Any]) -> set[str]:
     return names
 
 
-def _minimum_required_tool_calls(contract: AgentContract, expectation: dict[str, Any]) -> int:
+def _minimum_required_tool_calls(
+    contract: AgentContract, expectation: dict[str, Any]
+) -> int:
     candidates = [len(set(_clean_tool_names(contract.must_call)))]
     if expectation.get("all_of"):
         candidates.append(len(set(_clean_tool_names(expectation["all_of"]))))

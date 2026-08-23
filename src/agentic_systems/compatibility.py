@@ -11,16 +11,13 @@ from .core.runtime import (
     _openai_signal_present,
     _vllm_signal_present,
 )
-
-
-PROVIDER_NAMES = (
-    "python-runtime",
-    "bedrock-runtime",
-    "openai-runtime",
-    "vllm-runtime",
-    "ollama-runtime",
+from .registry import (
+    FRAMEWORK_NAMES,
+    PROVIDER_NAMES,
+    framework_definition,
+    matrix_contract,
+    provider_definition,
 )
-FRAMEWORK_NAMES = ("native", "langgraph", "openai-agents", "strands")
 
 
 @dataclass(frozen=True)
@@ -61,12 +58,8 @@ def compatibility_report() -> dict[str, object]:
 
 
 def _case(provider: str, framework: str) -> CompatibilityCase:
-    dependency = {
-        "native": None,
-        "langgraph": "langgraph",
-        "openai-agents": "agents",
-        "strands": "strands",
-    }[framework]
+    contract = matrix_contract(provider, framework)
+    dependency = framework_definition(framework).dependency
     if dependency and importlib.util.find_spec(dependency) is None:
         return CompatibilityCase(
             provider,
@@ -77,13 +70,7 @@ def _case(provider: str, framework: str) -> CompatibilityCase:
             f"Install the optional dependency for {framework}.",
         )
 
-    provider_dependency = {
-        "python-runtime": None,
-        "openai-runtime": "openai",
-        "ollama-runtime": "openai",
-        "vllm-runtime": "openai",
-        "bedrock-runtime": "boto3",
-    }[provider]
+    provider_dependency = provider_definition(provider).dependency
     if provider_dependency and importlib.util.find_spec(provider_dependency) is None:
         return CompatibilityCase(
             provider,
@@ -105,7 +92,7 @@ def _case(provider: str, framework: str) -> CompatibilityCase:
         return CompatibilityCase(
             provider,
             framework,
-            True,
+            contract.status != "unsupported",
             False,
             "needs-configuration",
             f"Configure {provider} before live execution.",
@@ -113,7 +100,7 @@ def _case(provider: str, framework: str) -> CompatibilityCase:
     return CompatibilityCase(
         provider,
         framework,
-        True,
+        contract.status != "unsupported",
         True,
         "ready",
         "Offline contract certified and runtime signals available.",

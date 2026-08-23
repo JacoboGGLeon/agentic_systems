@@ -6,15 +6,24 @@ import time
 import pytest
 
 import agentic_systems as lab
-from agentic_systems.engines.names import BEDROCK_RUNTIME_ENGINE, OPENAI_RUNTIME_ENGINE, PYTHON_RUNTIME_ENGINE
+from agentic_systems.engines.names import (
+    BEDROCK_RUNTIME_ENGINE,
+    OPENAI_RUNTIME_ENGINE,
+    PYTHON_RUNTIME_ENGINE,
+)
 from agentic_systems.core import runtime as runtime_module
 from agentic_systems.results import RunResult
+
 system_module = importlib.import_module("agentic_systems.system")
 
 
 def test_public_runtime_scheduler_factories_and_aliases() -> None:
-    sched = lab.scheduler(timeout_s=10, max_retries=2, max_tool_calls=3, max_turns=4, max_concurrency=1)
-    runtime = lab.runtime(provider="python-runtime", model="m1", region="r1", scheduler=sched)
+    sched = lab.scheduler(
+        timeout_s=10, max_retries=2, max_tool_calls=3, max_turns=4, max_concurrency=1
+    )
+    runtime = lab.runtime(
+        provider="python-runtime", model="m1", region="r1", scheduler=sched
+    )
 
     assert isinstance(sched, lab.SchedulerConfig)
     assert isinstance(runtime, lab.RuntimeConfig)
@@ -47,7 +56,7 @@ def test_scheduler_rejects_invalid_limits(kwargs: dict[str, object]) -> None:
 def test_python_runtime_runtime_retries_failed_agent_run() -> None:
     state = {"calls": 0}
 
-    @lab.tool
+    @lab.tool(metadata={"retryable": True})
     def flaky(value: int) -> dict:
         state["calls"] += 1
         if state["calls"] == 1:
@@ -56,7 +65,9 @@ def test_python_runtime_runtime_retries_failed_agent_run() -> None:
 
     runtime = lab.runtime(
         provider="python-runtime",
-        scheduler=lab.scheduler(timeout_s=2, max_retries=1, max_tool_calls=5, max_turns=6),
+        scheduler=lab.scheduler(
+            timeout_s=2, max_retries=1, max_tool_calls=5, max_turns=6
+        ),
     )
     agent = lab.agent(name="retry_agent", tools=[flaky], runtime=runtime)
 
@@ -69,13 +80,39 @@ def test_python_runtime_runtime_retries_failed_agent_run() -> None:
     assert result.usage["scheduler"]["retries"] == 1
 
 
+def test_python_runtime_does_not_retry_unclassified_failure() -> None:
+    state = {"calls": 0}
+
+    @lab.tool
+    def permanent_failure(value: int) -> dict:
+        state["calls"] += 1
+        raise ValueError(f"invalid {value}")
+
+    runtime = lab.runtime(
+        provider="python-runtime",
+        scheduler=lab.scheduler(timeout_s=2, max_retries=3),
+    )
+    result = lab.agent(
+        name="permanent_failure_agent", tools=[permanent_failure], runtime=runtime
+    ).run({"tool": "permanent_failure", "input": {"value": 21}})
+
+    assert result.ok is False
+    assert result.should_retry() is False
+    assert state["calls"] == 1
+    assert result.usage["scheduler"]["attempts"] == 1
+    assert result.usage["scheduler"]["retries"] == 0
+
+
 def test_python_runtime_runtime_times_out_slow_tool() -> None:
     @lab.tool
     def slow(value: int) -> dict:
         time.sleep(0.2)
         return {"result": value}
 
-    runtime = lab.runtime(provider="python-runtime", scheduler=lab.scheduler(timeout_s=0.01, max_retries=0))
+    runtime = lab.runtime(
+        provider="python-runtime",
+        scheduler=lab.scheduler(timeout_s=0.01, max_retries=0),
+    )
     agent = lab.agent(name="timeout_agent", tools=[slow], runtime=runtime)
 
     result = agent.run({"tool": "slow", "input": {"value": 1}})
@@ -91,7 +128,10 @@ def test_scheduler_max_tool_calls_limits_python_runtime_plan() -> None:
     def add_one(value: int) -> dict:
         return {"value": value + 1}
 
-    runtime = lab.runtime(provider="python-runtime", scheduler=lab.scheduler(max_tool_calls=1, timeout_s=2))
+    runtime = lab.runtime(
+        provider="python-runtime",
+        scheduler=lab.scheduler(max_tool_calls=1, timeout_s=2),
+    )
     agent = lab.agent(name="limit_agent", tools=[add_one], runtime=runtime)
 
     result = agent.run(
@@ -120,7 +160,9 @@ def test_unbound_python_runtime_agent_has_no_scheduler_meta() -> None:
     assert "scheduler" not in result.meta
 
 
-def test_bedrock_provider_path_receives_scheduler_limited_policy_without_hydrating_bedrock() -> None:
+def test_bedrock_provider_path_receives_scheduler_limited_policy_without_hydrating_bedrock() -> (
+    None
+):
     captured = {}
 
     class FakeBedrockEngine:
@@ -129,7 +171,14 @@ def test_bedrock_provider_path_receives_scheduler_limited_policy_without_hydrati
         def run(self, agent, input, policy, *, mode="default") -> RunResult:
             captured["max_turns"] = policy.max_turns
             captured["max_tool_calls"] = policy.max_tool_calls
-            return RunResult(text="ok", data={"ok": True}, ok=True, engine=self.name, model=agent.model or "m", mode=mode)
+            return RunResult(
+                text="ok",
+                data={"ok": True},
+                ok=True,
+                engine=self.name,
+                model=agent.model or "m",
+                mode=mode,
+            )
 
     runtime = lab.runtime(
         provider="bedrock-runtime",
@@ -139,7 +188,9 @@ def test_bedrock_provider_path_receives_scheduler_limited_policy_without_hydrati
     )
     system = lab.AgenticSystem(model="fake-model", region="us-east-1", runtime=runtime)
     system._engines[BEDROCK_RUNTIME_ENGINE] = FakeBedrockEngine()
-    agent = system.agent(name="cloud", instructions="Return ok.", tools=[], engine="bedrock-runtime")
+    agent = system.agent(
+        name="cloud", instructions="Return ok.", tools=[], engine="bedrock-runtime"
+    )
 
     result = agent.run("hello")
 
@@ -157,13 +208,20 @@ def test_runtime_auto_prefers_openai_when_openai_signal_exists(monkeypatch) -> N
     monkeypatch.delenv("AWS_PROFILE", raising=False)
     monkeypatch.delenv("AWS_REGION", raising=False)
     monkeypatch.delenv("AWS_DEFAULT_REGION", raising=False)
-    monkeypatch.setattr(runtime_module, "_module_available", lambda name: name == "openai")
+    monkeypatch.setattr(
+        runtime_module, "_module_available", lambda name: name == "openai"
+    )
 
-    runtime = lab.runtime(provider="auto", provider_priority=["openai-runtime", "bedrock-runtime", "vllm-runtime"])
+    runtime = lab.runtime(
+        provider="auto",
+        provider_priority=["openai-runtime", "bedrock-runtime", "vllm-runtime"],
+    )
     system = lab.AgenticSystem(model="m", region="r", runtime=runtime)
 
     assert runtime.provider == "auto"
-    assert system._engine(runtime.provider).__class__.__name__ == "OpenAIRuntimeProvider"
+    assert (
+        system._engine(runtime.provider).__class__.__name__ == "OpenAIRuntimeProvider"
+    )
 
 
 def test_runtime_auto_describe_resolves_openai_signal(monkeypatch) -> None:
@@ -175,7 +233,9 @@ def test_runtime_auto_describe_resolves_openai_signal(monkeypatch) -> None:
     monkeypatch.delenv("AWS_PROFILE", raising=False)
     monkeypatch.delenv("AWS_REGION", raising=False)
     monkeypatch.delenv("AWS_DEFAULT_REGION", raising=False)
-    monkeypatch.setattr(runtime_module, "_module_available", lambda name: name == "openai")
+    monkeypatch.setattr(
+        runtime_module, "_module_available", lambda name: name == "openai"
+    )
 
     summary = lab.runtime(provider="auto").describe()
 
@@ -186,7 +246,9 @@ def test_runtime_auto_describe_resolves_openai_signal(monkeypatch) -> None:
     assert "OPENAI" in summary["reason"]
 
 
-def test_openai_runtime_reads_environment_config_without_leaking_secret(monkeypatch) -> None:
+def test_openai_runtime_reads_environment_config_without_leaking_secret(
+    monkeypatch,
+) -> None:
     monkeypatch.setenv("OPENAI_API_KEY", "secret-test-key")
     monkeypatch.setenv("OPENAI_MODEL", "gpt-env-model")
     monkeypatch.setenv("OPENAI_BASE_URL", "https://example.openai.test/v1")
@@ -225,7 +287,9 @@ def test_runtime_auto_describe_resolves_bedrock_signal(monkeypatch) -> None:
     monkeypatch.setenv("AWS_ACCESS_KEY_ID", "test-access-key")
     monkeypatch.setenv("AWS_SECRET_ACCESS_KEY", "test-secret-key")
     monkeypatch.setenv("AWS_REGION", "us-east-1")
-    monkeypatch.setattr(runtime_module, "_module_available", lambda name: name == "boto3")
+    monkeypatch.setattr(
+        runtime_module, "_module_available", lambda name: name == "boto3"
+    )
 
     summary = lab.runtime(provider="auto", region="us-east-1").describe()
 
@@ -245,13 +309,17 @@ def test_runtime_auto_does_not_treat_region_as_bedrock_credentials(monkeypatch) 
     monkeypatch.setenv("VLLM_BASE_URL", "")
     monkeypatch.setenv("OLLAMA_BASE_URL", "")
     monkeypatch.setenv("OLLAMA_MODEL", "")
-    monkeypatch.setattr(runtime_module, "_aws_shared_credentials_present", lambda: False)
+    monkeypatch.setattr(
+        runtime_module, "_aws_shared_credentials_present", lambda: False
+    )
     monkeypatch.setenv("AWS_BEARER_TOKEN_BEDROCK", "")
     monkeypatch.setenv("AWS_ROLE_ARN", "")
     monkeypatch.setenv("AWS_WEB_IDENTITY_TOKEN_FILE", "")
     monkeypatch.setenv("AWS_CONTAINER_CREDENTIALS_FULL_URI", "")
     monkeypatch.setenv("AWS_CONTAINER_CREDENTIALS_RELATIVE_URI", "")
-    monkeypatch.setattr(runtime_module, "_module_available", lambda name: name in {"boto3", "openai"})
+    monkeypatch.setattr(
+        runtime_module, "_module_available", lambda name: name in {"boto3", "openai"}
+    )
 
     summary = lab.runtime(provider="auto").describe()
 
@@ -259,7 +327,9 @@ def test_runtime_auto_does_not_treat_region_as_bedrock_credentials(monkeypatch) 
     assert summary["fallback_provider"] is None
 
 
-def test_runtime_auto_describe_reports_unresolved_without_backend_signal(monkeypatch) -> None:
+def test_runtime_auto_describe_reports_unresolved_without_backend_signal(
+    monkeypatch,
+) -> None:
     monkeypatch.setenv("VLLM_BASE_URL", "")
     monkeypatch.setenv("OPENAI_API_KEY", "")
     monkeypatch.setenv("AWS_BEARER_TOKEN_BEDROCK", "")
@@ -289,8 +359,12 @@ def test_runtime_auto_accepts_bedrock_api_key_with_region(monkeypatch) -> None:
     monkeypatch.delenv("AWS_ACCESS_KEY_ID", raising=False)
     monkeypatch.delenv("AWS_SECRET_ACCESS_KEY", raising=False)
     monkeypatch.delenv("AWS_PROFILE", raising=False)
-    monkeypatch.setattr(runtime_module, "_aws_shared_credentials_present", lambda: False)
-    monkeypatch.setattr(runtime_module, "_module_available", lambda name: name == "boto3")
+    monkeypatch.setattr(
+        runtime_module, "_aws_shared_credentials_present", lambda: False
+    )
+    monkeypatch.setattr(
+        runtime_module, "_module_available", lambda name: name == "boto3"
+    )
 
     summary = lab.runtime(provider="auto").describe()
 
