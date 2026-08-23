@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+from email.message import Message
 from datetime import datetime, timezone
 from types import SimpleNamespace
 
@@ -223,3 +224,14 @@ def test_attestation_rejects_duplicate_and_unexpected_scenarios() -> None:
     message = str(captured.value)
     assert "duplicate scenarios" in message
     assert "unexpected scenarios" in message
+
+
+def test_license_evidence_ignores_third_party_notice_bodies() -> None:
+    from scripts.check_licenses import _license_evidence
+
+    package = Message()
+    package["License"] = (
+        "BSD 3-Clause License\n\nThird-party notice: GNU GENERAL PUBLIC LICENSE"
+    )
+
+    assert _license_evidence(package) == "BSD 3-Clause License"

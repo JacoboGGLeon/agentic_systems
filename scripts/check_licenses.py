@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import importlib.metadata as metadata
 from pathlib import Path
+from typing import Any
 
 from packaging.requirements import Requirement
 
@@ -36,6 +37,25 @@ def _requirements() -> set[str]:
     return {Requirement(item).name for item in declared}
 
 
+def _license_evidence(package: Any) -> str:
+    """Return canonical license metadata without scanning bundled notice bodies."""
+    expression = package.get("License-Expression")
+    classifiers = [
+        value
+        for value in package.get_all("Classifier") or ()
+        if value.startswith("License ::")
+    ]
+    legacy_lines = [
+        line.strip()
+        for line in (package.get("License") or "").splitlines()
+        if line.strip()
+    ]
+    legacy_summary = legacy_lines[0] if legacy_lines else None
+    return " | ".join(
+        value for value in (expression, " ".join(classifiers), legacy_summary) if value
+    )
+
+
 def main() -> int:
     failures: list[str] = []
     checked = 0
@@ -45,15 +65,7 @@ def main() -> int:
         except metadata.PackageNotFoundError:
             continue
         checked += 1
-        license_text = " | ".join(
-            value
-            for value in (
-                package.get("License-Expression"),
-                package.get("License"),
-                " ".join(package.get_all("Classifier") or ()),
-            )
-            if value
-        )
+        license_text = _license_evidence(package)
         upper = license_text.upper()
         denied = any(marker in upper for marker in DENIED_MARKERS)
         allowed = any(marker.upper() in upper for marker in ALLOWED_MARKERS)
