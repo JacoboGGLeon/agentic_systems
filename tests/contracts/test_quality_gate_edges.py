@@ -69,6 +69,47 @@ def test_run_policy_validates_every_optional_limit_boundary() -> None:
     assert RunPolicy.validate_optional_positive_ints(2) == 2
 
 
+def test_canonical_tool_callable_covers_all_argument_shapes_and_missing_function() -> (
+    None
+):
+    calls: list[object] = []
+
+    def function(value: object = None) -> object:
+        return value
+
+    successful = SimpleNamespace(
+        name="shape",
+        function=function,
+        run=lambda payload: (
+            calls.append(payload)
+            or SimpleNamespace(ok=True, data=payload, errors=[], text="")
+        ),
+    )
+    invoke = tools.canonical_tool_callable(successful)
+
+    assert invoke() is None
+    assert invoke(1, 2) == [1, 2]
+    assert invoke(value=3) == {"value": 3}
+    assert calls == [None, [1, 2], {"value": 3}]
+
+    failed = SimpleNamespace(
+        name="failed",
+        function=function,
+        run=lambda payload: SimpleNamespace(
+            ok=False, data=payload, errors=[], text="failed safely"
+        ),
+    )
+    data, ok, error = tools.decode_tool_output(
+        tools.canonical_tool_callable(failed)("input")
+    )
+    assert data == "input"
+    assert ok is False
+    assert error == {"code": "tool_execution_failed", "message": "failed safely"}
+
+    with pytest.raises(ValueError, match="has no function"):
+        tools.canonical_tool_callable(SimpleNamespace(name="empty", function=None))
+
+
 def test_async_scheduler_returns_non_retryable_values_and_tolerates_locked_errors() -> (
     None
 ):
