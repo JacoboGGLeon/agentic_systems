@@ -119,6 +119,35 @@ def test_ollama_runtime_provider_runs_openai_compatible_tool_loop() -> None:
     assert repeated.check_invariants().ok is True
 
 
+def test_openai_compatible_loop_stops_when_required_tool_is_satisfied() -> None:
+    runtime = toolkit.runtime(provider="ollama-runtime", model="qwen3:4b")
+    system = toolkit.system(runtime=runtime, model="qwen3:4b")
+    client = FakeOllamaClient()
+    provider = OllamaRuntimeProvider(system, client=client)
+    agent = system.agent(
+        name="required-tool",
+        instructions="Usa duplicar.",
+        tools=[duplicar],
+        contract=toolkit.AgentContract(
+            must_call=["duplicar"],
+            completion="when_required_tools_satisfied",
+        ),
+    )
+
+    result = provider.run(
+        agent,
+        "Duplica 21.",
+        toolkit.RunPolicy(tool_choice="duplicar", max_turns=3, max_tool_calls=1),
+        mode="eval",
+    )
+
+    assert client.chat.completions.calls == 1
+    assert result.ok is True
+    assert [event.name for event in result.tool_events] == ["duplicar"]
+    assert result.tool_events[0].output["result"] == 42
+    assert result.validate(agent.contract).ok is True
+
+
 def test_ollama_completion_without_tools_and_async_execution() -> None:
     runtime = toolkit.runtime(provider="ollama-runtime", model="qwen3:4b")
     provider = OllamaRuntimeProvider(

@@ -86,11 +86,16 @@ Requisito live: Runtime de Colab con GPU. Para certificar un release, sube el wh
 | Variable | Default | Proposito |
 |---|---|---|
 | RUN_VLLM_LIVE | 1 | Usa 0 para ejecutar sólo el contrato offline. |
-| COMMIT_SHA | vacío | Commit exacto que produjo el wheel candidato. |
-| MODEL_ID | unsloth/Qwen3-4B-Instruct-2507 | Modelo, checkpoint o adapter servido. |
-| PROFILE | custom | Perfil validado del servidor vLLM. |
+| COMMIT_SHA | candidato 2.1.0 | Commit exacto que produjo el wheel candidato. |
+| EXPECTED_WHEEL_SHA256 | candidato 2.1.0 | Hash que debe tener el wheel subido. |
+| MODEL_ID | unsloth/Qwen3-0.6B | Modelo ligero con tool calling para Colab. |
+| PROFILE | auto | Resuelve fast, medium o power desde VRAM; admite override. |
+| VLLM_DTYPE | automático | half en T4; bfloat16 desde compute capability 8.0. |
+| VLLM_ENABLE_THINKING | 0 | Desactiva reasoning en tool calling multi-turn. |
+| VLLM_TEMPERATURE | 0.7 | Sampling recomendado por Qwen3 en modo non-thinking. |
 
-En Colab: selecciona GPU, ejecuta en orden, sube el wheel y completa COMMIT_SHA."""
+En Colab: selecciona GPU, ejecuta en orden y sube el wheel indicado. Los valores
+pueden sustituirse mediante variables de entorno para certificar otro candidato."""
         ),
         nbformat.v4.new_markdown_cell(
             """## Contrato de la demostracion
@@ -104,47 +109,123 @@ import subprocess
 import sys
 from pathlib import Path
 
+
+def load_canonical_dotenv(start: Path) -> Path | None:
+    # The explicit path exists for isolated CI; otherwise the nearest .env is king.
+    explicit = os.getenv("AGENTIC_SYSTEMS_DOTENV")
+    candidates = (
+        (Path(explicit).expanduser().resolve(),)
+        if explicit
+        else tuple(directory / ".env" for directory in (start.resolve(), *start.resolve().parents))
+    )
+    for candidate in candidates:
+        if not candidate.is_file():
+            continue
+        for raw_line in candidate.read_text(encoding="utf-8").splitlines():
+            line = raw_line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, value = line.split("=", 1)
+            key = key.strip()
+            if key:
+                os.environ[key] = value.strip().strip('"').strip("'")
+        return candidate
+    return None
+
+
+DOTENV_PATH = load_canonical_dotenv(Path.cwd())
 RUN_VLLM_LIVE = os.getenv("RUN_VLLM_LIVE", "1").strip().lower() in {"1", "true", "yes"}
+COMMIT_SHA = os.getenv("AGENTIC_SYSTEMS_COMMIT_SHA", "").strip()
+EXPECTED_WHEEL_FILENAME = os.getenv("AGENTIC_SYSTEMS_WHEEL_FILENAME", "").strip()
+EXPECTED_WHEEL_SHA256 = os.getenv("AGENTIC_SYSTEMS_WHEEL_SHA256", "").strip().lower()
+MODEL_ID = os.getenv("VLLM_MODEL", "unsloth/Qwen3-0.6B")
+BASE_MODEL_ID = os.getenv("VLLM_BASE_MODEL", "Qwen/Qwen3-0.6B")
+REQUESTED_PROFILE = os.getenv("VLLM_PROFILE", "fast").strip().lower()
+VLLM_HOST = os.getenv("VLLM_HOST", "127.0.0.1")
+VLLM_PORT = int(os.getenv("VLLM_PORT", "8000"))
+VLLM_BASE_URL = os.getenv("VLLM_BASE_URL", f"http://{VLLM_HOST}:{VLLM_PORT}/v1")
+VLLM_API_KEY = os.getenv("VLLM_API_KEY", "vllm")
+VLLM_TOOL_CALL_PARSER = os.getenv("VLLM_TOOL_CALL_PARSER", "hermes")
+VLLM_ENABLE_THINKING = os.getenv("VLLM_ENABLE_THINKING", "0").strip().lower() in {
+    "1", "true", "yes"
+}
+VLLM_REASONING_PARSER = os.getenv(
+    "VLLM_REASONING_PARSER", "qwen3" if VLLM_ENABLE_THINKING else ""
+).strip() or None
+VLLM_TEMPERATURE = float(os.getenv("VLLM_TEMPERATURE", "0.7"))
+VLLM_GPU_MEMORY_UTILIZATION = float(os.getenv("VLLM_GPU_MEMORY_UTILIZATION", "0.4"))
+VLLM_MAX_MODEL_LEN = int(os.getenv("VLLM_MAX_MODEL_LEN", "2048"))
+VLLM_MAX_NUM_SEQS = int(os.getenv("VLLM_MAX_NUM_SEQS", "4"))
+assert REQUESTED_PROFILE in {"auto", "fast", "medium", "power", "custom"}
+
 WHEEL_PATH = None
-files = None
 if RUN_VLLM_LIVE:
-    from google.colab import files
-
-    uploaded = files.upload()
-    wheel_names = [name for name in uploaded if name.endswith(".whl")]
-    assert len(wheel_names) == 1, "Sube exactamente un wheel de agentic-systems"
-    WHEEL_PATH = "/content/" + wheel_names[0]
-
-COMMIT_SHA = ""  # obligatorio para una attestation de release
-MODEL_ID = "unsloth/Qwen3-4B-Instruct-2507"
-BASE_MODEL_ID = "Qwen/Qwen3-4B-Instruct-2507"
-PROFILE = "custom"
-PORT = 8000
-MAX_MODEL_LEN = 4096
-GPU_MEMORY_UTILIZATION = 0.75
-MAX_NUM_SEQS = 2"""
+    assert len(COMMIT_SHA) == 40, "Define AGENTIC_SYSTEMS_COMMIT_SHA en .env"
+    assert EXPECTED_WHEEL_FILENAME.endswith(".whl"), (
+        "Define AGENTIC_SYSTEMS_WHEEL_FILENAME en .env"
+    )
+    assert len(EXPECTED_WHEEL_SHA256) == 64, (
+        "Define AGENTIC_SYSTEMS_WHEEL_SHA256 en .env"
+    )
+    configured_wheel = os.getenv("AGENTIC_SYSTEMS_WHEEL")
+    search_roots = [Path.cwd(), Path("/content")]
+    wheel_candidates = (
+        [Path(configured_wheel).expanduser()]
+        if configured_wheel
+        else [
+            root / EXPECTED_WHEEL_FILENAME
+            for root in search_roots
+            if (root / EXPECTED_WHEEL_FILENAME).is_file()
+        ]
+    )
+    wheel_candidates = list(dict.fromkeys(path.resolve() for path in wheel_candidates))
+    if len(wheel_candidates) > 1:
+        raise RuntimeError(
+            "Existe más de un wheel candidato; define AGENTIC_SYSTEMS_WHEEL en .env"
+        )
+    if wheel_candidates:
+        WHEEL_PATH = str(wheel_candidates[0])
+    else:
+        try:
+            from google.colab import files
+        except ImportError as exc:
+            raise FileNotFoundError(
+                f"Coloca {EXPECTED_WHEEL_FILENAME} junto al notebook"
+            ) from exc
+        uploaded = files.upload()
+        wheel_names = [name for name in uploaded if name.endswith(".whl")]
+        assert len(wheel_names) == 1, "Sube exactamente un wheel de agentic-systems"
+        WHEEL_PATH = "/content/" + wheel_names[0]"""
         ),
         nbformat.v4.new_markdown_cell(
             """## 1) Instalar el wheel y vLLM
 
-La instalación usa el backend de Torch resuelto por vLLM para no mezclar wheels CUDA. TorchAudio y TorchVision no son necesarios para este modelo textual y se retiran si Colab dejó variantes incompatibles."""
+La instalación usa el backend de Torch resuelto por vLLM para no mezclar wheels CUDA. TorchVision se instala en la misma transacción porque vLLM 0.27 lo importa durante el warm-up incluso para modelos de texto; sólo TorchAudio se retira si Colab dejó una variante CUDA incompatible."""
         ),
         nbformat.v4.new_code_cell(
             """if RUN_VLLM_LIVE:
     subprocess.run([sys.executable, "-m", "pip", "install", "-q", "-U", "uv"], check=True)
-    subprocess.run(["uv", "pip", "install", "-U", "vllm", "--torch-backend=auto"], check=True)
     subprocess.run([
-        sys.executable, "-m", "pip", "install", "-q", WHEEL_PATH,
+        "uv", "pip", "install", "-U", "vllm", "torchvision",
+        "--torch-backend=auto",
+    ], check=True)
+    subprocess.run([
+        sys.executable, "-m", "pip", "install", "-q",
+        "--force-reinstall", "--no-deps", WHEEL_PATH,
+    ], check=True)
+    subprocess.run([
+        sys.executable, "-m", "pip", "install", "-q",
         "openai>=2.45,<3", "openai-agents>=0.18.3,<0.19",
         "langgraph>=0.2", "strands-agents>=1.29,<2", "mcp>=1,<2",
     ], check=True)
     subprocess.run([
-        sys.executable, "-m", "pip", "uninstall", "-y", "torchaudio", "torchvision"
+        sys.executable, "-m", "pip", "uninstall", "-y", "torchaudio"
     ], check=False)"""
         ),
         nbformat.v4.new_code_cell(
             """import hashlib
 import platform
+from importlib.metadata import version as package_version
 
 import agentic_systems as toolkit
 
@@ -155,17 +236,71 @@ environment = {
     "python": platform.python_version(),
     "run_live": RUN_VLLM_LIVE,
     "wheel_sha256": wheel_sha256,
+    "dotenv": str(DOTENV_PATH) if DOTENV_PATH else None,
+    "model": MODEL_ID,
+    "requested_profile": REQUESTED_PROFILE,
+    "host": VLLM_HOST,
+    "port": VLLM_PORT,
+    "api_key_configured": bool(VLLM_API_KEY),
 }
 if RUN_VLLM_LIVE:
     import torch
 
+    assert Path(WHEEL_PATH).name == EXPECTED_WHEEL_FILENAME, (
+        Path(WHEEL_PATH).name,
+        EXPECTED_WHEEL_FILENAME,
+    )
+    assert wheel_sha256 == EXPECTED_WHEEL_SHA256, (
+        wheel_sha256,
+        EXPECTED_WHEEL_SHA256,
+    )
     environment.update(
         torch=torch.__version__,
+        torchvision=package_version("torchvision"),
+        vllm=package_version("vllm"),
         cuda_available=torch.cuda.is_available(),
         gpu=torch.cuda.get_device_name(0) if torch.cuda.is_available() else None,
+        cuda_capability=(
+            list(torch.cuda.get_device_capability(0))
+            if torch.cuda.is_available()
+            else None
+        ),
     )
     assert toolkit.__version__ == "2.1.0"
     assert torch.cuda.is_available(), "Selecciona Runtime > Change runtime type > GPU"
+
+    cuda_major, cuda_minor = torch.cuda.get_device_capability(0)
+    gpu_properties = torch.cuda.get_device_properties(0)
+    gpu_memory_gib = round(gpu_properties.total_memory / (1024 ** 3), 2)
+    VLLM_DTYPE = os.getenv("VLLM_DTYPE") or (
+        "half" if cuda_major < 8 else "bfloat16"
+    )
+    if REQUESTED_PROFILE == "auto":
+        PROFILE = (
+            "fast"
+            if gpu_memory_gib < 20
+            else "medium"
+            if gpu_memory_gib < 60
+            else "power"
+        )
+    else:
+        PROFILE = REQUESTED_PROFILE
+    SERVER_EXTRA_ARGS = (
+        "--dtype", VLLM_DTYPE,
+        "--default-chat-template-kwargs",
+        json.dumps({"enable_thinking": VLLM_ENABLE_THINKING}),
+    )
+    environment.update(
+        requested_vllm_profile=REQUESTED_PROFILE,
+        selected_vllm_profile=PROFILE,
+        vllm_dtype=VLLM_DTYPE,
+        cuda_capability=[cuda_major, cuda_minor],
+        gpu_memory_gib=gpu_memory_gib,
+    )
+else:
+    PROFILE = REQUESTED_PROFILE if REQUESTED_PROFILE != "auto" else "fast"
+    VLLM_DTYPE = None
+    SERVER_EXTRA_ARGS = ()
 toolkit.show_json(environment, title="Preflight vLLM")"""
         ),
         nbformat.v4.new_markdown_cell(
@@ -183,13 +318,14 @@ server = toolkit.model_server(
     artifact,
     backend="vllm",
     profile=PROFILE,
-    host="127.0.0.1",
-    port=PORT,
-    max_model_len=MAX_MODEL_LEN,
-    gpu_memory_utilization=GPU_MEMORY_UTILIZATION,
-    max_num_seqs=MAX_NUM_SEQS,
-    tool_call_parser="hermes",
-    reasoning_parser=None,
+    gpu_memory_utilization=VLLM_GPU_MEMORY_UTILIZATION,
+    max_model_len=VLLM_MAX_MODEL_LEN,
+    max_num_seqs=VLLM_MAX_NUM_SEQS,
+    host=VLLM_HOST,
+    port=VLLM_PORT,
+    tool_call_parser=VLLM_TOOL_CALL_PARSER,
+    reasoning_parser=VLLM_REASONING_PARSER,
+    extra_args=SERVER_EXTRA_ARGS,
     startup_timeout_s=600,
     log_path="/content/vllm-server.log",
 )
@@ -197,7 +333,45 @@ toolkit.show_json(server.inspect(), title="ModelServer declarado")"""
         ),
         nbformat.v4.new_code_cell(
             """if RUN_VLLM_LIVE:
-    endpoint = server.start()
+    try:
+        endpoint = server.start()
+    except Exception as exc:
+        log_path = Path("/content/vllm-server.log")
+        log_text = (
+            log_path.read_text(encoding="utf-8", errors="replace")
+            if log_path.exists()
+            else ""
+        )
+        diagnostic_lines = [
+            line
+            for line in log_text.splitlines()
+            if any(
+                token in line.lower()
+                for token in (
+                    "error",
+                    "exception",
+                    "runtimeerror",
+                    "valueerror",
+                    "traceback",
+                    "cuda",
+                    "bfloat16",
+                    "dtype",
+                )
+            )
+        ]
+        toolkit.show_json(
+            {
+                "error_type": type(exc).__name__,
+                "message": str(exc),
+                "profile": PROFILE,
+                "dtype": VLLM_DTYPE,
+                "log_head": log_text[:24000],
+                "log_tail": log_text[-24000:],
+                "diagnostic_lines": diagnostic_lines[-200:],
+            },
+            title="vLLM startup failure",
+        )
+        raise
     health = server.health()
     toolkit.show_json(health.model_dump(mode="json"), title="vLLM health")
     assert health.status == "healthy", "Revisa /content/vllm-server.log"
@@ -208,7 +382,7 @@ else:
     runtime = toolkit.runtime(
         provider="vllm-runtime",
         model=MODEL_ID,
-        endpoint="http://127.0.0.1:8000/v1",
+        endpoint=VLLM_BASE_URL,
         metadata={"tutorial": "providers/vllm-unsloth-qwen", "live": False},
     )
 toolkit.show_json(runtime.describe(), title="vLLM RuntimeConfig")"""
@@ -232,7 +406,12 @@ agent = system.agent(
         must_call=["multiply"],
         completion="when_required_tools_satisfied",
     ),
-    policy=toolkit.RunPolicy(max_turns=3, max_tool_calls=1, temperature=0.0),
+    policy=toolkit.RunPolicy(
+        max_turns=3,
+        max_tool_calls=1,
+        temperature=VLLM_TEMPERATURE,
+        tool_choice="multiply",
+    ),
 )
 toolkit.show_json(agent.info(), title="Agente declarado")"""
         ),
@@ -242,6 +421,7 @@ toolkit.show_json(agent.info(), title="Agente declarado")"""
     assert isinstance(result, toolkit.RunResult)
     assert result.ok, result.errors
     assert result.engine == "vllm-runtime"
+    assert [event.name for event in result.tool_events] == ["multiply"]
     result.check_invariants()
     toolkit.human_result(result, title="vLLM RunResult", show_lineage=True)
     toolkit.show_json(toolkit.run_result_output(result), title="Contrato normalizado")
@@ -262,21 +442,26 @@ El runner oficial consume el mismo endpoint. La attestation compara invariantes,
             """if RUN_VLLM_LIVE:
     if not COMMIT_SHA:
         raise ValueError("Completa COMMIT_SHA con el commit exacto que produjo el wheel")
-    repo = Path("/content/agentic-systems")
-    if not repo.exists():
-        subprocess.run([
-            "git", "clone", "https://github.com/JacoboGGLeon/agentic_systems.git", str(repo)
-        ], check=True)
-    subprocess.run(["git", "-C", str(repo), "fetch", "--all", "--tags"], check=True)
-    subprocess.run(["git", "-C", str(repo), "checkout", "--detach", COMMIT_SHA], check=True)
+    local_runner = Path.cwd() / "run_live_matrix.py"
+    if local_runner.is_file():
+        matrix_runner = local_runner
+    else:
+        repo = Path("/content/agentic-systems")
+        if not repo.exists():
+            subprocess.run([
+                "git", "clone", "https://github.com/JacoboGGLeon/agentic_systems.git", str(repo)
+            ], check=True)
+        subprocess.run(["git", "-C", str(repo), "fetch", "--all", "--tags"], check=True)
+        subprocess.run(["git", "-C", str(repo), "checkout", "--detach", COMMIT_SHA], check=True)
+        matrix_runner = repo / "scripts" / "run_live_matrix.py"
     os.environ.update(
         VLLM_BASE_URL=endpoint.base_url,
-        VLLM_API_KEY="vllm",
+        VLLM_API_KEY=VLLM_API_KEY,
         VLLM_MODEL=artifact.model_id,
     )
     OUTPUT = Path("/content/vllm-attestation.json")
     completed = subprocess.run([
-        sys.executable, str(repo / "scripts" / "run_live_matrix.py"),
+        sys.executable, str(matrix_runner),
         "--wheel", WHEEL_PATH,
         "--output", str(OUTPUT),
         "--commit", COMMIT_SHA,
@@ -294,10 +479,17 @@ El runner oficial consume el mismo endpoint. La attestation compara invariantes,
         }, title="Diagnóstico vLLM")
         raise RuntimeError(f"La matriz live falló con código {completed.returncode}")
     attestation = json.loads(OUTPUT.read_text())
-    toolkit.show_json(attestation.get("summary", {}), title="Attestation summary")
+    failed_cases = [case for case in attestation["cases"] if not case["ok"]]
+    summary = {
+        "total": len(attestation["cases"]),
+        "passed": len(attestation["cases"]) - len(failed_cases),
+        "failed": len(failed_cases),
+    }
+    toolkit.show_json(summary, title="Attestation summary")
     assert attestation["wheel_sha256"] == wheel_sha256
     assert attestation["commit_sha"] == COMMIT_SHA
-    assert attestation["summary"]["failed"] == 0
+    assert summary["total"] == 4
+    assert summary["failed"] == 0
     files.download(str(OUTPUT))
 else:
     toolkit.show_json({"status": "not-run", "scope": "vllm-attestation"}, title="Attestation gate")"""
@@ -344,6 +536,8 @@ Con live desactivado: contratos declarativos y estados not-run ejecutables. Con 
     )"""
         ),
     ]
+    for index, cell in enumerate(nb.cells):
+        cell["id"] = f"vllm-21-{index:02d}"
     return nb
 
 

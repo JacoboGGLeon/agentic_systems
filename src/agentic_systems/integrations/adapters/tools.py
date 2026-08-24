@@ -72,15 +72,19 @@ def canonical_tool_callable(tool: Any) -> Callable[..., Any]:
     function = tool.function
     if function is None:
         raise ValueError(f"Tool {tool.name!r} has no function.")
+    signature = inspect.signature(function)
 
     @functools.wraps(function)
     def invoke(*args: Any, **kwargs: Any) -> Any:
         if kwargs:
             payload: Any = kwargs
+        elif len(args) > 1:
+            try:
+                payload = dict(signature.bind(*args).arguments)
+            except TypeError:
+                payload = list(args)
         elif len(args) == 1:
             payload = args[0]
-        elif args:
-            payload = list(args)
         else:
             payload = None
         result = tool.run(payload)
@@ -96,7 +100,7 @@ def canonical_tool_callable(tool: Any) -> Callable[..., Any]:
         )
         return {_TOOL_RESULT_MARKER: {"ok": False, "data": result.data, "error": error}}
 
-    invoke.__signature__ = inspect.signature(function)  # type: ignore[attr-defined]
+    invoke.__signature__ = signature  # type: ignore[attr-defined]
     return invoke
 
 

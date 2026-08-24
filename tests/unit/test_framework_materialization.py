@@ -12,6 +12,7 @@ from agentic_systems.integrations.adapters.strands import (
     _materialize_model as strands_model,
 )
 from agentic_systems.integrations.adapters.strands_scripted import ScriptedStrandsModel
+from agentic_systems.providers.bedrock_runtime import BedrockRuntime
 
 
 def _agent(provider: str, *, metadata=None):
@@ -101,20 +102,44 @@ def test_strands_materializes_each_provider(monkeypatch):
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
     bedrock_calls = {}
     openai_calls = []
+
+    class FakeOpenAIModel:
+        def __init__(self, **kwargs):
+            openai_calls.append(kwargs)
+
+        def format_request(self, messages, tool_specs=None, **kwargs):
+            return {
+                "messages": messages,
+                "tools": tool_specs,
+                **kwargs,
+            }
+
     monkeypatch.setattr(
         "strands.models.BedrockModel",
         lambda **kwargs: bedrock_calls.update(kwargs) or object(),
     )
     monkeypatch.setattr(
         "strands.models.openai.OpenAIModel",
-        lambda **kwargs: openai_calls.append(kwargs) or object(),
+        FakeOpenAIModel,
     )
 
     assert isinstance(
         strands_model(_agent("python-runtime"), object()),
         ScriptedStrandsModel,
     )
-    strands_model(_agent("bedrock-runtime"), object())
+    session = object()
+    strands_model(
+        _agent("bedrock-runtime"),
+        SimpleNamespace(
+            system=SimpleNamespace(
+                _runtime=SimpleNamespace(
+                    session=session,
+                    auth_mode="aws-credential-chain",
+                    streaming=False,
+                )
+            )
+        ),
+    )
     strands_model(_agent("openai-runtime"), object())
     strands_model(
         _agent(
@@ -131,10 +156,11 @@ def test_strands_materializes_each_provider(monkeypatch):
         object(),
     )
 
-    assert bedrock_calls == {
-        "model_id": "model-bedrock-runtime",
-        "region_name": "eu-west-1",
-    }
+    assert bedrock_calls["model_id"] == "model-bedrock-runtime"
+    assert bedrock_calls["region_name"] is None
+    assert bedrock_calls["boto_session"] is session
+    assert bedrock_calls["streaming"] is False
+    assert bedrock_calls["boto_client_config"].signature_version == "v4"
     assert openai_calls[0] == {
         "model_id": "model-openai-runtime",
         "client_args": None,
@@ -148,3 +174,20 @@ def test_strands_materializes_each_provider(monkeypatch):
         "base_url": "http://ollama.invalid/v1",
         "api_key": "ollama",
     }
+
+def test_strands_real_bedrock_model_accepts_canonical_runtime(monkeypatch):
+    monkeypatch.setenv("AWS_BEARER_TOKEN_BEDROCK", "")
+    monkeypatch.setenv("AWS_ACCESS_KEY_ID", "test-access-key")
+    monkeypatch.setenv("AWS_SECRET_ACCESS_KEY", "test-secret-key")
+    monkeypatch.setenv("BEDROCK_STREAMING", "0")
+    runtime = BedrockRuntime(
+        model_id="amazon.nova-micro-v1:0",
+        region_name="us-east-1",
+    )
+    engine = SimpleNamespace(system=SimpleNamespace(_runtime=runtime))
+
+    model = strands_model(_agent("bedrock-runtime"), engine)
+
+    assert model.config["streaming"] is False
+    assert model.client.meta.region_name == "us-east-1"
+    assert model.client.meta.config.signature_version == "v4"

@@ -138,7 +138,10 @@ def test_openai_provider_tool_success_failure_async_and_max_turns():
     assert result.meta["execution_engine"] == "openai-runtime"
     assert result.usage["total_tokens"] == 7
     assert result.tool_events[0].output["result"] == 42
-    assert client.calls[0]["tool_choice"] == "required"
+    assert client.calls[0]["tool_choice"] == {
+        "type": "function",
+        "function": {"name": "add"},
+    }
 
     failing_client = FakeClient(
         [
@@ -173,6 +176,8 @@ def test_openai_provider_tool_success_failure_async_and_max_turns():
     ).run(agent, "loop", RunPolicy(max_turns=1), mode="debug")
     assert exceeded.ok is False
     assert exceeded.data["error"]["code"] == "max_turns_exceeded"
+    assert [event.name for event in exceeded.tool_events] == ["add"]
+    assert exceeded.engine == "bedrock-runtime"
 
     async_client = FakeClient(
         [
@@ -189,6 +194,31 @@ def test_openai_provider_tool_success_failure_async_and_max_turns():
         ).arun(agent, "async", RunPolicy(), mode="audit")
     )
     assert async_result.text == "async final"
+def test_openai_provider_stops_when_required_tools_are_satisfied():
+    runtime = build_runtime()
+    agent = build_agent(runtime)
+    agent.contract = AgentContract(
+        must_call=["add"],
+        completion="when_required_tools_satisfied",
+    )
+    client = FakeClient(
+        [
+            FakeResponse(
+                FakeMessage(
+                    tool_calls=[FakeToolCall("add", '{"a": 20, "b": 22}')]
+                )
+            )
+        ]
+    )
+
+    result = OpenAIRuntimeProvider(
+        SimpleNamespace(_runtime=runtime), client=client
+    ).run(agent, "sum", RunPolicy(tool_choice="add"), mode="eval")
+
+    assert result.ok is True
+    assert len(client.calls) == 1
+    assert [event.name for event in result.tool_events] == ["add"]
+    assert result.tool_events[0].output == {"result": 42, "summary": "20+22=42"}
 
 
 def test_openai_provider_aliases_namespaced_tools_without_public_identity_loss():
@@ -253,6 +283,16 @@ def test_openai_provider_helpers_and_import_paths(monkeypatch):
     assert _tool_choice(None) == "auto"
     assert _tool_choice("auto") == "auto"
     assert _tool_choice("any") == "required"
+    only_tool = [{"type": "function", "function": {"name": "only"}}]
+    assert _tool_choice("required", only_tool) == {
+        "type": "function",
+        "function": {"name": "only"},
+    }
+    assert _tool_choice("required", only_tool * 2) == "required"
+    assert _tool_choice("required", [{"type": "function"}]) == "required"
+    assert _tool_choice(
+        "required", [{"type": "function", "function": {"name": ""}}]
+    ) == "required"
     assert _tool_choice("add") == {"type": "function", "function": {"name": "add"}}
     assert _tool_choice({"raw": True}) == "auto"
     assert _json_loads("[1, 2]") == {"value": [1, 2]}

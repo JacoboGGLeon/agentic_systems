@@ -101,6 +101,7 @@ class OpenAIAgentsFrameworkAdapter(FrameworkAdapter):
         native_agent = self.prepare(agent, engine)
         _configure_model(native_agent.model, policy, mode)
         kwargs = _runner_kwargs(agent, agent.framework_config.run_kwargs)
+        _configure_native_agent(native_agent, policy)
         max_turns = effective_max_turns(policy, kwargs)
         aliases = tool_name_aliases(agent.available_tools())
         try:
@@ -147,6 +148,7 @@ class OpenAIAgentsFrameworkAdapter(FrameworkAdapter):
             ) from exc
         native_agent = self.prepare(agent, engine)
         _configure_model(native_agent.model, policy, mode)
+        _configure_native_agent(native_agent, policy)
         kwargs = _runner_kwargs(agent, agent.framework_config.run_kwargs)
         max_turns = effective_max_turns(policy, kwargs)
         aliases = tool_name_aliases(agent.available_tools())
@@ -227,6 +229,24 @@ def _configure_model(model: Any, policy: RunPolicy, mode: str) -> None:
     configure = getattr(model, "configure", None)
     if callable(configure):
         configure(policy, mode)
+
+
+def _configure_native_agent(native_agent: Any, policy: RunPolicy) -> None:
+    """Project the shared policy into the OpenAI Agents model contract."""
+
+    settings = getattr(native_agent, "model_settings", None)
+    if settings is None or not dataclasses.is_dataclass(settings):
+        return
+    has_tools = bool(getattr(native_agent, "tools", ()) or ())
+    updates: dict[str, Any] = {
+        "temperature": policy.temperature,
+        # OpenAI-compatible servers reject tool_choice when the request has no
+        # tools. Keep the policy projection valid for completion-only agents.
+        "tool_choice": policy.tool_choice if has_tools else None,
+    }
+    if policy.max_tokens is not None:
+        updates["max_tokens"] = policy.max_tokens
+    native_agent.model_settings = dataclasses.replace(settings, **updates)
 
 
 def _runner_kwargs(agent: Any, configured: Mapping[str, Any]) -> dict[str, Any]:

@@ -12,6 +12,7 @@ import os
 from typing import Dict, Optional
 
 import boto3
+from botocore.config import Config
 
 from ..defaults import DEFAULT_AWS_REGION
 from .bedrock.converse import _ConverseMixin
@@ -25,6 +26,18 @@ from .bedrock.models import (
 )
 from .bedrock.tools import _ToolsMixin
 
+
+def _bedrock_streaming_from_environment() -> bool:
+    """Parse the canonical Bedrock streaming selector from ``.env``/environment."""
+
+    raw = (os.getenv("BEDROCK_STREAMING") or "0").strip().lower()
+    if raw in {"1", "true", "yes", "on"}:
+        return True
+    if raw in {"0", "false", "no", "off", ""}:
+        return False
+    raise ValueError(
+        "BEDROCK_STREAMING must be one of 1/0, true/false, yes/no, or on/off."
+    )
 
 
 class BedrockRuntime(
@@ -55,7 +68,11 @@ class BedrockRuntime(
             )
 
         self.session = boto3.Session(region_name=region_name)
-        self.auth_mode = "bedrock-api-key" if os.getenv("AWS_BEARER_TOKEN_BEDROCK") else "aws-credential-chain"
+        bedrock_api_key = (os.getenv("AWS_BEARER_TOKEN_BEDROCK") or "").strip()
+        self.auth_mode = (
+            "bedrock-api-key" if bedrock_api_key else "aws-credential-chain"
+        )
+        self.streaming = _bedrock_streaming_from_environment()
         self.region_name = (
             self.session.region_name
             or os.getenv("AWS_REGION")
@@ -63,10 +80,20 @@ class BedrockRuntime(
             or DEFAULT_AWS_REGION
         )
 
-        self.runtime = boto3.client("bedrock-runtime", region_name=self.region_name)
-        self.bedrock = boto3.client("bedrock", region_name=self.region_name)
-        self.sts = None if self.auth_mode == "bedrock-api-key" else boto3.client("sts", region_name=self.region_name)
+        client_kwargs: dict[str, object] = {"region_name": self.region_name}
+        if self.auth_mode == "aws-credential-chain":
+            # Botocore treats an existing but empty AWS_BEARER_TOKEN_BEDROCK as
+            # a bearer-token signal. Agentic Systems defines an empty .env value
+            # as IAM mode, so force SigV4 without mutating canonical config.
+            client_kwargs["config"] = Config(signature_version="v4")
 
+        self.runtime = self.session.client("bedrock-runtime", **client_kwargs)
+        self.bedrock = self.session.client("bedrock", **client_kwargs)
+        self.sts = (
+            None
+            if self.auth_mode == "bedrock-api-key"
+            else self.session.client("sts", **client_kwargs)
+        )
         self._tools: Dict[str, RuntimeToolSpec] = {}
 
 

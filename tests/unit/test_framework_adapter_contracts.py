@@ -14,8 +14,13 @@ from agentic_systems.integrations.adapters import openai_agents as oa
 from agentic_systems.integrations.adapters import openai_models as om
 from agentic_systems.integrations.adapters import strands as sa
 from agentic_systems.integrations.adapters import strands_scripted as ss
-from agentic_systems.integrations.adapters.tools import merge_tools, tool_identity
+from agentic_systems.integrations.adapters.tools import (
+    canonical_tool_callable,
+    merge_tools,
+    tool_identity,
+)
 from agentic_systems.integrations.config import FrameworkConfig
+from agentic_systems.tools.decorators import tool
 
 
 class Payload(BaseModel):
@@ -41,6 +46,17 @@ def test_registry_config_and_tool_validation_contracts():
     assert tool_identity({"toolSpec": {"name": "lookup"}}) == "lookup"
     with pytest.raises(ValueError, match="collision"):
         merge_tools([{"name": "same"}], [{"name": "same"}])
+
+
+def test_canonical_tool_callable_binds_positional_multi_parameter_inputs():
+    @tool(name="multiply", description="Multiply two integers.")
+    def multiply(a: int, b: int) -> dict[str, int]:
+        return {"result": a * b}
+
+    invoke = canonical_tool_callable(multiply)
+
+    assert invoke(17, 19) == {"result": 323}
+    assert invoke(a=17, b=19) == {"result": 323}
 
 
 def test_bedrock_openai_translation_helpers_cover_all_shapes():
@@ -248,6 +264,23 @@ def test_openai_adapter_normalization_and_json_helpers():
     oa._configure_model(object(), RunPolicy(), "eval")
     assert configured
 
+    from agents import ModelSettings
+
+    native_agent = SimpleNamespace(model_settings=ModelSettings(), tools=[object()])
+    named_policy = RunPolicy(
+        max_tokens=321,
+        temperature=0.7,
+        tool_choice="multiply",
+    )
+    oa._configure_native_agent(native_agent, named_policy)
+    assert native_agent.model_settings.temperature == 0.7
+    assert native_agent.model_settings.max_tokens == 321
+    assert native_agent.model_settings.tool_choice == "multiply"
+
+    completion_agent = SimpleNamespace(model_settings=ModelSettings(), tools=[])
+    oa._configure_native_agent(completion_agent, named_policy)
+    assert completion_agent.model_settings.tool_choice is None
+
 
 def test_scripted_strands_model_helpers_and_streams():
     model = ss.ScriptedStrandsModel()
@@ -361,6 +394,30 @@ def test_strands_adapter_helpers_cover_results_tools_and_failures():
     )
     sa._configure_model(object(), policy, "eval")
     assert configured
+
+    class OpenAICompatibleModel:
+        def __init__(self):
+            self.config = {"params": {"top_p": 0.8}}
+
+        def update_config(self, **configuration):
+            self.config.update(configuration)
+
+    openai_model = OpenAICompatibleModel()
+    named_policy = RunPolicy(
+        max_tokens=321,
+        temperature=0.7,
+        tool_choice="multiply",
+    )
+    sa._configure_model(openai_model, named_policy, "eval")
+    assert openai_model.config["params"] == {
+        "top_p": 0.8,
+        "temperature": 0.7,
+        "max_tokens": 321,
+        "tool_choice": {
+            "type": "function",
+            "function": {"name": "multiply"},
+        },
+    }
 
     provider = RunResult(text="provider", engine="python-runtime", model="m")
     native_agent = SimpleNamespace(model=SimpleNamespace(last_result=provider))

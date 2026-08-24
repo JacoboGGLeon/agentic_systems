@@ -296,6 +296,9 @@ def test_strands_materializes_explicit_vllm_endpoint_and_secret(monkeypatch):
         def __init__(self, *, model_id, client_args):
             observed.update(model_id=model_id, client_args=client_args)
 
+        def format_request(self, *args, **kwargs):
+            return {"model": "served-qwen", "tools": [], "tool_choice": "auto"}
+
     monkeypatch.setattr(strands_openai, "OpenAIModel", FakeOpenAIModel)
     runtime = toolkit.runtime(
         provider="vllm-runtime",
@@ -309,7 +312,7 @@ def test_strands_materializes_explicit_vllm_endpoint_and_secret(monkeypatch):
         runtime_config=runtime,
     )
 
-    _materialize_model(agent, None)
+    model = _materialize_model(agent, None)
 
     assert observed == {
         "model_id": "served-qwen",
@@ -318,6 +321,8 @@ def test_strands_materializes_explicit_vllm_endpoint_and_secret(monkeypatch):
             "api_key": "private-vllm-key",
         },
     }
+    request = model.format_request()
+    assert request == {"model": "served-qwen"}
 
 
 def test_strands_preserves_hook_provider_and_rejects_non_callable():

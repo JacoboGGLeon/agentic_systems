@@ -155,12 +155,13 @@ reason
 configuration
 ```
 
-Before running provider notebooks, configure credentials in the shell or host
-environment that launches Jupyter/VSCode. The CLI and notebooks read these
-variables; they do not ask for or persist secrets.
+Before running provider notebooks, copy `.env.example` to the local `.env` and
+configure that environment. The CLI and notebooks read the nearest `.env`; they
+do not ask for, persist, clear or replace secrets. `.env` is ignored by Git.
 
-You can use either exported variables or a local `.env` file. `.env` is ignored
-by git.
+For SageMaker/ADA IAM, keep `AWS_BEARER_TOKEN_BEDROCK=` empty so boto3 inherits
+the execution role through its standard credential chain. Give it a non-empty
+value only for the native Bedrock API-key route.
 
 ```powershell
 $env:OPENAI_API_KEY="your_key_here"

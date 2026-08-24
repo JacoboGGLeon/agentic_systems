@@ -1,0 +1,219 @@
+"""Build the final portable Colab kit from one wheel and one Git commit."""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import shutil
+import subprocess
+import textwrap
+import zipfile
+from pathlib import Path
+
+import nbformat
+
+
+ROOT = Path(__file__).resolve().parents[1]
+SOURCE = ROOT / "tutorials" / "providers" / "03_vllm.ipynb"
+RUNNER = ROOT / "scripts" / "run_live_matrix.py"
+DEFAULT_WHEEL = ROOT / "dist" / "agentic_systems-2.1.0-py3-none-any.whl"
+DEFAULT_OUTPUT = ROOT / "dist"
+PACKAGE_STEM = "agentic-systems-2.1.0-vllm-qwen06-colab-final"
+NOTEBOOK_FILENAME = "03_vllm_qwen06_colab_final.ipynb"
+MODEL_ID = "unsloth/Qwen3-0.6B"
+
+
+def _sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _git_commit() -> str:
+    return subprocess.check_output(
+        ["git", "rev-parse", "HEAD"],
+        cwd=ROOT,
+        text=True,
+    ).strip()
+
+
+def _dotenv(*, commit: str, wheel: Path, wheel_sha256: str) -> str:
+    return textwrap.dedent(
+        f"""\
+        RUN_VLLM_LIVE=1
+
+        AGENTIC_SYSTEMS_COMMIT_SHA={commit}
+        AGENTIC_SYSTEMS_WHEEL=/content/{wheel.name}
+        AGENTIC_SYSTEMS_WHEEL_FILENAME={wheel.name}
+        AGENTIC_SYSTEMS_WHEEL_SHA256={wheel_sha256}
+
+        VLLM_MODEL={MODEL_ID}
+        VLLM_BASE_MODEL=Qwen/Qwen3-0.6B
+        VLLM_PROFILE=fast
+        VLLM_HOST=127.0.0.1
+        VLLM_PORT=8000
+        VLLM_BASE_URL=http://127.0.0.1:8000/v1
+        VLLM_API_KEY=vllm
+        VLLM_TOOL_CALL_PARSER=hermes
+        VLLM_REASONING_PARSER=
+        VLLM_ENABLE_THINKING=0
+        VLLM_TEMPERATURE=0.7
+        AGENTIC_SYSTEMS_LIVE_TEMPERATURE=0.0
+        VLLM_GPU_MEMORY_UTILIZATION=0.4
+        VLLM_MAX_MODEL_LEN=2048
+        VLLM_MAX_NUM_SEQS=4
+
+        AGENTIC_SYSTEMS_PROVIDER_PRIORITY=vllm-runtime
+        """
+    )
+
+
+def _readme(*, commit: str, wheel: Path, wheel_sha256: str) -> str:
+    return textwrap.dedent(
+        f"""\
+        # Agentic Systems 2.1.0 · vLLM/Qwen 0.6B final live kit
+
+        1. Abre un Colab nuevo y selecciona una GPU.
+        2. Sube `{PACKAGE_STEM}.zip` cuando lo solicite la primera celda.
+        3. Ejecuta **Run all** una sola vez.
+        4. Descarga `vllm-attestation.json`.
+
+        Identidad certificable:
+
+        - Commit: `{commit}`
+        - Wheel: `{wheel.name}`
+        - SHA256: `{wheel_sha256}`
+        - Model: `{MODEL_ID}`
+
+        `.env` es la fuente canónica de configuración. El notebook verifica los
+        checksums internos antes de instalar y no permite fallback de provider.
+        """
+    )
+
+
+def _bootstrap(wheel_filename: str) -> nbformat.NotebookNode:
+    source = f'''from pathlib import Path
+import hashlib
+import zipfile
+
+CONTENT = Path("/content")
+REQUIRED = (
+    CONTENT / ".env",
+    CONTENT / "{wheel_filename}",
+    CONTENT / "run_live_matrix.py",
+)
+
+from google.colab import files
+
+uploaded = files.upload()
+package_names = [name for name in uploaded if name.lower().endswith(".zip")]
+assert len(package_names) == 1, "Sube exactamente un ZIP del paquete E2E"
+with zipfile.ZipFile(CONTENT / package_names[0]) as package:
+    package.extractall(CONTENT)
+
+missing = [str(path) for path in REQUIRED if not path.is_file()]
+assert not missing, {{"missing_package_files": missing}}
+manifest_path = CONTENT / "SHA256SUMS.txt"
+assert manifest_path.is_file(), {{"missing_package_files": [str(manifest_path)]}}
+for line in manifest_path.read_text(encoding="utf-8").splitlines():
+    expected, filename = line.split("  ", 1)
+    artifact = CONTENT / filename
+    actual = hashlib.sha256(artifact.read_bytes()).hexdigest()
+    assert actual == expected, {{
+        "checksum_mismatch": filename,
+        "actual": actual,
+        "expected": expected,
+    }}
+print("Agentic Systems vLLM final package ready")'''
+    cell = nbformat.v4.new_code_cell(source)
+    cell["id"] = "vllm-final-bootstrap"
+    cell.metadata["tags"] = ["colab-bootstrap", "package-contract"]
+    return cell
+
+
+def _write_archive(
+    package_dir: Path, files: tuple[str, ...], archive_path: Path
+) -> None:
+    checksum_path = package_dir / "SHA256SUMS.txt"
+    checksum_path.write_text(
+        "".join(f"{_sha256(package_dir / name)}  {name}\n" for name in files),
+        encoding="utf-8",
+    )
+    with zipfile.ZipFile(
+        archive_path, "w", compression=zipfile.ZIP_DEFLATED
+    ) as archive:
+        for name in (*files, checksum_path.name):
+            data = (package_dir / name).read_bytes()
+            entry = zipfile.ZipInfo(name, date_time=(1980, 1, 1, 0, 0, 0))
+            entry.compress_type = zipfile.ZIP_DEFLATED
+            entry.external_attr = 0o100644 << 16
+            archive.writestr(entry, data)
+
+
+def build(*, wheel: Path, commit: str, output_dir: Path) -> Path:
+    wheel = wheel.resolve()
+    output_dir = output_dir.resolve()
+    if not wheel.is_file():
+        raise FileNotFoundError(wheel)
+    if len(commit) != 40:
+        raise ValueError("commit must be the full 40-character Git SHA")
+
+    wheel_sha256 = _sha256(wheel)
+    package_dir = output_dir / PACKAGE_STEM
+    package_dir.mkdir(parents=True, exist_ok=True)
+
+    packaged_wheel = package_dir / wheel.name
+    shutil.copy2(wheel, packaged_wheel)
+    shutil.copy2(RUNNER, package_dir / "run_live_matrix.py")
+    (package_dir / ".env").write_text(
+        _dotenv(commit=commit, wheel=wheel, wheel_sha256=wheel_sha256),
+        encoding="utf-8",
+    )
+    (package_dir / "README.md").write_text(
+        _readme(commit=commit, wheel=wheel, wheel_sha256=wheel_sha256),
+        encoding="utf-8",
+    )
+
+    notebook = nbformat.read(SOURCE, as_version=4)
+    notebook.cells.insert(0, _bootstrap(wheel.name))
+    notebook.metadata.setdefault("agentic_systems", {})["portable_package"] = {
+        "filename": f"{PACKAGE_STEM}.zip",
+        "model": MODEL_ID,
+        "commit_sha": commit,
+        "wheel_filename": wheel.name,
+        "wheel_sha256": wheel_sha256,
+    }
+    nbformat.write(notebook, package_dir / NOTEBOOK_FILENAME)
+
+    package_files = (
+        ".env",
+        NOTEBOOK_FILENAME,
+        wheel.name,
+        "README.md",
+        "run_live_matrix.py",
+    )
+    archive_path = output_dir / f"{PACKAGE_STEM}.zip"
+    _write_archive(package_dir, package_files, archive_path)
+    print(
+        f"{archive_path}\n"
+        f"commit={commit}\n"
+        f"wheel={wheel.name}\n"
+        f"wheel_sha256={wheel_sha256}\n"
+        f"package_sha256={_sha256(archive_path)}"
+    )
+    return archive_path
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--wheel", type=Path, default=DEFAULT_WHEEL)
+    parser.add_argument("--commit", default=None)
+    parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT)
+    args = parser.parse_args()
+    build(
+        wheel=args.wheel,
+        commit=args.commit or _git_commit(),
+        output_dir=args.output_dir,
+    )
+
+
+if __name__ == "__main__":
+    main()

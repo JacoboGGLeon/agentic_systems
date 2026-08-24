@@ -70,16 +70,18 @@ toolkit.show(runtime.describe(), title="Local runtime")
 
 ## Configure Provider Notebooks
 
-Set configuration in the same shell that starts Jupyter. The explicit
-`RUN_*_LIVE=1` values are optional because live execution is already the default
-when readiness passes; they make intent visible in a demo session.
+Copy `.env.example` to `.env` at the repository root and fill only the Providers
+you use. `.env` is the canonical project configuration source. Runtime factories,
+Provider environment snapshots, notebooks and the CLI load the nearest `.env`
+while walking upward from the current directory. Existing host variables retain
+the standard process-environment precedence; notebooks never set, unset or
+rewrite authentication variables. The file is ignored by Git; never paste its
+credentials into notebooks, outputs or commits.
 
-Alternatively, copy `.env.example` to `.env` at the repository root and fill
-only the Providers you use. Runtime factories, Provider environment snapshots,
-notebooks and the CLI load the nearest `.env` while walking upward from the
-current directory. Existing process variables take precedence over file values.
-The file is ignored by Git; never paste credentials into notebooks, outputs or
-commits.
+For SageMaker/ADA IAM, leave `AWS_BEARER_TOKEN_BEDROCK=` empty. boto3 then uses
+its normal credential chain and inherits the execution role. For Bedrock API-key
+authentication, give that same key a non-empty value in the environment's local
+`.env`.
 
 ### POSIX Shell Or Git Bash
 

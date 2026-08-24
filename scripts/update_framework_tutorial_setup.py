@@ -51,6 +51,21 @@ if importlib.util.find_spec("agents") is None:
             1,
         )
         target.source = setup + existing
+    target.source = target.source.replace(
+        "from agents import (\n",
+        "from agents import (  # noqa: E402\n",
+        1,
+    )
+    target.source = target.source.replace(
+        "from pydantic import BaseModel\n",
+        "from pydantic import BaseModel  # noqa: E402\n",
+        1,
+    )
+    target.source = target.source.replace(
+        "\nimport agentic_systems as toolkit\n\nRUN_LIVE",
+        "\nRUN_LIVE",
+        1,
+    )
     for cell in notebook.cells:
         if cell.cell_type == "code":
             cell.execution_count = None

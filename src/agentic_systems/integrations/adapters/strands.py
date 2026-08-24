@@ -134,11 +134,29 @@ class StrandsFrameworkAdapter(FrameworkAdapter):
 
 def _materialize_model(agent: Any, engine: Any) -> Any:
     if agent.engine == BEDROCK_RUNTIME_ENGINE:
+        from botocore.config import Config
         from strands.models import BedrockModel
 
+        runtime = getattr(getattr(engine, "system", None), "_runtime", engine)
+        session = getattr(runtime, "session", None)
+        auth_mode = getattr(runtime, "auth_mode", None)
+        # Strands rejects boto_session + region_name. The canonical runtime
+        # session already owns the region and authentication chain.
+        region_name = (
+            None
+            if session is not None
+            else getattr(agent.runtime_config, "region_name", None)
+        )
         return BedrockModel(
             model_id=agent.model,
-            region_name=getattr(agent.runtime_config, "region_name", None),
+            region_name=region_name,
+            boto_session=session,
+            streaming=bool(getattr(runtime, "streaming", False)),
+            boto_client_config=(
+                Config(signature_version="v4")
+                if auth_mode == "aws-credential-chain"
+                else None
+            ),
         )
     if agent.engine in {
         OPENAI_RUNTIME_ENGINE,
@@ -147,6 +165,20 @@ def _materialize_model(agent: Any, engine: Any) -> Any:
     }:
         from strands.models.openai import OpenAIModel
 
+        model_class = OpenAIModel
+        if agent.engine == VLLM_RUNTIME_ENGINE:
+
+            class VLLMOpenAIModel(OpenAIModel):
+                """Normalize Strands requests for the vLLM OpenAI endpoint."""
+
+                def format_request(self, *args: Any, **kwargs: Any) -> dict[str, Any]:
+                    request = super().format_request(*args, **kwargs)
+                    if not request.get("tools"):
+                        request.pop("tools", None)
+                        request.pop("tool_choice", None)
+                    return request
+
+            model_class = VLLMOpenAIModel
         client_args: dict[str, Any] = {}
         if agent.engine == VLLM_RUNTIME_ENGINE:
             metadata = getattr(agent.runtime_config, "metadata", {}) or {}
@@ -187,7 +219,7 @@ def _materialize_model(agent: Any, engine: Any) -> Any:
                 client_args["base_url"] = endpoint
             if api_key:
                 client_args["api_key"] = api_key
-        return OpenAIModel(model_id=agent.model, client_args=client_args or None)
+        return model_class(model_id=agent.model, client_args=client_args or None)
     if agent.engine == PYTHON_RUNTIME_ENGINE:
         from .strands_scripted import ScriptedStrandsModel
 
@@ -273,6 +305,27 @@ def _configure_model(model: Any, policy: RunPolicy, mode: str) -> None:
     configure = getattr(model, "configure", None)
     if callable(configure):
         configure(policy, mode)
+        return
+    update_config = getattr(model, "update_config", None)
+    config = getattr(model, "config", None)
+    if not callable(update_config) or not isinstance(config, Mapping):
+        return
+    params = dict(config.get("params") or {})
+    tool_choice: Any = policy.tool_choice
+    if isinstance(tool_choice, str) and tool_choice not in {
+        "",
+        "auto",
+        "none",
+        "required",
+    }:
+        tool_choice = {
+            "type": "function",
+            "function": {"name": tool_choice},
+        }
+    params.update(temperature=policy.temperature, tool_choice=tool_choice)
+    if policy.max_tokens is not None:
+        params["max_tokens"] = policy.max_tokens
+    update_config(params=params)
 
 
 def _run_kwargs(agent: Any, policy: RunPolicy) -> dict[str, Any]:

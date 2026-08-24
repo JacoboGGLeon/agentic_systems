@@ -16,10 +16,16 @@ root and use python scripts/validate_sandbox.py below.
 
 ## ADA with IAM credentials
 
-Do not set AWS_BEARER_TOKEN_BEDROCK. Let boto3 use the sandbox role and set
-the region/model selected for ADA:
+Use the local, Git-ignored `.env` as the canonical configuration source. Leave
+the bearer value empty so boto3 inherits the sandbox/SageMaker execution role:
 
-    export AWS_REGION=us-east-2
+    AWS_BEARER_TOKEN_BEDROCK=
+    AWS_REGION=us-east-2
+    BEDROCK_MODEL_ID=us.amazon.nova-pro-v1:0
+    RUN_BEDROCK_LIVE=1
+
+Then run without exporting, unsetting or rewriting credentials in the notebook:
+
     python scripts/validate_sandbox.py \
       --provider bedrock-runtime \
       --model "$BEDROCK_MODEL_ID" \
@@ -27,17 +33,23 @@ the region/model selected for ADA:
 
 ## Bedrock API key
 
-Use a fresh Bedrock API key in the standard AWS environment variable. Do not
-write it into .env, notebooks, evidence or manifests:
+For the API-key route, put the fresh key in the same local `.env`; the file is
+ignored by Git and must never be copied into notebooks, evidence or bundles:
 
-    export AWS_BEARER_TOKEN_BEDROCK='fresh-key'
-    export AWS_REGION=us-east-2
+    AWS_BEARER_TOKEN_BEDROCK=<fresh-api-key>
+    AWS_REGION=us-east-2
+    BEDROCK_MODEL_ID=us.amazon.nova-pro-v1:0
+    RUN_BEDROCK_LIVE=1
+
+Then execute the same validator:
+
     python scripts/validate_sandbox.py \
       --provider bedrock-runtime \
       --model "$BEDROCK_MODEL_ID" \
       --output evidence/bedrock-api-key
 
-Unset the bearer token before repeating the IAM path.
+To return to IAM, make the bearer value empty in `.env`. Agentic Systems and
+the notebooks never mutate that decision.
 
 ## Colab with vLLM
 

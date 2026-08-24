@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 from datetime import datetime, timezone
+from importlib import metadata
 import hashlib
 import json
 import os
@@ -12,7 +13,13 @@ import platform
 import subprocess
 from typing import Any
 
-import agentic_systems as toolkit
+from agentic_systems.contracts import AgentContract, RunPolicy
+from agentic_systems.factories import (
+    runtime as build_runtime,
+    scheduler as build_scheduler,
+    system as build_system,
+)
+from agentic_systems.errors import redact_sensitive_text
 from agentic_systems.registry import (
     FRAMEWORK_NAMES,
     PROVIDER_NAMES,
@@ -24,6 +31,8 @@ from agentic_systems.schemas.attestation import (
     LiveMatrixCase,
     LiveScenarioEvidence,
 )
+from agentic_systems.schemas.base import JsonValue
+from agentic_systems.results import RunResult
 from agentic_systems.tools.decorators import tool
 
 
@@ -31,12 +40,12 @@ ROOT = Path(__file__).resolve().parents[1]
 LIVE_PROFILES = ROOT / "quality" / "live-profiles.json"
 
 
-@tool(name="quality.echo", description="Return a value unchanged.")
-def quality_echo(value: str) -> dict[str, str]:
-    return {"value": value}
+@tool(name="multiply", description="Multiply two integers.")
+def quality_multiply(a: int, b: int) -> dict[str, int]:
+    return {"result": a * b}
 
 
-@tool(name="quality.fail", description="Raise a controlled test error.")
+@tool(name="fail", description="Raise a controlled test error.")
 def quality_fail(message: str = "controlled") -> dict[str, str]:
     raise RuntimeError(message)
 
@@ -47,6 +56,36 @@ def _sha256(path: Path) -> str:
         for chunk in iter(lambda: stream.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def _live_environment() -> dict[str, JsonValue]:
+    """Collect non-secret runtime identity directly from the live process."""
+
+    cuda_version = os.getenv("CUDA_VERSION")
+    gpu_name = os.getenv("GPU_NAME")
+    try:
+        import torch
+
+        if not cuda_version:
+            cuda_version = str(torch.version.cuda or "") or None
+        if not gpu_name and torch.cuda.is_available():
+            gpu_name = str(torch.cuda.get_device_name(0)) or None
+    except Exception:  # noqa: BLE001 - optional environment evidence only.
+        pass
+
+    vllm_version = os.getenv("VLLM_VERSION")
+    if not vllm_version:
+        try:
+            vllm_version = metadata.version("vllm")
+        except metadata.PackageNotFoundError:
+            vllm_version = None
+
+    return {
+        "platform": platform.platform(),
+        "cuda": cuda_version,
+        "gpu": gpu_name,
+        "vllm": vllm_version,
+    }
 
 
 def _commit() -> str:
@@ -65,7 +104,7 @@ def _model(provider: str) -> str | None:
     return os.getenv(variable) if variable else None
 
 
-def _safe_errors(result: toolkit.RunResult) -> tuple[dict[str, Any], ...]:
+def _safe_errors(result: RunResult) -> tuple[dict[str, Any], ...]:
     safe: list[dict[str, Any]] = []
     for error in result.errors:
         safe.append(
@@ -73,6 +112,9 @@ def _safe_errors(result: toolkit.RunResult) -> tuple[dict[str, Any], ...]:
                 "code": str(error.get("code") or "execution_error"),
                 "category": str(error.get("category") or "execution"),
                 "retryable": bool(error.get("retryable", False)),
+                "validation_code": error.get("validation_code"),
+                "path": error.get("path"),
+                "message": redact_sensitive_text(error.get("message") or "")[:1000],
             }
         )
     return tuple(safe)
@@ -80,7 +122,7 @@ def _safe_errors(result: toolkit.RunResult) -> tuple[dict[str, Any], ...]:
 
 def _evidence(
     name: str,
-    result: toolkit.RunResult,
+    result: RunResult,
     *,
     expected_ok: bool = True,
 ) -> LiveScenarioEvidence:
@@ -99,8 +141,14 @@ def _evidence(
             "expected_ok": expected_ok,
             "engine": result.engine,
             "model": result.model,
+            "framework_adapter": result.meta.get("framework_adapter"),
+            "fallback_provider": result.meta.get("fallback_provider"),
+            "tool_names": [event.name for event in result.tool_events],
+            "error_codes": [
+                str(error.get("code") or "execution_error") for error in result.errors
+            ],
             "tool_event_count": len(result.tool_events),
-            "round_trip": toolkit.RunResult.model_validate_json(
+            "round_trip": RunResult.model_validate_json(
                 result.model_dump_json()
             ).normalized()
             == result.normalized(),
@@ -112,59 +160,80 @@ def _run_case(provider: str, framework: str) -> LiveMatrixCase:
     contract = matrix_contract(provider, framework)
     model_generation = provider_capability(provider, "model_generation")
     expects_model_generation = model_generation.status != "unsupported"
-    runtime = toolkit.runtime(
+    live_temperature = float(os.getenv("AGENTIC_SYSTEMS_LIVE_TEMPERATURE", "0.0"))
+    runtime_config = build_runtime(
         provider=provider,
         model=_model(provider),
-        scheduler=toolkit.scheduler(
+        scheduler=build_scheduler(
             timeout_s=90,
             max_retries=1,
             max_turns=4,
             max_tool_calls=2,
         ),
     )
-    completion_agent = toolkit.agent(
+    # Keep the release gate 1:1 with the public provider tutorial: one explicit
+    # system owns the runtime and creates every agent. The framework is the
+    # only variable across matrix cases.
+    agentic_system = build_system(runtime=runtime_config)
+    completion_agent = agentic_system.agent(
         name=f"quality-completion-{provider}-{framework}",
         instructions="Return a concise public answer. Do not call tools.",
-        runtime=runtime,
         framework=framework,
     )
-    tool_agent = toolkit.agent(
+    tool_agent = agentic_system.agent(
         name=f"quality-tool-{provider}-{framework}",
-        instructions=(
-            "Call quality.echo exactly once with value='LIVE_TOOL_OK', then answer briefly."
+        instructions="Use multiply to calculate 17 times 19. Return only the result.",
+        tools=[quality_multiply],
+        framework=framework,
+        contract=AgentContract(
+            must_call=["multiply"],
+            completion="when_required_tools_satisfied",
         ),
-        tools=[quality_echo],
-        runtime=runtime,
-        framework=framework,
-        contract=toolkit.AgentContract(must_call=["quality.echo"]),
+        policy=RunPolicy(
+            tool_choice="multiply", max_tokens=512, temperature=live_temperature
+        ),
     )
-    failure_agent = toolkit.agent(
+    failure_agent = agentic_system.agent(
         name=f"quality-error-{provider}-{framework}",
-        instructions="Call quality.fail exactly once with message='controlled'.",
+        instructions=(
+            "Call fail exactly once. Its arguments must be the JSON object "
+            '{"message": "controlled"}. Do not write text before the tool call.'
+        ),
         tools=[quality_fail],
-        runtime=runtime,
         framework=framework,
-        contract=toolkit.AgentContract(must_call=["quality.fail"]),
+        contract=AgentContract(
+            must_call=["fail"],
+            completion="when_required_tools_satisfied",
+        ),
+        policy=RunPolicy(
+            tool_choice="fail",
+            max_tokens=512,
+            temperature=live_temperature,
+            repair=False,
+        ),
     )
 
-    inspection = tool_agent.system.inspect() if tool_agent.system is not None else None
-    inspect_ok = bool(inspection and inspection.get("ok", True))
+    inspection = agentic_system.inspect().to_dict()
+    inspect_ok = bool(inspection.get("ok", True))
     if provider == "python-runtime":
         completion_input: Any = {"value": "LIVE_COMPLETION_OK"}
         tool_input: Any = {
-            "tool": "quality.echo",
-            "input": {"value": "LIVE_TOOL_OK"},
+            "tool": "multiply",
+            "input": {"a": 17, "b": 19},
         }
         failure_input: Any = {
-            "tool": "quality.fail",
+            "tool": "fail",
             "input": {"message": "controlled"},
         }
     else:
         completion_input = (
             "Reply with a concise confirmation containing LIVE_COMPLETION_OK."
         )
-        tool_input = "Use the required tool now."
-        failure_input = "Use the required failing tool now."
+        tool_input = "How much is 17 times 19? Use multiply and return only the result."
+        failure_input = (
+            'Invoke fail now with {"message": "controlled"}. Return no text '
+            "before the tool call."
+        )
 
     completion = completion_agent.run(completion_input, mode="eval")
     tool_result = tool_agent.run(tool_input, mode="eval")
@@ -180,18 +249,31 @@ def _run_case(provider: str, framework: str) -> LiveMatrixCase:
         _evidence("tool_calling", tool_result),
         LiveScenarioEvidence(
             name="structured_error",
-            ok=(not failure.ok and bool(failure.errors)),
+            ok=(
+                not failure.ok
+                and bool(failure.errors)
+                and any(event.name == "fail" for event in failure.tool_events)
+            ),
             invariant_issues=tuple(
                 issue.code for issue in failure.check_invariants().issues
             ),
-            details={"error_count": len(failure.errors)},
+            details={
+                "error_count": len(failure.errors),
+                "engine": failure.engine,
+                "model": failure.model,
+                "framework_adapter": failure.meta.get("framework_adapter"),
+                "fallback_provider": failure.meta.get("fallback_provider"),
+                "tool_names": [event.name for event in failure.tool_events],
+                "error_codes": [
+                    str(error.get("code") or "execution_error")
+                    for error in failure.errors
+                ],
+            },
         ),
         LiveScenarioEvidence(
             name="run_result_round_trip",
             ok=all(
-                toolkit.RunResult.model_validate_json(
-                    item.model_dump_json()
-                ).normalized()
+                RunResult.model_validate_json(item.model_dump_json()).normalized()
                 == item.normalized()
                 for item in (completion, tool_result, failure)
             ),
@@ -297,6 +379,11 @@ def main() -> int:
                 )
             cases.append(case)
             print(f"[live] ok={case.ok} model={case.model or '-'}", flush=True)
+            if not case.ok:
+                print(
+                    "[live] failed-case=" + case.model_dump_json(exclude_none=True),
+                    flush=True,
+                )
 
     evidence = LiveAttestation(
         created_at=datetime.now(timezone.utc),
@@ -304,12 +391,7 @@ def main() -> int:
         wheel_sha256=_sha256(wheel),
         wheel_filename=wheel.name,
         python_version=platform.python_version(),
-        environment={
-            "platform": platform.platform(),
-            "cuda": os.getenv("CUDA_VERSION"),
-            "gpu": os.getenv("GPU_NAME"),
-            "vllm": os.getenv("VLLM_VERSION"),
-        },
+        environment=_live_environment(),
         cases=tuple(cases),
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)

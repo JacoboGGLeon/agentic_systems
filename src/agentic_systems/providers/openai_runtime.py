@@ -228,20 +228,23 @@ def _run_chat_loop(
     while True:
         turns += 1
         if turns > max_turns:
-            return _failure(
+            result = _failure(
                 "OpenAIRuntimeProvider exceeded max_turns.",
                 agent,
                 mode,
                 "max_turns_exceeded",
-                meta={"turns": turns},
+                meta={"turns": turns, "runtime_engine": runtime_engine},
             )
+            result.engine = runtime_engine
+            result.tool_events = list(tool_events)
+            return result
         response = client.chat.completions.create(
             model=getattr(agent, "model", None)
             or getattr(getattr(agent, "system", None), "model", None)
             or DEFAULT_OPENAI_MODEL_ID,
             messages=messages,
             tools=tools or None,
-            tool_choice=_tool_choice(policy.tool_choice) if tools else None,
+            tool_choice=_tool_choice(policy.tool_choice, tools) if tools else None,
             temperature=policy.temperature,
             max_tokens=policy.max_tokens,
         )
@@ -301,6 +304,17 @@ def _run_chat_loop(
                     runtime_engine=runtime_engine,
                     source="openai.chat.completions",
                 )
+            if _required_tools_satisfied(agent, tool_events):
+                return _finalize_run_result(
+                    _tool_result_text(result["envelope"]),
+                    tool_events,
+                    ok,
+                    _usage_from_response(response),
+                    agent=agent,
+                    mode=mode,
+                    runtime_engine=runtime_engine,
+                    source="openai.chat.completions",
+                )
 
 
 async def _run_chat_loop_async(
@@ -321,20 +335,23 @@ async def _run_chat_loop_async(
     while True:
         turns += 1
         if turns > max_turns:
-            return _failure(
+            result = _failure(
                 "OpenAIRuntimeProvider exceeded max_turns.",
                 agent,
                 mode,
                 "max_turns_exceeded",
-                meta={"turns": turns},
+                meta={"turns": turns, "runtime_engine": runtime_engine},
             )
+            result.engine = runtime_engine
+            result.tool_events = list(tool_events)
+            return result
         response = await client.chat.completions.create(
             model=getattr(agent, "model", None)
             or getattr(getattr(agent, "system", None), "model", None)
             or DEFAULT_OPENAI_MODEL_ID,
             messages=messages,
             tools=tools or None,
-            tool_choice=_tool_choice(policy.tool_choice) if tools else None,
+            tool_choice=_tool_choice(policy.tool_choice, tools) if tools else None,
             temperature=policy.temperature,
             max_tokens=policy.max_tokens,
         )
@@ -389,6 +406,17 @@ async def _run_chat_loop_async(
                     tool_events,
                     False,
                     usage,
+                    agent=agent,
+                    mode=mode,
+                    runtime_engine=runtime_engine,
+                    source="openai.chat.completions",
+                )
+            if _required_tools_satisfied(agent, tool_events):
+                return _finalize_run_result(
+                    _tool_result_text(result["envelope"]),
+                    tool_events,
+                    ok,
+                    _usage_from_response(response),
                     agent=agent,
                     mode=mode,
                     runtime_engine=runtime_engine,
@@ -533,7 +561,23 @@ def _usage_from_response(response: Any) -> dict[str, Any]:
     return payload
 
 
-def _tool_choice(choice: Any) -> Any:
+def _required_tools_satisfied(agent: Any, tool_events: list[ToolEvent]) -> bool:
+    contract = getattr(agent, "contract", None)
+    completion = getattr(contract, "completion", None)
+    if completion not in {
+        "when_contract_satisfied",
+        "when_required_tools_satisfied",
+    }:
+        return False
+    required = set(getattr(contract, "must_call", ()) or ())
+    successful = {event.name for event in tool_events if event.ok}
+    return bool(required) and required.issubset(successful)
+
+
+def _tool_choice(
+    choice: Any,
+    tools: list[dict[str, Any]] | None = None,
+) -> Any:
     if choice is None:
         return "auto"
     if not isinstance(choice, str):
@@ -541,6 +585,15 @@ def _tool_choice(choice: Any) -> Any:
     if choice == "auto":
         return "auto"
     if choice in {"required", "any"}:
+        if tools and len(tools) == 1:
+            function = tools[0].get("function")
+            if isinstance(function, Mapping):
+                name = function.get("name")
+                if isinstance(name, str) and name:
+                    return {
+                        "type": "function",
+                        "function": {"name": name},
+                    }
         return "required"
     return {
         "type": "function",

@@ -115,7 +115,7 @@ def test_deterministic_notebook_executes_from_fresh_kernel(name, monkeypatch):
 
 
 @pytest.mark.parametrize("name", PROVIDER_NOTEBOOKS)
-def test_provider_notebook_executes_as_not_run_from_fresh_kernel(name, monkeypatch):
+def test_provider_notebook_executes_as_not_run_from_fresh_kernel(name, monkeypatch, tmp_path):
     for variable in (
         "RUN_OPENAI_LIVE",
         "RUN_VLLM_LIVE",
@@ -123,6 +123,12 @@ def test_provider_notebook_executes_as_not_run_from_fresh_kernel(name, monkeypat
         "RUN_BEDROCK_LIVE",
     ):
         monkeypatch.setenv(variable, "0")
+    isolated_dotenv = tmp_path / ".env"
+    isolated_dotenv.write_text(
+        "RUN_OPENAI_LIVE=0\nRUN_VLLM_LIVE=0\nRUN_OLLAMA_LIVE=0\nRUN_BEDROCK_LIVE=0\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("AGENTIC_SYSTEMS_DOTENV", str(isolated_dotenv))
 
     notebook = nbformat.read(TUTORIALS / name, as_version=4)
     client = NotebookClient(
