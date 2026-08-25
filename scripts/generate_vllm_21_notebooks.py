@@ -2,14 +2,12 @@
 
 from __future__ import annotations
 
-import copy
 from pathlib import Path
 
 import nbformat
 
 
 ROOT = Path(__file__).resolve().parents[1]
-TUTORIAL = ROOT / "tutorials" / "providers" / "03_vllm.ipynb"
 ATTESTATION = ROOT / "release" / "notebooks" / "vllm_attestation.ipynb"
 
 
@@ -543,9 +541,9 @@ Con live desactivado: contratos declarativos y estados not-run ejecutables. Con 
 
 def main() -> None:
     notebook = build_notebook()
-    for path in (TUTORIAL, ATTESTATION):
+    for path in (ATTESTATION,):
         path.parent.mkdir(parents=True, exist_ok=True)
-        nbformat.write(copy.deepcopy(notebook), path)
+        nbformat.write(notebook, path)
         print(path.relative_to(ROOT))
 
 

@@ -14,7 +14,7 @@ import nbformat
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / "tutorials" / "providers" / "03_vllm.ipynb"
+SOURCE = ROOT / "release" / "notebooks" / "vllm_attestation.ipynb"
 RUNNER = ROOT / "scripts" / "run_live_matrix.py"
 DEFAULT_WHEEL = ROOT / "dist" / "agentic_systems-2.1.0-py3-none-any.whl"
 DEFAULT_OUTPUT = ROOT / "dist"

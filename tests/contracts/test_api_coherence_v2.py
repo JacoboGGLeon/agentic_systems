@@ -201,7 +201,15 @@ def test_documentation_and_reference_notebook_have_the_same_ids():
     assert documented == CONTRACT_IDS
     assert tuple(namespace["EXPECTED_API_IDS"]) == CONTRACT_IDS
     assert tuple(namespace["EXPECTED_SCENARIO_IDS"]) == SCENARIO_IDS
-    assert tuple(namespace["EXPECTED_SCENARIOS"]) == SHARED_SCENARIOS
+    notebook_scenarios = tuple(
+        {
+            "id": scenario["id"],
+            "notebooks": scenario["notebooks"],
+            "api_ids": scenario["api_ids"],
+        }
+        for scenario in SHARED_SCENARIOS
+    )
+    assert tuple(namespace["EXPECTED_SCENARIOS"]) == notebook_scenarios
     assert namespace["EXPECTED_CHECKSUM"] == MANIFEST["checksum"]
     for scenario_id in SCENARIO_IDS:
         assert f"| `{scenario_id}` |" in contract_text

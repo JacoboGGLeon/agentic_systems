@@ -39,14 +39,10 @@ PROVIDER_NOTEBOOKS = (
     "providers/04_ollama.ipynb",
 )
 
-CLI_NOTEBOOKS = tuple(
-    f"cli/{name}" for name in (*DETERMINISTIC_NOTEBOOKS, *PROVIDER_NOTEBOOKS)
-)
 EXAMPLE_ROOT = ROOT / "examples" / "agentic_systems_studio" / "notebooks"
 EXAMPLE_NOTEBOOKS = (
-    "00_studio_catalog.ipynb",
-    "01_system_composition.ipynb",
-    "02_launch_studio.ipynb",
+    "00_conversational_system.ipynb",
+    "01_launch_studio.ipynb",
 )
 LIVE_NOTEBOOKS = (
     ("providers/01_openai.ipynb", "RUN_OPENAI_LIVE"),
@@ -76,9 +72,7 @@ def _execute_notebook(client: NotebookClient):
 
 def test_execution_inventory_covers_every_canonical_notebook():
     canonical = {
-        path.relative_to(TUTORIALS).as_posix()
-        for path in TUTORIALS.rglob("*.ipynb")
-        if path.relative_to(TUTORIALS).parts[0] != "cli"
+        path.relative_to(TUTORIALS).as_posix() for path in TUTORIALS.rglob("*.ipynb")
     }
     classified = set(DETERMINISTIC_NOTEBOOKS) | set(PROVIDER_NOTEBOOKS)
     assert classified == canonical
@@ -115,7 +109,9 @@ def test_deterministic_notebook_executes_from_fresh_kernel(name, monkeypatch):
 
 
 @pytest.mark.parametrize("name", PROVIDER_NOTEBOOKS)
-def test_provider_notebook_executes_as_not_run_from_fresh_kernel(name, monkeypatch, tmp_path):
+def test_provider_notebook_executes_as_not_run_from_fresh_kernel(
+    name, monkeypatch, tmp_path
+):
     for variable in (
         "RUN_OPENAI_LIVE",
         "RUN_VLLM_LIVE",
@@ -142,30 +138,6 @@ def test_provider_notebook_executes_as_not_run_from_fresh_kernel(name, monkeypat
 
     assert all(output.get("output_type") != "error" for output in outputs)
     assert "not-run" in repr(outputs)
-
-
-def test_cli_execution_inventory_covers_every_cli_notebook():
-    actual = {
-        path.relative_to(TUTORIALS).as_posix()
-        for path in (TUTORIALS / "cli").rglob("*.ipynb")
-    }
-    assert set(CLI_NOTEBOOKS) == actual
-
-
-@pytest.mark.parametrize("name", CLI_NOTEBOOKS)
-def test_cli_notebook_executes_from_fresh_kernel(name, monkeypatch):
-    monkeypatch.setenv("RUN_CLI_LIVE", "0")
-    notebook = nbformat.read(TUTORIALS / name, as_version=4)
-    client = NotebookClient(
-        notebook,
-        timeout=180,
-        kernel_name="python3",
-        resources={"metadata": {"path": str(ROOT)}},
-    )
-    executed = _execute_notebook(client)
-    outputs = [output for cell in executed.cells for output in cell.get("outputs", [])]
-    assert all(output.get("output_type") != "error" for output in outputs)
-    assert "$ " in repr(outputs)
 
 
 def test_example_execution_inventory_covers_every_studio_notebook():
@@ -195,8 +167,8 @@ def test_studio_example_notebook_executes_from_fresh_kernel(name, monkeypatch):
     executed = _execute_notebook(client)
     outputs = [output for cell in executed.cells for output in cell.get("outputs", [])]
     assert all(output.get("output_type") != "error" for output in outputs)
-    if name == "02_launch_studio.ipynb":
-        assert "Test cleanup: studio server stopped" in repr(outputs)
+    if name == "01_launch_studio.ipynb":
+        assert "Health check: ok" in repr(outputs)
 
 
 @pytest.mark.parametrize(("name", "flag"), LIVE_NOTEBOOKS)

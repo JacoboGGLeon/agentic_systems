@@ -415,9 +415,9 @@ def test_strands_adapter_helpers_cover_results_tools_and_failures():
         def update_config(self, **model_config):
             self.config.update(model_config)
 
-    SparseOpenAICompatibleModel.update_config.__annotations__["model_config"] = (
-        Unpack[SparseOpenAIConfig]
-    )
+    SparseOpenAICompatibleModel.update_config.__annotations__["model_config"] = Unpack[
+        SparseOpenAIConfig
+    ]
 
     named_policy = RunPolicy(
         max_tokens=321,
@@ -445,6 +445,42 @@ def test_strands_adapter_helpers_cover_results_tools_and_failures():
             "function": {"name": "multiply"},
         },
     }
+
+    class DirectConfig(TypedDict, total=False):
+        temperature: float
+        max_tokens: int
+
+    class TypedDirectModel:
+        def __init__(self):
+            self.config = {"model_id": "typed-native-model"}
+            self.updates = []
+
+        def update_config(self, **model_config):
+            self.updates.append(model_config)
+            self.config.update(model_config)
+
+    TypedDirectModel.update_config.__annotations__["model_config"] = Unpack[
+        DirectConfig
+    ]
+    typed_direct_model = TypedDirectModel()
+    sa._configure_model(typed_direct_model, named_policy, "eval")
+    assert typed_direct_model.updates == [
+        {
+            "temperature": 0.7,
+            "max_tokens": 321,
+        }
+    ]
+
+    assert sa._declared_model_config_keys(object()) == set()
+
+    class InvalidAnnotationModel:
+        def update_config(self, **model_config):
+            return model_config
+
+    InvalidAnnotationModel.update_config.__annotations__["model_config"] = (
+        "MissingModelConfig"
+    )
+    assert sa._declared_model_config_keys(InvalidAnnotationModel()) == set()
 
     class DirectModel:
         def __init__(self):

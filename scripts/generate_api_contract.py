@@ -68,30 +68,27 @@ def _contract_doc(manifest: dict[str, Any]) -> str:
         f"- Export and member IDs: `{manifest['entry_count']}`",
         f"- Shared scenarios: `{manifest['scenario_count']}`",
         f"- Checksum: `{manifest['checksum']}`",
-        "- CLI: `agentic-systems api describe <id>`",
-        "- Verification: `agentic-systems api exercise --all`",
         "- Notebook: `tutorials/api/14_api_contract_matrix.ipynb`",
         "",
         "## Traceability",
         "",
         "Every heading below is one canonical ID shared by Source, API,",
-        "documentation, the reference notebook, CLI, and pytest.",
+        "documentation, the reference notebook and pytest.",
         "",
     ]
     lines.extend(
         [
             "### Scenario registry",
             "",
-            "| Scenario | CLI | Notebooks | API IDs | Pytest |",
-            "|---|---|---|---|---|",
+            "| Scenario | Notebooks | API IDs |",
+            "|---|---|---|",
         ]
     )
     for scenario in manifest["scenarios"]:
         lines.append(
-            f"| `{scenario['id']}` | `{scenario['cli']}` | "
+            f"| `{scenario['id']}` | "
             f"{'<br>'.join(scenario['notebooks'])} | "
-            f"{'<br>'.join(scenario['api_ids'])} | "
-            f"`{scenario['pytest']}` |"
+            f"{'<br>'.join(scenario['api_ids'])} |"
         )
     lines.extend(
         [
@@ -115,9 +112,7 @@ def _contract_doc(manifest: dict[str, Any]) -> str:
                 f"- Tier: `{entry['tier']}`",
                 f"- Signature: `{signature}`",
                 f"- Source: `{_source_path(entry['source'])}` (`{entry['source']}`)",
-                f"- CLI: `agentic-systems api describe {entry['id']}`",
-                f"- Exercise: `agentic-systems api exercise {entry['id']}`",
-                f"- Pytest ID: `{entry['id']}`",
+                f"- Contract ID: `{entry['id']}`",
                 "",
             ]
         )
@@ -140,12 +135,22 @@ def _code(source: str) -> dict[str, Any]:
 
 def _notebook(manifest: dict[str, Any]) -> str:
     ids = json.dumps(manifest["ids"], indent=2)
-    scenarios = json.dumps(manifest["scenarios"], indent=2)
+    scenarios = json.dumps(
+        [
+            {
+                "id": item["id"],
+                "notebooks": item["notebooks"],
+                "api_ids": item["api_ids"],
+            }
+            for item in manifest["scenarios"]
+        ],
+        indent=2,
+    )
     cells = [
         _md(
             "# 14 - Contrato API 1:1 de Agentic Systems 2.1\n\n"
             "## Objetivo\n\n"
-            "Verificar de forma ejecutable que Source, API, documentacion, CLI, "
+            "Verificar de forma ejecutable que Source, API, documentacion, "
             "notebooks y pytest comparten exactamente los mismos IDs publicos. "
             "Este capitulo cierra el recorrido iniciado por runtimes, tools, skills, "
             "agents, systems, environments y evals.\n"
@@ -191,7 +196,15 @@ def _notebook(manifest: dict[str, Any]) -> str:
             "assert manifest['checksum'] == EXPECTED_CHECKSUM\n"
             "assert manifest['export_count'] == EXPECTED_EXPORT_COUNT\n"
             "assert manifest['entry_count'] == EXPECTED_ENTRY_COUNT\n"
-            "assert tuple(manifest['scenarios']) == EXPECTED_SCENARIOS\n"
+            "public_scenarios = tuple(\n"
+            "    {\n"
+            "        'id': item['id'],\n"
+            "        'notebooks': item['notebooks'],\n"
+            "        'api_ids': item['api_ids'],\n"
+            "    }\n"
+            "    for item in manifest['scenarios']\n"
+            ")\n"
+            "assert public_scenarios == EXPECTED_SCENARIOS\n"
             "assert tuple(manifest['scenario_ids']) == EXPECTED_SCENARIO_IDS\n"
             "assert manifest['scenario_count'] == EXPECTED_SCENARIO_COUNT\n"
             "toolkit.show({key: manifest[key] for key in "
@@ -266,8 +279,7 @@ librer\u00eda.
 
 Ning\u00fan notebook depende de celdas secretas. Los notebooks Python can\u00f3nicos
 permanecen sin outputs; la evidencia se produce desde un kernel limpio.
-Los notebooks paralelos de tutorials/cli preservan outputs Rich no secretos y
-los regeneran con scripts/execute_cli_tutorials.py. RUN_*_LIVE=0 fuerza offline.
+RUN_*_LIVE=0 mantiene offline las fronteras externas sin fabricar evidencia.
 
 ## Modelo que ense\u00f1an
 
@@ -317,7 +329,7 @@ insertan donde aclaran Provider x Framework y cierran la trazabilidad 1:1.
 | 17 | core/09_multi_agentic_system.ipynb | Sistema secuencial de varios Agents. |
 | 18 | core/10_multi_agent_graph.ipynb | Sistema multi-agent con Graph. |
 | 19 | frameworks/03_provider_framework_matrix.ipynb | Matriz 5 x 4 y evidencia live. |
-| 20 | api/14_api_contract_matrix.ipynb | Contrato Source/API/Docs/CLI/Pytest 1:1. |
+| 20 | api/14_api_contract_matrix.ipynb | Contrato Source/API/Docs/Pytest 1:1. |
 
 ## Capas, no rutas separadas
 
@@ -371,8 +383,7 @@ Los notebooks no fabrican resultados ni mutan sus campos para aparentar \u00e9xi
 Los 21 notebooks Python deben importar agentic_systems as toolkit, usar s\u00f3lo
 la API p\u00fablica estable, compilar, comenzar sin outputs y declarar metadata.
 La suite los ejecuta desde kernels limpios: 17 producen evidencia determinista
-y 4 prueban not-run de Providers. Los 21 notebooks CLI deben mapear 1:1, invocar
-el CLI real y preservar salida Rich integra. El notebook API verifica
+y 4 prueban not-run de Providers. El notebook API verifica
 {manifest["entry_count"]} IDs y {manifest["scenario_count"]} escenarios compartidos.
 
 ## Contribution Standard

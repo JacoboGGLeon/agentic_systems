@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "agentic-systems-studio"
 version = "0.1.0"
-description = "Portable component studio and reference scaffolder for Agentic Systems 2.1"
+description = "Provider/framework-agnostic conversational reference for Agentic Systems 2.1"
 requires-python = ">=3.10"
 dependencies = [
   "agentic-systems==2.1.0",
@@ -21,9 +21,6 @@ notebook = [
   "jupyter-server-proxy>=4.4",
 ]
 test = ["pytest>=8.0"]
-
-[project.scripts]
-agentic-studio = "agentic_systems_studio.__main__:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/agentic_systems_studio"]

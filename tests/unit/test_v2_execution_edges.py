@@ -97,7 +97,11 @@ def test_cli_matrix_distinguishes_not_ready_and_failed(monkeypatch):
     )
     fake = SimpleNamespace(compatibility_matrix=lambda: (not_ready, ready))
 
-    monkeypatch.setattr(cli, "_cli_agent", lambda *_args, **_kwargs: (_ for _ in ()).throw(RuntimeError("boom")))
+    monkeypatch.setattr(
+        cli,
+        "_cli_agent",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(RuntimeError("boom")),
+    )
     report = cli._matrix_workflow(fake, live=True)
 
     assert report["not_run"] == 1
@@ -118,6 +122,21 @@ def test_compatibility_report_and_missing_dependency(monkeypatch):
 
     assert external_frameworks
     assert all(case.status == "missing-dependency" for case in external_frameworks)
+
+
+def test_compatibility_matrix_reports_unconfigured_provider(monkeypatch):
+    monkeypatch.setattr(compatibility_module, "_load_dotenv", lambda: None)
+    monkeypatch.setattr(compatibility_module, "_openai_signal_present", lambda: False)
+    monkeypatch.setattr(
+        compatibility_module.importlib.util, "find_spec", lambda _name: object()
+    )
+
+    cases = toolkit.compatibility_matrix()
+    openai_cases = [case for case in cases if case.provider == "openai-runtime"]
+
+    assert openai_cases
+    assert all(case.status == "needs-configuration" for case in openai_cases)
+    assert all(case.ready is False for case in openai_cases)
 
 
 def test_model_provider_identity_and_toolset_owner_validation():
@@ -171,7 +190,9 @@ def test_execution_plan_paths_and_async_compiled_system():
     parallel = ParallelPlan().execute(
         [
             CallableExecutable(lambda _value: RunResult(usage={"tokens": 2})),
-            CallableExecutable(lambda _value: RunResult(usage={"tokens": 3, "cached": True})),
+            CallableExecutable(
+                lambda _value: RunResult(usage={"tokens": 3, "cached": True})
+            ),
         ]
     )
     assert parallel.usage == {"tokens": 5}

@@ -73,13 +73,14 @@ unzip agentic-systems-skill-2.1.0.zip -d ~/.codex/skills
 
 Restart or reload Codex, then invoke `$agentic-systems`. OpenAI Skills upload
 surfaces that accept a ZIP can consume the same artifact. Download the
-standalone skill and the complete ten-system Studio from the
+standalone skill, conversational Studio and ADA offline bundle from the
 [v2.1.0 release](https://github.com/JacoboGGLeon/agentic_systems/releases/tag/v2.1.0).
 
 Release assets:
 
 - `agentic-systems-skill-2.1.0.zip`: Codex/OpenAI skill package.
-- `agentic-systems-studio-2.1.0.zip`: portable Studio with ten nested systems.
+- `agentic-systems-studio-2.1.0.zip`: one portable conversational Agentic System.
+- `agentic-systems-2.1.0-ada-offline.zip`: wheel, Studio, tutorials and live evidence for restricted environments.
 - `SHA256SUMS-2.1.0.txt`: hashes for the Python and product artifacts.
 
 For an installed-package smoke test and provider notebook setup, follow
@@ -166,7 +167,7 @@ Canonical framework facades:
 | `openai-agents` | OpenAI Agents `Runner`, native Tools, handoffs, guardrails, sessions and MCP. |
 | `strands` | `strands.Agent`, native Tools/MCP, hooks and lifecycle. |
 
-Providers decide where inference runs. The selected Framework always owns its orchestration loop, and `RunResult.meta["framework_adapter"]` records the adapter that executed. Configuration details live in docs/ONBOARDING_FIRST_RUN.md, docs/CLI.md and the layered tutorials/core, tutorials/providers and tutorials/frameworks paths.
+Providers decide where inference runs. The selected Framework always owns its orchestration loop, and `RunResult.meta["framework_adapter"]` records the adapter that executed. Configuration details live in docs/ONBOARDING_FIRST_RUN.md and the layered tutorials/core, tutorials/providers and tutorials/frameworks paths.
 
 ## From Zero-to-Hero
 
@@ -381,20 +382,6 @@ agent = toolkit.agent(
 
 Integration-specific arguments stay owned by the selected framework. Agentic Systems keeps a thin facade; it does not reinterpret or hide framework-specific behavior.
 
-## CLI
-
-The package exposes diagnostics and inspection commands:
-
-```bash
-agentic-systems version
-agentic-systems doctor --json
-agentic-systems runtime --provider auto --json
-agentic-systems api --tier public --json
-agentic-systems public-api --all --json
-```
-
-The CLI is for inspection, diagnostics and packaging smoke tests. It should not contain business logic.
-
 ## Tutorials
 
 The canonical learning path is layered by responsibility:
@@ -404,7 +391,7 @@ The canonical learning path is layered by responsibility:
 | tutorials/core | Agentic Systems grammar and composition | Python Runtime, Native Framework, portable Graph |
 | tutorials/providers | Inference boundary | Explicit preflight; external execution when configured |
 | tutorials/frameworks | Native orchestration SDK | Real SDK offline; Provider auto is optional |
-| tutorials/api | Exact public contract | Generated manifest, documentation and CLI/Pytest traceability |
+| tutorials/api | Exact public contract | Generated manifest, documentation and pytest traceability |
 
 Provider notebooks use one public route and choose Run All:
 
@@ -420,14 +407,14 @@ real with python-runtime; the matrix notebook covers all 20 declared pairs.
 Optional RUN_*_LIVE=1 changes only the Provider.
 RUN_*_LIVE=0 forces a fully offline validation.
 
-The full ordered inventory of 21 Python notebooks and their 21 CLI mirrors lives in
-tutorials/README.md. There is no active examples/ root or duplicate notebook
-route.
+The full ordered inventory contains 21 canonical Python notebooks and lives in
+tutorials/README.md. Studio is the single application example; there is no
+duplicated tutorial route.
 
 ## Documentation
 
 Use the [documentation map](docs/README.md) to choose the user guide,
-conceptual model, API/CLI reference or current engineering contracts. Version
+conceptual model, API reference or current engineering contracts. Version
 history is recorded in the [changelog](CHANGELOG.md); published artifact
 evidence belongs to GitHub Releases.
 

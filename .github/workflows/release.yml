@@ -35,7 +35,7 @@ jobs:
       - run: >-
           python -m pip install -e
           ".[dev,bedrock,langgraph,openai,openai-agents,strands]"
-          build twine "setuptools>=69" wheel
+          build twine "setuptools>=69" wheel pyright==1.1.411
       - run: >-
           python -m pip install -e
           "examples/agentic_systems_studio[ui,notebook,test]"

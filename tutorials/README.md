@@ -10,8 +10,7 @@ librería.
 
 Ningún notebook depende de celdas secretas. Los notebooks Python canónicos
 permanecen sin outputs; la evidencia se produce desde un kernel limpio.
-Los notebooks paralelos de tutorials/cli preservan outputs Rich no secretos y
-los regeneran con scripts/execute_cli_tutorials.py. RUN_*_LIVE=0 fuerza offline.
+RUN_*_LIVE=0 mantiene offline las fronteras externas sin fabricar evidencia.
 
 ## Modelo que enseñan
 
@@ -61,7 +60,7 @@ insertan donde aclaran Provider x Framework y cierran la trazabilidad 1:1.
 | 17 | core/09_multi_agentic_system.ipynb | Sistema secuencial de varios Agents. |
 | 18 | core/10_multi_agent_graph.ipynb | Sistema multi-agent con Graph. |
 | 19 | frameworks/03_provider_framework_matrix.ipynb | Matriz 5 x 4 y evidencia live. |
-| 20 | api/14_api_contract_matrix.ipynb | Contrato Source/API/Docs/CLI/Pytest 1:1. |
+| 20 | api/14_api_contract_matrix.ipynb | Contrato Source/API/Docs/Pytest 1:1. |
 
 ## Capas, no rutas separadas
 
@@ -115,8 +114,7 @@ Los notebooks no fabrican resultados ni mutan sus campos para aparentar éxito.
 Los 21 notebooks Python deben importar agentic_systems as toolkit, usar sólo
 la API pública estable, compilar, comenzar sin outputs y declarar metadata.
 La suite los ejecuta desde kernels limpios: 17 producen evidencia determinista
-y 4 prueban not-run de Providers. Los 21 notebooks CLI deben mapear 1:1, invocar
-el CLI real y preservar salida Rich integra. El notebook API verifica
+y 4 prueban not-run de Providers. El notebook API verifica
 437 IDs y 10 escenarios compartidos.
 
 ## Contribution Standard

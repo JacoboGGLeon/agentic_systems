@@ -6,34 +6,27 @@ stages, capabilities, assets and topology.
 Reference layout:
 
     application/
-      manifest.json
       pyproject.toml
       .env.example
       README.md
+      app.py
       src/application/
         tools.py
-        skills.py
-        agents.py
         system.py
-        environment.py
-        evals.py
         settings.py
-      skills/
-        codex-skill/SKILL.md
-        runtime/runtime-skill.json
-      assets/system.mmd
-      data/app.db
-      notebooks/00_walkthrough.ipynb
-      tests/test_contract.py
-      tests/test_execution.py
+      notebooks/
+        00_conversational_system.ipynb
+        01_launch_application.ipynb
+      tests/
+        test_contract.py
+        test_execution.py
 
-The manifest must identify Agentic Systems version, system identity, ordered
-stages, execution plan, required capabilities, provider/framework policy and
-assets. Mermaid node identities must match executable stage identities.
-Notebook, CLI and UI must call the same constructor used by tests.
+The typed configuration or manifest must identify the Agentic Systems version,
+system identity, execution plan, required capabilities and provider/framework
+policy. The direct notebook, presentation adapter and tests must call the same
+constructor.
 
-A product bundle may contain nested system bundles. Each nested bundle must be
-independently understandable and include its manifest, Mermaid, runnable entry
-point, notebook, tests, environment template and credential-free configuration.
-The top bundle adds a catalog, composition examples, SQLite inventory and
-checksums.
+A product bundle must be independently understandable and include its runnable
+entry point, direct notebook, tests, `.env.example`, credential-free
+configuration, manifest and checksums. Do not duplicate the agentic logic in
+the UI and do not persist credentials or raw provider reasoning.

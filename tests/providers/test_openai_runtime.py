@@ -194,6 +194,8 @@ def test_openai_provider_tool_success_failure_async_and_max_turns():
         ).arun(agent, "async", RunPolicy(), mode="audit")
     )
     assert async_result.text == "async final"
+
+
 def test_openai_provider_stops_when_required_tools_are_satisfied():
     runtime = build_runtime()
     agent = build_agent(runtime)
@@ -204,9 +206,7 @@ def test_openai_provider_stops_when_required_tools_are_satisfied():
     client = FakeClient(
         [
             FakeResponse(
-                FakeMessage(
-                    tool_calls=[FakeToolCall("add", '{"a": 20, "b": 22}')]
-                )
+                FakeMessage(tool_calls=[FakeToolCall("add", '{"a": 20, "b": 22}')])
             )
         ]
     )
@@ -219,6 +219,38 @@ def test_openai_provider_stops_when_required_tools_are_satisfied():
     assert len(client.calls) == 1
     assert [event.name for event in result.tool_events] == ["add"]
     assert result.tool_events[0].output == {"result": 42, "summary": "20+22=42"}
+
+
+def test_openai_provider_async_stops_when_required_tools_are_satisfied():
+    runtime = build_runtime()
+    agent = build_agent(runtime)
+    agent.contract = AgentContract(
+        must_call=["add"],
+        completion="when_required_tools_satisfied",
+    )
+    client = FakeClient(
+        [
+            FakeResponse(
+                FakeMessage(tool_calls=[FakeToolCall("add", '{"a": 20, "b": 22}')])
+            )
+        ]
+    )
+
+    result = asyncio.run(
+        OpenAIRuntimeProvider(
+            SimpleNamespace(_runtime=runtime),
+            async_client=FakeAsyncClient(client),
+        ).arun(
+            agent,
+            "sum",
+            RunPolicy(tool_choice="add"),
+            mode="eval",
+        )
+    )
+
+    assert result.ok is True
+    assert len(client.calls) == 1
+    assert [event.name for event in result.tool_events] == ["add"]
 
 
 def test_openai_provider_aliases_namespaced_tools_without_public_identity_loss():
@@ -290,9 +322,10 @@ def test_openai_provider_helpers_and_import_paths(monkeypatch):
     }
     assert _tool_choice("required", only_tool * 2) == "required"
     assert _tool_choice("required", [{"type": "function"}]) == "required"
-    assert _tool_choice(
-        "required", [{"type": "function", "function": {"name": ""}}]
-    ) == "required"
+    assert (
+        _tool_choice("required", [{"type": "function", "function": {"name": ""}}])
+        == "required"
+    )
     assert _tool_choice("add") == {"type": "function", "function": {"name": "add"}}
     assert _tool_choice({"raw": True}) == "auto"
     assert _json_loads("[1, 2]") == {"value": [1, 2]}

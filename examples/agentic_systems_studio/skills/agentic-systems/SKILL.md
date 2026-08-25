@@ -8,8 +8,8 @@ metadata:
 # Agentic Systems 2.1
 
 Build the requested application from one explicit system declaration. Use that
-declaration to keep source, API usage, Mermaid, CLI, notebooks, tests,
-documentation and bundles coherent.
+declaration to keep source, public API usage, notebooks, tests, documentation
+and bundles coherent.
 
 ## Conceptual boundaries
 
@@ -37,28 +37,18 @@ the request.
 3. Select provider and framework independently. Check the installed compatibility
    surface before promising a combination. Read references/provider-framework.md
    for provider selection, credentials and live testing.
-4. Scaffold the reference structure with the bundled script when
-   agentic-systems-studio is installed:
-
-       python scripts/scaffold.py TARGET --name APPLICATION --system SYSTEM_ID
-
-   Treat the scaffold as provisional until its manifest Tool identities resolve
-   to decorated functions, its runtime Skill resolves the same functions, both
-   generated test files pass and its deterministic notebook cells execute from
-   a fresh kernel. A green shape/syntax report alone is not acceptance evidence.
-
-5. Assemble through the public toolkit grammar: toolkit.tool, toolkit.skill,
+4. Assemble through the public toolkit grammar: toolkit.tool, toolkit.skill,
    toolkit.agent or system.agent, toolkit.system, toolkit.environment and
    toolkit.eval. Keep execution composition on the System.
-6. Call inspect before live execution. Verify deterministic behavior offline,
+5. Call inspect before live execution. Verify deterministic behavior offline,
    then test only explicitly configured live providers. Preserve one normalized
    RunResult and its child lineage.
-7. Update the declaration first when topology changes, then regenerate Mermaid,
+6. Update the declaration first when topology changes, then regenerate diagrams,
    manifests and derived assets. Read references/project-contract.md for the
    required application structure. Reject python-runtime when any declared stage
    is a reasoner or reviewer; it is an operator runtime, not a language-model
    provider.
-8. Use references/testing.md for contract, notebook, CLI, provider/framework and
+7. Use references/testing.md for contract, notebook, provider/framework and
    bundle acceptance gates.
 
 Never write credentials into source, notebooks, manifests, SQLite or bundles.

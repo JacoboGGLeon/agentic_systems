@@ -13,9 +13,7 @@ COMMIT = "5865dbc893ef397581fee1a8e9ff58efabce3625"
 WHEEL = "agentic_systems-2.1.0-py3-none-any.whl"
 BEDROCK_SHA256 = "5a873a4979768a4142d4debd8c1eeb7c4e27a9515892c4cde41607d1bfedfe25"
 DOTENV_EXAMPLE = ROOT / ".env.example"
-SANDBOX_VALIDATION = (
-    ROOT / "examples" / "agentic_systems_studio" / "docs" / "SANDBOX_VALIDATION.md"
-)
+ADA_GUIDE = ROOT / "examples" / "agentic_systems_studio" / "docs" / "ADA.md"
 
 
 def _load(path: Path):
@@ -142,15 +140,12 @@ def test_bedrock_authentication_is_selected_by_dotenv_without_notebook_mutation(
     None
 ):
     dotenv = DOTENV_EXAMPLE.read_text(encoding="utf-8")
-    sandbox_docs = SANDBOX_VALIDATION.read_text(encoding="utf-8")
+    ada_docs = ADA_GUIDE.read_text(encoding="utf-8")
     assert "AWS_BEARER_TOKEN_BEDROCK=" in dotenv
     assert "AWS_BEARER_TOKEN_BEDROCK=your_" not in dotenv
-    assert "boto3 inherits the sandbox/SageMaker execution role" in sandbox_docs
-    assert (
-        "Agentic Systems and\nthe notebooks never mutate that decision" in sandbox_docs
-    )
-    assert "Do not write it into .env" not in sandbox_docs
-    assert "Unset the bearer token" not in sandbox_docs
+    assert "boto3 automatically uses" in ada_docs
+    assert "execution-role credential chain" in ada_docs
+    assert "never mutate the authentication route" in ada_docs
 
 
 def test_live_runner_discovers_gpu_cuda_and_vllm_without_env_hardcoding(

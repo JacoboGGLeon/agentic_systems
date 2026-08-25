@@ -1,4 +1,4 @@
-"""Build a reproducible Studio bundle containing ten nested system bundles."""
+"""Build the reproducible conversational Studio bundle."""
 
 from __future__ import annotations
 
@@ -14,10 +14,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
-from agentic_systems_studio.catalog import SYSTEM_SPECS  # noqa: E402
-from agentic_systems_studio.scaffolder import scaffold_application  # noqa: E402
 from agentic_systems import __version__ as AGENTIC_SYSTEMS_VERSION  # noqa: E402
-from agentic_systems_studio.store import StudioStore  # noqa: E402
 
 
 def _sha256(path: Path) -> str:
@@ -33,7 +30,12 @@ def _copy(source: Path, target: Path) -> None:
         shutil.copytree(
             source,
             target,
-            ignore=shutil.ignore_patterns("__pycache__", "*.pyc", ".pytest_cache"),
+            ignore=shutil.ignore_patterns(
+                "__pycache__",
+                "*.pyc",
+                ".pytest_cache",
+                "*.codex-backup",
+            ),
         )
     else:
         target.parent.mkdir(parents=True, exist_ok=True)
@@ -69,8 +71,7 @@ def build_bundle(output_dir: str | Path | None = None) -> Path:
     destination = output / f"agentic-systems-studio-{AGENTIC_SYSTEMS_VERSION}.zip"
 
     with tempfile.TemporaryDirectory(prefix="agentic-systems-studio-") as temporary:
-        temporary_root = Path(temporary)
-        bundle_root = temporary_root / "agentic-systems-studio"
+        bundle_root = Path(temporary) / "agentic-systems-studio"
         bundle_root.mkdir()
 
         for relative in (
@@ -79,52 +80,37 @@ def build_bundle(output_dir: str | Path | None = None) -> Path:
             ".env.example",
             "app.py",
             "src",
-            "skills",
             "notebooks",
             "docs",
-            "scripts",
-            "evidence",
+            "scripts/generate_notebooks.py",
         ):
             source = PROJECT_ROOT / relative
             if source.exists():
                 _copy(source, bundle_root / relative)
 
-        database = StudioStore(bundle_root / "data" / "studio.db")
-        database.initialize()
-
-        nested_dir = bundle_root / "system-bundles"
-        nested_dir.mkdir()
-        nested_manifest = []
-        for spec in SYSTEM_SPECS:
-            application = temporary_root / "nested" / spec.id
-            scaffold_application(
-                application,
-                name=spec.id,
-                system_id=spec.id,
-            )
-            nested_zip = _zip_tree(application, nested_dir / f"{spec.id}.zip")
-            nested_manifest.append(
-                {
-                    "id": spec.id,
-                    "name": spec.name,
-                    "size": spec.size,
-                    "agents": len(spec.stages),
-                    "path": f"system-bundles/{nested_zip.name}",
-                    "sha256": _sha256(nested_zip),
-                }
-            )
-
         manifest = {
-            "schema_version": "agentic-systems.studio-bundle/v1",
+            "schema_version": "agentic-systems.studio-bundle/v2",
             "product": "Agentic Systems Studio",
+            "application": "conversational-studio",
             "agentic_systems_version": AGENTIC_SYSTEMS_VERSION,
-            "systems": nested_manifest,
-            "composition_plans": ["sequential", "parallel"],
+            "configuration_source": ".env",
+            "entry_points": {
+                "notebook": "notebooks/00_conversational_system.ipynb",
+                "streamlit": "notebooks/01_launch_studio.ipynb",
+            },
+            "providers": [
+                "auto",
+                "openai-runtime",
+                "ollama-runtime",
+                "bedrock-runtime",
+                "vllm-runtime",
+            ],
+            "frameworks": ["native", "langgraph", "openai-agents", "strands"],
             "normalized_result": "RunResult",
             "credentials_included": False,
         }
         (bundle_root / "manifest.json").write_text(
-            json.dumps(manifest, indent=2, ensure_ascii=False),
+            json.dumps(manifest, indent=2, ensure_ascii=False) + "\n",
             encoding="utf-8",
         )
         (bundle_root / "SHA256SUMS").write_text(
@@ -145,7 +131,7 @@ def main() -> int:
             {
                 "bundle": str(path.resolve()),
                 "sha256": _sha256(path),
-                "systems": len(SYSTEM_SPECS),
+                "application": "conversational-studio",
             },
             indent=2,
         )

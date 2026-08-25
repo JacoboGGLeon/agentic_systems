@@ -1,88 +1,72 @@
-# Agentic Systems Studio
+# Agentic Systems Studio 2.1
 
-This is the first portable reference product built on Agentic Systems 2.1. It is
-both a reusable local component market and a system-of-systems demonstration.
+Studio is one conversational Agentic System presented through two equivalent
+entry points:
 
-The catalog contains ten systems of different sizes. Every system combines a
-deterministic operator on python-runtime with one or more reasoning or review
-agents on the selected provider and framework. The same SystemSpec generates:
+- `notebooks/00_conversational_system.ipynb` runs the system directly;
+- `app.py` wraps that same system in a Streamlit chat application.
 
-- executable agents and runtime Skills;
-- the Mermaid diagram;
-- the Studio UI and CLI inventory;
-- the SQLite catalog;
-- documentation and tests;
-- a self-contained nested bundle.
+The application is intentionally small. A deterministic Python boundary creates
+a bounded context envelope and records tool evidence. A reasoning Agent handles
+language through the provider and framework selected by `.env`. Both boundaries
+return the same normalized `RunResult` contract used by the library.
 
-The included Agentic Systems Creator is the largest reference system. The
-scaffolder turns a catalog system into a complete application with source,
-tools, runtime and Codex skills, environment and eval entry points, notebook,
-tests, Mermaid, manifest, assets and SQLite database.
+## Runtime portability
 
-## Quick start
+Reasoning providers:
 
-From the repository root:
+- `openai-runtime`
+- `ollama-runtime`
+- `bedrock-runtime` (API key or the normal boto3/IAM credential chain)
+- `vllm-runtime`
+- `auto`
 
-    python -m pip install -e .
-    python -m pip install -e examples/agentic_systems_studio[ui,notebook]
-    agentic-studio list
-    agentic-studio diagram agentic-systems-creator
-    agentic-studio init ./my_app --name my_app
-    agentic-studio create ./generated_app --name generated_app --template incident-response --input "Create an incident response system."
-    agentic-studio serve --open-browser
+Frameworks:
 
-The equivalent notebook launcher is notebooks/02_launch_studio.ipynb. It starts
-the same loopback-only server, waits for the Streamlit health endpoint and shows
-two explicit buttons. The primary button uses the absolute URL reported by the
-live StudioServer (http://localhost:<port>/) for VS Code and local notebooks.
-The secondary button uses /jupyterlab/default/proxy/<port>/ only for ADA-style
-JupyterLab. Standard local Jupyter installations usually use /proxy; set
-PROXY_PREFIX in the launch notebook accordingly.
+- `native`
+- `langgraph`
+- `openai-agents`
+- `strands`
 
-Live execution is explicit:
+There is no provider fallback inside Studio. If the selected runtime cannot run,
+the chat shows the normalized failure and preserves the declared identity.
 
-    agentic-studio run data-quality --provider ollama-runtime --framework agentic-systems
-    agentic-studio compose data-quality decision-intelligence --mode sequential --provider openai-runtime
-    agentic-studio validate --provider ollama-runtime --framework agentic-systems --model qwen3:4b-instruct --output evidence/ollama-native.json
+## Install in an isolated kernel
 
-ADA and Colab can exercise all ten systems through every installed framework
-with the bundled scripts/validate_sandbox.py runner. See
-docs/SANDBOX_VALIDATION.md for the exact IAM, Bedrock API-key and vLLM
-commands and the expected evidence files.
+For local development:
 
-Provider credentials are read from the environment and are never copied into
-SQLite, manifests or bundles.
+```text
+python -m venv .venv-studio
+.venv-studio/Scripts/python -m pip install -e .
+.venv-studio/Scripts/python -m pip install -e examples/agentic_systems_studio[ui,notebook]
+```
 
-## Recommended local Ollama model
+On Linux, macOS, SageMaker or ADA, use `.venv-studio/bin/python` instead. In an
+environment with restricted Internet, point pip at the approved Artifactory
+through `PIP_INDEX_URL` and `PIP_TRUSTED_HOST`; the application never embeds
+repository or registry credentials.
 
-Use the instruction-tuned Q4 model for agents and tool use:
+Copy `.env.example` to `.env` and choose the runtime contract there. Provider
+credentials remain in the environment and are never written to Studio artifacts,
+attestations or bundles.
 
-    ollama pull qwen3:4b-instruct
-    OLLAMA_MODEL=qwen3:4b-instruct
+## Run
 
-The local qwen3:4b alias may resolve to the Q4 thinking variant. That variant
-spends a much larger completion budget on internal reasoning and can exhaust the
-limit before producing a final answer. Lower-bit Q3 or Q2 builds can be faster
-or smaller, but are not the reference default because instruction following and
-tool selection are more fragile. See docs/LIVE_VALIDATION.md for measured runs.
+Open `notebooks/01_launch_studio.ipynb` and run both cells. The launcher binds
+Streamlit to loopback, checks health and provides both the local URL and the
+ADA/JupyterLab proxy URL.
 
-## Creator output contract
+The Streamlit sidebar shows the provider, framework, model and limits loaded from
+`.env`. Runtime configuration is deliberately read-only in the UI: change `.env`
+and restart Studio when you want another provider or framework.
 
-Selecting Agentic Systems Creator in the Systems tab runs one public
-create_application(...) operation shared with agentic-studio create.
-A successful run must produce both a reasoning blueprint and a deterministic
-artifact-materialization child. The UI then displays the generated directory,
-file tree, contract checks, manifest, Mermaid, run commands, normalized
-RunResult and a downloadable ZIP. A blueprint without physical files is not a
-successful Creator run.
+## What the reference proves
 
-## Composition model
-
-A tool is a deterministic operation. A runtime Skill packages tools and
-instructions for an Agent. An Agent is one computation unit. A System connects
-units through an execution plan. A Studio composition connects complete
-CompiledSystem objects and returns one hierarchical RunResult.
-
-This makes the bundle recursive: the top-level Studio bundle contains ten
-independently reusable system bundles, while remaining executable as a single
-system-of-systems.
+- the same source runs with or without a UI;
+- deterministic and reasoning boundaries remain separate;
+- provider and framework are configuration, not application branches;
+- conversation history is bounded before entering a model;
+- arithmetic is established by a deterministic Tool;
+- reasoning metadata stays private while tool evidence remains observable;
+- every turn produces a serializable, invariant-checked `RunResult`;
+- failures are visible and never trigger a silent provider fallback.

@@ -13,16 +13,21 @@ from agentic_systems.results import RunResult
 from agentic_systems.skills.loader import SkillLoadError
 from agentic_systems.skills.skill import Skill
 import agentic_systems.skills.loader as loader_module
+
 tool_module = importlib.import_module("agentic_systems.tools.tool")
 
 
 def test_chain_expectations_and_factories(monkeypatch, tmp_path):
     class FakeRuntime:
         def complete(self, prompt, *, instructions="", data=None, **kwargs):
-            return RunResult(text=f"complete:{prompt}", data=data or {}, usage={"n": 1}, ok=True)
+            return RunResult(
+                text=f"complete:{prompt}", data=data or {}, usage={"n": 1}, ok=True
+            )
 
         def answer_from_markdown(self, *, path, question, instructions="", **kwargs):
-            return RunResult(text=f"answer:{Path(path).name}:{question}", usage={"n": 2}, ok=True)
+            return RunResult(
+                text=f"answer:{Path(path).name}:{question}", usage={"n": 2}, ok=True
+            )
 
     chain = Chain(FakeRuntime(), instructions="base")
     assert chain.complete("p").text == "complete:p"
@@ -58,16 +63,27 @@ def test_chain_expectations_and_factories(monkeypatch, tmp_path):
     )
     for key in model_env_vars:
         monkeypatch.delenv(key, raising=False)
+    for key in factories_module.VLLM_MODEL_ENV_VARS:
+        monkeypatch.delenv(key, raising=False)
     assert (
         factories_module.default_model_id() == factories_module.DEFAULT_BEDROCK_MODEL_ID
     )
     assert (
-        factories_module.default_ollama_model_id() == factories_module.DEFAULT_OLLAMA_MODEL_ID
+        factories_module.default_ollama_model_id()
+        == factories_module.DEFAULT_OLLAMA_MODEL_ID
+    )
+    assert (
+        factories_module.default_vllm_model_id()
+        == factories_module.DEFAULT_VLLM_MODEL_ID
     )
 
     assert factories_module._merge_skill_inputs(None, "skills") == "skills"
     assert factories_module._merge_skill_inputs("skill", None) == ["skill"]
-    assert factories_module._merge_skill_inputs("skill", ["a", "b"]) == ["skill", "a", "b"]
+    assert factories_module._merge_skill_inputs("skill", ["a", "b"]) == [
+        "skill",
+        "a",
+        "b",
+    ]
     assert factories_module._merge_skill_inputs("skill", "other") == ["skill", "other"]
 
     skill_dir = tmp_path / "skill_dir"
@@ -77,9 +93,18 @@ def test_chain_expectations_and_factories(monkeypatch, tmp_path):
     packaged_fallback = tmp_path / "packaged_fallback"
     packaged_fallback.mkdir()
     original_resolve_packaged = factories_module._resolve_packaged_skill_path
-    monkeypatch.setattr(factories_module, "_resolve_packaged_skill_path", lambda text: packaged_fallback.resolve())
-    assert factories_module._resolve_skill_path("package/style") == packaged_fallback.resolve()
-    monkeypatch.setattr(factories_module, "_resolve_packaged_skill_path", original_resolve_packaged)
+    monkeypatch.setattr(
+        factories_module,
+        "_resolve_packaged_skill_path",
+        lambda text: packaged_fallback.resolve(),
+    )
+    assert (
+        factories_module._resolve_skill_path("package/style")
+        == packaged_fallback.resolve()
+    )
+    monkeypatch.setattr(
+        factories_module, "_resolve_packaged_skill_path", original_resolve_packaged
+    )
     assert factories_module._resolve_packaged_skill_path("////") is None
 
     existing = Skill(name="existing")
@@ -101,15 +126,18 @@ def test_chain_expectations_and_factories(monkeypatch, tmp_path):
             return created
 
     monkeypatch.setattr(factories_module, "AgenticSystem", FakeWorkspace)
-    created = factories_module.agent(name="a", engine="python-runtime", skill="s", skills=["x"], metadata={"m": 1})
+    created = factories_module.agent(
+        name="a", engine="python-runtime", skill="s", skills=["x"], metadata={"m": 1}
+    )
     assert created.metadata == {"m": 1}
     assert created.kwargs["skills"] == ["s", "x"]
 
-    runtime_cfg = RuntimeConfig(provider="openai-runtime", model_id="runtime-model", region_name="us-test-1")
+    runtime_cfg = RuntimeConfig(
+        provider="openai-runtime", model_id="runtime-model", region_name="us-test-1"
+    )
     created_runtime = factories_module.agent(name="b", runtime=runtime_cfg)
     assert created_runtime.kwargs["engine"] == "openai-runtime"
     assert created_runtime.kwargs["model"] == "runtime-model"
-
 
 
 def test_factories_loader_and_tool_error_paths(monkeypatch, tmp_path):
@@ -117,7 +145,11 @@ def test_factories_loader_and_tool_error_paths(monkeypatch, tmp_path):
     monkeypatch.delenv("OPENAI_MODEL", raising=False)
     assert factories_module.default_openai_model_id() == "gpt-4o-mini"
 
-    monkeypatch.setattr(factories_module, "resolve_auto_provider", lambda region, priority=None: "bedrock-runtime")
+    monkeypatch.setattr(
+        factories_module,
+        "resolve_auto_provider",
+        lambda region, priority=None: "bedrock-runtime",
+    )
     monkeypatch.setattr(factories_module, "default_region", lambda: "bedrock-region")
     assert factories_module._default_runtime_region("auto") == "bedrock-region"
     assert factories_module._default_runtime_region("openai-runtime") is None
@@ -166,7 +198,10 @@ def test_factories_loader_and_tool_error_paths(monkeypatch, tmp_path):
         raise ModuleNotFoundError(package)
 
     monkeypatch.setattr(factories_module.resources, "files", fake_files)
-    assert factories_module._resolve_packaged_skill_path("pkg/packaged") == packaged_dir.resolve()
+    assert (
+        factories_module._resolve_packaged_skill_path("pkg/packaged")
+        == packaged_dir.resolve()
+    )
 
     class BadTraversable:
         def __truediv__(self, part):
@@ -175,14 +210,21 @@ def test_factories_loader_and_tool_error_paths(monkeypatch, tmp_path):
         def __str__(self):
             raise TypeError("bad path")
 
-    monkeypatch.setattr(factories_module.resources, "files", lambda package: BadTraversable())
+    monkeypatch.setattr(
+        factories_module.resources, "files", lambda package: BadTraversable()
+    )
     assert factories_module._resolve_packaged_skill_path("pkg/anything") is None
 
-    assert factories_module._default_agent_model("bedrock-runtime") == factories_module.default_model_id()
+    assert (
+        factories_module._default_agent_model("bedrock-runtime")
+        == factories_module.default_model_id()
+    )
     assert tool_module._ensure_model_schema(None, "field") is None
 
     original_spec = loader_module.importlib.util.spec_from_loader
-    monkeypatch.setattr(loader_module.importlib.util, "spec_from_loader", lambda *args, **kwargs: None)
+    monkeypatch.setattr(
+        loader_module.importlib.util, "spec_from_loader", lambda *args, **kwargs: None
+    )
     no_init = tmp_path / "no_init_pkg"
     no_init.mkdir()
     with pytest.raises(SkillLoadError):

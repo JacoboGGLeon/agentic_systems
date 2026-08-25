@@ -40,11 +40,7 @@ RUN_RESULT_FIELDS = {"final", "runtime", "usage", "validation"}
 
 
 def _notebooks():
-    return sorted(
-        path
-        for path in TUTORIALS.rglob("*.ipynb")
-        if path.relative_to(TUTORIALS).parts[0] != "cli"
-    )
+    return sorted(path for path in TUTORIALS.rglob("*.ipynb"))
 
 
 def _relative(path: Path) -> str:
@@ -139,6 +135,12 @@ def test_curriculum_order_and_reviewed_narrative_are_1_to_1():
                 continue
             assert cell.get("execution_count") is None, relative
             assert cell.get("outputs", []) == [], relative
+
+
+def test_learning_surface_has_no_cli_mirror_or_cli_narrative():
+    assert not (TUTORIALS / "cli").exists()
+    for path in _notebooks():
+        assert not re.search(r"\bCLI\b", _source(_load(path)), re.IGNORECASE), path
 
 
 def test_notebook_metadata_matches_layer_and_literal_api_claims():
@@ -360,7 +362,7 @@ def test_tutorial_repository_layout_and_assets_are_intentional():
         for path in TUTORIALS.iterdir()
         if path.is_dir() and not path.name.startswith("__")
     )
-    assert roots == ["api", "cli", "core", "frameworks", "providers", "skills"]
+    assert roots == ["api", "core", "frameworks", "providers", "skills"]
     assert not (TUTORIALS / "human_output.py").exists()
     assert not (TUTORIALS / "roadmap").exists()
     assert not list(TUTORIALS.glob("*.ipynb"))
