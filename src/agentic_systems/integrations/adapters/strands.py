@@ -6,7 +6,7 @@ import inspect
 import json
 import os
 from collections.abc import Mapping
-from typing import Any, cast, get_type_hints
+from typing import Any, cast, get_args, get_type_hints
 
 from ...contracts import RunPolicy
 from ...engines.names import (
@@ -315,12 +315,21 @@ def _configure_model(model: Any, policy: RunPolicy, mode: str) -> None:
         generation_config["max_tokens"] = policy.max_tokens
 
     # Strands model implementations expose two public configuration shapes.
-    # OpenAI-compatible models keep request parameters under config["params"];
-    # Bedrock and other native models validate generation parameters at the top
-    # level. Passing params to a direct model is rejected by Strands and, more
-    # importantly, silently leaves temperature/max_tokens unapplied.
-    if "params" not in config:
-        update_config(**generation_config)
+    # Discover the accepted keys from update_config's Unpack[TypedDict] contract
+    # instead of inferring the shape from the current (possibly sparse) values.
+    declared_keys = _declared_model_config_keys(model)
+    nested_params = "params" in declared_keys or (
+        not declared_keys and "params" in config
+    )
+    if not nested_params:
+        if declared_keys:
+            generation_config = {
+                key: value
+                for key, value in generation_config.items()
+                if key in declared_keys
+            }
+        if generation_config:
+            update_config(**generation_config)
         return
 
     params = dict(config.get("params") or {})
@@ -337,6 +346,23 @@ def _configure_model(model: Any, policy: RunPolicy, mode: str) -> None:
         }
     params.update(generation_config, tool_choice=tool_choice)
     update_config(params=params)
+
+
+def _declared_model_config_keys(model: Any) -> set[str]:
+    """Return keys accepted by a Strands update_config Unpack contract."""
+
+    update_config = getattr(type(model), "update_config", None)
+    if not callable(update_config):
+        return set()
+    try:
+        annotation = get_type_hints(update_config).get("model_config")
+    except (NameError, TypeError):
+        return set()
+    arguments = get_args(annotation)
+    if len(arguments) != 1:
+        return set()
+    fields = getattr(arguments[0], "__annotations__", None)
+    return set(fields) if isinstance(fields, Mapping) else set()
 
 
 def _run_kwargs(agent: Any, policy: RunPolicy) -> dict[str, Any]:

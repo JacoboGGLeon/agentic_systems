@@ -6,6 +6,7 @@ from types import SimpleNamespace
 
 import pytest
 from pydantic import BaseModel, ValidationError
+from typing_extensions import TypedDict, Unpack
 
 from agentic_systems import RunPolicy, RunResult
 from agentic_systems.integrations.adapters import framework_adapter
@@ -403,6 +404,21 @@ def test_strands_adapter_helpers_cover_results_tools_and_failures():
             self.config.update(configuration)
 
     openai_model = OpenAICompatibleModel()
+
+    class SparseOpenAIConfig(TypedDict, total=False):
+        params: dict[str, object] | None
+
+    class SparseOpenAICompatibleModel:
+        def __init__(self):
+            self.config = {"model_id": "openai-compatible"}
+
+        def update_config(self, **model_config):
+            self.config.update(model_config)
+
+    SparseOpenAICompatibleModel.update_config.__annotations__["model_config"] = (
+        Unpack[SparseOpenAIConfig]
+    )
+
     named_policy = RunPolicy(
         max_tokens=321,
         temperature=0.7,
@@ -411,6 +427,17 @@ def test_strands_adapter_helpers_cover_results_tools_and_failures():
     sa._configure_model(openai_model, named_policy, "eval")
     assert openai_model.config["params"] == {
         "top_p": 0.8,
+        "temperature": 0.7,
+        "max_tokens": 321,
+        "tool_choice": {
+            "type": "function",
+            "function": {"name": "multiply"},
+        },
+    }
+
+    sparse_openai_model = SparseOpenAICompatibleModel()
+    sa._configure_model(sparse_openai_model, named_policy, "eval")
+    assert sparse_openai_model.config["params"] == {
         "temperature": 0.7,
         "max_tokens": 321,
         "tool_choice": {
