@@ -419,6 +419,29 @@ def test_strands_adapter_helpers_cover_results_tools_and_failures():
         },
     }
 
+    class DirectModel:
+        def __init__(self):
+            self.config = {"model_id": "native-model"}
+            self.updates = []
+
+        def update_config(self, **configuration):
+            self.updates.append(configuration)
+            self.config.update(configuration)
+
+    direct_model = DirectModel()
+    sa._configure_model(direct_model, named_policy, "eval")
+    assert direct_model.updates == [
+        {
+            "temperature": 0.7,
+            "max_tokens": 321,
+        }
+    ]
+    assert "params" not in direct_model.config
+
+    no_max_tokens = DirectModel()
+    sa._configure_model(no_max_tokens, RunPolicy(temperature=0.2), "eval")
+    assert no_max_tokens.updates == [{"temperature": 0.2}]
+
     provider = RunResult(text="provider", engine="python-runtime", model="m")
     native_agent = SimpleNamespace(model=SimpleNamespace(last_result=provider))
     assert sa._normalize_result(agent, native_agent, object(), "x", "eval") is provider

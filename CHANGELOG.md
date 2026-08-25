@@ -39,6 +39,10 @@ provider/framework substitutability.
   methods and fingerprint only the public contract.
 - Strands callbacks with typed event parameters are normalized into HookProvider
   objects, preserving compatibility across Strands 1.29 through the current 1.x.
+- Strands model policy configuration now follows each SDK model's declared
+  shape: OpenAI-compatible request parameters remain nested under `params`,
+  while native models such as Bedrock receive `temperature` and `max_tokens`
+  directly, preventing ignored settings and invalid-parameter warnings.
 - The OpenAI Agents tutorial bootstraps its optional SDK dependency idempotently
   in a fresh Jupyter kernel instead of failing with a raw ModuleNotFoundError.
 

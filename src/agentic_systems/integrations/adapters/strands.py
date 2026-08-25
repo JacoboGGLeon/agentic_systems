@@ -310,6 +310,19 @@ def _configure_model(model: Any, policy: RunPolicy, mode: str) -> None:
     config = getattr(model, "config", None)
     if not callable(update_config) or not isinstance(config, Mapping):
         return
+    generation_config: dict[str, Any] = {"temperature": policy.temperature}
+    if policy.max_tokens is not None:
+        generation_config["max_tokens"] = policy.max_tokens
+
+    # Strands model implementations expose two public configuration shapes.
+    # OpenAI-compatible models keep request parameters under config["params"];
+    # Bedrock and other native models validate generation parameters at the top
+    # level. Passing params to a direct model is rejected by Strands and, more
+    # importantly, silently leaves temperature/max_tokens unapplied.
+    if "params" not in config:
+        update_config(**generation_config)
+        return
+
     params = dict(config.get("params") or {})
     tool_choice: Any = policy.tool_choice
     if isinstance(tool_choice, str) and tool_choice not in {
@@ -322,9 +335,7 @@ def _configure_model(model: Any, policy: RunPolicy, mode: str) -> None:
             "type": "function",
             "function": {"name": tool_choice},
         }
-    params.update(temperature=policy.temperature, tool_choice=tool_choice)
-    if policy.max_tokens is not None:
-        params["max_tokens"] = policy.max_tokens
+    params.update(generation_config, tool_choice=tool_choice)
     update_config(params=params)
 
 
