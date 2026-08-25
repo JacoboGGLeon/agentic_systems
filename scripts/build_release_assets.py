@@ -146,6 +146,9 @@ def build_release_assets() -> dict[str, object]:
         studio,
         skill,
     ]
+    ada_bundle = DIST / f"agentic-systems-{VERSION}-ada-offline.zip"
+    if ada_bundle.exists():
+        artifacts.append(ada_bundle)
     missing = [str(path) for path in artifacts if not path.exists()]
     if missing:
         raise FileNotFoundError(f"Missing release artifacts: {missing}")
