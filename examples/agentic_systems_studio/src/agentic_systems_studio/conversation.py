@@ -193,10 +193,8 @@ class ConversationalStudio:
                 "framework": self.config.framework,
                 "model": self.config.model,
             },
-            "deterministic_system": self.deterministic_system.inspect().model_dump(
-                mode="json"
-            ),
-            "reasoning_system": self.reasoning_system.inspect().model_dump(mode="json"),
+            "deterministic_system": self.deterministic_system.inspect().to_dict(),
+            "reasoning_system": self.reasoning_system.inspect().to_dict(),
             "agents": [self.context_agent.info(), self.assistant.info()],
         }
 

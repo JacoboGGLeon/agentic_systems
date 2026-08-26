@@ -4,7 +4,14 @@ from __future__ import annotations
 
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field, PrivateAttr, model_validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    PrivateAttr,
+    field_validator,
+    model_validator,
+)
 
 from .contracts import AgentContract, ValidationResult, validate_tool_expectation
 from .errors import is_retryable_error_payload
@@ -12,6 +19,7 @@ from .engines.names import BEDROCK_RUNTIME_ENGINE
 from .final_answer import final_answer
 from .normalization import contains_leading_reasoning, project_public_text
 from .tools.events import ToolEvent
+from .usage import normalize_usage, usage_view
 
 TRACE_SCHEMA_VERSION = "agentic_systems.trace.v1"
 RUN_SCHEMA_VERSION = "agentic_systems.run.v1"
@@ -137,6 +145,11 @@ class RunResult(BaseModel):
     children: list["RunResult"] = Field(default_factory=list)
 
     _native_result: Any = PrivateAttr(default=None)
+
+    @field_validator("usage", mode="before")
+    @classmethod
+    def _normalize_usage(cls, value: Any) -> dict[str, Any]:
+        return normalize_usage(value)
 
     @model_validator(mode="before")
     @classmethod
@@ -435,6 +448,7 @@ class RunResult(BaseModel):
         """
 
         runtime = {
+            "provider": self.engine,
             "engine": self.engine,
             "runtime_engine": self.meta.get("runtime_engine", self.engine),
             "framework": self.meta.get("framework"),
@@ -455,7 +469,7 @@ class RunResult(BaseModel):
             "input": input_payload,
             "answer": answer,
             "tools": tools,
-            "usage": self.usage,
+            "usage": usage_view(self.usage),
             "validation": self.validation,
             "errors": self.errors,
             "final": self.final,

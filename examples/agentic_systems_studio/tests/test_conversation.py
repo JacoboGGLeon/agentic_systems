@@ -92,6 +92,19 @@ def test_context_agent_run_uses_public_default_mode_and_public_data():
     assert result.data["history_turns"] == 0
 
 
+def test_conversational_studio_inspect_uses_public_report_projection():
+    studio = build_conversational_system(
+        ConversationConfig(provider="openai-runtime", model="offline-contract-model")
+    )
+
+    report = studio.inspect()
+
+    assert report["deterministic_system"]["ok"] is True
+    assert report["reasoning_system"]["ok"] is True
+    assert report["configuration"]["provider"] == "openai-runtime"
+    assert len(report["agents"]) == 2
+
+
 @pytest.mark.parametrize(
     "framework", ["native", "langgraph", "openai-agents", "strands"]
 )

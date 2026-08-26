@@ -94,6 +94,7 @@ def _fallback_normalized(result_dict: dict[str, Any]) -> dict[str, Any]:
         "schema_version": RUN_SCHEMA_FALLBACK,
         "ok": bool(result_dict.get("ok", result_dict.get("run_ok", False))),
         "runtime": {
+            "provider": result_dict.get("provider") or result_dict.get("engine"),
             "engine": result_dict.get("engine"),
             "runtime_engine": meta.get("runtime_engine", result_dict.get("engine")),
             "model": result_dict.get("model"),
@@ -172,7 +173,7 @@ def _format_usage(usage: dict[str, Any]) -> str:
         value = usage.get(key)
         if value is not None:
             parts.append(f"{key}={value}")
-    return " | ".join(parts) if parts else _compact(usage)
+    return " | ".join(parts) if parts else "no disponible"
 
 
 def _print_payload(
@@ -660,7 +661,7 @@ def _rich_print_human_result(
     runtime_table.add_column("Campo", style="bold")
     runtime_table.add_column("Valor")
     runtime_table.add_row("Estado", "OK" if normalized.get("ok") else "ERROR")
-    runtime_table.add_row("Engine", _runtime_engine(normalized) or "n/a")
+    runtime_table.add_row("Provider", _runtime_engine(normalized) or "n/a")
     runtime_table.add_row("Framework", _runtime_framework(normalized) or "agentic-systems")
     runtime_table.add_row("Mode", str(runtime.get("mode") or "n/a"))
     if runtime.get("model"):
@@ -847,7 +848,7 @@ def print_human_result(
 
     _print_block(2, "Runtime y usage")
     print(f"Estado: {'OK' if normalized.get('ok') else 'ERROR'}")
-    print(f"Engine: {_runtime_engine(normalized) or 'n/a'}")
+    print(f"Provider: {_runtime_engine(normalized) or 'n/a'}")
     print(f"Framework: {_runtime_framework(normalized) or 'agentic-systems'}")
     print(f"Mode: {runtime.get('mode') or 'n/a'}")
     if runtime.get("model"):

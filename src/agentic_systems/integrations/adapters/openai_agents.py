@@ -22,6 +22,7 @@ from ...protocols import AsyncRunner, SyncRunner
 from ...registry import provider_capability
 from ...results import RunResult
 from ...tools.events import ToolEvent
+from ...usage import normalize_usage
 from .base import FrameworkAdapter, attach_native_result, effective_max_turns
 from .tools import (
     ToolNameAliases,
@@ -353,7 +354,7 @@ def _usage(native_result: Any) -> dict[str, Any]:
     context = getattr(native_result, "context_wrapper", None)
     usage = getattr(context, "usage", None)
     payload = _jsonable(usage)
-    return payload if isinstance(payload, dict) else {}
+    return normalize_usage(payload)
 
 
 def _failure(agent: Any, input_value: Any, mode: str, exc: Exception) -> RunResult:

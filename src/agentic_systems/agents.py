@@ -537,14 +537,17 @@ class Agent:
             result.meta.setdefault("scheduler", self.runtime_config.scheduler.to_dict())
         result.meta["scheduler_execution"] = scheduler_meta
         result.usage.setdefault("scheduler", {})
+        latency_ms = scheduler_meta.get("latency_ms")
         result.usage["scheduler"].update(
             {
                 "attempts": scheduler_meta.get("attempts"),
                 "retries": scheduler_meta.get("retries"),
                 "timed_out": scheduler_meta.get("timed_out"),
-                "latency_ms": scheduler_meta.get("latency_ms"),
+                "latency_ms": latency_ms,
             }
         )
+        if isinstance(latency_ms, (int, float)) and not isinstance(latency_ms, bool):
+            result.usage.setdefault("client_duration_ms", latency_ms)
         return result
 
     def _scheduler_failure_result(

@@ -66,7 +66,11 @@ def test_vllm_runtime_provider_runs_openai_compatible_tool_loop() -> None:
     assert result.meta["execution_engine"] == VLLM_RUNTIME_ENGINE
     assert result.tool_events[0].name == "duplicar"
     assert result.tool_events[0].output["result"] == 42
-    assert result.usage["total_tokens"] == 15
+    assert result.usage["requests"] == 2
+    assert result.usage["input_tokens"] == 20
+    assert result.usage["output_tokens"] == 10
+    assert result.usage["total_tokens"] == 30
+    assert result.usage["client_duration_ms"] >= 0
     assert (
         result.meta["source_result_type"] == "vllm.openai_compatible.chat.completions"
     )

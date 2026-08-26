@@ -19,7 +19,23 @@ st.set_page_config(
 
 
 def _result_payload(result):
-    return result.model_dump(mode="json") if hasattr(result, "model_dump") else result
+    if not hasattr(result, "normalized"):
+        return result
+    payload = result.normalized()
+    runtime = dict(payload.get("runtime") or {})
+    public_runtime = {
+        "provider": runtime.get("provider")
+        or runtime.get("runtime_engine")
+        or runtime.get("engine"),
+        "framework": runtime.get("framework"),
+        "model": runtime.get("model"),
+        "mode": runtime.get("mode"),
+    }
+    payload["runtime"] = public_runtime
+    blocks = dict(payload.get("blocks") or {})
+    blocks["runtime"] = public_runtime
+    payload["blocks"] = blocks
+    return payload
 
 
 @st.cache_resource(show_spinner="Compiling Agentic System...")

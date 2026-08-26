@@ -13,6 +13,7 @@ import re
 from collections.abc import Mapping
 from hashlib import sha256
 from typing import Any
+from time import perf_counter
 from uuid import uuid4
 
 from agentic_systems.contracts import RunPolicy
@@ -21,6 +22,7 @@ from agentic_systems.engines.names import OPENAI_RUNTIME_ENGINE, canonical_engin
 from agentic_systems.results import RunResult
 from agentic_systems.providers.conformance import ProviderProfile, provider_profile
 from agentic_systems.tools.events import ToolEvent
+from agentic_systems.usage import merge_usage, normalize_usage
 
 _INSTALL_HINT = "Install with: pip install openai"
 _OPENAI_TOOL_NAME = re.compile(r"^[a-zA-Z0-9_-]{1,64}$")
@@ -224,6 +226,7 @@ def _run_chat_loop(
     tool_events: list[ToolEvent] = []
     ok = True
     turns = 0
+    usage: dict[str, Any] = {}
     max_turns = policy.max_turns or 8
     while True:
         turns += 1
@@ -237,7 +240,9 @@ def _run_chat_loop(
             )
             result.engine = runtime_engine
             result.tool_events = list(tool_events)
+            result.usage = usage
             return result
+        request_started = perf_counter()
         response = client.chat.completions.create(
             model=getattr(agent, "model", None)
             or getattr(getattr(agent, "system", None), "model", None)
@@ -248,6 +253,12 @@ def _run_chat_loop(
             temperature=policy.temperature,
             max_tokens=policy.max_tokens,
         )
+        response_usage = _usage_from_response(response)
+        response_usage.setdefault("requests", 1)
+        response_usage.setdefault(
+            "client_duration_ms", round((perf_counter() - request_started) * 1000, 3)
+        )
+        usage = merge_usage(usage, response_usage)
         choice = response.choices[0]
         message = choice.message
         assistant_content = getattr(message, "content", None) or ""
@@ -255,7 +266,6 @@ def _run_chat_loop(
         if assistant_content:
             messages.append({"role": "assistant", "content": assistant_content})
         if not tool_calls:
-            usage = _usage_from_response(response)
             return _finalize_run_result(
                 assistant_content,
                 tool_events,
@@ -293,7 +303,6 @@ def _run_chat_loop(
                 }
             )
             if not result["event"].ok and not policy.repair:
-                usage = _usage_from_response(response)
                 return _finalize_run_result(
                     _tool_result_text(result["envelope"]),
                     tool_events,
@@ -309,7 +318,7 @@ def _run_chat_loop(
                     _tool_result_text(result["envelope"]),
                     tool_events,
                     ok,
-                    _usage_from_response(response),
+                    usage,
                     agent=agent,
                     mode=mode,
                     runtime_engine=runtime_engine,
@@ -331,6 +340,7 @@ async def _run_chat_loop_async(
     tool_events: list[ToolEvent] = []
     ok = True
     turns = 0
+    usage: dict[str, Any] = {}
     max_turns = policy.max_turns or 8
     while True:
         turns += 1
@@ -344,7 +354,9 @@ async def _run_chat_loop_async(
             )
             result.engine = runtime_engine
             result.tool_events = list(tool_events)
+            result.usage = usage
             return result
+        request_started = perf_counter()
         response = await client.chat.completions.create(
             model=getattr(agent, "model", None)
             or getattr(getattr(agent, "system", None), "model", None)
@@ -355,6 +367,12 @@ async def _run_chat_loop_async(
             temperature=policy.temperature,
             max_tokens=policy.max_tokens,
         )
+        response_usage = _usage_from_response(response)
+        response_usage.setdefault("requests", 1)
+        response_usage.setdefault(
+            "client_duration_ms", round((perf_counter() - request_started) * 1000, 3)
+        )
+        usage = merge_usage(usage, response_usage)
         choice = response.choices[0]
         message = choice.message
         assistant_content = getattr(message, "content", None) or ""
@@ -362,7 +380,6 @@ async def _run_chat_loop_async(
         if assistant_content:
             messages.append({"role": "assistant", "content": assistant_content})
         if not tool_calls:
-            usage = _usage_from_response(response)
             return _finalize_run_result(
                 assistant_content,
                 tool_events,
@@ -400,7 +417,6 @@ async def _run_chat_loop_async(
                 }
             )
             if not result["event"].ok and not policy.repair:
-                usage = _usage_from_response(response)
                 return _finalize_run_result(
                     _tool_result_text(result["envelope"]),
                     tool_events,
@@ -416,7 +432,7 @@ async def _run_chat_loop_async(
                     _tool_result_text(result["envelope"]),
                     tool_events,
                     ok,
-                    _usage_from_response(response),
+                    usage,
                     agent=agent,
                     mode=mode,
                     runtime_engine=runtime_engine,
@@ -558,7 +574,7 @@ def _usage_from_response(response: Any) -> dict[str, Any]:
         value = getattr(usage, key, None)
         if value is not None:
             payload[key] = value
-    return payload
+    return normalize_usage(payload)
 
 
 def _required_tools_satisfied(agent: Any, tool_events: list[ToolEvent]) -> bool:

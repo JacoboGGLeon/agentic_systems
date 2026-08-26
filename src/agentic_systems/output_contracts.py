@@ -13,7 +13,9 @@ from pydantic import BaseModel, ConfigDict, Field
 
 AGENTIC_OUTPUT_SCHEMA_VERSION = "agentic_systems.output.v1"
 
-OutputKind = Literal["tool", "agent", "skill", "system", "graph", "environment", "eval", "chain"]
+OutputKind = Literal[
+    "tool", "agent", "skill", "system", "graph", "environment", "eval", "chain"
+]
 
 
 class RuntimeInfo(BaseModel):
@@ -21,13 +23,18 @@ class RuntimeInfo(BaseModel):
 
     model_config = ConfigDict(extra="allow")
 
+    provider: str | None = None
     engine: str | None = None
     mode: str | None = None
     model: str | None = None
 
 
 class UsageInfo(BaseModel):
-    """Token, request and timing accounting reported by a backend."""
+    """Comparable usage evidence across providers.
+
+    ``service_latency_ms`` is provider-reported. ``client_duration_ms`` may be
+    measured around the provider/framework call by Agentic Systems.
+    """
 
     model_config = ConfigDict(extra="allow")
 
@@ -119,7 +126,11 @@ class AgenticOutput(BaseModel):
         payload = self.model_dump(mode="json")
         if include_empty:
             return payload
-        return {key: value for key, value in payload.items() if value not in ({}, [], "", None)}
+        return {
+            key: value
+            for key, value in payload.items()
+            if value not in ({}, [], "", None)
+        }
 
 
 __all__ = [

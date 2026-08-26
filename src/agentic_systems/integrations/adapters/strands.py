@@ -20,6 +20,7 @@ from ...protocols import AsyncRunner, SyncRunner
 from ...registry import provider_capability
 from ...results import RunResult
 from ...tools.events import ToolEvent
+from ...usage import normalize_usage
 from .base import FrameworkAdapter, attach_native_result, effective_max_turns
 from .tools import ToolNameAliases, merge_tools, tool_name_aliases
 
@@ -400,7 +401,7 @@ def _normalize_result(
         messages=messages,
         tool_events=_tool_events(messages, aliases),
         raw_responses=[_jsonable(getattr(native_result, "message", {}))],
-        usage=_json_dict(getattr(native_result, "metrics", {})),
+        usage=_strands_usage(getattr(native_result, "metrics", {})),
         engine=agent.engine,
         model=agent.model or "",
         mode=mode,
@@ -488,6 +489,36 @@ def _output_data(value: Any, text: str) -> dict[str, Any]:
 def _json_dict(value: Any) -> dict[str, Any]:
     payload = _jsonable(value)
     return payload if isinstance(payload, dict) else {}
+
+
+def _strands_usage(metrics: Any) -> dict[str, Any]:
+    """Project public EventLoopMetrics without depending on SDK internals."""
+
+    summary_method = getattr(metrics, "get_summary", None)
+    if callable(summary_method):
+        summary = _json_dict(summary_method())
+    else:
+        summary = _json_dict(metrics)
+    accumulated_usage = _json_dict(summary.get("accumulated_usage", summary))
+    payload = normalize_usage(accumulated_usage)
+
+    accumulated_metrics = _json_dict(summary.get("accumulated_metrics", {}))
+    service_latency = accumulated_metrics.get("latencyMs")
+    if isinstance(service_latency, (int, float)) and not isinstance(
+        service_latency, bool
+    ):
+        payload["service_latency_ms"] = service_latency
+
+    total_duration = summary.get("total_duration")
+    if isinstance(total_duration, (int, float)) and not isinstance(
+        total_duration, bool
+    ):
+        payload["client_duration_ms"] = round(total_duration * 1000, 3)
+
+    cycles = summary.get("total_cycles")
+    if isinstance(cycles, int) and not isinstance(cycles, bool) and cycles > 0:
+        payload["requests"] = cycles
+    return normalize_usage(payload)
 
 
 def _jsonable(value: Any) -> Any:
