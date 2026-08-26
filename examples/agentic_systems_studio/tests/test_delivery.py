@@ -38,7 +38,13 @@ def test_notebooks_are_the_same_conversational_system_with_and_without_ui():
     )
     assert "build_conversational_system(" in direct_code
     assert "safe_calculate.run(" in direct_code
+    assert "environment_path = load_studio_environment()" in direct_code
+    assert direct_code.index("load_studio_environment()") < direct_code.index(
+        "RUN_STUDIO_LIVE ="
+    )
     assert "start_studio_server(" in launch_code
+    assert "environment_path = load_studio_environment()" in launch_code
+    assert launch_code.index("load_studio_environment()") < launch_code.index("PORT =")
     assert "studio_proxy_url(" in launch_code
     assert direct["metadata"]["agentic_systems"]["configuration"] == ".env"
     assert launch["metadata"]["agentic_systems"]["configuration"] == ".env"

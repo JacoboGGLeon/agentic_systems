@@ -8,6 +8,10 @@ from .conversation import (
     prepare_conversation_context,
     safe_calculate,
 )
+from .environment import (
+    find_studio_environment,
+    load_studio_environment,
+)
 from .creator import create_application
 from .scaffolder import ScaffoldReport, scaffold_application
 from .server import (
@@ -45,7 +49,9 @@ __all__ = [
     "build_system",
     "compose_systems",
     "create_application",
+    "find_studio_environment",
     "get_system_spec",
+    "load_studio_environment",
     "prepare_conversation_context",
     "safe_calculate",
     "scaffold_application",

@@ -8,6 +8,7 @@ from agentic_systems_studio.conversation import (
     ConversationConfig,
     build_conversational_system,
 )
+from agentic_systems_studio.environment import load_studio_environment
 
 
 st.set_page_config(
@@ -26,6 +27,7 @@ def _system(config: ConversationConfig):
     return build_conversational_system(config)
 
 
+environment_path = load_studio_environment()
 config = ConversationConfig.from_environment()
 
 with st.sidebar:
@@ -33,6 +35,7 @@ with st.sidebar:
     st.json(
         {
             "source": ".env",
+            "path": str(environment_path),
             "provider": config.provider,
             "framework": config.framework,
             "model": config.model or "provider default",

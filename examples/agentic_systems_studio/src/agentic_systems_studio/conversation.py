@@ -15,6 +15,7 @@ from agentic_systems.registry import (
     PROVIDER_NAMES,
     provider_capability,
 )
+from agentic_systems_studio.environment import load_studio_environment
 
 
 _BINARY_OPERATORS = {
@@ -132,8 +133,9 @@ class ConversationConfig:
 
     @classmethod
     def from_environment(cls) -> "ConversationConfig":
-        # A public runtime loads the nearest .env without overriding process values.
-        toolkit.runtime(provider="python-runtime")
+        # The single Studio .env is canonical; managed credentials not declared
+        # there remain inherited from the hosting environment.
+        load_studio_environment()
         return cls(
             provider=os.getenv("AGENTIC_SYSTEMS_PROVIDER", "auto"),
             framework=os.getenv("AGENTIC_SYSTEMS_FRAMEWORK", "native"),

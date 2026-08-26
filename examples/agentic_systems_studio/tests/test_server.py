@@ -62,6 +62,8 @@ def test_launch_notebook_uses_public_launcher_and_proxy_button():
         for cell in notebook["cells"]
         if cell["cell_type"] == "code"
     )
+    assert "environment_path = load_studio_environment()" in code
+    assert code.index("load_studio_environment()") < code.index("PORT =")
     assert "start_studio_server(" in code
     assert "studio_proxy_url(" in code
     assert "studio_button_html(" in code
