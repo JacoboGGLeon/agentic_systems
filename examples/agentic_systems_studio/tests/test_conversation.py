@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from types import SimpleNamespace
 
+import pytest
 import agentic_systems as toolkit
 from agentic_systems.tools import ToolEvent
 
@@ -49,7 +50,10 @@ def test_conversational_tools_are_bounded_and_deterministic():
     assert all(item["role"] != "system" for item in context.data["history"])
 
 
-def test_conversational_studio_composes_real_run_results():
+@pytest.mark.parametrize(
+    "framework", ["native", "langgraph", "openai-agents", "strands"]
+)
+def test_conversational_studio_composes_real_run_results(framework):
     context_payload = {
         "message": "17 * 19",
         "history": [],
@@ -60,7 +64,7 @@ def test_conversational_studio_composes_real_run_results():
         text="context",
         engine="python-runtime",
         model="python-runtime",
-        mode="context",
+        mode="default",
         tool_events=[
             ToolEvent(
                 id="context-1",
@@ -75,15 +79,15 @@ def test_conversational_studio_composes_real_run_results():
         text="323",
         engine="vllm-runtime",
         model="qwen-test",
-        mode="chat",
+        mode="default",
         usage={"total_tokens": 12},
     )
     studio = ConversationalStudio(
-        config=ConversationConfig(provider="vllm-runtime", framework="langgraph"),
+        config=ConversationConfig(provider="vllm-runtime", framework=framework),
         reasoning_system=object(),
         deterministic_system=object(),
-        assistant=SimpleNamespace(run=lambda *_args, **_kwargs: answer_result),
-        context_agent=SimpleNamespace(run=lambda *_args, **_kwargs: context_result),
+        assistant=SimpleNamespace(run=lambda *_args: answer_result),
+        context_agent=SimpleNamespace(run=lambda *_args: context_result),
     )
 
     result = studio.run("17 * 19")
@@ -91,7 +95,7 @@ def test_conversational_studio_composes_real_run_results():
     assert result.ok is True
     assert result.text == "323"
     assert result.engine == "vllm-runtime"
-    assert result.meta["framework"] == "langgraph"
+    assert result.meta["framework"] == framework
     assert result.meta["engines_used"] == ["python-runtime", "vllm-runtime"]
     assert result.data["context_summary"] == {
         "history_turns": 0,

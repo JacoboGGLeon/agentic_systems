@@ -41,7 +41,6 @@ SECRET_PATTERNS = (
 STUDIO_EXPORTS = (
     "README.md",
     "pyproject.toml",
-    ".env.example",
     "app.py",
     "src",
     "notebooks",

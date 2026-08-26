@@ -58,9 +58,10 @@ DIRECT = _notebook(
         ),
         _markdown(
             "## 1. Configuration contract\n\n"
-            "Copy `.env.example` to `.env`. No credential is entered in the notebook and "
-            "no provider fallback is enabled. Set `RUN_STUDIO_LIVE=1` when the selected "
-            "provider is ready.\n"
+            "In ADA, copy the bundle-root `.env.example` to the bundle-root `.env`; "
+            "that is the only runtime configuration file. No credential is entered in "
+            "the notebook and no provider fallback is enabled. Set `RUN_STUDIO_LIVE=1` "
+            "when the selected provider is ready.\\n"
         ),
         _code(
             "import os\n\n"

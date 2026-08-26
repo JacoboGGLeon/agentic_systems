@@ -5,8 +5,9 @@
    platform configuration and never belong in this bundle).
 3. Install the certified `agentic_systems-2.1.0-py3-none-any.whl` and the local
    Studio package with the `ui,notebook` extras.
-4. Copy `.env.example` to `.env`; select one provider/framework and keep credentials
-   in the managed runtime or approved secret mechanism.
+4. At the ADA bundle root, copy `.env.example` to `.env`. This is the only runtime
+   configuration file; select one provider/framework and keep credentials in the
+   managed runtime or approved secret mechanism.
 5. Run `00_conversational_system.ipynb` for the direct system contract.
 6. Run `01_launch_studio.ipynb` for Streamlit through the JupyterLab proxy.
 

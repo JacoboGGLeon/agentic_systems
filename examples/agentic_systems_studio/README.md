@@ -46,9 +46,10 @@ environment with restricted Internet, point pip at the approved Artifactory
 through `PIP_INDEX_URL` and `PIP_TRUSTED_HOST`; the application never embeds
 repository or registry credentials.
 
-Copy `.env.example` to `.env` and choose the runtime contract there. Provider
-credentials remain in the environment and are never written to Studio artifacts,
-attestations or bundles.
+Use exactly one configuration file. The standalone Studio archive copies its root
+`.env.example` to its root `.env`; the ADA delivery uses the single `.env.example`
+at the ADA bundle root. Provider credentials remain in the managed environment and
+are never written to Studio artifacts, attestations or bundles.
 
 ## Run
 

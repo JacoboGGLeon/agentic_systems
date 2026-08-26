@@ -216,7 +216,6 @@ class ConversationalStudio:
                 "tool": "prepare_conversation_context",
                 "input": {"messages": public_history, "message": message},
             },
-            mode="context",
         )
         context = context_result.tool_events[-1].output
         assistant_result = self.assistant.run(
@@ -224,7 +223,6 @@ class ConversationalStudio:
             "Call safe_calculate when arithmetic evidence is useful. Never expose private "
             "reasoning and never claim that an uncalled tool was executed.\n\n"
             + json.dumps(context, ensure_ascii=False),
-            mode="chat",
         )
         result = toolkit.compose_result(
             text=assistant_result.text,
@@ -238,7 +236,7 @@ class ConversationalStudio:
                 "framework": self.config.framework,
             },
             results=[context_result, assistant_result],
-            mode="chat",
+            mode=assistant_result.mode,
             framework=self.config.framework,
             input=message,
             engine=assistant_result.engine,

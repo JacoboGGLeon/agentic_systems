@@ -36,6 +36,8 @@ def test_ada_bundle_is_reproducible_certified_and_offline(tmp_path: Path):
         assert manifest["tutorial_notebooks"] == 21
         assert manifest["cli_tutorials"] == 0
         assert root + ".env.example" in names
+        env_examples = {name for name in names if Path(name).name == ".env.example"}
+        assert env_examples == {root + ".env.example"}
         assert root + "studio/app.py" in names
         assert root + "studio/notebooks/00_conversational_system.ipynb" in names
         assert root + "studio/notebooks/01_launch_studio.ipynb" in names
