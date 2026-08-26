@@ -236,6 +236,16 @@ def _human_text_from_mapping(payload: dict[str, Any]) -> str | None:
         # behavior.
         if key == "final_output":
             return value.strip()
+        # Delegated Agent/System executions retain structured public evidence in
+        # final while exposing one explicit human answer. The execution marker
+        # distinguishes this envelope from arbitrary structured output, so the
+        # reusable evidence remains available in normalized JSON.
+        if key in {"answer", "text"} and "execution" in payload:
+            return value.strip()
+        if key == "answer" and set(payload).issubset(
+            {"answer", "text", "unsupported_request", "ok", "tool"}
+        ):
+            return value.strip()
         if key == "summary" and len(payload) <= 3:
             return value.strip()
         if len(payload) == 1:

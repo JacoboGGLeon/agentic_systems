@@ -84,3 +84,29 @@ def test_compact_human_result_still_renders_tool_sql_and_rows_when_present(capsy
     assert "currency_id" in out
     assert "sin SQL registrado" not in out
     assert "sin filas para mostrar" not in out
+
+
+def test_human_result_projects_delegated_execution_answer_without_json(capsys):
+    answer = "17 multiplied by 19 is 323."
+    result = RunResult(
+        text=answer,
+        final={
+            "answer": answer,
+            "text": answer,
+            "data": {"result": 323},
+            "ok": True,
+            "execution": {
+                "execution_id": "child-run",
+                "provider": "python-runtime",
+                "framework": "native",
+            },
+            "tool": "delegate_calculator",
+        },
+        engine="python-runtime",
+        mode="eval",
+    )
+
+    lab.human_result(result, title="Delegated", pretty=False)
+    rendered = capsys.readouterr().out
+    answer_block = rendered.split("Respuesta:\n", 1)[1].split("\n\n4)", 1)[0]
+    assert answer_block.strip() == answer

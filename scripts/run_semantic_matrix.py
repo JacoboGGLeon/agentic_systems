@@ -146,6 +146,18 @@ def _human(result: RunResult, provider: str, framework: str, name: str) -> str:
     return redact_sensitive_text(stream.getvalue()).strip()
 
 
+def _human_answer_block(human: str) -> str:
+    """Extract the exact public answer rendered by human_result."""
+
+    marker = "Respuesta:\n"
+    start = human.find(marker)
+    if start < 0:
+        return ""
+    start += len(marker)
+    end = human.find("\n\n4)", start)
+    return human[start : end if end >= 0 else None].strip()
+
+
 def _review(
     result: RunResult,
     eval_case: Any,
@@ -265,6 +277,13 @@ def _review(
         failures.append("human_result mislabels framework")
     if answer not in human:
         failures.append("human_result omits the public answer")
+    rendered_answer = _human_answer_block(human)
+    if not rendered_answer:
+        failures.append("human_result public answer block is empty")
+    elif rendered_answer.startswith(("{", "[")):
+        failures.append("human_result exposes structured technical JSON as its answer")
+    elif any(marker in rendered_answer for marker in forbidden):
+        failures.append("human_result answer exposes technical or private content")
 
     return {
         "ok": not failures,
