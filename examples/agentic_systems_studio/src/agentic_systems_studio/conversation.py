@@ -217,7 +217,7 @@ class ConversationalStudio:
                 "input": {"messages": public_history, "message": message},
             },
         )
-        context = context_result.tool_events[-1].output
+        context = dict(context_result.data)
         assistant_result = self.assistant.run(
             "Respond to the current user message using the bounded conversation context. "
             "Call safe_calculate when arithmetic evidence is useful. Never expose private "

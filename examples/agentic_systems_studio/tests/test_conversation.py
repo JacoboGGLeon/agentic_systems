@@ -8,6 +8,7 @@ from agentic_systems.tools import ToolEvent
 
 from agentic_systems_studio.conversation import (
     ConversationConfig,
+    build_conversational_system,
     ConversationalStudio,
     prepare_conversation_context,
     safe_calculate,
@@ -50,6 +51,23 @@ def test_conversational_tools_are_bounded_and_deterministic():
     assert all(item["role"] != "system" for item in context.data["history"])
 
 
+def test_context_agent_run_uses_public_default_mode_and_public_data():
+    studio = build_conversational_system(
+        ConversationConfig(provider="openai-runtime", model="offline-contract-model")
+    )
+
+    result = studio.context_agent.run(
+        {
+            "tool": "prepare_conversation_context",
+            "input": {"messages": [], "message": "hola"},
+        }
+    )
+
+    assert result.ok is True
+    assert result.data["message"] == "hola"
+    assert result.data["history_turns"] == 0
+
+
 @pytest.mark.parametrize(
     "framework", ["native", "langgraph", "openai-agents", "strands"]
 )
@@ -65,12 +83,13 @@ def test_conversational_studio_composes_real_run_results(framework):
         engine="python-runtime",
         model="python-runtime",
         mode="default",
+        data=context_payload,
         tool_events=[
             ToolEvent(
                 id="context-1",
                 name="prepare_conversation_context",
                 input={},
-                output=context_payload,
+                output={"data": context_payload},
                 ok=True,
             )
         ],
