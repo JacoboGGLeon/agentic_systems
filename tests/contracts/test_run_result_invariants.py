@@ -219,6 +219,37 @@ def test_reasoning_is_removed_before_first_public_projection_and_round_trip() ->
     assert "private chain" not in result.model_dump_json()
 
 
+def test_normalized_recursively_removes_reasoning_from_public_answer_data() -> None:
+    raw = "<thinking>private nested chain</thinking>\n\nPublic answer"
+    result = RunResult(
+        text="Public answer",
+        final={"text": "Public answer"},
+        data={"text": raw, "nested": [{"summary": raw}]},
+        raw_responses=[{"text": raw}],
+    )
+
+    normalized = result.normalized()
+    serialized = json.dumps(normalized)
+
+    assert normalized["answer"]["data"] == {
+        "text": "Public answer",
+        "nested": [{"summary": "Public answer"}],
+    }
+    assert normalized["final"] == {"text": "Public answer"}
+    assert "private nested chain" not in serialized
+    assert "<thinking>" not in serialized
+    assert result.data["text"] == raw
+    assert result.raw_responses[0]["text"] == raw
+
+
+def test_unbalanced_nested_reasoning_is_preserved_and_fails_invariants() -> None:
+    raw = "<thinking>ambiguous provider output"
+    result = RunResult(text="Public answer", data={"text": raw})
+
+    assert result.normalized()["answer"]["data"]["text"] == raw
+    assert "reasoning_exposed_in_public_answer" in _codes(result.check_invariants())
+
+
 def test_lineage_preserves_status_usage_validation_and_evidence() -> None:
     result = RunResult(
         text="answer",

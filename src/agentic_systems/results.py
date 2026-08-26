@@ -156,6 +156,32 @@ def public_answer_text(value: Any, *, _depth: int = 0) -> str:
     return ""
 
 
+def _project_public_value(value: Any) -> Any:
+    """Recursively sanitize answer payloads without mutating runtime evidence."""
+
+    if isinstance(value, str):
+        return project_public_text(value).text
+    if isinstance(value, dict):
+        return {key: _project_public_value(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [_project_public_value(item) for item in value]
+    if isinstance(value, tuple):
+        return tuple(_project_public_value(item) for item in value)
+    return value
+
+
+def _contains_public_reasoning(value: Any) -> bool:
+    """Detect recognized leading reasoning blocks in a public payload tree."""
+
+    if isinstance(value, str):
+        return contains_leading_reasoning(value)
+    if isinstance(value, dict):
+        return any(_contains_public_reasoning(item) for item in value.values())
+    if isinstance(value, (list, tuple)):
+        return any(_contains_public_reasoning(item) for item in value)
+    return False
+
+
 def is_technical_public_answer(text: str) -> bool:
     """Return true for internal envelopes or Python repr leaked as an answer."""
 
@@ -464,10 +490,12 @@ class RunResult(BaseModel):
                 path="final",
             )
 
-        if contains_leading_reasoning(self.text) or (
-            isinstance(self.final.get("text"), str)
-            and contains_leading_reasoning(self.final["text"])
-        ):
+        public_answer = {
+            "text": self.text,
+            "final": _project_public_value(self.final),
+            "data": _project_public_value(self.data),
+        }
+        if _contains_public_reasoning(public_answer):
             result.add(
                 "reasoning_exposed_in_public_answer",
                 "RunResult public projections cannot begin with native reasoning blocks.",
@@ -523,10 +551,12 @@ class RunResult(BaseModel):
             "mode": self.mode,
         }
         input_payload = self.meta.get("input")
+        public_final = _project_public_value(self.final)
+        public_data = _project_public_value(self.data)
         answer = {
             "text": self.text,
-            "final": self.final,
-            "data": self.data,
+            "final": public_final,
+            "data": public_data,
         }
         tools = [_normalize_tool_event(event) for event in self.tool_events]
         return {
@@ -544,12 +574,12 @@ class RunResult(BaseModel):
             "usage": usage_view(self.usage),
             "validation": self.validation,
             "errors": self.errors,
-            "final": self.final,
+            "final": public_final,
             "blocks": {
                 "user_input": input_payload,
                 "runtime": runtime,
                 "agent_answer": answer,
-                "final_answer": self.final,
+                "final_answer": public_final,
                 "tool_actions": [
                     {
                         "name": tool.get("name"),
