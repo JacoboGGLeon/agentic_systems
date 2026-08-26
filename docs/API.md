@@ -630,6 +630,8 @@ AgenticGraph
 agent_node
 graph
 EvalReport
+JudgeRubric
+JudgeResult
 Evaluator
 run_eval
 AgenticEnvironment
@@ -654,10 +656,10 @@ integrations
 __version__
 ```
 
-Contract entries including public members: 437
+Contract entries including public members: 455
 Shared contract scenarios: 10
 
-Contract checksum: `602095a3d27e1fa03852f27ee9a8d4bd8e6c864dce3067ee83976c3cafe285b7`
+Contract checksum: `0f943e98f8cbea89cefd616d13c3695ffaba653cd4d34258082df2e212c7dd45`
 ## Provider Conformance API
 
 The advanced `agentic_systems.providers` namespace exposes the Runtime/Provider

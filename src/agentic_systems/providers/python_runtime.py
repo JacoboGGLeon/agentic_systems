@@ -30,8 +30,19 @@ class PythonRuntimeProvider:
     def __init__(self, system: Any | None = None) -> None:
         self.system = system
 
-    def run(self, agent: Any, input: Any, policy: RunPolicy, *, mode: str = "default") -> RunResult:
+    def run(
+        self, agent: Any, input: Any, policy: RunPolicy, *, mode: str = "default"
+    ) -> RunResult:
         tools = _tool_registry(agent)
+        structured_input = hasattr(input, "model_dump")
+        if structured_input:
+            contract = getattr(agent, "contract", None)
+            required_tools = list(getattr(contract, "must_call", ()) or ())
+            if len(required_tools) == 1 and required_tools[0] in tools:
+                input = {
+                    "tool": required_tools[0],
+                    "input": input.model_dump(mode="python"),
+                }
         if not tools:
             return _failure(
                 message="PythonRuntimeProvider needs at least one concrete Tool on the agent.",
@@ -45,13 +56,19 @@ class PythonRuntimeProvider:
             pipeline = _parse_pipeline(input, tools)
             if pipeline is not None:
                 names, state = pipeline
-                if policy.max_tool_calls is not None and len(names) > policy.max_tool_calls:
+                if (
+                    policy.max_tool_calls is not None
+                    and len(names) > policy.max_tool_calls
+                ):
                     return _failure(
                         message=f"PythonRuntimeProvider planned {len(names)} tool calls, above max_tool_calls={policy.max_tool_calls}.",
                         agent=agent,
                         mode=mode,
                         code="max_tool_calls_exceeded",
-                        meta={"planned_tool_calls": len(names), "max_tool_calls": policy.max_tool_calls},
+                        meta={
+                            "planned_tool_calls": len(names),
+                            "max_tool_calls": policy.max_tool_calls,
+                        },
                     )
                 return _run_pipeline(agent, tools, names, state, policy, mode=mode)
             calls = _parse_plan(input, tools)
@@ -70,12 +87,17 @@ class PythonRuntimeProvider:
                 agent=agent,
                 mode=mode,
                 code="max_tool_calls_exceeded",
-                meta={"planned_tool_calls": len(calls), "max_tool_calls": policy.max_tool_calls},
+                meta={
+                    "planned_tool_calls": len(calls),
+                    "max_tool_calls": policy.max_tool_calls,
+                },
             )
 
         return _run_calls(agent, tools, calls, policy, mode=mode)
 
-    async def arun(self, agent: Any, input: Any, policy: RunPolicy, *, mode: str = "default") -> RunResult:
+    async def arun(
+        self, agent: Any, input: Any, policy: RunPolicy, *, mode: str = "default"
+    ) -> RunResult:
         return await asyncio.to_thread(self.run, agent, input, policy, mode=mode)
 
 
@@ -90,15 +112,31 @@ def _tool_registry(agent: Any) -> dict[str, Tool]:
     return {tool.name: tool for tool in tools if isinstance(tool, Tool)}
 
 
-def _run_calls(agent: Any, tools: Mapping[str, Tool], calls: list[dict[str, Any]], policy: RunPolicy, *, mode: str) -> RunResult:
+def _run_calls(
+    agent: Any,
+    tools: Mapping[str, Tool],
+    calls: list[dict[str, Any]],
+    policy: RunPolicy,
+    *,
+    mode: str,
+) -> RunResult:
     outputs: list[dict[str, Any]] = []
     events: list[ToolEvent] = []
     ok = True
     for index, call in enumerate(calls):
         tool = tools[call["tool"]]
-        result = tool.run(call.get("input"), context={"engine": PythonRuntimeProvider.name, "agent": getattr(agent, "name", ""), "index": index})
+        result = tool.run(
+            call.get("input"),
+            context={
+                "engine": PythonRuntimeProvider.name,
+                "agent": getattr(agent, "name", ""),
+                "index": index,
+            },
+        )
         events.extend(result.tool_events)
-        output_data = result.data if isinstance(result.data, dict) else {"value": result.data}
+        output_data = (
+            result.data if isinstance(result.data, dict) else {"value": result.data}
+        )
         outputs.append(
             {
                 "index": index,
@@ -147,10 +185,27 @@ def _run_pipeline(
     for index, name in enumerate(names):
         tool = tools[name]
         input_snapshot = _json_like(current)
-        result = tool.run(current, context={"engine": PythonRuntimeProvider.name, "agent": getattr(agent, "name", ""), "index": index})
+        result = tool.run(
+            current,
+            context={
+                "engine": PythonRuntimeProvider.name,
+                "agent": getattr(agent, "name", ""),
+                "index": index,
+            },
+        )
         events.extend(result.tool_events)
-        output_data = result.data if isinstance(result.data, dict) else {"value": result.data}
-        outputs.append({"index": index, "tool": name, "input": input_snapshot, "ok": result.ok, "output": output_data})
+        output_data = (
+            result.data if isinstance(result.data, dict) else {"value": result.data}
+        )
+        outputs.append(
+            {
+                "index": index,
+                "tool": name,
+                "input": input_snapshot,
+                "ok": result.ok,
+                "output": output_data,
+            }
+        )
         ok = ok and bool(result.ok)
         current = output_data
         if not result.ok and not policy.repair:
@@ -176,7 +231,9 @@ def _run_pipeline(
     )
 
 
-def _parse_pipeline(input_value: Any, tools: Mapping[str, Tool]) -> tuple[list[str], Any] | None:
+def _parse_pipeline(
+    input_value: Any, tools: Mapping[str, Tool]
+) -> tuple[list[str], Any] | None:
     if not isinstance(input_value, Mapping):
         return None
 
@@ -191,7 +248,11 @@ def _parse_pipeline(input_value: Any, tools: Mapping[str, Tool]) -> tuple[list[s
         return _normalize_pipeline(names, state, tools)
 
     raw_tools = input_value.get("tools")
-    if "state" in input_value and isinstance(raw_tools, Iterable) and not isinstance(raw_tools, (str, bytes, Mapping)):
+    if (
+        "state" in input_value
+        and isinstance(raw_tools, Iterable)
+        and not isinstance(raw_tools, (str, bytes, Mapping))
+    ):
         raw_list = list(raw_tools)
         if all(isinstance(item, str) for item in raw_list):
             return _normalize_pipeline(raw_list, input_value.get("state"), tools)
@@ -199,13 +260,17 @@ def _parse_pipeline(input_value: Any, tools: Mapping[str, Tool]) -> tuple[list[s
     return None
 
 
-def _normalize_pipeline(names: Any, state: Any, tools: Mapping[str, Tool]) -> tuple[list[str], Any]:
+def _normalize_pipeline(
+    names: Any, state: Any, tools: Mapping[str, Tool]
+) -> tuple[list[str], Any]:
     if not isinstance(names, Iterable) or isinstance(names, (str, bytes, Mapping)):
         raise TypeError("Pipeline tools must be a list of tool names.")
     normalized = [str(name) for name in names]
     missing = [name for name in normalized if name not in tools]
     if missing:
-        raise KeyError(f"Unknown pipeline tools {missing!r}. Available tools: {sorted(tools)}")
+        raise KeyError(
+            f"Unknown pipeline tools {missing!r}. Available tools: {sorted(tools)}"
+        )
     return normalized, state
 
 
@@ -213,7 +278,9 @@ def _parse_plan(input_value: Any, tools: Mapping[str, Tool]) -> list[dict[str, A
     if isinstance(input_value, str):
         input_value = input_value.strip()
         if not input_value:
-            raise ValueError("PythonRuntimeProvider received an empty string. Pass a structured tool plan or a direct payload for one tool.")
+            raise ValueError(
+                "PythonRuntimeProvider received an empty string. Pass a structured tool plan or a direct payload for one tool."
+            )
         try:
             input_value = json.loads(input_value)
         except json.JSONDecodeError as exc:
@@ -228,7 +295,9 @@ def _parse_plan(input_value: Any, tools: Mapping[str, Tool]) -> list[dict[str, A
     if isinstance(input_value, Mapping):
         for key in ("steps", "tools", "calls"):
             value = input_value.get(key)
-            if isinstance(value, Iterable) and not isinstance(value, (str, bytes, Mapping)):
+            if isinstance(value, Iterable) and not isinstance(
+                value, (str, bytes, Mapping)
+            ):
                 return [_normalize_call(item, tools) for item in value]
         if any(key in input_value for key in ("tool", "tool_name", "name")):
             return [_normalize_call(input_value, tools)]
@@ -247,7 +316,9 @@ def _parse_plan(input_value: Any, tools: Mapping[str, Tool]) -> list[dict[str, A
         tool_name = next(iter(tools))
         return [{"tool": tool_name, "input": input_value}]
 
-    raise ValueError("Unsupported PythonRuntimeProvider input. Pass a dict plan, list of plans, JSON string, or single-tool payload.")
+    raise ValueError(
+        "Unsupported PythonRuntimeProvider input. Pass a dict plan, list of plans, JSON string, or single-tool payload."
+    )
 
 
 def _normalize_call(item: Any, tools: Mapping[str, Tool]) -> dict[str, Any]:
@@ -280,7 +351,7 @@ def _result_data(outputs: list[dict[str, Any]], *, ok: bool) -> dict[str, Any]:
 def _summary_from_output_payload(payload: Any) -> str:
     if not isinstance(payload, Mapping):
         return ""
-    for key in ("summary", "text", "message", "error"):
+    for key in ("answer", "summary", "text", "message", "error"):
         value = payload.get(key)
         if value:
             return str(value)
@@ -306,7 +377,14 @@ def _result_text(data: dict[str, Any], outputs: list[dict[str, Any]]) -> str:
     return json.dumps(data, ensure_ascii=False)
 
 
-def _failure(*, message: str, agent: Any, mode: str, code: str, meta: dict[str, Any] | None = None) -> RunResult:
+def _failure(
+    *,
+    message: str,
+    agent: Any,
+    mode: str,
+    code: str,
+    meta: dict[str, Any] | None = None,
+) -> RunResult:
     return RunResult(
         text=message,
         data={"ok": False, "error": {"code": code, "message": message}},

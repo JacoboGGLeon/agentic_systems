@@ -64,7 +64,15 @@ from .environments import (
     build_planned_agent_graph,
     environment_lineage,
 )
-from .evals import EvalCaseResult, EvalReport, EvalReproducibility, Evaluator, run_eval
+from .evals import (
+    EvalCaseResult,
+    EvalReport,
+    EvalReproducibility,
+    Evaluator,
+    JudgeResult,
+    JudgeRubric,
+    run_eval,
+)
 from .expectations import ExpectationBuilder, expect
 from .integrations.langgraph import (
     AgenticGraph,

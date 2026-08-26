@@ -96,6 +96,15 @@ def test_final_answer_and_results_private_edges(monkeypatch):
 
     normalized = results_module._normalize_tool_event(RawOutputEvent())
     assert normalized["output"] == {"value": "scalar"}
+    assert (
+        results_module._tool_summary(
+            {
+                "answer": "Please choose a supported task.",
+                "unsupported_request": "weather",
+            }
+        )
+        == "Please choose a supported task."
+    )
 
     usage = results_module._usage_totals(
         [
@@ -117,3 +126,11 @@ def test_final_answer_and_results_private_edges(monkeypatch):
         {"tool_expectation": {"rule": "custom"}}
     )
     assert validation.issues[0].code == "tool_expectation_failed"
+
+
+def test_public_answer_text_preserves_business_json_strings_without_double_encoding():
+    text = '{"value": "ok"}'
+
+    assert results_module.public_answer_text(text) == text
+    assert results_module.public_answer_text('{"answer": "human"}') == "human"
+    assert results_module.public_answer_text("plain answer") == "plain answer"

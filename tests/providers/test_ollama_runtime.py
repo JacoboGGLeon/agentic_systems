@@ -123,7 +123,7 @@ def test_ollama_runtime_provider_runs_openai_compatible_tool_loop() -> None:
     assert repeated.check_invariants().ok is True
 
 
-def test_openai_compatible_loop_stops_when_required_tool_is_satisfied() -> None:
+def test_openai_compatible_loop_synthesizes_after_required_tool_is_satisfied() -> None:
     runtime = toolkit.runtime(provider="ollama-runtime", model="qwen3:4b")
     system = toolkit.system(runtime=runtime, model="qwen3:4b")
     client = FakeOllamaClient()
@@ -145,7 +145,8 @@ def test_openai_compatible_loop_stops_when_required_tool_is_satisfied() -> None:
         mode="eval",
     )
 
-    assert client.chat.completions.calls == 1
+    assert client.chat.completions.calls == 2
+    assert result.text == "El resultado es 42."
     assert result.ok is True
     assert [event.name for event in result.tool_events] == ["duplicar"]
     assert result.tool_events[0].output["result"] == 42

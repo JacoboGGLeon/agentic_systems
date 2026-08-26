@@ -12,6 +12,7 @@ import os
 import re
 from collections.abc import Mapping
 from hashlib import sha256
+from types import SimpleNamespace
 from typing import Any
 from time import perf_counter
 from uuid import uuid4
@@ -22,6 +23,7 @@ from agentic_systems.engines.names import OPENAI_RUNTIME_ENGINE, canonical_engin
 from agentic_systems.results import RunResult
 from agentic_systems.providers.conformance import ProviderProfile, provider_profile
 from agentic_systems.tools.events import ToolEvent
+from agentic_systems.tools.parsing import parse_textual_tool_call
 from agentic_systems.usage import merge_usage, normalize_usage
 
 _INSTALL_HINT = "Install with: pip install openai"
@@ -228,6 +230,7 @@ def _run_chat_loop(
     turns = 0
     usage: dict[str, Any] = {}
     max_turns = policy.max_turns or 8
+    synthesis_only = False
     while True:
         turns += 1
         if turns > max_turns:
@@ -248,8 +251,10 @@ def _run_chat_loop(
             or getattr(getattr(agent, "system", None), "model", None)
             or DEFAULT_OPENAI_MODEL_ID,
             messages=messages,
-            tools=tools or None,
-            tool_choice=_tool_choice(policy.tool_choice, tools) if tools else None,
+            tools=None if synthesis_only else (tools or None),
+            tool_choice=None
+            if synthesis_only or not tools
+            else _tool_choice(policy.tool_choice, tools),
             temperature=policy.temperature,
             max_tokens=policy.max_tokens,
         )
@@ -263,6 +268,9 @@ def _run_chat_loop(
         message = choice.message
         assistant_content = getattr(message, "content", None) or ""
         tool_calls = list(getattr(message, "tool_calls", None) or [])
+        assistant_content, tool_calls = _normalize_textual_tool_call(
+            assistant_content, tool_calls, tools
+        )
         if assistant_content:
             messages.append({"role": "assistant", "content": assistant_content})
         if not tool_calls:
@@ -314,16 +322,8 @@ def _run_chat_loop(
                     source="openai.chat.completions",
                 )
             if _required_tools_satisfied(agent, tool_events):
-                return _finalize_run_result(
-                    _tool_result_text(result["envelope"]),
-                    tool_events,
-                    ok,
-                    usage,
-                    agent=agent,
-                    mode=mode,
-                    runtime_engine=runtime_engine,
-                    source="openai.chat.completions",
-                )
+                synthesis_only = True
+                break
 
 
 async def _run_chat_loop_async(
@@ -342,6 +342,7 @@ async def _run_chat_loop_async(
     turns = 0
     usage: dict[str, Any] = {}
     max_turns = policy.max_turns or 8
+    synthesis_only = False
     while True:
         turns += 1
         if turns > max_turns:
@@ -362,8 +363,10 @@ async def _run_chat_loop_async(
             or getattr(getattr(agent, "system", None), "model", None)
             or DEFAULT_OPENAI_MODEL_ID,
             messages=messages,
-            tools=tools or None,
-            tool_choice=_tool_choice(policy.tool_choice, tools) if tools else None,
+            tools=None if synthesis_only else (tools or None),
+            tool_choice=None
+            if synthesis_only or not tools
+            else _tool_choice(policy.tool_choice, tools),
             temperature=policy.temperature,
             max_tokens=policy.max_tokens,
         )
@@ -377,6 +380,9 @@ async def _run_chat_loop_async(
         message = choice.message
         assistant_content = getattr(message, "content", None) or ""
         tool_calls = list(getattr(message, "tool_calls", None) or [])
+        assistant_content, tool_calls = _normalize_textual_tool_call(
+            assistant_content, tool_calls, tools
+        )
         if assistant_content:
             messages.append({"role": "assistant", "content": assistant_content})
         if not tool_calls:
@@ -428,16 +434,8 @@ async def _run_chat_loop_async(
                     source="openai.chat.completions",
                 )
             if _required_tools_satisfied(agent, tool_events):
-                return _finalize_run_result(
-                    _tool_result_text(result["envelope"]),
-                    tool_events,
-                    ok,
-                    usage,
-                    agent=agent,
-                    mode=mode,
-                    runtime_engine=runtime_engine,
-                    source="openai.chat.completions",
-                )
+                synthesis_only = True
+                break
 
 
 def _execute_tool(
@@ -651,6 +649,42 @@ def _canonical_tool_name(runtime: Any, agent: Any, provider_name: str) -> str:
             f"{provider_name!r}: {sorted(matches)!r}."
         )
     return matches[0] if matches else provider_name
+
+
+def _normalize_textual_tool_call(
+    content: str,
+    native_calls: list[Any],
+    tool_definitions: list[dict[str, Any]],
+) -> tuple[str, list[Any]]:
+    """Promote an exact declared ``name(JSON)`` expression to a Tool call.
+
+    Some OpenAI-compatible models emit the selected function as message text
+    instead of ``message.tool_calls``. The fallback is deliberately narrow: it
+    accepts the entire response only, requires a declared provider Tool name,
+    and requires a JSON object. Prose, code blocks, and unknown names remain
+    ordinary public text.
+    """
+
+    calls = list(native_calls)
+    if calls or not content.strip():
+        return content, calls
+    allowed = {
+        str(item.get("function", {}).get("name") or "")
+        for item in tool_definitions
+        if isinstance(item, Mapping)
+    }
+    parsed = parse_textual_tool_call(content, allowed)
+    if parsed is None:
+        return content, calls
+    name, arguments = parsed
+    call_id = f"textual-tool-{uuid4().hex}"
+    call = SimpleNamespace(
+        id=call_id,
+        function=SimpleNamespace(
+            name=name, arguments=json.dumps(arguments, ensure_ascii=False)
+        ),
+    )
+    return "", [call]
 
 
 def _tool_call_dict(tc: Any) -> dict[str, Any]:

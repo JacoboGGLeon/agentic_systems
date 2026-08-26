@@ -15,7 +15,50 @@ from openai.types.responses import (
     ResponseFunctionToolCall,
     ResponseOutputMessage,
     ResponseOutputText,
+
 )
+
+from agentic_systems.tools.parsing import parse_textual_tool_call
+
+
+class ToolCallNormalizingModel(Model):
+    """Normalize strict textual Tool calls before the Runner owns the loop."""
+
+    def __init__(self, delegate: Model, tool_names: list[str]) -> None:
+        self.delegate = delegate
+        self.tool_names = tuple(tool_names)
+
+    async def get_response(self, *args: Any, **kwargs: Any) -> ModelResponse:
+        response = await self.delegate.get_response(*args, **kwargs)
+        if any(isinstance(item, ResponseFunctionToolCall) for item in response.output):
+            return response
+        text = ""
+        for item in response.output:
+            if not isinstance(item, ResponseOutputMessage):
+                continue
+            for block in item.content:
+                if isinstance(block, ResponseOutputText):
+                    text += block.text
+        parsed = parse_textual_tool_call(text, self.tool_names)
+        if parsed is None:
+            return response
+        name, arguments = parsed
+        return ModelResponse(
+            output=[
+                ResponseFunctionToolCall(
+                    arguments=json.dumps(arguments, ensure_ascii=False),
+                    call_id=f"call_{uuid.uuid4().hex}",
+                    name=name,
+                    type="function_call",
+                )
+            ],
+            usage=response.usage,
+            response_id=response.response_id,
+        )
+
+    async def stream_response(self, *args: Any, **kwargs: Any) -> AsyncIterator[Any]:
+        async for item in self.delegate.stream_response(*args, **kwargs):
+            yield item
 
 
 class ScriptedOpenAIModel(Model):
@@ -171,4 +214,4 @@ def _jsonable(value: Any) -> Any:
     return value
 
 
-__all__ = ["ScriptedOpenAIModel"]
+__all__ = ["ScriptedOpenAIModel", "ToolCallNormalizingModel"]

@@ -216,7 +216,8 @@ def test_openai_provider_stops_when_required_tools_are_satisfied():
     ).run(agent, "sum", RunPolicy(tool_choice="add"), mode="eval")
 
     assert result.ok is True
-    assert len(client.calls) == 1
+    assert len(client.calls) == 2
+    assert result.text == "fallback final"
     assert [event.name for event in result.tool_events] == ["add"]
     assert result.tool_events[0].output == {"result": 42, "summary": "20+22=42"}
 
@@ -249,7 +250,8 @@ def test_openai_provider_async_stops_when_required_tools_are_satisfied():
     )
 
     assert result.ok is True
-    assert len(client.calls) == 1
+    assert len(client.calls) == 2
+    assert result.text == "fallback final"
     assert [event.name for event in result.tool_events] == ["add"]
 
 

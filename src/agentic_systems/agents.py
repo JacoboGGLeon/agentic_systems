@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import inspect
 import json
+import uuid
 from collections import Counter
 from collections.abc import Callable, Iterable
 from typing import Any
@@ -29,6 +31,7 @@ from .engines.names import (
     canonical_engine_name,
     normalize_engine_text,
 )
+from .delegation import capture_delegated_results, record_delegated_result
 from .errors import GraphContractError, is_transient_exception
 from .integrations.config import FrameworkConfig
 from .results import RunResult
@@ -50,6 +53,8 @@ def _coerce_input(value: Any, input_contract: Any | None) -> Any:
 
 
 def _coerce_output_data(result: RunResult, output_contract: Any | None) -> RunResult:
+    if not result.ok:
+        return result
     if output_contract is None:
         if not result.final:
             result.final = final_answer(result.data, text=result.text)
@@ -71,6 +76,7 @@ def _coerce_output_data(result: RunResult, output_contract: Any | None) -> RunRe
         and source.get("text") == result.text
     ):
         source = _try_parse_json_object(result.text)
+    source = _unwrap_structured_output(source, output_contract)
     validated = output_contract.model_validate(source)
     payload = validated.model_dump(mode="json")
     result.data = payload
@@ -84,6 +90,28 @@ def _try_parse_json_object(text: str) -> dict[str, Any]:
     except Exception:
         return {"text": text}
     return parsed if isinstance(parsed, dict) else {"value": parsed}
+
+
+def _unwrap_structured_output(
+    value: Any,
+    output_contract: Any,
+    *,
+    depth: int = 0,
+) -> Any:
+    if depth > 4:
+        return value
+    contract_fields = set(getattr(output_contract, "model_fields", {}))
+    if isinstance(value, str):
+        parsed = _try_parse_json_object(value)
+        if isinstance(parsed, dict) and set(parsed) == {"text"}:
+            return value
+        return _unwrap_structured_output(parsed, output_contract, depth=depth + 1)
+    if isinstance(value, dict) and len(value) == 1:
+        key, nested = next(iter(value.items()))
+        wrapper_keys = {"data", "output", "result", "final", "final_output", "value"}
+        if key in wrapper_keys and key not in contract_fields:
+            return _unwrap_structured_output(nested, output_contract, depth=depth + 1)
+    return value
 
 
 def _resolve_framework_and_engine(
@@ -378,6 +406,19 @@ class Agent:
         mode: str = "eval",
         config: RunPolicy | dict[str, Any] | None = None,
     ) -> RunResult:
+        """Run the agent and preserve every delegated Agent as a child."""
+
+        with capture_delegated_results() as delegated:
+            result = self._run_impl(input, mode=mode, config=config)
+        return self._attach_delegated_results(result, delegated)
+
+    def _run_impl(
+        self,
+        input: Any = None,
+        *,
+        mode: str = "eval",
+        config: RunPolicy | dict[str, Any] | None = None,
+    ) -> RunResult:
         """Run the agent from synchronous user code.
 
         This is the primary execution method for notebooks, scripts and tests.
@@ -421,6 +462,7 @@ class Agent:
                 is_success=lambda item: bool(getattr(item, "ok", True)),
                 should_retry_value=lambda item: item.should_retry(),
                 should_retry_exception=is_transient_exception,
+                inline=adapter.sync_execution_lane == "caller",
             )
         except SchedulerTimeoutError as exc:
             result = self._scheduler_failure_result(
@@ -448,6 +490,19 @@ class Agent:
         )
 
     async def arun(
+        self,
+        input: Any = None,
+        *,
+        mode: str = "eval",
+        config: RunPolicy | dict[str, Any] | None = None,
+    ) -> RunResult:
+        """Run asynchronously and preserve every delegated Agent child."""
+
+        with capture_delegated_results() as delegated:
+            result = await self._arun_impl(input, mode=mode, config=config)
+        return self._attach_delegated_results(result, delegated)
+
+    async def _arun_impl(
         self,
         input: Any = None,
         *,
@@ -581,6 +636,7 @@ class Agent:
         adapter = result.meta.get("framework_adapter") or self.framework_config.name
         result.meta.update(_framework_metadata(self.framework, adapter=adapter))
         result.meta.setdefault("framework_config", self.framework_config.inspect())
+        result.meta.setdefault("agent_name", self.name)
         if clean_input is not None:
             result.meta.setdefault("input", _json_like(clean_input))
         runtime_engine = self._runtime_engine_name()
@@ -592,8 +648,21 @@ class Agent:
         if result.engine == self.engine:
             result.engine = runtime_engine
         result = _coerce_output_data(result, self.output_contract)
+        if result.execution_id is None:
+            result.execution_id = f"run-{uuid.uuid4().hex}"
         validation = result.validate(self.contract)
         return result.apply_validation(validation)
+
+    @staticmethod
+    def _attach_delegated_results(
+        result: RunResult, delegated: list[RunResult]
+    ) -> RunResult:
+        existing = {child.execution_id for child in result.children}
+        for child in delegated:
+            if child.execution_id not in existing:
+                result.add_child(child)
+                existing.add(child.execution_id)
+        return result
 
     def run_sync(
         self,
@@ -645,21 +714,41 @@ class Agent:
         return _node
 
     def as_tool(self, *, name: str | None = None, description: str | None = None):
-        tool_name = name or self.name
+        """Expose this Agent as a typed delegation tool with public evidence."""
 
-        def _agent_tool(prompt: str) -> dict[str, Any]:
+        tool_name = name or self.name
+        public_signature = _agent_tool_signature(self.input_contract)
+
+        def _agent_tool(*args: Any, **kwargs: Any) -> dict:
             """Run this agent as a dict-returning tool."""
 
-            result = self.run(prompt)
+            bound = public_signature.bind(*args, **kwargs)
+            bound.apply_defaults()
+            payload = dict(bound.arguments)
+            if self.input_contract is None:
+                agent_input: Any = payload.get("prompt")
+            else:
+                agent_input = payload
+            result = self.run(agent_input)
+            record_delegated_result(result)
             return {
+                "answer": result.text,
                 "text": result.text,
                 "data": result.data,
                 "ok": result.ok,
-                "trace": result.trace("compact"),
+                "execution": {
+                    "execution_id": result.execution_id,
+                    "provider": result.engine,
+                    "framework": result.meta.get("framework_adapter")
+                    or result.meta.get("framework"),
+                    "model": result.model,
+                    "usage": result.usage,
+                },
             }
 
         _agent_tool.__name__ = tool_name.replace(".", "_")
         _agent_tool.__doc__ = description or f"Run agent {self.name}."
+        _agent_tool.__signature__ = public_signature
         return _agent_tool
 
     def validate(self) -> ValidationResult:
@@ -741,6 +830,33 @@ class Agent:
                 "Direct Agent.eval(...) needs an attached AgenticSystem. Use `agent.bind(system)` first."
             )
         return self.system.eval(self, cases, **kwargs)
+
+
+def _agent_tool_signature(input_contract: Any | None) -> inspect.Signature:
+    """Build a JSON-friendly callable signature from a Pydantic contract."""
+
+    parameters: list[inspect.Parameter] = []
+    fields = getattr(input_contract, "model_fields", None)
+    if fields:
+        for name, field in fields.items():
+            default = inspect.Signature.empty if field.is_required() else field.default
+            parameters.append(
+                inspect.Parameter(
+                    name,
+                    inspect.Parameter.POSITIONAL_OR_KEYWORD,
+                    annotation=field.annotation or Any,
+                    default=default,
+                )
+            )
+    else:
+        parameters.append(
+            inspect.Parameter(
+                "prompt",
+                inspect.Parameter.POSITIONAL_OR_KEYWORD,
+                annotation=str,
+            )
+        )
+    return inspect.Signature(parameters, return_annotation=dict)
 
 
 def _normalize_agent_tool_inputs(

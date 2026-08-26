@@ -91,6 +91,8 @@ class RuntimeConfig:
         """Return a runtime config from an object, dict, or keyword overrides."""
 
         if isinstance(value, cls):
+            if not overrides:
+                return value
             base = value.to_dict()
         elif value is None:
             base = {}

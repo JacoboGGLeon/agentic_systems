@@ -96,7 +96,7 @@ def test_python_provider_frameworks_support_async_execution(framework: str | Non
 
 def test_public_surface_is_frozen_for_2_1():
     assert toolkit.__version__ == "2.1.0"
-    assert len(toolkit.__all__) == 87
+    assert len(toolkit.__all__) == 89
     assert toolkit.__all__.count("framework") == 1
 
 

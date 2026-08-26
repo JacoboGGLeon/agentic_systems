@@ -20,7 +20,7 @@ from ...engines.names import (
 )
 from ...protocols import AsyncRunner, SyncRunner
 from ...registry import provider_capability
-from ...results import RunResult
+from ...results import RunResult, public_answer_text
 from ...tools.events import ToolEvent
 from ...usage import normalize_usage
 from .base import FrameworkAdapter, attach_native_result, effective_max_turns
@@ -47,6 +47,8 @@ class OpenAIAgentsFrameworkAdapter(FrameworkAdapter):
                 ) from exc
 
             kwargs = dict(agent.framework_config.agent_kwargs)
+            if agent.output_contract is not None:
+                kwargs.setdefault("output_type", agent.output_contract)
             native_tools = kwargs.pop("tools", None)
             canonical_tools = agent.available_tools()
             aliases = tool_name_aliases(canonical_tools)
@@ -207,10 +209,18 @@ def _materialize_model(agent: Any, engine: Any) -> Any:
                 if isinstance(secret, SecretStr)
                 else secret or os.getenv("OLLAMA_API_KEY") or "ollama"
             )
+        from .openai_models import ToolCallNormalizingModel
+
         client = AsyncOpenAI(base_url=base_url, api_key=api_key)
-        return OpenAIChatCompletionsModel(
+        delegate = OpenAIChatCompletionsModel(
             model=agent.model,
             openai_client=client,
+        )
+        available_tools = getattr(agent, "available_tools", lambda: [])()
+        aliases = tool_name_aliases(available_tools)
+        return ToolCallNormalizingModel(
+            delegate,
+            [aliases.native(tool.name) for tool in available_tools],
         )
     from .openai_models import ScriptedOpenAIModel
 
@@ -382,10 +392,9 @@ def _input_text(value: Any) -> str:
 
 
 def _output_text(value: Any) -> str:
-    if hasattr(value, "model_dump_json"):
-        return value.model_dump_json()
-    if isinstance(value, str):
-        return value
+    projected = public_answer_text(value)
+    if projected:
+        return projected
     return json.dumps(_jsonable(value), ensure_ascii=False, default=str)
 
 

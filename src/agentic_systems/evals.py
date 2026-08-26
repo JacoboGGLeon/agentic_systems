@@ -6,6 +6,7 @@ or graph-based agent runs.
 """
 
 from __future__ import annotations
+import json
 
 from typing import Any, Literal
 
@@ -14,7 +15,72 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 from .contracts import AgentContract, ValidationResult
 from .environments import AgenticEnvironment, GraphState
 from .lineage import _short
-from .results import RunResult, _contains_subset
+from .results import RunResult, _contains_subset, is_technical_public_answer
+from .usage import merge_usage
+
+
+DEFAULT_JUDGE_CRITERIA = (
+    "request_fulfillment",
+    "evidence_correctness",
+    "clarity",
+    "no_technical_noise",
+    "no_unsupported_claims",
+)
+
+DEFAULT_JUDGE_INSTRUCTIONS = (
+    "Evaluate request_fulfillment against the declared expected contract, not "
+    "against an impossible literal interpretation of the user's request. A safe "
+    "refusal or useful clarification is full request fulfillment when the expected "
+    "contract declares the request out of scope and the candidate performs no "
+    "unsupported delegation. Treat deterministic validation and recorded Tool "
+    "evidence as authoritative facts; never invent missing evidence or penalize "
+    "behavior that the expected contract explicitly requires."
+)
+
+
+class JudgeRubric(BaseModel):
+    """Typed semantic rubric shared by deterministic and model judges."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    criteria: tuple[str, ...] = DEFAULT_JUDGE_CRITERIA
+    threshold: float = Field(default=0.80, ge=0.0, le=1.0)
+    instructions: str = DEFAULT_JUDGE_INSTRUCTIONS
+
+
+class JudgeResult(BaseModel):
+    """Normalized, auditable semantic verdict."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    ok: bool
+    score: float = Field(ge=0.0, le=1.0)
+    criteria: dict[str, float] = Field(default_factory=dict)
+    threshold: float = Field(default=0.80, ge=0.0, le=1.0)
+    deterministic_validation_ok: bool = True
+    rationale: str = ""
+    provider: str | None = None
+    framework: str | None = None
+    model: str | None = None
+    usage: dict[str, Any] = Field(default_factory=dict)
+
+    @model_validator(mode="after")
+    def validate_verdict(self) -> "JudgeResult":
+        if any(score < 0.0 or score > 1.0 for score in self.criteria.values()):
+            raise ValueError("Judge criterion scores must be between 0 and 1")
+        criteria_ok = (
+            self.deterministic_validation_ok
+            and bool(self.criteria)
+            and all(score >= self.threshold for score in self.criteria.values())
+        )
+        if self.ok != criteria_ok:
+            raise ValueError(
+                "JudgeResult.ok must equal the threshold verdict for every criterion"
+            )
+        return self
+
+    def to_dict(self) -> dict[str, Any]:
+        return self.model_dump(mode="json")
 
 
 class EvalCaseResult(BaseModel):
@@ -26,6 +92,11 @@ class EvalCaseResult(BaseModel):
     expected: dict[str, Any] = Field(default_factory=dict)
     result: dict[str, Any]
     validation: dict[str, Any]
+    deterministic_validation: dict[str, Any] | None = None
+    judge: JudgeResult | None = None
+    candidate_usage: dict[str, Any] = Field(default_factory=dict)
+    judge_usage: dict[str, Any] = Field(default_factory=dict)
+    usage: dict[str, Any] = Field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return self.model_dump(mode="json")
@@ -37,7 +108,9 @@ class EvalReproducibility(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     schema_version: str = "agentic_systems.eval-reproducibility.v1"
-    classification: Literal["deterministic", "seeded", "non_deterministic"] = "non_deterministic"
+    classification: Literal["deterministic", "seeded", "non_deterministic"] = (
+        "non_deterministic"
+    )
     seed: int | None = 0
     replayable: bool = False
     conditions: list[str] = Field(default_factory=list)
@@ -47,7 +120,9 @@ class EvalReproducibility(BaseModel):
         if self.classification == "seeded" and self.seed is None:
             raise ValueError("seeded eval reproducibility requires a non-null seed")
         if self.classification == "non_deterministic" and self.replayable:
-            raise ValueError("non_deterministic eval reproducibility cannot promise replayable=True")
+            raise ValueError(
+                "non_deterministic eval reproducibility cannot promise replayable=True"
+            )
         return self
 
     def to_dict(self) -> dict[str, Any]:
@@ -57,7 +132,7 @@ class EvalReproducibility(BaseModel):
 class EvalReport(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    schema_version: str = "agentic_systems.eval-report.v1"
+    schema_version: str = "agentic_systems.eval-report.v2"
     ok: bool
     total: int
     passed: int
@@ -84,7 +159,9 @@ class EvalReport(BaseModel):
         if self.ok != (actual_failed == 0):
             problems.append(f"ok={self.ok}, expected {actual_failed == 0}")
         if problems:
-            raise ValueError("EvalReport aggregates are inconsistent: " + "; ".join(problems))
+            raise ValueError(
+                "EvalReport aggregates are inconsistent: " + "; ".join(problems)
+            )
         return self
 
     def to_dict(self) -> dict[str, Any]:
@@ -172,7 +249,12 @@ class EvalReport(BaseModel):
                 summary=answer,
                 source="EvalReport",
                 why="Evals usan el mismo patrón batch/episodio que environments.",
-                evidence={"total": self.total, "passed": self.passed, "failed": self.failed, "pass_rate": self.pass_rate},
+                evidence={
+                    "total": self.total,
+                    "passed": self.passed,
+                    "failed": self.failed,
+                    "pass_rate": self.pass_rate,
+                },
             )
         ]
         for index, case in enumerate(self.cases, start=1):
@@ -184,7 +266,10 @@ class EvalReport(BaseModel):
                     step_id=f"case_{index}",
                     kind="decision",
                     title=f"Eval case: {case.name}",
-                    summary=_short(f"{status}; input={_short(case.input, max_chars=120)}; expected={expected}; actual={actual}.", max_chars=420),
+                    summary=_short(
+                        f"{status}; input={_short(case.input, max_chars=120)}; expected={expected}; actual={actual}.",
+                        max_chars=420,
+                    ),
                     source="EvalCaseResult",
                     why="El eval ejecutó el caso y comparó la salida real contra contrato/expectativa declarativa.",
                     evidence={
@@ -205,7 +290,12 @@ class EvalReport(BaseModel):
                 summary=answer,
                 source="EvalReport",
                 why="El score agregado se calcula desde los casos ejecutados, no desde una respuesta inventada.",
-                evidence={"total": self.total, "passed": self.passed, "failed": self.failed, "pass_rate": self.pass_rate},
+                evidence={
+                    "total": self.total,
+                    "passed": self.passed,
+                    "failed": self.failed,
+                    "pass_rate": self.pass_rate,
+                },
             )
         )
         return LineageMemory(
@@ -219,8 +309,6 @@ class EvalReport(BaseModel):
             tags=["eval", *(tags or [])],
             metadata=metadata or {},
         )
-
-
 
 
 def _case_expected_summary(expected: dict[str, Any]) -> str:
@@ -240,8 +328,16 @@ def _case_expected_summary(expected: dict[str, Any]) -> str:
 def _case_actual_evidence(case: EvalCaseResult) -> dict[str, Any]:
     result = case.result or {}
     answer = result.get("answer") if isinstance(result.get("answer"), dict) else {}
-    data = answer.get("data") if isinstance(answer.get("data"), dict) else result.get("data") or {}
-    final = answer.get("final") if isinstance(answer.get("final"), dict) else result.get("final") or {}
+    data = (
+        answer.get("data")
+        if isinstance(answer.get("data"), dict)
+        else result.get("data") or {}
+    )
+    final = (
+        answer.get("final")
+        if isinstance(answer.get("final"), dict)
+        else result.get("final") or {}
+    )
     tools = result.get("tools") if isinstance(result.get("tools"), list) else []
     return {
         "ok": result.get("ok"),
@@ -284,7 +380,6 @@ def _case_actual_summary(case: EvalCaseResult) -> str:
     return "sin salida estructurada"
 
 
-
 class Evaluator:
     """Small public evaluation facade."""
 
@@ -295,6 +390,8 @@ class Evaluator:
         *,
         mode: str = "eval",
         environment_kwargs: dict[str, Any] | None = None,
+        judge: Any | None = None,
+        rubric: JudgeRubric | dict[str, Any] | None = None,
         determinism: Literal[
             "deterministic", "seeded", "non_deterministic"
         ] = "non_deterministic",
@@ -312,6 +409,8 @@ class Evaluator:
             cases,
             mode=mode,
             environment_kwargs=environment_kwargs,
+            judge=judge,
+            rubric=rubric,
             determinism=determinism,
             seed=seed,
             reproducibility_conditions=reproducibility_conditions,
@@ -324,7 +423,11 @@ class Evaluator:
         *,
         mode: str = "eval",
         environment_kwargs: dict[str, Any] | None = None,
-        determinism: Literal["deterministic", "seeded", "non_deterministic"] = "non_deterministic",
+        judge: Any | None = None,
+        rubric: JudgeRubric | dict[str, Any] | None = None,
+        determinism: Literal[
+            "deterministic", "seeded", "non_deterministic"
+        ] = "non_deterministic",
         seed: int | None = 0,
         reproducibility_conditions: list[str] | None = None,
     ) -> EvalReport:
@@ -335,6 +438,8 @@ class Evaluator:
             cases,
             mode=mode,
             environment_kwargs=environment_kwargs,
+            judge=judge,
+            rubric=rubric,
             determinism=determinism,
             seed=seed,
             reproducibility_conditions=reproducibility_conditions,
@@ -347,7 +452,11 @@ class Evaluator:
         *,
         mode: str = "eval",
         environment_kwargs: dict[str, Any] | None = None,
-        determinism: Literal["deterministic", "seeded", "non_deterministic"] = "non_deterministic",
+        judge: Any | None = None,
+        rubric: JudgeRubric | dict[str, Any] | None = None,
+        determinism: Literal[
+            "deterministic", "seeded", "non_deterministic"
+        ] = "non_deterministic",
         seed: int | None = 0,
         reproducibility_conditions: list[str] | None = None,
     ) -> EvalReport:
@@ -358,6 +467,8 @@ class Evaluator:
             cases,
             mode=mode,
             environment_kwargs=environment_kwargs,
+            judge=judge,
+            rubric=rubric,
             determinism=determinism,
             seed=seed,
             reproducibility_conditions=reproducibility_conditions,
@@ -367,9 +478,13 @@ class Evaluator:
 class _EvalStepGraph:
     """Graph-shaped adapter that evaluates one case per environment step."""
 
-    def __init__(self, agent: Any, *, mode: str) -> None:
+    def __init__(
+        self, agent: Any, *, mode: str, judge: Any | None, rubric: JudgeRubric
+    ) -> None:
         self.agent = agent
         self.mode = mode
+        self.judge = judge
+        self.rubric = rubric
 
     def invoke(self, state: GraphState) -> GraphState:
         case = state["row"]
@@ -377,10 +492,23 @@ class _EvalStepGraph:
         name = str(case.get("name") or f"case_{index + 1}")
         expected = dict(case.get("expected") or {})
         contract = _contract_from_case(case, expected)
-        result: RunResult = _run_agent_case(self.agent, case.get("input"), mode=self.mode, config=case.get("config"))
+        result: RunResult = _run_agent_case(
+            self.agent, case.get("input"), mode=self.mode, config=case.get("config")
+        )
         validation = result.validate(contract)
         _apply_expected_assertions(validation, result, expected)
-        ok = result.ok and validation.ok
+        deterministic_ok = result.ok and validation.ok
+        judge_result = _run_judge(
+            self.judge,
+            case=case,
+            result=result,
+            rubric=self.rubric,
+            deterministic_ok=deterministic_ok,
+        )
+        candidate_usage = _candidate_usage(result)
+        judge_usage = dict(judge_result.usage) if judge_result is not None else {}
+        aggregate_usage = merge_usage(candidate_usage, judge_usage)
+        ok = deterministic_ok and (judge_result is None or judge_result.ok)
         return {
             **state,
             "eval": {
@@ -390,11 +518,18 @@ class _EvalStepGraph:
                 "expected": expected,
                 "result": result.to_dict(),
                 "validation": validation.to_dict(),
+                "deterministic_validation": validation.to_dict(),
+                "judge": judge_result.to_dict() if judge_result is not None else None,
+                "candidate_usage": candidate_usage,
+                "judge_usage": judge_usage,
+                "usage": aggregate_usage,
             },
             "memory": {
                 **(state.get("memory") or {}),
                 "evaluated": [*(state.get("memory") or {}).get("evaluated", []), name],
-                "passed": [*(state.get("memory") or {}).get("passed", []), name] if ok else (state.get("memory") or {}).get("passed", []),
+                "passed": [*(state.get("memory") or {}).get("passed", []), name]
+                if ok
+                else (state.get("memory") or {}).get("passed", []),
             },
         }
 
@@ -405,7 +540,11 @@ def run_eval(
     *,
     mode: str = "eval",
     environment_kwargs: dict[str, Any] | None = None,
-    determinism: Literal["deterministic", "seeded", "non_deterministic"] = "non_deterministic",
+    judge: Any | None = None,
+    rubric: JudgeRubric | dict[str, Any] | None = None,
+    determinism: Literal[
+        "deterministic", "seeded", "non_deterministic"
+    ] = "non_deterministic",
     seed: int | None = 0,
     reproducibility_conditions: list[str] | None = None,
 ) -> EvalReport:
@@ -417,11 +556,12 @@ def run_eval(
     histories instead of maintaining a separate batch runner.
     """
 
+    resolved_rubric = JudgeRubric.model_validate(rubric or {})
     kwargs = dict(environment_kwargs or {})
     kwargs.setdefault("name", "agent_eval")
     env = AgenticEnvironment(
         records=cases,
-        graph=_EvalStepGraph(agent, mode=mode),
+        graph=_EvalStepGraph(agent, mode=mode, judge=judge, rubric=resolved_rubric),
         reward_fn=_eval_reward,
         **kwargs,
     )
@@ -467,9 +607,13 @@ def _eval_reproducibility(
     if classification == "seeded":
         default_conditions.append("all stochastic components consume the declared seed")
     elif classification == "deterministic":
-        default_conditions.append("agent, graph, scorer, and provider contain no uncontrolled randomness")
+        default_conditions.append(
+            "agent, graph, scorer, and provider contain no uncontrolled randomness"
+        )
     else:
-        default_conditions.append("uncontrolled model, provider, tool, or external randomness may vary results")
+        default_conditions.append(
+            "uncontrolled model, provider, tool, or external randomness may vary results"
+        )
     return EvalReproducibility(
         classification=classification,
         seed=seed,
@@ -478,13 +622,173 @@ def _eval_reproducibility(
     )
 
 
-def _run_agent_case(agent: Any, input_value: Any, *, mode: str, config: Any) -> RunResult:
+def _candidate_usage(result: RunResult) -> dict[str, Any]:
+    """Aggregate actual agent executions without double-counting plan projections."""
+
+    nodes = list(result.walk())
+    agent_nodes = [node for node in nodes if node.meta.get("agent_name")]
+    if not agent_nodes:
+        return dict(result.usage or {})
+    return merge_usage(*(dict(node.usage or {}) for node in agent_nodes))
+
+
+def _run_judge(
+    judge: Any | None,
+    *,
+    case: dict[str, Any],
+    result: RunResult,
+    rubric: JudgeRubric,
+    deterministic_ok: bool,
+) -> JudgeResult | None:
+    if judge is None:
+        return None
+    request = {
+        "task": "semantic_judge",
+        "rubric": rubric.model_dump(mode="json"),
+        "case": {
+            "name": case.get("name"),
+            "input": case.get("input"),
+            "expected": case.get("expected") or {},
+        },
+        "candidate": _judge_candidate_view(result),
+    }
+    try:
+        judged = judge.run(request, mode="eval")
+    except TypeError:
+        judged = judge.run(request)
+    payload = _judge_payload(judged)
+    raw_criteria = payload.get("criteria")
+    raw_criteria = raw_criteria if isinstance(raw_criteria, dict) else {}
+    criteria = {name: float(raw_criteria.get(name, 0.0)) for name in rubric.criteria}
+    score = float(payload.get("score", sum(criteria.values()) / len(criteria)))
+    provider = payload.get("provider")
+    framework = payload.get("framework")
+    model = payload.get("model")
+    usage: dict[str, Any] = {}
+    if isinstance(judged, RunResult):
+        provider = judged.engine
+        framework = judged.meta.get("framework_adapter") or judged.meta.get("framework")
+        model = judged.model
+        usage = dict(judged.usage or {})
+    threshold_ok = bool(criteria) and all(
+        value >= rubric.threshold for value in criteria.values()
+    )
+    return JudgeResult(
+        ok=deterministic_ok and threshold_ok,
+        score=score,
+        criteria=criteria,
+        threshold=rubric.threshold,
+        deterministic_validation_ok=deterministic_ok,
+        rationale=str(payload.get("rationale") or ""),
+        provider=str(provider) if provider else None,
+        framework=str(framework) if framework else None,
+        model=str(model) if model else None,
+        usage=usage,
+    )
+
+
+def _judge_candidate_view(result: RunResult) -> dict[str, Any]:
+    """Project complete lineage without redundant presentation/raw payloads."""
+
+    def project(node: dict[str, Any]) -> dict[str, Any]:
+        children = [
+            project(child)
+            for child in node.get("children", [])
+            if isinstance(child, dict)
+        ]
+        tools = []
+        for tool in node.get("tools", []):
+            if not isinstance(tool, dict):
+                continue
+            tools.append(
+                {
+                    "name": tool.get("name"),
+                    "ok": tool.get("ok"),
+                    "input": tool.get("input"),
+                    "output": None if children else tool.get("output"),
+                    "error": tool.get("error"),
+                }
+            )
+        return {
+            "ok": node.get("ok"),
+            "execution": node.get("execution"),
+            "runtime": node.get("runtime"),
+            "answer": {"text": (node.get("answer") or {}).get("text")},
+            "tools": tools,
+            "usage": node.get("usage"),
+            "validation": node.get("validation"),
+            "errors": node.get("errors"),
+            "children": children,
+        }
+
+    return project(result.normalized())
+
+
+def _judge_payload(judged: Any) -> dict[str, Any]:
+    if isinstance(judged, dict):
+        sources = [judged]
+    elif isinstance(judged, RunResult):
+        sources = [
+            judged.data,
+            judged.final,
+            *(event.output for event in judged.tool_events),
+        ]
+        try:
+            sources.append(json.loads(judged.text))
+        except (TypeError, ValueError, json.JSONDecodeError):
+            pass
+    else:
+        sources = []
+
+    def _find(value: Any, *, depth: int = 0) -> dict[str, Any] | None:
+        if depth > 6:
+            return None
+        if isinstance(value, dict):
+            if isinstance(value.get("criteria"), dict):
+                return value
+            priority = ("judge", "data", "output", "result", "final_output")
+            ordered = [value.get(key) for key in priority if key in value]
+            ordered.extend(item for key, item in value.items() if key not in priority)
+            for item in ordered:
+                found = _find(item, depth=depth + 1)
+                if found is not None:
+                    return found
+        elif isinstance(value, list):
+            for item in value:
+                found = _find(item, depth=depth + 1)
+                if found is not None:
+                    return found
+        elif isinstance(value, str):
+            try:
+                decoded = json.loads(value)
+            except (TypeError, ValueError, json.JSONDecodeError):
+                return None
+            if decoded != value:
+                return _find(decoded, depth=depth + 1)
+            for item in value:
+                found = _find(item, depth=depth + 1)
+                if found is not None:
+                    return found
+        return None
+
+    for source in sources:
+        found = _find(source)
+        if found is not None:
+            return found
+    return {}
+
+
+def _run_agent_case(
+    agent: Any, input_value: Any, *, mode: str, config: Any
+) -> RunResult:
     if hasattr(agent, "run"):
         return agent.run(input_value, mode=mode, config=config)
     return agent.run_sync(input_value, mode=mode, config=config)
 
 
-def _contract_from_case(case: dict[str, Any], expected: dict[str, Any]) -> AgentContract:
+def _contract_from_case(
+    case: dict[str, Any], expected: dict[str, Any]
+) -> AgentContract:
     contract = AgentContract.coerce(case.get("contract") or {})
     if "must_call" in expected:
         contract.must_call = list(expected["must_call"])
@@ -493,22 +797,119 @@ def _contract_from_case(case: dict[str, Any], expected: dict[str, Any]) -> Agent
     return contract
 
 
-def _eval_reward(graph_state: GraphState, row: dict[str, Any], action: Any, env: AgenticEnvironment) -> float:
+def _eval_reward(
+    graph_state: GraphState, row: dict[str, Any], action: Any, env: AgenticEnvironment
+) -> float:
     return 1.0 if graph_state.get("eval", {}).get("ok") else 0.0
 
 
-def _apply_expected_assertions(validation: ValidationResult, result: RunResult, expected: dict[str, Any]) -> None:
-    if "text_contains" in expected and str(expected["text_contains"]) not in result.text:
+def _apply_expected_assertions(
+    validation: ValidationResult, result: RunResult, expected: dict[str, Any]
+) -> None:
+    if (
+        "text_contains" in expected
+        and str(expected["text_contains"]) not in result.text
+    ):
         validation.add(
             "expected_text_missing",
             f"Expected text to contain {expected['text_contains']!r}.",
             path="text",
         )
-    if "data_contains" in expected and not _contains_subset(result.data, expected["data_contains"]):
+    if "data_contains" in expected and not _contains_subset(
+        result.data, expected["data_contains"]
+    ):
         validation.add(
             "expected_data_mismatch",
             "Expected data subset not found.",
             path="data",
             meta={"expected": expected["data_contains"], "actual": result.data},
         )
-
+    if expected.get("human_answer") and (
+        not result.text.strip() or is_technical_public_answer(result.text)
+    ):
+        validation.add(
+            "non_human_public_answer",
+            "Expected a natural public answer, not an internal envelope or repr.",
+            path="text",
+        )
+    nodes = list(result.walk())
+    identity_node = next(
+        (node for node in nodes if node.meta.get("agent_name")), result
+    )
+    expected_provider = expected.get("provider")
+    actual_provider = identity_node.engine
+    if expected_provider and actual_provider != expected_provider:
+        validation.add(
+            "provider_identity_mismatch",
+            f"Expected provider {expected_provider!r}, observed {actual_provider!r}.",
+            path="runtime.provider",
+        )
+    expected_framework = expected.get("framework")
+    actual_framework = identity_node.meta.get(
+        "framework_adapter"
+    ) or identity_node.meta.get("framework")
+    if expected_framework and actual_framework != expected_framework:
+        validation.add(
+            "framework_identity_mismatch",
+            f"Expected framework {expected_framework!r}, observed {actual_framework!r}.",
+            path="runtime.framework",
+        )
+    execution_nodes = [node for node in nodes if node.meta.get("agent_name")]
+    tool_nodes = execution_nodes or nodes
+    tool_path = [
+        event.name for node in tool_nodes for event in (node.tool_events or [])
+    ]
+    agent_path = [str(node.meta["agent_name"]) for node in execution_nodes]
+    if "allowed_tool_paths" in expected:
+        allowed_tool_paths = [
+            list(path)
+            for path in expected["allowed_tool_paths"]
+            if isinstance(path, (list, tuple))
+        ]
+        if tool_path not in allowed_tool_paths:
+            validation.add(
+                "tool_path_not_allowed",
+                "Observed Tool path is not one of the declared semantic routes.",
+                path="lineage.tools",
+                meta={"allowed": allowed_tool_paths, "actual": tool_path},
+            )
+    if "tool_path" in expected and tool_path != list(expected["tool_path"]):
+        validation.add(
+            "tool_path_mismatch",
+            "Observed Tool path differs from the declared semantic route.",
+            path="lineage.tools",
+            meta={"expected": expected["tool_path"], "actual": tool_path},
+        )
+    if "agent_path" in expected and agent_path != list(expected["agent_path"]):
+        validation.add(
+            "agent_path_mismatch",
+            "Observed Agent path differs from the declared semantic route.",
+            path="lineage.agents",
+            meta={"expected": expected["agent_path"], "actual": agent_path},
+        )
+    if expected.get("no_fallback") and any(
+        node.meta.get("fallback_provider") for node in nodes
+    ):
+        validation.add(
+            "unexpected_provider_fallback",
+            "Semantic certification forbids provider fallback.",
+            path="runtime.fallback_provider",
+        )
+    for tool_name, subset in (expected.get("tool_output_contains") or {}).items():
+        matching = [
+            event
+            for node in nodes
+            for event in (node.tool_events or [])
+            if event.name == tool_name
+        ]
+        if not matching or not any(
+            _contains_subset(event.output, subset)
+            or _contains_subset(event.output.get("data", {}), subset)
+            for event in matching
+        ):
+            validation.add(
+                "expected_tool_evidence_missing",
+                f"Expected evidence from Tool {tool_name!r} was not observed.",
+                path=f"lineage.tools.{tool_name}",
+                meta={"expected": subset},
+            )

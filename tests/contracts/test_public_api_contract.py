@@ -34,7 +34,7 @@ EXPECTED_BEDROCK_RUNTIME_SIGNATURES = {
 
 
 def test_public_api_and_bedrock_exports_are_frozen_for_2_1():
-    assert len(agentic_systems.__all__) == 87
+    assert len(agentic_systems.__all__) == 89
     assert providers.BedrockRuntime is bedrock_runtime.BedrockRuntime
     assert providers.BedrockRunResult is bedrock_runtime.BedrockRunResult
     assert not hasattr(bedrock_runtime, "__version__")

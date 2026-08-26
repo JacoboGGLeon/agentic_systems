@@ -2,6 +2,7 @@ import asyncio
 from types import SimpleNamespace
 
 
+import agentic_systems.providers.openai_runtime as openai_runtime_module
 from agentic_systems import (
     AgentContract,
     RunPolicy,
@@ -81,3 +82,28 @@ def test_openai_runtime_provider_with_fake_runtime():
     assert result.tool_events[0].output["result"] == 42
     async_result = asyncio.run(engine.arun(agent, {"x": 2}, RunPolicy(), mode="audit"))
     assert async_result.text == "openai final"
+
+
+def test_textual_tool_call_fallback_is_declared_exact_and_json_only():
+    tools = [
+        {
+            "type": "function",
+            "function": {"name": "clarify_scope", "parameters": {}},
+        }
+    ]
+    content, calls = openai_runtime_module._normalize_textual_tool_call(
+        'clarify_scope({"question":"weather"})', [], tools
+    )
+    assert content == ""
+    assert calls[0].function.name == "clarify_scope"
+    assert calls[0].function.arguments == '{"question": "weather"}'
+
+    for invalid in (
+        'unknown({"question":"weather"})',
+        'Please call clarify_scope({"question":"weather"})',
+        'clarify_scope({question: "weather"})',
+        '```clarify_scope({"question":"weather"})```',
+    ):
+        assert openai_runtime_module._normalize_textual_tool_call(
+            invalid, [], tools
+        ) == (invalid, [])

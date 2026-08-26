@@ -425,6 +425,7 @@ class AgenticSystem:
             is_async=inspect.iscoroutinefunction(public_tool.function),
         )
         return public_tool
+
     def add(self, executable: Any) -> Any:
         """Register any Executable as a system computation unit."""
 
@@ -433,7 +434,6 @@ class AgenticSystem:
         if executable not in self._agents:
             self._agents.append(executable)
         return executable
-
 
     def agent(
         self,
@@ -568,13 +568,16 @@ class AgenticSystem:
         *,
         execution: ExecutionPlan | None = None,
         name: str = "system",
+        entrypoint: Agent | str | None = None,
     ) -> CompiledSystem:
-        """Freeze registered Agents and their external execution plan."""
+        """Freeze the whole system or a single declared entrypoint."""
 
+        units, entrypoint_name = self._resolve_entrypoint(entrypoint)
         return CompiledSystem(
             name=name,
-            units=tuple(self._agents),
+            units=units,
             plan=execution or SequentialPlan(),
+            entrypoint=entrypoint_name,
         )
 
     def run(
@@ -582,21 +585,47 @@ class AgenticSystem:
         input: Any = None,
         *,
         execution: ExecutionPlan | None = None,
+        entrypoint: Agent | str | None = None,
         **kwargs: Any,
     ):
         """Execute all registered Agents through the system plan."""
 
-        return self.compile(execution=execution).run(input, **kwargs)
+        return self.compile(execution=execution, entrypoint=entrypoint).run(
+            input, **kwargs
+        )
 
     async def arun(
         self,
         input: Any = None,
         *,
         execution: ExecutionPlan | None = None,
+        entrypoint: Agent | str | None = None,
         **kwargs: Any,
     ):
-        return await self.compile(execution=execution).arun(input, **kwargs)
+        return await self.compile(execution=execution, entrypoint=entrypoint).arun(
+            input, **kwargs
+        )
 
+    def _resolve_entrypoint(
+        self, entrypoint: Agent | str | None
+    ) -> tuple[tuple[Agent, ...], str | None]:
+        """Resolve one registered Agent without executing unrelated agents."""
+
+        if entrypoint is None:
+            return tuple(self._agents), None
+        if isinstance(entrypoint, Agent):
+            if not any(agent is entrypoint for agent in self._agents):
+                raise ValueError("System entrypoint Agent must be registered.")
+            return (entrypoint,), entrypoint.name
+        name = str(entrypoint).strip()
+        matches = [agent for agent in self._agents if agent.name == name]
+        if len(matches) != 1:
+            available = sorted(agent.name for agent in self._agents)
+            raise ValueError(
+                f"Unknown or ambiguous system entrypoint {name!r}; available={available}"
+            )
+
+        return (matches[0],), matches[0].name
     def inspect(self) -> InspectReport:
         warnings: list[dict[str, Any]] = []
         errors: list[dict[str, Any]] = []

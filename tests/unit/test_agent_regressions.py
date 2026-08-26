@@ -52,6 +52,10 @@ class InputModel(BaseModel):
     input: str
 
 
+class FinalOutputModel(BaseModel):
+    final_output: str
+
+
 class OutputModel(BaseModel):
     answer: str
     score: int = 1
@@ -71,9 +75,28 @@ def test_agent_input_output_coercion_accepts_supported_shapes():
     result = RunResult(text='{"answer":"yes","score":2}')
     coerced = _coerce_output_data(result, OutputModel)
     assert coerced.data == {"answer": "yes", "score": 2}
+    wrapped = RunResult(
+        text="ignored",
+        data={"final_output": '{"answer":"wrapped","score":4}'},
+    )
+    assert _coerce_output_data(wrapped, OutputModel).data == {
+        "answer": "wrapped",
+        "score": 4,
+    }
+    declared_wrapper = RunResult(data={"final_output": "preserved"})
+    assert _coerce_output_data(declared_wrapper, FinalOutputModel).data == {
+        "final_output": "preserved"
+    }
     same = RunResult(text="x", data={"answer": "data", "score": 3})
     assert _coerce_output_data(same, OutputModel).data["answer"] == "data"
     untouched = RunResult(text="x")
+    failed = RunResult(
+        ok=False,
+        errors=[{"code": "run_failed", "message": "scheduler timeout"}],
+    )
+    assert _coerce_output_data(failed, OutputModel) is failed
+    assert failed.errors[0]["code"] == "run_failed"
+
     assert _coerce_output_data(untouched, None) is untouched
 
 

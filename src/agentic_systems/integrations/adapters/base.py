@@ -13,6 +13,9 @@ class FrameworkAdapter(ABC):
     """Execute one real orchestration Framework around a selected Provider."""
 
     name: str
+    # SDKs whose sync runner owns main-thread event-loop state opt into caller.
+    # Other adapters retain interruptible worker-lane timeouts.
+    sync_execution_lane: str = "worker"
 
     @abstractmethod
     def prepare(self, agent: Any, engine: Any) -> Any:

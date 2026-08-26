@@ -76,7 +76,7 @@ def test_alpha_version_surface_and_packaging_are_consistent():
 
     assert project["project"]["version"] == "2.1.0"
     assert agentic_systems.__version__ == "2.1.0"
-    assert len(PUBLIC_API) == 87
+    assert len(PUBLIC_API) == 89
     assert "InspectReport" not in PUBLIC_API
     assert not hasattr(agentic_systems, "build_single_agent_step_graph")
     assert not hasattr(agentic_systems, "PUBLIC_API")

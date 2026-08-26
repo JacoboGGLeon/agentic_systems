@@ -188,6 +188,8 @@ ENGINE_API = (
 EVAL_API = (
     "EvalCaseResult",
     "EvalReport",
+    "JudgeRubric",
+    "JudgeResult",
     "EvalReproducibility",
     "Evaluator",
     "run_eval",
@@ -336,6 +338,8 @@ STABLE_API = (
     "agent_node",
     "graph",
     "EvalReport",
+    "JudgeRubric",
+    "JudgeResult",
     "Evaluator",
     "run_eval",
     "AgenticEnvironment",

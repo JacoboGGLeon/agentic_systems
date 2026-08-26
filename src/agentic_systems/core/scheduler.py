@@ -6,11 +6,13 @@ without replacing ``RunPolicy`` or provider-specific semantics.
 """
 
 from __future__ import annotations
+from contextvars import ContextVar, copy_context
 
 import asyncio
 import concurrent.futures
+import threading
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, Awaitable, Callable, TypeVar
 
 from pydantic import ValidationError
@@ -18,6 +20,9 @@ from pydantic import ValidationError
 from agentic_systems.schemas.execution import ExecutionLimits
 
 T = TypeVar("T")
+_ACTIVE_SYNC_SCHEDULERS: ContextVar[frozenset[int]] = ContextVar(
+    "agentic_systems_active_sync_schedulers", default=frozenset()
+)
 
 
 class SchedulerTimeoutError(TimeoutError):
@@ -43,6 +48,12 @@ class SchedulerConfig:
     max_turns: int | None = 6
     max_concurrency: int = 1
     backoff_s: float = 0.0
+    _executor: concurrent.futures.ThreadPoolExecutor | None = field(
+        init=False, default=None, repr=False, compare=False
+    )
+    _executor_lock: threading.Lock = field(
+        init=False, default_factory=threading.Lock, repr=False, compare=False
+    )
 
     def __post_init__(self) -> None:
         try:
@@ -150,6 +161,7 @@ def execute_sync(
     scheduler: SchedulerConfig,
     *,
     is_success: Callable[[T], bool] | None = None,
+    inline: bool = False,
     should_retry_value: Callable[[T], bool] | None = None,
     should_retry_exception: Callable[[BaseException], bool] | None = None,
 ) -> tuple[T, dict[str, Any]]:
@@ -169,7 +181,7 @@ def execute_sync(
 
     for attempt in range(1, attempts + 1):
         try:
-            value = _call_with_timeout(fn, scheduler.timeout_s)
+            value = _call_with_timeout(fn, scheduler, inline=inline)
             last_value = value
             if success_check(value) or attempt == attempts:
                 return value, _scheduler_meta(
@@ -254,11 +266,27 @@ async def execute_async(
     )  # pragma: no cover
 
 
-def _call_with_timeout(fn: Callable[[], T], timeout_s: float | None) -> T:
+def _call_with_timeout(
+    fn: Callable[[], T], scheduler: SchedulerConfig, *, inline: bool = False
+) -> T:
+    if inline or id(scheduler) in _ACTIVE_SYNC_SCHEDULERS.get():
+        return fn()
+    timeout_s = scheduler.timeout_s
     if timeout_s is None:
         return fn()
-    executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
-    future = executor.submit(fn)
+    executor = _scheduler_executor(scheduler)
+    context = copy_context()
+
+    def invoke() -> T:
+        active = _ACTIVE_SYNC_SCHEDULERS.get()
+        token = _ACTIVE_SYNC_SCHEDULERS.set(active | {id(scheduler)})
+        try:
+            return fn()
+        finally:
+            _ACTIVE_SYNC_SCHEDULERS.reset(token)
+
+    future = executor.submit(context.run, invoke)
+
     try:
         return future.result(timeout=float(timeout_s))
     except concurrent.futures.TimeoutError as exc:
@@ -266,8 +294,30 @@ def _call_with_timeout(fn: Callable[[], T], timeout_s: float | None) -> T:
         raise SchedulerTimeoutError(
             f"Execution exceeded timeout_s={timeout_s}."
         ) from exc
-    finally:
-        executor.shutdown(wait=False, cancel_futures=True)
+
+
+def _scheduler_executor(
+    scheduler: SchedulerConfig,
+) -> concurrent.futures.ThreadPoolExecutor:
+    """Return the stable synchronous execution lane owned by ``scheduler``.
+
+    Some framework SDKs keep per-thread runner state. Reusing the lane preserves
+    that state across sequential candidate, delegation, and judge calls while
+    still applying the configured timeout at the caller boundary.
+    """
+
+    executor = scheduler._executor
+    if executor is not None:
+        return executor
+    with scheduler._executor_lock:
+        executor = scheduler._executor
+        if executor is None:
+            executor = concurrent.futures.ThreadPoolExecutor(
+                max_workers=int(scheduler.max_concurrency),
+                thread_name_prefix="agentic-systems",
+            )
+            object.__setattr__(scheduler, "_executor", executor)
+    return executor
 
 
 def _scheduler_meta(

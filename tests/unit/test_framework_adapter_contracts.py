@@ -283,6 +283,62 @@ def test_openai_adapter_normalization_and_json_helpers():
     assert completion_agent.model_settings.tool_choice is None
 
 
+def test_strands_promotes_only_exact_declared_textual_tool_calls() -> None:
+    specs = [{"name": "clarify_scope"}]
+    textual = [
+        {"messageStart": {"role": "assistant"}},
+        {
+            "contentBlockDelta": {
+                "delta": {"text": 'clarify_scope({"question": "weather tomorrow?"})'}
+            }
+        },
+        {"messageStop": {"stopReason": "end_turn"}},
+        {"metadata": {"usage": {"totalTokens": 1}}},
+    ]
+
+    normalized = sa._normalize_textual_tool_events(textual, specs)
+
+    assert normalized[1]["contentBlockStart"]["start"]["toolUse"]["name"] == (
+        "clarify_scope"
+    )
+    assert normalized[2]["contentBlockDelta"]["delta"]["toolUse"]["input"] == (
+        '{"question": "weather tomorrow?"}'
+    )
+    assert normalized[-1] == textual[-1]
+    prose = [
+        {
+            "contentBlockDelta": {
+                "delta": {"text": 'Please call clarify_scope({"question": "weather"})'}
+            }
+        }
+    ]
+    assert sa._normalize_textual_tool_events(prose, specs) == prose
+    native = [
+        {
+            "contentBlockStart": {
+                "start": {"toolUse": {"name": "clarify_scope", "toolUseId": "native"}}
+            }
+        }
+    ]
+    assert sa._normalize_textual_tool_events(native, specs) == native
+
+
+def test_strands_tool_output_removes_native_content_block_envelope() -> None:
+    delegated = [
+        {"text": ('{"answer":"17 multiplied by 19 is 323.","data":{"result":323}}')}
+    ]
+
+    output = sa._strands_tool_output(delegated)
+
+    assert output["text"] == "17 multiplied by 19 is 323."
+    assert output["evidence"]["data"] == {"result": 323}
+    assert "items" not in output
+    assert sa._strands_tool_output([{"json": {"result": 323}}]) == {"result": 323}
+    assert sa._strands_tool_output([{"text": "plain evidence"}]) == {
+        "value": "plain evidence"
+    }
+
+
 def test_scripted_strands_model_helpers_and_streams():
     model = ss.ScriptedStrandsModel()
     model.update_config(extra=True)
@@ -621,3 +677,22 @@ def test_scripted_strands_tool_outputs_ignore_non_mapping_messages():
     ]
 
     assert ss._tool_outputs(messages) == []
+
+
+def test_openai_compatible_textual_call_normalizes_before_runner():
+    class Delegate:
+        async def get_response(self, *args, **kwargs):
+            return om._text_response('lookup({"value":7})')
+
+        async def stream_response(self, *args, **kwargs):
+            if False:
+                yield None
+
+    model = om.ToolCallNormalizingModel(
+        Delegate(),
+        ["lookup"],
+    )
+    response = asyncio.run(model.get_response())
+    call = response.output[0]
+    assert call.name == "lookup"
+    assert call.arguments == '{"value": 7}'

@@ -120,7 +120,7 @@ def decode_tool_output(value: Any) -> tuple[Any, bool, dict[str, Any] | None]:
         return value, True, None
     envelope = payload.get(_TOOL_RESULT_MARKER)
     if not isinstance(envelope, Mapping):
-        return value, True, None
+        return payload, True, None
     error_value = envelope.get("error")
     error = dict(error_value) if isinstance(error_value, Mapping) else None
     return envelope.get("data"), bool(envelope.get("ok", False)), error

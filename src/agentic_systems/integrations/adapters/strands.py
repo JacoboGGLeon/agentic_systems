@@ -18,7 +18,8 @@ from ...engines.names import (
 )
 from ...protocols import AsyncRunner, SyncRunner
 from ...registry import provider_capability
-from ...results import RunResult
+from ...results import RunResult, public_answer_text
+from ...tools.parsing import parse_textual_tool_call
 from ...tools.events import ToolEvent
 from ...usage import normalize_usage
 from .base import FrameworkAdapter, attach_native_result, effective_max_turns
@@ -166,10 +167,48 @@ def _materialize_model(agent: Any, engine: Any) -> Any:
     }:
         from strands.models.openai import OpenAIModel
 
-        model_class = OpenAIModel
+        # Test doubles and vendor shims may expose a factory instead of a class.
+        # Native Strands installations expose a class and receive the strict
+        # boundary normalizer below.
+        if not isinstance(OpenAIModel, type):
+            client_args: dict[str, Any] = {}
+            endpoint = getattr(agent.runtime_config, "endpoint", None)
+            api_key = _runtime_api_key(agent) or os.getenv("OPENAI_API_KEY")
+            if endpoint:
+                client_args["base_url"] = endpoint
+            if api_key:
+                client_args["api_key"] = api_key
+            return OpenAIModel(model_id=agent.model, client_args=client_args or None)
+
+        class ToolCallNormalizingOpenAIModel(OpenAIModel):
+            """Promote strict textual calls emitted by OpenAI-compatible models."""
+
+            async def stream(
+                self,
+                messages: Any,
+                tool_specs: list[Any] | None = None,
+                system_prompt: str | None = None,
+                *,
+                tool_choice: Any = None,
+                **kwargs: Any,
+            ) -> Any:
+                events = [
+                    event
+                    async for event in super().stream(
+                        messages,
+                        tool_specs,
+                        system_prompt,
+                        tool_choice=tool_choice,
+                        **kwargs,
+                    )
+                ]
+                for event in _normalize_textual_tool_events(events, tool_specs):
+                    yield event
+
+        model_class = ToolCallNormalizingOpenAIModel
         if agent.engine == VLLM_RUNTIME_ENGINE:
 
-            class VLLMOpenAIModel(OpenAIModel):
+            class VLLMOpenAIModel(ToolCallNormalizingOpenAIModel):
                 """Normalize Strands requests for the vLLM OpenAI endpoint."""
 
                 def format_request(self, *args: Any, **kwargs: Any) -> dict[str, Any]:
@@ -226,6 +265,63 @@ def _materialize_model(agent: Any, engine: Any) -> Any:
 
         return ScriptedStrandsModel(agent.model or agent.engine)
     raise ValueError(f"Unsupported Provider for Strands: {agent.engine!r}.")
+
+
+def _normalize_textual_tool_events(
+    events: list[Any], tool_specs: list[Any] | None
+) -> list[Any]:
+    """Promote one exact declared name-with-JSON response to ToolUse.
+
+    The normalization is deliberately strict and confined to the external
+    Strands/OpenAI-compatible boundary. Prose, code, unknown tools, malformed JSON,
+    and responses that already contain native ToolUse blocks are unchanged.
+    """
+
+    if any(
+        isinstance(event, Mapping)
+        and isinstance(event.get("contentBlockStart"), Mapping)
+        and isinstance(event["contentBlockStart"].get("start"), Mapping)
+        and "toolUse" in event["contentBlockStart"]["start"]
+        for event in events
+    ):
+        return events
+    names: list[str] = []
+    for spec in tool_specs or []:
+        if not isinstance(spec, Mapping):
+            continue
+        name = spec.get("name")
+        if not name and isinstance(spec.get("toolSpec"), Mapping):
+            name = spec["toolSpec"].get("name")
+        if isinstance(name, str) and name:
+            names.append(name)
+    text = "".join(
+        str(delta["text"])
+        for event in events
+        if isinstance(event, Mapping)
+        and isinstance(event.get("contentBlockDelta"), Mapping)
+        and isinstance(event["contentBlockDelta"].get("delta"), Mapping)
+        and isinstance((delta := event["contentBlockDelta"]["delta"]).get("text"), str)
+    )
+    parsed = parse_textual_tool_call(text, names)
+    if parsed is None:
+        return events
+    name, arguments = parsed
+    tool_use_id = f"agentic-systems-{name}"
+    metadata = [
+        event for event in events if isinstance(event, Mapping) and "metadata" in event
+    ]
+    return [
+        {"messageStart": {"role": "assistant"}},
+        {
+            "contentBlockStart": {
+                "start": {"toolUse": {"name": name, "toolUseId": tool_use_id}}
+            }
+        },
+        {"contentBlockDelta": {"delta": {"toolUse": {"input": json.dumps(arguments)}}}},
+        {"contentBlockStop": {}},
+        {"messageStop": {"stopReason": "tool_use"}},
+        *metadata,
+    ]
 
 
 class _CallbackHookProvider:
@@ -391,8 +487,10 @@ def _normalize_result(
         return provider_result
 
     structured = getattr(native_result, "structured_output", None)
-    text = _input_text(structured) if structured is not None else str(native_result)
-    data = _output_data(structured, text)
+    raw_value = structured if structured is not None else str(native_result)
+    raw_text = _input_text(raw_value)
+    text = public_answer_text(raw_value) or raw_text
+    data = _output_data(raw_value, raw_text)
     messages = [_jsonable(item) for item in getattr(native_agent, "messages", ())]
     return RunResult(
         text=text,
@@ -444,13 +542,45 @@ def _tool_events(
                         id=call_id,
                         name=aliases.canonical(str(original.get("name") or "")),
                         input=dict(original.get("input") or {}),
-                        output={"data": _jsonable(result.get("content"))},
+                        output=_strands_tool_output(result.get("content")),
                         ok=status == "success",
                         error=None if status == "success" else {"status": status},
                         meta={"source": "strands"},
                     )
                 )
     return events
+
+
+def _strands_tool_output(value: Any) -> dict[str, Any]:
+    """Decode Strands content blocks into stable public Tool evidence."""
+
+    payload = _jsonable(value)
+    if isinstance(payload, list):
+        decoded: list[Any] = []
+        for block in payload:
+            if isinstance(block, Mapping) and "json" in block:
+                decoded.append(block["json"])
+            elif isinstance(block, Mapping) and isinstance(block.get("text"), str):
+                decoded.append(_decode_json_text(block["text"]))
+            else:
+                decoded.append(block)
+        payload = decoded[0] if len(decoded) == 1 else {"items": decoded}
+    if isinstance(payload, str):
+        payload = _decode_json_text(payload)
+    if isinstance(payload, Mapping):
+        public = dict(payload)
+        answer = public.get("answer") or public.get("text")
+        if isinstance(answer, str) and answer:
+            return {"text": answer, "evidence": public}
+        return public
+    return {"value": payload}
+
+
+def _decode_json_text(value: str) -> Any:
+    try:
+        return json.loads(value)
+    except json.JSONDecodeError:
+        return value
 
 
 def _failure(agent: Any, input_value: Any, mode: str, exc: Exception) -> RunResult:

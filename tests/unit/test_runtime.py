@@ -22,6 +22,7 @@ def test_runtime_config_coerce_dotenv_and_describe(monkeypatch, tmp_path):
         region_name="r",
         scheduler={"timeout_s": 7},
     )
+    assert RuntimeConfig.coerce(base) is base
     coerced = RuntimeConfig.coerce(
         base, model="m2", region="r2", provider="python-runtime"
     )

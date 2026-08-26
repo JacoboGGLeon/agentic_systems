@@ -207,6 +207,11 @@ def test_tool_aliases_and_decoding_cover_nested_portable_inputs(
     assert aliases.map_input(({"tool_name": "first"},)) == ({"tool_name": "same"},)
     assert tools.decode_tool_output("not valid [") == ("not valid [", True, None)
     assert tools.decode_tool_output("1") == ("1", True, None)
+    assert tools.decode_tool_output("{'answer': 'human'}") == (
+        {"answer": "human"},
+        True,
+        None,
+    )
 
 
 def test_registry_rejects_undeclared_capabilities() -> None:

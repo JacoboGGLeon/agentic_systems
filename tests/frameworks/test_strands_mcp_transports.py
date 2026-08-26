@@ -113,4 +113,7 @@ def test_strands_executes_native_mcp_tool_over_local_transport(transport: str):
         "value": "verified",
         "transport": transport,
     }
-    assert result.tool_events[0].output["data"]
+    assert result.tool_events[0].output == {
+        "value": "verified",
+        "transport": transport,
+    }

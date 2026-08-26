@@ -5,6 +5,7 @@ graphs, pipelines and compiled systems can therefore share one public boundary.
 """
 
 from __future__ import annotations
+import uuid
 
 from collections.abc import Awaitable, Callable, Iterable
 from dataclasses import dataclass, field
@@ -132,7 +133,16 @@ class SequentialPlan:
             model=final.model,
             mode=final.mode,
             children=children,
-            meta={"execution_plan": self.name, "unit_count": len(children)},
+            meta={
+                "execution_plan": self.name,
+                "unit_count": len(children),
+                "runtime_engine": final.engine,
+                "execution_engine": final.engine,
+                "framework": final.meta.get("framework_adapter")
+                or final.meta.get("framework")
+                or "agentic-systems",
+                "framework_adapter": final.meta.get("framework_adapter"),
+            },
         )
 
 
@@ -163,7 +173,10 @@ class ParallelPlan:
         materialized = tuple(units)
         with ThreadPoolExecutor(max_workers=self.max_workers) as pool:
             children = list(
-                pool.map(lambda unit: coerce_run_result(unit.run(input, **kwargs)), materialized)
+                pool.map(
+                    lambda unit: coerce_run_result(unit.run(input, **kwargs)),
+                    materialized,
+                )
             )
         return RunResult(
             data={"results": [child.data for child in children]},
@@ -178,7 +191,6 @@ class ParallelPlan:
         )
 
 
-
 @dataclass(frozen=True)
 class CompiledSystem:
     """Executable snapshot of connected units and their external plan."""
@@ -186,11 +198,20 @@ class CompiledSystem:
     units: tuple[Executable, ...]
     plan: ExecutionPlan = field(default_factory=SequentialPlan)
     name: str = "system"
+    entrypoint: str | None = None
 
     def run(self, input: Any = None, **kwargs: Any) -> RunResult:
         result = self.plan.execute(self.units, input, **kwargs)
+        if result.execution_id is None:
+            result.execution_id = f"run-{uuid.uuid4().hex}"
+        execution_id = result.execution_id
+        result.meta.setdefault("input", input)
+        for child in result.children:
+            if child.parent_execution_id is None:
+                child.parent_execution_id = execution_id
         result.meta.setdefault("system", self.name)
         result.meta.setdefault("compiled", True)
+        result.meta.setdefault("entrypoint", self.entrypoint)
         return result
 
     async def arun(self, input: Any = None, **kwargs: Any) -> RunResult:
@@ -199,11 +220,16 @@ class CompiledSystem:
         return await asyncio.to_thread(self.run, input, **kwargs)
 
     def inspect(self) -> dict[str, Any]:
-        return {
+        report = {
             "name": self.name,
             "execution_plan": self.plan.name,
             "unit_count": len(self.units),
         }
+        if self.entrypoint is not None:
+            report["entrypoint"] = self.entrypoint
+        return report
+
+
 __all__ = [
     "AsyncExecutable",
     "CompiledSystem",

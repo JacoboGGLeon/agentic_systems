@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import importlib
+import threading
 import time
 
 import pytest
@@ -145,3 +146,30 @@ def test_scheduler_config_policy_retries_timeouts_and_async_paths():
             )
 
     asyncio.run(async_checks())
+
+
+def test_sync_scheduler_reuses_one_execution_lane_without_serializing_resources():
+    scheduler = SchedulerConfig(timeout_s=1, max_concurrency=1)
+
+    first_thread = execute_sync(threading.get_ident, scheduler)[0]
+    second_thread = execute_sync(threading.get_ident, scheduler)[0]
+
+    assert first_thread == second_thread
+    assert first_thread != threading.get_ident()
+    inline_thread = execute_sync(threading.get_ident, scheduler, inline=True)[0]
+    assert inline_thread == threading.get_ident()
+
+    assert "_executor" not in scheduler.to_dict()
+
+
+def test_sync_scheduler_executes_nested_work_inline_without_deadlock() -> None:
+    scheduler = SchedulerConfig(timeout_s=1, max_concurrency=1)
+    observed: dict[str, int] = {}
+
+    def outer() -> int:
+        observed["outer"] = threading.get_ident()
+        observed["inner"] = execute_sync(threading.get_ident, scheduler)[0]
+        return observed["inner"]
+
+    assert execute_sync(outer, scheduler)[0] == observed["outer"]
+    assert observed["inner"] == observed["outer"]

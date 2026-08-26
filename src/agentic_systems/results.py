@@ -1,6 +1,7 @@
 """Run result and trace schema for Agentic Systems 1.0."""
 
 from __future__ import annotations
+import json
 
 from typing import Any
 
@@ -118,6 +119,64 @@ def _result_errors(result: "RunResult") -> list[dict[str, Any]]:
             entry["recovered_by_tool_event_id"] = recovered_by
         errors.append(entry)
     return errors
+
+
+def public_answer_text(value: Any, *, _depth: int = 0) -> str:
+    """Extract an explicit human projection without depending on an SDK shape."""
+
+    if _depth > 6 or value is None:
+        return ""
+    if hasattr(value, "model_dump"):
+        value = value.model_dump(mode="python")
+    if isinstance(value, str):
+        clean = value.strip()
+        if not clean:
+            return ""
+        try:
+            parsed = json.loads(clean)
+        except (TypeError, ValueError, json.JSONDecodeError):
+            return clean
+        if parsed == value:
+            return clean
+        projected = public_answer_text(parsed, _depth=_depth + 1)
+        return projected or clean
+    if isinstance(value, dict):
+        for key in ("answer", "text", "message", "summary", "final_output"):
+            if key in value:
+                text = public_answer_text(value[key], _depth=_depth + 1)
+                if text:
+                    return text
+        for key in ("data", "output", "result", "final"):
+            if key in value:
+                text = public_answer_text(value[key], _depth=_depth + 1)
+                if text:
+                    return text
+    if isinstance(value, list) and len(value) == 1:
+        return public_answer_text(value[0], _depth=_depth + 1)
+    return ""
+
+
+def is_technical_public_answer(text: str) -> bool:
+    """Return true for internal envelopes or Python repr leaked as an answer."""
+
+    clean = str(text or "").strip()
+    if not clean:
+        return False
+    if clean.startswith("{' ") or (clean.startswith("{") and "': " in clean):
+        return True
+    if not clean.startswith("{"):
+        return False
+    try:
+        payload = json.loads(clean)
+    except (TypeError, ValueError, json.JSONDecodeError):
+        return False
+    if not isinstance(payload, dict):
+        return False
+    envelope_keys = {"kind", "tool_name", "ok", "data", "meta"}
+    if envelope_keys.issubset(payload):
+        return True
+    projected = public_answer_text(payload)
+    return bool(projected and projected != clean)
 
 
 class RunResult(BaseModel):
@@ -415,6 +474,13 @@ class RunResult(BaseModel):
                 path="text",
             )
 
+        if is_technical_public_answer(self.text):
+            result.add(
+                "technical_answer_exposed_in_public_answer",
+                "RunResult public text cannot be a raw ToolEnvelope or Python repr.",
+                path="text",
+            )
+
         try:
             self.model_dump(mode="json")
         except Exception as exc:  # noqa: BLE001 - report serialization failures as invariant issues.
@@ -448,10 +514,11 @@ class RunResult(BaseModel):
         """
 
         runtime = {
-            "provider": self.engine,
+            "provider": self.meta.get("runtime_engine", self.engine),
             "engine": self.engine,
             "runtime_engine": self.meta.get("runtime_engine", self.engine),
-            "framework": self.meta.get("framework"),
+            "framework": self.meta.get("framework_adapter")
+            or self.meta.get("framework"),
             "model": self.model,
             "mode": self.mode,
         }
@@ -465,6 +532,11 @@ class RunResult(BaseModel):
         return {
             "schema_version": RUN_SCHEMA_VERSION,
             "ok": self.ok,
+            "execution": {
+                "execution_id": self.execution_id,
+                "parent_execution_id": self.parent_execution_id,
+            },
+            "children": [child.normalized() for child in self.children],
             "runtime": runtime,
             "input": input_payload,
             "answer": answer,
@@ -734,6 +806,8 @@ def _tool_summary(payload: dict[str, Any]) -> str:
         return str(payload["error"])
     if payload.get("text"):
         return str(payload["text"])
+    if payload.get("answer"):
+        return str(payload["answer"])
     important = {
         key: payload[key] for key in ("operation", "result", "value") if key in payload
     }
