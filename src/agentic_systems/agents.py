@@ -31,7 +31,12 @@ from .engines.names import (
     canonical_engine_name,
     normalize_engine_text,
 )
-from .delegation import capture_delegated_results, record_delegated_result
+from .delegation import (
+    capture_delegated_results,
+    delegated_scheduler_is_inline,
+    inline_delegated_scheduler,
+    record_delegated_result,
+)
 from .errors import GraphContractError, is_transient_exception
 from .integrations.config import FrameworkConfig
 from .results import RunResult
@@ -462,7 +467,10 @@ class Agent:
                 is_success=lambda item: bool(getattr(item, "ok", True)),
                 should_retry_value=lambda item: item.should_retry(),
                 should_retry_exception=is_transient_exception,
-                inline=adapter.sync_execution_lane == "caller",
+                inline=(
+                    adapter.sync_execution_lane == "caller"
+                    or delegated_scheduler_is_inline()
+                ),
             )
         except SchedulerTimeoutError as exc:
             result = self._scheduler_failure_result(
@@ -729,7 +737,8 @@ class Agent:
                 agent_input: Any = payload.get("prompt")
             else:
                 agent_input = payload
-            result = self.run(agent_input)
+            with inline_delegated_scheduler():
+                result = self.run(agent_input)
             record_delegated_result(result)
             return {
                 "answer": result.text,

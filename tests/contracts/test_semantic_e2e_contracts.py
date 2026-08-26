@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+import concurrent.futures
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict
 
 import agentic_systems as toolkit
+from agentic_systems.core.scheduler import execute_sync
 
 
 class MultiplyInput(BaseModel):
@@ -44,7 +46,7 @@ def test_system_entrypoint_delegation_preserves_skill_agent_hierarchy() -> None:
         name="delegate_calculator",
         description="Delegate exact multiplication to CalculatorAgent.",
     )
-    orchestrator = system.agent(
+    system.agent(
         name="orchestrator_agent",
         instructions="Choose exactly one specialist.",
         tools=[delegate],
@@ -85,6 +87,38 @@ def test_system_entrypoint_delegation_preserves_skill_agent_hierarchy() -> None:
     assert any(
         step.kind == "tool" and step.source == "multiply" for step in lineage.steps
     )
+
+
+def test_agent_as_tool_avoids_cross_thread_single_lane_deadlock() -> None:
+    scheduler = toolkit.scheduler(timeout_s=1.0, max_concurrency=1, max_retries=0)
+    runtime = toolkit.runtime(
+        provider="python-runtime",
+        model="python-runtime",
+        scheduler=scheduler,
+    )
+    system = toolkit.system(runtime=runtime, model="python-runtime")
+    math_skill = toolkit.Skill(
+        name="cross_thread_math",
+        description="Exact multiplication evidence.",
+        tools=[multiply],
+    )
+    specialist = system.agent(
+        name="cross_thread_specialist",
+        instructions="Execute multiply exactly once.",
+        skills=[math_skill],
+        input=MultiplyInput,
+        contract=toolkit.AgentContract(must_call=["multiply"]),
+    )
+    delegate = specialist.as_tool(name="delegate_cross_thread")
+
+    def framework_call() -> dict:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+            return executor.submit(delegate, a=17, b=19).result(timeout=0.5)
+
+    value, scheduler_meta = execute_sync(framework_call, scheduler)
+    assert value["data"]["result"] == 323
+    assert scheduler_meta["timed_out"] is False
+    assert scheduler_meta["attempts"] == 1
 
 
 def test_openai_agents_receives_pydantic_output_contract_natively() -> None:

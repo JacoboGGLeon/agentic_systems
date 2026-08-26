@@ -16,14 +16,21 @@ from agentic_systems.providers.bedrock_runtime import BedrockRuntime
 
 
 def _agent(provider: str, *, metadata=None):
-    return SimpleNamespace(
+    agent = SimpleNamespace(
         engine=provider,
         model=f"model-{provider}",
         runtime_config=SimpleNamespace(
             metadata=metadata or {},
             region_name="eu-west-1",
+            endpoint=None,
+            api_key=None,
         ),
     )
+    agent._scheduler = lambda: SimpleNamespace(
+        timeout_s=20.0,
+        max_retries=1,
+    )
+    return agent
 
 
 def test_openai_agents_materializes_each_provider(monkeypatch):
@@ -32,7 +39,19 @@ def test_openai_agents_materializes_each_provider(monkeypatch):
     runtime = object()
     engine = SimpleNamespace(system=SimpleNamespace(_runtime=runtime, model="fallback"))
 
-    assert openai_model(_agent("openai-runtime"), engine) == "model-openai-runtime"
+    calls = {}
+    monkeypatch.setenv("OPENAI_API_KEY", "test-openai-key")
+    monkeypatch.setattr(
+        "openai.AsyncOpenAI",
+        lambda **kwargs: calls.setdefault("client", kwargs) or object(),
+    )
+    monkeypatch.setattr(
+        "agents.OpenAIResponsesModel",
+        lambda **kwargs: calls.setdefault("responses_model", kwargs) or object(),
+    )
+    openai_model(_agent("openai-runtime"), engine)
+    assert calls["responses_model"]["model"] == "model-openai-runtime"
+    calls.clear()
     assert isinstance(
         openai_model(_agent("python-runtime"), engine), ScriptedOpenAIModel
     )
@@ -42,7 +61,7 @@ def test_openai_agents_materializes_each_provider(monkeypatch):
     assert bedrock.runtime is runtime
     assert bedrock.model_id == "model-bedrock-runtime"
 
-    calls = {}
+    calls.clear()
     monkeypatch.setattr(
         "openai.AsyncOpenAI",
         lambda **kwargs: calls.setdefault("client", kwargs) or object(),
@@ -60,6 +79,8 @@ def test_openai_agents_materializes_each_provider(monkeypatch):
 
     assert calls["client"]["base_url"] == "http://vllm.invalid/v1"
     assert calls["client"]["api_key"] == "vllm"
+    assert calls["client"]["timeout"] == 19.0
+    assert calls["client"]["max_retries"] == 1
     assert calls["model"]["model"] == "model-vllm-runtime"
 
     calls.clear()
@@ -174,6 +195,7 @@ def test_strands_materializes_each_provider(monkeypatch):
         "base_url": "http://ollama.invalid/v1",
         "api_key": "ollama",
     }
+
 
 def test_strands_real_bedrock_model_accepts_canonical_runtime(monkeypatch):
     monkeypatch.setenv("AWS_BEARER_TOKEN_BEDROCK", "")

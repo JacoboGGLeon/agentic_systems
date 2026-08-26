@@ -171,11 +171,33 @@ class OpenAIAgentsFrameworkAdapter(FrameworkAdapter):
 
 
 def _materialize_model(agent: Any, engine: Any) -> Any:
+    from openai import AsyncOpenAI
+
+    client_options = _openai_client_options(agent)
     if agent.engine == OPENAI_RUNTIME_ENGINE:
-        return agent.model
+        from agents import OpenAIResponsesModel
+
+        metadata = getattr(agent.runtime_config, "metadata", {}) or {}
+        openai_metadata = metadata.get("openai") or {}
+        secret = getattr(agent.runtime_config, "api_key", None)
+        api_key = (
+            secret.get_secret_value()
+            if isinstance(secret, SecretStr)
+            else secret or os.getenv("OPENAI_API_KEY")
+        )
+        base_url = (
+            getattr(agent.runtime_config, "endpoint", None)
+            or openai_metadata.get("base_url")
+            or os.getenv("OPENAI_BASE_URL")
+        )
+        client = AsyncOpenAI(
+            base_url=base_url,
+            api_key=api_key,
+            **client_options,
+        )
+        return OpenAIResponsesModel(model=agent.model, openai_client=client)
     if agent.engine in {OLLAMA_RUNTIME_ENGINE, VLLM_RUNTIME_ENGINE}:
         from agents import OpenAIChatCompletionsModel
-        from openai import AsyncOpenAI
 
         metadata = getattr(agent.runtime_config, "metadata", {}) or {}
         if agent.engine == VLLM_RUNTIME_ENGINE:
@@ -211,7 +233,11 @@ def _materialize_model(agent: Any, engine: Any) -> Any:
             )
         from .openai_models import ToolCallNormalizingModel
 
-        client = AsyncOpenAI(base_url=base_url, api_key=api_key)
+        client = AsyncOpenAI(
+            base_url=base_url,
+            api_key=api_key,
+            **client_options,
+        )
         delegate = OpenAIChatCompletionsModel(
             model=agent.model,
             openai_client=client,
@@ -234,6 +260,26 @@ def _materialize_model(agent: Any, engine: Any) -> Any:
             agent.model or engine.system.model,
         )
     raise ValueError(f"Unsupported Provider for OpenAI Agents: {agent.engine!r}.")
+
+
+def _openai_client_options(agent: Any) -> dict[str, Any]:
+    """Bind SDK retries/timeouts to the canonical scheduler contract."""
+
+    scheduler_factory = getattr(agent, "_scheduler", None)
+    if not callable(scheduler_factory):
+        return {}
+    scheduler = scheduler_factory()
+    options: dict[str, Any] = {
+        "max_retries": int(getattr(scheduler, "max_retries", 0)),
+    }
+    timeout_s = getattr(scheduler, "timeout_s", None)
+    if timeout_s is not None:
+        timeout = float(timeout_s)
+        # Leave a small coordination reserve so the SDK releases its worker
+        # before the outer scheduler timeout expires.
+        reserve = min(1.0, timeout * 0.05)
+        options["timeout"] = max(0.001, timeout - reserve)
+    return options
 
 
 def _configure_model(model: Any, policy: RunPolicy, mode: str) -> None:
