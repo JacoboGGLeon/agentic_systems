@@ -46,6 +46,7 @@ class JudgeRubric(BaseModel):
     criteria: tuple[str, ...] = DEFAULT_JUDGE_CRITERIA
     threshold: float = Field(default=0.80, ge=0.0, le=1.0)
     instructions: str = DEFAULT_JUDGE_INSTRUCTIONS
+    certification_tool: str | None = None
 
 
 class JudgeResult(BaseModel):
@@ -58,6 +59,9 @@ class JudgeResult(BaseModel):
     criteria: dict[str, float] = Field(default_factory=dict)
     threshold: float = Field(default=0.80, ge=0.0, le=1.0)
     deterministic_validation_ok: bool = True
+    execution_ok: bool = True
+    certification_tool: str | None = None
+    certification_recorded: bool = True
     rationale: str = ""
     provider: str | None = None
     framework: str | None = None
@@ -70,6 +74,8 @@ class JudgeResult(BaseModel):
             raise ValueError("Judge criterion scores must be between 0 and 1")
         criteria_ok = (
             self.deterministic_validation_ok
+            and self.execution_ok
+            and self.certification_recorded
             and bool(self.criteria)
             and all(score >= self.threshold for score in self.criteria.values())
         )
@@ -665,20 +671,38 @@ def _run_judge(
     framework = payload.get("framework")
     model = payload.get("model")
     usage: dict[str, Any] = {}
+    execution_ok = True
+    certification_recorded = rubric.certification_tool is None
     if isinstance(judged, RunResult):
+        execution_ok = judged.ok
         provider = judged.engine
         framework = judged.meta.get("framework_adapter") or judged.meta.get("framework")
         model = judged.model
         usage = dict(judged.usage or {})
+        if rubric.certification_tool is not None:
+            matching_events = [
+                event
+                for event in judged.tool_events
+                if event.name == rubric.certification_tool and event.ok
+            ]
+            certification_recorded = len(matching_events) == 1
     threshold_ok = bool(criteria) and all(
         value >= rubric.threshold for value in criteria.values()
     )
     return JudgeResult(
-        ok=deterministic_ok and threshold_ok,
+        ok=(
+            deterministic_ok
+            and execution_ok
+            and certification_recorded
+            and threshold_ok
+        ),
         score=score,
         criteria=criteria,
         threshold=rubric.threshold,
         deterministic_validation_ok=deterministic_ok,
+        execution_ok=execution_ok,
+        certification_tool=rubric.certification_tool,
+        certification_recorded=certification_recorded,
         rationale=str(payload.get("rationale") or ""),
         provider=str(provider) if provider else None,
         framework=str(framework) if framework else None,

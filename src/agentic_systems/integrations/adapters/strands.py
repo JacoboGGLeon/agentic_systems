@@ -634,8 +634,10 @@ def _strands_usage(metrics: Any) -> dict[str, Any]:
 
     accumulated_metrics = _json_dict(summary.get("accumulated_metrics", {}))
     service_latency = accumulated_metrics.get("latencyMs")
-    if isinstance(service_latency, (int, float)) and not isinstance(
-        service_latency, bool
+    if (
+        isinstance(service_latency, (int, float))
+        and not isinstance(service_latency, bool)
+        and service_latency > 0
     ):
         payload["service_latency_ms"] = service_latency
 

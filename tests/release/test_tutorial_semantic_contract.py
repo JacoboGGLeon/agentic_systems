@@ -150,6 +150,12 @@ def test_notebook_metadata_matches_layer_and_literal_api_claims():
         "02_aws_strands.ipynb": "strands",
         "03_provider_framework_matrix.ipynb": "all",
     }
+    framework_providers = {
+        "00_langgraph.ipynb": "auto",
+        "01_openai_agents.ipynb": "auto",
+        "02_aws_strands.ipynb": "auto",
+        "03_provider_framework_matrix.ipynb": "all",
+    }
     provider_names = {
         "00_auto.ipynb": "auto",
         "01_openai.ipynb": "openai-runtime",
@@ -183,7 +189,7 @@ def test_notebook_metadata_matches_layer_and_literal_api_claims():
             assert metadata["framework"] == "native"
             assert metadata["execution_mode"] == "offline"
         else:
-            assert metadata["provider"] == "python-runtime"
+            assert metadata["provider"] == framework_providers[path.name]
             assert metadata["framework"] == frameworks[path.name]
             assert metadata["live_provider"] == "auto"
 
@@ -520,6 +526,12 @@ def test_live_notebooks_are_run_all_ready_by_default():
         notebook = _load(TUTORIALS / name)
         source = _source(notebook)
         code = _code(notebook)
+        if name.startswith("frameworks/"):
+            assert f'os.getenv("{flag}", provider_live_value)' in code
+            assert "selected_provider.removesuffix" in code
+            assert "offline-deterministic-control" in source
+            continue
+
         default = "0" if name.startswith("frameworks/") else "1"
         assert f'os.getenv("{flag}", "{default}")' in code, name
         if default == "1":
@@ -540,11 +552,20 @@ def test_live_notebooks_are_run_all_ready_by_default():
     assert "AWS_BEARER_TOKEN_BEDROCK" in bedrock
 
     for name in (
+        "frameworks/00_langgraph.ipynb",
         "frameworks/02_aws_strands.ipynb",
         "frameworks/01_openai_agents.ipynb",
     ):
         source = _code(_load(TUTORIALS / name))
         assert 'else toolkit.runtime(provider="python-runtime")' in source
+        assert 'os.getenv("AGENTIC_SYSTEMS_PROVIDER", "auto")' in source
+    langgraph = _code(_load(TUTORIALS / "frameworks/00_langgraph.ipynb"))
+    openai_agents = _code(_load(TUTORIALS / "frameworks/01_openai_agents.ipynb"))
+    strands = _code(_load(TUTORIALS / "frameworks/02_aws_strands.ipynb"))
+    assert 'not sync_result.text.lstrip().startswith("{")' in langgraph
+    assert 'not result.text.lstrip().startswith("{")' in openai_agents
+    assert 'not sync_result.text.lstrip().startswith("{")' in strands
+
     run_all_docs = (
         ROOT / "README.md",
         ROOT / "docs" / "API.md",

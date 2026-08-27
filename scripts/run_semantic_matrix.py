@@ -12,6 +12,8 @@ import os
 from pathlib import Path
 import platform
 import subprocess
+import sys
+import tempfile
 from typing import Any
 
 import agentic_systems as toolkit
@@ -33,7 +35,25 @@ MODEL_ENV = {
     "ollama-runtime": "OLLAMA_MODEL",
     "bedrock-runtime": "BEDROCK_MODEL_ID",
 }
-SECRET_MARKERS = ("API_KEY", "TOKEN", "SECRET", "PASSWORD", "CREDENTIAL")
+SECRET_KEY_MARKERS = (
+    "API_KEY",
+    "PASSWORD",
+    "SECRET",
+    "CREDENTIAL",
+    "AUTHORIZATION",
+    "ACCESS_KEY",
+    "BEARER_TOKEN",
+    "SESSION_TOKEN",
+    "SECURITY_TOKEN",
+    "WEB_IDENTITY_TOKEN",
+)
+
+
+def _is_secret_key(key: Any) -> bool:
+    upper = str(key).upper()
+    return upper in {"TOKEN", "SECRET", "PASSWORD", "CREDENTIAL"} or any(
+        marker in upper for marker in SECRET_KEY_MARKERS
+    )
 
 
 def _sha256(path: Path) -> str:
@@ -99,7 +119,7 @@ def _environment(dotenv: Path, providers: tuple[str, ...]) -> dict[str, Any]:
                             "python-runtime": "AGENTIC_SYSTEMS_",
                         }[provider]
                     )
-                    and any(marker in key for marker in SECRET_MARKERS)
+                    and _is_secret_key(key)
                 ),
             }
             for provider in providers
@@ -301,9 +321,7 @@ def _review(
 def _safe(value: Any) -> Any:
     if isinstance(value, dict):
         return {
-            key: _safe(item)
-            for key, item in value.items()
-            if not any(marker in str(key).upper() for marker in SECRET_MARKERS)
+            key: _safe(item) for key, item in value.items() if not _is_secret_key(key)
         }
     if isinstance(value, (list, tuple)):
         return [_safe(item) for item in value]
@@ -318,11 +336,19 @@ def _run_cell(provider: str, framework: str) -> dict[str, Any]:
         # A fresh System, Orchestrator, specialists, Skill, Judge, and Environment
         # are created for every episode. Stateful framework SDKs cannot leak history.
         cell = build_semantic_cell(provider, framework, model=model)
+        certification_tool = (
+            "score_semantics"
+            if provider == "python-runtime"
+            else "record_semantic_judgment"
+        )
         report = toolkit.Evaluator().evaluate(
             cell.executable,
             [declared],
             judge=cell.judge,
-            rubric=toolkit.JudgeRubric(threshold=0.8),
+            rubric=toolkit.JudgeRubric(
+                threshold=0.8,
+                certification_tool=certification_tool,
+            ),
             mode="eval",
             environment_kwargs={
                 "name": f"semantic-{provider}-{framework}-{declared['name']}"
@@ -457,6 +483,42 @@ def _review_markdown(evidence: dict[str, Any]) -> str:
     return "\n".join(lines).replace("§", chr(96)).rstrip() + "\n"
 
 
+def _run_from_wheel(argv: list[str], wheel: Path) -> int:
+    """Re-execute with the exact wheel installed in an isolated import root."""
+
+    with tempfile.TemporaryDirectory(prefix="agentic-systems-semantic-") as temporary:
+        target = Path(temporary) / "site-packages"
+        subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "pip",
+                "install",
+                "--force-reinstall",
+                "--no-deps",
+                "--target",
+                str(target),
+                str(wheel),
+            ],
+            check=True,
+            cwd=ROOT,
+        )
+        child_environment = dict(os.environ)
+        child_environment["PYTHONPATH"] = str(target)
+        child_environment["AGENTIC_SYSTEMS_WHEEL_TARGET"] = str(target)
+        completed = subprocess.run(
+            [
+                sys.executable,
+                str(Path(__file__).resolve()),
+                *argv,
+                "--wheel-runtime-ready",
+            ],
+            cwd=ROOT,
+            env=child_environment,
+        )
+        return completed.returncode
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--wheel", type=Path, required=True)
@@ -466,6 +528,9 @@ def main() -> int:
     parser.add_argument("--env", type=Path, default=ROOT / ".env")
     parser.add_argument("--providers", nargs="+", choices=PROVIDERS)
     parser.add_argument("--frameworks", nargs="+", choices=FRAMEWORKS)
+    parser.add_argument(
+        "--wheel-runtime-ready", action="store_true", help=argparse.SUPPRESS
+    )
     args = parser.parse_args()
 
     dotenv = args.env.resolve()
@@ -475,6 +540,15 @@ def main() -> int:
     wheel = args.wheel.resolve()
     if not wheel.exists():
         raise FileNotFoundError(wheel)
+    if not args.wheel_runtime_ready:
+        return _run_from_wheel(sys.argv[1:], wheel)
+    package_file = Path(toolkit.__file__).resolve()
+    target_value = os.getenv("AGENTIC_SYSTEMS_WHEEL_TARGET")
+    target = Path(target_value).resolve() if target_value else None
+    if target is None or target not in package_file.parents:
+        raise RuntimeError(
+            f"semantic runner did not import the certified wheel: {package_file}"
+        )
 
     cells: list[dict[str, Any]] = []
     for provider in providers:
@@ -511,6 +585,8 @@ def main() -> int:
             "wheel_filename": wheel.name,
             "wheel_sha256": _sha256(wheel),
             "package_version": toolkit.__version__,
+            "runtime_package_file": str(package_file),
+            "wheel_runtime_verified": True,
             "environment": _environment(dotenv, providers),
             "matrix": {"providers": list(providers), "frameworks": list(frameworks)},
             "summary": {

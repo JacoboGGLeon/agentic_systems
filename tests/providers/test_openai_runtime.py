@@ -255,6 +255,55 @@ def test_openai_provider_async_stops_when_required_tools_are_satisfied():
     assert [event.name for event in result.tool_events] == ["add"]
 
 
+def test_openai_provider_repairs_missing_required_tool_sync_and_async():
+    runtime = build_runtime()
+    agent = build_agent(runtime)
+    agent.contract = AgentContract(
+        must_call=["add"],
+        completion="when_required_tools_satisfied",
+    )
+
+    def responses():
+        return [
+            FakeResponse(FakeMessage(content="I cannot verify that yet.")),
+            FakeResponse(
+                FakeMessage(tool_calls=[FakeToolCall("add", '{"a": 20, "b": 22}')])
+            ),
+            FakeResponse(FakeMessage(content="The verified result is 42.")),
+        ]
+
+    sync_client = FakeClient(responses())
+    sync_result = OpenAIRuntimeProvider(
+        SimpleNamespace(_runtime=runtime), client=sync_client
+    ).run(agent, "sum", RunPolicy(max_repairs=1), mode="eval")
+
+    assert sync_result.ok is True
+    assert sync_result.meta["contract_repairs"] == 1
+    assert [event.name for event in sync_result.tool_events] == ["add"]
+    assert any(
+        message.get("role") == "user"
+        and "Contract repair" in str(message.get("content") or "")
+        for message in sync_client.calls[1]["messages"]
+    )
+
+    async_client = FakeClient(responses())
+    async_result = asyncio.run(
+        OpenAIRuntimeProvider(
+            SimpleNamespace(_runtime=runtime),
+            async_client=FakeAsyncClient(async_client),
+        ).arun(agent, "sum", RunPolicy(max_repairs=1), mode="eval")
+    )
+
+    assert async_result.ok is True
+    assert async_result.meta["contract_repairs"] == 1
+    assert [event.name for event in async_result.tool_events] == ["add"]
+    assert any(
+        message.get("role") == "user"
+        and "Contract repair" in str(message.get("content") or "")
+        for message in async_client.calls[1]["messages"]
+    )
+
+
 def test_openai_provider_aliases_namespaced_tools_without_public_identity_loss():
     runtime = ToolRegistryRuntime(model_id="runtime-model")
 

@@ -145,6 +145,25 @@ def test_bedrock_model_positional_call_and_streaming_error():
     assert result.output
     assert calls[0]["model_id"] == "model"
 
+    tool = SimpleNamespace(name="lookup", description="", params_json_schema=None)
+    handoff = SimpleNamespace(
+        tool_name="transfer_to_specialist",
+        tool_description="Transfer to specialist.",
+        input_json_schema={"type": "object", "properties": {}},
+    )
+    asyncio.run(
+        model.get_response(
+            input="hello",
+            model_settings=settings,
+            tools=[tool],
+            handoffs=[handoff],
+        )
+    )
+    assert {spec["toolSpec"]["name"] for spec in calls[-1]["tools"]} == {
+        "lookup",
+        "transfer_to_specialist",
+    }
+
     async def consume():
         return await anext(model.stream_response())
 

@@ -231,6 +231,8 @@ def _run_chat_loop(
     usage: dict[str, Any] = {}
     max_turns = policy.max_turns or 8
     synthesis_only = False
+    contract_repairs = 0
+    max_contract_repairs = max(0, int(policy.max_repairs or 0))
     while True:
         turns += 1
         if turns > max_turns:
@@ -274,6 +276,20 @@ def _run_chat_loop(
         if assistant_content:
             messages.append({"role": "assistant", "content": assistant_content})
         if not tool_calls:
+            missing_tools = _missing_required_tools(agent, tool_events)
+            if (
+                missing_tools
+                and policy.repair
+                and contract_repairs < max_contract_repairs
+            ):
+                contract_repairs += 1
+                messages.append(
+                    {
+                        "role": "user",
+                        "content": _required_tool_repair_prompt(missing_tools),
+                    }
+                )
+                continue
             return _finalize_run_result(
                 assistant_content,
                 tool_events,
@@ -283,6 +299,7 @@ def _run_chat_loop(
                 mode=mode,
                 runtime_engine=runtime_engine,
                 source="openai.chat.completions",
+                contract_repairs=contract_repairs,
             )
         messages.append(
             {
@@ -320,6 +337,7 @@ def _run_chat_loop(
                     mode=mode,
                     runtime_engine=runtime_engine,
                     source="openai.chat.completions",
+                    contract_repairs=contract_repairs,
                 )
             if _required_tools_satisfied(agent, tool_events):
                 synthesis_only = True
@@ -343,6 +361,8 @@ async def _run_chat_loop_async(
     usage: dict[str, Any] = {}
     max_turns = policy.max_turns or 8
     synthesis_only = False
+    contract_repairs = 0
+    max_contract_repairs = max(0, int(policy.max_repairs or 0))
     while True:
         turns += 1
         if turns > max_turns:
@@ -386,6 +406,20 @@ async def _run_chat_loop_async(
         if assistant_content:
             messages.append({"role": "assistant", "content": assistant_content})
         if not tool_calls:
+            missing_tools = _missing_required_tools(agent, tool_events)
+            if (
+                missing_tools
+                and policy.repair
+                and contract_repairs < max_contract_repairs
+            ):
+                contract_repairs += 1
+                messages.append(
+                    {
+                        "role": "user",
+                        "content": _required_tool_repair_prompt(missing_tools),
+                    }
+                )
+                continue
             return _finalize_run_result(
                 assistant_content,
                 tool_events,
@@ -395,6 +429,7 @@ async def _run_chat_loop_async(
                 mode=mode,
                 runtime_engine=runtime_engine,
                 source="openai.chat.completions",
+                contract_repairs=contract_repairs,
             )
         messages.append(
             {
@@ -432,6 +467,7 @@ async def _run_chat_loop_async(
                     mode=mode,
                     runtime_engine=runtime_engine,
                     source="openai.chat.completions",
+                    contract_repairs=contract_repairs,
                 )
             if _required_tools_satisfied(agent, tool_events):
                 synthesis_only = True
@@ -500,6 +536,7 @@ def _finalize_run_result(
     mode: str,
     runtime_engine: str,
     source: str,
+    contract_repairs: int = 0,
 ) -> RunResult:
     if ok and not str(text or "").strip():
         result = _failure(
@@ -510,6 +547,7 @@ def _finalize_run_result(
             meta={
                 "source_result_type": source,
                 "runtime_engine": runtime_engine,
+                "contract_repairs": contract_repairs,
             },
         )
         result.engine = runtime_engine
@@ -529,6 +567,7 @@ def _finalize_run_result(
             "source_result_type": source,
             "runtime_engine": runtime_engine,
             "execution_engine": OPENAI_RUNTIME_ENGINE,
+            "contract_repairs": contract_repairs,
             **_framework_meta(agent),
         },
     )
@@ -586,6 +625,25 @@ def _required_tools_satisfied(agent: Any, tool_events: list[ToolEvent]) -> bool:
     required = set(getattr(contract, "must_call", ()) or ())
     successful = {event.name for event in tool_events if event.ok}
     return bool(required) and required.issubset(successful)
+
+
+def _missing_required_tools(
+    agent: Any, tool_events: list[ToolEvent]
+) -> tuple[str, ...]:
+    contract = getattr(agent, "contract", None)
+    required = tuple(getattr(contract, "must_call", ()) or ())
+    successful = {event.name for event in tool_events if event.ok}
+    return tuple(name for name in required if name not in successful)
+
+
+def _required_tool_repair_prompt(missing_tools: tuple[str, ...]) -> str:
+    names = ", ".join(missing_tools)
+    return (
+        "Contract repair: the previous response omitted required Tool evidence. "
+        f"Call the missing required Tool(s) now: {names}. "
+        "Use arguments from the user's request and do not claim success before "
+        "observing the Tool output."
+    )
 
 
 def _tool_choice(

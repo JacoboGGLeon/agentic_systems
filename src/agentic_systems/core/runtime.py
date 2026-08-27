@@ -142,6 +142,16 @@ class RuntimeConfig:
         resolved = _describe_resolution(
             self.provider, self.region_name, resolution, self.provider_priority
         )
+        configuration = _safe_configuration(self.metadata)
+        selected_configuration = _selected_configuration(
+            resolved["selected_provider"], configuration
+        )
+        provider_key = _provider_configuration_key(resolved["selected_provider"])
+        configured_api_key = bool(
+            self.api_key is not None
+            or selected_configuration.get("api_key_configured")
+            or selected_configuration.get(f"{provider_key}_api_key_configured")
+        )
         return {
             "selected_provider": resolved["selected_provider"],
             "mode": resolved["mode"],
@@ -150,13 +160,17 @@ class RuntimeConfig:
             "reason": resolved["reason"],
             "model": self.model_id,
             "region": self.region_name,
-            "endpoint": self.endpoint,
-            "api_key_configured": self.api_key is not None,
+            "endpoint": self.endpoint or selected_configuration.get("base_url"),
+            "api_key_configured": configured_api_key,
+            "credentials_configured": bool(
+                configured_api_key
+                or selected_configuration.get("credentials_configured")
+            ),
             "scheduler": self.scheduler.to_dict(),
             "provider_priority": list(
                 resolved.get("provider_priority") or self.provider_priority or ()
             ),
-            "configuration": _safe_configuration(self.metadata),
+            "configuration": configuration,
         }
 
 
@@ -404,6 +418,21 @@ def _safe_configuration(metadata: dict[str, Any]) -> dict[str, Any]:
         if isinstance(value, dict):
             configuration[key] = dict(value)
     return configuration
+
+
+def _provider_configuration_key(provider: str) -> str:
+    """Return the metadata namespace for a canonical runtime provider."""
+
+    return provider.removesuffix("-runtime")
+
+
+def _selected_configuration(
+    provider: str, configuration: dict[str, Any]
+) -> dict[str, Any]:
+    """Return safe metadata for the selected provider only."""
+
+    selected = configuration.get(_provider_configuration_key(provider))
+    return dict(selected) if isinstance(selected, dict) else {}
 
 
 __all__ = [

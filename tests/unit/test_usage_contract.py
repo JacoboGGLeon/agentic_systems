@@ -26,6 +26,20 @@ class FakeStrandsMetrics:
         }
 
 
+class FakeStrandsMetricsWithoutServiceLatency:
+    def get_summary(self) -> dict:
+        return {
+            "total_cycles": 1,
+            "total_duration": 0.05,
+            "accumulated_usage": {
+                "inputTokens": 3,
+                "outputTokens": 2,
+                "totalTokens": 5,
+            },
+            "accumulated_metrics": {"latencyMs": 0.0},
+        }
+
+
 def test_usage_aliases_are_canonical_and_backward_compatible() -> None:
     usage = normalize_usage(
         {"prompt_tokens": 11, "completion_tokens": 4, "total_tokens": 15}
@@ -75,6 +89,14 @@ def test_strands_public_metrics_are_not_dropped() -> None:
     assert usage["total_tokens"] == 20
     assert usage["service_latency_ms"] == 81.5
     assert usage["client_duration_ms"] == 125.0
+
+
+def test_strands_zero_latency_sentinel_is_not_public_evidence() -> None:
+    usage = _strands_usage(FakeStrandsMetricsWithoutServiceLatency())
+
+    assert usage["requests"] == 1
+    assert usage["client_duration_ms"] == 50.0
+    assert "service_latency_ms" not in usage
 
 
 def test_scheduler_supplies_client_duration_without_service_latency() -> None:

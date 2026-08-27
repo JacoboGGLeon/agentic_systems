@@ -263,11 +263,31 @@ def test_openai_runtime_reads_environment_config_without_leaking_secret(
         "base_url": "https://example.openai.test/v1",
         "model_env_vars": ["OPENAI_MODEL"],
     }
+    assert summary["endpoint"] == "https://example.openai.test/v1"
+    assert summary["api_key_configured"] is True
+    assert summary["credentials_configured"] is True
     assert "secret-test-key" not in str(summary)
+
+
+def test_ollama_runtime_description_projects_selected_configuration(
+    monkeypatch,
+) -> None:
+    monkeypatch.setenv("OLLAMA_MODEL", "qwen-test")
+    monkeypatch.setenv("OLLAMA_BASE_URL", "http://127.0.0.1:11434/v1")
+
+    summary = lab.runtime(provider="ollama-runtime").describe()
+
+    assert summary["selected_provider"] == "ollama-runtime"
+    assert summary["model"] == "qwen-test"
+    assert summary["endpoint"] == "http://127.0.0.1:11434/v1"
+    assert summary["api_key_configured"] is False
+    assert summary["credentials_configured"] is False
 
 
 def test_runtime_auto_falls_back_to_bedrock_when_aws_signal_exists(monkeypatch) -> None:
     monkeypatch.setenv("VLLM_BASE_URL", "")
+    monkeypatch.setenv("OLLAMA_MODEL", "")
+    monkeypatch.setenv("OLLAMA_BASE_URL", "")
     monkeypatch.setenv("OPENAI_API_KEY", "")
     monkeypatch.setenv("OPENAI_BASE_URL", "")
     monkeypatch.setenv("AWS_ACCESS_KEY_ID", "x")

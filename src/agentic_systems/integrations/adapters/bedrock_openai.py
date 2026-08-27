@@ -31,10 +31,15 @@ class BedrockOpenAIModel(Model):
         input_value = kwargs.get("input") if "input" in kwargs else args[1]
         model_settings = kwargs.get("model_settings")
         tools = kwargs.get("tools") if "tools" in kwargs else args[3]
+        handoffs = (
+            kwargs.get("handoffs")
+            if "handoffs" in kwargs
+            else (args[5] if len(args) > 5 else [])
+        )
         messages, extra_system = _bedrock_messages(input_value)
-        system = ([{"text": str(system_instructions)}] if system_instructions else [])
+        system = [{"text": str(system_instructions)}] if system_instructions else []
         system.extend(extra_system)
-        tool_specs = _bedrock_tools(tools or [])
+        tool_specs = _bedrock_tools([*(tools or []), *(handoffs or [])])
         response = await asyncio.to_thread(
             self.runtime.converse,
             messages=messages,
@@ -56,8 +61,14 @@ class BedrockOpenAIModel(Model):
         yield  # pragma: no cover
 
 
-def _bedrock_messages(input_value: Any) -> tuple[list[dict[str, Any]], list[dict[str, str]]]:
-    items = [_jsonable(item) for item in input_value] if isinstance(input_value, list) else []
+def _bedrock_messages(
+    input_value: Any,
+) -> tuple[list[dict[str, Any]], list[dict[str, str]]]:
+    items = (
+        [_jsonable(item) for item in input_value]
+        if isinstance(input_value, list)
+        else []
+    )
     if not items:
         return [{"role": "user", "content": [{"text": _text(input_value)}]}], []
 
@@ -76,7 +87,11 @@ def _bedrock_messages(input_value: Any) -> tuple[list[dict[str, Any]], list[dict
                 calls.append(
                     {
                         "toolUse": {
-                            "toolUseId": str(call.get("call_id") or call.get("id") or uuid.uuid4().hex),
+                            "toolUseId": str(
+                                call.get("call_id")
+                                or call.get("id")
+                                or uuid.uuid4().hex
+                            ),
                             "name": str(call.get("name") or ""),
                             "input": _object(call.get("arguments")),
                         }
@@ -87,10 +102,17 @@ def _bedrock_messages(input_value: Any) -> tuple[list[dict[str, Any]], list[dict
             continue
         if item.get("type") == "function_call_output":
             outputs: list[dict[str, Any]] = []
-            while index < len(items) and items[index].get("type") == "function_call_output":
+            while (
+                index < len(items)
+                and items[index].get("type") == "function_call_output"
+            ):
                 output = items[index]
                 value = _decode(output.get("output"))
-                content = {"json": value} if isinstance(value, (dict, list)) else {"text": str(value)}
+                content = (
+                    {"json": value}
+                    if isinstance(value, (dict, list))
+                    else {"text": str(value)}
+                )
                 outputs.append(
                     {
                         "toolResult": {
@@ -117,18 +139,26 @@ def _bedrock_messages(input_value: Any) -> tuple[list[dict[str, Any]], list[dict
 def _bedrock_tools(tools: list[Any]) -> list[dict[str, Any]]:
     output: list[dict[str, Any]] = []
     for tool in tools:
-        name = str(getattr(tool, "name", "") or "")
+        name = str(getattr(tool, "name", "") or getattr(tool, "tool_name", "") or "")
         if not name:
             continue
-        schema = getattr(tool, "params_json_schema", None) or {
-            "type": "object",
-            "properties": {},
-        }
+        schema = (
+            getattr(tool, "params_json_schema", None)
+            or getattr(tool, "input_json_schema", None)
+            or {
+                "type": "object",
+                "properties": {},
+            }
+        )
         output.append(
             {
                 "toolSpec": {
                     "name": name,
-                    "description": getattr(tool, "description", None) or f"Tool {name}",
+                    "description": (
+                        getattr(tool, "description", None)
+                        or getattr(tool, "tool_description", None)
+                        or f"Tool {name}"
+                    ),
                     "inputSchema": {"json": schema},
                 }
             }
@@ -187,7 +217,9 @@ def _model_response(response: Mapping[str, Any]) -> ModelResponse:
             output_tokens=int(usage.get("outputTokens") or 0),
             total_tokens=int(usage.get("totalTokens") or 0),
         ),
-        response_id=str(response.get("ResponseMetadata", {}).get("RequestId") or uuid.uuid4().hex),
+        response_id=str(
+            response.get("ResponseMetadata", {}).get("RequestId") or uuid.uuid4().hex
+        ),
     )
 
 
@@ -221,7 +253,9 @@ def _decode(value: Any) -> Any:
 
 
 def _text(value: Any) -> str:
-    return value if isinstance(value, str) else json.dumps(_jsonable(value), default=str)
+    return (
+        value if isinstance(value, str) else json.dumps(_jsonable(value), default=str)
+    )
 
 
 def _jsonable(value: Any) -> Any:

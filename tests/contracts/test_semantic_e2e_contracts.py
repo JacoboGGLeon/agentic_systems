@@ -7,6 +7,7 @@ from pydantic import BaseModel, ConfigDict
 
 import agentic_systems as toolkit
 from agentic_systems.core.scheduler import execute_sync
+from agentic_systems.results import RunResult, ToolEvent
 
 
 class MultiplyInput(BaseModel):
@@ -226,6 +227,87 @@ def test_eval_v2_requires_deterministic_validation_and_judge() -> None:
     assert failing.cases[0].deterministic_validation["ok"] is False
     assert failing.cases[0].judge is not None
     assert failing.cases[0].judge.ok is False
+
+
+class ToolCertifiedJudge:
+    def __init__(self, *, tool_name: str | None, ok: bool = True) -> None:
+        self.tool_name = tool_name
+        self.ok = ok
+
+    def run(self, input: Any, *, mode: str) -> toolkit.RunResult:
+        scores = {name: 0.9 for name in toolkit.JudgeRubric().criteria}
+        events = []
+        if self.tool_name is not None:
+            events.append(
+                ToolEvent(
+                    id="judge-certification",
+                    name=self.tool_name,
+                    ok=True,
+                    output={
+                        "score": 0.9,
+                        "criteria": scores,
+                        "rationale": "Certified from evidence.",
+                    },
+                )
+            )
+        return RunResult(
+            text="Semantic verdict recorded.",
+            data={
+                "score": 0.9,
+                "criteria": scores,
+                "rationale": "Certified from evidence.",
+            },
+            ok=self.ok,
+            engine="openai-runtime",
+            model="test-model",
+            mode=mode,
+            tool_events=events,
+            meta={"framework": "native", "input": input},
+        )
+
+
+def test_eval_requires_one_successful_judge_certification_tool() -> None:
+    rubric = toolkit.JudgeRubric(certification_tool="record_semantic_judgment")
+    case = [
+        {
+            "name": "calculation",
+            "input": "17 x 19",
+            "expected": {"text_contains": "323"},
+        }
+    ]
+
+    missing = toolkit.Evaluator().evaluate(
+        Candidate("17 multiplied by 19 is 323."),
+        case,
+        judge=ToolCertifiedJudge(tool_name=None),
+        rubric=rubric,
+    )
+    assert missing.ok is False
+    assert missing.cases[0].judge is not None
+    assert missing.cases[0].judge.certification_recorded is False
+
+    invalid_run = toolkit.Evaluator().evaluate(
+        Candidate("17 multiplied by 19 is 323."),
+        case,
+        judge=ToolCertifiedJudge(
+            tool_name="record_semantic_judgment",
+            ok=False,
+        ),
+        rubric=rubric,
+    )
+    assert invalid_run.ok is False
+    assert invalid_run.cases[0].judge is not None
+    assert invalid_run.cases[0].judge.execution_ok is False
+
+    certified = toolkit.Evaluator().evaluate(
+        Candidate("17 multiplied by 19 is 323."),
+        case,
+        judge=ToolCertifiedJudge(tool_name="record_semantic_judgment"),
+        rubric=rubric,
+    )
+    assert certified.ok is True
+    assert certified.cases[0].judge is not None
+    assert certified.cases[0].judge.certification_recorded is True
 
 
 def test_eval_accepts_only_explicitly_allowed_tool_paths() -> None:
