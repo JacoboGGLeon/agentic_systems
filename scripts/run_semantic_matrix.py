@@ -25,16 +25,17 @@ from semantic_e2e_application import (
     PROVIDERS,
     build_semantic_cell,
     expected_paths,
+    looks_like_short_poem,
     semantic_cases,
+    supports_model_generation,
+    states_verified_product,
 )
 
 
 ROOT = Path(__file__).resolve().parents[1]
-MODEL_ENV = {
-    "openai-runtime": "OPENAI_MODEL",
-    "ollama-runtime": "OLLAMA_MODEL",
-    "bedrock-runtime": "BEDROCK_MODEL_ID",
-}
+SEMANTIC_APPLICATION_PATH = (
+    Path(__file__).resolve().with_name("semantic_e2e_application.py")
+)
 SECRET_KEY_MARKERS = (
     "API_KEY",
     "PASSWORD",
@@ -90,16 +91,21 @@ def _load_canonical_dotenv(path: Path) -> bool:
 
 
 def _model(provider: str) -> str:
-    if provider == "python-runtime":
-        return "python-runtime"
-    variable = MODEL_ENV[provider]
-    model = str(os.getenv(variable) or "").strip()
+    """Resolve model identity through the same public runtime factory as users."""
+
+    model = str(toolkit.runtime(provider=provider).model_id or "").strip()
     if not model:
-        raise ValueError(f"{variable} is required by the canonical .env.")
+        raise ValueError(
+            f"The canonical .env did not resolve a model for {provider!r}."
+        )
     return model
 
 
 def _environment(dotenv: Path, providers: tuple[str, ...]) -> dict[str, Any]:
+    runtime_descriptions = {
+        provider: toolkit.runtime(provider=provider).describe()
+        for provider in providers
+    }
     return {
         "dotenv": str(dotenv.resolve()) if dotenv.exists() else None,
         "dotenv_loaded": dotenv.exists(),
@@ -108,19 +114,7 @@ def _environment(dotenv: Path, providers: tuple[str, ...]) -> dict[str, Any]:
         "providers": {
             provider: {
                 "model": _model(provider),
-                "credentials_configured": any(
-                    value
-                    for key, value in os.environ.items()
-                    if key.startswith(
-                        {
-                            "openai-runtime": "OPENAI_",
-                            "ollama-runtime": "OLLAMA_",
-                            "bedrock-runtime": "AWS_",
-                            "python-runtime": "AGENTIC_SYSTEMS_",
-                        }[provider]
-                    )
-                    and _is_secret_key(key)
-                ),
+                "runtime": runtime_descriptions[provider],
             }
             for provider in providers
         },
@@ -248,6 +242,13 @@ def _review(
     name = str(declared["name"])
     if name == "calculation" and "323" not in answer:
         failures.append("calculation answer does not state 323")
+    elif name == "poetic_calculation":
+        if not states_verified_product(answer):
+            failures.append("poetic calculation does not state 323")
+        if supports_model_generation(provider) and not looks_like_short_poem(answer):
+            failures.append(
+                "poetic calculation is not a substantive poem of at least three lines"
+            )
     elif name == "text_analysis" and not ("4" in answer and "29" in answer):
         failures.append("text answer does not state exact 4/29 metrics")
     elif name == "out_of_scope":
@@ -337,9 +338,9 @@ def _run_cell(provider: str, framework: str) -> dict[str, Any]:
         # are created for every episode. Stateful framework SDKs cannot leak history.
         cell = build_semantic_cell(provider, framework, model=model)
         certification_tool = (
-            "score_semantics"
-            if provider == "python-runtime"
-            else "record_semantic_judgment"
+            "record_semantic_judgment"
+            if supports_model_generation(provider)
+            else "score_semantics"
         )
         report = toolkit.Evaluator().evaluate(
             cell.executable,
@@ -354,7 +355,9 @@ def _run_cell(provider: str, framework: str) -> dict[str, Any]:
                 "name": f"semantic-{provider}-{framework}-{declared['name']}"
             },
             determinism=(
-                "deterministic" if provider == "python-runtime" else "non_deterministic"
+                "non_deterministic"
+                if supports_model_generation(provider)
+                else "deterministic"
             ),
             seed=0,
             reproducibility_conditions=[
@@ -366,6 +369,7 @@ def _run_cell(provider: str, framework: str) -> dict[str, Any]:
         reports.append(report)
         eval_case = report.cases[0]
         result = RunResult.model_validate(eval_case.result)
+        judge_execution = getattr(cell.judge, "last_result", None)
         name = str(declared["name"])
         lineage = result.lineage(
             name=f"{provider}-{framework}-{name}",
@@ -386,6 +390,11 @@ def _run_cell(provider: str, framework: str) -> dict[str, Any]:
                 "candidate": result.normalized(),
                 "deterministic_validation": eval_case.deterministic_validation,
                 "judge": eval_case.judge.to_dict() if eval_case.judge else None,
+                "judge_execution": (
+                    judge_execution.normalized()
+                    if isinstance(judge_execution, RunResult)
+                    else None
+                ),
                 "candidate_usage": eval_case.candidate_usage,
                 "judge_usage": eval_case.judge_usage,
                 "usage": eval_case.usage,
@@ -402,9 +411,9 @@ def _run_cell(provider: str, framework: str) -> dict[str, Any]:
         "framework": framework,
         "model": model,
         "control_kind": (
-            "deterministic-control"
-            if provider == "python-runtime"
-            else "live-language-model"
+            "live-language-model"
+            if supports_model_generation(provider)
+            else "deterministic-control"
         ),
         "ok": passed == len(episodes),
         "eval_report": {
@@ -573,6 +582,22 @@ def main() -> int:
                 f"[semantic] ok={cell['ok']} episodes={len(cell['episodes'])}",
                 flush=True,
             )
+            for episode in cell.get("episodes", []):
+                if episode.get("ok"):
+                    continue
+                failures = episode.get("semantic_review", {}).get("failures", [])
+                print(
+                    f"[semantic] FAIL {provider} × {framework} × "
+                    f"{episode.get('name')}: " + "; ".join(map(str, failures)),
+                    flush=True,
+                )
+            if cell.get("bootstrap_error"):
+                error = cell["bootstrap_error"]
+                print(
+                    f"[semantic] BOOTSTRAP {provider} × {framework}: "
+                    f"{error.get('type')}: {error.get('message')}",
+                    flush=True,
+                )
 
     episode_rows = [episode for cell in cells for episode in cell.get("episodes", [])]
     passed_cells = sum(bool(cell["ok"]) for cell in cells)
@@ -587,6 +612,16 @@ def main() -> int:
             "package_version": toolkit.__version__,
             "runtime_package_file": str(package_file),
             "wheel_runtime_verified": True,
+            "gate_assets": {
+                "runner": {
+                    "filename": Path(__file__).name,
+                    "sha256": _sha256(Path(__file__).resolve()),
+                },
+                "application": {
+                    "filename": SEMANTIC_APPLICATION_PATH.name,
+                    "sha256": _sha256(SEMANTIC_APPLICATION_PATH),
+                },
+            },
             "environment": _environment(dotenv, providers),
             "matrix": {"providers": list(providers), "frameworks": list(frameworks)},
             "summary": {

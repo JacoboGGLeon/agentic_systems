@@ -149,17 +149,50 @@ def _materialize_model(agent: Any, engine: Any) -> Any:
             if session is not None
             else getattr(agent.runtime_config, "region_name", None)
         )
-        return BedrockModel(
-            model_id=agent.model,
-            region_name=region_name,
-            boto_session=session,
-            streaming=bool(getattr(runtime, "streaming", False)),
-            boto_client_config=(
+        model_kwargs = {
+            "model_id": agent.model,
+            "region_name": region_name,
+            "boto_session": session,
+            "streaming": bool(getattr(runtime, "streaming", False)),
+            "boto_client_config": (
                 Config(signature_version="v4")
                 if auth_mode == "aws-credential-chain"
                 else None
             ),
-        )
+        }
+        # Test doubles and vendor shims may expose a factory rather than a
+        # subclassable SDK model. They still receive the same public contract.
+        if not isinstance(BedrockModel, type):
+            return BedrockModel(**model_kwargs)
+
+        class ContractAwareBedrockModel(BedrockModel):
+            """Release a forced Tool after the declared contract is satisfied."""
+
+            async def stream(
+                self,
+                messages: Any,
+                tool_specs: list[Any] | None = None,
+                system_prompt: str | None = None,
+                *,
+                tool_choice: Any = None,
+                **kwargs: Any,
+            ) -> Any:
+                async for event in super().stream(
+                    messages,
+                    tool_specs,
+                    system_prompt,
+                    tool_choice=_budgeted_continuation_tool_choice(
+                        self, agent, messages, tool_choice
+                    ),
+                    **kwargs,
+                ):
+                    # Strands can stop consuming immediately after ToolUse. Record
+                    # the emitted call before yielding so the next model turn sees
+                    # the exhausted budget even if this generator is not resumed.
+                    _record_emitted_tool_calls(self, _stream_tool_use_count(event))
+                    yield event
+
+        return ContractAwareBedrockModel(**model_kwargs)
     if agent.engine in {
         OPENAI_RUNTIME_ENGINE,
         OLLAMA_RUNTIME_ENGINE,
@@ -183,6 +216,33 @@ def _materialize_model(agent: Any, engine: Any) -> Any:
         class ToolCallNormalizingOpenAIModel(OpenAIModel):
             """Promote strict textual calls emitted by OpenAI-compatible models."""
 
+            def format_request(
+                self,
+                messages: Any = None,
+                tool_specs: list[Any] | None = None,
+                system_prompt: str | None = None,
+                tool_choice: Any = None,
+                *,
+                system_prompt_content: list[Any] | None = None,
+                **kwargs: Any,
+            ) -> dict[str, Any]:
+                resolved_choice = _continuation_tool_choice(
+                    agent, messages, tool_choice
+                )
+                request = super().format_request(
+                    messages,
+                    tool_specs,
+                    system_prompt,
+                    resolved_choice,
+                    system_prompt_content=system_prompt_content,
+                    **kwargs,
+                )
+                # OpenAIModel merges config.params after the per-turn choice.
+                # Make the contract-aware continuation authoritative.
+                if resolved_choice == {"auto": {}}:
+                    request["tool_choice"] = "auto"
+                return request
+
             async def stream(
                 self,
                 messages: Any,
@@ -192,6 +252,9 @@ def _materialize_model(agent: Any, engine: Any) -> Any:
                 tool_choice: Any = None,
                 **kwargs: Any,
             ) -> Any:
+                tool_choice = _budgeted_continuation_tool_choice(
+                    self, agent, messages, tool_choice
+                )
                 events = [
                     event
                     async for event in super().stream(
@@ -202,7 +265,12 @@ def _materialize_model(agent: Any, engine: Any) -> Any:
                         **kwargs,
                     )
                 ]
-                for event in _normalize_textual_tool_events(events, tool_specs):
+                normalized_events = _normalize_textual_tool_events(events, tool_specs)
+                _record_emitted_tool_calls(
+                    self,
+                    sum(_stream_tool_use_count(event) for event in normalized_events),
+                )
+                for event in normalized_events:
                     yield event
 
         model_class = ToolCallNormalizingOpenAIModel
@@ -265,6 +333,115 @@ def _materialize_model(agent: Any, engine: Any) -> Any:
 
         return ScriptedStrandsModel(agent.model or agent.engine)
     raise ValueError(f"Unsupported Provider for Strands: {agent.engine!r}.")
+
+
+def _continuation_tool_choice(
+    agent: Any,
+    messages: Any,
+    tool_choice: Any,
+) -> Any:
+    """Stop forcing a Tool once successful evidence satisfies the contract.
+
+    Strands applies a model-level Tool choice on every turn. A named/required
+    choice is useful for the first turn, but retaining it after a successful
+    Tool result creates duplicate calls and prevents the model from producing
+    its public final answer. The decision is contract-driven and therefore
+    identical for Bedrock and OpenAI-compatible model boundaries.
+    """
+
+    contract = getattr(agent, "contract", None)
+    completion = getattr(contract, "completion", None)
+    required = set(getattr(contract, "must_call", ()) or ())
+    if not required or completion not in {
+        "when_contract_satisfied",
+        "when_required_tools_satisfied",
+    }:
+        return tool_choice
+
+    aliases = tool_name_aliases(agent.available_tools())
+    public_messages = [_jsonable(message) for message in messages or ()]
+    successful = {
+        event.name for event in _tool_events(public_messages, aliases) if event.ok
+    }
+    if required.issubset(successful):
+        return {"auto": {}}
+    available = {str(getattr(tool, "name", "")) for tool in agent.available_tools()}
+    if (
+        len(required) == 1
+        and available == required
+        and _has_successful_tool_result(public_messages)
+    ):
+        # Some Strands model boundaries pass only the latest ToolResult to the
+        # continuation turn. With one declared Tool its identity is unambiguous.
+        return {"auto": {}}
+    return tool_choice
+
+
+def _budgeted_continuation_tool_choice(
+    model: Any,
+    agent: Any,
+    messages: Any,
+    tool_choice: Any,
+) -> Any:
+    """Resolve per-turn choice and enforce the effective Tool-call budget.
+
+    Message projections differ across Framework SDK versions. The adapter also
+    tracks ToolUse blocks it actually emitted, so a forced choice cannot create
+    a second call after the declared positive budget has been exhausted.
+    """
+
+    resolved = _continuation_tool_choice(agent, messages, tool_choice)
+    limit = getattr(model, "_agentic_systems_max_tool_calls", None)
+    emitted = getattr(model, "_agentic_systems_emitted_tool_calls", 0)
+    if isinstance(limit, int) and limit > 0 and emitted >= limit:
+        return {"auto": {}}
+    return resolved
+
+
+def _stream_tool_use_count(event: Any) -> int:
+    """Count native ToolUse starts without depending on a provider SDK class."""
+
+    public = _jsonable(event)
+    if not isinstance(public, Mapping):
+        return 0
+    block_start = public.get("contentBlockStart")
+    if not isinstance(block_start, Mapping):
+        return 0
+    start = block_start.get("start")
+    return int(isinstance(start, Mapping) and isinstance(start.get("toolUse"), Mapping))
+
+
+def _record_emitted_tool_calls(model: Any, count: int) -> None:
+    if count <= 0:
+        return
+    current = getattr(model, "_agentic_systems_emitted_tool_calls", 0)
+    try:
+        setattr(model, "_agentic_systems_emitted_tool_calls", current + count)
+    except (AttributeError, TypeError):
+        # Immutable third-party shims still use message-based continuation.
+        return
+
+
+def _reset_tool_budget(model: Any, max_tool_calls: int | None) -> None:
+    try:
+        setattr(model, "_agentic_systems_max_tool_calls", max_tool_calls)
+        setattr(model, "_agentic_systems_emitted_tool_calls", 0)
+    except (AttributeError, TypeError):
+        # Not every test double or vendor proxy permits private attributes.
+        return
+
+
+def _has_successful_tool_result(value: Any) -> bool:
+    """Recognize a successful native Strands ToolResult at any message depth."""
+
+    if isinstance(value, Mapping):
+        result = value.get("toolResult") or value.get("tool_result")
+        if isinstance(result, Mapping):
+            return str(result.get("status") or "success").lower() == "success"
+        return any(_has_successful_tool_result(item) for item in value.values())
+    if isinstance(value, (list, tuple)):
+        return any(_has_successful_tool_result(item) for item in value)
+    return False
 
 
 def _normalize_textual_tool_events(
@@ -399,6 +576,9 @@ def _strands_tool(tool: Any, native_name: str | None = None) -> Any:
 
 
 def _configure_model(model: Any, policy: RunPolicy, mode: str) -> None:
+    # This state belongs to one public Agent.run invocation. It is deliberately
+    # private and is reset even when the Framework caches its native model.
+    _reset_tool_budget(model, policy.max_tool_calls)
     configure = getattr(model, "configure", None)
     if callable(configure):
         configure(policy, mode)

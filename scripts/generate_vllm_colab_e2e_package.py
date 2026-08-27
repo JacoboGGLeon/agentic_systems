@@ -15,7 +15,8 @@ import nbformat
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "release" / "notebooks" / "vllm_attestation.ipynb"
-RUNNER = ROOT / "scripts" / "run_live_matrix.py"
+SEMANTIC_RUNNER = ROOT / "scripts" / "run_semantic_matrix.py"
+SEMANTIC_APPLICATION = ROOT / "scripts" / "semantic_e2e_application.py"
 DEFAULT_WHEEL = ROOT / "dist" / "agentic_systems-2.1.0-py3-none-any.whl"
 DEFAULT_OUTPUT = ROOT / "dist"
 PACKAGE_STEM = "agentic-systems-2.1.0-vllm-qwen06-colab-final"
@@ -58,7 +59,7 @@ def _dotenv(*, commit: str, wheel: Path, wheel_sha256: str) -> str:
         VLLM_TEMPERATURE=0.7
         AGENTIC_SYSTEMS_LIVE_TEMPERATURE=0.0
         VLLM_GPU_MEMORY_UTILIZATION=0.4
-        VLLM_MAX_MODEL_LEN=2048
+        VLLM_MAX_MODEL_LEN=8192
         VLLM_MAX_NUM_SEQS=4
 
         AGENTIC_SYSTEMS_PROVIDER_PRIORITY=vllm-runtime
@@ -74,7 +75,7 @@ def _readme(*, commit: str, wheel: Path, wheel_sha256: str) -> str:
         1. Abre un Colab nuevo y selecciona una GPU.
         2. Sube `{PACKAGE_STEM}.zip` cuando lo solicite la primera celda.
         3. Ejecuta **Run all** una sola vez.
-        4. Descarga `vllm-attestation.json`.
+        4. Descarga `vllm-semantic-attestation.json` y `vllm-semantic-review.md`.
 
         Identidad certificable:
 
@@ -85,6 +86,8 @@ def _readme(*, commit: str, wheel: Path, wheel_sha256: str) -> str:
 
         `.env` es la fuente canónica de configuración. El notebook verifica los
         checksums internos antes de instalar y no permite fallback de provider.
+        El cierre exige respuesta humana, linaje jerárquico, validación
+        determinista y judge; `ok=true` por sí solo no certifica una celda.
         """
     )
 
@@ -98,7 +101,8 @@ CONTENT = Path("/content")
 REQUIRED = (
     CONTENT / ".env",
     CONTENT / "{wheel_filename}",
-    CONTENT / "run_live_matrix.py",
+    CONTENT / "run_semantic_matrix.py",
+    CONTENT / "semantic_e2e_application.py",
 )
 
 from google.colab import files
@@ -162,7 +166,8 @@ def build(*, wheel: Path, commit: str, output_dir: Path) -> Path:
 
     packaged_wheel = package_dir / wheel.name
     shutil.copy2(wheel, packaged_wheel)
-    shutil.copy2(RUNNER, package_dir / "run_live_matrix.py")
+    shutil.copy2(SEMANTIC_RUNNER, package_dir / "run_semantic_matrix.py")
+    shutil.copy2(SEMANTIC_APPLICATION, package_dir / "semantic_e2e_application.py")
     (package_dir / ".env").write_text(
         _dotenv(commit=commit, wheel=wheel, wheel_sha256=wheel_sha256),
         encoding="utf-8",
@@ -188,7 +193,8 @@ def build(*, wheel: Path, commit: str, output_dir: Path) -> Path:
         NOTEBOOK_FILENAME,
         wheel.name,
         "README.md",
-        "run_live_matrix.py",
+        "run_semantic_matrix.py",
+        "semantic_e2e_application.py",
     )
     archive_path = output_dir / f"{PACKAGE_STEM}.zip"
     _write_archive(package_dir, package_files, archive_path)

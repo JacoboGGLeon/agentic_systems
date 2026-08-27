@@ -64,12 +64,13 @@ def test_vllm_attestation_reads_candidate_identity_from_dotenv() -> None:
     )
     assert "assert len(COMMIT_SHA) == 40" in code
     assert "assert len(EXPECTED_WHEEL_SHA256) == 64" in code
-    assert 'attestation["summary"]' not in code
-    assert (
-        'failed_cases = [case for case in attestation["cases"] if not case["ok"]]'
-        in code
-    )
+    assert 'summary = attestation["summary"]' in code
     assert 'assert summary["total"] == 4' in code
+    assert 'assert summary["episodes_total"] == 16' in code
+    assert 'assert summary["episodes_failed"] == 0' in code
+    assert 'title="Fallas semánticas por episodio"' in code
+    assert "files.download(str(OUTPUT))" in code
+    assert 'attestation["gate_assets"]["runner"]["sha256"]' in code
     assert '"native", "langgraph", "openai-agents", "strands"' in code
     assert "server.health()" in code
     assert 'result.engine == "vllm-runtime"' in code
@@ -82,7 +83,16 @@ def test_vllm_attestation_reads_candidate_identity_from_dotenv() -> None:
     assert 'json.dumps({"enable_thinking": VLLM_ENABLE_THINKING})' in code
     assert "temperature=VLLM_TEMPERATURE" in code
     assert 'assert [event.name for event in result.tool_events] == ["multiply"]' in code
+    assert 'assert "323" in result.text' in code
+    assert 'assert "ToolEnvelope" not in result.text' in code
+    assert 'semantic_runner = Path.cwd() / "run_semantic_matrix.py"' in code
+    assert 'semantic_application = Path.cwd() / "semantic_e2e_application.py"' in code
+    assert 'episode["deterministic_validation"]["ok"]' in code
+    assert 'episode["judge"]["ok"]' in code
+    assert '"git", "clone"' not in code
+    assert "https://github.com" not in code
     assert "VLLM_GPU_MEMORY_UTILIZATION" in code
+    assert 'VLLM_MAX_MODEL_LEN = int(os.getenv("VLLM_MAX_MODEL_LEN", "8192"))' in code
     assert '"--force-reinstall", "--no-deps", WHEEL_PATH' in code
     assert "load_canonical_dotenv(Path.cwd())" in code
     assert "os.environ[key] = value.strip()" in code
@@ -142,6 +152,7 @@ def test_bedrock_attestation_respects_dotenv_auth_and_runs_full_framework_matrix
         'required_api = ("aws_environment_snapshot", "boto3_session_snapshot")' in code
     )
     assert "El kernel conserva agentic_systems" in code
+
 
 def test_bedrock_authentication_is_selected_by_dotenv_without_notebook_mutation() -> (
     None

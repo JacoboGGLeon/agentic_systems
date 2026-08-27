@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+import asyncio
 from types import SimpleNamespace
 
+from agentic_systems.contracts import RunPolicy
+from agentic_systems.integrations.adapters import strands as strands_adapter
 from agentic_systems.integrations.adapters.bedrock_openai import BedrockOpenAIModel
 from agentic_systems.integrations.adapters.openai_agents import (
     _materialize_model as openai_model,
@@ -195,6 +198,56 @@ def test_strands_materializes_each_provider(monkeypatch):
         "base_url": "http://ollama.invalid/v1",
         "api_key": "ollama",
     }
+
+
+def test_strands_bedrock_releases_forced_tool_before_abandoned_stream(monkeypatch):
+    choices = []
+
+    class FakeBedrockModel:
+        def __init__(self, **kwargs):
+            self.kwargs = kwargs
+
+        async def stream(
+            self,
+            messages,
+            tool_specs=None,
+            system_prompt=None,
+            *,
+            tool_choice=None,
+            **kwargs,
+        ):
+            choices.append(tool_choice)
+            yield {
+                "contentBlockStart": {
+                    "start": {
+                        "toolUse": {
+                            "toolUseId": f"tool-{len(choices)}",
+                            "name": "record_semantic_judgment",
+                        }
+                    }
+                }
+            }
+            yield {"messageStop": {"stopReason": "tool_use"}}
+
+    monkeypatch.setattr("strands.models.BedrockModel", FakeBedrockModel)
+    agent = _agent("bedrock-runtime")
+    agent.contract = SimpleNamespace(
+        must_call=["record_semantic_judgment"],
+        completion="when_required_tools_satisfied",
+    )
+    agent.available_tools = lambda: [SimpleNamespace(name="record_semantic_judgment")]
+    model = strands_adapter._materialize_model(agent, object())
+    strands_adapter._configure_model(model, RunPolicy(max_tool_calls=1), "eval")
+    forced = {"tool": {"name": "record_semantic_judgment"}}
+
+    async def exercise() -> None:
+        first_stream = model.stream([], tool_choice=forced)
+        await anext(first_stream)
+        # Strands may not resume the first generator after receiving ToolUse.
+        [event async for event in model.stream([], tool_choice=forced)]
+
+    asyncio.run(exercise())
+    assert choices == [forced, {"auto": {}}]
 
 
 def test_strands_real_bedrock_model_accepts_canonical_runtime(monkeypatch):

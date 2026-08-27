@@ -152,7 +152,7 @@ VLLM_REASONING_PARSER = os.getenv(
 ).strip() or None
 VLLM_TEMPERATURE = float(os.getenv("VLLM_TEMPERATURE", "0.7"))
 VLLM_GPU_MEMORY_UTILIZATION = float(os.getenv("VLLM_GPU_MEMORY_UTILIZATION", "0.4"))
-VLLM_MAX_MODEL_LEN = int(os.getenv("VLLM_MAX_MODEL_LEN", "2048"))
+VLLM_MAX_MODEL_LEN = int(os.getenv("VLLM_MAX_MODEL_LEN", "8192"))
 VLLM_MAX_NUM_SEQS = int(os.getenv("VLLM_MAX_NUM_SEQS", "4"))
 assert REQUESTED_PROFILE in {"auto", "fast", "medium", "power", "custom"}
 
@@ -420,6 +420,9 @@ toolkit.show_json(agent.info(), title="Agente declarado")"""
     assert result.ok, result.errors
     assert result.engine == "vllm-runtime"
     assert [event.name for event in result.tool_events] == ["multiply"]
+    assert "323" in result.text
+    assert not result.text.lstrip().startswith(("{", "[")), result.text
+    assert "ToolEnvelope" not in result.text
     result.check_invariants()
     toolkit.human_result(result, title="vLLM RunResult", show_lineage=True)
     toolkit.show_json(toolkit.run_result_output(result), title="Contrato normalizado")
@@ -432,37 +435,41 @@ else:
     }, title="vLLM live gate")"""
         ),
         nbformat.v4.new_markdown_cell(
-            """## 4) Certificar los cuatro frameworks
+            """## 4) Certificar semánticamente los cuatro frameworks
 
-El runner oficial consume el mismo endpoint. La attestation compara invariantes, identidad, Tools, errores y round-trip; no exige texto idéntico entre Frameworks."""
+El runner oficial ejecuta cuatro episodios E2E por Framework: cálculo, poema
+basado en cálculo verificado, análisis de texto y petición fuera de alcance. Una
+celda sólo pasa cuando coinciden respuesta humana, ruta Agent/Tool, linaje,
+identidad real, validación determinista y judge.
+Un `ok=true` estructural no es suficiente."""
         ),
         nbformat.v4.new_code_cell(
             """if RUN_VLLM_LIVE:
     if not COMMIT_SHA:
         raise ValueError("Completa COMMIT_SHA con el commit exacto que produjo el wheel")
-    local_runner = Path.cwd() / "run_live_matrix.py"
-    if local_runner.is_file():
-        matrix_runner = local_runner
-    else:
-        repo = Path("/content/agentic-systems")
-        if not repo.exists():
-            subprocess.run([
-                "git", "clone", "https://github.com/JacoboGGLeon/agentic_systems.git", str(repo)
-            ], check=True)
-        subprocess.run(["git", "-C", str(repo), "fetch", "--all", "--tags"], check=True)
-        subprocess.run(["git", "-C", str(repo), "checkout", "--detach", COMMIT_SHA], check=True)
-        matrix_runner = repo / "scripts" / "run_live_matrix.py"
+    semantic_runner = Path.cwd() / "run_semantic_matrix.py"
+    semantic_application = Path.cwd() / "semantic_e2e_application.py"
+    missing = [
+        str(path)
+        for path in (semantic_runner, semantic_application)
+        if not path.is_file()
+    ]
+    if missing:
+        raise FileNotFoundError({"missing_semantic_gate_files": missing})
     os.environ.update(
         VLLM_BASE_URL=endpoint.base_url,
         VLLM_API_KEY=VLLM_API_KEY,
         VLLM_MODEL=artifact.model_id,
     )
-    OUTPUT = Path("/content/vllm-attestation.json")
+    OUTPUT = Path("/content/vllm-semantic-attestation.json")
+    REVIEW = Path("/content/vllm-semantic-review.md")
     completed = subprocess.run([
-        sys.executable, str(matrix_runner),
+        sys.executable, str(semantic_runner),
         "--wheel", WHEEL_PATH,
         "--output", str(OUTPUT),
+        "--review", str(REVIEW),
         "--commit", COMMIT_SHA,
+        "--env", str(DOTENV_PATH),
         "--providers", "vllm-runtime",
         "--frameworks", "native", "langgraph", "openai-agents", "strands",
     ], text=True, capture_output=True)
@@ -472,25 +479,54 @@ El runner oficial consume el mismo endpoint. La attestation compara invariantes,
         "stderr": completed.stderr,
     }, title="vLLM live matrix")
     if completed.returncode:
+        if OUTPUT.is_file():
+            failed_attestation = json.loads(OUTPUT.read_text(encoding="utf-8"))
+            toolkit.show_json({
+                "summary": failed_attestation.get("summary"),
+                "failures": [
+                    {
+                        "framework": cell.get("framework"),
+                        "episode": episode.get("name"),
+                        "review": episode.get("semantic_review", {}).get("failures", []),
+                        "judge": episode.get("judge"),
+                    }
+                    for cell in failed_attestation.get("cells", [])
+                    for episode in cell.get("episodes", [])
+                    if not episode.get("ok")
+                ],
+            }, title="Fallas semánticas por episodio")
+            files.download(str(OUTPUT))
+        if REVIEW.is_file():
+            files.download(str(REVIEW))
         toolkit.show_json({
             "vllm_log_tail": Path("/content/vllm-server.log").read_text(errors="replace")[-12000:],
         }, title="Diagnóstico vLLM")
         raise RuntimeError(f"La matriz live falló con código {completed.returncode}")
-    attestation = json.loads(OUTPUT.read_text())
-    failed_cases = [case for case in attestation["cases"] if not case["ok"]]
-    summary = {
-        "total": len(attestation["cases"]),
-        "passed": len(attestation["cases"]) - len(failed_cases),
-        "failed": len(failed_cases),
-    }
-    toolkit.show_json(summary, title="Attestation summary")
+    attestation = json.loads(OUTPUT.read_text(encoding="utf-8"))
+    summary = attestation["summary"]
+    toolkit.show_json(summary, title="Semantic attestation summary")
     assert attestation["wheel_sha256"] == wheel_sha256
     assert attestation["commit_sha"] == COMMIT_SHA
+    assert len(attestation["gate_assets"]["runner"]["sha256"]) == 64
+    assert len(attestation["gate_assets"]["application"]["sha256"]) == 64
     assert summary["total"] == 4
     assert summary["failed"] == 0
+    assert summary["episodes_total"] == 16
+    assert summary["episodes_failed"] == 0
+    for cell in attestation["cells"]:
+        assert cell["provider"] == "vllm-runtime"
+        assert cell["ok"]
+        for episode in cell["episodes"]:
+            assert episode["ok"]
+            assert episode["semantic_review"]["ok"]
+            assert episode["deterministic_validation"]["ok"]
+            assert episode["judge"]["ok"]
+            answer = episode["candidate"]["answer"]["text"].lstrip()
+            assert not answer.startswith(("{", "[")), answer
     files.download(str(OUTPUT))
+    files.download(str(REVIEW))
 else:
-    toolkit.show_json({"status": "not-run", "scope": "vllm-attestation"}, title="Attestation gate")"""
+    toolkit.show_json({"status": "not-run", "scope": "vllm-semantic-attestation"}, title="Attestation gate")"""
         ),
         nbformat.v4.new_markdown_cell(
             """## 5) API realmente ejercitada
@@ -509,8 +545,12 @@ La cobertura enumera sólo llamadas presentes en las celdas anteriores. Servir e
     "toolkit.runtime",
     "toolkit.tool",
     "toolkit.system",
+    "toolkit.Skill",
     "system.agent",
+    "system.compile",
     "agent.run",
+    "toolkit.Evaluator.evaluate",
+    "toolkit.JudgeRubric",
     "toolkit.human_result",
     "toolkit.run_result_output",
     "toolkit.RunResult",
@@ -523,7 +563,11 @@ toolkit.show_json(api_coverage, title="vLLM API coverage")"""
         nbformat.v4.new_markdown_cell(
             """## Resultado e interpretacion
 
-Con live desactivado: contratos declarativos y estados not-run ejecutables. Con live activado: un RunResult vllm-runtime real y una attestation de native, LangGraph, OpenAI Agents y Strands. Para fine-tuning, entrena y guarda un checkpoint o adapter con Unsloth, cambia MODEL_ID y conserva el resto."""
+Con live desactivado: contratos declarativos y estados not-run ejecutables. Con
+live activado: un RunResult vllm-runtime con respuesta humana y una certificación
+semántica de 16 episodios sobre native, LangGraph, OpenAI Agents y Strands. Para
+fine-tuning, entrena y guarda un checkpoint o adapter con Unsloth, cambia MODEL_ID
+y conserva el resto."""
         ),
         nbformat.v4.new_code_cell(
             """if RUN_VLLM_LIVE:

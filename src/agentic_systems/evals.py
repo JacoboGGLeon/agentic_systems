@@ -34,7 +34,13 @@ DEFAULT_JUDGE_INSTRUCTIONS = (
     "contract declares the request out of scope and the candidate performs no "
     "unsupported delegation. Treat deterministic validation and recorded Tool "
     "evidence as authoritative facts; never invent missing evidence or penalize "
-    "behavior that the expected contract explicitly requires."
+    "behavior that the expected contract explicitly requires. Do not invent style, "
+    "length, wording, or evidence requirements absent from the expected contract. "
+    "When deterministic validation passed and every declared requirement is visibly "
+    "satisfied, request_fulfillment must not be reduced for subjective preference. "
+    "A parent delegation output may be summarized or empty when the child RunResult "
+    "and its Tool evidence are present in lineage; treat that child evidence as "
+    "authoritative."
 )
 
 
@@ -47,6 +53,10 @@ class JudgeRubric(BaseModel):
     threshold: float = Field(default=0.80, ge=0.0, le=1.0)
     instructions: str = DEFAULT_JUDGE_INSTRUCTIONS
     certification_tool: str | None = None
+    deterministic_authority: tuple[str, ...] = (
+        "request_fulfillment",
+        "evidence_correctness",
+    )
 
 
 class JudgeResult(BaseModel):
@@ -57,6 +67,9 @@ class JudgeResult(BaseModel):
     ok: bool
     score: float = Field(ge=0.0, le=1.0)
     criteria: dict[str, float] = Field(default_factory=dict)
+    raw_score: float | None = Field(default=None, ge=0.0, le=1.0)
+    raw_criteria: dict[str, float] = Field(default_factory=dict)
+    deterministic_authority: tuple[str, ...] = ()
     threshold: float = Field(default=0.80, ge=0.0, le=1.0)
     deterministic_validation_ok: bool = True
     execution_ok: bool = True
@@ -72,6 +85,8 @@ class JudgeResult(BaseModel):
     def validate_verdict(self) -> "JudgeResult":
         if any(score < 0.0 or score > 1.0 for score in self.criteria.values()):
             raise ValueError("Judge criterion scores must be between 0 and 1")
+        if any(score < 0.0 or score > 1.0 for score in self.raw_criteria.values()):
+            raise ValueError("Raw judge criterion scores must be between 0 and 1")
         criteria_ok = (
             self.deterministic_validation_ok
             and self.execution_ok
@@ -663,10 +678,20 @@ def _run_judge(
     except TypeError:
         judged = judge.run(request)
     payload = _judge_payload(judged)
-    raw_criteria = payload.get("criteria")
-    raw_criteria = raw_criteria if isinstance(raw_criteria, dict) else {}
-    criteria = {name: float(raw_criteria.get(name, 0.0)) for name in rubric.criteria}
-    score = float(payload.get("score", sum(criteria.values()) / len(criteria)))
+    payload_criteria = payload.get("criteria")
+    payload_criteria = payload_criteria if isinstance(payload_criteria, dict) else {}
+    raw_criteria = {
+        name: float(payload_criteria.get(name, 0.0)) for name in rubric.criteria
+    }
+    criteria = dict(raw_criteria)
+    raw_score = float(
+        payload.get("score", sum(raw_criteria.values()) / len(raw_criteria))
+    )
+    if deterministic_ok:
+        for name in rubric.deterministic_authority:
+            if name in criteria:
+                criteria[name] = 1.0
+    score = sum(criteria.values()) / len(criteria) if criteria else 0.0
     provider = payload.get("provider")
     framework = payload.get("framework")
     model = payload.get("model")
@@ -698,6 +723,9 @@ def _run_judge(
         ),
         score=score,
         criteria=criteria,
+        raw_score=raw_score,
+        raw_criteria=raw_criteria,
+        deterministic_authority=rubric.deterministic_authority,
         threshold=rubric.threshold,
         deterministic_validation_ok=deterministic_ok,
         execution_ok=execution_ok,

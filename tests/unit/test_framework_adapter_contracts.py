@@ -580,6 +580,137 @@ def test_strands_adapter_helpers_cover_results_tools_and_failures():
     sa._configure_model(no_max_tokens, RunPolicy(temperature=0.2), "eval")
     assert no_max_tokens.updates == [{"temperature": 0.2}]
 
+    forced_choice = {
+        "type": "function",
+        "function": {"name": "record_semantic_judgment"},
+    }
+    contract_agent = SimpleNamespace(
+        contract=SimpleNamespace(
+            must_call=["record_semantic_judgment"],
+            completion="when_required_tools_satisfied",
+        ),
+        available_tools=lambda: [SimpleNamespace(name="record_semantic_judgment")],
+    )
+    before_tool = [{"role": "user", "content": [{"text": "judge"}]}]
+    assert (
+        sa._continuation_tool_choice(contract_agent, before_tool, forced_choice)
+        == forced_choice
+    )
+    after_tool = [
+        {
+            "role": "assistant",
+            "content": [
+                {
+                    "toolUse": {
+                        "toolUseId": "judge-1",
+                        "name": "record_semantic_judgment",
+                        "input": {"score": 1.0},
+                    }
+                }
+            ],
+        },
+        {
+            "role": "user",
+            "content": [
+                {
+                    "toolResult": {
+                        "toolUseId": "judge-1",
+                        "status": "success",
+                        "content": [{"json": {"score": 1.0}}],
+                    }
+                }
+            ],
+        },
+    ]
+    assert sa._continuation_tool_choice(contract_agent, after_tool, forced_choice) == {
+        "auto": {}
+    }
+
+    result_only = [
+        {
+            "role": "user",
+            "content": [
+                {
+                    "toolResult": {
+                        "toolUseId": "judge-1",
+                        "status": "success",
+                        "content": [{"json": {"score": 1.0}}],
+                    }
+                }
+            ],
+        }
+    ]
+    assert sa._continuation_tool_choice(contract_agent, result_only, forced_choice) == {
+        "auto": {}
+    }
+
+    budget_model = SimpleNamespace(
+        _agentic_systems_max_tool_calls=1,
+        _agentic_systems_emitted_tool_calls=0,
+    )
+    assert (
+        sa._budgeted_continuation_tool_choice(
+            budget_model, contract_agent, before_tool, forced_choice
+        )
+        == forced_choice
+    )
+    assert (
+        sa._stream_tool_use_count(
+            {
+                "contentBlockStart": {
+                    "start": {
+                        "toolUse": {
+                            "toolUseId": "judge-1",
+                            "name": "record_semantic_judgment",
+                        }
+                    }
+                }
+            }
+        )
+        == 1
+    )
+    sa._record_emitted_tool_calls(budget_model, 1)
+    assert sa._budgeted_continuation_tool_choice(
+        budget_model, contract_agent, before_tool, forced_choice
+    ) == {"auto": {}}
+
+    sa._configure_model(budget_model, RunPolicy(max_tool_calls=2), "eval")
+    assert budget_model._agentic_systems_max_tool_calls == 2
+    assert budget_model._agentic_systems_emitted_tool_calls == 0
+
+    model_agent = SimpleNamespace(
+        engine="openai-runtime",
+        model="model",
+        runtime_config=SimpleNamespace(
+            endpoint=None,
+            api_key=None,
+            metadata={},
+        ),
+        contract=contract_agent.contract,
+        available_tools=contract_agent.available_tools,
+    )
+    contract_model = sa._materialize_model(model_agent, object())
+    sa._configure_model(contract_model, named_policy, "eval")
+    request = contract_model.format_request(
+        after_tool,
+        [
+            {
+                "name": "record_semantic_judgment",
+                "description": "Record judgment",
+                "inputSchema": {"json": {"type": "object"}},
+            }
+        ],
+        "judge",
+        forced_choice,
+    )
+    assert request["tool_choice"] == "auto"
+
+    contract_agent.contract.completion = "on_max_turns"
+    assert (
+        sa._continuation_tool_choice(contract_agent, after_tool, forced_choice)
+        == forced_choice
+    )
+
     provider = RunResult(text="provider", engine="python-runtime", model="m")
     native_agent = SimpleNamespace(model=SimpleNamespace(last_result=provider))
     assert sa._normalize_result(agent, native_agent, object(), "x", "eval") is provider

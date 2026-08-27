@@ -46,7 +46,8 @@ def test_final_vllm_kit_derives_identity_from_real_artifacts(tmp_path: Path) -> 
             "03_vllm_qwen06_colab_final.ipynb",
             WHEEL_NAME,
             "README.md",
-            "run_live_matrix.py",
+            "run_semantic_matrix.py",
+            "semantic_e2e_application.py",
             "SHA256SUMS.txt",
         }
         dotenv = archive.read(".env").decode()
@@ -62,10 +63,14 @@ def test_final_vllm_kit_derives_identity_from_real_artifacts(tmp_path: Path) -> 
         assert metadata["wheel_sha256"] == expected_wheel_sha
         assert metadata["model"] == "unsloth/Qwen3-0.6B"
 
-        runner = archive.read("run_live_matrix.py").decode()
-        assert "def _live_environment()" in runner
-        assert 'metadata.version("vllm")' in runner
-        assert "torch.cuda.get_device_name(0)" in runner
+        runner = archive.read("run_semantic_matrix.py").decode()
+        application = archive.read("semantic_e2e_application.py").decode()
+        assert '"schema_version": "agentic_systems.semantic-attestation.v1"' in runner
+        assert "human_result exposes structured technical JSON" in runner
+        assert '"vllm-runtime"' in application
+        assert "record_semantic_judgment" in application
+        assert 'tool_choice="record_semantic_judgment"' in application
+        assert '"poetic_calculation"' in application
 
         for line in archive.read("SHA256SUMS.txt").decode().splitlines():
             expected, filename = line.split("  ", 1)

@@ -4,11 +4,13 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import json
+import re
 from typing import Any
 
 from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
 import agentic_systems as toolkit
+from agentic_systems.providers import provider_profile
 
 
 PROVIDERS = (
@@ -16,10 +18,69 @@ PROVIDERS = (
     "openai-runtime",
     "ollama-runtime",
     "bedrock-runtime",
+    "vllm-runtime",
 )
 FRAMEWORKS = ("native", "langgraph", "openai-agents", "strands")
 TEXT_SAMPLE = " Agentic   systems are reliable. "
 NORMALIZED_TEXT = "Agentic systems are reliable."
+
+
+def supports_model_generation(provider: str) -> bool:
+    """Resolve semantic expectations from the canonical Provider capability profile."""
+
+    return (
+        provider_profile(provider).capability("model_generation").status
+        != "unsupported"
+    )
+
+
+def states_verified_product(answer: str) -> bool:
+    """Recognize the case fact without requiring one exact surface form."""
+
+    normalized = " ".join(answer.lower().replace("–", "-").split())
+    accepted = (
+        "323",
+        "three hundred twenty-three",
+        "three hundred and twenty-three",
+        "three-two-three",
+        "trescientos veintitrés",
+        "trescientos veintitres",
+    )
+    return any(form in normalized for form in accepted)
+
+
+def looks_like_short_poem(answer: str) -> bool:
+    """Require a visibly textual result without prescribing exact wording."""
+
+    lines = [line.strip(" -*\t") for line in answer.splitlines() if line.strip()]
+    word_count = sum(
+        1
+        for token in answer.replace("323", "").split()
+        if any(ch.isalpha() for ch in token)
+    )
+    return (
+        states_verified_product(answer)
+        and answer.count("323") == 1
+        and not _contains_spelled_number_sequence(answer)
+        and len(lines) == 3
+        and lines[1] == "323"
+        and not any(
+            character.isdigit() for line in (lines[0], lines[2]) for character in line
+        )
+        and word_count >= 8
+    )
+
+
+def _contains_spelled_number_sequence(answer: str) -> bool:
+    """Reject multi-token written numbers when the case requires literal digits."""
+
+    number_word = (
+        r"zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|"
+        r"twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|"
+        r"twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand"
+    )
+    pattern = rf"\b(?:{number_word})(?:[-\s]+(?:{number_word}))+\b"
+    return re.search(pattern, answer, flags=re.IGNORECASE) is not None
 
 
 class CalculationInput(BaseModel):
@@ -83,8 +144,17 @@ def record_semantic_judgment(
     return decision.model_dump(mode="json")
 
 
-@toolkit.tool(name="multiply", description="Multiply two validated integers exactly.")
-def multiply(a: int, b: int) -> dict[str, Any]:
+@toolkit.tool(
+    name="multiply",
+    description=(
+        "Multiply two validated integers exactly and optionally render the verified "
+        "result as a deterministic three-line poem."
+    ),
+)
+def multiply(
+    a: int,
+    b: int,
+) -> dict[str, Any]:
     result = a * b
     return {
         "result": result,
@@ -118,7 +188,8 @@ def analyze_text(text: str) -> dict[str, Any]:
 def clarify_scope(question: str) -> dict[str, Any]:
     return {
         "answer": (
-            "I can help with exact multiplication or deterministic text analysis. "
+            "That request is outside my supported scope. I can help with exact "
+            "multiplication or deterministic text analysis. "
             "Please choose one of those tasks and provide the needed input."
         ),
         "unsupported_request": question,
@@ -185,6 +256,16 @@ def score_semantics(
         ]
         evidence_ok = any(item.get("result") == 323 for item in multiply_outputs)
         request_ok = "323" in answer
+    elif name == "poetic_calculation":
+        multiply_outputs = [
+            _tool_output(item) for item in tools if item.get("name") == "multiply"
+        ]
+        evidence_ok = any(item.get("result") == 323 for item in multiply_outputs)
+        request_ok = (
+            looks_like_short_poem(answer)
+            if expected.get("model_generation")
+            else states_verified_product(answer)
+        )
     elif name == "text_analysis":
         text_outputs = [
             _tool_output(item) for item in tools if item.get("name") == "analyze_text"
@@ -256,6 +337,18 @@ class DeterministicJudge:
         )
 
 
+class AuditedJudge:
+    """Expose the real judge RunResult to the external certification artifact."""
+
+    def __init__(self, agent: Any) -> None:
+        self.agent = agent
+        self.last_result: toolkit.RunResult | None = None
+
+    def run(self, request: dict[str, Any], *, mode: str = "eval") -> toolkit.RunResult:
+        self.last_result = self.agent.run(request, mode=mode)
+        return self.last_result
+
+
 @dataclass(frozen=True)
 class SemanticCell:
     provider: str
@@ -268,11 +361,21 @@ class SemanticCell:
 
 
 def _case_input(provider: str, name: str) -> Any:
-    if provider != "python-runtime":
+    if supports_model_generation(provider):
         return {
             "calculation": (
                 "Calculate 17 × 19. Delegate to exactly one specialist and explain "
                 "the verified result in natural language."
+            ),
+            "poetic_calculation": (
+                "Calculate 17 × 19 using exactly one specialist. Then turn the verified "
+                "result into a short poem of exactly three non-empty lines. Your entire "
+                "final answer must be only those three lines: no preface, explanation, "
+                "heading, blank paragraph, or epilogue. Line 1 must "
+                "contain imagery and no digits. Line 2 must be exactly 323 with no other "
+                "characters or words. Line 3 must contain imagery and no digits. Never "
+                "spell, paraphrase, hyphenate, repeat, or otherwise "
+                "transform that number. Do not expose JSON or implementation details."
             ),
             "text_analysis": (
                 f"Analyze this exact text: {TEXT_SAMPLE!r}. Delegate to exactly one "
@@ -285,6 +388,10 @@ def _case_input(provider: str, name: str) -> Any:
         }[name]
     return {
         "calculation": {
+            "tool": "delegate_calculator",
+            "input": {"a": 17, "b": 19},
+        },
+        "poetic_calculation": {
             "tool": "delegate_calculator",
             "input": {"a": 17, "b": 19},
         },
@@ -303,6 +410,7 @@ def semantic_cases(provider: str, framework: str) -> tuple[dict[str, Any], ...]:
     common = {
         "provider": provider,
         "framework": framework,
+        "model_generation": supports_model_generation(provider),
         "human_answer": True,
         "no_fallback": True,
     }
@@ -313,6 +421,21 @@ def semantic_cases(provider: str, framework: str) -> tuple[dict[str, Any], ...]:
             "expected": {
                 **common,
                 "text_contains": "323",
+                "agent_path": ["orchestrator_agent", "calculator_agent"],
+                "tool_path": ["delegate_calculator", "multiply"],
+                "tool_output_contains": {"multiply": {"result": 323}},
+            },
+        },
+        {
+            "name": "poetic_calculation",
+            "input": _case_input(provider, "poetic_calculation"),
+            "expected": {
+                **common,
+                "output_style": (
+                    "short-poem-exactly-three-lines"
+                    if supports_model_generation(provider)
+                    else "deterministic-evidence-control"
+                ),
                 "agent_path": ["orchestrator_agent", "calculator_agent"],
                 "tool_path": ["delegate_calculator", "multiply"],
                 "tool_output_contains": {"multiply": {"result": 323}},
@@ -360,7 +483,9 @@ def build_semantic_cell(
     if framework not in FRAMEWORKS:
         raise ValueError(f"Unsupported semantic framework {framework!r}.")
 
-    resolved_model = model or ("python-runtime" if provider == "python-runtime" else "")
+    resolved_model = model or (
+        "" if supports_model_generation(provider) else "python-runtime"
+    )
     if not resolved_model:
         raise ValueError(f"No model configured for {provider!r}.")
 
@@ -428,11 +553,17 @@ def build_semantic_cell(
     )
     calculator_tool = calculator.as_tool(
         name="delegate_calculator",
-        description="Use only for exact multiplication; returns public specialist evidence.",
+        description=(
+            "Use for exact multiplication and for any response that must creatively "
+            "render a verified product; returns public specialist evidence."
+        ),
     )
     text_tool = text_agent.as_tool(
         name="delegate_text",
-        description="Use only for deterministic text normalization and metrics.",
+        description=(
+            "Use only to normalize and measure a supplied text. Never use it to write, "
+            "rewrite, summarize, translate, or create poetry."
+        ),
     )
     orchestrator = system.agent(
         name="orchestrator_agent",
@@ -441,7 +572,13 @@ def build_semantic_cell(
             "delegate_calculator. For text analysis call delegate_text. For unsupported "
             "requests call clarify_scope without calling a specialist. Never call more "
             "than one tool. After a tool result, always write a concise natural-language "
-            "answer grounded only in that evidence. Never expose JSON, ToolEnvelope, "
+            "answer grounded only in that evidence. If the user requests a poem or other "
+            "creative form, produce that form only after the deterministic evidence is "
+            "available. When the user specifies an exact output format, return only that "
+            "format without a preface, explanation, heading, or epilogue. For unsupported "
+            "requests, explicitly state that the requested "
+            "capability is outside scope, name the supported tasks, and ask the user to "
+            "choose one. Never expose JSON, ToolEnvelope, "
             "Python repr, private reasoning, or implementation details."
         ),
         tools=[calculator_tool, text_tool, clarify_scope],
@@ -458,7 +595,7 @@ def build_semantic_cell(
     )
     executable = system.compile(entrypoint=orchestrator)
 
-    if provider == "python-runtime":
+    if not supports_model_generation(provider):
         judge_agent = system.agent(
             name="judge_agent",
             instructions="Apply score_semantics exactly once.",
@@ -478,8 +615,11 @@ def build_semantic_cell(
         judge: Any = DeterministicJudge(judge_agent)
     else:
         judge_tools = [record_semantic_judgment]
-        judge_contract = toolkit.AgentContract(must_call=["record_semantic_judgment"])
-        judge = system.agent(
+        judge_contract = toolkit.AgentContract(
+            must_call=["record_semantic_judgment"],
+            completion="when_required_tools_satisfied",
+        )
+        judge_agent = system.agent(
             name="judge_agent",
             instructions=(
                 "You are a strict semantic evaluator. Compare the candidate public "
@@ -488,7 +628,14 @@ def build_semantic_cell(
                 "contract declares a request out of scope, a useful clarification "
                 "with no specialist delegation is successful fulfillment; do not "
                 "penalize it for refusing the impossible literal request. "
+                "A concise answer that explicitly marks the request outside scope, "
+                "names the supported capabilities, and asks the user to choose is fully "
+                "clear; it need not invent an answer to the unsupported request. "
                 "Deterministic validation and recorded Tool evidence are authoritative. "
+                "Do not invent undeclared requirements or penalize punctuation, brevity, "
+                "wording, or artistic taste when the explicit contract is satisfied. "
+                "A parent delegation may summarize or omit output when its child lineage "
+                "contains the authoritative specialist and Tool evidence. "
                 "Return one typed semantic judgment by calling the "
                 "record_semantic_judgment Tool exactly once. Score every criterion "
                 "from 0 to 1. A claim unsupported by Tool evidence must score zero for "
@@ -504,9 +651,10 @@ def build_semantic_cell(
                 max_tool_calls=1,
                 max_tokens=700,
                 temperature=0.0,
-                tool_choice="auto",
+                tool_choice="record_semantic_judgment",
             ),
         )
+        judge = AuditedJudge(judge_agent)
 
     return SemanticCell(
         provider=provider,

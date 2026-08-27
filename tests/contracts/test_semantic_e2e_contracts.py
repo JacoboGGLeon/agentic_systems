@@ -146,7 +146,14 @@ def test_judge_rubric_defines_contract_aware_fulfillment() -> None:
     assert "expected contract" in rubric.instructions
     assert "out of scope" in rubric.instructions
     assert "useful clarification" in rubric.instructions
+    assert "Do not invent style" in rubric.instructions
+    assert "subjective preference" in rubric.instructions
+    assert "child RunResult" in rubric.instructions
     assert rubric.threshold == 0.80
+    assert rubric.deterministic_authority == (
+        "request_fulfillment",
+        "evidence_correctness",
+    )
 
 
 class Candidate:
@@ -175,6 +182,27 @@ class Judge:
                 "score": 0.9,
                 "criteria": scores,
                 "rationale": "Correct, clear, and supported by evidence.",
+            },
+            ok=True,
+            engine="python-runtime",
+            model="python-runtime",
+            mode=mode,
+            usage={"requests": 1},
+            meta={"framework": "native", "input": input},
+        )
+
+
+class DriftedJudge:
+    def run(self, input: Any, *, mode: str) -> toolkit.RunResult:
+        scores = {name: 0.9 for name in toolkit.JudgeRubric().criteria}
+        scores["request_fulfillment"] = 0.1
+        scores["evidence_correctness"] = 0.2
+        return toolkit.RunResult(
+            text="Semantic verdict recorded with contract drift.",
+            data={
+                "score": sum(scores.values()) / len(scores),
+                "criteria": scores,
+                "rationale": "Model judge imposed undeclared requirements.",
             },
             ok=True,
             engine="python-runtime",
@@ -227,6 +255,31 @@ def test_eval_v2_requires_deterministic_validation_and_judge() -> None:
     assert failing.cases[0].deterministic_validation["ok"] is False
     assert failing.cases[0].judge is not None
     assert failing.cases[0].judge.ok is False
+
+
+def test_deterministic_contract_authority_is_explicit_and_auditable() -> None:
+    report = toolkit.Evaluator().evaluate(
+        Candidate("17 multiplied by 19 is 323."),
+        [
+            {
+                "name": "calculation",
+                "input": "17 x 19",
+                "expected": {"text_contains": "323"},
+            }
+        ],
+        judge=DriftedJudge(),
+        rubric=toolkit.JudgeRubric(),
+        determinism="deterministic",
+    )
+
+    verdict = report.cases[0].judge
+    assert verdict is not None
+    assert verdict.ok is True
+    assert verdict.raw_criteria["request_fulfillment"] == 0.1
+    assert verdict.raw_criteria["evidence_correctness"] == 0.2
+    assert verdict.criteria["request_fulfillment"] == 1.0
+    assert verdict.criteria["evidence_correctness"] == 1.0
+    assert verdict.raw_score is not None and verdict.raw_score < verdict.score
 
 
 class ToolCertifiedJudge:
