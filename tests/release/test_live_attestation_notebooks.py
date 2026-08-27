@@ -105,9 +105,14 @@ def test_bedrock_attestation_respects_dotenv_auth_and_runs_full_framework_matrix
     None
 ):
     code = _code(BEDROCK_IAM)
-    assert COMMIT in code
-    assert WHEEL in code
-    assert BEDROCK_SHA256 in code
+    assert COMMIT not in code
+    assert WHEEL not in code
+    assert BEDROCK_SHA256 not in code
+    assert 'COMMIT_SHA = os.getenv("AGENTIC_SYSTEMS_COMMIT_SHA", "").strip()' in code
+    assert '"AGENTIC_SYSTEMS_WHEEL_FILENAME", ""' in code
+    assert '"AGENTIC_SYSTEMS_WHEEL_SHA256", ""' in code
+    assert "assert len(COMMIT_SHA) == 40" in code
+    assert "assert len(EXPECTED_WHEEL_SHA256) == 64" in code
     assert "toolkit.aws_environment_snapshot()" in code
     assert "El .env resolvió otro modo" not in code
     assert 'os.environ["AWS_BEARER_TOKEN_BEDROCK"]' not in code
@@ -123,7 +128,10 @@ def test_bedrock_attestation_respects_dotenv_auth_and_runs_full_framework_matrix
         'attestation["environment"]["bedrock_authentication_mode"] == aws_session["authentication_mode"]'
         in code
     )
-    assert "validate_live_attestation.py" in code
+    assert 'runner_path = Path.cwd() / "run_live_matrix.py"' in code
+    assert 'validator_path = Path.cwd() / "validate_live_attestation.py"' in code
+    assert '"git", "clone"' not in code
+    assert "https://github.com" not in code
     assert "FileLink" in code
     assert code.index("if not wheel_candidates:") < code.index(
         "import agentic_systems as toolkit"
@@ -134,7 +142,6 @@ def test_bedrock_attestation_respects_dotenv_auth_and_runs_full_framework_matrix
         'required_api = ("aws_environment_snapshot", "boto3_session_snapshot")' in code
     )
     assert "El kernel conserva agentic_systems" in code
-
 
 def test_bedrock_authentication_is_selected_by_dotenv_without_notebook_mutation() -> (
     None

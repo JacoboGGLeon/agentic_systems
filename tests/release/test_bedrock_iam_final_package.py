@@ -1,0 +1,81 @@
+from __future__ import annotations
+
+import hashlib
+import json
+import subprocess
+import sys
+import zipfile
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[2]
+GENERATOR = ROOT / "scripts" / "generate_bedrock_iam_package.py"
+PACKAGE_STEM = "agentic-systems-2.1.0-bedrock-iam-final"
+WHEEL_NAME = "agentic_systems-2.1.0-py3-none-any.whl"
+
+
+def test_final_bedrock_iam_kit_is_portable_and_env_driven(tmp_path: Path) -> None:
+    wheel = tmp_path / WHEEL_NAME
+    wheel.write_bytes(b"certified-wheel")
+    commit = "a" * 40
+    subprocess.run(
+        [
+            sys.executable,
+            str(GENERATOR),
+            "--wheel",
+            str(wheel),
+            "--commit",
+            commit,
+            "--output-dir",
+            str(tmp_path),
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    archive_path = tmp_path / f"{PACKAGE_STEM}.zip"
+    expected_wheel_sha = hashlib.sha256(wheel.read_bytes()).hexdigest()
+    with zipfile.ZipFile(archive_path) as archive:
+        names = set(archive.namelist())
+        assert names == {
+            ".env",
+            "bedrock_iam_attestation.ipynb",
+            WHEEL_NAME,
+            "README.md",
+            "run_live_matrix.py",
+            "validate_live_attestation.py",
+            "SHA256SUMS.txt",
+        }
+        dotenv = archive.read(".env").decode()
+        assert f"AGENTIC_SYSTEMS_COMMIT_SHA={commit}" in dotenv
+        assert f"AGENTIC_SYSTEMS_WHEEL_FILENAME={WHEEL_NAME}" in dotenv
+        assert f"AGENTIC_SYSTEMS_WHEEL_SHA256={expected_wheel_sha}" in dotenv
+        assert f"AGENTIC_SYSTEMS_WHEEL={WHEEL_NAME}" in dotenv
+        assert "AGENTIC_SYSTEMS_PROVIDER=bedrock-runtime" in dotenv
+        assert "AGENTIC_SYSTEMS_PROVIDER_PRIORITY=bedrock-runtime" in dotenv
+        assert "AWS_BEARER_TOKEN_BEDROCK=" in dotenv.splitlines()
+
+        notebook = json.loads(archive.read("bedrock_iam_attestation.ipynb"))
+        code = "\n".join(
+            "".join(cell.get("source", ""))
+            for cell in notebook["cells"]
+            if cell.get("cell_type") == "code"
+        )
+        assert commit not in code
+        assert expected_wheel_sha not in code
+        assert "https://github.com" not in code
+        assert 'Path.cwd() / "run_live_matrix.py"' in code
+
+        for line in archive.read("SHA256SUMS.txt").decode().splitlines():
+            expected, filename = line.split("  ", 1)
+            assert hashlib.sha256(archive.read(filename)).hexdigest() == expected
+
+        combined = "\n".join(
+            archive.read(name).decode(errors="ignore")
+            for name in names
+            if not name.endswith(".whl")
+        )
+        assert "sk-proj-" not in combined
+        assert "AWS_SECRET_ACCESS_KEY=" not in combined

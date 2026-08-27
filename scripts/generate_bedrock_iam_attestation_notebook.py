@@ -9,11 +9,7 @@ import nbformat
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "release" / "notebooks" / "bedrock_iam_attestation.ipynb"
-CANDIDATE_COMMIT_SHA = "5865dbc893ef397581fee1a8e9ff58efabce3625"
-CANDIDATE_WHEEL_FILENAME = "agentic_systems-2.1.0-py3-none-any.whl"
-CANDIDATE_WHEEL_SHA256 = (
-    "5a873a4979768a4142d4debd8c1eeb7c4e27a9515892c4cde41607d1bfedfe25"
-)
+
 
 
 def build_notebook() -> nbformat.NotebookNode:
@@ -29,8 +25,7 @@ def build_notebook() -> nbformat.NotebookNode:
                 ],
                 "provider": "bedrock-runtime",
                 "target": "sagemaker-jupyterlab",
-                "candidate_commit_sha": CANDIDATE_COMMIT_SHA,
-                "candidate_wheel_sha256": CANDIDATE_WHEEL_SHA256,
+                "candidate_identity_source": ".env",
             },
             "kernelspec": {
                 "display_name": "Python 3",
@@ -99,14 +94,20 @@ def load_canonical_dotenv(start: Path) -> Path | None:
 
 DOTENV_PATH = load_canonical_dotenv(Path.cwd())
 
-COMMIT_SHA = os.getenv("AGENTIC_SYSTEMS_COMMIT_SHA", "5865dbc893ef397581fee1a8e9ff58efabce3625")
+COMMIT_SHA = os.getenv("AGENTIC_SYSTEMS_COMMIT_SHA", "").strip()
 EXPECTED_WHEEL_FILENAME = os.getenv(
-    "AGENTIC_SYSTEMS_WHEEL_FILENAME", "agentic_systems-2.1.0-py3-none-any.whl"
-)
+    "AGENTIC_SYSTEMS_WHEEL_FILENAME", ""
+).strip()
 EXPECTED_WHEEL_SHA256 = os.getenv(
-    "AGENTIC_SYSTEMS_WHEEL_SHA256",
-    "5a873a4979768a4142d4debd8c1eeb7c4e27a9515892c4cde41607d1bfedfe25",
-).lower()
+    "AGENTIC_SYSTEMS_WHEEL_SHA256", ""
+).strip().lower()
+assert len(COMMIT_SHA) == 40, "Define AGENTIC_SYSTEMS_COMMIT_SHA en .env"
+assert EXPECTED_WHEEL_FILENAME.endswith(".whl"), (
+    "Define AGENTIC_SYSTEMS_WHEEL_FILENAME en .env"
+)
+assert len(EXPECTED_WHEEL_SHA256) == 64, (
+    "Define AGENTIC_SYSTEMS_WHEEL_SHA256 en .env"
+)
 
 configured_wheel = os.getenv("AGENTIC_SYSTEMS_WHEEL")
 search_roots = [Path.cwd(), *list(Path.cwd().parents)[:3], Path.home()]
@@ -131,7 +132,7 @@ assert len(wheel_candidates) <= 1, (
 
 if not wheel_candidates:
     raise FileNotFoundError(
-        "Falta el wheel exacto. Sube agentic_systems-2.1.0-py3-none-any.whl "
+        f"Falta el wheel exacto {EXPECTED_WHEEL_FILENAME}. "
         "al mismo directorio, reinicia el kernel y ejecuta Run All."
     )
 
@@ -315,25 +316,15 @@ normalizados y round-trip de RunResult. Sólo cambia el framework."""
         ),
         nbformat.v4.new_code_cell(
             """if RUN_BEDROCK_LIVE:
-    repo = Path.cwd() / ".agentic-systems-candidate"
-    if not repo.exists():
-        subprocess.run([
-            "git",
-            "clone",
-            "https://github.com/JacoboGGLeon/agentic_systems.git",
-            str(repo),
-        ], check=True)
-    subprocess.run(["git", "-C", str(repo), "fetch", "--all", "--tags"], check=True)
-    subprocess.run(["git", "-C", str(repo), "checkout", "--detach", COMMIT_SHA], check=True)
-    checked_out = subprocess.check_output(
-        ["git", "-C", str(repo), "rev-parse", "HEAD"], text=True
-    ).strip()
-    assert checked_out == COMMIT_SHA
+    runner_path = Path.cwd() / "run_live_matrix.py"
+    validator_path = Path.cwd() / "validate_live_attestation.py"
+    assert runner_path.is_file(), runner_path
+    assert validator_path.is_file(), validator_path
 
     OUTPUT = Path.cwd() / "bedrock-attestation.json"
     completed = subprocess.run([
         sys.executable,
-        str(repo / "scripts" / "run_live_matrix.py"),
+        str(runner_path),
         "--wheel",
         str(WHEEL_PATH),
         "--output",
@@ -383,7 +374,7 @@ normalizados y round-trip de RunResult. Sólo cambia el framework."""
 
     validation = subprocess.run([
         sys.executable,
-        str(repo / "scripts" / "validate_live_attestation.py"),
+        str(validator_path),
         str(OUTPUT),
         "--commit",
         COMMIT_SHA,
