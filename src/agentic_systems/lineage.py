@@ -192,6 +192,19 @@ def _evidence_line(step: "LineageStep", *, max_chars: int) -> str:
     return f"{label}: {_short(summary, max_chars=360)}"
 
 
+def _lineage_path_summary(step: "LineageStep") -> str:
+    """Render one public route step without losing execution identity."""
+
+    if step.kind == "execution":
+        agent = str(step.evidence.get("agent") or step.title)
+        role = "System" if step.evidence.get("depth") == 0 else "Agent"
+        return f"{role}: {agent} ({step.source})"
+    summary = _natural_summary(step.summary)
+    if step.kind == "tool":
+        return f"{step.title} — {summary}"
+    return f"{step.title} — {summary}" if step.title else summary
+
+
 def _tool_output_facts(output: dict[str, Any], *, max_rows: int = 3) -> dict[str, Any]:
     facts: dict[str, Any] = {}
     if not isinstance(output, dict):
@@ -664,7 +677,7 @@ class LineageMemory(BaseModel):
         tool_steps = [step for step in self.steps if step.kind == "tool"]
         path_steps = []
         for step in self.steps:
-            if step.kind not in {"decision", "tool", "context"}:
+            if step.kind not in {"execution", "decision", "tool", "context"}:
                 continue
             # Graph-node wrapper summaries are useful evidence, but noisy in the
             # human route when concrete tool steps are available. Keep route
@@ -684,7 +697,7 @@ class LineageMemory(BaseModel):
         error_steps = [step for step in self.steps if step.kind == "error"]
         fallback_steps = [step for step in self.steps if step.kind == "validation"]
         support_reasons = _derive_support_reasons(self.steps, ok=self.ok)
-        how_items = [_natural_summary(step.summary) for step in path_steps]
+        how_items = [_lineage_path_summary(step) for step in path_steps]
         how_items = [item for item in how_items if item]
         return {
             "what_happened": self.answer or "The run produced no final answer text.",

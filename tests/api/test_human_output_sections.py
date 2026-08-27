@@ -16,7 +16,9 @@ def test_compact_human_result_does_not_emit_empty_sql_or_table_blocks(capsys):
     lab.human_result(result, title="Demo sin SQL", pretty=False)
     out = capsys.readouterr().out
 
-    assert "Respuesta simple" not in out  # final dict takes precedence over fallback text
+    assert (
+        "Respuesta simple" not in out
+    )  # final dict takes precedence over fallback text
     assert '"value": 42' in out
     assert "SQL ejecutado" not in out
     assert "Preview de datos" not in out
@@ -30,8 +32,16 @@ def test_compact_human_result_renders_declared_final_sections(capsys):
         final={
             "summary": "Consulta lista.",
             "sections": [
-                {"kind": "sql", "title": "Consulta ejecutada", "content": "SELECT 1 AS answer"},
-                {"kind": "table", "title": "Resultado tabular", "rows": [{"answer": 1}]},
+                {
+                    "kind": "sql",
+                    "title": "Consulta ejecutada",
+                    "content": "SELECT 1 AS answer",
+                },
+                {
+                    "kind": "table",
+                    "title": "Resultado tabular",
+                    "rows": [{"answer": 1}],
+                },
             ],
         },
         data={"evidence": "demo"},
@@ -110,3 +120,40 @@ def test_human_result_projects_delegated_execution_answer_without_json(capsys):
     rendered = capsys.readouterr().out
     answer_block = rendered.split("Respuesta:\n", 1)[1].split("\n\n4)", 1)[0]
     assert answer_block.strip() == answer
+
+
+def test_human_result_lineage_names_system_agents_and_skill_tool(capsys):
+    specialist = RunResult(
+        text="17 multiplied by 19 is 323.",
+        engine="python-runtime",
+        meta={"agent_name": "calculator_agent"},
+        tool_events=[
+            ToolEvent(
+                id="tool-multiply",
+                name="multiply",
+                input={"a": 17, "b": 19},
+                output={"result": 323},
+                ok=True,
+            )
+        ],
+    )
+    orchestrator = RunResult(
+        text="The product is 323.",
+        engine="openai-runtime",
+        meta={"agent_name": "orchestrator_agent", "framework_adapter": "langgraph"},
+        children=[specialist],
+    )
+    result = RunResult(
+        text="The product is 323.",
+        engine="agentic-system",
+        meta={"system": "semantic_system", "runtime_engine": "openai-runtime"},
+        children=[orchestrator],
+    )
+
+    lab.human_result(result, title="Hierarchy", pretty=False, show_lineage=True)
+    rendered = capsys.readouterr().out
+
+    assert "System: semantic_system" in rendered
+    assert "Agent: orchestrator_agent" in rendered
+    assert "Agent: calculator_agent" in rendered
+    assert "Tool: multiply" in rendered
