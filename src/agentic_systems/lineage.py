@@ -516,7 +516,17 @@ class LineageMemory(BaseModel):
             for child in list(getattr(node, "children", []) or []):
                 visit(child, depth + 1)
 
-        visit(result, 0)
+        root_children = list(getattr(result, "children", []) or [])
+        root_tools = list(getattr(result, "tool_events", []) or [])
+        root_meta = getattr(result, "meta", {}) or {}
+        has_execution_evidence = bool(
+            root_children
+            or root_tools
+            or root_meta.get("agent_name")
+            or root_meta.get("system")
+        )
+        if has_execution_evidence:
+            visit(result, 0)
         tools: list[Any] = []
         for node_index, (node, depth) in enumerate(hierarchy, start=1):
             steps.append(_execution_lineage_step(node, index=node_index, depth=depth))
