@@ -3,12 +3,35 @@ from __future__ import annotations
 import dataclasses
 import sys
 import types
+from typing import Literal
 
 import pytest
 from pydantic import BaseModel
 
 import agentic_systems.providers as providers
 from agentic_systems.providers.base import RuntimeToolSpec, ToolRegistryRuntime
+
+
+def test_tool_registry_resolves_deferred_literal_annotations():
+    runtime = ToolRegistryRuntime(model_id="m")
+
+    @runtime.tool
+    def judge(
+        failed_criteria: list[Literal["clarity", "evidence_correctness"]],
+    ) -> dict:
+        return {"failed_criteria": failed_criteria}
+
+    schema = runtime.export_tool_specs(["judge"])[0]["input_schema"]
+    assert schema["properties"]["failed_criteria"]["items"]["enum"] == [
+        "clarity",
+        "evidence_correctness",
+    ]
+    assert runtime.execute_tool(
+        "judge", {"failed_criteria": ["clarity"]}
+    ).ok
+    assert not runtime.execute_tool(
+        "judge", {"failed_criteria": ["unsupported"]}
+    ).ok
 
 
 def test_tool_registry_runtime_payloads_validation_and_lazy_provider(monkeypatch, capsys):

@@ -13,7 +13,7 @@ import json
 import os
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from typing import Any, Callable, Dict, Sequence, Type
+from typing import Any, Callable, Dict, Sequence, Type, get_type_hints
 
 from pydantic import BaseModel, ConfigDict, Field, create_model
 
@@ -122,7 +122,11 @@ class ToolRegistryRuntime:
                     return fn
             tool_description = description or inspect.getdoc(fn) or f"Tool {tool_name}"
             signature = inspect.signature(fn)
-            input_model = self._build_input_model(tool_name, signature)
+            input_model = self._build_input_model(
+                tool_name,
+                signature,
+                function=fn,
+            )
             input_schema = input_model.model_json_schema()
             input_schema.setdefault("type", "object")
             input_schema.setdefault("properties", {})
@@ -149,7 +153,22 @@ class ToolRegistryRuntime:
         return decorator(func)
 
     @staticmethod
-    def _build_input_model(tool_name: str, signature: inspect.Signature) -> Type[BaseModel]:
+    def _build_input_model(
+        tool_name: str,
+        signature: inspect.Signature,
+        *,
+        function: Callable[..., Any] | None = None,
+    ) -> Type[BaseModel]:
+        type_hints: dict[str, Any] = {}
+        if function is not None:
+            try:
+                type_hints = get_type_hints(function, include_extras=True)
+            except (NameError, TypeError) as exc:
+                raise TypeError(
+                    f"Tool '{tool_name}' has unresolved type annotations: {exc}. "
+                    "Define referenced types at module scope or pass an explicit "
+                    "Pydantic input schema."
+                ) from exc
         fields: dict[str, tuple[Any, Any]] = {}
         for param_name, param in signature.parameters.items():
             if param.kind in {inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD}:
@@ -157,7 +176,10 @@ class ToolRegistryRuntime:
                     f"Tool '{tool_name}' cannot use *args or **kwargs. "
                     "Use explicit typed parameters so a JSON schema can be generated."
                 )
-            annotation = Any if param.annotation is inspect.Signature.empty else param.annotation
+            annotation = type_hints.get(
+                param_name,
+                Any if param.annotation is inspect.Signature.empty else param.annotation,
+            )
             default = ... if param.default is inspect.Signature.empty else param.default
             fields[param_name] = (annotation, default)
         model_name = "".join(part.capitalize() for part in tool_name.split("_")) + "Input"

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import inspect
 from dataclasses import dataclass
+from typing import Literal
 
 import pytest
 from pydantic import BaseModel, create_model
@@ -60,6 +61,20 @@ def test_input_models_reject_variadics_and_preserve_defaults():
 
     with pytest.raises(TypeError, match="cannot use"):
         ToolsRuntime._build_input_model("variadic", inspect.signature(variadic))
+
+
+def test_bedrock_tools_resolve_deferred_literal_annotations():
+    runtime = ToolsRuntime()
+
+    @runtime.tool
+    def judge(failed_criteria: list[Literal["clarity", "evidence"]]) -> dict:
+        return {"failed_criteria": failed_criteria}
+
+    schema = runtime.export_tool_specs(["judge"])[0]["input_schema"]
+    assert schema["properties"]["failed_criteria"]["items"]["enum"] == [
+        "clarity",
+        "evidence",
+    ]
 
 
 def test_registry_validation_reports_each_static_contract_issue():

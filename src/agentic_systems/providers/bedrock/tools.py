@@ -5,7 +5,7 @@ import dataclasses
 import inspect
 import json
 from datetime import datetime, timezone
-from typing import Any, Callable, Dict, List, Optional, Sequence, Type
+from typing import Any, Callable, Dict, List, Optional, Sequence, Type, get_type_hints
 
 from pydantic import BaseModel, ConfigDict, create_model
 
@@ -37,7 +37,11 @@ class _ToolsMixin:
             tool_name = name or fn.__name__
             tool_description = description or inspect.getdoc(fn) or f"Tool {tool_name}"
             signature = inspect.signature(fn)
-            input_model = self._build_input_model(tool_name, signature)
+            input_model = self._build_input_model(
+                tool_name,
+                signature,
+                function=fn,
+            )
             input_schema = input_model.model_json_schema()
 
             # Bedrock expects object schemas for tool input.
@@ -64,9 +68,23 @@ class _ToolsMixin:
 
     @staticmethod
     def _build_input_model(
-        tool_name: str, signature: inspect.Signature
+        tool_name: str,
+        signature: inspect.Signature,
+        *,
+        function: Callable[..., Any] | None = None,
     ) -> Type[BaseModel]:
         """Create a Pydantic v2 model from a Python function signature."""
+
+        type_hints: Dict[str, Any] = {}
+        if function is not None:
+            try:
+                type_hints = get_type_hints(function, include_extras=True)
+            except (NameError, TypeError) as exc:
+                raise TypeError(
+                    f"Tool '{tool_name}' has unresolved type annotations: {exc}. "
+                    "Define referenced types at module scope or pass an explicit "
+                    "Pydantic input schema."
+                ) from exc
 
         fields: Dict[str, tuple[Any, Any]] = {}
 
@@ -80,8 +98,9 @@ class _ToolsMixin:
                     "Use explicit typed parameters so a JSON schema can be generated."
                 )
 
-            annotation = (
-                Any if param.annotation is inspect.Signature.empty else param.annotation
+            annotation = type_hints.get(
+                param_name,
+                Any if param.annotation is inspect.Signature.empty else param.annotation,
             )
             default = ... if param.default is inspect.Signature.empty else param.default
             fields[param_name] = (annotation, default)
