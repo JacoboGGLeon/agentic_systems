@@ -159,10 +159,7 @@ def record_semantic_judgment(
 
 @toolkit.tool(
     name="multiply",
-    description=(
-        "Multiply two validated integers exactly and optionally render the verified "
-        "result as a deterministic three-line poem."
-    ),
+    description="Multiply two validated integers and return verified public evidence.",
 )
 def multiply(
     a: int,
@@ -171,10 +168,7 @@ def multiply(
     result = a * b
     return {
         "result": result,
-        "answer": (
-            f"Verified product: {result}. Continue with the caller's requested final "
-            "presentation instead of copying this evidence sentence."
-        ),
+        "answer": f"Verified product: {result}.",
     }
 
 

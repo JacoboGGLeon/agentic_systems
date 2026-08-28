@@ -120,6 +120,21 @@ def test_poem_shape_is_semantic_not_exact_text() -> None:
     assert openai_poem["expected"]["output_style"] == "short-poem-exactly-three-lines"
 
 
+def test_deterministic_multiply_exposes_only_public_evidence() -> None:
+    spec = importlib.util.spec_from_file_location(
+        "semantic_e2e_public_evidence", SCRIPTS / "semantic_e2e_application.py"
+    )
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+
+    output = module.multiply.function(a=17, b=19)
+
+    assert output == {"result": 323, "answer": "Verified product: 323."}
+    assert "continue" not in output["answer"].lower()
+
+
 def test_model_judge_uses_one_closed_failed_criteria_list() -> None:
     spec = importlib.util.spec_from_file_location(
         "semantic_e2e_judge_contract", SCRIPTS / "semantic_e2e_application.py"
