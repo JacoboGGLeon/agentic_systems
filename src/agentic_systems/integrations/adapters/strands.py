@@ -769,6 +769,7 @@ def _normalize_result(
     messages = [_jsonable(item) for item in getattr(native_agent, "messages", ())]
     return RunResult(
         text=text,
+        final={"text": text},
         data=data,
         ok=True,
         messages=messages,

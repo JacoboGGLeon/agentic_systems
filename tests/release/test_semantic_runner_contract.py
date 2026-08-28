@@ -70,6 +70,16 @@ def test_poem_shape_is_semantic_not_exact_text() -> None:
     assert module.looks_like_short_poem(
         "Measured paths meet beneath moonlight,\n323\nA verified product blooms in rhyme."
     )
+    assert module.looks_like_short_poem(
+        "Golden sunflowers sway,\n323\nMoonlight on still waters."
+    )
+    assert module.looks_like_short_poem(
+        "A shadow stretches,\n323,\nSoft winds answer."
+    )
+    assert module.looks_like_short_poem(
+        "Moonlight touches water,\n3 2 3\nLeaves whisper softly."
+    )
+    assert not module.looks_like_short_poem("🌟\n323\n🌙")
     assert not module.looks_like_short_poem(
         "Seventeen meets nineteen,\nTheir measured paths combine,\nThree hundred twenty-three shines."
     )
@@ -82,6 +92,9 @@ def test_poem_shape_is_semantic_not_exact_text() -> None:
     )
     assert not module.looks_like_short_poem(
         "The factors meet in light,\nTheir answer is 323,\nA final echo: 323."
+    )
+    assert "Do not use emoji-only lines" in module._case_input(
+        "openai-runtime", "poetic_calculation"
     )
 
     assert module.supports_model_generation("python-runtime") is False

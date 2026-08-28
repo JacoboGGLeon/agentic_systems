@@ -770,6 +770,8 @@ def test_strands_adapter_helpers_cover_results_tools_and_failures():
     assert events[0].ok is False
     assert events[1].ok is True
     assert result.usage == {"value": 3}
+    assert result.final == {"text": result.text}
+    assert result.data == {"value": 2}
     assert sa._failure(agent, "x", "eval", RuntimeError("boom")).ok is False
     assert sa._input_text({"x": 1}) == '{"x": 1}'
     assert sa._output_data("x", '{"x": 1}') == {"x": 1}

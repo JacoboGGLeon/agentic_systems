@@ -46,28 +46,30 @@ def states_verified_product(answer: str) -> bool:
         "trescientos veintitrés",
         "trescientos veintitres",
     )
-    return any(form in normalized for form in accepted)
+    separated_digits = re.search(r"(?<!\d)3(?:[\s,._-]*)2(?:[\s,._-]*)3(?!\d)", normalized)
+    return any(form in normalized for form in accepted) or separated_digits is not None
 
 
 def looks_like_short_poem(answer: str) -> bool:
     """Require a visibly textual result without prescribing exact wording."""
 
     lines = [line.strip(" -*\t") for line in answer.splitlines() if line.strip()]
-    word_count = sum(
-        1
-        for token in answer.replace("323", "").split()
-        if any(ch.isalpha() for ch in token)
-    )
+    if len(lines) != 3:
+        return False
+    middle_digits = "".join(character for character in lines[1] if character.isdigit())
+    outer_word_counts = [
+        sum(1 for token in line.split() if any(ch.isalpha() for ch in token))
+        for line in (lines[0], lines[2])
+    ]
     return (
         states_verified_product(answer)
-        and answer.count("323") == 1
         and not _contains_spelled_number_sequence(answer)
-        and len(lines) == 3
-        and lines[1] == "323"
+        and middle_digits == "323"
+        and not any(character.isalpha() for character in lines[1])
         and not any(
             character.isdigit() for line in (lines[0], lines[2]) for character in line
         )
-        and word_count >= 8
+        and all(count >= 2 for count in outer_word_counts)
     )
 
 
@@ -402,9 +404,11 @@ def _case_input(provider: str, name: str) -> Any:
             ),
             "poetic_calculation": (
                 "Use exactly one specialist to calculate 17 × 19. After receiving the "
-                "verified result, answer only with a three-line poem: an image in the "
-                "first line, only the verified digits in the middle line, and an image "
-                "in the last line. Do not add a heading or explanation."
+                "verified result, answer only with a three-line textual poem. The first "
+                "and last lines must each contain at least two alphabetic words and no "
+                "digits. The middle line must be exactly the verified digits 323, with "
+                "no spaces or punctuation. Do not use emoji-only lines, a heading, or "
+                "an explanation."
             ),
             "text_analysis": (
                 f"Analyze this exact text: {TEXT_SAMPLE!r}. Delegate to exactly one "
