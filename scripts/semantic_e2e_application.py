@@ -308,11 +308,7 @@ def score_semantics(
             _tool_output(item) for item in tools if item.get("name") == "multiply"
         ]
         evidence_ok = any(item.get("result") == 323 for item in multiply_outputs)
-        request_ok = (
-            looks_like_short_poem(answer)
-            if expected.get("model_generation")
-            else states_verified_product(answer)
-        )
+        request_ok = looks_like_short_poem(answer)
     elif name == "text_analysis":
         text_outputs = [
             _tool_output(item) for item in tools if item.get("name") == "analyze_text"
@@ -445,12 +441,13 @@ def _case_input(provider: str, name: str) -> Any:
                 "capabilities, ask me to choose a supported task."
             ),
         }[name]
+    if name == "poetic_calculation":
+        raise ValueError(
+            f"Provider {provider!r} does not declare model_generation; "
+            "the poetic scenario is not applicable."
+        )
     return {
         "calculation": {
-            "tool": "delegate_calculator",
-            "input": {"a": 17, "b": 19},
-        },
-        "poetic_calculation": {
             "tool": "delegate_calculator",
             "input": {"a": 17, "b": 19},
         },
@@ -473,28 +470,13 @@ def semantic_cases(provider: str, framework: str) -> tuple[dict[str, Any], ...]:
         "human_answer": True,
         "no_fallback": True,
     }
-    return (
+    cases = [
         {
             "name": "calculation",
             "input": _case_input(provider, "calculation"),
             "expected": {
                 **common,
                 "text_contains": "323",
-                "agent_path": ["orchestrator_agent", "calculator_agent"],
-                "tool_path": ["delegate_calculator", "multiply"],
-                "tool_output_contains": {"multiply": {"result": 323}},
-            },
-        },
-        {
-            "name": "poetic_calculation",
-            "input": _case_input(provider, "poetic_calculation"),
-            "expected": {
-                **common,
-                "output_style": (
-                    "short-poem-exactly-three-lines"
-                    if supports_model_generation(provider)
-                    else "deterministic-evidence-control"
-                ),
                 "agent_path": ["orchestrator_agent", "calculator_agent"],
                 "tool_path": ["delegate_calculator", "multiply"],
                 "tool_output_contains": {"multiply": {"result": 323}},
@@ -526,7 +508,23 @@ def semantic_cases(provider: str, framework: str) -> tuple[dict[str, Any], ...]:
                 "allowed_tool_paths": [[], ["clarify_scope"]],
             },
         },
-    )
+    ]
+    if supports_model_generation(provider):
+        cases.insert(
+            1,
+            {
+                "name": "poetic_calculation",
+                "input": _case_input(provider, "poetic_calculation"),
+                "expected": {
+                    **common,
+                    "output_style": "short-poem-exactly-three-lines",
+                    "agent_path": ["orchestrator_agent", "calculator_agent"],
+                    "tool_path": ["delegate_calculator", "multiply"],
+                    "tool_output_contains": {"multiply": {"result": 323}},
+                },
+            },
+        )
+    return tuple(cases)
 
 
 def build_semantic_cell(

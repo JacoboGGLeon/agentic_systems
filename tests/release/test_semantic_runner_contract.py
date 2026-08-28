@@ -4,6 +4,8 @@ import importlib.util
 from pathlib import Path
 import sys
 
+import pytest
+
 
 ROOT = Path(__file__).resolve().parents[2]
 SCRIPTS = ROOT / "scripts"
@@ -106,18 +108,21 @@ def test_poem_shape_is_semantic_not_exact_text() -> None:
     ):
         assert module.supports_model_generation(provider) is True
 
-    python_poem = next(
-        case
-        for case in module.semantic_cases("python-runtime", "native")
-        if case["name"] == "poetic_calculation"
-    )
+    python_cases = module.semantic_cases("python-runtime", "native")
     openai_poem = next(
         case
         for case in module.semantic_cases("openai-runtime", "native")
         if case["name"] == "poetic_calculation"
     )
-    assert python_poem["expected"]["output_style"] == "deterministic-evidence-control"
+    assert [case["name"] for case in python_cases] == [
+        "calculation",
+        "text_analysis",
+        "out_of_scope",
+    ]
     assert openai_poem["expected"]["output_style"] == "short-poem-exactly-three-lines"
+
+    with pytest.raises(ValueError, match="does not declare model_generation"):
+        module._case_input("python-runtime", "poetic_calculation")
 
 
 def test_deterministic_multiply_exposes_only_public_evidence() -> None:
