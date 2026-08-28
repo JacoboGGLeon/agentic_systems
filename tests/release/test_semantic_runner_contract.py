@@ -134,6 +134,14 @@ def test_deterministic_multiply_exposes_only_public_evidence() -> None:
     assert output == {"result": 323, "answer": "Verified product: 323."}
     assert "continue" not in output["answer"].lower()
 
+    punctuated = module.analyze_text.function(text="Already complete.")
+    unpunctuated = module.analyze_text.function(text="Needs punctuation")
+    assert punctuated["answer"].startswith('The normalized text is "Already complete." It')
+    assert '". It' not in punctuated["answer"]
+    assert unpunctuated["answer"].startswith(
+        'The normalized text is "Needs punctuation". It'
+    )
+
 
 def test_model_judge_uses_one_closed_failed_criteria_list() -> None:
     spec = importlib.util.spec_from_file_location(

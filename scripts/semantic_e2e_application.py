@@ -179,13 +179,14 @@ def multiply(
 def analyze_text(text: str) -> dict[str, Any]:
     normalized = " ".join(text.split())
     words = normalized.split()
+    sentence_end = "" if normalized.endswith((".", "!", "?")) else "."
     return {
         "normalized": normalized,
         "lowercase": normalized.lower(),
         "word_count": len(words),
         "character_count": len(normalized),
         "answer": (
-            f'The normalized text is "{normalized}". '
+            f'The normalized text is "{normalized}"{sentence_end} '
             f"It has {len(words)} words and {len(normalized)} characters."
         ),
     }
