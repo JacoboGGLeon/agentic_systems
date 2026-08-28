@@ -219,6 +219,42 @@ def test_openai_provider_stops_when_required_tools_are_satisfied():
     assert len(client.calls) == 2
     assert result.text == "fallback final"
     assert [event.name for event in result.tool_events] == ["add"]
+
+
+def test_openai_provider_enforces_tool_budget_within_one_model_response():
+    runtime = build_runtime()
+    agent = build_agent(runtime, tools=("add", "fail"))
+    client = FakeClient(
+        [
+            FakeResponse(
+                FakeMessage(
+                    tool_calls=[
+                        FakeToolCall("add", '{"a": 20, "b": 22}', "accepted"),
+                        FakeToolCall("fail", "{}", "rejected"),
+                    ]
+                )
+            ),
+            FakeResponse(FakeMessage(content="The verified result is 42.")),
+        ]
+    )
+
+    result = OpenAIRuntimeProvider(
+        SimpleNamespace(_runtime=runtime), client=client
+    ).run(agent, "sum", RunPolicy(max_tool_calls=1), mode="eval")
+
+    assert result.ok is True
+    assert result.text == "The verified result is 42."
+    assert [event.name for event in result.tool_events] == ["add"]
+    assert result.meta["rejected_tool_calls"] == [
+        {
+            "name": "fail",
+            "provider_call_id": "rejected",
+            "reason": "max_tool_calls_exhausted",
+            "turn": 1,
+        }
+    ]
+    assert client.calls[1]["tools"] is None
+    assert client.calls[1]["tool_choice"] is None
     assert result.tool_events[0].output == {"result": 42, "summary": "20+22=42"}
 
 

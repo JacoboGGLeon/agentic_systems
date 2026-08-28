@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ast
+import dataclasses
 import json
 import uuid
 from collections.abc import AsyncIterator, Mapping
@@ -15,7 +16,6 @@ from openai.types.responses import (
     ResponseFunctionToolCall,
     ResponseOutputMessage,
     ResponseOutputText,
-
 )
 
 from agentic_systems.tools.parsing import parse_textual_tool_call
@@ -27,11 +27,23 @@ class ToolCallNormalizingModel(Model):
     def __init__(self, delegate: Model, tool_names: list[str]) -> None:
         self.delegate = delegate
         self.tool_names = tuple(tool_names)
+        self._max_tool_calls: int | None = None
+        self._emitted_tool_calls = 0
+        self.rejected_tool_calls: list[dict[str, Any]] = []
+
+    def configure(self, policy: Any, mode: str) -> None:
+        """Reset the execution budget for one public Agent invocation."""
+
+        del mode
+        self._max_tool_calls = getattr(policy, "max_tool_calls", None)
+        self._emitted_tool_calls = 0
+        self.rejected_tool_calls = []
 
     async def get_response(self, *args: Any, **kwargs: Any) -> ModelResponse:
+        args, kwargs = self._without_tools_when_exhausted(args, kwargs)
         response = await self.delegate.get_response(*args, **kwargs)
         if any(isinstance(item, ResponseFunctionToolCall) for item in response.output):
-            return response
+            return self._budget_response(response)
         text = ""
         for item in response.output:
             if not isinstance(item, ResponseOutputMessage):
@@ -43,22 +55,87 @@ class ToolCallNormalizingModel(Model):
         if parsed is None:
             return response
         name, arguments = parsed
-        return ModelResponse(
-            output=[
-                ResponseFunctionToolCall(
-                    arguments=json.dumps(arguments, ensure_ascii=False),
-                    call_id=f"call_{uuid.uuid4().hex}",
-                    name=name,
-                    type="function_call",
-                )
-            ],
-            usage=response.usage,
-            response_id=response.response_id,
+        return self._budget_response(
+            ModelResponse(
+                output=[
+                    ResponseFunctionToolCall(
+                        arguments=json.dumps(arguments, ensure_ascii=False),
+                        call_id=f"call_{uuid.uuid4().hex}",
+                        name=name,
+                        type="function_call",
+                    )
+                ],
+                usage=response.usage,
+                response_id=response.response_id,
+            )
         )
 
     async def stream_response(self, *args: Any, **kwargs: Any) -> AsyncIterator[Any]:
         async for item in self.delegate.stream_response(*args, **kwargs):
             yield item
+
+    def _without_tools_when_exhausted(
+        self, args: tuple[Any, ...], kwargs: dict[str, Any]
+    ) -> tuple[tuple[Any, ...], dict[str, Any]]:
+        if not self._budget_exhausted():
+            return args, kwargs
+        values = list(args)
+        updated = dict(kwargs)
+        if "tools" in updated:
+            updated["tools"] = []
+        elif len(values) > 3:
+            values[3] = []
+        if "model_settings" in updated:
+            updated["model_settings"] = _without_tool_choice(updated["model_settings"])
+        elif len(values) > 2:
+            values[2] = _without_tool_choice(values[2])
+        return tuple(values), updated
+
+    def _budget_exhausted(self) -> bool:
+        return (
+            isinstance(self._max_tool_calls, int)
+            and self._emitted_tool_calls >= self._max_tool_calls
+        )
+
+    def _budget_response(self, response: ModelResponse) -> ModelResponse:
+        calls = [
+            item
+            for item in response.output
+            if isinstance(item, ResponseFunctionToolCall)
+        ]
+        if self._max_tool_calls is None:
+            self._emitted_tool_calls += len(calls)
+            return response
+        remaining = max(0, self._max_tool_calls - self._emitted_tool_calls)
+        accepted_ids = {id(item) for item in calls[:remaining]}
+        rejected = calls[remaining:]
+        self.rejected_tool_calls.extend(
+            {
+                "name": item.name,
+                "provider_call_id": item.call_id,
+                "reason": "max_tool_calls_exhausted",
+            }
+            for item in rejected
+        )
+        self._emitted_tool_calls += min(len(calls), remaining)
+        if not rejected:
+            return response
+        return ModelResponse(
+            output=[
+                item
+                for item in response.output
+                if not isinstance(item, ResponseFunctionToolCall)
+                or id(item) in accepted_ids
+            ],
+            usage=response.usage,
+            response_id=response.response_id,
+        )
+
+
+def _without_tool_choice(settings: Any) -> Any:
+    if dataclasses.is_dataclass(settings):
+        return dataclasses.replace(settings, tool_choice=None)
+    return settings
 
 
 class ScriptedOpenAIModel(Model):

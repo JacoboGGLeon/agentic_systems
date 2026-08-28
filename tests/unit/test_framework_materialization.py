@@ -244,10 +244,17 @@ def test_strands_bedrock_releases_forced_tool_before_abandoned_stream(monkeypatc
         first_stream = model.stream([], tool_choice=forced)
         await anext(first_stream)
         # Strands may not resume the first generator after receiving ToolUse.
-        [event async for event in model.stream([], tool_choice=forced)]
+        second_events = [event async for event in model.stream([], tool_choice=forced)]
+        assert second_events == []
 
     asyncio.run(exercise())
     assert choices == [forced, {"auto": {}}]
+    assert model._agentic_systems_rejected_tool_calls == [
+        {
+            "name": "record_semantic_judgment",
+            "reason": "max_tool_calls_exhausted",
+        }
+    ]
 
 
 def test_strands_real_bedrock_model_accepts_canonical_runtime(monkeypatch):

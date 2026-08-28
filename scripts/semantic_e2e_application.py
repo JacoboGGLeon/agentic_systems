@@ -122,19 +122,26 @@ class JudgeDecision(BaseModel):
     description="Record one typed semantic judgment after reviewing all evidence.",
 )
 def record_semantic_judgment(
-    request_fulfillment: float,
-    evidence_correctness: float,
-    clarity: float,
-    no_technical_noise: float,
-    no_unsupported_claims: float,
+    request_fulfillment: bool,
+    evidence_correctness: bool,
+    clarity: bool,
+    no_technical_noise: bool,
+    no_unsupported_claims: bool,
     rationale: str,
 ) -> dict[str, Any]:
+    """Record pass/fail per criterion and project it onto the public 0..1 rubric.
+
+    Small models are substantially more reliable at satisfying a boolean Tool schema
+    than at choosing calibrated floating-point scores.  The public evaluation contract
+    remains provider-agnostic and numerical: ``False`` maps to 0.0 and ``True`` to 1.0.
+    """
+
     criteria = JudgeCriteria(
-        request_fulfillment=request_fulfillment,
-        evidence_correctness=evidence_correctness,
-        clarity=clarity,
-        no_technical_noise=no_technical_noise,
-        no_unsupported_claims=no_unsupported_claims,
+        request_fulfillment=float(request_fulfillment),
+        evidence_correctness=float(evidence_correctness),
+        clarity=float(clarity),
+        no_technical_noise=float(no_technical_noise),
+        no_unsupported_claims=float(no_unsupported_claims),
     )
     decision = JudgeDecision(
         score=sum(criteria.model_dump().values()) / 5,
@@ -637,10 +644,14 @@ def build_semantic_cell(
                 "A parent delegation may summarize or omit output when its child lineage "
                 "contains the authoritative specialist and Tool evidence. "
                 "Return one typed semantic judgment by calling the "
-                "record_semantic_judgment Tool exactly once. Score every criterion "
-                "from 0 to 1. A claim unsupported by Tool evidence must score zero for "
-                "evidence_correctness and no_unsupported_claims. Raw JSON or technical "
-                "envelopes must score zero for clarity and no_technical_noise."
+                "record_semantic_judgment Tool exactly once. Mark every criterion true "
+                "only when it passes and false when it fails. A claim unsupported by "
+                "Tool evidence must fail evidence_correctness and "
+                "no_unsupported_claims. no_unsupported_claims concerns factual claims "
+                "only; never fail it for formatting, line count, length, structure, "
+                "wording, or artistic style. Those requirements belong only to "
+                "request_fulfillment. Raw JSON or technical envelopes must fail clarity "
+                "and no_technical_noise."
             ),
             tools=judge_tools,
             framework=framework,

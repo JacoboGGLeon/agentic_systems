@@ -148,6 +148,8 @@ def test_judge_rubric_defines_contract_aware_fulfillment() -> None:
     assert "useful clarification" in rubric.instructions
     assert "Do not invent style" in rubric.instructions
     assert "subjective preference" in rubric.instructions
+    assert "factual assertions" in rubric.instructions
+    assert "must never reduce no_unsupported_claims" in rubric.instructions
     assert "child RunResult" in rubric.instructions
     assert rubric.threshold == 0.80
     assert rubric.deterministic_authority == (

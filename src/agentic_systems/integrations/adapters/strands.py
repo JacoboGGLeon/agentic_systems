@@ -177,19 +177,26 @@ def _materialize_model(agent: Any, engine: Any) -> Any:
                 tool_choice: Any = None,
                 **kwargs: Any,
             ) -> Any:
-                async for event in super().stream(
-                    messages,
-                    tool_specs,
-                    system_prompt,
-                    tool_choice=_budgeted_continuation_tool_choice(
-                        self, agent, messages, tool_choice
-                    ),
-                    **kwargs,
-                ):
-                    # Strands can stop consuming immediately after ToolUse. Record
-                    # the emitted call before yielding so the next model turn sees
-                    # the exhausted budget even if this generator is not resumed.
-                    _record_emitted_tool_calls(self, _stream_tool_use_count(event))
+                events = [
+                    event
+                    async for event in super().stream(
+                        messages,
+                        tool_specs,
+                        system_prompt,
+                        tool_choice=_budgeted_continuation_tool_choice(
+                            self, agent, messages, tool_choice
+                        ),
+                        **kwargs,
+                    )
+                ]
+                authorized_events = _limit_tool_use_events(self, events)
+                # Record before yielding: Strands may stop consuming immediately
+                # after ToolUse, but the next turn must still see exhausted budget.
+                _record_emitted_tool_calls(
+                    self,
+                    sum(_stream_tool_use_count(event) for event in authorized_events),
+                )
+                for event in authorized_events:
                     yield event
 
         return ContractAwareBedrockModel(**model_kwargs)
@@ -226,8 +233,8 @@ def _materialize_model(agent: Any, engine: Any) -> Any:
                 system_prompt_content: list[Any] | None = None,
                 **kwargs: Any,
             ) -> dict[str, Any]:
-                resolved_choice = _continuation_tool_choice(
-                    agent, messages, tool_choice
+                resolved_choice = _budgeted_continuation_tool_choice(
+                    self, agent, messages, tool_choice
                 )
                 request = super().format_request(
                     messages,
@@ -266,6 +273,7 @@ def _materialize_model(agent: Any, engine: Any) -> Any:
                     )
                 ]
                 normalized_events = _normalize_textual_tool_events(events, tool_specs)
+                normalized_events = _limit_tool_use_events(self, normalized_events)
                 _record_emitted_tool_calls(
                     self,
                     sum(_stream_tool_use_count(event) for event in normalized_events),
@@ -426,9 +434,70 @@ def _reset_tool_budget(model: Any, max_tool_calls: int | None) -> None:
     try:
         setattr(model, "_agentic_systems_max_tool_calls", max_tool_calls)
         setattr(model, "_agentic_systems_emitted_tool_calls", 0)
+        setattr(model, "_agentic_systems_rejected_tool_calls", [])
     except (AttributeError, TypeError):
         # Not every test double or vendor proxy permits private attributes.
         return
+
+
+def _limit_tool_use_events(model: Any, events: list[Any]) -> list[Any]:
+    """Keep only ToolUse blocks authorized by the current execution budget."""
+
+    limit = getattr(model, "_agentic_systems_max_tool_calls", None)
+    if not isinstance(limit, int):
+        return events
+    emitted = int(getattr(model, "_agentic_systems_emitted_tool_calls", 0) or 0)
+    remaining = max(0, limit - emitted)
+    accepted = 0
+    suppress_block = False
+    filtered: list[Any] = []
+    rejected = list(getattr(model, "_agentic_systems_rejected_tool_calls", ()) or ())
+    for event in events:
+        public = _jsonable(event)
+        starts_tool = _stream_tool_use_count(public) > 0
+        starts_block = isinstance(public, Mapping) and isinstance(
+            public.get("contentBlockStart"), Mapping
+        )
+        if starts_tool:
+            if accepted >= remaining:
+                rejected.append(
+                    {
+                        "name": _stream_tool_use_name(public),
+                        "reason": "max_tool_calls_exhausted",
+                    }
+                )
+                suppress_block = True
+                continue
+            accepted += 1
+            suppress_block = False
+            filtered.append(event)
+            continue
+        if starts_block:
+            suppress_block = False
+        if suppress_block:
+            if isinstance(public, Mapping) and "contentBlockStop" in public:
+                suppress_block = False
+            continue
+        filtered.append(event)
+    try:
+        setattr(model, "_agentic_systems_rejected_tool_calls", rejected)
+    except (AttributeError, TypeError):
+        pass
+    return filtered
+
+
+def _stream_tool_use_name(event: Any) -> str:
+    public = _jsonable(event)
+    if not isinstance(public, Mapping):
+        return ""
+    block_start = public.get("contentBlockStart")
+    if not isinstance(block_start, Mapping):
+        return ""
+    start = block_start.get("start")
+    if not isinstance(start, Mapping):
+        return ""
+    tool_use = start.get("toolUse")
+    return str(tool_use.get("name") or "") if isinstance(tool_use, Mapping) else ""
 
 
 def _has_successful_tool_result(value: Any) -> bool:
@@ -661,9 +730,13 @@ def _normalize_result(
     aliases: ToolNameAliases | None = None,
 ) -> RunResult:
     provider_result = getattr(native_agent.model, "last_result", None)
+    rejected_tool_calls = list(
+        getattr(native_agent.model, "_agentic_systems_rejected_tool_calls", ()) or ()
+    )
     if isinstance(provider_result, RunResult):
         provider_result.meta["framework_adapter"] = "strands"
         provider_result.meta["input"] = _jsonable(input_value)
+        provider_result.meta["rejected_tool_calls"] = rejected_tool_calls
         return provider_result
 
     structured = getattr(native_result, "structured_output", None)
@@ -688,6 +761,7 @@ def _normalize_result(
             "framework_adapter": "strands",
             "input": _jsonable(input_value),
             "stop_reason": getattr(native_result, "stop_reason", None),
+            "rejected_tool_calls": rejected_tool_calls,
         },
     )
 

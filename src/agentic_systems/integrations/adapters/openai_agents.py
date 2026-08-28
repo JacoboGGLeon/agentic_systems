@@ -326,10 +326,12 @@ def _normalize_result(
     aliases: ToolNameAliases | None = None,
 ) -> RunResult:
     bridged = getattr(getattr(native_result, "last_agent", None), "model", None)
+    rejected_tool_calls = list(getattr(bridged, "rejected_tool_calls", ()) or ())
     provider_result = getattr(bridged, "last_result", None)
     if isinstance(provider_result, RunResult):
         provider_result.meta["framework_adapter"] = "openai-agents"
         provider_result.meta["input"] = _jsonable(input_value)
+        provider_result.meta["rejected_tool_calls"] = rejected_tool_calls
         return provider_result
 
     final_output = getattr(native_result, "final_output", "")
@@ -363,6 +365,7 @@ def _normalize_result(
             "source_result_type": type(native_result).__name__,
             "framework_adapter": "openai-agents",
             "input": _jsonable(input_value),
+            "rejected_tool_calls": rejected_tool_calls,
         },
     )
 

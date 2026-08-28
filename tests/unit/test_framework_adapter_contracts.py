@@ -678,6 +678,30 @@ def test_strands_adapter_helpers_cover_results_tools_and_failures():
     assert budget_model._agentic_systems_max_tool_calls == 2
     assert budget_model._agentic_systems_emitted_tool_calls == 0
 
+    two_tool_events = [
+        {
+            "contentBlockStart": {
+                "start": {"toolUse": {"toolUseId": "one", "name": "calculator"}}
+            }
+        },
+        {"contentBlockDelta": {"delta": {"toolUse": {"input": "{}"}}}},
+        {"contentBlockStop": {}},
+        {
+            "contentBlockStart": {
+                "start": {"toolUse": {"toolUseId": "two", "name": "text"}}
+            }
+        },
+        {"contentBlockDelta": {"delta": {"toolUse": {"input": "{}"}}}},
+        {"contentBlockStop": {}},
+    ]
+    sa._reset_tool_budget(budget_model, 1)
+    filtered_events = sa._limit_tool_use_events(budget_model, two_tool_events)
+    assert len(filtered_events) == 3
+    assert sa._stream_tool_use_name(filtered_events[0]) == "calculator"
+    assert budget_model._agentic_systems_rejected_tool_calls == [
+        {"name": "text", "reason": "max_tool_calls_exhausted"}
+    ]
+
     model_agent = SimpleNamespace(
         engine="openai-runtime",
         model="model",
@@ -846,3 +870,54 @@ def test_openai_compatible_textual_call_normalizes_before_runner():
     call = response.output[0]
     assert call.name == "lookup"
     assert call.arguments == '{"value": 7}'
+
+
+def test_openai_agents_bridge_enforces_tool_budget_per_model_response():
+    class Delegate:
+        def __init__(self) -> None:
+            self.calls = []
+
+        async def get_response(self, *args, **kwargs):
+            self.calls.append((args, kwargs))
+            return om.ModelResponse(
+                output=[
+                    om.ResponseFunctionToolCall(
+                        arguments='{"value": 1}',
+                        call_id="one",
+                        name="calculator",
+                        type="function_call",
+                    ),
+                    om.ResponseFunctionToolCall(
+                        arguments='{"value": 2}',
+                        call_id="two",
+                        name="text",
+                        type="function_call",
+                    ),
+                ],
+                usage=om.Usage(),
+                response_id="response",
+            )
+
+        async def stream_response(self, *args, **kwargs):
+            if False:
+                yield None
+
+    delegate = Delegate()
+    model = om.ToolCallNormalizingModel(delegate, ["calculator", "text"])
+    model.configure(RunPolicy(max_tool_calls=1), "eval")
+
+    response = asyncio.run(model.get_response())
+
+    calls = [
+        item
+        for item in response.output
+        if isinstance(item, om.ResponseFunctionToolCall)
+    ]
+    assert [item.name for item in calls] == ["calculator"]
+    assert model.rejected_tool_calls == [
+        {
+            "name": "text",
+            "provider_call_id": "two",
+            "reason": "max_tool_calls_exhausted",
+        }
+    ]

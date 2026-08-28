@@ -230,7 +230,8 @@ def _run_chat_loop(
     turns = 0
     usage: dict[str, Any] = {}
     max_turns = policy.max_turns or 8
-    synthesis_only = False
+    synthesis_only = policy.max_tool_calls == 0
+    rejected_tool_calls: list[dict[str, Any]] = []
     contract_repairs = 0
     max_contract_repairs = max(0, int(policy.max_repairs or 0))
     while True:
@@ -273,6 +274,13 @@ def _run_chat_loop(
         assistant_content, tool_calls = _normalize_textual_tool_call(
             assistant_content, tool_calls, tools
         )
+        tool_calls, rejected = _authorize_tool_calls(
+            tool_calls,
+            policy.max_tool_calls,
+            executed=len(tool_events),
+            turn=turns,
+        )
+        rejected_tool_calls.extend(rejected)
         if assistant_content:
             messages.append({"role": "assistant", "content": assistant_content})
         if not tool_calls:
@@ -300,6 +308,7 @@ def _run_chat_loop(
                 runtime_engine=runtime_engine,
                 source="openai.chat.completions",
                 contract_repairs=contract_repairs,
+                rejected_tool_calls=rejected_tool_calls,
             )
         messages.append(
             {
@@ -339,7 +348,9 @@ def _run_chat_loop(
                     source="openai.chat.completions",
                     contract_repairs=contract_repairs,
                 )
-            if _required_tools_satisfied(agent, tool_events):
+            if _tool_budget_exhausted(policy.max_tool_calls, len(tool_events)) or (
+                _required_tools_satisfied(agent, tool_events)
+            ):
                 synthesis_only = True
                 break
 
@@ -360,7 +371,8 @@ async def _run_chat_loop_async(
     turns = 0
     usage: dict[str, Any] = {}
     max_turns = policy.max_turns or 8
-    synthesis_only = False
+    synthesis_only = policy.max_tool_calls == 0
+    rejected_tool_calls: list[dict[str, Any]] = []
     contract_repairs = 0
     max_contract_repairs = max(0, int(policy.max_repairs or 0))
     while True:
@@ -403,6 +415,13 @@ async def _run_chat_loop_async(
         assistant_content, tool_calls = _normalize_textual_tool_call(
             assistant_content, tool_calls, tools
         )
+        tool_calls, rejected = _authorize_tool_calls(
+            tool_calls,
+            policy.max_tool_calls,
+            executed=len(tool_events),
+            turn=turns,
+        )
+        rejected_tool_calls.extend(rejected)
         if assistant_content:
             messages.append({"role": "assistant", "content": assistant_content})
         if not tool_calls:
@@ -430,6 +449,7 @@ async def _run_chat_loop_async(
                 runtime_engine=runtime_engine,
                 source="openai.chat.completions",
                 contract_repairs=contract_repairs,
+                rejected_tool_calls=rejected_tool_calls,
             )
         messages.append(
             {
@@ -469,9 +489,46 @@ async def _run_chat_loop_async(
                     source="openai.chat.completions",
                     contract_repairs=contract_repairs,
                 )
-            if _required_tools_satisfied(agent, tool_events):
+            if _tool_budget_exhausted(policy.max_tool_calls, len(tool_events)) or (
+                _required_tools_satisfied(agent, tool_events)
+            ):
                 synthesis_only = True
                 break
+
+
+def _tool_budget_exhausted(limit: int | None, executed: int) -> bool:
+    return isinstance(limit, int) and executed >= limit
+
+
+def _authorize_tool_calls(
+    tool_calls: list[Any],
+    limit: int | None,
+    *,
+    executed: int,
+    turn: int,
+) -> tuple[list[Any], list[dict[str, Any]]]:
+    """Authorize only calls inside the declared execution budget.
+
+    A model may propose several calls in one response. ``max_tool_calls`` limits
+    executions, not merely continuation turns, so excess proposals never reach a
+    Tool. They remain observable as rejected evidence instead of being silently
+    executed or discarded.
+    """
+
+    if limit is None:
+        return tool_calls, []
+    remaining = max(0, int(limit) - executed)
+    authorized = tool_calls[:remaining]
+    rejected = [
+        {
+            "name": str(getattr(getattr(call, "function", None), "name", "") or ""),
+            "provider_call_id": getattr(call, "id", None),
+            "reason": "max_tool_calls_exhausted",
+            "turn": turn,
+        }
+        for call in tool_calls[remaining:]
+    ]
+    return authorized, rejected
 
 
 def _execute_tool(
@@ -537,6 +594,7 @@ def _finalize_run_result(
     runtime_engine: str,
     source: str,
     contract_repairs: int = 0,
+    rejected_tool_calls: list[dict[str, Any]] | None = None,
 ) -> RunResult:
     if ok and not str(text or "").strip():
         result = _failure(
@@ -568,6 +626,7 @@ def _finalize_run_result(
             "runtime_engine": runtime_engine,
             "execution_engine": OPENAI_RUNTIME_ENGINE,
             "contract_repairs": contract_repairs,
+            "rejected_tool_calls": list(rejected_tool_calls or ()),
             **_framework_meta(agent),
         },
     )
