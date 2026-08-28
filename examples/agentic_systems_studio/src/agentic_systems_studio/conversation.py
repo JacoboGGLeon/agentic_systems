@@ -136,10 +136,24 @@ class ConversationConfig:
         # The single Studio .env is canonical; managed credentials not declared
         # there remain inherited from the hosting environment.
         load_studio_environment()
+        declared_provider = os.getenv("AGENTIC_SYSTEMS_PROVIDER", "auto")
+        provider = declared_provider
+        model = os.getenv("AGENTIC_SYSTEMS_MODEL") or None
+        try:
+            # Resolve auto exactly once through the canonical registry. The compiled
+            # Studio contract then records the provider it will actually execute.
+            resolved_runtime = toolkit.runtime(provider=declared_provider)
+            provider = str(resolved_runtime.describe()["selected_provider"])
+            if model is None:
+                # Provider-specific model env vars remain canonical; the generic
+                # model setting is only an explicit override.
+                model = resolved_runtime.model_id
+        except ValueError:
+            pass
         return cls(
-            provider=os.getenv("AGENTIC_SYSTEMS_PROVIDER", "auto"),
+            provider=provider,
             framework=os.getenv("AGENTIC_SYSTEMS_FRAMEWORK", "native"),
-            model=os.getenv("AGENTIC_SYSTEMS_MODEL") or None,
+            model=model,
             timeout_s=float(os.getenv("AGENTIC_SYSTEMS_TIMEOUT_S", "120")),
             max_turns=int(os.getenv("AGENTIC_SYSTEMS_MAX_TURNS", "6")),
             max_tool_calls=int(os.getenv("AGENTIC_SYSTEMS_MAX_TOOL_CALLS", "4")),

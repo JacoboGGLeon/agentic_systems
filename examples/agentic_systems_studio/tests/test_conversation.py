@@ -43,6 +43,48 @@ def test_conversation_config_uses_canonical_dotenv_without_secrets(
     assert ConversationConfig(framework="native").framework_value is None
 
 
+def test_conversation_config_resolves_model_from_provider_registry(
+    monkeypatch, tmp_path
+):
+    environment = tmp_path / ".env"
+    environment.write_text(
+        "AGENTIC_SYSTEMS_PROVIDER=bedrock-runtime\n"
+        "AGENTIC_SYSTEMS_FRAMEWORK=native\n"
+        "AGENTIC_SYSTEMS_MODEL=\n"
+        "BEDROCK_MODEL_ID=provider-owned-model\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("AGENTIC_SYSTEMS_ENV_FILE", str(environment))
+    monkeypatch.delenv("AGENTIC_SYSTEMS_MODEL", raising=False)
+    monkeypatch.delenv("BEDROCK_MODEL_ID", raising=False)
+
+    config = ConversationConfig.from_environment()
+
+    assert config.provider == "bedrock-runtime"
+    assert config.framework == "native"
+    assert config.model == "provider-owned-model"
+
+
+def test_conversation_config_materializes_auto_provider_without_hardcoding(
+    monkeypatch, tmp_path
+):
+    environment = tmp_path / ".env"
+    environment.write_text(
+        "AGENTIC_SYSTEMS_PROVIDER=auto\n"
+        "AGENTIC_SYSTEMS_PROVIDER_PRIORITY=openai-runtime\n"
+        "AGENTIC_SYSTEMS_MODEL=\n"
+        "OPENAI_API_KEY=test-key\n"
+        "OPENAI_MODEL=provider-owned-model\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("AGENTIC_SYSTEMS_ENV_FILE", str(environment))
+
+    config = ConversationConfig.from_environment()
+
+    assert config.provider == "openai-runtime"
+    assert config.model == "provider-owned-model"
+
+
 def test_load_studio_environment_reports_the_resolved_contract(monkeypatch, tmp_path):
     environment = tmp_path / ".env"
     environment.write_text("RUN_STUDIO_LIVE=1\n", encoding="utf-8")

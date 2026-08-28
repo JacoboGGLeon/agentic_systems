@@ -46,6 +46,7 @@ STUDIO_EXPORTS = (
     "notebooks",
     "docs",
 )
+FRAMEWORKS = {"native", "langgraph", "openai-agents", "strands"}
 
 
 def sha256(path: Path) -> str:
@@ -54,6 +55,91 @@ def sha256(path: Path) -> str:
         for chunk in iter(lambda: stream.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def _read_json(path: Path) -> dict[str, object]:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _validate_semantic_evidence(
+    path: Path,
+    *,
+    provider: str,
+    certification: dict[str, object],
+    row: dict[str, object],
+) -> None:
+    payload = _read_json(path)
+    if (
+        payload.get("schema_version")
+        != "agentic_systems.semantic-attestation.v1"
+        or payload.get("commit_sha") != certification["commit_sha"]
+        or payload.get("wheel_sha256") != certification["wheel_sha256"]
+        or not payload.get("wheel_runtime_verified")
+    ):
+        raise ValueError(f"Semantic evidence identity mismatch: {path.name}")
+
+    cells = [
+        cell for cell in payload.get("cells", []) if cell.get("provider") == provider
+    ]
+    episodes = [episode for cell in cells for episode in cell.get("episodes", [])]
+    if (
+        len(cells) != 4
+        or {cell.get("framework") for cell in cells} != FRAMEWORKS
+        or any(not cell.get("ok") for cell in cells)
+        or len(episodes) != row.get("episodes_passed")
+        or any(
+            not episode.get("ok")
+            or not episode.get("deterministic_validation", {}).get("ok")
+            or not episode.get("judge", {}).get("ok")
+            for episode in episodes
+        )
+    ):
+        raise ValueError(f"Semantic evidence is incomplete: {provider}")
+
+    runtime = (
+        payload.get("environment", {})
+        .get("providers", {})
+        .get(provider, {})
+        .get("runtime", {})
+    )
+    if runtime.get("selected_provider") != provider or runtime.get(
+        "fallback_provider"
+    ):
+        raise ValueError(f"Semantic evidence used fallback: {provider}")
+
+
+def _validate_authentication_evidence(
+    path: Path,
+    *,
+    certification: dict[str, object],
+    row: dict[str, object],
+) -> None:
+    payload = _read_json(path)
+    cases = payload.get("cases", [])
+    environment = payload.get("environment", {})
+    if (
+        payload.get("schema_version") != "agentic_systems.live-attestation.v1"
+        or payload.get("commit_sha") != certification["commit_sha"]
+        or payload.get("wheel_sha256") != certification["wheel_sha256"]
+        or environment.get("bedrock_authentication_mode")
+        != row.get("authentication_mode")
+        or not environment.get("uses_aws_credential_chain")
+        or len(cases) != 4
+        or {case.get("framework") for case in cases} != FRAMEWORKS
+        or any(
+            case.get("provider") != "bedrock-runtime" or not case.get("ok")
+            for case in cases
+        )
+    ):
+        raise ValueError(f"Authentication evidence is incomplete: {path.name}")
+
+    for case in cases:
+        for scenario in case.get("scenarios", []):
+            details = scenario.get("details", {})
+            if not scenario.get("ok") or details.get("fallback_provider"):
+                raise ValueError(
+                    f"Authentication evidence used fallback: {path.name}"
+                )
 
 
 def _git(*args: str) -> str:
@@ -98,14 +184,25 @@ def _load_certification() -> dict[str, object]:
     if not SDIST.is_file():
         raise FileNotFoundError(SDIST)
 
-    declared = [
-        *certification.get("primary_matrix", {}).values(),
-        *certification.get("additional_authentication_routes", {}).values(),
-    ]
-    for row in declared:
+    for provider, row in certification.get("primary_matrix", {}).items():
         evidence = EVIDENCE / str(row["artifact"])
         if not evidence.is_file() or sha256(evidence) != row["sha256"]:
             raise ValueError(f"Evidence checksum mismatch: {evidence.name}")
+        _validate_semantic_evidence(
+            evidence,
+            provider=provider,
+            certification=certification,
+            row=row,
+        )
+    for row in certification.get("additional_authentication_routes", {}).values():
+        evidence = EVIDENCE / str(row["artifact"])
+        if not evidence.is_file() or sha256(evidence) != row["sha256"]:
+            raise ValueError(f"Evidence checksum mismatch: {evidence.name}")
+        _validate_authentication_evidence(
+            evidence,
+            certification=certification,
+            row=row,
+        )
     return certification
 
 
@@ -341,6 +438,7 @@ def build_bundle(
             "certification": {
                 "schema_version": certification["schema_version"],
                 "primary": "20/20",
+                "semantic_episodes": "76/76",
                 "bedrock_iam": "4/4",
                 "total": "24/24",
                 "no_fallback": True,
