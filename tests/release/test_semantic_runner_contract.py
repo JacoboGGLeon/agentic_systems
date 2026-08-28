@@ -202,3 +202,66 @@ def test_attestation_binds_external_gate_assets_by_hash() -> None:
     assert '"gate_assets"' in source
     assert '"runner"' in source
     assert '"application"' in source
+
+
+def test_bedrock_semantic_environment_records_authentication_mode(
+    monkeypatch,
+) -> None:
+    class Runtime:
+        def describe(self):
+            return {"selected_provider": "bedrock-runtime", "region": "us-east-2"}
+
+    monkeypatch.setattr(SEMANTIC_MATRIX.toolkit, "runtime", lambda **kwargs: Runtime())
+    monkeypatch.setattr(
+        SEMANTIC_MATRIX.toolkit,
+        "boto3_session_snapshot",
+        lambda **kwargs: {
+            "authentication_mode": "aws-credential-chain",
+            "has_credentials": True,
+            "bedrock_api_key_configured": False,
+        },
+    )
+    monkeypatch.setattr(
+        SEMANTIC_MATRIX,
+        "_model",
+        lambda provider: "us.amazon.nova-pro-v1:0",
+    )
+
+    environment = SEMANTIC_MATRIX._environment(
+        ROOT / ".env", ("bedrock-runtime",)
+    )
+
+    authentication = environment["providers"]["bedrock-runtime"]["authentication"]
+    assert authentication["authentication_mode"] == "aws-credential-chain"
+    assert authentication["has_credentials"] is True
+    assert authentication["bedrock_api_key_configured"] is False
+
+
+def test_ada_semantic_wrapper_uses_dotenv_and_all_frameworks(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    spec = importlib.util.spec_from_file_location(
+        "ada_semantic_matrix", SCRIPTS / "run_ada_semantic_matrix.py"
+    )
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    dotenv = tmp_path / ".env"
+    dotenv.write_text(
+        "AGENTIC_SYSTEMS_PROVIDER=bedrock-runtime\n"
+        "RUN_SEMANTIC_MATRIX_LIVE=1\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("AGENTIC_SYSTEMS_PROVIDER", "openai-runtime")
+
+    module._load_dotenv(dotenv)
+
+    assert module.FRAMEWORKS == (
+        "native",
+        "langgraph",
+        "openai-agents",
+        "strands",
+    )
+    assert module._enabled("RUN_SEMANTIC_MATRIX_LIVE") is True
+    assert module.os.environ["AGENTIC_SYSTEMS_PROVIDER"] == "bedrock-runtime"

@@ -46,6 +46,11 @@ STUDIO_EXPORTS = (
     "notebooks",
     "docs",
 )
+VALIDATION_EXPORTS = (
+    "run_ada_semantic_matrix.py",
+    "run_semantic_matrix.py",
+    "semantic_e2e_application.py",
+)
 FRAMEWORKS = {"native", "langgraph", "openai-agents", "strands"}
 
 
@@ -279,6 +284,7 @@ def _readme(certification: dict[str, object], provenance: dict[str, object]) -> 
         - `artifacts/`: wheel y sdist certificados.
         - `studio/`: un solo sistema agéntico conversacional, directo y Streamlit.
         - `tutorials/`: los 21 notebooks canónicos; no hay duplicado CLI.
+        - `validation/`: matriz semántica E2E ejecutable desde el wheel incluido.
         - `evidence/`: matriz primaria 20/20 y ruta Bedrock IAM 4/4.
         - `.env.example`: contrato único para provider, framework y modelo.
         - `verify_bundle.py`: verificación offline de todos los checksums.
@@ -310,9 +316,17 @@ def _readme(certification: dict[str, object], provenance: dict[str, object]) -> 
 
         Después copia `.env.example` a `.env`, elige provider/framework y abre:
 
-        1. `studio/notebooks/00_conversational_system.ipynb` para ejecutar el
+        1. Ejecuta la matriz semántica independiente:
+
+               python validation/run_ada_semantic_matrix.py
+
+           El provider se toma de `.env`; el gate ejecuta sus cuatro frameworks,
+           valida cada respuesta determinísticamente y mediante judge, y escribe
+           `outputs/<provider>-semantic-attestation.json` y
+           `outputs/<provider>-semantic-review.md`.
+        2. `studio/notebooks/00_conversational_system.ipynb` para ejecutar el
            sistema sin aplicación.
-        2. `studio/notebooks/01_launch_studio.ipynb` para el mismo sistema mediante
+        3. `studio/notebooks/01_launch_studio.ipynb` para el mismo sistema mediante
            Streamlit y el proxy de JupyterLab/ADA.
 
         Para Bedrock IAM deja `AWS_BEARER_TOKEN_BEDROCK` vacío: boto3 hereda el
@@ -417,6 +431,8 @@ def build_bundle(
         _copy(EVIDENCE, bundle / "evidence")
         for relative in STUDIO_EXPORTS:
             _copy(STUDIO / relative, bundle / "studio" / relative)
+        for filename in VALIDATION_EXPORTS:
+            _copy(ROOT / "scripts" / filename, bundle / "validation" / filename)
         _copy(STUDIO / ".env.example", bundle / ".env.example")
 
         notebooks = sorted((bundle / "tutorials").rglob("*.ipynb"))
@@ -452,6 +468,16 @@ def build_bundle(
             ],
             "frameworks": ["native", "langgraph", "openai-agents", "strands"],
             "studio": "one-conversational-agentic-system",
+            "semantic_gate": {
+                "entrypoint": "validation/run_ada_semantic_matrix.py",
+                "configuration_source": ".env",
+                "frameworks": sorted(FRAMEWORKS),
+                "model_provider_episodes": 16,
+                "outputs": [
+                    "outputs/<provider>-semantic-attestation.json",
+                    "outputs/<provider>-semantic-review.md",
+                ],
+            },
             "tutorial_notebooks": 21,
             "cli_tutorials": 0,
         }

@@ -106,18 +106,24 @@ def _environment(dotenv: Path, providers: tuple[str, ...]) -> dict[str, Any]:
         provider: toolkit.runtime(provider=provider).describe()
         for provider in providers
     }
+    provider_rows: dict[str, dict[str, Any]] = {}
+    for provider in providers:
+        row: dict[str, Any] = {
+            "model": _model(provider),
+            "runtime": runtime_descriptions[provider],
+        }
+        if provider == "bedrock-runtime":
+            row["authentication"] = toolkit.boto3_session_snapshot(
+                region_name=str(runtime_descriptions[provider].get("region") or "")
+                or None
+            )
+        provider_rows[provider] = row
     return {
         "dotenv": str(dotenv.resolve()) if dotenv.exists() else None,
         "dotenv_loaded": dotenv.exists(),
         "platform": platform.platform(),
         "python": platform.python_version(),
-        "providers": {
-            provider: {
-                "model": _model(provider),
-                "runtime": runtime_descriptions[provider],
-            }
-            for provider in providers
-        },
+        "providers": provider_rows,
     }
 
 

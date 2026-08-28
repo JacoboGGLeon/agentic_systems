@@ -44,6 +44,17 @@ def test_ada_bundle_is_reproducible_certified_and_offline(tmp_path: Path):
         assert root + "studio/app.py" in names
         assert root + "studio/notebooks/00_conversational_system.ipynb" in names
         assert root + "studio/notebooks/01_launch_studio.ipynb" in names
+        assert root + "validation/run_ada_semantic_matrix.py" in names
+        assert root + "validation/run_semantic_matrix.py" in names
+        assert root + "validation/semantic_e2e_application.py" in names
+        assert manifest["semantic_gate"]["configuration_source"] == ".env"
+        assert manifest["semantic_gate"]["frameworks"] == [
+            "langgraph",
+            "native",
+            "openai-agents",
+            "strands",
+        ]
+        assert manifest["semantic_gate"]["model_provider_episodes"] == 16
         assert root + "evidence/bedrock-iam-attestation.json" in names
         assert root + "evidence/vllm-attestation.json" in names
         assert root + "evidence/local-semantic-attestation.json" in names
