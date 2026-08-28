@@ -340,6 +340,53 @@ def test_openai_provider_repairs_missing_required_tool_sync_and_async():
     )
 
 
+def test_openai_provider_recovers_a_failed_tool_call_sync_and_async():
+    runtime = build_runtime()
+    agent = build_agent(runtime)
+    agent.contract = AgentContract(
+        must_call=["add"],
+        completion="when_required_tools_satisfied",
+    )
+
+    def responses():
+        return [
+            FakeResponse(
+                FakeMessage(tool_calls=[FakeToolCall("add", '{"input": "invalid"}')])
+            ),
+            FakeResponse(
+                FakeMessage(tool_calls=[FakeToolCall("add", '{"a": 20, "b": 22}')])
+            ),
+            FakeResponse(FakeMessage(content="The verified result is 42.")),
+        ]
+
+    policy = RunPolicy(
+        max_turns=3,
+        max_tool_calls=2,
+        repair=True,
+        tool_choice="add",
+    )
+    sync_result = OpenAIRuntimeProvider(
+        SimpleNamespace(_runtime=runtime), client=FakeClient(responses())
+    ).run(agent, "sum", policy, mode="eval")
+
+    assert sync_result.ok is True
+    assert [event.ok for event in sync_result.tool_events] == [False, True]
+    assert sync_result.trace()["recovered_tool_error_count"] == 1
+    sync_result.check_invariants().raise_if_failed()
+
+    async_result = asyncio.run(
+        OpenAIRuntimeProvider(
+            SimpleNamespace(_runtime=runtime),
+            async_client=FakeAsyncClient(FakeClient(responses())),
+        ).arun(agent, "sum", policy, mode="eval")
+    )
+
+    assert async_result.ok is True
+    assert [event.ok for event in async_result.tool_events] == [False, True]
+    assert async_result.trace()["recovered_tool_error_count"] == 1
+    async_result.check_invariants().raise_if_failed()
+
+
 def test_openai_provider_aliases_namespaced_tools_without_public_identity_loss():
     runtime = ToolRegistryRuntime(model_id="runtime-model")
 

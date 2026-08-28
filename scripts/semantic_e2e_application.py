@@ -679,11 +679,12 @@ def build_semantic_cell(
             contract=judge_contract,
             output=None,
             policy=toolkit.RunPolicy(
-                max_turns=2,
-                max_tool_calls=1,
+                max_turns=3,
+                max_tool_calls=2,
                 max_tokens=700,
                 temperature=0.0,
                 tool_choice="record_semantic_judgment",
+                repair=True,
             ),
         )
         judge = AuditedJudge(judge_agent)

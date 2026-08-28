@@ -171,6 +171,13 @@ def test_model_judge_uses_one_closed_failed_criteria_list() -> None:
     assert failed["criteria"]["no_technical_noise"] == 0.0
     assert failed["criteria"]["evidence_correctness"] == 1.0
 
+    cell = module.build_semantic_cell(
+        "openai-runtime", "native", model="gpt-4.1-mini"
+    )
+    assert cell.judge.agent.policy.max_tool_calls == 2
+    assert cell.judge.agent.policy.max_turns == 3
+    assert cell.judge.agent.policy.repair is True
+
 
 def test_attestation_binds_external_gate_assets_by_hash() -> None:
     source = (SCRIPTS / "run_semantic_matrix.py").read_text(encoding="utf-8")

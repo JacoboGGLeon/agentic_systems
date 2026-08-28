@@ -328,7 +328,7 @@ def _run_chat_loop(
                 provider_call_id=getattr(tc, "id", None),
             )
             tool_events.append(result["event"])
-            ok = ok and result["event"].ok
+            ok = _tool_events_ok(tool_events)
             messages.append(
                 {
                     "role": "tool",
@@ -469,7 +469,7 @@ async def _run_chat_loop_async(
                 provider_call_id=getattr(tc, "id", None),
             )
             tool_events.append(result["event"])
-            ok = ok and result["event"].ok
+            ok = _tool_events_ok(tool_events)
             messages.append(
                 {
                     "role": "tool",
@@ -498,6 +498,19 @@ async def _run_chat_loop_async(
 
 def _tool_budget_exhausted(limit: int | None, executed: int) -> bool:
     return isinstance(limit, int) and executed >= limit
+
+
+def _tool_events_ok(tool_events: list[ToolEvent]) -> bool:
+    """Return whether every failed Tool call has a later successful recovery."""
+
+    return all(
+        event.ok
+        or any(
+            later.name == event.name and later.ok
+            for later in tool_events[index + 1 :]
+        )
+        for index, event in enumerate(tool_events)
+    )
 
 
 def _authorize_tool_calls(
