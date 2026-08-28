@@ -743,40 +743,42 @@ def _run_judge(
 
 
 def _judge_candidate_view(result: RunResult) -> dict[str, Any]:
-    """Project complete lineage without redundant presentation/raw payloads."""
+    """Project complete lineage once, without presentation or recursive duplication."""
 
-    def project(node: dict[str, Any]) -> dict[str, Any]:
-        children = [
-            project(child)
-            for child in node.get("children", [])
-            if isinstance(child, dict)
+    executions: list[dict[str, Any]] = []
+    for node in result.walk():
+        normalized = node.normalized()
+        has_children = bool(node.children)
+        tools = [
+            {
+                "name": tool.get("name"),
+                "ok": tool.get("ok"),
+                "input": tool.get("input"),
+                "output": None if has_children else tool.get("output"),
+                "error": tool.get("error"),
+            }
+            for tool in normalized.get("tools", [])
+            if isinstance(tool, dict)
         ]
-        tools = []
-        for tool in node.get("tools", []):
-            if not isinstance(tool, dict):
-                continue
-            tools.append(
-                {
-                    "name": tool.get("name"),
-                    "ok": tool.get("ok"),
-                    "input": tool.get("input"),
-                    "output": None if children else tool.get("output"),
-                    "error": tool.get("error"),
-                }
-            )
-        return {
-            "ok": node.get("ok"),
-            "execution": node.get("execution"),
-            "runtime": node.get("runtime"),
-            "answer": {"text": (node.get("answer") or {}).get("text")},
-            "tools": tools,
-            "usage": node.get("usage"),
-            "validation": node.get("validation"),
-            "errors": node.get("errors"),
-            "children": children,
-        }
+        executions.append(
+            {
+                "execution": normalized.get("execution"),
+                "agent": node.meta.get("agent_name"),
+                "runtime": normalized.get("runtime"),
+                "answer": {"text": (normalized.get("answer") or {}).get("text")},
+                "tools": tools,
+                "validation": normalized.get("validation"),
+                "errors": normalized.get("errors"),
+            }
+        )
 
-    return project(result.normalized())
+    root = executions[0] if executions else {}
+    return {
+        "ok": result.ok,
+        "runtime": root.get("runtime"),
+        "answer": root.get("answer"),
+        "executions": executions,
+    }
 
 
 def _judge_payload(judged: Any) -> dict[str, Any]:

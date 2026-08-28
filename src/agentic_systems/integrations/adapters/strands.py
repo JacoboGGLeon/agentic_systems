@@ -8,6 +8,9 @@ import os
 from collections.abc import Mapping
 from typing import Any, cast, get_args, get_type_hints
 
+from pydantic import ConfigDict as _ConfigDict
+from pydantic import create_model as _create_model
+
 from ...contracts import RunPolicy
 from ...engines.names import (
     BEDROCK_RUNTIME_ENGINE,
@@ -623,25 +626,44 @@ def _strands_tool(tool: Any, native_name: str | None = None) -> Any:
 
     from strands import tool as strands_tool
 
-    if tool.input_schema is not None:
-        schema = tool.input_schema.model_json_schema()
-    else:
-        parameters = list(inspect.signature(function).parameters.values())
-        schema = {
-            "type": "object",
-            "properties": {parameter.name: {} for parameter in parameters},
-            "required": [
-                parameter.name
-                for parameter in parameters
-                if parameter.default is inspect.Signature.empty
-            ],
-        }
+    schema = _tool_input_json_schema(tool, function)
     return cast(Any, strands_tool)(
         function,
         name=native_name or tool.name,
         description=tool.description or None,
         inputSchema=schema,
     )
+
+
+def _tool_input_json_schema(tool: Any, function: Any) -> dict[str, Any]:
+    """Build the same typed, closed Tool schema for every Strands provider."""
+
+    if tool.input_schema is not None:
+        return cast(dict[str, Any], tool.input_schema.model_json_schema())
+
+    signature = inspect.signature(function)
+    type_hints = get_type_hints(function)
+    fields: dict[str, tuple[Any, Any]] = {}
+    for name, parameter in signature.parameters.items():
+        if parameter.kind in {
+            inspect.Parameter.VAR_POSITIONAL,
+            inspect.Parameter.VAR_KEYWORD,
+        }:
+            raise TypeError(
+                f"Tool '{tool.name}' cannot use *args or **kwargs. "
+                "Use explicit typed parameters so a JSON schema can be generated."
+            )
+        annotation = type_hints.get(name, Any)
+        default = ... if parameter.default is inspect.Signature.empty else parameter.default
+        fields[name] = (annotation, default)
+
+    model_name = "".join(part.capitalize() for part in tool.name.split("_")) + "ToolInput"
+    input_model = _create_model(
+        model_name,
+        __config__=_ConfigDict(extra="forbid", arbitrary_types_allowed=True),
+        **fields,
+    )
+    return cast(dict[str, Any], input_model.model_json_schema())
 
 
 def _configure_model(model: Any, policy: RunPolicy, mode: str) -> None:

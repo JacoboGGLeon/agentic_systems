@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import json
 import re
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
@@ -122,26 +122,30 @@ class JudgeDecision(BaseModel):
     description="Record one typed semantic judgment after reviewing all evidence.",
 )
 def record_semantic_judgment(
-    request_fulfillment: bool,
-    evidence_correctness: bool,
-    clarity: bool,
-    no_technical_noise: bool,
-    no_unsupported_claims: bool,
+    failed_criteria: list[
+        Literal[
+            "request_fulfillment",
+            "evidence_correctness",
+            "clarity",
+            "no_technical_noise",
+            "no_unsupported_claims",
+        ]
+    ],
     rationale: str,
 ) -> dict[str, Any]:
-    """Record pass/fail per criterion and project it onto the public 0..1 rubric.
+    """Record failed criteria and project them onto the public 0..1 rubric.
 
-    Small models are substantially more reliable at satisfying a boolean Tool schema
-    than at choosing calibrated floating-point scores.  The public evaluation contract
-    remains provider-agnostic and numerical: ``False`` maps to 0.0 and ``True`` to 1.0.
+    A closed list avoids polarity ambiguity in negatively named criteria and gives every
+    framework the same small enum schema.  The public evaluation contract remains
+    provider-agnostic and numerical: listed criteria map to 0.0 and all others to 1.0.
     """
 
+    failed = set(failed_criteria)
     criteria = JudgeCriteria(
-        request_fulfillment=float(request_fulfillment),
-        evidence_correctness=float(evidence_correctness),
-        clarity=float(clarity),
-        no_technical_noise=float(no_technical_noise),
-        no_unsupported_claims=float(no_unsupported_claims),
+        **{
+            name: 0.0 if name in failed else 1.0
+            for name in JudgeCriteria.model_fields
+        }
     )
     decision = JudgeDecision(
         score=sum(criteria.model_dump().values()) / 5,
@@ -165,7 +169,10 @@ def multiply(
     result = a * b
     return {
         "result": result,
-        "answer": f"{a} multiplied by {b} is {result}.",
+        "answer": (
+            f"Verified product: {result}. Continue with the caller's requested final "
+            "presentation instead of copying this evidence sentence."
+        ),
     }
 
 
@@ -205,6 +212,25 @@ def clarify_scope(question: str) -> dict[str, Any]:
 
 def _candidate_tools(candidate: dict[str, Any]) -> list[dict[str, Any]]:
     tools: list[dict[str, Any]] = []
+
+    executions = candidate.get("executions")
+    if isinstance(executions, list):
+        for execution in executions:
+            if not isinstance(execution, dict):
+                continue
+            runtime = (
+                execution.get("runtime")
+                if isinstance(execution.get("runtime"), dict)
+                else {}
+            )
+            if runtime.get("engine") == "agentic-system":
+                continue
+            tools.extend(
+                item
+                for item in execution.get("tools", [])
+                if isinstance(item, dict)
+            )
+        return tools
 
     def visit(node: Any) -> None:
         if not isinstance(node, dict):
@@ -375,14 +401,10 @@ def _case_input(provider: str, name: str) -> Any:
                 "the verified result in natural language."
             ),
             "poetic_calculation": (
-                "Calculate 17 × 19 using exactly one specialist. Then turn the verified "
-                "result into a short poem of exactly three non-empty lines. Your entire "
-                "final answer must be only those three lines: no preface, explanation, "
-                "heading, blank paragraph, or epilogue. Line 1 must "
-                "contain imagery and no digits. Line 2 must be exactly 323 with no other "
-                "characters or words. Line 3 must contain imagery and no digits. Never "
-                "spell, paraphrase, hyphenate, repeat, or otherwise "
-                "transform that number. Do not expose JSON or implementation details."
+                "Use exactly one specialist to calculate 17 × 19. After receiving the "
+                "verified result, answer only with a three-line poem: an image in the "
+                "first line, only the verified digits in the middle line, and an image "
+                "in the last line. Do not add a heading or explanation."
             ),
             "text_analysis": (
                 f"Analyze this exact text: {TEXT_SAMPLE!r}. Delegate to exactly one "
@@ -644,9 +666,10 @@ def build_semantic_cell(
                 "A parent delegation may summarize or omit output when its child lineage "
                 "contains the authoritative specialist and Tool evidence. "
                 "Return one typed semantic judgment by calling the "
-                "record_semantic_judgment Tool exactly once. Mark every criterion true "
-                "only when it passes and false when it fails. A claim unsupported by "
-                "Tool evidence must fail evidence_correctness and "
+                "record_semantic_judgment Tool exactly once. Put only criteria that "
+                "actually fail in failed_criteria; use an empty list when every criterion "
+                "passes. A claim unsupported by Tool evidence must fail "
+                "evidence_correctness and "
                 "no_unsupported_claims. no_unsupported_claims concerns factual claims "
                 "only; never fail it for formatting, line count, length, structure, "
                 "wording, or artistic style. Those requirements belong only to "

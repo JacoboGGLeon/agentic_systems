@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import builtins
 from types import SimpleNamespace
+from typing import Literal
 
 import pytest
 from pydantic import BaseModel
@@ -175,6 +176,24 @@ def test_model_tool_and_json_contracts():
         )
     )
     assert native_tool.tool_name == "schema_tool"
+
+    def typed_function(
+        failed_criteria: list[Literal["clarity", "no_technical_noise"]],
+        accepted: bool,
+    ):
+        return failed_criteria, accepted
+
+    inferred = sa._tool_input_json_schema(
+        SimpleNamespace(name="typed_tool", input_schema=None),
+        typed_function,
+    )
+    assert inferred["additionalProperties"] is False
+    assert inferred["properties"]["accepted"]["type"] == "boolean"
+    assert inferred["properties"]["failed_criteria"]["type"] == "array"
+    assert inferred["properties"]["failed_criteria"]["items"]["enum"] == [
+        "clarity",
+        "no_technical_noise",
+    ]
     assert sa._jsonable(3) == 3
     assert oa._output_data({"value": 1}, "ignored") == {"value": 1}
     assert (

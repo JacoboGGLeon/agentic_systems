@@ -7,6 +7,7 @@ from pydantic import BaseModel, ConfigDict
 
 import agentic_systems as toolkit
 from agentic_systems.core.scheduler import execute_sync
+from agentic_systems.evals import _judge_candidate_view
 from agentic_systems.results import RunResult, ToolEvent
 
 
@@ -88,6 +89,57 @@ def test_system_entrypoint_delegation_preserves_skill_agent_hierarchy() -> None:
     assert any(
         step.kind == "tool" and step.source == "multiply" for step in lineage.steps
     )
+
+
+def test_judge_candidate_view_flattens_complete_lineage_without_duplication() -> None:
+    child = RunResult(
+        text="Verified product: 323.",
+        data={"result": 323},
+        engine="python-runtime",
+        model="python-runtime",
+        mode="eval",
+        parent_execution_id="root-execution",
+        tool_events=[
+            ToolEvent(
+                id="multiply-call",
+                name="multiply",
+                ok=True,
+                input={"a": 17, "b": 19},
+                output={"result": 323},
+            )
+        ],
+        meta={"agent_name": "calculator_agent", "framework": "native"},
+    )
+    root = RunResult(
+        text="The verified result is 323.",
+        data={"answer": "The verified result is 323."},
+        engine="openai-runtime",
+        model="test-model",
+        mode="eval",
+        execution_id="root-execution",
+        children=[child],
+        tool_events=[
+            ToolEvent(
+                id="delegate-call",
+                name="delegate_calculator",
+                ok=True,
+                input={"a": 17, "b": 19},
+                output={"answer": "Verified product: 323."},
+            )
+        ],
+        meta={"agent_name": "orchestrator_agent", "framework": "native"},
+    )
+
+    candidate = _judge_candidate_view(root)
+
+    assert "children" not in candidate
+    assert "usage" not in candidate
+    assert [item["agent"] for item in candidate["executions"]] == [
+        "orchestrator_agent",
+        "calculator_agent",
+    ]
+    assert candidate["executions"][0]["tools"][0]["output"] is None
+    assert candidate["executions"][1]["tools"][0]["output"] == {"result": 323}
 
 
 def test_agent_as_tool_avoids_cross_thread_single_lane_deadlock() -> None:

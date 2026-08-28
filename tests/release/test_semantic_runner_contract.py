@@ -107,6 +107,43 @@ def test_poem_shape_is_semantic_not_exact_text() -> None:
     assert openai_poem["expected"]["output_style"] == "short-poem-exactly-three-lines"
 
 
+def test_model_judge_uses_one_closed_failed_criteria_list() -> None:
+    spec = importlib.util.spec_from_file_location(
+        "semantic_e2e_judge_contract", SCRIPTS / "semantic_e2e_application.py"
+    )
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+
+    from agentic_systems.integrations.adapters import strands
+
+    schema = strands._tool_input_json_schema(
+        module.record_semantic_judgment,
+        module.record_semantic_judgment.function,
+    )
+    properties = schema["properties"]
+    assert set(properties) == {"failed_criteria", "rationale"}
+    assert properties["failed_criteria"]["type"] == "array"
+    assert set(properties["failed_criteria"]["items"]["enum"]) == set(
+        module.JudgeCriteria.model_fields
+    )
+
+    passed = module.record_semantic_judgment.function(
+        failed_criteria=[],
+        rationale="All declared criteria passed.",
+    )
+    failed = module.record_semantic_judgment.function(
+        failed_criteria=["clarity", "no_technical_noise"],
+        rationale="The answer exposed an implementation envelope.",
+    )
+    assert passed["score"] == 1.0
+    assert set(passed["criteria"].values()) == {1.0}
+    assert failed["criteria"]["clarity"] == 0.0
+    assert failed["criteria"]["no_technical_noise"] == 0.0
+    assert failed["criteria"]["evidence_correctness"] == 1.0
+
+
 def test_attestation_binds_external_gate_assets_by_hash() -> None:
     source = (SCRIPTS / "run_semantic_matrix.py").read_text(encoding="utf-8")
 
