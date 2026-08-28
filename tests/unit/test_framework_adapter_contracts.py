@@ -702,6 +702,21 @@ def test_strands_adapter_helpers_cover_results_tools_and_failures():
         {"name": "text", "reason": "max_tool_calls_exhausted"}
     ]
 
+    contract_complete_events = [
+        *two_tool_events[:3],
+        {"messageStop": {"stopReason": "tool_use"}},
+    ]
+    sa._reset_tool_budget(budget_model, 2)
+    filtered_complete = sa._limit_tool_use_events(
+        budget_model,
+        contract_complete_events,
+        suppress_tools=True,
+    )
+    assert filtered_complete == [{"messageStop": {"stopReason": "end_turn"}}]
+    assert budget_model._agentic_systems_rejected_tool_calls == [
+        {"name": "calculator", "reason": "contract_satisfied"}
+    ]
+
     model_agent = SimpleNamespace(
         engine="openai-runtime",
         model="model",

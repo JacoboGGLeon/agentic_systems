@@ -143,7 +143,7 @@ def test_deterministic_multiply_exposes_only_public_evidence() -> None:
     )
 
 
-def test_model_judge_uses_one_closed_failed_criteria_list() -> None:
+def test_model_judge_uses_one_closed_failed_criteria_list(monkeypatch) -> None:
     spec = importlib.util.spec_from_file_location(
         "semantic_e2e_judge_contract", SCRIPTS / "semantic_e2e_application.py"
     )
@@ -164,6 +164,8 @@ def test_model_judge_uses_one_closed_failed_criteria_list() -> None:
     assert set(properties["failed_criteria"]["items"]["enum"]) == set(
         module.JudgeCriteria.model_fields
     )
+    assert properties["rationale"]["minLength"] == 1
+    assert properties["rationale"]["maxLength"] == 800
 
     passed = module.record_semantic_judgment.function(
         failed_criteria=[],
@@ -179,12 +181,14 @@ def test_model_judge_uses_one_closed_failed_criteria_list() -> None:
     assert failed["criteria"]["no_technical_noise"] == 0.0
     assert failed["criteria"]["evidence_correctness"] == 1.0
 
+    monkeypatch.setenv("AGENTIC_SYSTEMS_SEMANTIC_JUDGE_MAX_TOKENS", "900")
     cell = module.build_semantic_cell(
         "openai-runtime", "native", model="gpt-4.1-mini"
     )
     assert cell.judge.agent.policy.max_tool_calls == 2
     assert cell.judge.agent.policy.max_turns == 3
     assert cell.judge.agent.policy.repair is True
+    assert cell.judge.agent.policy.max_tokens == 900
 
 
 def test_attestation_binds_external_gate_assets_by_hash() -> None:

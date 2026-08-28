@@ -180,6 +180,7 @@ def _materialize_model(agent: Any, engine: Any) -> Any:
                 tool_choice: Any = None,
                 **kwargs: Any,
             ) -> Any:
+                contract_satisfied = _contract_tools_satisfied(agent, messages)
                 events = [
                     event
                     async for event in super().stream(
@@ -192,7 +193,9 @@ def _materialize_model(agent: Any, engine: Any) -> Any:
                         **kwargs,
                     )
                 ]
-                authorized_events = _limit_tool_use_events(self, events)
+                authorized_events = _limit_tool_use_events(
+                    self, events, suppress_tools=contract_satisfied
+                )
                 # Record before yielding: Strands may stop consuming immediately
                 # after ToolUse, but the next turn must still see exhausted budget.
                 _record_emitted_tool_calls(
@@ -262,6 +265,7 @@ def _materialize_model(agent: Any, engine: Any) -> Any:
                 tool_choice: Any = None,
                 **kwargs: Any,
             ) -> Any:
+                contract_satisfied = _contract_tools_satisfied(agent, messages)
                 tool_choice = _budgeted_continuation_tool_choice(
                     self, agent, messages, tool_choice
                 )
@@ -276,7 +280,11 @@ def _materialize_model(agent: Any, engine: Any) -> Any:
                     )
                 ]
                 normalized_events = _normalize_textual_tool_events(events, tool_specs)
-                normalized_events = _limit_tool_use_events(self, normalized_events)
+                normalized_events = _limit_tool_use_events(
+                    self,
+                    normalized_events,
+                    suppress_tools=contract_satisfied,
+                )
                 _record_emitted_tool_calls(
                     self,
                     sum(_stream_tool_use_count(event) for event in normalized_events),
@@ -360,6 +368,14 @@ def _continuation_tool_choice(
     identical for Bedrock and OpenAI-compatible model boundaries.
     """
 
+    if _contract_tools_satisfied(agent, messages):
+        return {"auto": {}}
+    return tool_choice
+
+
+def _contract_tools_satisfied(agent: Any, messages: Any) -> bool:
+    """Detect successful required Tool evidence across Strands projections."""
+
     contract = getattr(agent, "contract", None)
     completion = getattr(contract, "completion", None)
     required = set(getattr(contract, "must_call", ()) or ())
@@ -367,7 +383,7 @@ def _continuation_tool_choice(
         "when_contract_satisfied",
         "when_required_tools_satisfied",
     }:
-        return tool_choice
+        return False
 
     aliases = tool_name_aliases(agent.available_tools())
     public_messages = [_jsonable(message) for message in messages or ()]
@@ -375,17 +391,15 @@ def _continuation_tool_choice(
         event.name for event in _tool_events(public_messages, aliases) if event.ok
     }
     if required.issubset(successful):
-        return {"auto": {}}
+        return True
     available = {str(getattr(tool, "name", "")) for tool in agent.available_tools()}
-    if (
+    # Some Strands model boundaries pass only the latest ToolResult to the
+    # continuation turn. With one declared Tool its identity is unambiguous.
+    return (
         len(required) == 1
         and available == required
         and _has_successful_tool_result(public_messages)
-    ):
-        # Some Strands model boundaries pass only the latest ToolResult to the
-        # continuation turn. With one declared Tool its identity is unambiguous.
-        return {"auto": {}}
-    return tool_choice
+    )
 
 
 def _budgeted_continuation_tool_choice(
@@ -443,16 +457,22 @@ def _reset_tool_budget(model: Any, max_tool_calls: int | None) -> None:
         return
 
 
-def _limit_tool_use_events(model: Any, events: list[Any]) -> list[Any]:
-    """Keep only ToolUse blocks authorized by the current execution budget."""
+def _limit_tool_use_events(
+    model: Any,
+    events: list[Any],
+    *,
+    suppress_tools: bool = False,
+) -> list[Any]:
+    """Keep only ToolUse blocks authorized by budget and contract completion."""
 
     limit = getattr(model, "_agentic_systems_max_tool_calls", None)
     if not isinstance(limit, int):
         return events
     emitted = int(getattr(model, "_agentic_systems_emitted_tool_calls", 0) or 0)
-    remaining = max(0, limit - emitted)
+    remaining = 0 if suppress_tools else max(0, limit - emitted)
     accepted = 0
     suppress_block = False
+    rejected_in_batch = False
     filtered: list[Any] = []
     rejected = list(getattr(model, "_agentic_systems_rejected_tool_calls", ()) or ())
     for event in events:
@@ -466,9 +486,14 @@ def _limit_tool_use_events(model: Any, events: list[Any]) -> list[Any]:
                 rejected.append(
                     {
                         "name": _stream_tool_use_name(public),
-                        "reason": "max_tool_calls_exhausted",
+                        "reason": (
+                            "contract_satisfied"
+                            if suppress_tools
+                            else "max_tool_calls_exhausted"
+                        ),
                     }
                 )
+                rejected_in_batch = True
                 suppress_block = True
                 continue
             accepted += 1
@@ -480,6 +505,17 @@ def _limit_tool_use_events(model: Any, events: list[Any]) -> list[Any]:
         if suppress_block:
             if isinstance(public, Mapping) and "contentBlockStop" in public:
                 suppress_block = False
+            continue
+        if (
+            rejected_in_batch
+            and accepted == 0
+            and isinstance(public, Mapping)
+            and isinstance(public.get("messageStop"), Mapping)
+        ):
+            message_stop = dict(public["messageStop"])
+            if message_stop.get("stopReason") == "tool_use":
+                message_stop["stopReason"] = "end_turn"
+            filtered.append({"messageStop": message_stop})
             continue
         filtered.append(event)
     try:

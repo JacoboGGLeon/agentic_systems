@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import json
+import os
 import re
 from typing import Any, Literal
 
@@ -119,9 +120,25 @@ class JudgeDecision(BaseModel):
     rationale: str = Field(validation_alias=AliasChoices("rationale", "comment"))
 
 
+class SemanticJudgmentInput(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    failed_criteria: list[
+        Literal[
+            "request_fulfillment",
+            "evidence_correctness",
+            "clarity",
+            "no_technical_noise",
+            "no_unsupported_claims",
+        ]
+    ]
+    rationale: str = Field(min_length=1, max_length=800)
+
+
 @toolkit.tool(
     name="record_semantic_judgment",
     description="Record one typed semantic judgment after reviewing all evidence.",
+    input=SemanticJudgmentInput,
 )
 def record_semantic_judgment(
     failed_criteria: list[
@@ -377,6 +394,20 @@ class AuditedJudge:
     def run(self, request: dict[str, Any], *, mode: str = "eval") -> toolkit.RunResult:
         self.last_result = self.agent.run(request, mode=mode)
         return self.last_result
+
+
+def semantic_judge_max_tokens() -> int:
+    """Read the canonical judge budget from environment with strict validation."""
+
+    name = "AGENTIC_SYSTEMS_SEMANTIC_JUDGE_MAX_TOKENS"
+    raw = os.getenv(name, "1400")
+    try:
+        value = int(raw)
+    except ValueError as exc:
+        raise ValueError(f"{name} must be an integer, got {raw!r}.") from exc
+    if value < 1:
+        raise ValueError(f"{name} must be at least 1, got {value}.")
+    return value
 
 
 @dataclass(frozen=True)
@@ -667,7 +698,9 @@ def build_semantic_cell(
                 "Return one typed semantic judgment by calling the "
                 "record_semantic_judgment Tool exactly once. Put only criteria that "
                 "actually fail in failed_criteria; use an empty list when every criterion "
-                "passes. A claim unsupported by Tool evidence must fail "
+                "passes. Keep rationale factual and under 80 words; call the Tool "
+                "immediately instead of drafting analysis. A claim unsupported by Tool "
+                "evidence must fail "
                 "evidence_correctness and "
                 "no_unsupported_claims. no_unsupported_claims concerns factual claims "
                 "only; never fail it for formatting, line count, length, structure, "
@@ -682,7 +715,7 @@ def build_semantic_cell(
             policy=toolkit.RunPolicy(
                 max_turns=3,
                 max_tool_calls=2,
-                max_tokens=700,
+                max_tokens=semantic_judge_max_tokens(),
                 temperature=0.0,
                 tool_choice="record_semantic_judgment",
                 repair=True,
