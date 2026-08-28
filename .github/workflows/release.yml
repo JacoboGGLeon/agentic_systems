@@ -7,6 +7,10 @@ on:
         description: Exact package version to publish (for example 2.1.0)
         required: true
         type: string
+      candidate_release_id:
+        description: Numeric ID of the draft release containing the certified assets
+        required: true
+        type: string
       wheel_sha256:
         description: SHA256 of the already-certified wheel
         required: true
@@ -41,6 +45,7 @@ jobs:
       EXPECTED_WHEEL_SHA256: ${{ inputs.wheel_sha256 }}
       EXPECTED_SDIST_SHA256: ${{ inputs.sdist_sha256 }}
       EXPECTED_ADA_SHA256: ${{ inputs.ada_sha256 }}
+      CANDIDATE_RELEASE_ID: ${{ inputs.candidate_release_id }}
       GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v5
@@ -53,11 +58,19 @@ jobs:
       - name: Download the immutable release candidate
         run: |
           mkdir candidate
-          gh release download "v${RELEASE_VERSION}" --dir candidate \
-            --pattern "agentic_systems-${RELEASE_VERSION}-py3-none-any.whl" \
-            --pattern "agentic_systems-${RELEASE_VERSION}.tar.gz" \
-            --pattern "agentic-systems-${RELEASE_VERSION}-ada-offline.zip" \
-            --pattern "SHA256SUMS-${RELEASE_VERSION}.txt"
+          release_json="$(gh api \
+            "/repos/${GITHUB_REPOSITORY}/releases/${CANDIDATE_RELEASE_ID}")"
+          for name in \
+            "agentic_systems-${RELEASE_VERSION}-py3-none-any.whl" \
+            "agentic_systems-${RELEASE_VERSION}.tar.gz" \
+            "agentic-systems-${RELEASE_VERSION}-ada-offline.zip" \
+            "SHA256SUMS-${RELEASE_VERSION}.txt"; do
+            asset_id="$(jq -r --arg name "$name" \
+              '.assets[] | select(.name == $name) | .id' <<<"$release_json")"
+            test -n "$asset_id"
+            gh api "/repos/${GITHUB_REPOSITORY}/releases/assets/${asset_id}" \
+              -H "Accept: application/octet-stream" > "candidate/$name"
+          done
       - name: Verify external artifact identity
         run: |
           wheel="candidate/agentic_systems-${RELEASE_VERSION}-py3-none-any.whl"
