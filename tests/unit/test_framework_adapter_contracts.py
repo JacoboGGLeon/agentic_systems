@@ -262,6 +262,54 @@ def test_openai_adapter_normalization_and_json_helpers():
     result = oa._normalize_result(agent, generic, "input", "default")
     assert result.tool_events[0].input == {"value": "bad"}
     assert result.usage == {"value": 1}
+
+    failed_call = type(
+        "ToolCallItem",
+        (),
+        {"raw_item": {"call_id": "failed", "name": "lookup", "arguments": "{}"}},
+    )()
+    failed_output = type(
+        "ToolCallOutputItem",
+        (),
+        {
+            "raw_item": {
+                "call_id": "failed",
+                "output": {
+                    "__agentic_systems_tool_result__": {
+                        "ok": False,
+                        "data": {},
+                        "error": {"code": "ValidationError", "message": "too long"},
+                    }
+                },
+            }
+        },
+    )()
+    recovered_call = type(
+        "ToolCallItem",
+        (),
+        {"raw_item": {"call_id": "recovered", "name": "lookup", "arguments": "{}"}},
+    )()
+    recovered_output = type(
+        "ToolCallOutputItem",
+        (),
+        {"raw_item": {"call_id": "recovered", "output": {"score": 1.0}}},
+    )()
+    recovered_native = SimpleNamespace(
+        last_agent=None,
+        final_output="certified",
+        raw_responses=[],
+        new_items=[failed_call, failed_output, recovered_call, recovered_output],
+        context_wrapper=None,
+        to_input_list=lambda: [],
+    )
+    recovered_result = oa._normalize_result(
+        agent, recovered_native, "input", "default"
+    )
+    assert recovered_result.ok is True
+    assert recovered_result.text == "certified"
+    assert recovered_result.trace()["recovered_tool_error_count"] == 1
+    assert recovered_result.trace()["unresolved_failed_tool_count"] == 0
+    assert recovered_result.errors[0]["resolved"] is True
     assert oa._usage(SimpleNamespace(context_wrapper=None)) == {}
     assert oa._failure(agent, "x", "eval", RuntimeError("boom")).ok is False
     assert oa._input_text({"x": 1}) == '{"x": 1}'

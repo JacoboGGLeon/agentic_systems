@@ -19,7 +19,7 @@ from .errors import is_retryable_error_payload
 from .engines.names import BEDROCK_RUNTIME_ENGINE
 from .final_answer import final_answer
 from .normalization import contains_leading_reasoning, project_public_text
-from .tools.events import ToolEvent
+from .tools.events import ToolEvent, classify_tool_failures
 from .usage import normalize_usage, usage_view
 
 TRACE_SCHEMA_VERSION = "agentic_systems.trace.v1"
@@ -49,25 +49,7 @@ def _contains_subset(actual: Any, expected: Any) -> bool:
 def _classify_tool_failures(
     tool_events: list[ToolEvent],
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
-    recovered: list[dict[str, Any]] = []
-    unresolved: list[dict[str, Any]] = []
-    for index, event in enumerate(tool_events):
-        if event.ok:
-            continue
-        payload = event.model_dump(mode="json")
-        recovery = next(
-            (
-                later
-                for later in tool_events[index + 1 :]
-                if later.name == event.name and later.ok
-            ),
-            None,
-        )
-        if recovery is None:
-            unresolved.append(payload)
-        else:
-            recovered.append({**payload, "recovered_by_tool_event_id": recovery.id})
-    return recovered, unresolved
+    return classify_tool_failures(tool_events)
 
 
 def _append_unique_error(errors: list[dict[str, Any]], error: dict[str, Any]) -> None:

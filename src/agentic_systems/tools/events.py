@@ -50,4 +50,30 @@ class ToolEvent(BaseModel):
         )
 
 
-__all__ = ["ToolEvent"]
+def classify_tool_failures(
+    tool_events: list[ToolEvent],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Classify failed calls by whether a later same-name call recovered them."""
+
+    recovered: list[dict[str, Any]] = []
+    unresolved: list[dict[str, Any]] = []
+    for index, event in enumerate(tool_events):
+        if event.ok:
+            continue
+        payload = event.model_dump(mode="json")
+        recovery = next(
+            (
+                later
+                for later in tool_events[index + 1 :]
+                if later.name == event.name and later.ok
+            ),
+            None,
+        )
+        if recovery is None:
+            unresolved.append(payload)
+        else:
+            recovered.append({**payload, "recovered_by_tool_event_id": recovery.id})
+    return recovered, unresolved
+
+
+__all__ = ["ToolEvent", "classify_tool_failures"]

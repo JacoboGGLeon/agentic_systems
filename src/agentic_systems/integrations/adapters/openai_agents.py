@@ -21,7 +21,7 @@ from ...engines.names import (
 from ...protocols import AsyncRunner, SyncRunner
 from ...registry import provider_capability
 from ...results import RunResult, public_answer_text
-from ...tools.events import ToolEvent
+from ...tools.events import ToolEvent, classify_tool_failures
 from ...usage import normalize_usage
 from .base import FrameworkAdapter, attach_native_result, effective_max_turns
 from .tools import (
@@ -341,7 +341,8 @@ def _normalize_result(
         _jsonable(item) for item in getattr(native_result, "raw_responses", ())
     ]
     events = _tool_events(native_result, aliases)
-    failed = [event for event in events if not event.ok]
+    _recovered, unresolved = classify_tool_failures(events)
+    failed = [ToolEvent.model_validate(item) for item in unresolved]
     if failed:
         failure_error = failed[0].error or {
             "code": "tool_execution_failed",
