@@ -12,16 +12,11 @@ from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
 import agentic_systems as toolkit
 from agentic_systems.providers import provider_profile
+from agentic_systems.registry import FRAMEWORK_NAMES, PROVIDER_NAMES
 
 
-PROVIDERS = (
-    "python-runtime",
-    "openai-runtime",
-    "ollama-runtime",
-    "bedrock-runtime",
-    "vllm-runtime",
-)
-FRAMEWORKS = ("native", "langgraph", "openai-agents", "strands")
+PROVIDERS = PROVIDER_NAMES
+FRAMEWORKS = FRAMEWORK_NAMES
 TEXT_SAMPLE = " Agentic   systems are reliable. "
 NORMALIZED_TEXT = "Agentic systems are reliable."
 
@@ -47,7 +42,9 @@ def states_verified_product(answer: str) -> bool:
         "trescientos veintitrés",
         "trescientos veintitres",
     )
-    separated_digits = re.search(r"(?<!\d)3(?:[\s,._-]*)2(?:[\s,._-]*)3(?!\d)", normalized)
+    separated_digits = re.search(
+        r"(?<!\d)3(?:[\s,._-]*)2(?:[\s,._-]*)3(?!\d)", normalized
+    )
     return any(form in normalized for form in accepted) or separated_digits is not None
 
 
@@ -161,10 +158,7 @@ def record_semantic_judgment(
 
     failed = set(failed_criteria)
     criteria = JudgeCriteria(
-        **{
-            name: 0.0 if name in failed else 1.0
-            for name in JudgeCriteria.model_fields
-        }
+        **{name: 0.0 if name in failed else 1.0 for name in JudgeCriteria.model_fields}
     )
     decision = JudgeDecision(
         score=sum(criteria.model_dump().values()) / 5,
@@ -240,9 +234,7 @@ def _candidate_tools(candidate: dict[str, Any]) -> list[dict[str, Any]]:
             if runtime.get("engine") == "agentic-system":
                 continue
             tools.extend(
-                item
-                for item in execution.get("tools", [])
-                if isinstance(item, dict)
+                item for item in execution.get("tools", []) if isinstance(item, dict)
             )
         return tools
 

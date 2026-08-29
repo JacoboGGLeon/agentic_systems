@@ -863,15 +863,20 @@ def _eval_reward(
 def _apply_expected_assertions(
     validation: ValidationResult, result: RunResult, expected: dict[str, Any]
 ) -> None:
-    if (
-        "text_contains" in expected
-        and str(expected["text_contains"]) not in result.text
-    ):
-        validation.add(
-            "expected_text_missing",
-            f"Expected text to contain {expected['text_contains']!r}.",
-            path="text",
+    if "text_contains" in expected:
+        raw_fragments = expected["text_contains"]
+        fragments = (
+            [raw_fragments] if isinstance(raw_fragments, str) else list(raw_fragments)
         )
+        missing = [
+            str(fragment) for fragment in fragments if str(fragment) not in result.text
+        ]
+        if missing:
+            validation.add(
+                "expected_text_missing",
+                f"Expected text to contain every declared fragment; missing {missing!r}.",
+                path="text",
+            )
     if "data_contains" in expected and not _contains_subset(
         result.data, expected["data_contains"]
     ):
@@ -917,6 +922,14 @@ def _apply_expected_assertions(
         event.name for node in tool_nodes for event in (node.tool_events or [])
     ]
     agent_path = [str(node.meta["agent_name"]) for node in execution_nodes]
+    execution_path = [
+        {
+            "provider": node.engine,
+            "framework": node.meta.get("framework_adapter")
+            or node.meta.get("framework"),
+        }
+        for node in nodes
+    ]
     if "allowed_tool_paths" in expected:
         allowed_tool_paths = [
             list(path)
@@ -943,6 +956,15 @@ def _apply_expected_assertions(
             "Observed Agent path differs from the declared semantic route.",
             path="lineage.agents",
             meta={"expected": expected["agent_path"], "actual": agent_path},
+        )
+    if "execution_path" in expected and not _contains_subset(
+        execution_path, expected["execution_path"]
+    ):
+        validation.add(
+            "execution_path_mismatch",
+            "Observed provider/framework lineage differs from the declared route.",
+            path="lineage.executions",
+            meta={"expected": expected["execution_path"], "actual": execution_path},
         )
     if expected.get("no_fallback") and any(
         node.meta.get("fallback_provider") for node in nodes

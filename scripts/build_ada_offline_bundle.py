@@ -13,6 +13,8 @@ import textwrap
 import zipfile
 from pathlib import Path
 
+from agentic_systems.registry import FRAMEWORK_NAMES, PROVIDER_NAMES
+
 try:
     import tomllib
 except ModuleNotFoundError:  # pragma: no cover - Python 3.10 only.
@@ -51,7 +53,7 @@ VALIDATION_EXPORTS = (
     "run_semantic_matrix.py",
     "semantic_e2e_application.py",
 )
-FRAMEWORKS = {"native", "langgraph", "openai-agents", "strands"}
+FRAMEWORKS = set(FRAMEWORK_NAMES)
 
 
 def sha256(path: Path) -> str:
@@ -75,8 +77,7 @@ def _validate_semantic_evidence(
 ) -> None:
     payload = _read_json(path)
     if (
-        payload.get("schema_version")
-        != "agentic_systems.semantic-attestation.v1"
+        payload.get("schema_version") != "agentic_systems.semantic-attestation.v1"
         or payload.get("commit_sha") != certification["commit_sha"]
         or payload.get("wheel_sha256") != certification["wheel_sha256"]
         or not payload.get("wheel_runtime_verified")
@@ -107,9 +108,7 @@ def _validate_semantic_evidence(
         .get(provider, {})
         .get("runtime", {})
     )
-    if runtime.get("selected_provider") != provider or runtime.get(
-        "fallback_provider"
-    ):
+    if runtime.get("selected_provider") != provider or runtime.get("fallback_provider"):
         raise ValueError(f"Semantic evidence used fallback: {provider}")
 
 
@@ -142,9 +141,7 @@ def _validate_authentication_evidence(
         for scenario in case.get("scenarios", []):
             details = scenario.get("details", {})
             if not scenario.get("ok") or details.get("fallback_provider"):
-                raise ValueError(
-                    f"Authentication evidence used fallback: {path.name}"
-                )
+                raise ValueError(f"Authentication evidence used fallback: {path.name}")
 
 
 def _git(*args: str) -> str:
@@ -459,14 +456,8 @@ def build_bundle(
                 "total": "24/24",
                 "no_fallback": True,
             },
-            "providers": [
-                "python-runtime",
-                "openai-runtime",
-                "ollama-runtime",
-                "bedrock-runtime",
-                "vllm-runtime",
-            ],
-            "frameworks": ["native", "langgraph", "openai-agents", "strands"],
+            "providers": list(PROVIDER_NAMES),
+            "frameworks": list(FRAMEWORK_NAMES),
             "studio": "one-conversational-agentic-system",
             "semantic_gate": {
                 "entrypoint": "validation/run_ada_semantic_matrix.py",

@@ -261,6 +261,10 @@ def test_tutorial_claims_match_current_product_contracts():
     assert 'framework_profile("strands")' in strands
     assert "streamable_http_client" in strands
     assert "stdio_client" in strands
+    assert "A2AAgent" in strands
+    assert "get_agent_card" in strands
+    assert 'agent_kwargs={"tools": [call_remote_echo]}' in strands
+    assert 'run_kwargs={"structured_output_model": PublicEvidence}' in strands
     assert "structured_output_model" in strands
     assert "def locate_repo_file" in strands
     assert "Path.cwd().parents" in strands

@@ -319,7 +319,7 @@ insertan donde aclaran Provider x Framework y cierran la trazabilidad 1:1.
 | 07 | core/02_skills.ipynb | Skill nativa y carga desde filesystem. |
 | 08 | core/03_agent.ipynb | Agent, contrato, pipeline y RunResult. |
 | 09 | core/04_results_lineage.ipynb | Human result, composici\u00f3n y lineage. |
-| 10 | frameworks/02_aws_strands.ipynb | Integraci\u00f3n Strands real. |
+| 10 | frameworks/02_aws_strands.ipynb | Strands real: kwargs, hooks, MCP y A2A. |
 | 11 | frameworks/01_openai_agents.ipynb | Integraci\u00f3n OpenAI Agents real. |
 | 12 | frameworks/00_langgraph.ipynb | LangGraph como l\u00f3gica del Agent/System. |
 | 13 | core/05_system.ipynb | Ownership, registros y compilaci\u00f3n. |
@@ -339,6 +339,23 @@ insertan donde aclaran Provider x Framework y cierran la trazabilidad 1:1.
 | providers | \u00bfD\u00f3nde corre inferencia? | Preflight; llamada externa s\u00f3lo si est\u00e1 habilitada. |
 | frameworks | \u00bfQui\u00e9n controla el loop? | SDK real; Provider independiente. |
 | api | \u00bfTodo lo publicado es trazable? | IDs exactos generados desde Source. |
+
+El bloque A2A del tutorial Strands requiere la capacidad nativa opcional
+declarada en `frameworks/requirements-strands-a2a.txt`. Se instala al preparar
+el entorno, nunca desde una celda, para conservar kernels reproducibles.
+
+### Superficies nativas ejercitadas
+
+| Framework | Construcci\u00f3n (`agent_kwargs`) | Ejecuci\u00f3n (`run_kwargs`) | Capacidad distintiva |
+|---|---|---|---|
+| native | No aplica | No aplica | Contrato portable de Agentic Systems. |
+| LangGraph | La topolog\u00eda se declara con `toolkit.graph` | La ejecuci\u00f3n se observa v\u00eda `GraphApp` | Estado y rutas condicionales reales. |
+| OpenAI Agents | Guardrails y handoffs | `SQLiteSession` | Runner, sesi\u00f3n y handoff nativos. |
+| Strands | Hooks, Tools nativas, clientes MCP y A2A | Structured output | Lifecycle y protocolos nativos. |
+
+La matriz Provider \u00d7 Framework mantiene los kwargs vac\u00edos intencionalmente: su
+objetivo es medir sustituibilidad. Los notebooks individuales prueban las
+capacidades distintivas sin contaminar esa comparaci\u00f3n.
 
 ## Auto, provider expl\u00edcito y credenciales
 

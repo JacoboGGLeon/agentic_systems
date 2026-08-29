@@ -67,7 +67,7 @@ def test_final_vllm_kit_derives_identity_from_real_artifacts(tmp_path: Path) -> 
         application = archive.read("semantic_e2e_application.py").decode()
         assert '"schema_version": "agentic_systems.semantic-attestation.v1"' in runner
         assert "human_result exposes structured technical JSON" in runner
-        assert '"vllm-runtime"' in application
+        assert "PROVIDERS = PROVIDER_NAMES" in application
         assert "record_semantic_judgment" in application
         assert 'tool_choice="record_semantic_judgment"' in application
         assert '"poetic_calculation"' in application

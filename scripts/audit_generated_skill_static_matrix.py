@@ -8,14 +8,13 @@ import json
 import sys
 from pathlib import Path
 
+from agentic_systems.registry import FRAMEWORK_NAMES, PROVIDER_NAMES
 
-PROVIDERS = (
-    "openai-runtime",
-    "ollama-runtime",
-    "bedrock-runtime",
-    "vllm-runtime",
+
+PROVIDERS = tuple(name for name in PROVIDER_NAMES if name != "python-runtime")
+FRAMEWORKS = tuple(
+    "agentic-systems" if name == "native" else name for name in FRAMEWORK_NAMES
 )
-FRAMEWORKS = ("agentic-systems", "langgraph", "openai-agents", "strands")
 
 
 def main(root_value: str) -> int:

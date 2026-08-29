@@ -40,6 +40,8 @@ class ProviderDefinition(ContractModel):
     capabilities: tuple[CapabilitySpec, ...]
     attestation_environment: tuple[str, ...] = ()
     requires_model_identity: bool = False
+    live_flag: str | None = None
+    authentication_modes: tuple[str, ...] = ()
 
 
 class FrameworkDefinition(ContractModel):
@@ -47,6 +49,7 @@ class FrameworkDefinition(ContractModel):
     dependency: str | None = None
     extra: str | None = None
     capabilities: tuple[CapabilitySpec, ...]
+    policy_fields: tuple[str, ...] = ()
 
 
 class MatrixContract(ContractModel):
@@ -71,6 +74,7 @@ _COMMON_PROVIDER_CAPABILITIES = (
 PROVIDERS: tuple[ProviderDefinition, ...] = (
     ProviderDefinition(
         name="python-runtime",
+        authentication_modes=("local",),
         capabilities=_COMMON_PROVIDER_CAPABILITIES
         + (
             _cap("deterministic_execution", "required"),
@@ -91,6 +95,8 @@ PROVIDERS: tuple[ProviderDefinition, ...] = (
             "AWS_ROLE_ARN",
         ),
         requires_model_identity=True,
+        live_flag="RUN_BEDROCK_LIVE",
+        authentication_modes=("bedrock-api-key", "aws-credential-chain"),
         endpoint_env=("AWS_REGION", "AWS_DEFAULT_REGION"),
         model_env=("BEDROCK_MODEL_ID",),
         capabilities=_COMMON_PROVIDER_CAPABILITIES
@@ -100,6 +106,8 @@ PROVIDERS: tuple[ProviderDefinition, ...] = (
         name="openai-runtime",
         dependency="openai",
         requires_model_identity=True,
+        live_flag="RUN_OPENAI_LIVE",
+        authentication_modes=("api-key", "custom-endpoint"),
         extra="openai",
         credential_env=("OPENAI_API_KEY",),
         endpoint_env=("OPENAI_BASE_URL",),
@@ -112,6 +120,8 @@ PROVIDERS: tuple[ProviderDefinition, ...] = (
         dependency="openai",
         attestation_environment=("cuda", "gpu", "vllm"),
         requires_model_identity=True,
+        live_flag="RUN_VLLM_LIVE",
+        authentication_modes=("openai-compatible",),
         extra="vllm-client",
         endpoint_env=("VLLM_BASE_URL",),
         model_env=("VLLM_MODEL",),
@@ -123,6 +133,8 @@ PROVIDERS: tuple[ProviderDefinition, ...] = (
         dependency="openai",
         extra="openai",
         requires_model_identity=True,
+        live_flag="RUN_OLLAMA_LIVE",
+        authentication_modes=("local-openai-compatible",),
         endpoint_env=("OLLAMA_BASE_URL",),
         model_env=("OLLAMA_MODEL",),
         capabilities=_COMMON_PROVIDER_CAPABILITIES
@@ -132,7 +144,20 @@ PROVIDERS: tuple[ProviderDefinition, ...] = (
 
 FRAMEWORKS: tuple[FrameworkDefinition, ...] = (
     FrameworkDefinition(
-        name="native", capabilities=(_cap("agent_execution", "required"),)
+        name="native",
+        capabilities=(_cap("agent_execution", "required"),),
+        policy_fields=(
+            "max_turns",
+            "max_tool_calls",
+            "max_tokens",
+            "temperature",
+            "tool_choice",
+            "repair",
+            "max_repairs",
+            "finalize",
+            "trace",
+            "strict",
+        ),
     ),
     FrameworkDefinition(
         name="langgraph",
@@ -141,6 +166,18 @@ FRAMEWORKS: tuple[FrameworkDefinition, ...] = (
         capabilities=(
             _cap("agent_execution", "required"),
             _cap("graph_execution", "required"),
+        ),
+        policy_fields=(
+            "max_turns",
+            "max_tool_calls",
+            "max_tokens",
+            "temperature",
+            "tool_choice",
+            "repair",
+            "max_repairs",
+            "finalize",
+            "trace",
+            "strict",
         ),
     ),
     FrameworkDefinition(
@@ -151,12 +188,26 @@ FRAMEWORKS: tuple[FrameworkDefinition, ...] = (
             _cap("agent_execution", "required"),
             _cap("handoffs", "optional"),
         ),
+        policy_fields=(
+            "max_turns",
+            "max_tool_calls",
+            "max_tokens",
+            "temperature",
+            "tool_choice",
+        ),
     ),
     FrameworkDefinition(
         name="strands",
         dependency="strands",
         extra="strands",
         capabilities=(_cap("agent_execution", "required"), _cap("mcp", "optional")),
+        policy_fields=(
+            "max_turns",
+            "max_tool_calls",
+            "max_tokens",
+            "temperature",
+            "tool_choice",
+        ),
     ),
 )
 
@@ -200,6 +251,12 @@ def framework_definition(name: str) -> FrameworkDefinition:
         raise ValueError(
             f"Unknown framework {name!r}; expected one of {FRAMEWORK_NAMES}."
         ) from exc
+
+
+def framework_policy_fields(name: str) -> tuple[str, ...]:
+    """Return policy fields implemented by one framework boundary."""
+
+    return framework_definition(name).policy_fields
 
 
 def dependency_target(
@@ -262,6 +319,7 @@ __all__ = [
     "ProviderDefinition",
     "dependency_target",
     "framework_definition",
+    "framework_policy_fields",
     "matrix_contract",
     "provider_definition",
     "registry_manifest",

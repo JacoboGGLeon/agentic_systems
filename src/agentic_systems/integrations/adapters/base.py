@@ -6,6 +6,7 @@ from abc import ABC, abstractmethod
 from typing import Any
 
 from ...contracts import RunPolicy
+from ...registry import framework_policy_fields
 from ...results import RunResult
 
 
@@ -69,4 +70,27 @@ def effective_max_turns(policy: RunPolicy, run_kwargs: dict[str, Any]) -> int:
     return min(policy.max_turns, value)
 
 
-__all__ = ["FrameworkAdapter", "attach_native_result", "effective_max_turns"]
+def validate_policy_support(framework: str, policy: RunPolicy, mode: str) -> None:
+    """Reject explicit policy semantics that a framework cannot honor."""
+
+    supported = set(framework_policy_fields(framework))
+    baseline = RunPolicy.for_mode(mode)
+    unsupported = [
+        name
+        for name in RunPolicy.model_fields
+        if name not in supported and getattr(policy, name) != getattr(baseline, name)
+    ]
+    if unsupported:
+        fields = ", ".join(sorted(unsupported))
+        raise ValueError(
+            f"Framework {framework!r} cannot honor non-default RunPolicy field(s): "
+            f"{fields}. Use a supported policy or select another framework."
+        )
+
+
+__all__ = [
+    "FrameworkAdapter",
+    "attach_native_result",
+    "effective_max_turns",
+    "validate_policy_support",
+]

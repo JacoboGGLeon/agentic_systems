@@ -596,3 +596,7 @@ def test_framework_notebooks_bootstrap_optional_dependencies_safely():
 
     strands = _code(_load(TUTORIALS / "frameworks/02_aws_strands.ipynb"))
     assert "def record_after_invocation(event: AfterInvocationEvent)" in strands
+    assert "A2AAgent" in strands
+    assert "get_agent_card" in strands
+    assert 'agent_kwargs={"tools": [call_remote_echo]}' in strands
+    assert 'run_kwargs={"structured_output_model": PublicEvidence}' in strands

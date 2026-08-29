@@ -1,0 +1,14 @@
+{
+  "schema_version": "agentic_systems.semantic-challenge.v1",
+  "id": "strands-protocol-graph",
+  "title": "Strands MCP + A2A under LangGraph with native judge",
+  "candidate_framework": "strands",
+  "orchestrator": "langgraph",
+  "judge_provider": "python-runtime",
+  "judge_framework": "native",
+  "protocols": ["mcp", "a2a"],
+  "local_providers": ["openai-runtime", "bedrock-runtime", "ollama-runtime"],
+  "external_providers": ["vllm-runtime", "bedrock-runtime"],
+  "required_tools": ["fetch_mcp_evidence", "fetch_a2a_evidence"],
+  "forbidden": ["fallback", "private_reasoning", "raw_tool_envelope", "unclassified_retry"]
+}

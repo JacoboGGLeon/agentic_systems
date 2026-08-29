@@ -23,11 +23,14 @@ jobs:
       - run: python -m pip install --upgrade pip
       - run: >-
           python -m pip install -e ".[dev,bedrock,langgraph,openai,openai-agents,strands]"
+      - run: python -m pip install -r tutorials/frameworks/requirements-strands-a2a.txt
           build twine "setuptools>=69" wheel pyright==1.1.411
       - run: >-
           python -m pip install -e
           "examples/agentic_systems_studio[ui,notebook,test]"
-      - run: python -m ruff check src tests tutorials/frameworks/mcp_echo_server.py
+      - run: >-
+          python -m ruff check src tests semantic_challenges
+          tutorials/frameworks/mcp_echo_server.py tutorials/frameworks/a2a_echo_server.py
       - name: Formatting gate
         if: matrix.python-version == '3.14'
         run: python scripts/check_format.py
@@ -51,6 +54,9 @@ jobs:
         run: >-
           python -m pytest -q tests/contracts
           tests/frameworks/test_provider_framework_matrix.py
+      - name: Focused semantic challenge contracts
+        if: matrix.python-version == '3.14'
+        run: python -m pytest -q tests/semantic_challenges
       - name: Complexity gate
         if: matrix.python-version == '3.14'
         run: python scripts/check_complexity.py
@@ -97,6 +103,11 @@ jobs:
           --cov-report=term-missing -q
       - run: python -m build --no-isolation
       - run: python -m twine check dist/*
+      - name: Build focused semantic challenge bundle
+        if: matrix.python-version == '3.14'
+        run: >-
+          python scripts/build_semantic_challenge_bundle.py
+          --evidence .tmp/no-live-evidence-in-pr
       - name: Lint Studio and release builder
         if: matrix.python-version == '3.14'
         run: >-
@@ -104,6 +115,7 @@ jobs:
           examples/agentic_systems_studio/tests
           examples/agentic_systems_studio/scripts
           scripts/build_release_assets.py
+          scripts/build_semantic_challenge_bundle.py
       - name: Test Studio and generated projects
         if: matrix.python-version == '3.14'
         run: python -m pytest -q examples/agentic_systems_studio/tests

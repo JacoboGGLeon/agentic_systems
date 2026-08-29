@@ -13,14 +13,6 @@ ROOT = Path(__file__).resolve().parents[1]
 ENV_PATH = ROOT / ".env"
 MANIFEST_PATH = ROOT / "manifest.json"
 RUNNER = Path(__file__).resolve().with_name("run_semantic_matrix.py")
-FRAMEWORKS = ("native", "langgraph", "openai-agents", "strands")
-PROVIDERS = {
-    "python-runtime",
-    "openai-runtime",
-    "ollama-runtime",
-    "bedrock-runtime",
-    "vllm-runtime",
-}
 
 
 def _load_dotenv(path: Path) -> None:
@@ -44,11 +36,20 @@ def _enabled(name: str) -> bool:
     return os.getenv(name, "").strip().lower() in {"1", "true", "yes"}
 
 
+def _matrix_contract(manifest: dict[str, object]) -> tuple[set[str], tuple[str, ...]]:
+    providers = {str(item) for item in manifest.get("providers") or []}
+    frameworks = tuple(str(item) for item in manifest.get("frameworks") or [])
+    if not providers or not frameworks:
+        raise ValueError("Bundle manifest does not declare providers/frameworks.")
+    return providers, frameworks
+
+
 def main() -> int:
     _load_dotenv(ENV_PATH)
     manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+    providers, frameworks = _matrix_contract(manifest)
     provider = os.getenv("AGENTIC_SYSTEMS_PROVIDER", "").strip()
-    if provider == "auto" or provider not in PROVIDERS:
+    if provider == "auto" or provider not in providers:
         raise ValueError(
             "AGENTIC_SYSTEMS_PROVIDER must select one explicit canonical provider; "
             f"observed {provider!r}."
@@ -83,7 +84,7 @@ def main() -> int:
         "--providers",
         provider,
         "--frameworks",
-        *FRAMEWORKS,
+        *frameworks,
     ]
     completed = subprocess.run(command, cwd=ROOT)
     if completed.returncode:
@@ -117,7 +118,7 @@ def main() -> int:
             {
                 "ok": True,
                 "provider": provider,
-                "frameworks": list(FRAMEWORKS),
+                "frameworks": list(frameworks),
                 "summary": summary,
                 "authentication_mode": authentication.get("authentication_mode"),
                 "attestation": str(attestation.resolve()),

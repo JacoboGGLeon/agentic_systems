@@ -25,7 +25,12 @@ from ...results import RunResult, public_answer_text
 from ...tools.parsing import parse_textual_tool_call
 from ...tools.events import ToolEvent
 from ...usage import normalize_usage
-from .base import FrameworkAdapter, attach_native_result, effective_max_turns
+from .base import (
+    FrameworkAdapter,
+    attach_native_result,
+    effective_max_turns,
+    validate_policy_support,
+)
 from .tools import ToolNameAliases, merge_tools, tool_name_aliases
 
 
@@ -72,6 +77,7 @@ class StrandsFrameworkAdapter(FrameworkAdapter):
         *,
         mode: str,
     ) -> RunResult:
+        validate_policy_support(self.name, policy, mode)
         if (
             isinstance(engine, SyncRunner)
             and not agent.available_tools()
@@ -108,6 +114,7 @@ class StrandsFrameworkAdapter(FrameworkAdapter):
         *,
         mode: str,
     ) -> RunResult:
+        validate_policy_support(self.name, policy, mode)
         if (
             isinstance(engine, AsyncRunner)
             and not agent.available_tools()
@@ -474,7 +481,9 @@ def _limit_tool_use_events(
     suppress_block = False
     rejected_in_batch = False
     filtered: list[Any] = []
-    rejected = list(getattr(model, "_agentic_systems_rejected_tool_calls", ()) or ())
+    rejected: list[dict[str, Any]] = list(
+        getattr(model, "_agentic_systems_rejected_tool_calls", ()) or ()
+    )
     for event in events:
         public = _jsonable(event)
         starts_tool = _stream_tool_use_count(public) > 0
@@ -690,11 +699,16 @@ def _tool_input_json_schema(tool: Any, function: Any) -> dict[str, Any]:
                 "Use explicit typed parameters so a JSON schema can be generated."
             )
         annotation = type_hints.get(name, Any)
-        default = ... if parameter.default is inspect.Signature.empty else parameter.default
+        default = (
+            ... if parameter.default is inspect.Signature.empty else parameter.default
+        )
         fields[name] = (annotation, default)
 
-    model_name = "".join(part.capitalize() for part in tool.name.split("_")) + "ToolInput"
-    input_model = _create_model(
+    model_name = (
+        "".join(part.capitalize() for part in tool.name.split("_")) + "ToolInput"
+    )
+    create_model = cast(Any, _create_model)
+    input_model = create_model(
         model_name,
         __config__=_ConfigDict(extra="forbid", arbitrary_types_allowed=True),
         **fields,

@@ -50,7 +50,7 @@ insertan donde aclaran Provider x Framework y cierran la trazabilidad 1:1.
 | 07 | core/02_skills.ipynb | Skill nativa y carga desde filesystem. |
 | 08 | core/03_agent.ipynb | Agent, contrato, pipeline y RunResult. |
 | 09 | core/04_results_lineage.ipynb | Human result, composición y lineage. |
-| 10 | frameworks/02_aws_strands.ipynb | Integración Strands real. |
+| 10 | frameworks/02_aws_strands.ipynb | Strands real: kwargs, hooks, MCP y A2A. |
 | 11 | frameworks/01_openai_agents.ipynb | Integración OpenAI Agents real. |
 | 12 | frameworks/00_langgraph.ipynb | LangGraph como lógica del Agent/System. |
 | 13 | core/05_system.ipynb | Ownership, registros y compilación. |
@@ -70,6 +70,23 @@ insertan donde aclaran Provider x Framework y cierran la trazabilidad 1:1.
 | providers | ¿Dónde corre inferencia? | Preflight; llamada externa sólo si está habilitada. |
 | frameworks | ¿Quién controla el loop? | SDK real; Provider independiente. |
 | api | ¿Todo lo publicado es trazable? | IDs exactos generados desde Source. |
+
+El bloque A2A del tutorial Strands requiere la capacidad nativa opcional
+declarada en `frameworks/requirements-strands-a2a.txt`. Se instala al preparar
+el entorno, nunca desde una celda, para conservar kernels reproducibles.
+
+### Superficies nativas ejercitadas
+
+| Framework | Construcción (`agent_kwargs`) | Ejecución (`run_kwargs`) | Capacidad distintiva |
+|---|---|---|---|
+| native | No aplica | No aplica | Contrato portable de Agentic Systems. |
+| LangGraph | La topología se declara con `toolkit.graph` | La ejecución se observa vía `GraphApp` | Estado y rutas condicionales reales. |
+| OpenAI Agents | Guardrails y handoffs | `SQLiteSession` | Runner, sesión y handoff nativos. |
+| Strands | Hooks, Tools nativas, clientes MCP y A2A | Structured output | Lifecycle y protocolos nativos. |
+
+La matriz Provider × Framework mantiene los kwargs vacíos intencionalmente: su
+objetivo es medir sustituibilidad. Los notebooks individuales prueban las
+capacidades distintivas sin contaminar esa comparación.
 
 ## Auto, provider explícito y credenciales
 

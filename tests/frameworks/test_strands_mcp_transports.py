@@ -31,7 +31,7 @@ def _free_port() -> int:
 
 
 def _wait_for_port(process: subprocess.Popen[bytes], port: int) -> None:
-    deadline = time.monotonic() + 15
+    deadline = time.monotonic() + 60
     while time.monotonic() < deadline:
         if process.poll() is not None:
             raise RuntimeError("The local Streamable HTTP MCP server exited early.")
@@ -40,7 +40,9 @@ def _wait_for_port(process: subprocess.Popen[bytes], port: int) -> None:
                 return
         except OSError:
             time.sleep(0.05)
-    raise TimeoutError("The local Streamable HTTP MCP server did not start.")
+    raise TimeoutError(
+        "The local Streamable HTTP MCP server did not start within 60 seconds."
+    )
 
 
 @asynccontextmanager
@@ -57,31 +59,32 @@ async def _stdio_transport() -> AsyncIterator[Any]:
 @pytest.mark.parametrize("transport", ["stdio", "streamable-http"])
 def test_strands_executes_native_mcp_tool_over_local_transport(transport: str):
     process: subprocess.Popen[bytes] | None = None
-    transport_factory: Callable[[], AbstractAsyncContextManager[Any]]
-    if transport == "stdio":
-        transport_factory = _stdio_transport
-    else:
-        port = _free_port()
-        process = subprocess.Popen(
-            [
-                sys.executable,
-                str(SERVER),
-                "--transport",
-                "streamable-http",
-                "--port",
-                str(port),
-            ],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-        )
-        _wait_for_port(process, port)
-        transport_factory = partial(
-            streamable_http_client,
-            f"http://127.0.0.1:{port}/mcp",
-        )
-
-    client = MCPClient(transport_factory)
+    client: MCPClient | None = None
     try:
+        transport_factory: Callable[[], AbstractAsyncContextManager[Any]]
+        if transport == "stdio":
+            transport_factory = _stdio_transport
+        else:
+            port = _free_port()
+            process = subprocess.Popen(
+                [
+                    sys.executable,
+                    str(SERVER),
+                    "--transport",
+                    "streamable-http",
+                    "--port",
+                    str(port),
+                ],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+            _wait_for_port(process, port)
+            transport_factory = partial(
+                streamable_http_client,
+                f"http://127.0.0.1:{port}/mcp",
+            )
+
+        client = MCPClient(transport_factory)
         agent = toolkit.agent(
             name=f"strands_mcp_{transport}",
             instructions="Execute the requested MCP tool.",
@@ -96,7 +99,8 @@ def test_strands_executes_native_mcp_tool_over_local_transport(transport: str):
             mode="eval",
         )
     finally:
-        client.stop(None, None, None)
+        if client is not None:
+            client.stop(None, None, None)
         if process is not None:
             process.terminate()
             try:

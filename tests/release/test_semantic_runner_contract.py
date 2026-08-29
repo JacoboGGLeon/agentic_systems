@@ -83,9 +83,7 @@ def test_poem_shape_is_semantic_not_exact_text() -> None:
     assert module.looks_like_short_poem(
         "Golden sunflowers sway,\n323\nMoonlight on still waters."
     )
-    assert module.looks_like_short_poem(
-        "A shadow stretches,\n323,\nSoft winds answer."
-    )
+    assert module.looks_like_short_poem("A shadow stretches,\n323,\nSoft winds answer.")
     assert module.looks_like_short_poem(
         "Moonlight touches water,\n3 2 3\nLeaves whisper softly."
     )
@@ -149,7 +147,9 @@ def test_deterministic_multiply_exposes_only_public_evidence() -> None:
 
     punctuated = module.analyze_text.function(text="Already complete.")
     unpunctuated = module.analyze_text.function(text="Needs punctuation")
-    assert punctuated["answer"].startswith('The normalized text is "Already complete." It')
+    assert punctuated["answer"].startswith(
+        'The normalized text is "Already complete." It'
+    )
     assert '". It' not in punctuated["answer"]
     assert unpunctuated["answer"].startswith(
         'The normalized text is "Needs punctuation". It'
@@ -195,9 +195,7 @@ def test_model_judge_uses_one_closed_failed_criteria_list(monkeypatch) -> None:
     assert failed["criteria"]["evidence_correctness"] == 1.0
 
     monkeypatch.setenv("AGENTIC_SYSTEMS_SEMANTIC_JUDGE_MAX_TOKENS", "900")
-    cell = module.build_semantic_cell(
-        "openai-runtime", "native", model="gpt-4.1-mini"
-    )
+    cell = module.build_semantic_cell("openai-runtime", "native", model="gpt-4.1-mini")
     assert cell.judge.agent.policy.max_tool_calls == 2
     assert cell.judge.agent.policy.max_turns == 3
     assert cell.judge.agent.policy.repair is True
@@ -235,9 +233,7 @@ def test_bedrock_semantic_environment_records_authentication_mode(
         lambda provider: "us.amazon.nova-pro-v1:0",
     )
 
-    environment = SEMANTIC_MATRIX._environment(
-        ROOT / ".env", ("bedrock-runtime",)
-    )
+    environment = SEMANTIC_MATRIX._environment(ROOT / ".env", ("bedrock-runtime",))
 
     authentication = environment["providers"]["bedrock-runtime"]["authentication"]
     assert authentication["authentication_mode"] == "aws-credential-chain"
@@ -257,19 +253,20 @@ def test_ada_semantic_wrapper_uses_dotenv_and_all_frameworks(
     spec.loader.exec_module(module)
     dotenv = tmp_path / ".env"
     dotenv.write_text(
-        "AGENTIC_SYSTEMS_PROVIDER=bedrock-runtime\n"
-        "RUN_SEMANTIC_MATRIX_LIVE=1\n",
+        "AGENTIC_SYSTEMS_PROVIDER=bedrock-runtime\nRUN_SEMANTIC_MATRIX_LIVE=1\n",
         encoding="utf-8",
     )
     monkeypatch.setenv("AGENTIC_SYSTEMS_PROVIDER", "openai-runtime")
 
     module._load_dotenv(dotenv)
 
-    assert module.FRAMEWORKS == (
-        "native",
-        "langgraph",
-        "openai-agents",
-        "strands",
+    providers, frameworks = module._matrix_contract(
+        {
+            "providers": ["bedrock-runtime"],
+            "frameworks": ["native", "langgraph", "openai-agents", "strands"],
+        }
     )
+    assert providers == {"bedrock-runtime"}
+    assert frameworks == ("native", "langgraph", "openai-agents", "strands")
     assert module._enabled("RUN_SEMANTIC_MATRIX_LIVE") is True
     assert module.os.environ["AGENTIC_SYSTEMS_PROVIDER"] == "bedrock-runtime"

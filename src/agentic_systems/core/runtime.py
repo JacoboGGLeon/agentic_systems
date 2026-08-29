@@ -333,10 +333,31 @@ def _module_available(name: str) -> bool:
         return False
 
 
-def _load_dotenv(start: Path | None = None) -> bool:
-    """Load a local .env file without overriding existing environment values."""
+DOTENV_PATH_ENV_VAR = "AGENTIC_SYSTEMS_DOTENV"
 
-    root = _find_dotenv(start or Path.cwd())
+
+def _load_dotenv(
+    start: Path | None = None,
+    *,
+    path: str | Path | None = None,
+    override: bool | None = None,
+) -> bool:
+    """Load canonical configuration while preserving legacy discovery semantics.
+
+    An explicit ``path`` (or ``AGENTIC_SYSTEMS_DOTENV``) is authoritative and
+    therefore overrides inherited process values by default. Nearest-file
+    discovery remains backward compatible and only fills missing values.
+    """
+
+    configured_path = path or os.getenv(DOTENV_PATH_ENV_VAR)
+    if configured_path is not None:
+        root = Path(configured_path).expanduser().resolve()
+        if not root.is_file():
+            raise FileNotFoundError(f"Canonical dotenv file does not exist: {root}")
+        should_override = True if override is None else override
+    else:
+        root = _find_dotenv(start or Path.cwd())
+        should_override = False if override is None else override
     if root is None:
         return False
     for raw_line in root.read_text(encoding="utf-8").splitlines():
@@ -346,7 +367,7 @@ def _load_dotenv(start: Path | None = None) -> bool:
         key, value = line.split("=", 1)
         key = key.strip()
         value = value.strip().strip('"').strip("'")
-        if key and key not in os.environ:
+        if key and (should_override or key not in os.environ):
             os.environ[key] = value
     return True
 

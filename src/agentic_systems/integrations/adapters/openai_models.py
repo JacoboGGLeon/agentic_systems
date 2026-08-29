@@ -7,7 +7,7 @@ import dataclasses
 import json
 import uuid
 from collections.abc import AsyncIterator, Mapping
-from typing import Any
+from typing import Any, cast
 
 from agents import ModelResponse
 from agents.models.interface import Model
@@ -133,8 +133,8 @@ class ToolCallNormalizingModel(Model):
 
 
 def _without_tool_choice(settings: Any) -> Any:
-    if dataclasses.is_dataclass(settings):
-        return dataclasses.replace(settings, tool_choice=None)
+    if dataclasses.is_dataclass(settings) and not isinstance(settings, type):
+        return dataclasses.replace(cast(Any, settings), tool_choice=None)
     return settings
 
 
@@ -160,10 +160,10 @@ class ScriptedOpenAIModel(Model):
             value: Any = payload[0] if len(payload) == 1 else payload
             return _text_response(json.dumps(value, ensure_ascii=False, default=str))
 
-        calls = _plan_calls(input_value, [*tools, *handoffs])
+        calls = _plan_calls(input_value, [*(tools or []), *(handoffs or [])])
         if not calls:
             return _text_response(_input_text(input_value))
-        response_items = [
+        response_items: list[Any] = [
             ResponseFunctionToolCall(
                 arguments=json.dumps(call["input"], ensure_ascii=False, default=str),
                 call_id=f"call_{uuid.uuid4().hex}",

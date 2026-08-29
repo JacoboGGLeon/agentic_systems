@@ -29,6 +29,10 @@ documentation, tutorials, and tests.
 API -> Docs -> Tutorials -> explicit automated or manual evidence
 ```
 
+Release certification is documented separately from teaching material and the
+Studio application. See [Semantic certification](docs/semantic-certification.md)
+and the focused [semantic challenges](semantic_challenges/README.md).
+
 Public concepts are defined in the API, explained in the documentation, taught through the canonical tutorials, and checked by explicit release gates.
 
 Release status: `2.1.0` hardens the Provider x Framework architecture with a canonical 20-pair registry, strict versioned schemas, normalized reasoning-safe results, polymorphic adapter contracts and blocking production/Pydantic/POO gates. The 2.1 surface contains 87 stable top-level exports and 437 traced export/member IDs; all 2.0 serialization views remain compatible.
@@ -81,6 +85,7 @@ Release assets:
 - `agentic-systems-skill-2.1.0.zip`: Codex/OpenAI skill package.
 - `agentic-systems-studio-2.1.0.zip`: one portable conversational Agentic System.
 - `agentic-systems-2.1.0-ada-offline.zip`: wheel, Studio, tutorials and live evidence for restricted environments.
+- `agentic-systems-2.1.0-strands-protocol-challenge.zip`: frozen MCP+A2A/LangGraph semantic gate for local, Colab, SageMaker and ADA execution.
 - `SHA256SUMS-2.1.0.txt`: hashes for the Python and product artifacts.
 
 For an installed-package smoke test and provider notebook setup, follow

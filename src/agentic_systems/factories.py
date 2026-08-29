@@ -43,14 +43,12 @@ from .skills.loader import load_skill_definition
 from .tools import ToolSet
 from .schemas.serving import ModelArtifact, VLLMServerSpec
 from .serving.vllm import VLLMServer, vllm_server_spec
+from .registry import provider_definition
 
-DEFAULT_MODEL_ENV_VARS = ("BEDROCK_MODEL_ID",)
-
-OPENAI_MODEL_ENV_VARS = ("OPENAI_MODEL",)
-OLLAMA_MODEL_ENV_VARS = ("OLLAMA_MODEL",)
-
-
-VLLM_MODEL_ENV_VARS = ("VLLM_MODEL",)
+DEFAULT_MODEL_ENV_VARS = provider_definition(BEDROCK_RUNTIME_ENGINE).model_env
+OPENAI_MODEL_ENV_VARS = provider_definition(OPENAI_RUNTIME_ENGINE).model_env
+OLLAMA_MODEL_ENV_VARS = provider_definition(OLLAMA_RUNTIME_ENGINE).model_env
+VLLM_MODEL_ENV_VARS = provider_definition(VLLM_RUNTIME_ENGINE).model_env
 
 
 def default_model_id() -> str:

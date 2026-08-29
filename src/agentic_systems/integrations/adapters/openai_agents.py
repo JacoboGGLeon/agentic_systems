@@ -23,7 +23,12 @@ from ...registry import provider_capability
 from ...results import RunResult, public_answer_text
 from ...tools.events import ToolEvent, classify_tool_failures
 from ...usage import normalize_usage
-from .base import FrameworkAdapter, attach_native_result, effective_max_turns
+from .base import (
+    FrameworkAdapter,
+    attach_native_result,
+    effective_max_turns,
+    validate_policy_support,
+)
 from .tools import (
     ToolNameAliases,
     canonical_tool_callable,
@@ -82,6 +87,7 @@ class OpenAIAgentsFrameworkAdapter(FrameworkAdapter):
         *,
         mode: str,
     ) -> RunResult:
+        validate_policy_support(self.name, policy, mode)
         if (
             isinstance(engine, SyncRunner)
             and not agent.available_tools()
@@ -130,6 +136,7 @@ class OpenAIAgentsFrameworkAdapter(FrameworkAdapter):
         *,
         mode: str,
     ) -> RunResult:
+        validate_policy_support(self.name, policy, mode)
         if (
             isinstance(engine, AsyncRunner)
             and not agent.available_tools()
