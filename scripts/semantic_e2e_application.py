@@ -11,6 +11,7 @@ from typing import Any, Literal
 from pydantic import AliasChoices, BaseModel, ConfigDict, Field, model_validator
 
 import agentic_systems as toolkit
+from agentic_systems.evals import JudgeFinding
 from agentic_systems.providers import provider_profile
 from agentic_systems.registry import FRAMEWORK_NAMES, PROVIDER_NAMES
 from agentic_systems.schemas import ContractExecutionBudget
@@ -127,11 +128,10 @@ SemanticViolationCriterion = Literal[
 ]
 
 
-class SemanticViolation(BaseModel):
+class SemanticViolation(JudgeFinding):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
     criterion: SemanticViolationCriterion
-    evidence: str = Field(min_length=1, max_length=500)
 
 
 class SemanticJudgmentInput(BaseModel):
@@ -153,7 +153,7 @@ class SemanticJudgmentInput(BaseModel):
     input=SemanticJudgmentInput,
 )
 def record_semantic_judgment(
-    violations: list[SemanticViolation],
+    judgment: SemanticJudgmentInput,
 ) -> dict[str, Any]:
     """Record evidence-backed violations and project them onto the public rubric.
 
@@ -162,7 +162,7 @@ def record_semantic_judgment(
     scores, findings, and rationale from the same structured evidence.
     """
 
-    normalized = [SemanticViolation.model_validate(item) for item in violations]
+    normalized = list(judgment.violations)
     failed = {item.criterion for item in normalized}
     criteria = JudgeCriteria(
         **{name: 0.0 if name in failed else 1.0 for name in JudgeCriteria.model_fields}

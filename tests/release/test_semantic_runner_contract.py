@@ -179,17 +179,21 @@ def test_model_judge_uses_typed_evidence_backed_violations(monkeypatch) -> None:
         module.JudgeCriteria.model_fields
     )
     assert violation_schema["properties"]["evidence"]["minLength"] == 1
-    assert violation_schema["properties"]["evidence"]["maxLength"] == 500
+    assert violation_schema["properties"]["evidence"]["maxLength"] == 1000
 
-    passed = module.record_semantic_judgment.function(violations=[])
+    passed = module.record_semantic_judgment.function(
+        module.SemanticJudgmentInput(violations=[])
+    )
     failed = module.record_semantic_judgment.function(
-        violations=[
-            {"criterion": "clarity", "evidence": "Answer is unreadable."},
-            {
-                "criterion": "no_technical_noise",
-                "evidence": "Answer exposed an implementation envelope.",
-            },
-        ],
+        module.SemanticJudgmentInput(
+            violations=[
+                {"criterion": "clarity", "evidence": "Answer is unreadable."},
+                {
+                    "criterion": "no_technical_noise",
+                    "evidence": "Answer exposed an implementation envelope.",
+                },
+            ]
+        )
     )
     assert passed["score"] == 1.0
     assert set(passed["criteria"].values()) == {1.0}

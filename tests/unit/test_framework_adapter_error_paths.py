@@ -2,13 +2,14 @@ from __future__ import annotations
 
 import asyncio
 import builtins
+import inspect
 from types import SimpleNamespace
 from typing import Literal
 
 import pytest
 from pydantic import BaseModel
 
-from agentic_systems import Agent, RunPolicy, RunResult
+from agentic_systems import Agent, RunPolicy, RunResult, tool as public_tool
 from agentic_systems.integrations.adapters import langgraph as lg
 from agentic_systems.integrations.adapters import openai_agents as oa
 from agentic_systems.integrations.adapters import openai_models as om
@@ -161,6 +162,18 @@ def test_strands_adapter_configuration_and_operational_errors(monkeypatch):
 
 class InputSchema(BaseModel):
     value: int
+
+
+@public_tool(input=InputSchema)
+def schema_backed_tool(payload: InputSchema) -> dict:
+    return {"value": payload.value}
+
+
+def test_strands_tool_executes_the_public_schema_instead_of_the_raw_signature():
+    native_tool = sa._strands_tool(schema_backed_tool)
+
+    assert inspect.signature(native_tool).parameters.keys() == {"value"}
+    assert native_tool(value=7) == {"value": 7}
 
 
 def test_model_tool_and_json_contracts():

@@ -6,6 +6,7 @@ import inspect
 import json
 import os
 from collections.abc import Mapping
+from functools import update_wrapper
 from typing import Any, cast, get_args, get_type_hints
 
 from pydantic import ConfigDict as _ConfigDict
@@ -672,12 +673,64 @@ def _strands_tool(tool: Any, native_name: str | None = None) -> Any:
     from strands import tool as strands_tool
 
     schema = _tool_input_json_schema(tool, function)
+    native_function = _schema_backed_function(tool, function)
     return cast(Any, strands_tool)(
-        function,
+        native_function,
         name=native_name or tool.name,
         description=tool.description or None,
         inputSchema=schema,
     )
+
+
+def _schema_backed_function(tool: Any, function: Any) -> Any:
+    """Project one explicit public Tool schema onto Strands' callable contract.
+
+    Strands validates invocations from the Python callable signature even when an
+    explicit ``inputSchema`` is supplied.  Public Agentic Systems Tools instead
+    treat their Pydantic ``input_schema`` as the source of truth.  Build a generic
+    keyword callable whose inspectable signature mirrors that schema, then execute
+    through ``Tool.run`` so every framework observes the same validation and output
+    normalization semantics.
+    """
+
+    input_schema = getattr(tool, "input_schema", None)
+    run = getattr(tool, "run", None)
+    if input_schema is None or not callable(run):
+        return function
+
+    def invoke(**payload: Any) -> Any:
+        result = run(payload)
+        if not result.ok:
+            message = result.text or f"Tool '{tool.name}' failed."
+            raise ValueError(message)
+        return result.data
+
+    update_wrapper(invoke, function)
+    parameters: list[inspect.Parameter] = []
+    annotations: dict[str, Any] = {}
+    for name, field in input_schema.model_fields.items():
+        annotation = field.annotation or Any
+        default = (
+            inspect.Signature.empty
+            if field.is_required()
+            else field.get_default(call_default_factory=True)
+        )
+        parameters.append(
+            inspect.Parameter(
+                name,
+                kind=inspect.Parameter.KEYWORD_ONLY,
+                default=default,
+                annotation=annotation,
+            )
+        )
+        annotations[name] = annotation
+    annotations["return"] = get_type_hints(function).get("return", Any)
+    invoke.__annotations__ = annotations
+    invoke.__signature__ = inspect.Signature(  # type: ignore[attr-defined]
+        parameters,
+        return_annotation=annotations["return"],
+    )
+    return invoke
 
 
 def _tool_input_json_schema(tool: Any, function: Any) -> dict[str, Any]:
