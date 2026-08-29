@@ -31,6 +31,13 @@ def test_attestation_redaction_preserves_usage_tokens_and_removes_credentials() 
         "OPENAI_API_KEY": "not-a-real-secret",
         "AWS_BEARER_TOKEN_BEDROCK": "not-a-real-token",
         "AWS_SESSION_TOKEN": "not-a-real-session",
+        "authentication": {
+            "authentication_mode": "aws-credential-chain",
+            "credential_method": "container-role",
+            "bedrock_api_key_configured": False,
+            "has_credentials": True,
+            "sts_identity_available": True,
+        },
     }
 
     sanitized = SEMANTIC_MATRIX._safe(payload)
@@ -39,6 +46,7 @@ def test_attestation_redaction_preserves_usage_tokens_and_removes_credentials() 
     assert "OPENAI_API_KEY" not in sanitized
     assert "AWS_BEARER_TOKEN_BEDROCK" not in sanitized
     assert "AWS_SESSION_TOKEN" not in sanitized
+    assert sanitized["authentication"] == payload["authentication"]
 
 
 def test_semantic_matrix_includes_vllm_and_uses_public_runtime_model_resolution(

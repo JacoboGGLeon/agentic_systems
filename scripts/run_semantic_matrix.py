@@ -48,10 +48,20 @@ SECRET_KEY_MARKERS = (
     "SECURITY_TOKEN",
     "WEB_IDENTITY_TOKEN",
 )
+PUBLIC_SECURITY_METADATA_KEYS = {
+    "authentication_mode",
+    "credential_method",
+    "bedrock_api_key_configured",
+    "has_credentials",
+    "sts_identity_available",
+}
 
 
 def _is_secret_key(key: Any) -> bool:
-    upper = str(key).upper()
+    normalized = str(key).strip().lower()
+    if normalized in PUBLIC_SECURITY_METADATA_KEYS:
+        return False
+    upper = normalized.upper()
     return upper in {"TOKEN", "SECRET", "PASSWORD", "CREDENTIAL"} or any(
         marker in upper for marker in SECRET_KEY_MARKERS
     )
