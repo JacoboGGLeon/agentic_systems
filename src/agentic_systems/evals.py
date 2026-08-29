@@ -60,6 +60,16 @@ class JudgeRubric(BaseModel):
         "request_fulfillment",
         "evidence_correctness",
     )
+    require_failure_findings: bool = True
+
+
+class JudgeFinding(BaseModel):
+    """Evidence-backed reason for one criterion scored below threshold."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    criterion: str
+    evidence: str = Field(min_length=1, max_length=1000)
 
 
 class JudgeResult(BaseModel):
@@ -78,6 +88,9 @@ class JudgeResult(BaseModel):
     execution_ok: bool = True
     certification_tool: str | None = None
     certification_recorded: bool = True
+    findings: tuple[JudgeFinding, ...] = ()
+    consistent: bool = True
+    consistency_issues: tuple[str, ...] = ()
     rationale: str = ""
     provider: str | None = None
     framework: str | None = None
@@ -94,9 +107,14 @@ class JudgeResult(BaseModel):
             self.deterministic_validation_ok
             and self.execution_ok
             and self.certification_recorded
+            and self.consistent
             and bool(self.criteria)
             and all(score >= self.threshold for score in self.criteria.values())
         )
+        if self.consistent != (not self.consistency_issues):
+            raise ValueError(
+                "JudgeResult.consistent must reflect consistency_issues"
+            )
         if self.ok != criteria_ok:
             raise ValueError(
                 "JudgeResult.ok must equal the threshold verdict for every criterion"
@@ -681,15 +699,67 @@ def _run_judge(
     except TypeError:
         judged = judge.run(request)
     payload = _judge_payload(judged)
+    consistency_issues: list[str] = []
     payload_criteria = payload.get("criteria")
     payload_criteria = payload_criteria if isinstance(payload_criteria, dict) else {}
-    raw_criteria = {
-        name: float(payload_criteria.get(name, 0.0)) for name in rubric.criteria
-    }
+    missing_criteria = [name for name in rubric.criteria if name not in payload_criteria]
+    unknown_criteria = [name for name in payload_criteria if name not in rubric.criteria]
+    if missing_criteria:
+        consistency_issues.append(
+            "missing judge criteria: " + ", ".join(sorted(missing_criteria))
+        )
+    if unknown_criteria:
+        consistency_issues.append(
+            "unknown judge criteria: " + ", ".join(sorted(unknown_criteria))
+        )
+    raw_criteria: dict[str, float] = {}
+    for name in rubric.criteria:
+        try:
+            raw_criteria[name] = float(payload_criteria.get(name, 0.0))
+        except (TypeError, ValueError):
+            raw_criteria[name] = 0.0
+            consistency_issues.append(f"criterion {name!r} is not numeric")
     criteria = dict(raw_criteria)
-    raw_score = float(
-        payload.get("score", sum(raw_criteria.values()) / len(raw_criteria))
+    expected_raw_score = (
+        sum(raw_criteria.values()) / len(raw_criteria) if raw_criteria else 0.0
     )
+    try:
+        raw_score = float(payload.get("score", expected_raw_score))
+    except (TypeError, ValueError):
+        raw_score = expected_raw_score
+        consistency_issues.append("judge score is not numeric")
+    if abs(raw_score - expected_raw_score) > 1e-9:
+        consistency_issues.append(
+            "judge score does not equal the mean of criterion scores"
+        )
+    findings: list[JudgeFinding] = []
+    raw_findings = payload.get("findings", [])
+    if not isinstance(raw_findings, list):
+        consistency_issues.append("judge findings must be a list")
+        raw_findings = []
+    for index, item in enumerate(raw_findings):
+        try:
+            findings.append(JudgeFinding.model_validate(item))
+        except (TypeError, ValueError) as exc:
+            consistency_issues.append(
+                f"judge finding {index} is invalid: {str(exc).splitlines()[0]}"
+            )
+    finding_names = [finding.criterion for finding in findings]
+    if len(set(finding_names)) != len(finding_names):
+        consistency_issues.append("judge findings contain duplicate criteria")
+    failed_criteria = {
+        name for name, value in raw_criteria.items() if value < rubric.threshold
+    }
+    finding_criteria = set(finding_names)
+    if rubric.require_failure_findings:
+        for name in sorted(failed_criteria - finding_criteria):
+            consistency_issues.append(
+                f"failed criterion {name!r} has no evidence-backed finding"
+            )
+        for name in sorted(finding_criteria - failed_criteria):
+            consistency_issues.append(
+                f"finding for passing or unknown criterion {name!r} is inconsistent"
+            )
     if deterministic_ok:
         for name in rubric.deterministic_authority:
             if name in criteria:
@@ -714,6 +784,7 @@ def _run_judge(
                 if event.name == rubric.certification_tool and event.ok
             ]
             certification_recorded = len(matching_events) == 1
+    consistent = not consistency_issues
     threshold_ok = bool(criteria) and all(
         value >= rubric.threshold for value in criteria.values()
     )
@@ -722,6 +793,7 @@ def _run_judge(
             deterministic_ok
             and execution_ok
             and certification_recorded
+            and consistent
             and threshold_ok
         ),
         score=score,
@@ -734,6 +806,9 @@ def _run_judge(
         execution_ok=execution_ok,
         certification_tool=rubric.certification_tool,
         certification_recorded=certification_recorded,
+        findings=tuple(findings),
+        consistent=consistent,
+        consistency_issues=tuple(consistency_issues),
         rationale=str(payload.get("rationale") or ""),
         provider=str(provider) if provider else None,
         framework=str(framework) if framework else None,

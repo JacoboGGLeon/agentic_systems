@@ -132,7 +132,7 @@ Los 21 notebooks Python deben importar agentic_systems as toolkit, usar sólo
 la API pública estable, compilar, comenzar sin outputs y declarar metadata.
 La suite los ejecuta desde kernels limpios: 17 producen evidencia determinista
 y 4 prueban not-run de Providers. El notebook API verifica
-463 IDs y 10 escenarios compartidos.
+470 IDs y 10 escenarios compartidos.
 
 ## Contribution Standard
 

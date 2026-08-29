@@ -8,7 +8,7 @@ import os
 import re
 from typing import Any, Literal
 
-from pydantic import AliasChoices, BaseModel, ConfigDict, Field
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field, model_validator
 
 import agentic_systems as toolkit
 from agentic_systems.providers import provider_profile
@@ -118,19 +118,33 @@ class JudgeDecision(BaseModel):
     rationale: str = Field(validation_alias=AliasChoices("rationale", "comment"))
 
 
+SemanticViolationCriterion = Literal[
+    "request_fulfillment",
+    "evidence_correctness",
+    "clarity",
+    "no_technical_noise",
+    "no_unsupported_claims",
+]
+
+
+class SemanticViolation(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    criterion: SemanticViolationCriterion
+    evidence: str = Field(min_length=1, max_length=500)
+
+
 class SemanticJudgmentInput(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
-    failed_criteria: list[
-        Literal[
-            "request_fulfillment",
-            "evidence_correctness",
-            "clarity",
-            "no_technical_noise",
-            "no_unsupported_claims",
-        ]
-    ]
-    rationale: str = Field(min_length=1, max_length=800)
+    violations: list[SemanticViolation]
+
+    @model_validator(mode="after")
+    def validate_unique_criteria(self) -> "SemanticJudgmentInput":
+        criteria = [item.criterion for item in self.violations]
+        if len(criteria) != len(set(criteria)):
+            raise ValueError("Each failed criterion may appear at most once")
+        return self
 
 
 @toolkit.tool(
@@ -139,34 +153,34 @@ class SemanticJudgmentInput(BaseModel):
     input=SemanticJudgmentInput,
 )
 def record_semantic_judgment(
-    failed_criteria: list[
-        Literal[
-            "request_fulfillment",
-            "evidence_correctness",
-            "clarity",
-            "no_technical_noise",
-            "no_unsupported_claims",
-        ]
-    ],
-    rationale: str,
+    violations: list[SemanticViolation],
 ) -> dict[str, Any]:
-    """Record failed criteria and project them onto the public 0..1 rubric.
+    """Record evidence-backed violations and project them onto the public rubric.
 
-    A closed list avoids polarity ambiguity in negatively named criteria and gives every
-    framework the same small enum schema.  The public evaluation contract remains
-    provider-agnostic and numerical: listed criteria map to 0.0 and all others to 1.0.
+    The model cannot submit a free-form score or contradictory global rationale.
+    Pydantic validates a closed criterion vocabulary and this deterministic Tool derives
+    scores, findings, and rationale from the same structured evidence.
     """
 
-    failed = set(failed_criteria)
+    normalized = [SemanticViolation.model_validate(item) for item in violations]
+    failed = {item.criterion for item in normalized}
     criteria = JudgeCriteria(
         **{name: 0.0 if name in failed else 1.0 for name in JudgeCriteria.model_fields}
+    )
+    findings = [item.model_dump(mode="json") for item in normalized]
+    rationale = (
+        "No evidence-backed rubric violations were recorded."
+        if not normalized
+        else "; ".join(
+            f"{item.criterion}: {item.evidence}" for item in normalized
+        )
     )
     decision = JudgeDecision(
         score=sum(criteria.model_dump().values()) / 5,
         criteria=criteria,
         rationale=rationale,
     )
-    return decision.model_dump(mode="json")
+    return {**decision.model_dump(mode="json"), "findings": findings}
 
 
 @toolkit.tool(
@@ -707,9 +721,10 @@ def build_semantic_cell(
                 "A parent delegation may summarize or omit output when its child lineage "
                 "contains the authoritative specialist and Tool evidence. "
                 "Return one typed semantic judgment by calling the "
-                "record_semantic_judgment Tool exactly once. Put only criteria that "
-                "actually fail in failed_criteria; use an empty list when every criterion "
-                "passes. Keep rationale factual and under 80 words; call the Tool "
+                "record_semantic_judgment Tool exactly once. Put only actual failures in "
+                "violations and include a short public-evidence reason for each; use an "
+                "empty list when every criterion passes. The Tool derives all scores and "
+                "the rationale, so never submit either yourself. Call the Tool "
                 "immediately instead of drafting analysis. A claim unsupported by Tool "
                 "evidence must fail "
                 "evidence_correctness and "

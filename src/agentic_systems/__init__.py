@@ -69,6 +69,7 @@ from .evals import (
     EvalReport,
     EvalReproducibility,
     Evaluator,
+    JudgeFinding,
     JudgeResult,
     JudgeRubric,
     run_eval,

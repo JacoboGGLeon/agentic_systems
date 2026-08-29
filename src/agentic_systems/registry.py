@@ -15,7 +15,7 @@ from .schemas.attestation import (
     LiveScenarioName as ScenarioName,
 )
 
-from .schemas.base import ContractModel
+from .schemas.base import ContractModel, JsonValue
 
 
 REGISTRY_SCHEMA_VERSION = "agentic_systems.registry.v1"
@@ -44,12 +44,33 @@ class ProviderDefinition(ContractModel):
     authentication_modes: tuple[str, ...] = ()
 
 
+class PolicyValueAllowance(ContractModel):
+    """One safe value for a policy field not implemented by a Framework SDK.
+
+    An allowance does not pretend that the Framework implements the field.  It
+    records values whose semantics require no action from the adapter, such as
+    disabling a repair loop that the SDK does not provide.
+    """
+
+    field: str
+    values: tuple[JsonValue, ...]
+
+
 class FrameworkDefinition(ContractModel):
     name: str
     dependency: str | None = None
     extra: str | None = None
     capabilities: tuple[CapabilitySpec, ...]
     policy_fields: tuple[str, ...] = ()
+    policy_value_allowances: tuple[PolicyValueAllowance, ...] = ()
+
+    def accepts_policy_value(self, field: str, value: object) -> bool:
+        """Return whether an unsupported field has a declared no-op value."""
+
+        return any(
+            allowance.field == field and value in allowance.values
+            for allowance in self.policy_value_allowances
+        )
 
 
 class MatrixContract(ContractModel):
@@ -195,6 +216,9 @@ FRAMEWORKS: tuple[FrameworkDefinition, ...] = (
             "temperature",
             "tool_choice",
         ),
+        policy_value_allowances=(
+            PolicyValueAllowance(field="repair", values=(False,)),
+        ),
     ),
     FrameworkDefinition(
         name="strands",
@@ -207,6 +231,9 @@ FRAMEWORKS: tuple[FrameworkDefinition, ...] = (
             "max_tokens",
             "temperature",
             "tool_choice",
+        ),
+        policy_value_allowances=(
+            PolicyValueAllowance(field="repair", values=(False,)),
         ),
     ),
 )
@@ -316,6 +343,7 @@ __all__ = [
     "CapabilitySpec",
     "FrameworkDefinition",
     "MatrixContract",
+    "PolicyValueAllowance",
     "ProviderDefinition",
     "dependency_target",
     "framework_definition",

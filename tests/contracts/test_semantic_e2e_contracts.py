@@ -256,6 +256,16 @@ class DriftedJudge:
             data={
                 "score": sum(scores.values()) / len(scores),
                 "criteria": scores,
+                "findings": [
+                    {
+                        "criterion": "request_fulfillment",
+                        "evidence": "The model imposed an undeclared requirement.",
+                    },
+                    {
+                        "criterion": "evidence_correctness",
+                        "evidence": "The model ignored deterministic Tool evidence.",
+                    },
+                ],
                 "rationale": "Model judge imposed undeclared requirements.",
             },
             ok=True,
@@ -334,6 +344,49 @@ def test_deterministic_contract_authority_is_explicit_and_auditable() -> None:
     assert verdict.criteria["request_fulfillment"] == 1.0
     assert verdict.criteria["evidence_correctness"] == 1.0
     assert verdict.raw_score is not None and verdict.raw_score < verdict.score
+
+
+class InconsistentJudge:
+    def run(self, input: Any, *, mode: str) -> toolkit.RunResult:
+        scores = {name: 1.0 for name in toolkit.JudgeRubric().criteria}
+        scores["no_unsupported_claims"] = 0.0
+        return toolkit.RunResult(
+            text="Semantic verdict recorded.",
+            data={
+                "score": sum(scores.values()) / len(scores),
+                "criteria": scores,
+                "rationale": "No unsupported claims were found.",
+            },
+            ok=True,
+            engine="vllm-runtime",
+            model="test-model",
+            mode=mode,
+            meta={"framework": "native", "input": input},
+        )
+
+
+def test_judge_rejects_failed_score_without_evidence_backed_finding() -> None:
+    report = toolkit.Evaluator().evaluate(
+        Candidate("17 multiplied by 19 is 323."),
+        [
+            {
+                "name": "calculation",
+                "input": "17 x 19",
+                "expected": {"text_contains": "323"},
+            }
+        ],
+        judge=InconsistentJudge(),
+        rubric=toolkit.JudgeRubric(),
+        determinism="deterministic",
+    )
+
+    verdict = report.cases[0].judge
+    assert verdict is not None
+    assert verdict.ok is False
+    assert verdict.consistent is False
+    assert verdict.consistency_issues == (
+        "failed criterion 'no_unsupported_claims' has no evidence-backed finding",
+    )
 
 
 class ToolCertifiedJudge:

@@ -36,6 +36,15 @@ def test_external_frameworks_reject_unsupported_non_default_policy() -> None:
         validate_policy_support("strands", unsupported, "eval")
 
 
+@pytest.mark.parametrize("framework", ["openai-agents", "strands"])
+def test_external_frameworks_accept_declared_noop_policy_values(
+    framework: str,
+) -> None:
+    disabled_repair = RunPolicy.for_mode("eval").merge({"repair": False})
+
+    validate_policy_support(framework, disabled_repair, "eval")
+
+
 def test_explicit_dotenv_is_authoritative_but_discovery_remains_compatible(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:

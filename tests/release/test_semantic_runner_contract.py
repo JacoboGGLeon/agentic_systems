@@ -156,7 +156,7 @@ def test_deterministic_multiply_exposes_only_public_evidence() -> None:
     )
 
 
-def test_model_judge_uses_one_closed_failed_criteria_list(monkeypatch) -> None:
+def test_model_judge_uses_typed_evidence_backed_violations(monkeypatch) -> None:
     spec = importlib.util.spec_from_file_location(
         "semantic_e2e_judge_contract", SCRIPTS / "semantic_e2e_application.py"
     )
@@ -172,27 +172,35 @@ def test_model_judge_uses_one_closed_failed_criteria_list(monkeypatch) -> None:
         module.record_semantic_judgment.function,
     )
     properties = schema["properties"]
-    assert set(properties) == {"failed_criteria", "rationale"}
-    assert properties["failed_criteria"]["type"] == "array"
-    assert set(properties["failed_criteria"]["items"]["enum"]) == set(
+    assert set(properties) == {"violations"}
+    assert properties["violations"]["type"] == "array"
+    violation_schema = schema["$defs"]["SemanticViolation"]
+    assert set(violation_schema["properties"]["criterion"]["enum"]) == set(
         module.JudgeCriteria.model_fields
     )
-    assert properties["rationale"]["minLength"] == 1
-    assert properties["rationale"]["maxLength"] == 800
+    assert violation_schema["properties"]["evidence"]["minLength"] == 1
+    assert violation_schema["properties"]["evidence"]["maxLength"] == 500
 
-    passed = module.record_semantic_judgment.function(
-        failed_criteria=[],
-        rationale="All declared criteria passed.",
-    )
+    passed = module.record_semantic_judgment.function(violations=[])
     failed = module.record_semantic_judgment.function(
-        failed_criteria=["clarity", "no_technical_noise"],
-        rationale="The answer exposed an implementation envelope.",
+        violations=[
+            {"criterion": "clarity", "evidence": "Answer is unreadable."},
+            {
+                "criterion": "no_technical_noise",
+                "evidence": "Answer exposed an implementation envelope.",
+            },
+        ],
     )
     assert passed["score"] == 1.0
     assert set(passed["criteria"].values()) == {1.0}
     assert failed["criteria"]["clarity"] == 0.0
     assert failed["criteria"]["no_technical_noise"] == 0.0
     assert failed["criteria"]["evidence_correctness"] == 1.0
+    assert [item["criterion"] for item in failed["findings"]] == [
+        "clarity",
+        "no_technical_noise",
+    ]
+    assert "implementation envelope" in failed["rationale"]
 
     monkeypatch.setenv("AGENTIC_SYSTEMS_SEMANTIC_JUDGE_MAX_TOKENS", "900")
     cell = module.build_semantic_cell("openai-runtime", "native", model="gpt-4.1-mini")
