@@ -20,6 +20,7 @@ from .base import ContractModel, JsonScalar, JsonValue, PersistedSpec
 from .execution import (
     EXECUTION_SCHEMA_VERSION,
     BedrockRuntimeSpec,
+    ContractExecutionBudget,
     ExecutionLimits,
     OllamaRuntimeSpec,
     OpenAIRuntimeSpec,
@@ -59,6 +60,7 @@ __all__ = [
     "SPEC_SCHEMA_VERSION",
     "AgentSpec",
     "BedrockRuntimeSpec",
+    "ContractExecutionBudget",
     "ContractModel",
     "EnvironmentSpec",
     "LiveScenarioName",

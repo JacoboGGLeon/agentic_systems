@@ -27,8 +27,21 @@ Each focused challenge records:
 - observed usage only (unknown values are not fabricated);
 - retries, fallback state, and invariant results.
 
-An `ok=true` value alone never certifies a challenge. The runner applies an
+An ok=true value alone never certifies a challenge. The runner applies an
 independent semantic review and the validator rejects incomplete cells.
+
+## Judge budgets
+
+Judge limits are derived from their declared Tool contract through
+ContractExecutionBudget; they are not selected per provider or framework.
+The default reserves one decision turn, one turn per required Tool, one
+finalization turn, protocol overhead, and a safety margin. A valid certification
+Tool event completes the contract early, so the ceiling does not force extra
+model calls.
+
+AGENTIC_SYSTEMS_SEMANTIC_JUDGE_MAX_TURNS is an optional .env override. If it is
+below the contract-derived minimum, preflight fails before any live request.
+AGENTIC_SYSTEMS_SEMANTIC_JUDGE_MAX_TOKENS remains the independent token cap.
 
 ## Current challenge
 

@@ -13,6 +13,7 @@ from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 import agentic_systems as toolkit
 from agentic_systems.providers import provider_profile
 from agentic_systems.registry import FRAMEWORK_NAMES, PROVIDER_NAMES
+from agentic_systems.schemas import ContractExecutionBudget
 
 
 PROVIDERS = PROVIDER_NAMES
@@ -398,6 +399,25 @@ def semantic_judge_max_tokens() -> int:
     return value
 
 
+def semantic_judge_execution_budget(
+    *, required_tool_calls: int
+) -> ContractExecutionBudget:
+    """Build and validate the portable judge budget before execution."""
+
+    name = "AGENTIC_SYSTEMS_SEMANTIC_JUDGE_MAX_TURNS"
+    raw = os.getenv(name, "").strip()
+    max_turns: int | None = None
+    if raw:
+        try:
+            max_turns = int(raw)
+        except ValueError as exc:
+            raise ValueError(f"{name} must be an integer, got {raw!r}.") from exc
+    return ContractExecutionBudget(
+        required_tool_calls=required_tool_calls,
+        max_turns=max_turns,
+    )
+
+
 @dataclass(frozen=True)
 class SemanticCell:
     provider: str
@@ -666,6 +686,9 @@ def build_semantic_cell(
             must_call=["record_semantic_judgment"],
             completion="when_required_tools_satisfied",
         )
+        judge_budget = semantic_judge_execution_budget(
+            required_tool_calls=len(judge_contract.must_call)
+        )
         judge_agent = system.agent(
             name="judge_agent",
             instructions=(
@@ -701,8 +724,8 @@ def build_semantic_cell(
             contract=judge_contract,
             output=None,
             policy=toolkit.RunPolicy(
-                max_turns=3,
-                max_tool_calls=2,
+                max_turns=judge_budget.effective_max_turns,
+                max_tool_calls=judge_budget.effective_max_tool_calls,
                 max_tokens=semantic_judge_max_tokens(),
                 temperature=0.0,
                 tool_choice="record_semantic_judgment",
