@@ -10,7 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 GENERATOR = ROOT / "scripts" / "generate_vllm_colab_e2e_package.py"
-PACKAGE_STEM = "agentic-systems-2.1.0-vllm-qwen06-colab-final"
+PACKAGE_STEM = "agentic-systems-2.1.0-vllm-qwen4b-colab-final"
 WHEEL_NAME = "agentic_systems-2.1.0-py3-none-any.whl"
 
 
@@ -43,7 +43,7 @@ def test_final_vllm_kit_derives_identity_from_real_artifacts(tmp_path: Path) -> 
         names = set(archive.namelist())
         assert names == {
             ".env",
-            "03_vllm_qwen06_colab_final.ipynb",
+            "03_vllm_qwen4b_colab_final.ipynb",
             WHEEL_NAME,
             "README.md",
             "run_semantic_matrix.py",
@@ -56,12 +56,19 @@ def test_final_vllm_kit_derives_identity_from_real_artifacts(tmp_path: Path) -> 
         assert f"AGENTIC_SYSTEMS_WHEEL_SHA256={expected_wheel_sha}" in dotenv
         assert f"AGENTIC_SYSTEMS_WHEEL=/content/{WHEEL_NAME}" in dotenv
         assert "AGENTIC_SYSTEMS_PROVIDER_PRIORITY=vllm-runtime" in dotenv
+        assert "AGENTIC_SYSTEMS_PROVIDER=vllm-runtime" in dotenv
+        assert "VLLM_MODEL=unsloth/Qwen3-4B-Instruct-2507" in dotenv
+        assert "VLLM_BASE_MODEL=Qwen/Qwen3-4B-Instruct-2507" in dotenv
+        assert "VLLM_PROFILE=custom" in dotenv
+        assert "VLLM_GPU_MEMORY_UTILIZATION=0.75" in dotenv
+        assert "VLLM_MAX_NUM_SEQS=2" in dotenv
 
-        notebook = json.loads(archive.read("03_vllm_qwen06_colab_final.ipynb"))
+        notebook = json.loads(archive.read("03_vllm_qwen4b_colab_final.ipynb"))
         metadata = notebook["metadata"]["agentic_systems"]["portable_package"]
         assert metadata["commit_sha"] == commit
         assert metadata["wheel_sha256"] == expected_wheel_sha
-        assert metadata["model"] == "unsloth/Qwen3-0.6B"
+        assert metadata["model"] == "unsloth/Qwen3-4B-Instruct-2507"
+        assert metadata["base_model"] == "Qwen/Qwen3-4B-Instruct-2507"
 
         runner = archive.read("run_semantic_matrix.py").decode()
         application = archive.read("semantic_e2e_application.py").decode()

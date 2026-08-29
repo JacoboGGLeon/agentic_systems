@@ -19,9 +19,10 @@ SEMANTIC_RUNNER = ROOT / "scripts" / "run_semantic_matrix.py"
 SEMANTIC_APPLICATION = ROOT / "scripts" / "semantic_e2e_application.py"
 DEFAULT_WHEEL = ROOT / "dist" / "agentic_systems-2.1.0-py3-none-any.whl"
 DEFAULT_OUTPUT = ROOT / "dist"
-PACKAGE_STEM = "agentic-systems-2.1.0-vllm-qwen06-colab-final"
-NOTEBOOK_FILENAME = "03_vllm_qwen06_colab_final.ipynb"
-MODEL_ID = "unsloth/Qwen3-0.6B"
+PACKAGE_STEM = "agentic-systems-2.1.0-vllm-qwen4b-colab-final"
+NOTEBOOK_FILENAME = "03_vllm_qwen4b_colab_final.ipynb"
+DEFAULT_MODEL_ID = "unsloth/Qwen3-4B-Instruct-2507"
+DEFAULT_BASE_MODEL_ID = "Qwen/Qwen3-4B-Instruct-2507"
 
 
 def _sha256(path: Path) -> str:
@@ -36,7 +37,14 @@ def _git_commit() -> str:
     ).strip()
 
 
-def _dotenv(*, commit: str, wheel: Path, wheel_sha256: str) -> str:
+def _dotenv(
+    *,
+    commit: str,
+    wheel: Path,
+    wheel_sha256: str,
+    model_id: str,
+    base_model_id: str,
+) -> str:
     return textwrap.dedent(
         f"""\
         RUN_VLLM_LIVE=1
@@ -46,9 +54,9 @@ def _dotenv(*, commit: str, wheel: Path, wheel_sha256: str) -> str:
         AGENTIC_SYSTEMS_WHEEL_FILENAME={wheel.name}
         AGENTIC_SYSTEMS_WHEEL_SHA256={wheel_sha256}
 
-        VLLM_MODEL={MODEL_ID}
-        VLLM_BASE_MODEL=Qwen/Qwen3-0.6B
-        VLLM_PROFILE=fast
+        VLLM_MODEL={model_id}
+        VLLM_BASE_MODEL={base_model_id}
+        VLLM_PROFILE=custom
         VLLM_HOST=127.0.0.1
         VLLM_PORT=8000
         VLLM_BASE_URL=http://127.0.0.1:8000/v1
@@ -58,21 +66,27 @@ def _dotenv(*, commit: str, wheel: Path, wheel_sha256: str) -> str:
         VLLM_ENABLE_THINKING=0
         VLLM_TEMPERATURE=0.7
         AGENTIC_SYSTEMS_LIVE_TEMPERATURE=0.0
-        VLLM_GPU_MEMORY_UTILIZATION=0.4
+        VLLM_GPU_MEMORY_UTILIZATION=0.75
         VLLM_MAX_MODEL_LEN=8192
-        VLLM_MAX_NUM_SEQS=4
+        VLLM_MAX_NUM_SEQS=2
 
+        AGENTIC_SYSTEMS_PROVIDER=vllm-runtime
+        AGENTIC_SYSTEMS_FRAMEWORK=native
         AGENTIC_SYSTEMS_PROVIDER_PRIORITY=vllm-runtime
+        RUN_SEMANTIC_MATRIX_LIVE=1
+        OPENAI_AGENTS_DISABLE_TRACING=1
         """
     )
 
 
-def _readme(*, commit: str, wheel: Path, wheel_sha256: str) -> str:
+def _readme(
+    *, commit: str, wheel: Path, wheel_sha256: str, model_id: str
+) -> str:
     return textwrap.dedent(
         f"""\
-        # Agentic Systems 2.1.0 · vLLM/Qwen 0.6B final live kit
+        # Agentic Systems 2.1.0 · vLLM/Qwen 4B final live kit
 
-        1. Abre un Colab nuevo y selecciona una GPU.
+        1. Abre un Colab nuevo y selecciona una GPU L4.
         2. Sube `{PACKAGE_STEM}.zip` cuando lo solicite la primera celda.
         3. Ejecuta **Run all** una sola vez.
         4. Descarga `vllm-semantic-attestation.json` y `vllm-semantic-review.md`.
@@ -82,7 +96,7 @@ def _readme(*, commit: str, wheel: Path, wheel_sha256: str) -> str:
         - Commit: `{commit}`
         - Wheel: `{wheel.name}`
         - SHA256: `{wheel_sha256}`
-        - Model: `{MODEL_ID}`
+        - Model: `{model_id}`
 
         `.env` es la fuente canónica de configuración. El notebook verifica los
         checksums internos antes de instalar y no permite fallback de provider.
@@ -152,7 +166,14 @@ def _write_archive(
             archive.writestr(entry, data)
 
 
-def build(*, wheel: Path, commit: str, output_dir: Path) -> Path:
+def build(
+    *,
+    wheel: Path,
+    commit: str,
+    output_dir: Path,
+    model_id: str = DEFAULT_MODEL_ID,
+    base_model_id: str = DEFAULT_BASE_MODEL_ID,
+) -> Path:
     wheel = wheel.resolve()
     output_dir = output_dir.resolve()
     if not wheel.is_file():
@@ -169,11 +190,22 @@ def build(*, wheel: Path, commit: str, output_dir: Path) -> Path:
     shutil.copy2(SEMANTIC_RUNNER, package_dir / "run_semantic_matrix.py")
     shutil.copy2(SEMANTIC_APPLICATION, package_dir / "semantic_e2e_application.py")
     (package_dir / ".env").write_text(
-        _dotenv(commit=commit, wheel=wheel, wheel_sha256=wheel_sha256),
+        _dotenv(
+            commit=commit,
+            wheel=wheel,
+            wheel_sha256=wheel_sha256,
+            model_id=model_id,
+            base_model_id=base_model_id,
+        ),
         encoding="utf-8",
     )
     (package_dir / "README.md").write_text(
-        _readme(commit=commit, wheel=wheel, wheel_sha256=wheel_sha256),
+        _readme(
+            commit=commit,
+            wheel=wheel,
+            wheel_sha256=wheel_sha256,
+            model_id=model_id,
+        ),
         encoding="utf-8",
     )
 
@@ -181,7 +213,8 @@ def build(*, wheel: Path, commit: str, output_dir: Path) -> Path:
     notebook.cells.insert(0, _bootstrap(wheel.name))
     notebook.metadata.setdefault("agentic_systems", {})["portable_package"] = {
         "filename": f"{PACKAGE_STEM}.zip",
-        "model": MODEL_ID,
+        "model": model_id,
+        "base_model": base_model_id,
         "commit_sha": commit,
         "wheel_filename": wheel.name,
         "wheel_sha256": wheel_sha256,
@@ -213,11 +246,15 @@ def main() -> None:
     parser.add_argument("--wheel", type=Path, default=DEFAULT_WHEEL)
     parser.add_argument("--commit", default=None)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--model", default=DEFAULT_MODEL_ID)
+    parser.add_argument("--base-model", default=DEFAULT_BASE_MODEL_ID)
     args = parser.parse_args()
     build(
         wheel=args.wheel,
         commit=args.commit or _git_commit(),
         output_dir=args.output_dir,
+        model_id=args.model,
+        base_model_id=args.base_model,
     )
 
 
