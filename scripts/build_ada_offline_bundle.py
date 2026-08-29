@@ -255,7 +255,7 @@ def _requirements() -> str:
         langgraph>=0.2.0
         openai>=2.45.0,<3
         openai-agents>=0.18.3,<0.19
-        strands-agents>=1.29.0,<2
+        strands-agents[a2a]>=1.29.0,<2
         mcp>=1,<2
         streamlit>=1.37
         ipython>=8.0

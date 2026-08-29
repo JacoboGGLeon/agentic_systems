@@ -638,8 +638,6 @@ def build_semantic_cell(
             max_tokens=700,
             temperature=0.0,
             tool_choice="auto",
-            repair=True,
-            max_repairs=1,
         ),
     )
     executable = system.compile(entrypoint=orchestrator)
@@ -708,7 +706,6 @@ def build_semantic_cell(
                 max_tokens=semantic_judge_max_tokens(),
                 temperature=0.0,
                 tool_choice="record_semantic_judgment",
-                repair=True,
             ),
         )
         judge = AuditedJudge(judge_agent)

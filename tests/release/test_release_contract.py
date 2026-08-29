@@ -93,7 +93,7 @@ def test_alpha_version_surface_and_packaging_are_consistent():
         for requirement in base_dependencies
     )
     assert extras["openai-agents"] == ["openai-agents>=0.18.3,<0.19"]
-    assert extras["strands"] == ["strands-agents>=1.29.0,<2", "mcp>=1,<2"]
+    assert extras["strands"] == ["strands-agents[a2a]>=1.29.0,<2", "mcp>=1,<2"]
 
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     install = (ROOT / "INSTALL.md").read_text(encoding="utf-8")

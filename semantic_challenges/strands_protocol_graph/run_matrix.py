@@ -205,7 +205,12 @@ def run_cell(provider: str) -> dict[str, Any]:
         mcp_token=mcp_token,
         a2a_token=a2a_token,
     )
-    with ProtocolChallenge(provider, model=model) as challenge:
+    with ProtocolChallenge(
+        provider,
+        model=model,
+        mcp_token=mcp_token,
+        a2a_token=a2a_token,
+    ) as challenge:
         report = toolkit.Evaluator().evaluate(
             challenge,
             [case],

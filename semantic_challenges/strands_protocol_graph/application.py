@@ -82,10 +82,10 @@ def _wait_for_port(process: subprocess.Popen[Any], port: int) -> None:
 
 
 @asynccontextmanager
-async def _mcp_transport() -> AsyncIterator[Any]:
+async def _mcp_transport(token: str) -> AsyncIterator[Any]:
     parameters = StdioServerParameters(
         command=sys.executable,
-        args=[str(ROOT / "mcp_server.py")],
+        args=[str(ROOT / "mcp_server.py"), "--token", token],
     )
     with open(os.devnull, "w", encoding="utf-8") as errlog:
         async with stdio_client(parameters, errlog=errlog) as transport:
@@ -230,10 +230,23 @@ class NativeProtocolJudge:
 class ProtocolChallenge:
     """Own protocol resources and expose one LangGraph-backed Executable."""
 
-    def __init__(self, provider: str, *, model: str | None = None) -> None:
+    def __init__(
+        self,
+        provider: str,
+        *,
+        model: str | None = None,
+        mcp_token: str,
+        a2a_token: str,
+    ) -> None:
         if provider not in PROVIDERS:
             raise ValueError(f"Unsupported challenge provider {provider!r}.")
         self.provider = provider
+        self.mcp_token = str(mcp_token).strip()
+        self.a2a_token = str(a2a_token).strip()
+        if not self.mcp_token or not self.a2a_token:
+            raise ValueError("Protocol evidence bindings cannot be empty.")
+        if self.mcp_token == self.a2a_token:
+            raise ValueError("MCP and A2A evidence bindings must be distinct.")
         self.model_generation = (
             provider_capability(provider, "model_generation").status != "unsupported"
         )
@@ -273,20 +286,25 @@ class ProtocolChallenge:
         remote = self.remote
 
         @strands_tool
-        def fetch_a2a_evidence(token: str) -> dict[str, str]:
+        def fetch_a2a_evidence() -> dict[str, str]:
             """Retrieve verified evidence from the remote A2A Agent."""
 
             response = remote(
-                json.dumps({"tool": "fetch_remote_evidence", "input": {"token": token}})
+                json.dumps(
+                    {
+                        "tool": "fetch_remote_evidence",
+                        "input": {"token": self.a2a_token},
+                    }
+                )
             )
             return {
                 "protocol": "a2a",
-                "token": token,
+                "token": self.a2a_token,
                 "status": "verified",
                 "remote_evidence": _a2a_text(response),
             }
 
-        self.mcp_client = MCPClient(_mcp_transport)
+        self.mcp_client = MCPClient(lambda: _mcp_transport(self.mcp_token))
         runtime = toolkit.runtime(
             provider=self.provider,
             model=self.model,
@@ -302,11 +320,12 @@ class ProtocolChallenge:
         self.candidate = self.system.agent(
             name="strands_protocol_agent",
             instructions=(
-                "For every request, call fetch_mcp_evidence exactly once with the MCP "
-                "token and fetch_a2a_evidence exactly once with the A2A token. Use no "
-                "other tools. Then write two concise natural sentences confirming both "
-                "protocols and both exact tokens. Never expose JSON, ToolEnvelope, code, "
-                "or private reasoning."
+                "For every request, call fetch_mcp_evidence exactly once and "
+                "fetch_a2a_evidence exactly once. The tools are already bound to the "
+                "authorized evidence, so pass no arguments and use no other tools. "
+                "Then write two concise natural sentences confirming both protocols "
+                "and copy both exact tokens from the verified tool results. Never "
+                "expose JSON, ToolEnvelope, code, or private reasoning."
             ),
             framework=toolkit.framework(
                 "strands",
@@ -419,11 +438,11 @@ def challenge_case(
             "steps": [
                 {
                     "tool": "fetch_mcp_evidence",
-                    "input": {"token": mcp_token},
+                    "input": {},
                 },
                 {
                     "tool": "fetch_a2a_evidence",
-                    "input": {"token": a2a_token},
+                    "input": {},
                 },
             ]
         }

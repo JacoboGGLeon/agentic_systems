@@ -19,6 +19,11 @@ judge checks answer, Tool outputs, provider/framework identity, and hierarchical
 lineage. The runner then performs a second manual-style deterministic review of
 `human_result`; `ok=true` alone cannot pass.
 
+The evidence identifiers are capability-bound when the isolated MCP and A2A
+resources are created. The language model chooses the Tools, but cannot rewrite
+the authoritative identifiers as Tool arguments. This applies uniformly to
+every provider and prevents a mutated argument from being certified as valid.
+
 ## Installation
 
 Install the exact candidate wheel, followed by the challenge dependencies:

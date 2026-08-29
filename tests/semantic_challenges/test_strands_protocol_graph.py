@@ -15,17 +15,22 @@ A2A_TOKEN = "A2A-TEST-EVIDENCE-91C2"
 
 
 def test_protocol_challenge_executes_real_mcp_a2a_strands_and_langgraph() -> None:
-    with ProtocolChallenge("python-runtime", model="python-runtime") as challenge:
+    with ProtocolChallenge(
+        "python-runtime",
+        model="python-runtime",
+        mcp_token=MCP_TOKEN,
+        a2a_token=A2A_TOKEN,
+    ) as challenge:
         result = challenge.run(
             {
                 "steps": [
                     {
                         "tool": "fetch_mcp_evidence",
-                        "input": {"token": MCP_TOKEN},
+                        "input": {},
                     },
                     {
                         "tool": "fetch_a2a_evidence",
-                        "input": {"token": A2A_TOKEN},
+                        "input": {},
                     },
                 ]
             }
@@ -48,6 +53,8 @@ def test_protocol_challenge_executes_real_mcp_a2a_strands_and_langgraph() -> Non
         "token": MCP_TOKEN,
         "status": "verified",
     }
+    assert candidate.tool_events[0].input == {}
+    assert candidate.tool_events[1].input == {}
     assert A2A_TOKEN in str(candidate.tool_events[1].output)
     assert "a2a" in str(candidate.tool_events[1].output).lower()
     for node in nodes:

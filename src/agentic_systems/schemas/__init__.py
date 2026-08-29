@@ -7,7 +7,14 @@ from .attestation import (
     LiveMatrixCase,
     LiveScenarioName,
     LiveScenarioEvidence,
+    SEMANTIC_ATTESTATION_SCHEMA_VERSION,
+    SemanticAttestation,
+    SemanticEpisodeEvidence,
+    SemanticMatrix,
+    SemanticMatrixCell,
+    SemanticSummary,
     validate_live_attestation,
+    validate_semantic_attestation,
 )
 from .base import ContractModel, JsonScalar, JsonValue, PersistedSpec
 from .execution import (
@@ -64,6 +71,12 @@ __all__ = [
     "LiveAttestation",
     "LiveMatrixCase",
     "LiveScenarioEvidence",
+    "SEMANTIC_ATTESTATION_SCHEMA_VERSION",
+    "SemanticAttestation",
+    "SemanticEpisodeEvidence",
+    "SemanticMatrix",
+    "SemanticMatrixCell",
+    "SemanticSummary",
     "NormalizedModelOutput",
     "OllamaRuntimeSpec",
     "SchemaMigrationError",
@@ -83,6 +96,7 @@ __all__ = [
     "UsageInfo",
     "VLLMRuntimeSpec",
     "validate_live_attestation",
+    "validate_semantic_attestation",
 ]
 from .serving import (
     SERVING_SCHEMA_VERSION,

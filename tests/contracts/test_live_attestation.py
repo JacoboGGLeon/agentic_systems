@@ -10,7 +10,13 @@ from agentic_systems.schemas import (
     LIVE_SCENARIO_NAMES,
     LiveMatrixCase,
     LiveScenarioEvidence,
+    SemanticAttestation,
+    SemanticEpisodeEvidence,
+    SemanticMatrix,
+    SemanticMatrixCell,
+    SemanticSummary,
     validate_live_attestation,
+    validate_semantic_attestation,
 )
 
 
@@ -147,3 +153,162 @@ def test_live_attestation_rejects_incomplete_scenarios_and_vllm_identity() -> No
     assert "missing scenarios" in message
     assert "live environment is incomplete" in message
     assert "does not identify the model" in message
+
+
+def _semantic_attestation() -> SemanticAttestation:
+    episode = SemanticEpisodeEvidence(
+        name="calculation",
+        ok=True,
+        candidate={
+            "ok": True,
+            "runtime": {
+                "provider": "openai-runtime",
+                "framework": "native",
+                "model": "gpt-4.1-mini",
+            },
+            "children": [],
+        },
+        deterministic_validation={"ok": True, "issues": []},
+        environment_episode={
+            "name": "semantic-openai-runtime-native-calculation",
+            "entity": "AgenticEnvironment",
+        },
+        human_result="Provider: openai-runtime | Framework: native | Answer: 323",
+        judge={
+            "ok": True,
+            "score": 1.0,
+            "threshold": 0.8,
+            "deterministic_validation_ok": True,
+            "certification_recorded": True,
+            "certification_tool": "record_semantic_judgment",
+            "provider": "openai-runtime",
+            "framework": "native",
+            "model": "gpt-4.1-mini",
+        },
+        judge_execution={
+            "ok": True,
+            "runtime": {
+                "provider": "openai-runtime",
+                "framework": "native",
+                "model": "gpt-4.1-mini",
+            },
+        },
+        lineage={"steps": [{"kind": "answer"}]},
+        semantic_review={"ok": True, "failures": []},
+    )
+    return SemanticAttestation(
+        created_at=NOW,
+        commit_sha=COMMIT,
+        wheel_sha256=WHEEL,
+        wheel_filename="agentic_systems-2.1.0-py3-none-any.whl",
+        package_version="2.1.0",
+        runtime_package_file="/venv/site-packages/agentic_systems/__init__.py",
+        wheel_runtime_verified=True,
+        gate_assets={"runner": {"sha256": "a" * 64}},
+        matrix=SemanticMatrix(
+            providers=("openai-runtime",),
+            frameworks=("native",),
+        ),
+        summary=SemanticSummary(
+            total=1,
+            passed=1,
+            failed=0,
+            episodes_total=1,
+            episodes_passed=1,
+            episodes_failed=0,
+        ),
+        cells=(
+            SemanticMatrixCell(
+                provider="openai-runtime",
+                framework="native",
+                model="gpt-4.1-mini",
+                ok=True,
+                control_kind="live-language-model",
+                eval_report={"ok": True},
+                episodes=(episode,),
+            ),
+        ),
+    )
+
+
+def test_semantic_attestation_accepts_complete_reviewed_evidence() -> None:
+    evidence = _semantic_attestation()
+    validate_semantic_attestation(
+        evidence,
+        expected_commit_sha=COMMIT,
+        expected_wheel_sha256=WHEEL,
+        expected_pairs={("openai-runtime", "native")},
+        now=NOW + timedelta(hours=1),
+    )
+    assert (
+        SemanticAttestation.model_validate_json(evidence.model_dump_json()) == evidence
+    )
+
+
+def test_semantic_attestation_rejects_false_positive_and_matrix_omission() -> None:
+    evidence = _semantic_attestation()
+    episode = (
+        evidence.cells[0]
+        .episodes[0]
+        .model_copy(
+            update={
+                "ok": False,
+                "deterministic_validation": {
+                    "ok": False,
+                    "issues": [{"code": "wrong"}],
+                },
+            }
+        )
+    )
+    cell = evidence.cells[0].model_copy(update={"ok": False, "episodes": (episode,)})
+    invalid = evidence.model_copy(update={"cells": (cell,)})
+    with pytest.raises(ValueError) as captured:
+        validate_semantic_attestation(
+            invalid,
+            expected_commit_sha=COMMIT,
+            expected_wheel_sha256=WHEEL,
+            expected_pairs={
+                ("openai-runtime", "native"),
+                ("bedrock-runtime", "native"),
+            },
+            now=NOW,
+        )
+    message = str(captured.value)
+    assert "required matrix" in message
+    assert "summary contradicts" in message
+    assert "failed deterministic validation" in message
+
+
+def test_semantic_attestation_rejects_missing_live_judge_execution() -> None:
+    evidence = _semantic_attestation()
+    episode = evidence.cells[0].episodes[0].model_copy(update={"judge_execution": None})
+    cell = evidence.cells[0].model_copy(update={"episodes": (episode,)})
+    invalid = evidence.model_copy(update={"cells": (cell,)})
+
+    with pytest.raises(ValueError, match="lacks live judge execution evidence"):
+        validate_semantic_attestation(
+            invalid,
+            expected_commit_sha=COMMIT,
+            expected_wheel_sha256=WHEEL,
+            expected_pairs={("openai-runtime", "native")},
+            now=NOW,
+        )
+
+
+def test_semantic_attestation_rejects_judge_identity_mismatch() -> None:
+    evidence = _semantic_attestation()
+    original = evidence.cells[0].episodes[0]
+    judge = dict(original.judge)
+    judge["provider"] = "bedrock-runtime"
+    episode = original.model_copy(update={"judge": judge})
+    cell = evidence.cells[0].model_copy(update={"episodes": (episode,)})
+    invalid = evidence.model_copy(update={"cells": (cell,)})
+
+    with pytest.raises(ValueError, match="judge provider identity differs"):
+        validate_semantic_attestation(
+            invalid,
+            expected_commit_sha=COMMIT,
+            expected_wheel_sha256=WHEEL,
+            expected_pairs={("openai-runtime", "native")},
+            now=NOW,
+        )
