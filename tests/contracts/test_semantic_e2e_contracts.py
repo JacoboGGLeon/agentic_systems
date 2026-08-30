@@ -390,9 +390,16 @@ def test_judge_rejects_failed_score_without_evidence_backed_finding() -> None:
 
 
 class ToolCertifiedJudge:
-    def __init__(self, *, tool_name: str | None, ok: bool = True) -> None:
+    def __init__(
+        self,
+        *,
+        tool_name: str | None,
+        ok: bool = True,
+        final_score: float = 0.9,
+    ) -> None:
         self.tool_name = tool_name
         self.ok = ok
+        self.final_score = final_score
 
     def run(self, input: Any, *, mode: str) -> toolkit.RunResult:
         scores = {name: 0.9 for name in toolkit.JudgeRubric().criteria}
@@ -413,9 +420,11 @@ class ToolCertifiedJudge:
         return RunResult(
             text="Semantic verdict recorded.",
             data={
-                "score": 0.9,
-                "criteria": scores,
-                "rationale": "Certified from evidence.",
+                "score": self.final_score,
+                "criteria": {
+                    name: self.final_score for name in toolkit.JudgeRubric().criteria
+                },
+                "rationale": "Non-authoritative final synthesis.",
             },
             ok=self.ok,
             engine="openai-runtime",
@@ -462,12 +471,17 @@ def test_eval_requires_one_successful_judge_certification_tool() -> None:
     certified = toolkit.Evaluator().evaluate(
         Candidate("17 multiplied by 19 is 323."),
         case,
-        judge=ToolCertifiedJudge(tool_name="record_semantic_judgment"),
+        judge=ToolCertifiedJudge(
+            tool_name="record_semantic_judgment",
+            final_score=0.0,
+        ),
         rubric=rubric,
     )
     assert certified.ok is True
     assert certified.cases[0].judge is not None
     assert certified.cases[0].judge.certification_recorded is True
+    assert certified.cases[0].judge.raw_score == 0.9
+    assert set(certified.cases[0].judge.raw_criteria.values()) == {0.9}
 
 
 def test_eval_accepts_only_explicitly_allowed_tool_paths() -> None:

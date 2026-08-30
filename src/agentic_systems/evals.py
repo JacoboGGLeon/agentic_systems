@@ -698,8 +698,10 @@ def _run_judge(
         judged = judge.run(request, mode="eval")
     except TypeError:
         judged = judge.run(request)
-    payload = _judge_payload(judged)
-    consistency_issues: list[str] = []
+    payload, certification_recorded, certification_issues = (
+        _certification_payload(judged, rubric.certification_tool)
+    )
+    consistency_issues = list(certification_issues)
     payload_criteria = payload.get("criteria")
     payload_criteria = payload_criteria if isinstance(payload_criteria, dict) else {}
     missing_criteria = [name for name in rubric.criteria if name not in payload_criteria]
@@ -770,20 +772,12 @@ def _run_judge(
     model = payload.get("model")
     usage: dict[str, Any] = {}
     execution_ok = True
-    certification_recorded = rubric.certification_tool is None
     if isinstance(judged, RunResult):
         execution_ok = judged.ok
         provider = judged.engine
         framework = judged.meta.get("framework_adapter") or judged.meta.get("framework")
         model = judged.model
         usage = dict(judged.usage or {})
-        if rubric.certification_tool is not None:
-            matching_events = [
-                event
-                for event in judged.tool_events
-                if event.name == rubric.certification_tool and event.ok
-            ]
-            certification_recorded = len(matching_events) == 1
     consistent = not consistency_issues
     threshold_ok = bool(criteria) and all(
         value >= rubric.threshold for value in criteria.values()
@@ -815,6 +809,39 @@ def _run_judge(
         model=str(model) if model else None,
         usage=usage,
     )
+
+
+def _certification_payload(
+    judged: Any,
+    certification_tool: str | None,
+) -> tuple[dict[str, Any], bool, tuple[str, ...]]:
+    """Select the structured certification event as the verdict authority.
+
+    A framework may synthesize or reshape the Tool result in its final assistant
+    message. When a rubric requires a certification Tool, only that successful,
+    uniquely named Tool event is authoritative; final model text remains presentation.
+    """
+
+    fallback = _judge_payload(judged)
+    if certification_tool is None:
+        return fallback, True, ()
+    if not isinstance(judged, RunResult):
+        return fallback, False, ()
+    matching_events = [
+        event
+        for event in judged.tool_events
+        if event.name == certification_tool and event.ok
+    ]
+    if len(matching_events) != 1:
+        return fallback, False, ()
+    output = matching_events[0].output
+    if not isinstance(output, dict):
+        return (
+            fallback,
+            True,
+            ("judge certification Tool output must be a structured object",),
+        )
+    return dict(output), True, ()
 
 
 def _judge_candidate_view(result: RunResult) -> dict[str, Any]:
