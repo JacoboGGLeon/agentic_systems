@@ -1111,6 +1111,25 @@ def test_openai_model_bridge_covers_passthrough_stream_and_unlimited_budget() ->
     sentinel = object()
     assert om._without_tool_choice(sentinel) is sentinel
 
+    model.configure(RunPolicy(max_tool_calls=0), "eval")
+    keyword_settings = Settings()
+    args, kwargs = model._without_tools_when_exhausted(
+        (),
+        {"tools": [object()], "model_settings": keyword_settings},
+    )
+    assert args == ()
+    assert kwargs["tools"] == []
+    assert kwargs["model_settings"].tool_choice is None
+
+    positional_settings = Settings()
+    args, kwargs = model._without_tools_when_exhausted(
+        ("system", "input", positional_settings, [object()]),
+        {},
+    )
+    assert kwargs == {}
+    assert args[3] == []
+    assert args[2].tool_choice is None
+
 
 def test_strands_boundary_helpers_tolerate_immutable_shims_and_malformed_events() -> (
     None
