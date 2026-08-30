@@ -8,6 +8,7 @@ from pydantic import BaseModel, ConfigDict
 import agentic_systems as toolkit
 from agentic_systems.core.scheduler import execute_sync
 from agentic_systems.evals import _judge_candidate_view
+from agentic_systems.providers.base import ToolEnvelope
 from agentic_systems.results import RunResult, ToolEvent
 
 
@@ -410,11 +411,16 @@ class ToolCertifiedJudge:
                     id="judge-certification",
                     name=self.tool_name,
                     ok=True,
-                    output={
-                        "score": 0.9,
-                        "criteria": scores,
-                        "rationale": "Certified from evidence.",
-                    },
+                    output=ToolEnvelope(
+                        kind="object",
+                        tool_name=self.tool_name,
+                        ok=True,
+                        data={
+                            "score": 0.9,
+                            "criteria": scores,
+                            "rationale": "Certified from evidence.",
+                        },
+                    ).model_dump(mode="json"),
                 )
             )
         return RunResult(

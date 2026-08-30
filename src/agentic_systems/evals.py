@@ -15,6 +15,7 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 from .contracts import AgentContract, ValidationResult
 from .environments import AgenticEnvironment, GraphState
 from .lineage import _short
+from .providers.base import ToolEnvelope
 from .results import RunResult, _contains_subset, is_technical_public_answer
 from .usage import merge_usage
 
@@ -841,7 +842,11 @@ def _certification_payload(
             True,
             ("judge certification Tool output must be a structured object",),
         )
-    return dict(output), True, ()
+    try:
+        envelope = ToolEnvelope.model_validate(output)
+    except (TypeError, ValueError):
+        return dict(output), True, ()
+    return dict(envelope.data), True, ()
 
 
 def _judge_candidate_view(result: RunResult) -> dict[str, Any]:
