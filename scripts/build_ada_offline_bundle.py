@@ -68,6 +68,32 @@ def _read_json(path: Path) -> dict[str, object]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def _referenced_evidence_files(
+    certification: dict[str, object],
+) -> tuple[Path, ...]:
+    """Resolve evidence from the certification document, not a parallel list."""
+
+    names = {SUMMARY.name}
+
+    def visit(value: object) -> None:
+        if isinstance(value, dict):
+            for child in value.values():
+                visit(child)
+            return
+        if isinstance(value, list):
+            for child in value:
+                visit(child)
+            return
+        if not isinstance(value, str) or not value.endswith((".json", ".md")):
+            return
+        candidate = EVIDENCE / value
+        if candidate.is_file():
+            names.add(value)
+
+    visit(certification)
+    return tuple(EVIDENCE / name for name in sorted(names))
+
+
 def _validate_semantic_evidence(
     path: Path,
     *,
@@ -425,7 +451,9 @@ def build_bundle(
         _copy(WHEEL, bundle / "artifacts" / WHEEL.name)
         _copy(SDIST, bundle / "artifacts" / SDIST.name)
         _copy(TUTORIALS, bundle / "tutorials")
-        _copy(EVIDENCE, bundle / "evidence")
+        evidence_files = _referenced_evidence_files(certification)
+        for evidence in evidence_files:
+            _copy(evidence, bundle / "evidence" / evidence.name)
         for relative in STUDIO_EXPORTS:
             _copy(STUDIO / relative, bundle / "studio" / relative)
         for filename in VALIDATION_EXPORTS:
@@ -469,6 +497,7 @@ def build_bundle(
                     "outputs/<provider>-semantic-review.md",
                 ],
             },
+            "evidence_files": [path.name for path in evidence_files],
             "tutorial_notebooks": 21,
             "cli_tutorials": 0,
         }

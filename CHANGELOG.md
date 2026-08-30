@@ -52,6 +52,19 @@ provider/framework substitutability.
 - Existing `text`, `final`, `engine`, `model`, `usage` and `meta` result views
   remain available; typed projections are additive.
 
+### Certification
+
+- The primary five-Provider by four-Framework matrix passed all 20 routes and
+  all 76 semantic episodes, including the deterministic Python control.
+- Bedrock AWS credential-chain execution passed four Framework routes and 16
+  semantic episodes in SageMaker, then repeated the same 4/4 and 16/16 result
+  in the ADA enterprise sandbox.
+- Across the primary matrix and both IAM environments, 108/108 semantic
+  episodes were manually reviewed for public answer, hierarchical lineage,
+  deterministic evidence, judge verdict, runtime identity and absence of
+  fallback. `final-certification-summary.json` pins the exact wheel and evidence
+  hashes used by the release gate.
+
 All notable changes to Agentic Systems are documented here.
 ## 2.0.0 - 2026-08-19
 

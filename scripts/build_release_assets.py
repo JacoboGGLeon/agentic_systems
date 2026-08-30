@@ -24,6 +24,8 @@ VERSION = str(
     ]
 )
 DIST = ROOT / "dist"
+CERTIFICATION_SUMMARY = DIST / "release-evidence" / "final-certification-summary.json"
+CERTIFICATION_ASSET = DIST / "final-certification-summary.json"
 SKILL_SOURCE = (
     ROOT / "examples" / "agentic_systems_studio" / "skills" / "agentic-systems"
 )
@@ -34,6 +36,7 @@ STUDIO_SOURCE = (
     / "dist"
     / f"agentic-systems-studio-{VERSION}.zip"
 )
+CHALLENGE_SOURCE = DIST / f"agentic-systems-{VERSION}-strands-protocol-challenge.zip"
 FORBIDDEN_PATH_PARTS = ("accountability_otc", "accountability-otc")
 SECRET_PREFIXES = (
     re.compile(rb"(?<![A-Za-z0-9_-])sk-[A-Za-z0-9_-]{20,}"),
@@ -99,6 +102,8 @@ def _members(path: Path):
                     stream = archive.extractfile(info)
                     if stream is not None:
                         yield info.name, stream.read()
+        return
+    yield path.name, path.read_bytes()
 
 
 def audit_archive(path: Path, secrets: list[bytes]) -> dict[str, object]:
@@ -128,7 +133,7 @@ def audit_archive(path: Path, secrets: list[bytes]) -> dict[str, object]:
     }
 
 
-def build_release_assets() -> dict[str, object]:
+def build_release_assets(*, require_certification: bool = False) -> dict[str, object]:
     DIST.mkdir(parents=True, exist_ok=True)
     if not STUDIO_SOURCE.exists():
         raise FileNotFoundError(
@@ -145,7 +150,15 @@ def build_release_assets() -> dict[str, object]:
         DIST / f"agentic_systems-{VERSION}.tar.gz",
         studio,
         skill,
+        CHALLENGE_SOURCE,
     ]
+    if CERTIFICATION_SUMMARY.exists():
+        shutil.copy2(CERTIFICATION_SUMMARY, CERTIFICATION_ASSET)
+        artifacts.append(CERTIFICATION_ASSET)
+    elif require_certification:
+        raise FileNotFoundError(
+            f"Final release assembly requires {CERTIFICATION_SUMMARY}"
+        )
     ada_bundle = DIST / f"agentic-systems-{VERSION}-ada-offline.zip"
     if ada_bundle.exists():
         artifacts.append(ada_bundle)
@@ -172,8 +185,20 @@ def build_release_assets() -> dict[str, object]:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.parse_args()
-    print(json.dumps(build_release_assets(), indent=2))
+    parser.add_argument(
+        "--require-certification",
+        action="store_true",
+        help="Fail unless the final live-certification summary is present.",
+    )
+    args = parser.parse_args()
+    print(
+        json.dumps(
+            build_release_assets(
+                require_certification=args.require_certification,
+            ),
+            indent=2,
+        )
+    )
     return 0
 
 

@@ -55,11 +55,26 @@ def test_ada_bundle_is_reproducible_certified_and_offline(tmp_path: Path):
             "strands",
         ]
         assert manifest["semantic_gate"]["model_provider_episodes"] == 16
-        assert root + "evidence/bedrock-iam-attestation.json" in names
-        assert root + "evidence/vllm-attestation.json" in names
-        assert root + "evidence/local-semantic-attestation.json" in names
-        assert root + "evidence/local-semantic-review.md" in names
-        assert root + "evidence/vllm-semantic-review.md" in names
+        bundled_evidence = {
+            Path(name).name for name in names if name.startswith(root + "evidence/")
+        }
+        assert bundled_evidence == set(manifest["evidence_files"])
+        certification = json.loads(
+            archive.read(root + "evidence/final-certification-summary.json")
+        )
+        primary = certification["primary_matrix"]
+        assert primary["vllm-runtime"]["artifact"] in bundled_evidence
+        assert primary["python-runtime"]["artifact"] in bundled_evidence
+        assert (
+            certification["evidence_inventory"]["vllm_semantic_review"]["artifact"]
+            in bundled_evidence
+        )
+        assert (
+            certification["additional_authentication_routes"][
+                "bedrock-runtime/aws-credential-chain"
+            ]["artifact"]
+            in bundled_evidence
+        )
         assert not any(Path(name).name == ".env" for name in names)
         assert not any("/cli/" in name.lower() for name in names)
 

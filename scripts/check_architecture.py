@@ -19,6 +19,10 @@ SELECTION_BOUNDARIES = (
     "core/runtime.py",
     "engines/",
     "providers/",
+    # Attestation validators compare observed identities; they never select a
+    # runtime or adapter. Keep this exact file as a validation boundary rather
+    # than weakening the rule for the whole schemas package.
+    "schemas/attestation.py",
     "integrations/langgraph.py",
     "integrations/adapters/",
 )

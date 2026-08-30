@@ -12,9 +12,23 @@ import zipfile
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
+REPOSITORY_ROOT = PROJECT_ROOT.parents[1]
+sys.path.insert(0, str(REPOSITORY_ROOT / "src"))
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 from agentic_systems import __version__ as AGENTIC_SYSTEMS_VERSION  # noqa: E402
+from agentic_systems.registry import (  # noqa: E402
+    FRAMEWORK_NAMES,
+    PROVIDERS,
+    provider_capability,
+)
+
+
+REASONING_PROVIDER_NAMES = tuple(
+    definition.name
+    for definition in PROVIDERS
+    if provider_capability(definition.name, "model_generation").status != "unsupported"
+)
 
 
 def _sha256(path: Path) -> str:
@@ -98,14 +112,8 @@ def build_bundle(output_dir: str | Path | None = None) -> Path:
                 "notebook": "notebooks/00_conversational_system.ipynb",
                 "streamlit": "notebooks/01_launch_studio.ipynb",
             },
-            "providers": [
-                "auto",
-                "openai-runtime",
-                "ollama-runtime",
-                "bedrock-runtime",
-                "vllm-runtime",
-            ],
-            "frameworks": ["native", "langgraph", "openai-agents", "strands"],
+            "providers": ["auto", *REASONING_PROVIDER_NAMES],
+            "frameworks": list(FRAMEWORK_NAMES),
             "normalized_result": "RunResult",
             "credentials_included": False,
         }

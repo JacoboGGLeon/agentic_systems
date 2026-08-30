@@ -23,6 +23,22 @@ on:
         description: SHA256 of the already-certified ADA delivery
         required: true
         type: string
+      studio_sha256:
+        description: SHA256 of the mirrored Studio delivery
+        required: true
+        type: string
+      skill_sha256:
+        description: SHA256 of the Agentic Systems 2.1 skill
+        required: true
+        type: string
+      certification_sha256:
+        description: SHA256 of the final certification summary
+        required: true
+        type: string
+      challenge_sha256:
+        description: SHA256 of the focused MCP+A2A/LangGraph challenge
+        required: true
+        type: string
       confirm_publish:
         description: Publish the verified candidate to PyPI
         required: true
@@ -45,6 +61,10 @@ jobs:
       EXPECTED_WHEEL_SHA256: ${{ inputs.wheel_sha256 }}
       EXPECTED_SDIST_SHA256: ${{ inputs.sdist_sha256 }}
       EXPECTED_ADA_SHA256: ${{ inputs.ada_sha256 }}
+      EXPECTED_STUDIO_SHA256: ${{ inputs.studio_sha256 }}
+      EXPECTED_SKILL_SHA256: ${{ inputs.skill_sha256 }}
+      EXPECTED_CERTIFICATION_SHA256: ${{ inputs.certification_sha256 }}
+      EXPECTED_CHALLENGE_SHA256: ${{ inputs.challenge_sha256 }}
       CANDIDATE_RELEASE_ID: ${{ inputs.candidate_release_id }}
       GH_TOKEN: ${{ github.token }}
     steps:
@@ -64,6 +84,10 @@ jobs:
             "agentic_systems-${RELEASE_VERSION}-py3-none-any.whl" \
             "agentic_systems-${RELEASE_VERSION}.tar.gz" \
             "agentic-systems-${RELEASE_VERSION}-ada-offline.zip" \
+            "agentic-systems-studio-${RELEASE_VERSION}.zip" \
+            "agentic-systems-skill-${RELEASE_VERSION}.zip" \
+            "agentic-systems-${RELEASE_VERSION}-strands-protocol-challenge.zip" \
+            "final-certification-summary.json" \
             "SHA256SUMS-${RELEASE_VERSION}.txt"; do
             asset_id="$(jq -r --arg name "$name" \
               '.assets[] | select(.name == $name) | .id' <<<"$release_json")"
@@ -76,9 +100,17 @@ jobs:
           wheel="candidate/agentic_systems-${RELEASE_VERSION}-py3-none-any.whl"
           sdist="candidate/agentic_systems-${RELEASE_VERSION}.tar.gz"
           ada="candidate/agentic-systems-${RELEASE_VERSION}-ada-offline.zip"
+          studio="candidate/agentic-systems-studio-${RELEASE_VERSION}.zip"
+          skill="candidate/agentic-systems-skill-${RELEASE_VERSION}.zip"
+          challenge="candidate/agentic-systems-${RELEASE_VERSION}-strands-protocol-challenge.zip"
+          certification="candidate/final-certification-summary.json"
           test "$(sha256sum "$wheel" | cut -d' ' -f1)" = "$EXPECTED_WHEEL_SHA256"
           test "$(sha256sum "$sdist" | cut -d' ' -f1)" = "$EXPECTED_SDIST_SHA256"
           test "$(sha256sum "$ada" | cut -d' ' -f1)" = "$EXPECTED_ADA_SHA256"
+          test "$(sha256sum "$studio" | cut -d' ' -f1)" = "$EXPECTED_STUDIO_SHA256"
+          test "$(sha256sum "$skill" | cut -d' ' -f1)" = "$EXPECTED_SKILL_SHA256"
+          test "$(sha256sum "$challenge" | cut -d' ' -f1)" = "$EXPECTED_CHALLENGE_SHA256"
+          test "$(sha256sum "$certification" | cut -d' ' -f1)" = "$EXPECTED_CERTIFICATION_SHA256"
           (cd candidate && sha256sum -c "SHA256SUMS-${RELEASE_VERSION}.txt")
       - name: Verify ADA checksums and certification manifest
         run: |
@@ -119,6 +151,7 @@ jobs:
             candidate/*.whl
             candidate/*.tar.gz
             candidate/*.zip
+            candidate/*.json
             candidate/SHA256SUMS-*.txt
           if-no-files-found: error
 
@@ -174,6 +207,7 @@ jobs:
             candidate/*.whl
             candidate/*.tar.gz
             candidate/*.zip
+            candidate/*.json
             candidate/SHA256SUMS-*.txt
 
   post-publish-smoke:

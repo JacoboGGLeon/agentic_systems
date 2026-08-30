@@ -24,7 +24,8 @@ The runtime identifiers retained for 2.0 compatibility are
 
 The pull-request gate runs Ruff, formatting, strict and baseline-ratcheted
 Pyright, Import Linter, architecture checks, complexity, benchmarks, contracts,
-the offline 20-pair matrix, coverage ratchets, dependency and license audits,
+the offline 20-pair matrix, coverage ratchets, an isolated built-wheel
+dependency audit, a direct-dependency license audit,
 secret scanning, Studio tests, bundle builds, wheel/sdist checks and a clean
 non-editable wheel smoke. Pull requests exercise Python 3.10 and 3.14; release
 smokes exercise every Python version from 3.10 through 3.14.
@@ -33,7 +34,7 @@ Useful local commands:
 
 ```bash
 python -m ruff check src tests scripts
-python -m ruff format --check src tests scripts
+python scripts/check_format.py
 python -m pyright --project pyrightconfig.json
 python scripts/check_pyright_baseline.py
 lint-imports

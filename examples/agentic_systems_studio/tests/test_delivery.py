@@ -5,6 +5,8 @@ import json
 import zipfile
 from pathlib import Path
 
+from agentic_systems.registry import FRAMEWORK_NAMES, PROVIDERS, provider_capability
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
@@ -78,6 +80,16 @@ def test_bundle_is_reproducible_conversational_delivery(tmp_path: Path):
         assert manifest["configuration_source"] == ".env"
         assert manifest["credentials_included"] is False
         assert manifest["normalized_result"] == "RunResult"
+        assert manifest["providers"] == [
+            "auto",
+            *(
+                item.name
+                for item in PROVIDERS
+                if provider_capability(item.name, "model_generation").status
+                != "unsupported"
+            ),
+        ]
+        assert manifest["frameworks"] == list(FRAMEWORK_NAMES)
         assert "notebooks/00_conversational_system.ipynb" in names
         assert "notebooks/01_launch_studio.ipynb" in names
         assert "src/agentic_systems_studio/conversation.py" in names

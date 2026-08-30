@@ -60,9 +60,6 @@ jobs:
       - name: Complexity gate
         if: matrix.python-version == '3.14'
         run: python scripts/check_complexity.py
-      - name: Dependency vulnerability audit
-        if: matrix.python-version == '3.14'
-        run: python -m pip_audit --local --skip-editable
       - name: Direct dependency license gate
         if: matrix.python-version == '3.14'
         run: python scripts/check_licenses.py
@@ -103,6 +100,13 @@ jobs:
           --cov-report=term-missing -q
       - run: python -m build --no-isolation
       - run: python -m twine check dist/*
+      - name: Clean runtime dependency vulnerability audit
+        if: matrix.python-version == '3.14'
+        run: |
+          python -m venv .tmp/runtime-audit
+          .tmp/runtime-audit/bin/python -m pip install --upgrade pip pip-audit
+          .tmp/runtime-audit/bin/python -m pip install dist/*.whl
+          .tmp/runtime-audit/bin/python -m pip_audit --local --skip-editable
       - name: Build focused semantic challenge bundle
         if: matrix.python-version == '3.14'
         run: >-

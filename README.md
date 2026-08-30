@@ -82,10 +82,13 @@ standalone skill, conversational Studio and ADA offline bundle from the
 
 Release assets:
 
+- `agentic_systems-2.1.0-py3-none-any.whl`: certified universal Python wheel.
+- `agentic_systems-2.1.0.tar.gz`: matching source distribution.
 - `agentic-systems-skill-2.1.0.zip`: Codex/OpenAI skill package.
 - `agentic-systems-studio-2.1.0.zip`: one portable conversational Agentic System.
 - `agentic-systems-2.1.0-ada-offline.zip`: wheel, Studio, tutorials and live evidence for restricted environments.
 - `agentic-systems-2.1.0-strands-protocol-challenge.zip`: frozen MCP+A2A/LangGraph semantic gate for local, Colab, SageMaker and ADA execution.
+- `final-certification-summary.json`: exact wheel identity and reviewed live evidence inventory.
 - `SHA256SUMS-2.1.0.txt`: hashes for the Python and product artifacts.
 
 For an installed-package smoke test and provider notebook setup, follow
