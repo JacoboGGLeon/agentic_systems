@@ -143,7 +143,7 @@ def test_chain_expectations_and_factories(monkeypatch, tmp_path):
 def test_factories_loader_and_tool_error_paths(monkeypatch, tmp_path):
     monkeypatch.setattr(factories_module, "_load_dotenv", lambda: None)
     monkeypatch.delenv("OPENAI_MODEL", raising=False)
-    assert factories_module.default_openai_model_id() == "gpt-4o-mini"
+    assert factories_module.default_openai_model_id() == "gpt-4.1-mini"
 
     monkeypatch.setattr(
         factories_module,

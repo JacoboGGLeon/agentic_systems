@@ -95,10 +95,10 @@ Validate the built wheel from an isolated environment, not the editable source:
 ```bash
 python -m venv .tmp/wheel-smoke
 .tmp/wheel-smoke/bin/python -m pip install dist/agentic_systems-*.whl
-.tmp/wheel-smoke/bin/python -c "import agentic_systems as a; m=a.api_contract(); assert len(a.__all__) == 87; assert m['entry_count'] == 437; assert m['scenario_count'] == 10"
+.tmp/wheel-smoke/bin/python -c "import agentic_systems as a; m=a.api_contract(); assert len(a.__all__) == 89; assert m['entry_count'] == 467; assert m['scenario_count'] == 10"
 .tmp/wheel-smoke/bin/agentic-systems version
 ```
 
 The equivalent Windows executables live under `.tmp/wheel-smoke/Scripts/`.
-A release smoke must confirm version, CLI, 87 exports, 437 export/member IDs,
+A release smoke must confirm version, CLI, 89 exports, 467 export/member IDs,
 10 shared scenarios and lazy optional imports. Live Provider readiness is separate.

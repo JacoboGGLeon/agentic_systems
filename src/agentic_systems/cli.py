@@ -34,7 +34,7 @@ from .registry import FRAMEWORKS, PROVIDERS, registry_manifest
 CONTACT_INFO = {
     "author": "Jacobo Gerardo González León",
     "email_1": "jacobogerardo.gonzalez@bbva.com",
-    "email_2": "jacoboggleon@gmail..com",
+    "email_2": "jacoboggleon@gmail.com",
     "linkedin": "https://www.linkedin.com/in/jacoboggleon/",
     "github_repo": "https://www.github.com/JacoboGGLeon/agentic_systems",
 }

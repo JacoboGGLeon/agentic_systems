@@ -1,6 +1,6 @@
 # Runtime, Provider, Framework And Graph Contracts
 
-Status: current adapter-boundary contract for the Agentic Systems 1.1 line.
+Status: current adapter-boundary contract for the Agentic Systems 2.1 line.
 
 This contract defines the observable guarantees of replacing one canonical
 Provider with another. It does not promise identical model behavior, text,
@@ -137,6 +137,12 @@ compilation, lifecycle, persistence and unsupported native capabilities.
 Requested Framework identity is configuration, not execution evidence.
 `framework_requested` records intent and `framework_adapter` records the adapter
 that actually ran.
+
+Stateful native Frameworks may retain their own conversation across calls when
+their SDK contract permits it. Every public `RunResult`, however, describes one
+Agent invocation: `messages`, `tool_events`, usage and `RunPolicy` validation are
+projected from that invocation only. Historical SDK messages remain available
+through the native object and are never counted again as newly executed Tools.
 
 ### Graph Backends
 

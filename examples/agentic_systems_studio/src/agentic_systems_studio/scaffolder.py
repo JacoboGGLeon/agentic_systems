@@ -659,7 +659,7 @@ def _files(spec: SystemSpec, package: str) -> dict[str, str]:
             OPENAI_MODEL=gpt-4.1-mini
 
             OLLAMA_BASE_URL=http://localhost:11434
-            OLLAMA_MODEL=qwen3:4b-instruct
+            OLLAMA_MODEL=qwen3:4b-instruct-2507-q4_K_M
 
             AWS_BEARER_TOKEN_BEDROCK=
             AWS_REGION=us-east-2

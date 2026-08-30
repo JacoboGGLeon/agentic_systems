@@ -237,6 +237,10 @@ result.validation  contract validation
 result.errors      structured errors
 ```
 
+Each `RunResult` is scoped to one public invocation. A stateful native Framework
+may retain its SDK conversation, but previous messages and Tool calls are not
+re-emitted or counted against the current invocation's `RunPolicy`.
+
 Render user-facing output with:
 
 ```python
@@ -350,7 +354,7 @@ Execution Context is a conceptual resolution view, not a public object. Runtime
 selection remains in `RuntimeConfig`, composition remains in `AgenticSystem`,
 per-run limits remain in `RunPolicy`, and state/evidence remain in their Graph,
 Environment, and `RunResult` owners. Do not import or construct
-`ExecutionContext`; no such public symbol exists in the 1.1 line. See
+`ExecutionContext`; no such public symbol exists in the 2.1 line. See
 [Computational Model](COMPUTATIONAL_MODEL.md).
 
 ## Graph Integrations

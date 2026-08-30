@@ -1,4 +1,4 @@
-"""Canonical Framework configuration for Agentic Systems 2.0."""
+"""Canonical Framework configuration for Agentic Systems 2.1."""
 
 from __future__ import annotations
 

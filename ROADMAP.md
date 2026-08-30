@@ -1,15 +1,16 @@
 # Agentic Systems Roadmap
 
-Current stable release: `2.0.0`.
+Current stable release: `2.1.0`.
 Current release line: `2.1`. Next development line: `2.2`.
 
-Agentic Systems 2.0 establishes the five-Provider by four-Framework execution
+Agentic Systems 2.1 establishes the five-Provider by four-Framework execution
 architecture, the common RunResult contract, dual Bedrock authentication,
-ToolSet, explicit System execution plans and the Python/CLI tutorial mirrors.
+ToolSet, explicit System execution plans, semantic certification and the
+Python/CLI/tutorial/Studio mirrors.
 Completed work and measured release evidence belong in the changelog and
 release reports, not in this forward-looking roadmap.
 
-## Direction After 2.0
+## Direction After 2.1
 
 Future work must earn its place through a concrete user contract and evidence.
 The preferred order is:

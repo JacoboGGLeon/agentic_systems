@@ -1,6 +1,6 @@
 # Computational Model
 
-Status: current normative conceptual model for the Agentic Systems 1.1 line.
+Status: current normative conceptual model for the Agentic Systems 2.1 line.
 
 This document defines the computational grammar, semantic ownership and mapping
 to the current public API. It replaces the former separate grammar, semantics,

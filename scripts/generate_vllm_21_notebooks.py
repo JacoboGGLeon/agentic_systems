@@ -86,7 +86,7 @@ Requisito live: Runtime de Colab con GPU. Para certificar un release, sube el wh
 | RUN_VLLM_LIVE | 1 | Usa 0 para ejecutar sólo el contrato offline. |
 | COMMIT_SHA | candidato 2.1.0 | Commit exacto que produjo el wheel candidato. |
 | EXPECTED_WHEEL_SHA256 | candidato 2.1.0 | Hash que debe tener el wheel subido. |
-| MODEL_ID | unsloth/Qwen3-0.6B | Modelo ligero con tool calling para Colab. |
+| MODEL_ID | unsloth/Qwen3-4B-Instruct-2507 | Modelo Instruct probado con tool calling para Colab. |
 | PROFILE | auto | Resuelve fast, medium o power desde VRAM; admite override. |
 | VLLM_DTYPE | automático | half en T4; bfloat16 desde compute capability 8.0. |
 | VLLM_ENABLE_THINKING | 0 | Desactiva reasoning en tool calling multi-turn. |
@@ -136,8 +136,8 @@ RUN_VLLM_LIVE = os.getenv("RUN_VLLM_LIVE", "1").strip().lower() in {"1", "true",
 COMMIT_SHA = os.getenv("AGENTIC_SYSTEMS_COMMIT_SHA", "").strip()
 EXPECTED_WHEEL_FILENAME = os.getenv("AGENTIC_SYSTEMS_WHEEL_FILENAME", "").strip()
 EXPECTED_WHEEL_SHA256 = os.getenv("AGENTIC_SYSTEMS_WHEEL_SHA256", "").strip().lower()
-MODEL_ID = os.getenv("VLLM_MODEL", "unsloth/Qwen3-0.6B")
-BASE_MODEL_ID = os.getenv("VLLM_BASE_MODEL", "Qwen/Qwen3-0.6B")
+MODEL_ID = os.getenv("VLLM_MODEL", "unsloth/Qwen3-4B-Instruct-2507")
+BASE_MODEL_ID = os.getenv("VLLM_BASE_MODEL", "Qwen/Qwen3-4B-Instruct-2507")
 REQUESTED_PROFILE = os.getenv("VLLM_PROFILE", "fast").strip().lower()
 VLLM_HOST = os.getenv("VLLM_HOST", "127.0.0.1")
 VLLM_PORT = int(os.getenv("VLLM_PORT", "8000"))

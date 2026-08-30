@@ -876,6 +876,41 @@ def test_strands_adapter_helpers_cover_results_tools_and_failures():
     assert result.usage == {"value": 3}
     assert result.final == {"text": result.text}
     assert result.data == {"value": 2}
+
+    current_messages = [
+        {
+            "content": [
+                {
+                    "toolUse": {
+                        "toolUseId": "current",
+                        "name": "lookup",
+                        "input": {"x": 2},
+                    }
+                },
+                {
+                    "toolResult": {
+                        "toolUseId": "current",
+                        "status": "success",
+                        "content": [{"json": {"value": 2}}],
+                    }
+                },
+            ]
+        }
+    ]
+    historical_agent = SimpleNamespace(
+        model=object(),
+        messages=[*messages[1:], *current_messages],
+    )
+    current_result = sa._normalize_result(
+        agent,
+        historical_agent,
+        generic_result,
+        {"x": 2},
+        "default",
+        message_cursor=len(messages[1:]),
+    )
+    assert [event.id for event in current_result.tool_events] == ["current"]
+    assert current_result.messages == current_messages
     assert sa._failure(agent, "x", "eval", RuntimeError("boom")).ok is False
     assert sa._input_text({"x": 1}) == '{"x": 1}'
     assert sa._output_data("x", '{"x": 1}') == {"x": 1}

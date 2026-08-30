@@ -86,7 +86,7 @@ Prerequisito: instala el wheel y los extras `vllm-server`, `langgraph`,
         nbformat.v4.new_markdown_cell(
             """## Parametros de la demostracion
 
-El ejemplo probado usa `unsloth/Qwen3-0.6B`, parser Hermes y modo non-thinking.
+El ejemplo probado usa `unsloth/Qwen3-4B-Instruct-2507`, parser Hermes y modo non-thinking.
 Los perfiles `fast`, `medium`, `power` y `custom` permanecen configurables."""
         ),
         nbformat.v4.new_code_cell(
@@ -100,8 +100,8 @@ import agentic_systems as toolkit
 toolkit.vllm_environment_snapshot()
 
 RUN_VLLM_LIVE = os.getenv("RUN_VLLM_LIVE", "1").lower() in {"1", "true", "yes"}
-MODEL_ID = os.getenv("VLLM_MODEL", "unsloth/Qwen3-0.6B")
-BASE_MODEL_ID = os.getenv("VLLM_BASE_MODEL", "Qwen/Qwen3-0.6B")
+MODEL_ID = os.getenv("VLLM_MODEL", "unsloth/Qwen3-4B-Instruct-2507")
+BASE_MODEL_ID = os.getenv("VLLM_BASE_MODEL", "Qwen/Qwen3-4B-Instruct-2507")
 PROFILE = os.getenv("VLLM_PROFILE", "fast")
 HOST = os.getenv("VLLM_HOST", "127.0.0.1")
 PORT = int(os.getenv("VLLM_PORT", "8000"))

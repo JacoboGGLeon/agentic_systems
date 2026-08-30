@@ -98,19 +98,19 @@ def test_alpha_version_surface_and_packaging_are_consistent():
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     install = (ROOT / "INSTALL.md").read_text(encoding="utf-8")
     manifest = (ROOT / "MANIFEST.in").read_text(encoding="utf-8")
-    assert "87 stable top-level exports" in readme
-    assert "437 traced export/member IDs" in readme
+    assert "89 stable top-level exports" in readme
+    assert "467 traced export/member IDs" in readme
     assert "all 20 declared pairs" in readme
     assert "tutorials/providers/04_ollama.ipynb" in readme
     cli_docs = (ROOT / "docs" / "CLI.md").read_text(encoding="utf-8")
     assert "Four offline passes and sixteen not-run rows" in cli_docs
     assert "--live --require-pass --json" in cli_docs
-    assert '"count": 437' in cli_docs
+    assert '"count": 467' in cli_docs
     contributing = (ROOT / "docs" / "CONTRIBUTING_CHECKLIST.md").read_text(
         encoding="utf-8"
     )
-    assert "len(a.__all__) == 87" in contributing
-    assert "m['entry_count'] == 437" in contributing
+    assert "len(a.__all__) == 89" in contributing
+    assert "m['entry_count'] == 467" in contributing
     roadmap = (ROOT / "ROADMAP.md").read_text(encoding="utf-8")
     assert "Current release line: `2.1`" in roadmap
     migration = (ROOT / "docs" / "MIGRATION_1_1_TO_2_0.md").read_text(encoding="utf-8")

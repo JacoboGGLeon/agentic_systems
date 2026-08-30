@@ -1,6 +1,6 @@
 # Composition Laws
 
-Status: current normative composition contract for the 1.1 line.
+Status: current normative composition contract for the 2.1 line.
 
 These laws govern Tool and Skill composition independently of Provider and
 Framework implementations. They apply inside one explicit composition boundary,

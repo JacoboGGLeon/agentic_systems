@@ -1,4 +1,4 @@
-"""Canonical Agent facade for Agentic Systems 2.0."""
+"""Canonical Agent facade for Agentic Systems 2.1."""
 
 from __future__ import annotations
 

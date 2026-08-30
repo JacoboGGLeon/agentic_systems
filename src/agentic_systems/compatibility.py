@@ -1,4 +1,4 @@
-"""Framework/provider compatibility inventory for Agentic Systems 2.0."""
+"""Framework/provider compatibility inventory for Agentic Systems 2.1."""
 
 from __future__ import annotations
 

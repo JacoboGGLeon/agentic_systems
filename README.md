@@ -35,7 +35,7 @@ and the focused [semantic challenges](semantic_challenges/README.md).
 
 Public concepts are defined in the API, explained in the documentation, taught through the canonical tutorials, and checked by explicit release gates.
 
-Release status: `2.1.0` hardens the Provider x Framework architecture with a canonical 20-pair registry, strict versioned schemas, normalized reasoning-safe results, polymorphic adapter contracts and blocking production/Pydantic/POO gates. The 2.1 surface contains 87 stable top-level exports and 437 traced export/member IDs; all 2.0 serialization views remain compatible.
+Release status: `2.1.0` hardens the Provider x Framework architecture with a canonical 20-pair registry, strict versioned schemas, normalized reasoning-safe results, polymorphic adapter contracts and blocking production/Pydantic/POO gates. The 2.1 surface contains 89 stable top-level exports and 467 traced export/member IDs; all 2.0 serialization views remain compatible.
 
 ## Installation
 

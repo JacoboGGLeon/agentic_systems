@@ -1,6 +1,6 @@
 # RunResult Contract
 
-Status: current normative execution-result contract for the 1.1 line.
+Status: current normative execution-result contract for the 2.1 line.
 
 `RunResult` is the common execution envelope for Tool and Agent runs. This
 document defines structural invariants that all producers and adapters must

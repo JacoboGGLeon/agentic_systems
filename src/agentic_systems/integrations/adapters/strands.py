@@ -90,6 +90,7 @@ class StrandsFrameworkAdapter(FrameworkAdapter):
             result.meta["framework_adapter"] = self.name
             return result
         native_agent = self.prepare(agent, engine)
+        message_cursor = _message_cursor(native_agent)
         _configure_model(native_agent.model, policy, mode)
         kwargs = _run_kwargs(agent, policy)
         aliases = tool_name_aliases(agent.available_tools())
@@ -102,7 +103,13 @@ class StrandsFrameworkAdapter(FrameworkAdapter):
         except Exception as exc:  # noqa: BLE001 - operational SDK failures normalize.
             return _failure(agent, input_value, mode, exc)
         result = _normalize_result(
-            agent, native_agent, native_result, input_value, mode, aliases
+            agent,
+            native_agent,
+            native_result,
+            input_value,
+            mode,
+            aliases,
+            message_cursor=message_cursor,
         )
         return attach_native_result(result, native_result)
 
@@ -127,6 +134,7 @@ class StrandsFrameworkAdapter(FrameworkAdapter):
             result.meta["framework_adapter"] = self.name
             return result
         native_agent = self.prepare(agent, engine)
+        message_cursor = _message_cursor(native_agent)
         _configure_model(native_agent.model, policy, mode)
         kwargs = _run_kwargs(agent, policy)
         aliases = tool_name_aliases(agent.available_tools())
@@ -140,7 +148,13 @@ class StrandsFrameworkAdapter(FrameworkAdapter):
         except Exception as exc:  # noqa: BLE001 - operational SDK failures normalize.
             return _failure(agent, input_value, mode, exc)
         result = _normalize_result(
-            agent, native_agent, native_result, input_value, mode, aliases
+            agent,
+            native_agent,
+            native_result,
+            input_value,
+            mode,
+            aliases,
+            message_cursor=message_cursor,
         )
         return attach_native_result(result, native_result)
 
@@ -853,6 +867,8 @@ def _normalize_result(
     input_value: Any,
     mode: str,
     aliases: ToolNameAliases | None = None,
+    *,
+    message_cursor: int = 0,
 ) -> RunResult:
     provider_result = getattr(native_agent.model, "last_result", None)
     rejected_tool_calls = list(
@@ -869,7 +885,7 @@ def _normalize_result(
     raw_text = _input_text(raw_value)
     text = public_answer_text(raw_value) or raw_text
     data = _output_data(raw_value, raw_text)
-    messages = [_jsonable(item) for item in getattr(native_agent, "messages", ())]
+    messages = _invocation_messages(native_agent, message_cursor)
     return RunResult(
         text=text,
         final={"text": text},
@@ -890,6 +906,32 @@ def _normalize_result(
             "rejected_tool_calls": rejected_tool_calls,
         },
     )
+
+
+def _message_cursor(native_agent: Any) -> int:
+    """Capture the native transcript boundary before one public invocation."""
+
+    messages = getattr(native_agent, "messages", ())
+    try:
+        return len(messages)
+    except TypeError:
+        return 0
+
+
+def _invocation_messages(native_agent: Any, cursor: int) -> list[Any]:
+    """Project only messages created by the current invocation.
+
+    Strands may retain a native conversation across calls. That history remains owned
+    by the SDK, while each public RunResult and its policy validation describe exactly
+    one invocation.
+    """
+
+    messages = getattr(native_agent, "messages", ())
+    try:
+        current = messages[cursor:]
+    except (IndexError, TypeError):
+        current = messages
+    return [_jsonable(item) for item in current]
 
 
 def _tool_events(

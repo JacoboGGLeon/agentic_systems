@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.1.0 - 2026-08-22
+## 2.1.0 - 2026-08-30
 
 Compatible hardening release. The 2.0 public facade remains stable while three
 blocking gates now certify production readiness, Pydantic contracts and
@@ -43,8 +43,13 @@ provider/framework substitutability.
   shape: OpenAI-compatible request parameters remain nested under `params`,
   while native models such as Bedrock receive `temperature` and `max_tokens`
   directly, preventing ignored settings and invalid-parameter warnings.
+- Stateful Strands Agents retain their native SDK conversation while each
+  public `RunResult` projects only the current invocation, preventing historical
+  Tool events from being counted again against `RunPolicy.max_tool_calls`.
 - The OpenAI Agents tutorial bootstraps its optional SDK dependency idempotently
   in a fresh Jupyter kernel instead of failing with a raw ModuleNotFoundError.
+- Public local-model defaults and examples now use the exact certified Qwen3 4B
+  Instruct 2507 artifacts for Ollama and vLLM; `.env` remains authoritative.
 
 ### Compatibility
 

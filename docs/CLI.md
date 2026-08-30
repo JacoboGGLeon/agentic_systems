@@ -19,8 +19,17 @@ agentic-systems version
 agentic-systems contact
 agentic-systems doctor
 agentic-systems runtime
+agentic-systems model-server inspect
 agentic-systems api
 agentic-systems public-api
+agentic-systems tool run
+agentic-systems skill inspect
+agentic-systems agent run
+agentic-systems system run
+agentic-systems environment run
+agentic-systems graph run
+agentic-systems eval run
+agentic-systems matrix check
 ```
 
 If `agentic-systems` is not found after activating a virtual environment,
@@ -49,7 +58,7 @@ Prints package author and project contact information:
 ```text
 Author: Jacobo Gerardo González León
 E-Mail 1: jacobogerardo.gonzalez@bbva.com
-E-Mail 2: jacoboggleon@gmail..com
+E-Mail 2: jacoboggleon@gmail.com
 LinkedIn: https://www.linkedin.com/in/jacoboggleon/
 Github Repo: https://www.github.com/JacoboGGLeon/agentic_systems
 ```
@@ -106,7 +115,7 @@ agentic-systems runtime --provider auto --json
 agentic-systems runtime --provider python-runtime
 agentic-systems runtime --provider openai-runtime --model gpt-4.1-mini
 agentic-systems runtime --provider bedrock-runtime --region us-east-1
-agentic-systems runtime --provider vllm-runtime --model Qwen/Qwen3-0.6B
+agentic-systems runtime --provider vllm-runtime --model unsloth/Qwen3-4B-Instruct-2507
 ```
 
 This command constructs `RuntimeConfig` and prints `runtime.describe()` without
@@ -128,7 +137,7 @@ Inspect the exact managed-server declaration without starting a process:
 
 ```bash
 agentic-systems model-server inspect \
-  --model unsloth/Qwen3-0.6B \
+  --model unsloth/Qwen3-4B-Instruct-2507 \
   --profile fast \
   --reasoning-parser qwen3 \
   --json
@@ -179,7 +188,7 @@ For vLLM/OpenAI-compatible local or Colab GPU inference:
 
 ```bash
 export VLLM_BASE_URL="http://127.0.0.1:8000/v1"
-export VLLM_MODEL="Qwen/Qwen3-0.6B"
+export VLLM_MODEL="unsloth/Qwen3-4B-Instruct-2507"
 export VLLM_API_KEY="EMPTY"
 agentic-systems runtime --provider auto --json
 ```
@@ -190,7 +199,7 @@ Expected vLLM output includes:
 {
   "selected_provider": "vllm-runtime",
   "mode": "auto",
-  "model": "Qwen/Qwen3-0.6B",
+  "model": "unsloth/Qwen3-4B-Instruct-2507",
   "configuration": {
     "vllm": {
       "base_url_configured": true
@@ -205,7 +214,7 @@ Expected OpenAI output includes:
 {
   "selected_provider": "openai-runtime",
   "mode": "auto",
-  "model": "gpt-4o-mini",
+  "model": "gpt-4.1-mini",
   "configuration": {
     "openai": {
       "api_key_configured": true
@@ -266,7 +275,7 @@ The JSON form returns:
 ```json
 {
   "tier": "public",
-  "count": 437,
+  "count": 467,
   "ids": ["agent", "Agent.run", "runtime"]
 }
 ```
@@ -303,7 +312,7 @@ long-running model execution as a default command
 Model execution belongs in Python code and notebooks where contracts, runtime,
 lineage and human output are explicit.
 
-## Executable 2.0 workflows
+## Executable 2.1 workflows
 
 The CLI exposes the same public grammar taught by the notebooks. Every workflow
 runs through agentic_systems public factories; it is not a parallel

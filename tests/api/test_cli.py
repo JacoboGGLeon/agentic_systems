@@ -104,7 +104,7 @@ def test_cli_contact_plain_and_json(capsys):
     payload = json.loads(capsys.readouterr().out)
     assert payload["author"] == "Jacobo Gerardo González León"
     assert payload["email_1"] == "jacobogerardo.gonzalez@bbva.com"
-    assert payload["email_2"] == "jacoboggleon@gmail..com"
+    assert payload["email_2"] == "jacoboggleon@gmail.com"
     assert payload["linkedin"] == "https://www.linkedin.com/in/jacoboggleon/"
     assert (
         payload["github_repo"] == "https://www.github.com/JacoboGGLeon/agentic_systems"

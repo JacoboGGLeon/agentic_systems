@@ -1,4 +1,4 @@
-"""Shared execution contracts for Agentic Systems 2.0.
+"""Shared execution contracts for Agentic Systems 2.1.
 
 These contracts describe behavior rather than a specific framework. Agents,
 graphs, pipelines and compiled systems can therefore share one public boundary.

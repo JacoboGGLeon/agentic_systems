@@ -4,12 +4,14 @@ Providers answer where model inference runs. Frameworks answer how an Agent is
 implemented. System execution plans answer how Agents or complete Systems are
 connected. Do not merge these three choices.
 
-Canonical reasoning providers are openai-runtime, ollama-runtime,
-bedrock-runtime, vllm-runtime and auto. python-runtime is deterministic and
-does not become a language model provider.
+Canonical provider identifiers are python-runtime, openai-runtime,
+ollama-runtime, bedrock-runtime and vllm-runtime. python-runtime is
+deterministic and does not become a language model provider. auto is a runtime
+selection mode, not a sixth Provider.
 
-Canonical optional frameworks are langgraph, openai-agents and strands.
-agentic-systems or no framework means the native Agentic Systems agent path.
+Canonical framework identifiers are native, langgraph, openai-agents and
+strands. native means the Agentic Systems agent loop; the other three select
+their real optional SDK adapters.
 
 For each requested combination report four independent facts:
 

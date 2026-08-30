@@ -1,4 +1,4 @@
-"""Explicit migrations for payloads persisted by Agentic Systems 2.0."""
+"""Explicit migrations for payloads persisted by Agentic Systems 2.1."""
 
 from __future__ import annotations
 
