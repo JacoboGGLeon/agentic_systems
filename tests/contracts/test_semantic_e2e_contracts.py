@@ -397,30 +397,38 @@ class ToolCertifiedJudge:
         tool_name: str | None,
         ok: bool = True,
         final_score: float = 0.9,
+        data_projection: bool = False,
     ) -> None:
         self.tool_name = tool_name
         self.ok = ok
         self.final_score = final_score
+        self.data_projection = data_projection
 
     def run(self, input: Any, *, mode: str) -> toolkit.RunResult:
         scores = {name: 0.9 for name in toolkit.JudgeRubric().criteria}
         events = []
         if self.tool_name is not None:
+            payload = {
+                "score": 0.9,
+                "criteria": scores,
+                "rationale": "Certified from evidence.",
+            }
+            output = (
+                {"data": payload}
+                if self.data_projection
+                else ToolEnvelope(
+                    kind="object",
+                    tool_name=self.tool_name,
+                    ok=True,
+                    data=payload,
+                ).model_dump(mode="json")
+            )
             events.append(
                 ToolEvent(
                     id="judge-certification",
                     name=self.tool_name,
                     ok=True,
-                    output=ToolEnvelope(
-                        kind="object",
-                        tool_name=self.tool_name,
-                        ok=True,
-                        data={
-                            "score": 0.9,
-                            "criteria": scores,
-                            "rationale": "Certified from evidence.",
-                        },
-                    ).model_dump(mode="json"),
+                    output=output,
                 )
             )
         return RunResult(
@@ -488,6 +496,21 @@ def test_eval_requires_one_successful_judge_certification_tool() -> None:
     assert certified.cases[0].judge.certification_recorded is True
     assert certified.cases[0].judge.raw_score == 0.9
     assert set(certified.cases[0].judge.raw_criteria.values()) == {0.9}
+
+    projected = toolkit.Evaluator().evaluate(
+        Candidate("17 multiplied by 19 is 323."),
+        case,
+        judge=ToolCertifiedJudge(
+            tool_name="record_semantic_judgment",
+            final_score=0.0,
+            data_projection=True,
+        ),
+        rubric=rubric,
+    )
+    assert projected.ok is True
+    assert projected.cases[0].judge is not None
+    assert projected.cases[0].judge.raw_score == 0.9
+    assert set(projected.cases[0].judge.raw_criteria.values()) == {0.9}
 
 
 def test_eval_accepts_only_explicitly_allowed_tool_paths() -> None:

@@ -842,11 +842,22 @@ def _certification_payload(
             True,
             ("judge certification Tool output must be a structured object",),
         )
+    direct = dict(output)
+    if "score" in direct and isinstance(direct.get("criteria"), dict):
+        return direct, True, ()
     try:
         envelope = ToolEnvelope.model_validate(output)
     except (TypeError, ValueError):
-        return dict(output), True, ()
-    return dict(envelope.data), True, ()
+        projected = output.get("data")
+        if isinstance(projected, dict):
+            projected = dict(projected)
+            if "score" in projected and isinstance(projected.get("criteria"), dict):
+                return projected, True, ()
+        return direct, True, ()
+    payload = dict(envelope.data)
+    if "score" in payload and isinstance(payload.get("criteria"), dict):
+        return payload, True, ()
+    return direct, True, ()
 
 
 def _judge_candidate_view(result: RunResult) -> dict[str, Any]:
