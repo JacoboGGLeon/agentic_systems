@@ -1,6 +1,7 @@
 import os
 from dataclasses import dataclass
 
+import pytest
 from pydantic import BaseModel
 
 from agentic_systems.providers.bedrock_runtime import BedrockRuntime, ToolEnvelope
@@ -140,3 +141,18 @@ def test_agent_contract_completion_aliases_are_normalized():
     c2 = AgentContract(completion="required_tools_ok")
     assert c1.completion == "when_required_tools_satisfied"
     assert c2.completion == "when_required_tools_satisfied"
+
+
+def test_tool_registration_rejects_unresolved_type_annotations():
+    runtime = build_runtime()
+
+    def unresolved(value) -> dict:
+        return {"value": value}
+
+    unresolved.__annotations__["value"] = "MissingToolInput"
+
+    with pytest.raises(
+        TypeError,
+        match="Tool 'unresolved' has unresolved type annotations",
+    ):
+        runtime.tool(unresolved)
