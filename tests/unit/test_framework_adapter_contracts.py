@@ -302,9 +302,7 @@ def test_openai_adapter_normalization_and_json_helpers():
         context_wrapper=None,
         to_input_list=lambda: [],
     )
-    recovered_result = oa._normalize_result(
-        agent, recovered_native, "input", "default"
-    )
+    recovered_result = oa._normalize_result(agent, recovered_native, "input", "default")
     assert recovered_result.ok is True
     assert recovered_result.text == "certified"
     assert recovered_result.trace()["recovered_tool_error_count"] == 1
@@ -333,9 +331,21 @@ def test_openai_adapter_normalization_and_json_helpers():
     assert configured
 
     from agents import ModelSettings
+    from agents import Agent as NativeAgent
 
-    native_agent = SimpleNamespace(model_settings=ModelSettings(), tools=[object()])
+    cached_agent = NativeAgent(name="cached", instructions="test")
+    execution_agent = oa._execution_agent(cached_agent)
+    execution_agent.tools.append(object())
+    assert execution_agent is not cached_agent
+    assert cached_agent.tools == []
+
+    native_agent = SimpleNamespace(
+        model_settings=ModelSettings(),
+        tools=[object()],
+        tool_use_behavior="run_llm_again",
+    )
     named_policy = RunPolicy(
+        max_tool_calls=1,
         max_tokens=321,
         temperature=0.7,
         tool_choice="multiply",
@@ -344,10 +354,41 @@ def test_openai_adapter_normalization_and_json_helpers():
     assert native_agent.model_settings.temperature == 0.7
     assert native_agent.model_settings.max_tokens == 321
     assert native_agent.model_settings.tool_choice == "multiply"
+    assert native_agent.model_settings.parallel_tool_calls is False
 
-    completion_agent = SimpleNamespace(model_settings=ModelSettings(), tools=[])
+    tool_behavior = native_agent.tool_use_behavior
+    decision = tool_behavior(None, [object()])
+    assert decision.is_final_output is False
+    assert native_agent.tools == []
+    assert native_agent.model_settings.tool_choice is None
+
+    completion_agent = SimpleNamespace(
+        model_settings=ModelSettings(),
+        tools=[],
+        tool_use_behavior="run_llm_again",
+    )
     oa._configure_native_agent(completion_agent, named_policy)
     assert completion_agent.model_settings.tool_choice is None
+
+    zero_budget_agent = SimpleNamespace(
+        model_settings=ModelSettings(),
+        tools=[object()],
+        tool_use_behavior="run_llm_again",
+    )
+    oa._configure_native_agent(zero_budget_agent, RunPolicy(max_tool_calls=0))
+    assert zero_budget_agent.tools == []
+    assert zero_budget_agent.model_settings.tool_choice is None
+
+    def custom_behavior(_context, _results):
+        return None
+
+    custom_agent = SimpleNamespace(
+        model_settings=ModelSettings(),
+        tools=[object()],
+        tool_use_behavior=custom_behavior,
+    )
+    oa._configure_native_agent(custom_agent, RunPolicy(max_tool_calls=1))
+    assert custom_agent.tool_use_behavior is custom_behavior
 
 
 def test_strands_promotes_only_exact_declared_textual_tool_calls() -> None:

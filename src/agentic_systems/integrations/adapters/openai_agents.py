@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import copy
 import dataclasses
 import json
 import os
@@ -107,7 +108,7 @@ class OpenAIAgentsFrameworkAdapter(FrameworkAdapter):
             raise ImportError(
                 'OpenAI Agents execution requires `pip install "agentic-systems[openai-agents]"`.'
             ) from exc
-        native_agent = self.prepare(agent, engine)
+        native_agent = _execution_agent(self.prepare(agent, engine))
         _configure_model(native_agent.model, policy, mode)
         kwargs = _runner_kwargs(agent, agent.framework_config.run_kwargs)
         _configure_native_agent(native_agent, policy)
@@ -156,7 +157,7 @@ class OpenAIAgentsFrameworkAdapter(FrameworkAdapter):
             raise ImportError(
                 'OpenAI Agents execution requires `pip install "agentic-systems[openai-agents]"`.'
             ) from exc
-        native_agent = self.prepare(agent, engine)
+        native_agent = _execution_agent(self.prepare(agent, engine))
         _configure_model(native_agent.model, policy, mode)
         _configure_native_agent(native_agent, policy)
         kwargs = _runner_kwargs(agent, agent.framework_config.run_kwargs)
@@ -295,22 +296,89 @@ def _configure_model(model: Any, policy: RunPolicy, mode: str) -> None:
         configure(policy, mode)
 
 
+def _execution_agent(native_agent: Any) -> Any:
+    """Create an isolated SDK Agent for one execution.
+
+    The adapter caches the prepared native object for inspection and reuse. Per-run
+    policy projection must never mutate that shared object, especially when a tool
+    budget removes tools after the final authorized call.
+    """
+
+    if dataclasses.is_dataclass(native_agent):
+        return cast(
+            Any,
+            dataclasses.replace(
+                cast(Any, native_agent),
+                tools=list(getattr(native_agent, "tools", ()) or ()),
+            ),
+        )
+    execution_agent = copy.copy(native_agent)
+    if hasattr(native_agent, "tools"):
+        execution_agent.tools = list(getattr(native_agent, "tools", ()) or ())
+    return execution_agent
+
+
 def _configure_native_agent(native_agent: Any, policy: RunPolicy) -> None:
     """Project the shared policy into the OpenAI Agents model contract."""
 
     settings = getattr(native_agent, "model_settings", None)
-    if settings is None or not dataclasses.is_dataclass(settings):
+    if settings is not None and dataclasses.is_dataclass(settings):
+        has_tools = bool(getattr(native_agent, "tools", ()) or ())
+        fields = {field.name for field in dataclasses.fields(settings)}
+        updates: dict[str, Any] = {
+            "temperature": policy.temperature,
+            # OpenAI-compatible servers reject tool_choice when the request has no
+            # tools. Keep the policy projection valid for completion-only agents.
+            "tool_choice": policy.tool_choice if has_tools else None,
+        }
+        if policy.max_tokens is not None:
+            updates["max_tokens"] = policy.max_tokens
+        if (
+            has_tools
+            and policy.max_tool_calls is not None
+            and "parallel_tool_calls" in fields
+        ):
+            updates["parallel_tool_calls"] = False
+        native_agent.model_settings = dataclasses.replace(
+            cast(Any, settings), **updates
+        )
+    _configure_tool_budget(native_agent, policy)
+
+
+def _configure_tool_budget(native_agent: Any, policy: RunPolicy) -> None:
+    """Prevent another SDK tool turn after the portable budget is exhausted."""
+
+    limit = policy.max_tool_calls
+    if limit is None:
         return
-    has_tools = bool(getattr(native_agent, "tools", ()) or ())
-    updates: dict[str, Any] = {
-        "temperature": policy.temperature,
-        # OpenAI-compatible servers reject tool_choice when the request has no
-        # tools. Keep the policy projection valid for completion-only agents.
-        "tool_choice": policy.tool_choice if has_tools else None,
-    }
-    if policy.max_tokens is not None:
-        updates["max_tokens"] = policy.max_tokens
-    native_agent.model_settings = dataclasses.replace(settings, **updates)
+    if limit == 0:
+        native_agent.tools = []
+        _disable_tool_choice(native_agent)
+        return
+    if getattr(native_agent, "tool_use_behavior", "run_llm_again") != "run_llm_again":
+        return
+
+    from agents import ToolsToFinalOutputResult
+
+    consumed = 0
+
+    def after_tools(_context: Any, tool_results: list[Any]) -> Any:
+        nonlocal consumed
+        consumed += len(tool_results)
+        if consumed >= limit:
+            native_agent.tools = []
+            _disable_tool_choice(native_agent)
+        return ToolsToFinalOutputResult(is_final_output=False, final_output=None)
+
+    native_agent.tool_use_behavior = after_tools
+
+
+def _disable_tool_choice(native_agent: Any) -> None:
+    settings = getattr(native_agent, "model_settings", None)
+    if settings is not None and dataclasses.is_dataclass(settings):
+        native_agent.model_settings = dataclasses.replace(
+            cast(Any, settings), tool_choice=None
+        )
 
 
 def _runner_kwargs(agent: Any, configured: Mapping[str, Any]) -> dict[str, Any]:

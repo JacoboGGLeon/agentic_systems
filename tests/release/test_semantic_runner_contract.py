@@ -206,6 +206,8 @@ def test_model_judge_uses_typed_evidence_backed_violations(monkeypatch) -> None:
     ]
     assert "implementation envelope" in failed["rationale"]
 
+    monkeypatch.delenv("AGENTIC_SYSTEMS_SEMANTIC_JUDGE_MAX_TOKENS", raising=False)
+    assert module.semantic_judge_max_tokens() == 4096
     monkeypatch.setenv("AGENTIC_SYSTEMS_SEMANTIC_JUDGE_MAX_TOKENS", "900")
     cell = module.build_semantic_cell("openai-runtime", "native", model="gpt-4.1-mini")
     assert cell.judge.agent.policy.max_tool_calls == 1

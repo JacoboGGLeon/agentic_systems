@@ -458,7 +458,7 @@ class Agent:
 
         if scheduler is None:
             result = _run_engine()
-            return self._finalize_result(result, clean_input)
+            return self._finalize_result(result, clean_input, policy=policy)
 
         try:
             result, scheduler_meta = execute_sync(
@@ -494,7 +494,9 @@ class Agent:
                 "timed_out": False,
             }
         return self._finalize_result(
-            self._attach_scheduler_meta(result, scheduler_meta), clean_input
+            self._attach_scheduler_meta(result, scheduler_meta),
+            clean_input,
+            policy=policy,
         )
 
     async def arun(
@@ -549,7 +551,7 @@ class Agent:
 
         if scheduler is None:
             result = await _run_engine()
-            return self._finalize_result(result, clean_input)
+            return self._finalize_result(result, clean_input, policy=policy)
 
         try:
             result, scheduler_meta = await execute_async(
@@ -581,7 +583,9 @@ class Agent:
                 "timed_out": False,
             }
         return self._finalize_result(
-            self._attach_scheduler_meta(result, scheduler_meta), clean_input
+            self._attach_scheduler_meta(result, scheduler_meta),
+            clean_input,
+            policy=policy,
         )
 
     def _scheduler(self) -> SchedulerConfig | None:
@@ -639,7 +643,11 @@ class Agent:
         return self.engine
 
     def _finalize_result(
-        self, result: RunResult, clean_input: Any | None = None
+        self,
+        result: RunResult,
+        clean_input: Any | None = None,
+        *,
+        policy: RunPolicy | None = None,
     ) -> RunResult:
         adapter = result.meta.get("framework_adapter") or self.framework_config.name
         result.meta.update(_framework_metadata(self.framework, adapter=adapter))
@@ -659,6 +667,18 @@ class Agent:
         if result.execution_id is None:
             result.execution_id = f"run-{uuid.uuid4().hex}"
         validation = result.validate(self.contract)
+        if policy is not None and policy.max_tool_calls is not None:
+            observed = len(result.tool_events)
+            if observed > policy.max_tool_calls:
+                validation.add(
+                    "max_tool_calls_exceeded",
+                    f"Observed {observed} Tool calls above max_tool_calls={policy.max_tool_calls}.",
+                    path="policy.max_tool_calls",
+                    meta={
+                        "observed_tool_calls": observed,
+                        "max_tool_calls": policy.max_tool_calls,
+                    },
+                )
         return result.apply_validation(validation)
 
     @staticmethod

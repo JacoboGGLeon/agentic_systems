@@ -171,9 +171,7 @@ def record_semantic_judgment(
     rationale = (
         "No evidence-backed rubric violations were recorded."
         if not normalized
-        else "; ".join(
-            f"{item.criterion}: {item.evidence}" for item in normalized
-        )
+        else "; ".join(f"{item.criterion}: {item.evidence}" for item in normalized)
     )
     decision = JudgeDecision(
         score=sum(criteria.model_dump().values()) / 5,
@@ -403,7 +401,7 @@ def semantic_judge_max_tokens() -> int:
     """Read the canonical judge budget from environment with strict validation."""
 
     name = "AGENTIC_SYSTEMS_SEMANTIC_JUDGE_MAX_TOKENS"
-    raw = os.getenv(name, "1400")
+    raw = os.getenv(name, "4096")
     try:
         value = int(raw)
     except ValueError as exc:

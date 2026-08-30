@@ -6,6 +6,7 @@ from pydantic import BaseModel
 
 from agentic_systems import (
     AgenticSystem,
+    RunPolicy,
     RunResult,
 )
 from agentic_systems.agents import (
@@ -14,6 +15,7 @@ from agentic_systems.agents import (
     _coerce_output_data,
     _try_parse_json_object,
 )
+from agentic_systems.tools.events import ToolEvent
 
 
 def build_system(strict=True, defaults=None):
@@ -194,6 +196,33 @@ def test_agent_validation_error_paths_direct_construction():
             engine="openai-runtime",
             framework="unsupported-framework",
         )
+
+
+def test_agent_finalization_fails_closed_above_tool_budget():
+    system = build_system()
+    agent = system.agent(name="budgeted", instructions="x")
+    result = RunResult(
+        text="done",
+        tool_events=[
+            ToolEvent(id="1", name="first", input={}, output={"data": {}}, ok=True),
+            ToolEvent(id="2", name="second", input={}, output={"data": {}}, ok=True),
+        ],
+    )
+
+    finalized = agent._finalize_result(
+        result,
+        {"input": "x"},
+        policy=RunPolicy(max_tool_calls=1),
+    )
+
+    assert finalized.ok is False
+    assert finalized.validation is not None
+    assert finalized.validation["issues"][-1]["code"] == "max_tool_calls_exceeded"
+    assert finalized.errors[-1]["validation_code"] == "max_tool_calls_exceeded"
+    assert finalized.errors[-1]["meta"] == {
+        "observed_tool_calls": 2,
+        "max_tool_calls": 1,
+    }
 
 
 def test_agent_sync_run_inside_loop_reraises_engine_error():

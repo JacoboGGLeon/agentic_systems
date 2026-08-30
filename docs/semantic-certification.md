@@ -41,7 +41,10 @@ model calls.
 
 AGENTIC_SYSTEMS_SEMANTIC_JUDGE_MAX_TURNS is an optional .env override. If it is
 below the contract-derived minimum, preflight fails before any live request.
-AGENTIC_SYSTEMS_SEMANTIC_JUDGE_MAX_TOKENS remains the independent token cap.
+AGENTIC_SYSTEMS_SEMANTIC_JUDGE_MAX_TOKENS remains the independent token cap. Its
+portable default is 4096: this is a ceiling, not a request to consume that many
+tokens, and it gives smaller reasoning-capable models enough room to reach the
+required certification Tool without provider-specific branches.
 
 ## Current challenge
 
