@@ -4,7 +4,7 @@ This challenge proves one complete route:
 
 ```text
 Evaluator / AgenticEnvironment
-└── AgenticSystem
+└── System
     └── real LangGraph (CompiledStateGraph)
         └── Strands Agent using the selected Provider
             ├── real MCP Tool over stdio

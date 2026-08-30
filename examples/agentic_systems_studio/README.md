@@ -15,11 +15,15 @@ return the same normalized `RunResult` contract used by the library.
 
 Reasoning providers:
 
+- `python-runtime` (deterministic Hello World control; it is not an LM)
 - `openai-runtime`
 - `ollama-runtime`
 - `bedrock-runtime` (API key or the normal boto3/IAM credential chain)
 - `vllm-runtime`
-- `auto`
+
+`auto` is the optional runtime-selection mode. It chooses one configured
+Provider before execution; it is not a fifth reasoning Provider and never means
+that several Providers ran.
 
 Frameworks:
 
@@ -53,13 +57,22 @@ are never written to Studio artifacts, attestations or bundles.
 
 ## Run
 
+From the repository root, launch the application directly:
+
+```text
+python -m streamlit run examples/agentic_systems_studio/app.py
+```
+
 Open `notebooks/01_launch_studio.ipynb` and run both cells. The launcher binds
 Streamlit to loopback, checks health and provides both the local URL and the
 ADA/JupyterLab proxy URL.
 
-The Streamlit sidebar shows the provider, framework, model and limits loaded from
-`.env`. Runtime configuration is deliberately read-only in the UI: change `.env`
-and restart Studio when you want another provider or framework.
+Studio discovers the routes configured by the canonical `.env` and managed host
+environment. The sidebar can select any discovered Provider and any installed
+Framework for the current session; credentials are never entered, copied or
+persisted by the UI. Edit `.env` and restart Studio only when the available
+runtime contract itself changes. `python-runtime` remains visibly labeled as a
+deterministic mock without a language model.
 
 ## What the reference proves
 

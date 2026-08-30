@@ -60,7 +60,8 @@ def test_streamlit_is_conversational_and_env_configured():
     assert "st.chat_message(" in source
     assert "ConversationConfig.from_environment()" in source
     assert "build_conversational_system(" in source
-    assert "st.selectbox(" not in source
+    assert "configured_provider_names()" in source
+    assert source.count("st.selectbox(") == 2
     assert "create_application(" not in source
     assert "SYSTEM_SPECS" not in source
 

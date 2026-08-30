@@ -18,8 +18,8 @@ CompositionMode = Literal["sequential", "parallel"]
 class StudioConfig:
     """Provider/framework configuration shared by every reasoning stage."""
 
-    provider: str = "openai-runtime"
-    framework: str = "agentic-systems"
+    provider: str = "auto"
+    framework: str = "native"
     model: str | None = None
     timeout_s: float = 120.0
     max_turns: int = 6
@@ -28,11 +28,7 @@ class StudioConfig:
 
     @property
     def framework_value(self) -> str | None:
-        return (
-            None
-            if self.framework in {"agentic-systems", "native", ""}
-            else self.framework
-        )
+        return None if self.framework in {"native", ""} else self.framework
 
     def runtime(self):
         return toolkit.runtime(

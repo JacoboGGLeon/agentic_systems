@@ -19,6 +19,7 @@ Releases, and superseded plans remain available through Git history.
 | Topic | Document |
 |---|---|
 | Computational grammar, semantics and API ownership | [Computational Model](COMPUTATIONAL_MODEL.md) |
+| Product promise, operating paths and narrative invariants | [Narrative Contract](NARRATIVE_CONTRACT.md) |
 | Package structure, namespace ownership and placement | [Architecture](ARCHITECTURE.md) |
 | Runtime, Provider, Framework and Graph boundaries | [Runtime And Framework Contracts](RUNTIME_AND_FRAMEWORK_CONTRACTS.md) |
 | Result, final-answer and serialization invariants | [RunResult Contract](RUNRESULT_CONTRACT.md) |

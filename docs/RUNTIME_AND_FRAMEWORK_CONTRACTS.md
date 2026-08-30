@@ -8,9 +8,11 @@ latency, cost, or vendor-specific features.
 
 ## Scope
 
-The contract applies to `python-runtime`, `openai-runtime`, `vllm-runtime`, and
-`bedrock-runtime` at the Agent execution boundary. A conforming execution is
-observed through `RunResult`, not through a Provider SDK response.
+The contract applies to all five canonical Providers: `python-runtime`,
+`openai-runtime`, `ollama-runtime`, `bedrock-runtime` and `vllm-runtime`
+at the Agent execution boundary. A conforming execution is observed through
+`RunResult`, not through a Provider SDK response. `auto` is a selection mode,
+not an additional Provider.
 
 `Runtime` selects and configures an execution path. `Provider` is the adapter
 that executes that path and normalizes its observable result. Changing either
@@ -63,16 +65,21 @@ surface over synchronous Tool execution, not native asynchronous execution.
 
 ## Capability Matrix
 
-| Capability | python-runtime | openai-runtime | vllm-runtime | bedrock-runtime |
-|---|---|---|---|---|
-| Base `RunResult` contract | supported | supported | supported | supported |
-| Model generation | unsupported | supported | supported | supported |
-| Deterministic execution | supported | unsupported | unsupported | unsupported |
-| Native async | degraded | supported | supported | degraded |
-| Token usage | degraded | supported | degraded | supported |
-| Streaming | unsupported | unsupported | unsupported | unsupported |
-| Cancellation | unsupported | unsupported | unsupported | unsupported |
-| Offline execution | supported | unsupported | unsupported | unsupported |
+| Capability | python-runtime | openai-runtime | ollama-runtime | bedrock-runtime | vllm-runtime |
+|---|---|---|---|---|---|
+| Base `RunResult` contract | supported | supported | supported | supported | supported |
+| Model generation | unsupported | supported | supported | supported | supported |
+| Deterministic execution | supported | unsupported | unsupported | unsupported | unsupported |
+| Native async | degraded | supported | supported | degraded | supported |
+| Token usage | degraded | supported | degraded | supported | degraded |
+| Streaming | unsupported | unsupported | unsupported | unsupported | unsupported |
+| Cancellation | unsupported | unsupported | unsupported | unsupported | unsupported |
+| Offline execution | supported | unsupported | supported | unsupported | unsupported |
+
+For `ollama-runtime`, offline means that execution can remain on the local
+machine after Ollama and the selected model have been installed. Agentic Systems
+does not install that service, pull models or imply readiness from configuration
+alone.
 
 Profiles are declarations about the adapter surface, not probes of credentials,
 network health, endpoint configuration, or model availability.
@@ -128,11 +135,28 @@ Agentic Systems owns Tool, Skill, Agent, Contract, RunResult, evidence, Provider
 selection and explicit state projection. External Frameworks own native state,
 compilation, lifecycle, persistence and unsupported native capabilities.
 
+Provider, Framework and Graph are independent selections:
+
+```text
+Provider  -> execution backend
+Framework -> Agent loop and native lifecycle owner
+Graph     -> explicit application topology and state transitions
+```
+
+A Provider identifier MUST NOT be accepted as a Framework identifier, or vice
+versa. Selecting a Framework for an Agent does not infer a Provider. Selecting a
+Provider does not infer a Framework or an application Graph.
+
 | Identity | Status | Meaning |
 |---|---|---|
 | `langgraph` | `native-adapter` | Real optional LangGraph adapter |
 | `openai-agents` | `native-adapter` | OpenAI Agents Runner owns the agent loop |
 | `strands` | `native-adapter` | Strands Agent owns lifecycle, Tools and MCP |
+
+For an Agent configured with `framework="langgraph"`, the adapter compiles a
+minimal one-node `StateGraph` that owns the invocation. This proves native
+Framework execution but does not claim application routing. Business nodes,
+branches and state transitions require an explicitly declared Graph.
 
 Requested Framework identity is configuration, not execution evidence.
 `framework_requested` records intent and `framework_adapter` records the adapter

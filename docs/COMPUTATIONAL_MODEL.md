@@ -32,18 +32,21 @@ Observation        structured evidence and human projections
 Verification       repeatable checks over behavior and evidence
 ```
 
-The existing learning path remains:
+The learning path introduces the vocabulary cumulatively, but the public model
+has two orthogonal dimensions plus an observation boundary:
 
 ```text
-function -> Tool -> Skill -> Agent -> AgenticSystem
-                                      |
-                                      v
-                                    Graph -> Environment -> Eval
+Computation: function -> Tool -> Skill -> Agent -> System
+Composition: Agent pipeline | System execution plan | Graph topology
+Time:        Environment -> Episode -> Step
+Evidence:    Eval observes Agent, System or Episode behavior
 ```
 
-This path is pedagogical, not a requirement that every system contain every
-layer. A Tool can run without a Skill. An Agent can run without a Graph. An Eval
-can verify an Agent without requiring a user-created Environment.
+This vocabulary is pedagogical, not a requirement that every application
+contain every abstraction. A Tool can run without a Skill. An Agent can run
+without a Graph. A Graph is not a layer after a System. An Environment does not
+replace a System. An Eval can verify an Agent or System without requiring a
+user-created Environment.
 
 ## Semantic Properties
 
@@ -139,18 +142,20 @@ agent = toolkit.agent(
 Counterexample: calling an HTTP model client an Agent merely because it returns
 generated text.
 
-### Composition Boundary: AgenticSystem
+### Composition Boundary: System
 
-An AgenticSystem is the public composition and governance boundary for shared
-Tools, Skills, Agents, runtime defaults, and inspection.
+A System is the public composition and governance boundary for shared Tools,
+Skills, Agents, runtime defaults, and inspection. The public Python type that
+implements this boundary is `AgenticSystem`; applications normally construct it
+with `toolkit.system(...)`.
 
 It MUST make registered parts and configuration inspectable. It MUST reject
 references to capabilities unavailable in its boundary. It MAY provide factories
 for Graphs, Environments, and Evals, but those conveniences do not make those
 abstractions internal details of the System.
 
-An AgenticSystem is not synonymous with one Agent. It can contain zero, one, or
-many Agents and shared capabilities.
+A System is not synonymous with one Agent. It can contain zero, one, or many
+Agents and shared capabilities.
 
 Example: one System registers shared customer Tools and creates separate
 research and approval Agents.
@@ -260,6 +265,19 @@ Framework identities; they are not Providers.
 
 A Framework adapter MUST preserve core contracts and SHOULD expose its native
 object for framework-specific capabilities.
+
+Provider, Framework and Graph remain independent:
+
+```text
+Provider  -> who executes
+Framework -> who owns the Agent loop
+Graph     -> what topology executes
+```
+
+An Agent-level LangGraph adapter MAY construct a minimal one-node native Graph
+to own that invocation. Such an adapter Graph is execution evidence, not an
+inferred business topology. Routing and state transitions belong to an
+explicitly declared Graph.
 
 ### Scheduler
 
@@ -371,11 +389,12 @@ The grammar permits these compositions:
 - a Tool executes directly;
 - a Skill packages Tools and operational knowledge;
 - an Agent uses Tools and Skills;
-- an Agent binds to one AgenticSystem for an execution;
-- an AgenticSystem owns shared Tools, Skills, and Agents;
+- an Agent binds to one System for an execution;
+- a System owns shared Tools, Skills, and Agents;
 - a Graph node invokes a Tool, Agent, Chain, or deterministic function;
 - an Environment uses a Graph or invokable transition;
-- an Eval verifies Agent or Environment behavior;
+- an Eval verifies Agent or System behavior directly, or observes it through
+  Environment episodes;
 - RunResult, lineage, and human output observe supported boundaries.
 
 The grammar rejects these interpretations:
@@ -412,7 +431,11 @@ The supported import is:
 import agentic_systems as toolkit
 ```
 
-`src/agentic_systems/api.py` is the inventory source of truth. The 2.0 baseline contains 78 top-level exports, 370 export/member IDs, and 10 shared scenarios; the complete checksum and signatures are documented in [API_CONTRACT.md](API_CONTRACT.md) and frozen by compatibility tests.
+`src/agentic_systems/api.py` is the inventory source of truth. The 2.0
+compatibility baseline contains 78 top-level exports and 370 export/member IDs.
+The 2.1 surface contains 89 stable top-level exports and 467 traced
+export/member IDs. Exact checksums and signatures are documented in
+[API_CONTRACT.md](API_CONTRACT.md) and frozen by compatibility tests.
 
 | Concept | Primary public surface |
 |---|---|

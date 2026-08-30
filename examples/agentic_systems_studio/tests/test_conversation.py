@@ -11,6 +11,7 @@ from agentic_systems_studio.conversation import (
     ConversationConfig,
     build_conversational_system,
     ConversationalStudio,
+    hello_world,
     prepare_conversation_context,
     safe_calculate,
 )
@@ -115,6 +116,31 @@ def test_conversational_tools_are_bounded_and_deterministic():
     assert context.ok is True
     assert context.data["history_turns"] == 2
     assert all(item["role"] != "system" for item in context.data["history"])
+
+    greeting = hello_world.run({"message": "hola"})
+    assert greeting.ok is True
+    assert greeting.data["execution_kind"] == "deterministic-mock"
+    assert "yo sólo trabajar" in greeting.data["message"]
+    assert "no tengo mente ni modelo de lenguaje" in greeting.data["message"]
+
+
+def test_python_runtime_is_an_explicit_deterministic_studio_mock():
+    studio = build_conversational_system(
+        ConversationConfig(provider="python-runtime", framework="native")
+    )
+
+    result = studio.run("hola")
+
+    assert result.ok is True
+    assert result.engine == "python-runtime"
+    assert result.meta["framework"] == "native"
+    assert [event.name for event in result.tool_events] == [
+        "prepare_conversation_context",
+        "hello_world",
+    ]
+    assert "yo sólo trabajar" in result.text
+    assert "no tengo mente ni modelo de lenguaje" in result.text
+    result.check_invariants().raise_if_failed()
 
 
 def test_context_agent_run_uses_public_default_mode_and_public_data():

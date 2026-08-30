@@ -40,3 +40,44 @@ def test_high_level_graph_api_builds_and_executes_state_nodes(monkeypatch):
     )
 
     assert graph.run({"value": 21}) == {"value": 42}
+
+
+def test_portable_graph_exposes_public_boundary_and_topology_inspection():
+    import agentic_systems as toolkit
+
+    graph = toolkit.graph(
+        nodes={"double": lambda state: {"value": state["value"] * 2}},
+        edges=[("START", "double"), ("double", "END")],
+        engine="portable",
+        name="calculator_graph",
+    )
+
+    assert graph.inspect() == {
+        "name": "calculator_graph",
+        "engine": "portable",
+        "schema_version": "agentic_systems.graph-boundary.v1",
+        "kind": "agentic-systems-native",
+        "framework": None,
+        "graph_type": "GraphApp",
+        "native_type": "_PortableGraph",
+        "owns": [
+            "portable_state_transition",
+            "agent_invocation",
+            "result_projection",
+        ],
+        "preserves": [
+            "ok",
+            "final",
+            "data",
+            "tool_events",
+            "usage",
+            "engine",
+            "model",
+            "mode",
+            "validation",
+            "errors",
+        ],
+        "nodes": ["double"],
+        "edges": [["START", "double"], ["double", "END"]],
+        "conditional_edge_count": 0,
+    }

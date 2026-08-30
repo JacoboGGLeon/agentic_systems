@@ -12,12 +12,17 @@ result construction.
 
 ## Install
 
-For library and CLI use from PyPI:
+Download `agentic_systems-2.1.0-py3-none-any.whl` and
+`SHA256SUMS-2.1.0.txt` from the v2.1.0 GitHub release, verify the checksum, then
+install the exact artifact:
 
 ```bash
 python -m pip install -U pip
-python -m pip install "agentic-systems[all]==2.1.0"
+python -m pip install "./agentic_systems-2.1.0-py3-none-any.whl[all]"
 ```
+
+PyPI currently serves the earlier 2.0.0 line. Installing the release wheel is
+therefore required when following the 2.1 tutorials and contracts.
 
 The notebooks are repository content; clone the repository before opening them:
 
@@ -56,7 +61,7 @@ import agentic_systems as toolkit
 runtime = toolkit.runtime(provider="python-runtime")
 system = toolkit.system(runtime=runtime)
 
-assert toolkit.__version__ == "2.0.0"
+assert toolkit.__version__ == "2.1.0"
 assert callable(toolkit.tool)
 assert callable(toolkit.skill)
 assert callable(toolkit.agent)
@@ -90,6 +95,10 @@ export OPENAI_API_KEY='...'
 export OPENAI_MODEL='gpt-4.1-mini'
 export RUN_OPENAI_LIVE=1
 
+export OLLAMA_BASE_URL='http://127.0.0.1:11434/v1'
+export OLLAMA_MODEL='qwen3:4b-instruct-2507-q4_K_M'
+export RUN_OLLAMA_LIVE=1
+
 export VLLM_BASE_URL='http://127.0.0.1:8000/v1'
 export VLLM_MODEL='your-model'
 export RUN_VLLM_LIVE=1
@@ -110,6 +119,10 @@ python -m jupyter lab
 $env:OPENAI_API_KEY = '...'
 $env:OPENAI_MODEL = 'gpt-4.1-mini'
 $env:RUN_OPENAI_LIVE = '1'
+
+$env:OLLAMA_BASE_URL = 'http://127.0.0.1:11434/v1'
+$env:OLLAMA_MODEL = 'qwen3:4b-instruct-2507-q4_K_M'
+$env:RUN_OLLAMA_LIVE = '1'
 
 $env:VLLM_BASE_URL = 'http://127.0.0.1:8000/v1'
 $env:VLLM_MODEL = 'your-model'
@@ -135,6 +148,7 @@ Provider notebooks evaluate readiness before crossing an external boundary:
 | Notebook | Readiness | Behavior |
 |---|---|---|
 | providers/01_openai.ipynb | OPENAI_API_KEY | Executes runtime -> system -> agent -> RunResult |
+| providers/04_ollama.ipynb | OLLAMA_MODEL and reachable Ollama endpoint | Executes the local OpenAI-compatible route as ollama-runtime |
 | providers/03_vllm.ipynb | VLLM_BASE_URL and VLLM_MODEL | Calls the OpenAI-compatible endpoint |
 | providers/02_bedrock.ipynb | Region plus SigV4 credentials or AWS_BEARER_TOKEN_BEDROCK | Calls the same boto3 bedrock-runtime Provider |
 | frameworks/00_langgraph.ipynb | Always ready offline | Executes real LangGraph; Provider auto is optional |

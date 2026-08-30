@@ -76,7 +76,7 @@ def test_data_quality_operator_extracts_csv_from_natural_language_prompt():
 def test_catalog_builds_exact_public_system(spec):
     studio_system = build_system(
         spec.id,
-        StudioConfig(provider="openai-runtime", framework="agentic-systems"),
+        StudioConfig(provider="openai-runtime", framework="native"),
     )
     inspection = studio_system.inspect()
     assert inspection["compiled"]["unit_count"] == len(spec.stages)
@@ -158,7 +158,20 @@ def test_scaffolder_generates_complete_non_destructive_application(tmp_path: Pat
     assert manifest["id"] == "incident-response"
     assert set(manifest["assets"]) == relative
     assert manifest["execution"]["plan"] == "sequential"
+    assert manifest["agentic_systems_version"] == toolkit.__version__
+    assert manifest["runtime_policy"]["default_provider"] == "auto"
+    assert manifest["runtime_policy"]["default_framework"] == "native"
+    assert "agentic-systems" not in manifest["runtime_policy"]["frameworks"]
     assert "python-runtime" not in manifest["runtime_policy"]["reasoning_providers"]
+    settings = (target / "src/reference_application/settings.py").read_text(
+        encoding="utf-8"
+    )
+    assert 'os.getenv("AGENTIC_SYSTEMS_PROVIDER", "auto")' in settings
+    assert 'os.getenv("AGENTIC_SYSTEMS_FRAMEWORK", "native")' in settings
+    env_example = (target / ".env.example").read_text(encoding="utf-8")
+    assert "AGENTIC_SYSTEMS_PROVIDER=auto" in env_example
+    assert "AGENTIC_SYSTEMS_FRAMEWORK=native" in env_example
+    assert "AGENTIC_PROVIDER=" not in env_example
     source = (target / "src/reference_application/tools.py").read_text(encoding="utf-8")
     for stage in manifest["stages"]:
         assert f"def {stage['tool_key']}" in source

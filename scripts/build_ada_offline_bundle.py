@@ -298,9 +298,19 @@ def _readme(certification: dict[str, object], provenance: dict[str, object]) -> 
         f"""\
         # Agentic Systems {VERSION} · entrega industrial para ADA
 
-        Este ZIP funciona sin GitHub ni PyPI. El único acceso de red esperado es
-        el Artifactory aprobado y, durante una ejecución live, el endpoint del
-        provider seleccionado. No contiene credenciales.
+        Este ZIP lleva Agentic Systems 2.1 desde un artefacto verificable hasta
+        una ejecución observable en un sandbox empresarial. Funciona sin GitHub
+        ni PyPI: el único acceso de red esperado es el Artifactory aprobado y,
+        durante una ejecución live, el endpoint del Provider seleccionado. No
+        contiene credenciales.
+
+        La misma gramática se conserva en todos los recorridos:
+
+            Tool -> Skill -> Agent -> System
+
+        El usuario elige por configuración dónde corre la inferencia y quién
+        controla el loop. El bundle declara cinco Providers y cuatro Frameworks;
+        `auto` es un modo de selección, no un Provider adicional.
 
         ## Contenido
 
@@ -308,7 +318,8 @@ def _readme(certification: dict[str, object], provenance: dict[str, object]) -> 
         - `studio/`: un solo sistema agéntico conversacional, directo y Streamlit.
         - `tutorials/`: los 21 notebooks canónicos; no hay duplicado CLI.
         - `validation/`: matriz semántica E2E ejecutable desde el wheel incluido.
-        - `evidence/`: matriz primaria 20/20 y ruta Bedrock IAM 4/4.
+        - `evidence/`: matriz primaria 20/20, Bedrock IAM en AWS/ADA y 108/108
+          episodios semánticos revisados.
         - `.env.example`: contrato único para provider, framework y modelo.
         - `verify_bundle.py`: verificación offline de todos los checksums.
 
@@ -337,13 +348,14 @@ def _readme(certification: dict[str, object], provenance: dict[str, object]) -> 
 
             python verify_bundle.py
 
-        Después copia `.env.example` a `.env`, elige provider/framework y abre:
+        Después copia `.env.example` a `.env`, elige Provider/Framework y sigue
+        una sola de estas rutas:
 
         1. Ejecuta la matriz semántica independiente:
 
                python validation/run_ada_semantic_matrix.py
 
-           El provider se toma de `.env`; el gate ejecuta sus cuatro frameworks,
+           El Provider se toma de `.env`; el gate ejecuta sus cuatro Frameworks,
            valida cada respuesta determinísticamente y mediante judge, y escribe
            `outputs/<provider>-semantic-attestation.json` y
            `outputs/<provider>-semantic-review.md`.
@@ -363,7 +375,9 @@ def _readme(certification: dict[str, object], provenance: dict[str, object]) -> 
         - source commit certificado: `{provenance["certified_commit"]}`
         - materials commit: `{provenance["materials_commit"]}`
         - core source equivalente: `true`
-        - live: `24/24`, sin fallback
+        - combinaciones primarias y ruta IAM adicional: `24/24`, sin fallback
+        - corroboración ADA: `4/4`
+        - episodios semánticos revisados: `108/108`
 
         El commit de materiales puede ser posterior porque sólo mejora tutoriales,
         Studio y tests. El builder comprueba que el árbol `src/agentic_systems`

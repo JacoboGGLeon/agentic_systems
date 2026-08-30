@@ -16,6 +16,7 @@ from typing import Any
 from agentic_systems.errors import GraphContractError
 from agentic_systems.engines.names import LANGGRAPH_ORCHESTRATOR
 from agentic_systems.environments import PlannedAgentGraph
+from agentic_systems.integrations.boundary import describe_graph_boundary
 from agentic_systems.results import RunResult
 from agentic_systems.utils import agent_output_mapper
 
@@ -668,6 +669,36 @@ class GraphApp:
 
     def invoke(self, state: Any) -> Any:
         return self.run(state)
+
+    def inspect(self) -> dict[str, Any]:
+        """Return the public Graph boundary and available topology metadata."""
+
+        inspection = {
+            "name": self.name,
+            "engine": self.engine,
+            **describe_graph_boundary(self).to_dict(),
+        }
+        nodes = getattr(self.native, "nodes", None)
+        if isinstance(nodes, Mapping):
+            inspection["nodes"] = [str(name) for name in nodes]
+
+        raw_edges = getattr(self.native, "edges", None)
+        if isinstance(raw_edges, Iterable) and not isinstance(
+            raw_edges, (str, bytes, Mapping)
+        ):
+            edges: list[list[str]] = []
+            for edge in raw_edges:
+                if not isinstance(edge, (list, tuple)) or len(edge) < 2:
+                    edges = []
+                    break
+                edges.append([str(edge[0]), str(edge[1])])
+            if edges:
+                inspection["edges"] = edges
+
+        conditional_edges = getattr(self.native, "conditional_edges", None)
+        if isinstance(conditional_edges, (list, tuple)):
+            inspection["conditional_edge_count"] = len(conditional_edges)
+        return inspection
 
     def lineage(self, state_or_result: Any, **kwargs: Any) -> Any:
         """Project a graph input/result state into Lineage Memory."""

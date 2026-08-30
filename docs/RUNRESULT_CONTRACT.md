@@ -136,7 +136,7 @@ projections may differ without contradicting one another.
 ```python
 schema = toolkit.output_schema(["procedure", "final_result"])
 answer = toolkit.final_answer(
-    {"procedure": ["2 + 3 = 5"], "final_result": 5},
+    {"procedure": ["20 + 22 = 42"], "final_result": 42},
     schema=schema,
 )
 ```

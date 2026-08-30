@@ -405,11 +405,11 @@ def test_every_notebook_states_model_evidence_and_evidence_limit():
             assert marker in first_markdown, (_relative(path), marker)
 
 
-def test_reviewed_narrative_freezes_the_2_0_conceptual_boundaries():
+def test_reviewed_narrative_freezes_the_current_conceptual_boundaries():
     requirements = {
         "providers/00_auto.ipynb": (
             "provider_priority",
-            "OpenAI y Bedrock",
+            "cinco Providers canonicos",
             "configured",
             "passed",
         ),

@@ -107,6 +107,20 @@ def prepare_conversation_context(
     }
 
 
+@toolkit.tool
+def hello_world(message: str) -> dict[str, Any]:
+    """Return a deterministic offline Studio response with public evidence."""
+
+    return {
+        "message": (
+            "Oh, disculpa, yo no entender; yo sólo trabajar. "
+            "Soy un mock determinista: no tengo mente ni modelo de lenguaje. "
+            f"Recibí: {message}"
+        ),
+        "execution_kind": "deterministic-mock",
+    }
+
+
 @dataclass(frozen=True)
 class ConversationConfig:
     """Environment-first configuration shared by the UI and notebook."""
@@ -122,7 +136,7 @@ class ConversationConfig:
     def __post_init__(self) -> None:
         if self.provider not in {"auto", *PROVIDER_NAMES}:
             raise ValueError(f"Unknown provider: {self.provider!r}")
-        if self.framework not in {"agentic-systems", *FRAMEWORK_NAMES}:
+        if self.framework not in FRAMEWORK_NAMES:
             raise ValueError(f"Unknown framework: {self.framework!r}")
         if self.timeout_s <= 0:
             raise ValueError("timeout_s must be greater than zero")
@@ -132,11 +146,16 @@ class ConversationConfig:
             )
 
     @classmethod
-    def from_environment(cls) -> "ConversationConfig":
+    def from_environment(
+        cls,
+        *,
+        provider: str | None = None,
+        framework: str | None = None,
+    ) -> "ConversationConfig":
         # The single Studio .env is canonical; managed credentials not declared
         # there remain inherited from the hosting environment.
         load_studio_environment()
-        declared_provider = os.getenv("AGENTIC_SYSTEMS_PROVIDER", "auto")
+        declared_provider = provider or os.getenv("AGENTIC_SYSTEMS_PROVIDER", "auto")
         provider = declared_provider
         model = os.getenv("AGENTIC_SYSTEMS_MODEL") or None
         try:
@@ -152,7 +171,8 @@ class ConversationConfig:
             pass
         return cls(
             provider=provider,
-            framework=os.getenv("AGENTIC_SYSTEMS_FRAMEWORK", "native"),
+            framework=framework
+            or os.getenv("AGENTIC_SYSTEMS_FRAMEWORK", "native"),
             model=model,
             timeout_s=float(os.getenv("AGENTIC_SYSTEMS_TIMEOUT_S", "120")),
             max_turns=int(os.getenv("AGENTIC_SYSTEMS_MAX_TURNS", "6")),
@@ -162,11 +182,7 @@ class ConversationConfig:
 
     @property
     def framework_value(self) -> str | None:
-        return (
-            None
-            if self.framework in {"", "agentic-systems", "native"}
-            else self.framework
-        )
+        return None if self.framework in {"", "native"} else self.framework
 
     def reasoning_runtime(self):
         return toolkit.runtime(
@@ -188,6 +204,26 @@ class ConversationConfig:
                 max_tool_calls=1,
             ),
         )
+
+
+def configured_provider_names() -> tuple[str, ...]:
+    """Return non-secret configured routes plus the deterministic mock."""
+
+    configured = ["python-runtime"]
+    if toolkit.openai_environment_snapshot().get("api_key_configured"):
+        configured.append("openai-runtime")
+    ollama = toolkit.ollama_environment_snapshot()
+    if ollama.get("model_configured") or ollama.get("base_url_configured"):
+        configured.append("ollama-runtime")
+    vllm = toolkit.vllm_environment_snapshot()
+    if vllm.get("model_configured") and vllm.get("base_url_configured"):
+        configured.append("vllm-runtime")
+    aws = toolkit.boto3_session_snapshot(
+        os.getenv("AWS_REGION") or os.getenv("AWS_DEFAULT_REGION") or None
+    )
+    if aws.get("ok") and aws.get("session_region"):
+        configured.append("bedrock-runtime")
+    return tuple(dict.fromkeys(configured))
 
 
 @dataclass
@@ -232,16 +268,26 @@ class ConversationalStudio:
             },
         )
         context = dict(context_result.data)
-        assistant_result = self.assistant.run(
-            "Respond to the current user message using the bounded conversation context. "
-            "Call safe_calculate when arithmetic evidence is useful. Never expose private "
-            "reasoning and never claim that an uncalled tool was executed.\n\n"
-            + json.dumps(context, ensure_ascii=False),
-        )
+        if self.config.provider == "python-runtime":
+            assistant_result = self.assistant.run(
+                {
+                    "tool": "hello_world",
+                    "input": {"message": str(context.get("message", message))},
+                }
+            )
+            answer = str(assistant_result.data["message"])
+        else:
+            assistant_result = self.assistant.run(
+                "Respond to the current user message using the bounded conversation context. "
+                "Call safe_calculate when arithmetic evidence is useful. Never expose private "
+                "reasoning and never claim that an uncalled tool was executed.\n\n"
+                + json.dumps(context, ensure_ascii=False),
+            )
+            answer = assistant_result.text
         result = toolkit.compose_result(
-            text=assistant_result.text,
+            text=answer,
             data={
-                "answer": assistant_result.text,
+                "answer": answer,
                 "context_summary": {
                     "history_turns": context.get("history_turns", 0),
                     "policy": context.get("policy", {}),
@@ -267,12 +313,13 @@ def build_conversational_system(
     """Build the same system used by the notebook and Streamlit UI."""
 
     selected = config or ConversationConfig.from_environment()
-    if selected.provider != "auto" and (
+    if selected.provider not in {"auto", "python-runtime"} and (
         provider_capability(selected.provider, "model_generation").status
         == "unsupported"
     ):
         raise ValueError(
-            "The conversational Studio requires a reasoning provider or provider='auto'."
+            "Studio requires a reasoning Provider, provider='auto', or the "
+            "python-runtime deterministic mock."
         )
 
     deterministic = toolkit.system(runtime=selected.deterministic_runtime())
@@ -292,21 +339,28 @@ def build_conversational_system(
     reasoning = toolkit.system(
         runtime=selected.reasoning_runtime(), model=selected.model
     )
+    mock = selected.provider == "python-runtime"
     assistant = reasoning.agent(
         name="conversation.assistant",
         instructions=(
             "You are a concise, evidence-aware conversational assistant. Preserve context, "
             "use deterministic tools when they add evidence, and never expose private reasoning."
         ),
-        tools=[safe_calculate],
+        tools=[hello_world] if mock else [safe_calculate],
         engine=selected.provider,
         framework=selected.framework_value,
         model=selected.model,
+        contract=toolkit.AgentContract(
+            must_call=["hello_world"],
+            completion="when_required_tools_satisfied",
+        )
+        if mock
+        else None,
         policy=toolkit.RunPolicy(
             max_turns=selected.max_turns,
             max_tool_calls=selected.max_tool_calls,
             max_tokens=selected.max_tokens,
-            tool_choice="auto",
+            tool_choice="hello_world" if mock else "auto",
         ),
     )
 
@@ -326,6 +380,8 @@ __all__ = [
     "ConversationConfig",
     "ConversationalStudio",
     "build_conversational_system",
+    "configured_provider_names",
+    "hello_world",
     "prepare_conversation_context",
     "safe_calculate",
 ]

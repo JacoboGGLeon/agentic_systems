@@ -7,7 +7,9 @@ import streamlit as st
 from agentic_systems_studio.conversation import (
     ConversationConfig,
     build_conversational_system,
+    configured_provider_names,
 )
+from agentic_systems.registry import FRAMEWORK_NAMES
 from agentic_systems_studio.environment import load_studio_environment
 
 
@@ -44,10 +46,35 @@ def _system(config: ConversationConfig):
 
 
 environment_path = load_studio_environment()
-config = ConversationConfig.from_environment()
+default_config = ConversationConfig.from_environment()
 
 with st.sidebar:
     st.header("Runtime contract")
+    providers = configured_provider_names()
+    provider = st.selectbox(
+        "Provider",
+        providers,
+        index=providers.index(default_config.provider)
+        if default_config.provider in providers
+        else 0,
+        format_func=lambda value: (
+            "python-runtime (deterministic Hello World mock)"
+            if value == "python-runtime"
+            else value
+        ),
+    )
+    frameworks = tuple(FRAMEWORK_NAMES)
+    framework = st.selectbox(
+        "Framework",
+        frameworks,
+        index=frameworks.index(default_config.framework)
+        if default_config.framework in frameworks
+        else 0,
+    )
+    config = ConversationConfig.from_environment(
+        provider=provider,
+        framework=framework,
+    )
     st.json(
         {
             "source": ".env",
@@ -59,7 +86,10 @@ with st.sidebar:
         },
         expanded=True,
     )
-    st.caption("Change `.env` and restart Studio to change the runtime contract.")
+    st.caption(
+        "Selections apply to this session only. Credentials and discovered routes "
+        "remain owned by `.env` or the managed host environment."
+    )
     if st.button("Clear conversation", use_container_width=True):
         st.session_state.pop("messages", None)
         st.session_state.pop("last_result", None)

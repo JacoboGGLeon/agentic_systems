@@ -19,7 +19,7 @@ answer, lineage, runtime identity, protocol evidence, and eval judgment agree.
 | Challenge | Purpose | Runtime matrix |
 |---|---|---|
 | [`strands_protocol_graph`](strands_protocol_graph/README.md) | Real Strands MCP + A2A, System-owned LangGraph orchestration, AgenticEnvironment/Eval, and a native deterministic judge | OpenAI, Bedrock, Ollama locally; vLLM and Bedrock IAM externally |
-| [Semantic E2E matrix](../docs/semantic-certification.md) | Skill → specialist → orchestrator → judge across provider/framework combinations | Python + four LM providers × four frameworks |
+| [Semantic E2E matrix](../docs/semantic-certification.md) | Skill -> specialist -> orchestrator -> judge across Provider/Framework combinations | Python + four LM Providers x four Frameworks |
 
 ## Evidence policy
 

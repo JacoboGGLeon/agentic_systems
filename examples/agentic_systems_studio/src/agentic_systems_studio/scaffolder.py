@@ -313,7 +313,7 @@ def _notebook(spec: SystemSpec, package: str) -> str:
                 f"from {package}.settings import AppSettings\n",
                 f"from {package}.system import STAGES, build_system\n",
                 f"from {package}.tools import TOOLS\n",
-                "settings = AppSettings(provider='openai-runtime', framework='agentic-systems')\n",
+                "settings = AppSettings(provider='openai-runtime', framework='native')\n",
                 "system = build_system(settings)\n",
                 "system.inspect()\n",
             ],
@@ -381,13 +381,13 @@ def _settings_source() -> str:
         from agentic_systems.registry import FRAMEWORK_NAMES, PROVIDER_NAMES, provider_capability
 
         REASONING_PROVIDERS = {"auto", *(name for name in PROVIDER_NAMES if provider_capability(name, "model_generation").status != "unsupported")}
-        APPLICATION_FRAMEWORKS = {"agentic-systems", *FRAMEWORK_NAMES}
+        APPLICATION_FRAMEWORKS = set(FRAMEWORK_NAMES)
 
 
         @dataclass(frozen=True)
         class AppSettings:
-            provider: str = "openai-runtime"
-            framework: str = "agentic-systems"
+            provider: str = "auto"
+            framework: str = "native"
             model: str | None = None
             timeout_s: float = 120.0
             max_turns: int = 6
@@ -408,14 +408,14 @@ def _settings_source() -> str:
             @classmethod
             def from_env(cls):
                 return cls(
-                    provider=os.getenv("AGENTIC_PROVIDER", "openai-runtime"),
-                    framework=os.getenv("AGENTIC_FRAMEWORK", "agentic-systems"),
-                    model=os.getenv("AGENTIC_MODEL") or None,
+                    provider=os.getenv("AGENTIC_SYSTEMS_PROVIDER", "auto"),
+                    framework=os.getenv("AGENTIC_SYSTEMS_FRAMEWORK", "native"),
+                    model=os.getenv("AGENTIC_SYSTEMS_MODEL") or None,
                 )
 
             @property
             def framework_value(self):
-                return None if self.framework in {"agentic-systems", "native"} else self.framework
+                return None if self.framework == "native" else self.framework
 
             def reasoning_runtime(self):
                 return toolkit.runtime(
@@ -595,9 +595,9 @@ def _files(spec: SystemSpec, package: str) -> dict[str, str]:
                     != "unsupported"
                 ],
             ],
-            "frameworks": ["agentic-systems", *FRAMEWORK_NAMES],
-            "default_provider": "openai-runtime",
-            "default_framework": "agentic-systems",
+            "frameworks": list(FRAMEWORK_NAMES),
+            "default_provider": "auto",
+            "default_framework": "native",
         },
         "assets": list(generated_assets),
     }
@@ -651,9 +651,13 @@ def _files(spec: SystemSpec, package: str) -> dict[str, str]:
         ),
         ".env.example": dedent(
             """\
-            AGENTIC_PROVIDER=openai-runtime
-            AGENTIC_FRAMEWORK=agentic-systems
-            AGENTIC_MODEL=
+            AGENTIC_SYSTEMS_PROVIDER=auto
+            AGENTIC_SYSTEMS_FRAMEWORK=native
+            AGENTIC_SYSTEMS_MODEL=
+            AGENTIC_SYSTEMS_TIMEOUT_S=120
+            AGENTIC_SYSTEMS_MAX_TURNS=6
+            AGENTIC_SYSTEMS_MAX_TOOL_CALLS=4
+            AGENTIC_SYSTEMS_MAX_TOKENS=1024
 
             OPENAI_API_KEY=
             OPENAI_MODEL=gpt-4.1-mini

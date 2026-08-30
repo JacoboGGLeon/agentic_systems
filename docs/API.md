@@ -206,6 +206,21 @@ Use `agent.run(...)` for sync execution and `agent.arun(...)` for async provider
 flows. Use `AgentContract`, `RunPolicy` and `ContractPolicySpec` before runtime
 calls when tool usage must be constrained.
 
+### Agent Pipeline
+
+`Agent.pipeline(...)` compiles the Agent as the first deterministic execution
+unit and appends any explicitly supplied stages. Inspect the plan before
+execution without calling a Provider, Agent or Tool:
+
+```python
+agent_pipeline = agent.pipeline(name="calculator_pipeline")
+toolkit.show(agent_pipeline.inspect(), title="Deterministic Agent pipeline")
+```
+
+The returned `CompiledSystem` reports its name, execution plan and unit count.
+The canonical executable example is
+[Core 03 - Agent](../tutorials/core/03_agent.ipynb).
+
 ### RunPolicy Parameters
 
 `RunPolicy` is the execution contract for agent loops. It should be declared near the agent definition, not hidden inside a notebook cell.
@@ -265,7 +280,10 @@ Use an output schema when the user requested fields:
 
 ```python
 schema = toolkit.output_schema(["procedure", "final_result"])
-answer = toolkit.final_answer({"procedure": ["2 + 3"], "final_result": 5}, schema=schema)
+answer = toolkit.final_answer(
+    {"procedure": ["20 + 22"], "final_result": 42},
+    schema=schema,
+)
 ```
 
 Public output names include `OutputSchema`, `AgenticOutput`, `RuntimeInfo`,
@@ -282,7 +300,7 @@ supported.
 ```python
 memory = result.lineage(
     name="calculator.run",
-    question="What is 2 + 3?",
+    question="What is 20 + 22?",
     goal="Explain the answer from tool evidence.",
 )
 
@@ -301,8 +319,10 @@ LINEAGE_SCHEMA_VERSION
 
 ## System
 
-`AgenticSystem` is the native system and composition factory. It registers tools,
-skills, agents, runtime and contracts.
+A System is the native composition and governance boundary. Applications create
+one with `toolkit.system(...)`; the returned public Python type is
+`AgenticSystem`. A System registers Tools, Skills, Agents, runtime and
+contracts, then exposes an inspectable external execution plan.
 
 ```python
 system = toolkit.system(runtime=runtime)
@@ -311,12 +331,25 @@ system = toolkit.system(runtime=runtime)
 def multiply(a: int, b: int) -> dict:
     return {"result": a * b}
 
-agent = system.agent(name="system_agent", instructions="Use registered tools.")
+agent = system.agent(
+    name="system_agent",
+    instructions="Use registered tools.",
+    tools=["multiply"],
+)
 inspection = system.inspect()
 inspection.raise_if_errors()
 structured = inspection.to_dict()
 human = inspection.human_text()
 composition = system.composition()
+
+system_pipeline = system.compile(
+    name="calculator_system_pipeline",
+    entrypoint=agent,
+)
+toolkit.show(system_pipeline.inspect(), title="System execution plan")
+result = system_pipeline.run(
+    {"tool": "multiply", "input": {"a": 6, "b": 7}}
+)
 ```
 
 Tool and Skill registration rejects different definitions with an occupied name.
@@ -370,6 +403,9 @@ graph = toolkit.graph(
     edges=[("START", "inspect"), ("inspect", "END")],
     engine="auto",
 )
+
+inspection = graph.inspect()
+toolkit.show(inspection, title="Native Graph inspection")
 ```
 
 The default `engine="auto"` uses LangGraph when installed and falls back to the
@@ -377,6 +413,13 @@ dependency-free portable backend. Use `engine="portable"` for deterministic
 core-only execution or `engine="langgraph"` when the native SDK is required.
 The portable backend supports sequential and conditional routes and rejects
 parallel branches explicitly instead of emulating framework behavior.
+
+`GraphApp.inspect()` is non-executing. It reports the Graph boundary, resolved
+engine, native type and the topology metadata exposed safely by the selected
+backend. For the portable backend this includes node names, edges and the
+conditional-edge count. It does not invoke the Graph or infer unavailable
+topology from a Framework-native object. See the executable
+[Core 06 - Native Graph](../tutorials/core/06_graph_native.ipynb).
 
 Public graph names:
 
@@ -387,25 +430,20 @@ graph
 
 LangGraph remains optional. The core package must import without LangGraph.
 
-## Environment And Evals
+## Environment
 
-Environments execute episodes. Evals score cases.
+An Environment supplies episodes and steps through time. It can drive a System,
+a Graph or another executable boundary for conversations, simulations,
+workflows and iterative processes. Evaluation is one possible observer; it is
+not the definition of an Environment.
 
 ```python
 env = toolkit.AgenticEnvironment(records=records, transition_fn=transition, reward_fn=reward)
 observation, info = env.reset(seed=17)
 observation, reward, terminated, truncated, info = env.step(action=None)
-
-report = toolkit.run_eval(
-    agent,
-    cases,
-    determinism="seeded",
-    seed=17,
-    reproducibility_conditions=["same fixtures and provider configuration"],
-)
 ```
 
-Public names:
+Public Environment names:
 
 ```text
 AgenticEnvironment
@@ -417,6 +455,26 @@ build_agent_step_graph
 build_dynamic_agent_router_graph
 build_planned_agent_graph
 environment_lineage
+```
+
+## Evals
+
+Evals measure an Agent or System directly, or observe behavior across
+Environment episodes. They do not replace the executable they evaluate.
+
+```python
+report = toolkit.run_eval(
+    agent,
+    cases,
+    determinism="seeded",
+    seed=17,
+    reproducibility_conditions=["same fixtures and provider configuration"],
+)
+```
+
+Public Eval names:
+
+```text
 EvalCaseResult
 EvalReport
 EvalReproducibility
@@ -660,10 +718,10 @@ integrations
 __version__
 ```
 
-Contract entries including public members: 467
+Contract entries including public members: 468
 Shared contract scenarios: 10
 
-Contract checksum: `9fab99ca5cd920b2e1fcd8071432f9b85513dfc0c8e4340159754d41422a7617`
+Contract checksum: `428e1cba46625e76ba17ee1565513f7f987eccb6385b0e045d2d382378d3f1fd`
 ## Provider Conformance API
 
 The advanced `agentic_systems.providers` namespace exposes the Runtime/Provider
