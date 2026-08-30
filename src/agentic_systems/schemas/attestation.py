@@ -292,19 +292,57 @@ def validate_semantic_attestation(
 ) -> None:
     """Reject incomplete or internally contradictory semantic evidence."""
 
+    errors = [
+        *_semantic_identity_errors(
+            attestation,
+            expected_commit_sha=expected_commit_sha,
+            expected_wheel_sha256=expected_wheel_sha256,
+        ),
+        *_semantic_freshness_errors(attestation, now=now, max_age=max_age),
+        *_semantic_matrix_errors(attestation, expected_pairs),
+        *_semantic_summary_errors(attestation),
+    ]
+    for cell in attestation.cells:
+        errors.extend(_semantic_cell_errors(cell))
+    if errors:
+        raise ValueError("; ".join(errors))
+
+
+def _semantic_identity_errors(
+    attestation: SemanticAttestation,
+    *,
+    expected_commit_sha: str,
+    expected_wheel_sha256: str,
+) -> list[str]:
     errors: list[str] = []
     if attestation.commit_sha != expected_commit_sha.strip().lower():
         errors.append("commit SHA does not match the release candidate")
     if attestation.wheel_sha256 != expected_wheel_sha256.strip().lower():
         errors.append("wheel SHA-256 does not match the release candidate")
-    age = (now or datetime.now(timezone.utc)) - attestation.created_at
-    if not timedelta(0) <= age <= max_age:
-        errors.append("attestation is outside the accepted age window")
     if not attestation.wheel_runtime_verified:
         errors.append("runtime was not verified as the installed candidate wheel")
+    return errors
 
+
+def _semantic_freshness_errors(
+    attestation: SemanticAttestation,
+    *,
+    now: datetime | None,
+    max_age: timedelta,
+) -> list[str]:
+    age = (now or datetime.now(timezone.utc)) - attestation.created_at
+    if timedelta(0) <= age <= max_age:
+        return []
+    return ["attestation is outside the accepted age window"]
+
+
+def _semantic_matrix_errors(
+    attestation: SemanticAttestation,
+    expected_pairs: set[tuple[str, str]],
+) -> list[str]:
     declared_providers = list(attestation.matrix.providers)
     declared_frameworks = list(attestation.matrix.frameworks)
+    errors: list[str] = []
     if len(set(declared_providers)) != len(declared_providers):
         errors.append("semantic matrix contains duplicate providers")
     if len(set(declared_frameworks)) != len(declared_frameworks):
@@ -326,7 +364,10 @@ def validate_semantic_attestation(
         errors.append(f"attestation is missing cells: {missing}")
     if unexpected:
         errors.append(f"attestation contains unexpected cells: {unexpected}")
+    return errors
 
+
+def _semantic_summary_errors(attestation: SemanticAttestation) -> list[str]:
     episodes = [episode for cell in attestation.cells for episode in cell.episodes]
     passed_cells = len([cell for cell in attestation.cells if cell.ok])
     passed_episodes = len([episode for episode in episodes if episode.ok])
@@ -338,29 +379,31 @@ def validate_semantic_attestation(
         "episodes_passed": passed_episodes,
         "episodes_failed": len(episodes) - passed_episodes,
     }
-    if attestation.summary.model_dump() != expected_summary:
-        errors.append("semantic summary contradicts cell or episode evidence")
+    if attestation.summary.model_dump() == expected_summary:
+        return []
+    return ["semantic summary contradicts cell or episode evidence"]
 
-    for cell in attestation.cells:
-        pair = (cell.provider, cell.framework)
-        if not cell.ok:
-            errors.append(f"semantic cell {pair} failed")
-        expected_control = (
-            "deterministic-control"
-            if cell.provider == "python-runtime"
-            else "live-language-model"
-        )
-        if cell.control_kind != expected_control:
-            errors.append(f"semantic cell {pair} has incorrect control kind")
-        if cell.eval_report.get("ok") is not True:
-            errors.append(f"semantic cell {pair} has a failed eval report")
-        names = [episode.name for episode in cell.episodes]
-        if len(set(names)) != len(names):
-            errors.append(f"semantic cell {pair} contains duplicate episodes")
-        for episode in cell.episodes:
-            errors.extend(_semantic_episode_errors(cell, episode))
-    if errors:
-        raise ValueError("; ".join(errors))
+
+def _semantic_cell_errors(cell: SemanticMatrixCell) -> list[str]:
+    pair = (cell.provider, cell.framework)
+    errors: list[str] = []
+    if not cell.ok:
+        errors.append(f"semantic cell {pair} failed")
+    expected_control = (
+        "deterministic-control"
+        if cell.provider == "python-runtime"
+        else "live-language-model"
+    )
+    if cell.control_kind != expected_control:
+        errors.append(f"semantic cell {pair} has incorrect control kind")
+    if cell.eval_report.get("ok") is not True:
+        errors.append(f"semantic cell {pair} has a failed eval report")
+    names = [episode.name for episode in cell.episodes]
+    if len(set(names)) != len(names):
+        errors.append(f"semantic cell {pair} contains duplicate episodes")
+    for episode in cell.episodes:
+        errors.extend(_semantic_episode_errors(cell, episode))
+    return errors
 
 
 def _semantic_episode_errors(
@@ -368,6 +411,18 @@ def _semantic_episode_errors(
     episode: SemanticEpisodeEvidence,
 ) -> list[str]:
     label = (cell.provider, cell.framework, episode.name)
+    return [
+        *_semantic_episode_contract_errors(episode, label),
+        *_semantic_judge_errors(cell, episode, label),
+        *_semantic_judge_execution_errors(cell, episode, label),
+        *_semantic_candidate_errors(cell, episode, label),
+    ]
+
+
+def _semantic_episode_contract_errors(
+    episode: SemanticEpisodeEvidence,
+    label: tuple[str, str, str],
+) -> list[str]:
     errors: list[str] = []
     if not episode.ok:
         errors.append(f"semantic episode {label} failed")
@@ -377,7 +432,16 @@ def _semantic_episode_errors(
         "entity"
     ) != "AgenticEnvironment" or not episode.environment_episode.get("name"):
         errors.append(f"semantic episode {label} lacks its Environment identity")
+    return errors
+
+
+def _semantic_judge_errors(
+    cell: SemanticMatrixCell,
+    episode: SemanticEpisodeEvidence,
+    label: tuple[str, str, str],
+) -> list[str]:
     judge = episode.judge
+    errors: list[str] = []
     if judge.get("ok") is not True:
         errors.append(f"semantic episode {label} failed its judge")
     if judge.get("deterministic_validation_ok") is not True:
@@ -390,62 +454,78 @@ def _semantic_episode_errors(
         errors.append(f"semantic episode {label} lacks a certified judge Tool")
     score = judge.get("score")
     threshold = judge.get("threshold")
-    if (
-        not isinstance(score, (int, float))
-        or not isinstance(threshold, (int, float))
-        or score < threshold
-    ):
+    if not _score_meets_threshold(score, threshold):
         errors.append(f"semantic episode {label} judge score is below threshold")
-    if judge.get("provider") != cell.provider:
-        errors.append(f"semantic episode {label} judge provider identity differs")
-    if judge.get("framework") != cell.framework:
-        errors.append(f"semantic episode {label} judge framework identity differs")
-    if judge.get("model") != cell.model:
-        errors.append(f"semantic episode {label} judge model identity differs")
+    errors.extend(
+        _semantic_runtime_identity_errors(
+            judge,
+            cell,
+            label,
+            subject="judge",
+            missing_message="lacks judge identity",
+        )
+    )
+    return errors
 
+
+def _score_meets_threshold(score: JsonValue, threshold: JsonValue) -> bool:
+    return (
+        isinstance(score, (int, float))
+        and isinstance(threshold, (int, float))
+        and score >= threshold
+    )
+
+
+def _semantic_judge_execution_errors(
+    cell: SemanticMatrixCell,
+    episode: SemanticEpisodeEvidence,
+    label: tuple[str, str, str],
+) -> list[str]:
     judge_execution = episode.judge_execution
-    if cell.provider == "python-runtime":
+    if cell.control_kind == "deterministic-control":
         if judge_execution is not None:
-            errors.append(
+            return [
                 f"semantic episode {label} deterministic judge must not claim an LM execution"
-            )
-    elif not isinstance(judge_execution, dict):
-        errors.append(f"semantic episode {label} lacks live judge execution evidence")
-    else:
-        if judge_execution.get("ok") is not True:
-            errors.append(f"semantic episode {label} live judge execution failed")
-        judge_runtime = judge_execution.get("runtime")
-        if not isinstance(judge_runtime, dict):
-            errors.append(f"semantic episode {label} live judge lacks runtime identity")
-        else:
-            if judge_runtime.get("provider") != cell.provider:
-                errors.append(
-                    f"semantic episode {label} live judge provider identity differs"
-                )
-            if judge_runtime.get("framework") != cell.framework:
-                errors.append(
-                    f"semantic episode {label} live judge framework identity differs"
-                )
-            if judge_runtime.get("model") != cell.model:
-                errors.append(
-                    f"semantic episode {label} live judge model identity differs"
-                )
+            ]
+        return []
+    if not isinstance(judge_execution, dict):
+        return [f"semantic episode {label} lacks live judge execution evidence"]
+    errors: list[str] = []
+    if judge_execution.get("ok") is not True:
+        errors.append(f"semantic episode {label} live judge execution failed")
+    errors.extend(
+        _semantic_runtime_identity_errors(
+            judge_execution.get("runtime"),
+            cell,
+            label,
+            subject="live judge",
+            missing_message="live judge lacks runtime identity",
+        )
+    )
+    return errors
+
+
+def _semantic_candidate_errors(
+    cell: SemanticMatrixCell,
+    episode: SemanticEpisodeEvidence,
+    label: tuple[str, str, str],
+) -> list[str]:
+    errors: list[str] = []
     review = episode.semantic_review
     if review.get("ok") is not True or review.get("failures"):
         errors.append(f"semantic episode {label} failed manual semantic review")
     candidate = episode.candidate
     if candidate.get("ok") is not True:
         errors.append(f"semantic episode {label} candidate execution failed")
-    runtime = candidate.get("runtime")
-    if not isinstance(runtime, dict):
-        errors.append(f"semantic episode {label} lacks runtime identity")
-    else:
-        if runtime.get("provider") != cell.provider:
-            errors.append(f"semantic episode {label} provider identity differs")
-        if runtime.get("framework") != cell.framework:
-            errors.append(f"semantic episode {label} framework identity differs")
-        if runtime.get("model") != cell.model:
-            errors.append(f"semantic episode {label} model identity differs")
+    errors.extend(
+        _semantic_runtime_identity_errors(
+            candidate.get("runtime"),
+            cell,
+            label,
+            subject="",
+            missing_message="lacks runtime identity",
+        )
+    )
     if _contains_truthy_key(candidate, "fallback_provider"):
         errors.append(f"semantic episode {label} contains a fallback provider")
     if (
@@ -455,6 +535,29 @@ def _semantic_episode_errors(
         errors.append(f"semantic episode {label} human_result omits runtime identity")
     if not episode.lineage:
         errors.append(f"semantic episode {label} lacks lineage evidence")
+    return errors
+
+
+def _semantic_runtime_identity_errors(
+    runtime: JsonValue | None,
+    cell: SemanticMatrixCell,
+    label: tuple[str, str, str],
+    *,
+    subject: str,
+    missing_message: str,
+) -> list[str]:
+    if not isinstance(runtime, dict):
+        return [f"semantic episode {label} {missing_message}"]
+    errors: list[str] = []
+    expected = {
+        "provider": cell.provider,
+        "framework": cell.framework,
+        "model": cell.model,
+    }
+    for field, value in expected.items():
+        if runtime.get(field) != value:
+            identity = " ".join(part for part in (subject, field) if part)
+            errors.append(f"semantic episode {label} {identity} identity differs")
     return errors
 
 
