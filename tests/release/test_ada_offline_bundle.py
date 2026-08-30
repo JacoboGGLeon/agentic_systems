@@ -10,6 +10,7 @@ import pytest
 
 
 ROOT = Path(__file__).resolve().parents[2]
+FRAMEWORKS = ("native", "langgraph", "openai-agents", "strands")
 
 
 def _builder():
@@ -21,8 +22,170 @@ def _builder():
     return module
 
 
-def test_ada_bundle_is_reproducible_certified_and_offline(tmp_path: Path):
+def _semantic_evidence(
+    provider: str,
+    *,
+    commit_sha: str,
+    wheel_sha256: str,
+    episodes_per_framework: int,
+) -> dict[str, object]:
+    episode = {
+        "ok": True,
+        "deterministic_validation": {"ok": True},
+        "judge": {"ok": True},
+    }
+    return {
+        "schema_version": "agentic_systems.semantic-attestation.v1",
+        "commit_sha": commit_sha,
+        "wheel_sha256": wheel_sha256,
+        "wheel_runtime_verified": True,
+        "environment": {
+            "providers": {
+                provider: {
+                    "runtime": {
+                        "selected_provider": provider,
+                        "fallback_provider": None,
+                    }
+                }
+            }
+        },
+        "cells": [
+            {
+                "provider": provider,
+                "framework": framework,
+                "ok": True,
+                "episodes": [dict(episode) for _ in range(episodes_per_framework)],
+            }
+            for framework in FRAMEWORKS
+        ],
+    }
+
+
+def _authentication_evidence(
+    *, commit_sha: str, wheel_sha256: str
+) -> dict[str, object]:
+    return {
+        "schema_version": "agentic_systems.live-attestation.v1",
+        "commit_sha": commit_sha,
+        "wheel_sha256": wheel_sha256,
+        "environment": {
+            "bedrock_authentication_mode": "aws-credential-chain",
+            "uses_aws_credential_chain": True,
+        },
+        "cases": [
+            {
+                "provider": "bedrock-runtime",
+                "framework": framework,
+                "ok": True,
+                "scenarios": [
+                    {"name": "completion", "ok": True, "details": {}},
+                    {"name": "tool_calling", "ok": True, "details": {}},
+                ],
+            }
+            for framework in FRAMEWORKS
+        ],
+    }
+
+
+def _write_json(path: Path, payload: dict[str, object]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, sort_keys=True), encoding="utf-8")
+
+
+def _certified_fixture(module, tmp_path: Path, monkeypatch) -> dict[str, object]:
+    """Create a credential-free release contract without relying on local dist/."""
+
+    dist = tmp_path / "dist"
+    evidence = dist / "release-evidence"
+    wheel = dist / "agentic_systems-2.1.0-py3-none-any.whl"
+    sdist = dist / "agentic_systems-2.1.0.tar.gz"
+    summary = evidence / "final-certification-summary.json"
+    dist.mkdir(parents=True)
+    evidence.mkdir()
+    wheel.write_bytes(b"synthetic wheel identity for hermetic release tests\n")
+    sdist.write_bytes(b"synthetic sdist identity for hermetic release tests\n")
+
+    monkeypatch.setattr(module, "DIST", dist)
+    monkeypatch.setattr(module, "EVIDENCE", evidence)
+    monkeypatch.setattr(module, "SUMMARY", summary)
+    monkeypatch.setattr(module, "WHEEL", wheel)
+    monkeypatch.setattr(module, "SDIST", sdist)
+
+    commit_sha = module._git("rev-parse", "HEAD")
+    wheel_sha256 = module.sha256(wheel)
+    primary_specs = {
+        "python-runtime": ("local-semantic-attestation.json", 3),
+        "openai-runtime": ("openai-semantic-attestation.json", 4),
+        "ollama-runtime": ("ollama-semantic-attestation.json", 4),
+        "bedrock-runtime": ("bedrock-semantic-attestation.json", 4),
+        "vllm-runtime": ("vllm-semantic-attestation.json", 4),
+    }
+    primary: dict[str, object] = {}
+    for provider, (filename, episodes_per_framework) in primary_specs.items():
+        artifact = evidence / filename
+        _write_json(
+            artifact,
+            _semantic_evidence(
+                provider,
+                commit_sha=commit_sha,
+                wheel_sha256=wheel_sha256,
+                episodes_per_framework=episodes_per_framework,
+            ),
+        )
+        primary[provider] = {
+            "artifact": filename,
+            "frameworks": list(FRAMEWORKS),
+            "passed": 4,
+            "failed": 0,
+            "episodes_passed": episodes_per_framework * len(FRAMEWORKS),
+            "episodes_failed": 0,
+            "sha256": module.sha256(artifact),
+        }
+
+    authentication = evidence / "bedrock-iam-attestation.json"
+    _write_json(
+        authentication,
+        _authentication_evidence(
+            commit_sha=commit_sha,
+            wheel_sha256=wheel_sha256,
+        ),
+    )
+    vllm_review = evidence / "vllm-semantic-review-final.md"
+    vllm_review.write_text("# Synthetic semantic review\n", encoding="utf-8")
+
+    certification: dict[str, object] = {
+        "schema_version": "agentic_systems.release-certification.v1",
+        "package_version": "2.1.0",
+        "commit_sha": commit_sha,
+        "wheel_sha256": wheel_sha256,
+        "no_fallback": True,
+        "secrets_redacted": True,
+        "primary_matrix": primary,
+        "additional_authentication_routes": {
+            "bedrock-runtime/aws-credential-chain": {
+                "artifact": authentication.name,
+                "authentication_mode": "aws-credential-chain",
+                "frameworks": list(FRAMEWORKS),
+                "passed": 4,
+                "failed": 0,
+                "sha256": module.sha256(authentication),
+            }
+        },
+        "evidence_inventory": {"vllm_semantic_review": {"artifact": vllm_review.name}},
+        "totals": {
+            "certified_live_executions": 24,
+            "certified_live_failed": 0,
+            "semantic_episodes_passed": 76,
+            "semantic_episodes_failed": 0,
+        },
+    }
+    _write_json(summary, certification)
+    return certification
+
+
+def test_ada_bundle_is_reproducible_certified_and_offline(tmp_path: Path, monkeypatch):
     module = _builder()
+    _certified_fixture(module, tmp_path, monkeypatch)
     first = module.build_bundle(tmp_path / "first", enforce_materials_clean=False)
     second = module.build_bundle(tmp_path / "second", enforce_materials_clean=False)
     assert first.read_bytes() == second.read_bytes()
@@ -85,8 +248,9 @@ def test_ada_bundle_is_reproducible_certified_and_offline(tmp_path: Path):
             assert observed == expected
 
 
-def test_certified_wheel_identity_matches_summary():
+def test_certified_wheel_identity_matches_summary(tmp_path: Path, monkeypatch):
     module = _builder()
+    _certified_fixture(module, tmp_path, monkeypatch)
     certification = module._load_certification()
     assert module.sha256(module.WHEEL) == certification["wheel_sha256"]
     assert certification["totals"]["certified_live_executions"] == 24
@@ -95,8 +259,9 @@ def test_certified_wheel_identity_matches_summary():
     assert certification["totals"]["semantic_episodes_failed"] == 0
 
 
-def test_certification_rejects_semantic_false_positive(tmp_path: Path):
+def test_certification_rejects_semantic_false_positive(tmp_path: Path, monkeypatch):
     module = _builder()
+    _certified_fixture(module, tmp_path, monkeypatch)
     certification = module._load_certification()
     source = module.EVIDENCE / "local-semantic-attestation.json"
     payload = json.loads(source.read_text(encoding="utf-8"))
@@ -113,8 +278,9 @@ def test_certification_rejects_semantic_false_positive(tmp_path: Path):
         )
 
 
-def test_certification_rejects_iam_fallback(tmp_path: Path):
+def test_certification_rejects_iam_fallback(tmp_path: Path, monkeypatch):
     module = _builder()
+    _certified_fixture(module, tmp_path, monkeypatch)
     certification = module._load_certification()
     source = module.EVIDENCE / "bedrock-iam-attestation.json"
     payload = json.loads(source.read_text(encoding="utf-8"))

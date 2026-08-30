@@ -1062,3 +1062,158 @@ def test_openai_agents_bridge_enforces_tool_budget_per_model_response():
             "reason": "max_tool_calls_exhausted",
         }
     ]
+
+
+def test_openai_model_bridge_covers_passthrough_stream_and_unlimited_budget() -> None:
+    class Delegate:
+        async def get_response(self, *args, **kwargs):
+            response = om._text_response("plain human answer")
+            response.output.insert(0, object())
+            return response
+
+        async def stream_response(self, *args, **kwargs):
+            yield "first"
+            yield "second"
+
+    model = om.ToolCallNormalizingModel(Delegate(), ["lookup"])
+    response = asyncio.run(model.get_response())
+    assert response.output[0].__class__ is object
+
+    async def collect() -> list[object]:
+        return [item async for item in model.stream_response()]
+
+    assert asyncio.run(collect()) == ["first", "second"]
+
+    call_response = om.ModelResponse(
+        output=[
+            om.ResponseFunctionToolCall(
+                arguments="{}",
+                call_id="one",
+                name="lookup",
+                type="function_call",
+            )
+        ],
+        usage=om.Usage(),
+        response_id="response",
+    )
+    assert model._budget_response(call_response) is call_response
+    assert model._emitted_tool_calls == 1
+
+    model.configure(RunPolicy(max_tool_calls=2), "eval")
+    assert model._budget_response(call_response) is call_response
+    assert model.rejected_tool_calls == []
+
+    @dataclass
+    class Settings:
+        tool_choice: str | None = "required"
+
+    assert om._without_tool_choice(Settings()).tool_choice is None
+    sentinel = object()
+    assert om._without_tool_choice(sentinel) is sentinel
+
+
+def test_strands_boundary_helpers_tolerate_immutable_shims_and_malformed_events() -> (
+    None
+):
+    class Immutable:
+        def __setattr__(self, name, value):
+            raise AttributeError(name)
+
+    immutable = Immutable()
+    sa._record_emitted_tool_calls(immutable, 0)
+    sa._record_emitted_tool_calls(immutable, 1)
+    sa._reset_tool_budget(immutable, 1)
+    assert sa._limit_tool_use_events(immutable, ["event"]) == ["event"]
+
+    assert sa._stream_tool_use_count(object()) == 0
+    assert sa._stream_tool_use_count({"contentBlockStart": []}) == 0
+    assert sa._stream_tool_use_name(object()) == ""
+    assert sa._stream_tool_use_name({"contentBlockStart": []}) == ""
+    assert sa._stream_tool_use_name({"contentBlockStart": {"start": []}}) == ""
+    assert (
+        sa._stream_tool_use_name({"contentBlockStart": {"start": {"toolUse": []}}})
+        == ""
+    )
+
+    model = SimpleNamespace(
+        _agentic_systems_max_tool_calls=0,
+        _agentic_systems_emitted_tool_calls=0,
+    )
+    events = [
+        {"contentBlockStart": {"start": {"text": "plain"}}},
+        {"contentBlockDelta": {"delta": {"text": "kept"}}},
+    ]
+    assert sa._limit_tool_use_events(model, events) == events
+
+
+def test_strands_schema_callable_propagates_public_tool_failure() -> None:
+    class Input(BaseModel):
+        value: int
+
+    def function(value: int) -> dict:
+        return {"value": value}
+
+    failed = SimpleNamespace(
+        name="typed_failure",
+        input_schema=Input,
+        run=lambda payload: SimpleNamespace(ok=False, text="", data={}),
+    )
+    invoke = sa._schema_backed_function(failed, function)
+    with pytest.raises(ValueError, match="typed_failure"):
+        invoke(value=7)
+
+    passthrough = SimpleNamespace(input_schema=None, run=None)
+    assert sa._schema_backed_function(passthrough, function) is function
+
+
+def test_strands_transcript_and_tool_output_edges_are_lossless() -> None:
+    class UnsizedMessages:
+        def __len__(self):
+            raise TypeError("unsized")
+
+        def __getitem__(self, item):
+            raise TypeError("unsliceable")
+
+        def __iter__(self):
+            return iter(({"role": "assistant"},))
+
+    native = SimpleNamespace(messages=UnsizedMessages())
+    assert sa._message_cursor(native) == 0
+    assert sa._invocation_messages(native, 0) == [{"role": "assistant"}]
+
+    mixed = sa._strands_tool_output([{"json": 1}, {"text": "2"}, object()])
+    assert mixed["items"][:2] == [1, 2]
+    assert len(mixed["items"]) == 3
+    assert sa._strands_tool_output('{"answer":"human"}') == {
+        "text": "human",
+        "evidence": {"answer": "human"},
+    }
+    assert sa._strands_tool_output(7) == {"value": 7}
+
+
+def test_openai_execution_agent_copies_mutable_tool_collection() -> None:
+    cached = SimpleNamespace(tools=["one"])
+    execution = oa._execution_agent(cached)
+    execution.tools.append("two")
+
+    assert cached.tools == ["one"]
+    assert execution.tools == ["one", "two"]
+
+
+def test_strands_event_budget_handles_immutable_model_and_variadic_tool() -> None:
+    class ImmutableBudget:
+        _agentic_systems_max_tool_calls = 0
+        _agentic_systems_emitted_tool_calls = 0
+        _agentic_systems_rejected_tool_calls = ()
+
+        def __setattr__(self, name, value):
+            raise TypeError(name)
+
+    assert sa._limit_tool_use_events(ImmutableBudget(), []) == []
+
+    def variadic(*args: object) -> dict:
+        return {"args": list(args)}
+
+    tool = SimpleNamespace(name="variadic", input_schema=None)
+    with pytest.raises(TypeError, match=r"cannot use \*args"):
+        sa._tool_input_json_schema(tool, variadic)

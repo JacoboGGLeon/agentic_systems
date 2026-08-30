@@ -77,7 +77,16 @@ def test_final_asset_build_can_require_live_certification(
     monkeypatch, tmp_path: Path
 ) -> None:
     module = _builder()
+    dist = tmp_path / "dist"
+    dist.mkdir()
+    studio = tmp_path / "studio.zip"
+    studio.write_bytes(b"synthetic studio archive")
     missing = tmp_path / "final-certification-summary.json"
+    monkeypatch.setattr(module, "DIST", dist)
+    monkeypatch.setattr(module, "STUDIO_SOURCE", studio)
+    monkeypatch.setattr(
+        module, "CERTIFICATION_ASSET", dist / "final-certification-summary.json"
+    )
     monkeypatch.setattr(module, "CERTIFICATION_SUMMARY", missing)
 
     with pytest.raises(FileNotFoundError, match="Final release assembly requires"):

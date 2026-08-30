@@ -146,16 +146,31 @@ def test_example_execution_inventory_covers_every_studio_notebook():
 
 
 @pytest.mark.parametrize("name", EXAMPLE_NOTEBOOKS)
-def test_studio_example_notebook_executes_from_fresh_kernel(name, monkeypatch):
+def test_studio_example_notebook_executes_from_fresh_kernel(
+    name, monkeypatch, tmp_path
+):
     import socket
 
-    monkeypatch.setenv("RUN_LIVE", "0")
     monkeypatch.setenv("AGENTIC_SYSTEMS_NOTEBOOK_TEST", "1")
     with socket.socket() as listener:
         listener.bind(("127.0.0.1", 0))
-        monkeypatch.setenv(
-            "AGENTIC_SYSTEMS_STUDIO_PORT", str(listener.getsockname()[1])
-        )
+        port = listener.getsockname()[1]
+    environment = tmp_path / ".env"
+    environment.write_text(
+        "\n".join(
+            (
+                "AGENTIC_SYSTEMS_PROVIDER=python-runtime",
+                "AGENTIC_SYSTEMS_FRAMEWORK=native",
+                "RUN_STUDIO_LIVE=0",
+                "RUN_SEMANTIC_MATRIX_LIVE=0",
+                f"AGENTIC_SYSTEMS_STUDIO_PORT={port}",
+                "AGENTIC_SYSTEMS_STUDIO_PROXY_PREFIX=/jupyterlab/default/proxy",
+                "",
+            )
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("AGENTIC_SYSTEMS_ENV_FILE", str(environment))
 
     notebook = nbformat.read(EXAMPLE_ROOT / name, as_version=4)
     client = NotebookClient(

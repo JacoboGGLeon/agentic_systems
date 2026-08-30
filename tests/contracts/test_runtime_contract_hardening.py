@@ -66,3 +66,8 @@ def test_explicit_dotenv_is_authoritative_but_discovery_remains_compatible(
     monkeypatch.setenv("CONTRACT_VALUE", "process")
     assert _load_dotenv(tmp_path)
     assert __import__("os").environ["CONTRACT_VALUE"] == "process"
+
+
+def test_explicit_missing_dotenv_fails_closed(tmp_path: Path) -> None:
+    with pytest.raises(FileNotFoundError, match="Canonical dotenv file does not exist"):
+        _load_dotenv(path=tmp_path / "missing.env")

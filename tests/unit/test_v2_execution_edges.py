@@ -205,6 +205,12 @@ def test_execution_plan_paths_and_async_compiled_system():
     assert result.data == {"value": "ok"}
     assert compiled.inspect()["unit_count"] == 1
 
+    entrypoint = CompiledSystem(
+        units=(CallableExecutable(lambda value: {"value": value}),),
+        entrypoint="orchestrator",
+    )
+    assert entrypoint.inspect()["entrypoint"] == "orchestrator"
+
 
 def test_result_children_validate_and_inherit_parent_execution_id():
     parent = RunResult(execution_id="parent")

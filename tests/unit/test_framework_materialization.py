@@ -200,6 +200,100 @@ def test_strands_materializes_each_provider(monkeypatch):
     }
 
 
+def test_strands_openai_factory_receives_explicit_endpoint_and_key(monkeypatch):
+    calls = []
+
+    def factory(**kwargs):
+        calls.append(kwargs)
+        return SimpleNamespace(**kwargs)
+
+    monkeypatch.setattr("strands.models.openai.OpenAIModel", factory)
+    agent = _agent("openai-runtime")
+    agent.runtime_config.endpoint = "http://provider.invalid/v1"
+    agent.runtime_config.api_key = "explicit-key"
+
+    model = strands_model(agent, object())
+
+    assert model.model_id == "model-openai-runtime"
+    assert calls == [
+        {
+            "model_id": "model-openai-runtime",
+            "client_args": {
+                "base_url": "http://provider.invalid/v1",
+                "api_key": "explicit-key",
+            },
+        }
+    ]
+
+
+def test_strands_openai_model_stream_normalizes_textual_tool_call(monkeypatch):
+    class FakeOpenAIModel:
+        def __init__(self, **kwargs):
+            self.kwargs = kwargs
+
+        def format_request(
+            self,
+            messages=None,
+            tool_specs=None,
+            system_prompt=None,
+            tool_choice=None,
+            **kwargs,
+        ):
+            return {
+                "messages": messages,
+                "tools": tool_specs,
+                "tool_choice": tool_choice,
+                **kwargs,
+            }
+
+        async def stream(
+            self,
+            messages,
+            tool_specs=None,
+            system_prompt=None,
+            *,
+            tool_choice=None,
+            **kwargs,
+        ):
+            yield {"messageStart": {"role": "assistant"}}
+            yield {"contentBlockDelta": {"delta": {"text": 'lookup({"value": 7})'}}}
+            yield {"messageStop": {"stopReason": "end_turn"}}
+
+    monkeypatch.setattr("strands.models.openai.OpenAIModel", FakeOpenAIModel)
+    agent = _agent("ollama-runtime")
+    agent.contract = SimpleNamespace(
+        must_call=["lookup"],
+        completion="when_required_tools_satisfied",
+    )
+    agent.available_tools = lambda: [SimpleNamespace(name="lookup")]
+    model = strands_model(agent, object())
+    strands_adapter._configure_model(model, RunPolicy(max_tool_calls=1), "eval")
+
+    async def collect():
+        return [
+            event
+            async for event in model.stream(
+                [],
+                [
+                    object(),
+                    {
+                        "toolSpec": {
+                            "name": "lookup",
+                            "inputSchema": {"json": {"type": "object"}},
+                        }
+                    },
+                ],
+                "system",
+                tool_choice={"tool": {"name": "lookup"}},
+            )
+        ]
+
+    events = asyncio.run(collect())
+    assert strands_adapter._stream_tool_use_count(events[1]) == 1
+    assert strands_adapter._stream_tool_use_name(events[1]) == "lookup"
+    assert model._agentic_systems_emitted_tool_calls == 1
+
+
 def test_strands_bedrock_releases_forced_tool_before_abandoned_stream(monkeypatch):
     choices = []
 

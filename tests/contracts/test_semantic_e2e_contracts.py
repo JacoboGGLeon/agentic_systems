@@ -3,11 +3,19 @@ from __future__ import annotations
 import concurrent.futures
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, ValidationError
+import pytest
 
 import agentic_systems as toolkit
+import agentic_systems.evals as evals_module
 from agentic_systems.core.scheduler import execute_sync
-from agentic_systems.evals import _judge_candidate_view
+from agentic_systems.contracts import ValidationResult
+from agentic_systems.evals import (
+    _apply_expected_assertions,
+    _judge_candidate_view,
+    _judge_payload,
+    _run_judge,
+)
 from agentic_systems.providers.base import ToolEnvelope
 from agentic_systems.results import RunResult, ToolEvent
 
@@ -173,6 +181,21 @@ def test_agent_as_tool_avoids_cross_thread_single_lane_deadlock() -> None:
     assert value["data"]["result"] == 323
     assert scheduler_meta["timed_out"] is False
     assert scheduler_meta["attempts"] == 1
+
+
+def test_agent_as_tool_exposes_prompt_signature_without_input_contract() -> None:
+    runtime = toolkit.runtime(provider="python-runtime", model="python-runtime")
+    system = toolkit.system(runtime=runtime, model="python-runtime")
+    specialist = system.agent(
+        name="prompt_specialist",
+        instructions="Return the supplied prompt.",
+    )
+
+    delegated = specialist.as_tool(name="delegate_prompt")
+    evidence = delegated(prompt="hello")
+
+    assert isinstance(evidence["ok"], bool)
+    assert evidence["execution"]["provider"] == "python-runtime"
 
 
 def test_openai_agents_receives_pydantic_output_contract_natively() -> None:
@@ -547,3 +570,188 @@ def test_eval_report_v1_payload_remains_loadable() -> None:
     }
     report = toolkit.EvalReport.model_validate(payload)
     assert report.schema_version == "agentic_systems.eval-report.v1"
+
+
+@pytest.mark.parametrize(
+    "updates, message",
+    [
+        ({"criteria": {"quality": -0.1}}, "criterion scores"),
+        ({"raw_criteria": {"quality": 1.1}}, "Raw judge criterion"),
+        (
+            {"consistent": True, "consistency_issues": ("drift",)},
+            "consistent must reflect",
+        ),
+        ({"ok": True, "criteria": {"quality": 0.1}}, "threshold verdict"),
+    ],
+)
+def test_judge_result_rejects_internally_contradictory_verdicts(
+    updates: dict[str, Any], message: str
+) -> None:
+    payload: dict[str, Any] = {
+        "ok": False,
+        "score": 0.1,
+        "criteria": {"quality": 0.1},
+        "raw_score": 0.1,
+        "raw_criteria": {"quality": 0.1},
+        "threshold": 0.8,
+        "consistent": True,
+        "consistency_issues": (),
+    }
+    payload.update(updates)
+
+    with pytest.raises(ValidationError, match=message):
+        toolkit.JudgeResult.model_validate(payload)
+
+
+def test_judge_normalization_rejects_malformed_and_self_inconsistent_payloads() -> None:
+    rubric = toolkit.JudgeRubric()
+    candidate = RunResult(text="Human answer", engine="python-runtime")
+
+    class LegacyJudge:
+        def run(self, request: Any) -> dict[str, Any]:
+            return {
+                "criteria": {
+                    rubric.criteria[0]: "not-a-number",
+                    "unknown": 1.0,
+                },
+                "score": "not-a-number",
+                "findings": "not-a-list",
+            }
+
+    malformed = _run_judge(
+        LegacyJudge(),
+        case={"name": "malformed", "input": "x", "expected": {}},
+        result=candidate,
+        rubric=rubric,
+        deterministic_ok=False,
+    )
+    assert malformed is not None and malformed.ok is False
+    assert any(
+        "missing judge criteria" in item for item in malformed.consistency_issues
+    )
+    assert any(
+        "unknown judge criteria" in item for item in malformed.consistency_issues
+    )
+    assert any("is not numeric" in item for item in malformed.consistency_issues)
+    assert "judge score is not numeric" in malformed.consistency_issues
+    assert "judge findings must be a list" in malformed.consistency_issues
+
+    passing = {name: 1.0 for name in rubric.criteria}
+
+    class ContradictoryJudge:
+        def run(self, request: Any, *, mode: str) -> dict[str, Any]:
+            return {
+                "criteria": passing,
+                "score": 0.0,
+                "findings": [
+                    {"criterion": rubric.criteria[0], "evidence": "first"},
+                    {"criterion": rubric.criteria[0], "evidence": "duplicate"},
+                    {},
+                ],
+            }
+
+    contradictory = _run_judge(
+        ContradictoryJudge(),
+        case={"name": "contradictory", "input": "x", "expected": {}},
+        result=candidate,
+        rubric=rubric,
+        deterministic_ok=True,
+    )
+    assert contradictory is not None and contradictory.ok is False
+    assert "judge score does not equal the mean of criterion scores" in (
+        contradictory.consistency_issues
+    )
+    assert (
+        "judge findings contain duplicate criteria" in contradictory.consistency_issues
+    )
+    assert any(
+        "judge finding 2 is invalid" in item
+        for item in contradictory.consistency_issues
+    )
+    assert any(
+        "finding for passing or unknown criterion" in item
+        for item in contradictory.consistency_issues
+    )
+
+
+def test_judge_payload_search_is_shape_agnostic_and_bounded(monkeypatch) -> None:
+    verdict = {"criteria": {"quality": 1.0}, "score": 1.0}
+    assert _judge_payload(verdict) == verdict
+    assert (
+        _judge_payload({"output": [{"result": __import__("json").dumps(verdict)}]})
+        == verdict
+    )
+    assert _judge_payload(object()) == {}
+    assert _judge_payload({"output": '"x"'}) == {}
+    assert _judge_payload({"output": [[[[[[[[verdict]]]]]]]]}) == {}
+
+    result = RunResult(
+        text="not-json",
+        final={"output": verdict},
+        data={},
+        tool_events=[],
+    )
+    assert _judge_payload(result) == verdict
+
+    def fixed_point_then_verdict(value: str) -> Any:
+        return verdict if value == "a" else value
+
+    monkeypatch.setattr(evals_module.json, "loads", fixed_point_then_verdict)
+    assert _judge_payload({"output": "ab"}) == verdict
+
+
+def test_expected_assertions_report_every_semantic_route_violation() -> None:
+    event = ToolEvent(
+        id="observed",
+        name="observed_tool",
+        ok=True,
+        output={"data": {"actual": 1}},
+    )
+    result = RunResult(
+        text=(
+            '{"kind":"object","tool_name":"observed_tool","ok":true,'
+            '"data":{},"meta":{}}'
+        ),
+        data={"actual": 1},
+        engine="python-runtime",
+        tool_events=[event],
+        meta={
+            "agent_name": "observed_agent",
+            "framework": "native",
+            "fallback_provider": "hidden-runtime",
+        },
+    )
+    validation = ValidationResult()
+    _apply_expected_assertions(
+        validation,
+        result,
+        {
+            "text_contains": ["human", "missing"],
+            "data_contains": {"expected": 2},
+            "human_answer": True,
+            "provider": "openai-runtime",
+            "framework": "langgraph",
+            "allowed_tool_paths": [["allowed_tool"], "ignored"],
+            "tool_path": ["expected_tool"],
+            "agent_path": ["expected_agent"],
+            "execution_path": [
+                {"provider": "openai-runtime", "framework": "langgraph"}
+            ],
+            "no_fallback": True,
+            "tool_output_contains": {"observed_tool": {"result": 323}},
+        },
+    )
+
+    assert {issue.code for issue in validation.issues} == {
+        "expected_text_missing",
+        "expected_data_mismatch",
+        "non_human_public_answer",
+        "provider_identity_mismatch",
+        "framework_identity_mismatch",
+        "tool_path_not_allowed",
+        "tool_path_mismatch",
+        "agent_path_mismatch",
+        "execution_path_mismatch",
+        "unexpected_provider_fallback",
+        "expected_tool_evidence_missing",
+    }

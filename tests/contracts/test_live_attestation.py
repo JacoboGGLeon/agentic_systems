@@ -312,3 +312,215 @@ def test_semantic_attestation_rejects_judge_identity_mismatch() -> None:
             expected_pairs={("openai-runtime", "native")},
             now=NOW,
         )
+
+
+@pytest.mark.parametrize(
+    ("field", "value", "message"),
+    [
+        ("commit_sha", "not-a-sha", "commit_sha"),
+        ("wheel_sha256", "short", "wheel_sha256"),
+    ],
+)
+def test_semantic_attestation_rejects_invalid_hashes(
+    field: str, value: str, message: str
+) -> None:
+    payload = _semantic_attestation().model_dump()
+    payload[field] = value
+
+    with pytest.raises(ValidationError, match=message):
+        SemanticAttestation.model_validate(payload)
+
+
+def test_semantic_attestation_reports_all_identity_matrix_and_episode_drift() -> None:
+    evidence = _semantic_attestation()
+    original = evidence.cells[0].episodes[0]
+    broken_episode = original.model_copy(
+        update={
+            "ok": False,
+            "deterministic_validation": {"ok": False, "issues": [{"code": "wrong"}]},
+            "environment_episode": {},
+            "human_result": "identity omitted",
+            "judge": {
+                "ok": False,
+                "score": "not-numeric",
+                "threshold": 0.8,
+                "deterministic_validation_ok": False,
+                "certification_recorded": False,
+                "certification_tool": None,
+                "provider": "wrong-provider",
+                "framework": "wrong-framework",
+                "model": "wrong-model",
+            },
+            "judge_execution": {"ok": False, "runtime": None},
+            "candidate": {
+                "ok": False,
+                "runtime": None,
+                "children": [{"meta": {"fallback_provider": "hidden-runtime"}}],
+            },
+            "lineage": {},
+            "semantic_review": {"ok": False, "failures": ["human review failed"]},
+        }
+    )
+    broken_cell = evidence.cells[0].model_copy(
+        update={
+            "ok": False,
+            "control_kind": "deterministic-control",
+            "eval_report": {"ok": False},
+            "episodes": (broken_episode, broken_episode),
+        }
+    )
+    invalid = evidence.model_copy(
+        update={
+            "created_at": NOW + timedelta(minutes=1),
+            "commit_sha": "c" * 40,
+            "wheel_sha256": "d" * 64,
+            "wheel_runtime_verified": False,
+            "matrix": SemanticMatrix(
+                providers=("openai-runtime", "openai-runtime"),
+                frameworks=("native", "native"),
+            ),
+            "cells": (broken_cell, broken_cell),
+        }
+    )
+
+    with pytest.raises(ValueError) as captured:
+        validate_semantic_attestation(
+            invalid,
+            expected_commit_sha=COMMIT,
+            expected_wheel_sha256=WHEEL,
+            expected_pairs={
+                ("openai-runtime", "native"),
+                ("bedrock-runtime", "langgraph"),
+            },
+            now=NOW,
+        )
+
+    message = str(captured.value)
+    for fragment in (
+        "commit SHA",
+        "wheel SHA-256",
+        "runtime was not verified",
+        "age window",
+        "duplicate providers",
+        "duplicate frameworks",
+        "duplicate provider/framework cells",
+        "required matrix",
+        "missing cells",
+        "summary contradicts",
+        "semantic cell",
+        "incorrect control kind",
+        "failed eval report",
+        "duplicate episodes",
+        "failed deterministic validation",
+        "lacks its Environment identity",
+        "failed its judge",
+        "judge contradicts",
+        "lacks a certified judge Tool",
+        "judge score is below threshold",
+        "judge provider identity differs",
+        "failed manual semantic review",
+        "candidate execution failed",
+        "contains a fallback provider",
+        "human_result omits runtime identity",
+        "lacks lineage evidence",
+    ):
+        assert fragment in message
+
+
+def test_live_judge_execution_reports_failure_and_missing_runtime_identity() -> None:
+    evidence = _semantic_attestation()
+    original = evidence.cells[0].episodes[0]
+    episode = original.model_copy(
+        update={"judge_execution": {"ok": False, "runtime": None}}
+    )
+    cell = evidence.cells[0].model_copy(update={"episodes": (episode,)})
+    invalid = evidence.model_copy(update={"cells": (cell,)})
+
+    with pytest.raises(ValueError) as captured:
+        validate_semantic_attestation(
+            invalid,
+            expected_commit_sha=COMMIT,
+            expected_wheel_sha256=WHEEL,
+            expected_pairs={("openai-runtime", "native")},
+            now=NOW,
+        )
+
+    message = str(captured.value)
+    assert "live judge execution failed" in message
+    assert "live judge lacks runtime identity" in message
+
+
+def test_deterministic_control_rejects_claimed_language_model_judge_execution() -> None:
+    evidence = _semantic_attestation()
+    original = evidence.cells[0].episodes[0]
+    valid_episode = original.model_copy(
+        update={
+            "human_result": "Provider: python-runtime | Framework: native",
+            "candidate": {
+                "ok": True,
+                "runtime": {
+                    "provider": "python-runtime",
+                    "framework": "native",
+                    "model": "python-runtime",
+                },
+            },
+            "judge": {
+                **original.judge,
+                "provider": "python-runtime",
+                "framework": "native",
+                "model": "python-runtime",
+            },
+            "judge_execution": None,
+        }
+    )
+    cell = evidence.cells[0].model_copy(
+        update={
+            "provider": "python-runtime",
+            "model": "python-runtime",
+            "control_kind": "deterministic-control",
+            "episodes": (valid_episode,),
+        }
+    )
+    valid = evidence.model_copy(
+        update={
+            "matrix": SemanticMatrix(
+                providers=("python-runtime",), frameworks=("native",)
+            ),
+            "cells": (cell,),
+        }
+    )
+    validate_semantic_attestation(
+        valid,
+        expected_commit_sha=COMMIT,
+        expected_wheel_sha256=WHEEL,
+        expected_pairs={("python-runtime", "native")},
+        now=NOW,
+    )
+
+    invalid_episode = valid_episode.model_copy(
+        update={"judge_execution": {"ok": True, "runtime": {}}}
+    )
+    invalid_cell = cell.model_copy(update={"episodes": (invalid_episode,)})
+    invalid = valid.model_copy(update={"cells": (invalid_cell,)})
+
+    with pytest.raises(ValueError, match="must not claim an LM execution"):
+        validate_semantic_attestation(
+            invalid,
+            expected_commit_sha=COMMIT,
+            expected_wheel_sha256=WHEEL,
+            expected_pairs={("python-runtime", "native")},
+            now=NOW,
+        )
+
+
+def test_semantic_attestation_reports_unexpected_observed_cell() -> None:
+    evidence = _semantic_attestation()
+
+    with pytest.raises(ValueError, match="unexpected cells"):
+        validate_semantic_attestation(
+            evidence,
+            expected_commit_sha=COMMIT,
+            expected_wheel_sha256=WHEEL,
+            expected_pairs={("bedrock-runtime", "native")},
+            now=NOW,
+        )
