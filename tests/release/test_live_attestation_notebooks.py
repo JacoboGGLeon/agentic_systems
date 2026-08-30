@@ -196,3 +196,22 @@ def test_live_runner_discovers_gpu_cuda_and_vllm_without_env_hardcoding(
         "gpu": "NVIDIA Test GPU",
         "vllm": "0.27.1",
     }
+
+
+def test_live_runner_treats_torch_as_optional_environment_evidence(monkeypatch) -> None:
+    import scripts.run_live_matrix as runner
+
+    def missing_optional_module(name: str):
+        raise ModuleNotFoundError(name=name)
+
+    for variable in ("CUDA_VERSION", "GPU_NAME", "VLLM_VERSION"):
+        monkeypatch.delenv(variable, raising=False)
+    monkeypatch.setattr(runner, "import_module", missing_optional_module)
+    monkeypatch.setattr(runner.metadata, "version", lambda name: "0.27.1")
+
+    assert runner._live_environment() == {
+        "platform": runner.platform.platform(),
+        "cuda": None,
+        "gpu": None,
+        "vllm": "0.27.1",
+    }

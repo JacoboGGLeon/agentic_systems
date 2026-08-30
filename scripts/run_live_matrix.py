@@ -4,14 +4,14 @@ from __future__ import annotations
 
 import argparse
 from datetime import datetime, timezone
-from importlib import metadata
+from importlib import import_module, metadata
 import hashlib
 import json
 import os
 from pathlib import Path
 import platform
 import subprocess
-from typing import Any
+from typing import Any, Protocol, cast
 
 from agentic_systems.contracts import AgentContract, RunPolicy
 from agentic_systems.factories import (
@@ -40,6 +40,21 @@ ROOT = Path(__file__).resolve().parents[1]
 LIVE_PROFILES = ROOT / "quality" / "live-profiles.json"
 
 
+class _TorchVersion(Protocol):
+    cuda: object | None
+
+
+class _TorchCuda(Protocol):
+    def is_available(self) -> bool: ...
+
+    def get_device_name(self, index: int) -> object: ...
+
+
+class _TorchModule(Protocol):
+    version: _TorchVersion
+    cuda: _TorchCuda
+
+
 @tool(name="multiply", description="Multiply two integers.")
 def quality_multiply(a: int, b: int) -> dict[str, int]:
     return {"result": a * b}
@@ -64,7 +79,7 @@ def _live_environment() -> dict[str, JsonValue]:
     cuda_version = os.getenv("CUDA_VERSION")
     gpu_name = os.getenv("GPU_NAME")
     try:
-        import torch
+        torch = cast(_TorchModule, import_module("torch"))
 
         if not cuda_version:
             cuda_version = str(torch.version.cuda or "") or None
