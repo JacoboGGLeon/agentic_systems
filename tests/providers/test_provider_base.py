@@ -26,16 +26,19 @@ def test_tool_registry_resolves_deferred_literal_annotations():
         "clarity",
         "evidence_correctness",
     ]
-    assert runtime.execute_tool(
-        "judge", {"failed_criteria": ["clarity"]}
-    ).ok
-    assert not runtime.execute_tool(
-        "judge", {"failed_criteria": ["unsupported"]}
-    ).ok
+    assert runtime.execute_tool("judge", {"failed_criteria": ["clarity"]}).ok
+    assert not runtime.execute_tool("judge", {"failed_criteria": ["unsupported"]}).ok
 
 
-def test_tool_registry_runtime_payloads_validation_and_lazy_provider(monkeypatch, capsys):
-    runtime = ToolRegistryRuntime(model_id="m", region_name="r", max_tokens_default="9", temperature_default="0.25")
+def test_tool_registry_runtime_payloads_validation_and_lazy_provider(
+    monkeypatch, capsys
+):
+    runtime = ToolRegistryRuntime(
+        model_id="m",
+        region_name="r",
+        max_tokens_default="9",
+        temperature_default="0.25",
+    )
     assert runtime.max_tokens_default == 9
     assert runtime.temperature_default == 0.25
 
@@ -50,7 +53,10 @@ def test_tool_registry_runtime_payloads_validation_and_lazy_provider(monkeypatch
 
     report = runtime.validate_tool_registry()
     assert report["ok"] is False
-    assert any(issue["issue"] == "parameter_missing_type_annotation" for issue in report["issues"])
+    assert any(
+        issue["issue"] == "parameter_missing_type_annotation"
+        for issue in report["issues"]
+    )
     assert runtime.export_tool_specs(["loose"])[0]["name"] == "loose"
     runtime.print_tool_specs()
     assert "loose" in capsys.readouterr().out
@@ -79,8 +85,21 @@ def test_tool_registry_runtime_payloads_validation_and_lazy_provider(monkeypatch
         None,
         object(),
     ]
-    kinds = [ToolRegistryRuntime.to_envelope(value, tool_name="payload").kind for value in payloads]
-    assert kinds == ["pydantic", "dataclass", "object", "list", "text", "boolean", "number", "null", "repr"]
+    kinds = [
+        ToolRegistryRuntime.to_envelope(value, tool_name="payload").kind
+        for value in payloads
+    ]
+    assert kinds == [
+        "pydantic",
+        "dataclass",
+        "object",
+        "list",
+        "text",
+        "boolean",
+        "number",
+        "null",
+        "repr",
+    ]
 
     def bad_varargs(*args):
         return {}
@@ -90,13 +109,12 @@ def test_tool_registry_runtime_payloads_validation_and_lazy_provider(monkeypatch
 
     fake_module = types.ModuleType("agentic_systems.providers.bedrock_runtime")
     fake_module.BedrockRuntime = object
-    monkeypatch.setitem(sys.modules, "agentic_systems.providers.bedrock_runtime", fake_module)
+    monkeypatch.setitem(
+        sys.modules, "agentic_systems.providers.bedrock_runtime", fake_module
+    )
     assert providers.BedrockRuntime is object
     with pytest.raises(AttributeError):
         providers.__getattr__("Nope")
-
-
-
 
 
 def test_base_provider_validates_registry_schema_errors():
@@ -139,5 +157,48 @@ def test_base_provider_validates_registry_schema_errors():
     class NestedData:
         value: int
 
-    envelope = runtime.to_envelope({"model": Dumpable(value=1), "data": NestedData(value=2)}, tool_name="nested")
+    envelope = runtime.to_envelope(
+        {"model": Dumpable(value=1), "data": NestedData(value=2)}, tool_name="nested"
+    )
     assert envelope.data == {"model": {"value": 1}, "data": {"value": 2}}
+
+
+def test_tool_registry_conflict_policies_are_explicit_and_inspectable():
+    runtime = ToolRegistryRuntime(model_id="m")
+
+    def original(value: int) -> dict:
+        return {"source": "original", "value": value}
+
+    def incoming(value: int) -> dict:
+        return {"source": "incoming", "value": value}
+
+    runtime.tool(original, name="shared")
+    runtime.tool(original, name="shared")
+    assert runtime.composition()["events"][-1]["decision"] == "reuse"
+
+    with pytest.raises(ValueError, match="Tool.*shared"):
+        runtime.tool(incoming, name="shared")
+
+    runtime.tool(incoming, name="shared", on_conflict="keep")
+    assert runtime.execute_tool("shared", {"value": 1}).data["source"] == "original"
+
+    runtime.tool(incoming, name="shared", on_conflict="replace")
+    assert runtime.execute_tool("shared", {"value": 1}).data["source"] == "incoming"
+    assert runtime.composition()["events"][-1] == {
+        "kind": "tool",
+        "identity": "shared",
+        "decision": "replace",
+        "selected": "incoming",
+    }
+
+
+def test_tool_registry_rejects_unresolved_type_annotations():
+    runtime = ToolRegistryRuntime(model_id="m")
+
+    def unresolved(value) -> dict:
+        return {"value": value}
+
+    unresolved.__annotations__["value"] = "MissingToolInput"
+
+    with pytest.raises(TypeError, match="unresolved type annotations"):
+        runtime.tool(unresolved)
