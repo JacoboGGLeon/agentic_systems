@@ -119,7 +119,7 @@ class JudgeDecision(BaseModel):
     rationale: str = Field(validation_alias=AliasChoices("rationale", "comment"))
 
 
-SemanticViolationCriterion = Literal[
+SemanticCriterion = Literal[
     "request_fulfillment",
     "evidence_correctness",
     "clarity",
@@ -128,22 +128,25 @@ SemanticViolationCriterion = Literal[
 ]
 
 
-class SemanticViolation(JudgeFinding):
+class SemanticCriterionAssessment(JudgeFinding):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
-    criterion: SemanticViolationCriterion
+    criterion: SemanticCriterion
+    passed: bool
 
 
 class SemanticJudgmentInput(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
-    violations: list[SemanticViolation]
+    assessments: list[SemanticCriterionAssessment]
 
     @model_validator(mode="after")
-    def validate_unique_criteria(self) -> "SemanticJudgmentInput":
-        criteria = [item.criterion for item in self.violations]
+    def validate_complete_unique_criteria(self) -> "SemanticJudgmentInput":
+        criteria = [item.criterion for item in self.assessments]
         if len(criteria) != len(set(criteria)):
-            raise ValueError("Each failed criterion may appear at most once")
+            raise ValueError("Each rubric criterion must appear exactly once")
+        if set(criteria) != set(JudgeCriteria.model_fields):
+            raise ValueError("Every rubric criterion must be assessed exactly once")
         return self
 
 
@@ -155,23 +158,26 @@ class SemanticJudgmentInput(BaseModel):
 def record_semantic_judgment(
     judgment: SemanticJudgmentInput,
 ) -> dict[str, Any]:
-    """Record evidence-backed violations and project them onto the public rubric.
+    """Record evidence-backed assessments and project them onto the public rubric.
 
     The model cannot submit a free-form score or contradictory global rationale.
     Pydantic validates a closed criterion vocabulary and this deterministic Tool derives
     scores, findings, and rationale from the same structured evidence.
     """
 
-    normalized = list(judgment.violations)
-    failed = {item.criterion for item in normalized}
+    normalized = list(judgment.assessments)
+    failed_items = [item for item in normalized if not item.passed]
+    failed = {item.criterion for item in failed_items}
     criteria = JudgeCriteria(
         **{name: 0.0 if name in failed else 1.0 for name in JudgeCriteria.model_fields}
     )
-    findings = [item.model_dump(mode="json") for item in normalized]
+    findings = [item.model_dump(mode="json") for item in failed_items]
     rationale = (
         "No evidence-backed rubric violations were recorded."
-        if not normalized
-        else "; ".join(f"{item.criterion}: {item.evidence}" for item in normalized)
+        if not failed_items
+        else "; ".join(
+            f"{item.criterion}: {item.evidence}" for item in failed_items
+        )
     )
     decision = JudgeDecision(
         score=sum(criteria.model_dump().values()) / 5,
@@ -719,9 +725,9 @@ def build_semantic_cell(
                 "A parent delegation may summarize or omit output when its child lineage "
                 "contains the authoritative specialist and Tool evidence. "
                 "Return one typed semantic judgment by calling the "
-                "record_semantic_judgment Tool exactly once. Put only actual failures in "
-                "violations and include a short public-evidence reason for each; use an "
-                "empty list when every criterion passes. The Tool derives all scores and "
+                "record_semantic_judgment Tool exactly once. Assess every rubric criterion "
+                "exactly once with passed=true or passed=false and a short public-evidence "
+                "reason. Do not omit passing criteria. The Tool derives all scores and "
                 "the rationale, so never submit either yourself. Call the Tool "
                 "immediately instead of drafting analysis. A claim unsupported by Tool "
                 "evidence must fail "

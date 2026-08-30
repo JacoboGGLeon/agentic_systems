@@ -39,6 +39,11 @@ finalization turn, protocol overhead, and a safety margin. A valid certification
 Tool event completes the contract early, so the ceiling does not force extra
 model calls.
 
+The model judge certifies through one typed Tool call. Its Pydantic input requires
+exactly one explicit pass/fail assessment, with public evidence, for every rubric
+criterion. The Tool—not free-form model text—derives scores, findings, and the
+overall verdict from that complete assessment set.
+
 AGENTIC_SYSTEMS_SEMANTIC_JUDGE_MAX_TURNS is an optional .env override. If it is
 below the contract-derived minimum, preflight fails before any live request.
 AGENTIC_SYSTEMS_SEMANTIC_JUDGE_MAX_TOKENS remains the independent token cap. Its

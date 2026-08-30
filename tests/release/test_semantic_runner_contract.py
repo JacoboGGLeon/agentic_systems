@@ -156,7 +156,7 @@ def test_deterministic_multiply_exposes_only_public_evidence() -> None:
     )
 
 
-def test_model_judge_uses_typed_evidence_backed_violations(monkeypatch) -> None:
+def test_model_judge_uses_typed_evidence_backed_assessments(monkeypatch) -> None:
     spec = importlib.util.spec_from_file_location(
         "semantic_e2e_judge_contract", SCRIPTS / "semantic_e2e_application.py"
     )
@@ -172,29 +172,48 @@ def test_model_judge_uses_typed_evidence_backed_violations(monkeypatch) -> None:
         module.record_semantic_judgment.function,
     )
     properties = schema["properties"]
-    assert set(properties) == {"violations"}
-    assert properties["violations"]["type"] == "array"
-    violation_schema = schema["$defs"]["SemanticViolation"]
-    assert set(violation_schema["properties"]["criterion"]["enum"]) == set(
+    assert set(properties) == {"assessments"}
+    assert properties["assessments"]["type"] == "array"
+    assessment_schema = schema["$defs"]["SemanticCriterionAssessment"]
+    assert set(assessment_schema["properties"]["criterion"]["enum"]) == set(
         module.JudgeCriteria.model_fields
     )
-    assert violation_schema["properties"]["evidence"]["minLength"] == 1
-    assert violation_schema["properties"]["evidence"]["maxLength"] == 1000
+    assert assessment_schema["properties"]["passed"]["type"] == "boolean"
+    assert assessment_schema["properties"]["evidence"]["minLength"] == 1
+    assert assessment_schema["properties"]["evidence"]["maxLength"] == 1000
 
     passed = module.record_semantic_judgment.function(
-        module.SemanticJudgmentInput(violations=[])
-    )
-    failed = module.record_semantic_judgment.function(
         module.SemanticJudgmentInput(
-            violations=[
-                {"criterion": "clarity", "evidence": "Answer is unreadable."},
-                {
-                    "criterion": "no_technical_noise",
-                    "evidence": "Answer exposed an implementation envelope.",
-                },
+            assessments=[
+                {"criterion": criterion, "passed": True, "evidence": "Satisfied."}
+                for criterion in module.JudgeCriteria.model_fields
             ]
         )
     )
+    failed = module.record_semantic_judgment.function(
+        module.SemanticJudgmentInput(
+            assessments=[
+                {
+                    "criterion": criterion,
+                    "passed": criterion not in {"clarity", "no_technical_noise"},
+                    "evidence": (
+                        "Answer is unreadable."
+                        if criterion == "clarity"
+                        else "Answer exposed an implementation envelope."
+                        if criterion == "no_technical_noise"
+                        else "Satisfied."
+                    ),
+                }
+                for criterion in module.JudgeCriteria.model_fields
+            ]
+        )
+    )
+    with pytest.raises(ValueError, match="Every rubric criterion"):
+        module.SemanticJudgmentInput(
+            assessments=[
+                {"criterion": "clarity", "passed": True, "evidence": "Satisfied."}
+            ]
+        )
     assert passed["score"] == 1.0
     assert set(passed["criteria"].values()) == {1.0}
     assert failed["criteria"]["clarity"] == 0.0
