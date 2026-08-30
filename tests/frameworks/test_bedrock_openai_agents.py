@@ -57,6 +57,7 @@ def test_openai_agents_owns_the_bedrock_tool_loop():
         tools=[toolkit.tool(echo)],
         engine="bedrock-runtime",
         framework="openai-agents",
+        policy=toolkit.RunPolicy(max_tool_calls=1),
     )
     runtime = FakeBedrockConverseRuntime()
     system._runtime = runtime
@@ -71,4 +72,5 @@ def test_openai_agents_owns_the_bedrock_tool_loop():
     assert len(result.tool_events) == 1
     assert len(runtime.calls) == 2
     assert runtime.calls[0]["tools"][0]["toolSpec"]["name"] == "echo"
+    assert runtime.calls[1]["tools"][0]["toolSpec"]["name"] == "echo"
     assert "toolResult" in runtime.calls[1]["messages"][-1]["content"][0]

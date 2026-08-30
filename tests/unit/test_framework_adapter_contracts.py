@@ -359,8 +359,8 @@ def test_openai_adapter_normalization_and_json_helpers():
     tool_behavior = native_agent.tool_use_behavior
     decision = tool_behavior(None, [object()])
     assert decision.is_final_output is False
-    assert native_agent.tools == []
-    assert native_agent.model_settings.tool_choice is None
+    assert len(native_agent.tools) == 1
+    assert native_agent.model_settings.tool_choice == "none"
 
     completion_agent = SimpleNamespace(
         model_settings=ModelSettings(),

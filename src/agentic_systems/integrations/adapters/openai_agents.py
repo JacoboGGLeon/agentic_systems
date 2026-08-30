@@ -301,7 +301,7 @@ def _execution_agent(native_agent: Any) -> Any:
 
     The adapter caches the prepared native object for inspection and reuse. Per-run
     policy projection must never mutate that shared object, especially when a tool
-    budget removes tools after the final authorized call.
+    budget changes tool selection after the final authorized call.
     """
 
     if dataclasses.is_dataclass(native_agent):
@@ -353,7 +353,7 @@ def _configure_tool_budget(native_agent: Any, policy: RunPolicy) -> None:
         return
     if limit == 0:
         native_agent.tools = []
-        _disable_tool_choice(native_agent)
+        _set_tool_choice(native_agent, None)
         return
     if getattr(native_agent, "tool_use_behavior", "run_llm_again") != "run_llm_again":
         return
@@ -366,7 +366,6 @@ def _configure_tool_budget(native_agent: Any, policy: RunPolicy) -> None:
         nonlocal consumed
         consumed += len(tool_results)
         if consumed >= limit:
-            native_agent.tools = []
             _disable_tool_choice(native_agent)
         return ToolsToFinalOutputResult(is_final_output=False, final_output=None)
 
@@ -374,10 +373,21 @@ def _configure_tool_budget(native_agent: Any, policy: RunPolicy) -> None:
 
 
 def _disable_tool_choice(native_agent: Any) -> None:
+    """Allow final synthesis without invalidating prior tool protocol messages.
+
+    Tool definitions remain attached because some provider protocols require their
+    schema whenever the conversation history contains tool calls or tool results.
+    The portable postcondition still fails closed if a model emits another call.
+    """
+
+    _set_tool_choice(native_agent, "none")
+
+
+def _set_tool_choice(native_agent: Any, value: str | None) -> None:
     settings = getattr(native_agent, "model_settings", None)
     if settings is not None and dataclasses.is_dataclass(settings):
         native_agent.model_settings = dataclasses.replace(
-            cast(Any, settings), tool_choice=None
+            cast(Any, settings), tool_choice=value
         )
 
 
