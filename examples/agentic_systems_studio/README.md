@@ -11,6 +11,12 @@ a bounded context envelope and records tool evidence. A reasoning Agent handles
 language through the provider and framework selected by `.env`. Both boundaries
 return the same normalized `RunResult` contract used by the library.
 
+The reasoning Agent also receives one runtime Skill that grounds product
+questions in the installed Agentic Systems 2.1 grammar. The Skill exposes a
+deterministic public-API description and canonical code template, so a local
+model does not have to guess what this project means by Tool, Skill, Agent,
+System, Graph, Environment or Eval.
+
 ## Runtime portability
 
 Reasoning providers:
@@ -81,6 +87,7 @@ deterministic mock without a language model.
 - provider and framework are configuration, not application branches;
 - conversation history is bounded before entering a model;
 - arithmetic is established by a deterministic Tool;
+- Agentic Systems code is grounded by a runtime Skill rather than model memory;
 - reasoning metadata stays private while tool evidence remains observable;
 - every turn produces a serializable, invariant-checked `RunResult`;
 - failures are visible and never trigger a silent provider fallback.

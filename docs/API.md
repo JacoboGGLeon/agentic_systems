@@ -549,7 +549,9 @@ make_agent_output_mapper
 Use `compose_result(...)` when a notebook combines several real executions into
 one visible result, for example deterministic tools plus an optional LM review.
 It preserves real engine names, framework metadata, usage and tool events so
-tutorials do not hand-build `RunResult(...)` envelopes.
+tutorials do not hand-build `RunResult(...)` envelopes. Put the user-facing
+answer under `data["text"]` when additional structured evidence shares the
+same composed result; `human_result` will keep that answer in natural language.
 
 ## CLI
 

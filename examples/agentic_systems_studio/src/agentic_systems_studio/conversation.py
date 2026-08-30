@@ -121,6 +121,79 @@ def hello_world(message: str) -> dict[str, Any]:
     }
 
 
+@toolkit.tool
+def inspect_agentic_systems_grammar(request: str) -> dict[str, Any]:
+    """Ground answers in the installed Agentic Systems public grammar."""
+
+    public_symbols = (
+        "tool",
+        "skill",
+        "runtime",
+        "agent",
+        "system",
+        "graph",
+        "environment",
+        "eval",
+        "human_result",
+    )
+    return {
+        "request": request[:1000],
+        "package": "agentic_systems",
+        "version": toolkit.__version__,
+        "public_symbols": {
+            name: name in toolkit.__all__ for name in public_symbols
+        },
+        "grammar": [
+            {"term": "Tool", "role": "deterministic executable capability"},
+            {
+                "term": "Skill",
+                "role": "reusable package of tools, prompts, contracts and policy",
+            },
+            {
+                "term": "Agent",
+                "role": "one computation unit with an internal pipeline",
+            },
+            {
+                "term": "System",
+                "role": "external composition and execution plan",
+            },
+            {
+                "term": "Graph",
+                "role": "explicit state topology when routing is part of the design",
+            },
+            {"term": "Environment", "role": "episodes and steps through time"},
+            {
+                "term": "Eval",
+                "role": "deterministic and judge-based observation",
+            },
+        ],
+        "independent_axes": {
+            "provider": "inference runtime",
+            "framework": "orchestration owner",
+        },
+        "canonical_example": (
+            "import agentic_systems as toolkit\n\n"
+            "@toolkit.tool\n"
+            "def greet(name: str) -> dict:\n"
+            "    return {\"message\": f\"Hello, {name}\"}\n\n"
+            "greeting = toolkit.skill(\n"
+            "    name=\"greeting\",\n"
+            "    tools=[greet],\n"
+            "    prompts={\"instructions\": \"Use greet for verified greetings.\"},\n"
+            ")\n"
+            "runtime = toolkit.runtime(provider=\"auto\")\n"
+            "system = toolkit.system(runtime=runtime)\n"
+            "assistant = system.agent(\n"
+            "    name=\"assistant\",\n"
+            "    instructions=greeting.instructions,\n"
+            "    skills=[greeting],\n"
+            ")\n"
+            "result = assistant.run(\"Greet Jacobo.\")\n"
+            "toolkit.human_result(result, show_lineage=True)"
+        ),
+    }
+
+
 @dataclass(frozen=True)
 class ConversationConfig:
     """Environment-first configuration shared by the UI and notebook."""
@@ -286,15 +359,7 @@ class ConversationalStudio:
             answer = assistant_result.text
         result = toolkit.compose_result(
             text=answer,
-            data={
-                "answer": answer,
-                "context_summary": {
-                    "history_turns": context.get("history_turns", 0),
-                    "policy": context.get("policy", {}),
-                },
-                "provider": self.config.provider,
-                "framework": self.config.framework,
-            },
+            data={"text": answer},
             results=[context_result, assistant_result],
             mode=assistant_result.mode,
             framework=self.config.framework,
@@ -302,6 +367,17 @@ class ConversationalStudio:
             engine=assistant_result.engine,
             model=assistant_result.model,
             meta={"studio_application": "conversational"},
+        )
+        result.data.update(
+            {
+                "answer": answer,
+                "context_summary": {
+                    "history_turns": context.get("history_turns", 0),
+                    "policy": context.get("policy", {}),
+                },
+                "provider": self.config.provider,
+                "framework": self.config.framework,
+            }
         )
         result.check_invariants()
         return result
@@ -340,13 +416,34 @@ def build_conversational_system(
         runtime=selected.reasoning_runtime(), model=selected.model
     )
     mock = selected.provider == "python-runtime"
+    grammar_skill = toolkit.skill(
+        name="agentic-systems-grammar",
+        version="2.1.0",
+        description=(
+            "Ground product questions and generated code in the installed "
+            "Agentic Systems public grammar."
+        ),
+        tools=[inspect_agentic_systems_grammar],
+        prompts={
+            "instructions": (
+                "When the user asks about Agentic Systems or requests an Agentic "
+                "Systems design or implementation, call inspect_agentic_systems_grammar "
+                "first and use only its public API evidence. Do not replace the grammar "
+                "with an ad hoc simulation."
+            )
+        },
+        contracts={"evidence_required_for_product_answers": True},
+    )
     assistant = reasoning.agent(
         name="conversation.assistant",
         instructions=(
-            "You are a concise, evidence-aware conversational assistant. Preserve context, "
-            "use deterministic tools when they add evidence, and never expose private reasoning."
+            "You are a concise, evidence-aware conversational assistant. Respond in the "
+            "user's language, preserve context, follow the requested output format, use "
+            "deterministic tools when they add evidence, and never expose private reasoning. "
+            + ("" if mock else grammar_skill.instructions)
         ),
         tools=[hello_world] if mock else [safe_calculate],
+        skills=[] if mock else [grammar_skill],
         engine=selected.provider,
         framework=selected.framework_value,
         model=selected.model,
@@ -382,6 +479,7 @@ __all__ = [
     "build_conversational_system",
     "configured_provider_names",
     "hello_world",
+    "inspect_agentic_systems_grammar",
     "prepare_conversation_context",
     "safe_calculate",
 ]

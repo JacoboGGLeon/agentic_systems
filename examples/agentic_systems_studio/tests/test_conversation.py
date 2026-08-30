@@ -12,6 +12,7 @@ from agentic_systems_studio.conversation import (
     build_conversational_system,
     ConversationalStudio,
     hello_world,
+    inspect_agentic_systems_grammar,
     prepare_conversation_context,
     safe_calculate,
 )
@@ -123,6 +124,14 @@ def test_conversational_tools_are_bounded_and_deterministic():
     assert "yo sólo trabajar" in greeting.data["message"]
     assert "no tengo mente ni modelo de lenguaje" in greeting.data["message"]
 
+    grammar = inspect_agentic_systems_grammar.run(
+        {"request": "Generate an Agentic Systems application"}
+    )
+    assert grammar.ok is True
+    assert grammar.data["version"] == "2.1.0"
+    assert all(grammar.data["public_symbols"].values())
+    assert "import agentic_systems as toolkit" in grammar.data["canonical_example"]
+
 
 def test_python_runtime_is_an_explicit_deterministic_studio_mock():
     studio = build_conversational_system(
@@ -176,7 +185,7 @@ def test_conversational_studio_inspect_uses_public_report_projection():
 @pytest.mark.parametrize(
     "framework", ["native", "langgraph", "openai-agents", "strands"]
 )
-def test_conversational_studio_composes_real_run_results(framework):
+def test_conversational_studio_composes_real_run_results(framework, capsys):
     context_payload = {
         "message": "17 * 19",
         "history": [],
@@ -218,6 +227,7 @@ def test_conversational_studio_composes_real_run_results(framework):
 
     assert result.ok is True
     assert result.text == "323"
+    assert result.final == {"text": "323"}
     assert result.engine == "vllm-runtime"
     assert result.meta["framework"] == framework
     assert result.meta["engines_used"] == ["python-runtime", "vllm-runtime"]
@@ -225,3 +235,8 @@ def test_conversational_studio_composes_real_run_results(framework):
         "history_turns": 0,
         "policy": {"reasoning_is_private": True},
     }
+
+    toolkit.human_result(result, pretty=False)
+    rendered = capsys.readouterr().out
+    assert "Respuesta:\n323" in rendered
+    assert 'Respuesta:\n{"answer"' not in rendered

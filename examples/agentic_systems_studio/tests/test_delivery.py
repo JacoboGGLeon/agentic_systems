@@ -66,6 +66,18 @@ def test_streamlit_is_conversational_and_env_configured():
     assert "SYSTEM_SPECS" not in source
 
 
+def test_studio_metadata_and_grounding_match_release_2_1():
+    pyproject = (PROJECT_ROOT / "pyproject.toml").read_text(encoding="utf-8")
+    conversation = (
+        PROJECT_ROOT / "src/agentic_systems_studio/conversation.py"
+    ).read_text(encoding="utf-8")
+
+    assert 'version = "2.1.0"' in pyproject
+    assert "inspect_agentic_systems_grammar" in conversation
+    assert 'name="agentic-systems-grammar"' in conversation
+    assert "skills=[] if mock else [grammar_skill]" in conversation
+
+
 def test_bundle_is_reproducible_conversational_delivery(tmp_path: Path):
     module = _load_bundle_builder()
     first = module.build_bundle(tmp_path / "first")
