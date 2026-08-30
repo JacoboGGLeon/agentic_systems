@@ -69,6 +69,10 @@ def test_final_vllm_kit_derives_identity_from_real_artifacts(tmp_path: Path) -> 
         assert metadata["wheel_sha256"] == expected_wheel_sha
         assert metadata["model"] == "unsloth/Qwen3-4B-Instruct-2507"
         assert metadata["base_model"] == "Qwen/Qwen3-4B-Instruct-2507"
+        notebook_text = json.dumps(notebook)
+        assert "unsloth/Qwen3-4B-Instruct-2507" in notebook_text
+        assert "Qwen/Qwen3-4B-Instruct-2507" in notebook_text
+        assert "Qwen3-0.6B" not in notebook_text
 
         runner = archive.read("run_semantic_matrix.py").decode()
         application = archive.read("semantic_e2e_application.py").decode()

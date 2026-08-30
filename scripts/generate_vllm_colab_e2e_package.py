@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import re
 import shutil
 import subprocess
 import textwrap
@@ -23,6 +24,8 @@ PACKAGE_STEM = "agentic-systems-2.1.0-vllm-qwen4b-colab-final"
 NOTEBOOK_FILENAME = "03_vllm_qwen4b_colab_final.ipynb"
 DEFAULT_MODEL_ID = "unsloth/Qwen3-4B-Instruct-2507"
 DEFAULT_BASE_MODEL_ID = "Qwen/Qwen3-4B-Instruct-2507"
+
+MODEL_REFERENCE = re.compile(r"(?:unsloth|Qwen)/Qwen3-[A-Za-z0-9_.:-]+")
 
 
 def _sha256(path: Path) -> str:
@@ -147,6 +150,40 @@ print("Agentic Systems vLLM final package ready")'''
     return cell
 
 
+def _configure_notebook_models(
+    notebook: nbformat.NotebookNode,
+    *,
+    model_id: str,
+    base_model_id: str,
+) -> None:
+    """Project the package model contract into every notebook cell."""
+    replacements = {"unsloth": model_id, "Qwen": base_model_id}
+    for cell in notebook.cells:
+        source = str(cell.get("source", ""))
+        cell["source"] = MODEL_REFERENCE.sub(
+            lambda match: replacements[match.group(0).split("/", 1)[0]],
+            source,
+        )
+
+
+def _assert_model_consistency(
+    notebook: nbformat.NotebookNode,
+    *,
+    model_id: str,
+    base_model_id: str,
+) -> None:
+    """Reject a bundle whose notebook references a different Qwen model."""
+    observed = set(MODEL_REFERENCE.findall(nbformat.writes(notebook)))
+    expected = {model_id, base_model_id}
+    unexpected = observed - expected
+    missing = expected - observed
+    if unexpected or missing:
+        raise ValueError(
+            "inconsistent vLLM model references: "
+            f"unexpected={sorted(unexpected)}, missing={sorted(missing)}"
+        )
+
+
 def _write_archive(
     package_dir: Path, files: tuple[str, ...], archive_path: Path
 ) -> None:
@@ -210,6 +247,11 @@ def build(
     )
 
     notebook = nbformat.read(SOURCE, as_version=4)
+    _configure_notebook_models(
+        notebook,
+        model_id=model_id,
+        base_model_id=base_model_id,
+    )
     notebook.cells.insert(0, _bootstrap(wheel.name))
     notebook.metadata.setdefault("agentic_systems", {})["portable_package"] = {
         "filename": f"{PACKAGE_STEM}.zip",
@@ -219,6 +261,11 @@ def build(
         "wheel_filename": wheel.name,
         "wheel_sha256": wheel_sha256,
     }
+    _assert_model_consistency(
+        notebook,
+        model_id=model_id,
+        base_model_id=base_model_id,
+    )
     nbformat.write(notebook, package_dir / NOTEBOOK_FILENAME)
 
     package_files = (
