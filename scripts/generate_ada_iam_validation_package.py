@@ -23,6 +23,17 @@ DEFAULT_WHEEL = ROOT / "dist" / "agentic_systems-2.1.1-py3-none-any.whl"
 DEFAULT_OUTPUT = ROOT / "dist"
 PACKAGE_STEM = "agentic-systems-2.1.1-bedrock-iam-ada-validation"
 WHEEL_NAME = "agentic_systems-2.1.1-py3-none-any.whl"
+STUDIO = ROOT / "examples" / "agentic_systems_studio"
+STUDIO_EXPORTS = (
+    "README.md",
+    "pyproject.toml",
+    "app.py",
+    ".env.example",
+    "src",
+    "notebooks",
+    "docs",
+    "scripts/validate_conversation_live.py",
+)
 VALIDATION_SCRIPTS = (
     "run_ada_semantic_matrix.py",
     "run_semantic_matrix.py",
@@ -82,6 +93,10 @@ def _requirements() -> str:
         ipython>=8.0
         ipykernel>=6.0
         nbformat>=5.10
+        nbclient>=0.10
+        nbconvert>=7.16
+        jupyter-server-proxy>=4.4
+        streamlit>=1.37
         """
     )
 
@@ -114,6 +129,15 @@ def _readme(*, commit: str, wheel_sha256: str) -> str:
                python validation/run_ada_semantic_matrix.py
 
         7. Conserva los dos archivos creados en `outputs/`.
+        8. Para probar el mismo sistema conversacional, instala el paquete local de
+           Studio y ejecútalo desde la raíz del bundle:
+
+               python -m pip install --no-deps -e "studio[ui,notebook]"
+               python -m streamlit run studio/app.py
+
+           `studio/notebooks/00_conversational_system.ipynb` ejecuta el contrato
+           directamente y `01_launch_studio.ipynb` abre la UI por el proxy de
+           JupyterLab. Ambos leen el único `.env` de la raíz.
 
         También puedes abrir `bedrock_iam_attestation.ipynb` y ejecutar Run All.
         El notebook ejecuta primero el smoke estructural y después los 16
@@ -203,7 +227,14 @@ def build(*, wheel: Path, commit: str, output_dir: Path) -> Path:
         artifacts = package / "artifacts"
         artifacts.mkdir()
         shutil.copy2(wheel, artifacts / wheel.name)
-
+        for relative in STUDIO_EXPORTS:
+            source = STUDIO / relative
+            target = package / "studio" / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            if source.is_dir():
+                shutil.copytree(source, target)
+            else:
+                shutil.copy2(source, target)
         dotenv = _dotenv(commit=commit, wheel=wheel, wheel_sha256=wheel_sha256).replace(
             f"AGENTIC_SYSTEMS_WHEEL={wheel.name}",
             f"AGENTIC_SYSTEMS_WHEEL=artifacts/{wheel.name}",
@@ -245,6 +276,7 @@ def build(*, wheel: Path, commit: str, output_dir: Path) -> Path:
             "frameworks": ["native", "langgraph", "openai-agents", "strands"],
             "authentication_required": "aws-credential-chain",
             "semantic_episodes": 16,
+            "studio": "one-conversational-agentic-system",
         }
         (package / "manifest.json").write_text(
             json.dumps(manifest, indent=2) + "\n", encoding="utf-8"

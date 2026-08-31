@@ -54,6 +54,12 @@ def test_ada_iam_validation_kit_is_offline_first_and_semantic(tmp_path: Path) ->
             "validation/run_ada_semantic_matrix.py",
             "validation/run_semantic_matrix.py",
             "validation/semantic_e2e_application.py",
+            "studio/app.py",
+            "studio/pyproject.toml",
+            "studio/notebooks/00_conversational_system.ipynb",
+            "studio/notebooks/01_launch_studio.ipynb",
+            "studio/src/agentic_systems_studio/conversation.py",
+            "studio/scripts/validate_conversation_live.py",
         }
         assert {prefix + name for name in required} <= names
 
@@ -73,6 +79,7 @@ def test_ada_iam_validation_kit_is_offline_first_and_semantic(tmp_path: Path) ->
         assert manifest["mutable_configuration_excluded_from_checksums"] is True
         assert manifest["authentication_required"] == "aws-credential-chain"
         assert manifest["semantic_episodes"] == 16
+        assert manifest["studio"] == "one-conversational-agentic-system"
         assert manifest["wheel"]["sha256"] == expected_wheel_sha
         assert manifest["provenance"]["core_source_equivalent"] is True
 
@@ -84,6 +91,11 @@ def test_ada_iam_validation_kit_is_offline_first_and_semantic(tmp_path: Path) ->
         )
         assert 'Path.cwd() / "run_semantic_matrix.py"' in code
         assert 'authentication["authentication_mode"] == "aws-credential-chain"' in code
+        assert "bedrock-studio-live-gate" in json.dumps(notebook)
+
+        requirements = archive.read(prefix + "requirements-ada.txt").decode()
+        assert "streamlit>=1.37" in requirements
+        assert "jupyter-server-proxy>=4.4" in requirements
 
         checksum_lines = archive.read(prefix + "SHA256SUMS.txt").decode().splitlines()
         assert not any(line.endswith("  .env") for line in checksum_lines)
