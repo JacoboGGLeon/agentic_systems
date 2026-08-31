@@ -30,9 +30,9 @@ STUDIO_EXPORTS = (
     "docs",
     "scripts/validate_conversation_live.py",
 )
-DEFAULT_WHEEL = ROOT / "dist" / "agentic_systems-2.1.0-py3-none-any.whl"
+DEFAULT_WHEEL = ROOT / "dist" / "agentic_systems-2.1.1-py3-none-any.whl"
 DEFAULT_OUTPUT = ROOT / "dist"
-PACKAGE_STEM = "agentic-systems-2.1.0-bedrock-iam-final"
+PACKAGE_STEM = "agentic-systems-2.1.1-bedrock-iam-final"
 
 
 def _sha256(path: Path) -> str:
@@ -71,7 +71,7 @@ def _dotenv(*, commit: str, wheel: Path, wheel_sha256: str) -> str:
 def _readme(*, commit: str, wheel: Path, wheel_sha256: str) -> str:
     return textwrap.dedent(
         f"""\
-        # Agentic Systems 2.1.0 · Bedrock IAM final kit
+        # Agentic Systems 2.1.1 · Bedrock IAM final kit
 
         1. Descomprime este ZIP en un directorio nuevo de SageMaker/ADA.
         2. Edita `.env`: conserva `AWS_BEARER_TOKEN_BEDROCK=` vacío para IAM y
@@ -95,7 +95,7 @@ def _readme(*, commit: str, wheel: Path, wheel_sha256: str) -> str:
 
 
 def _semantic_cell() -> nbformat.NotebookNode:
-    source = '''if RUN_BEDROCK_LIVE:
+    source = """if RUN_BEDROCK_LIVE:
     semantic_runner = Path.cwd() / "run_semantic_matrix.py"
     semantic_application = Path.cwd() / "semantic_e2e_application.py"
     missing = [
@@ -169,7 +169,7 @@ else:
     toolkit.show_json(
         {"status": "not-run", "scope": "bedrock-iam-semantic-attestation"},
         title="Semantic attestation gate",
-    )'''
+    )"""
     cell = nbformat.v4.new_code_cell(source)
     cell["id"] = "bedrock-iam-semantic-gate"
     cell.metadata["tags"] = ["semantic-attestation", "iam-contract"]
@@ -177,7 +177,7 @@ else:
 
 
 def _studio_cell() -> nbformat.NotebookNode:
-    source = '''if RUN_BEDROCK_LIVE:
+    source = """if RUN_BEDROCK_LIVE:
     studio_root = Path.cwd() / "studio"
     studio_gate = studio_root / "scripts" / "validate_conversation_live.py"
     if not studio_gate.is_file():
@@ -219,7 +219,7 @@ else:
     toolkit.show_json(
         {"status": "not-run", "scope": "bedrock-studio-live"},
         title="Bedrock Studio live gate",
-    )'''
+    )"""
     cell = nbformat.v4.new_code_cell(source)
     cell["id"] = "bedrock-studio-live-gate"
     cell.metadata["tags"] = ["studio", "live-semantic-gate", "iam-contract"]
@@ -271,9 +271,7 @@ def build(*, wheel: Path, commit: str, output_dir: Path) -> Path:
     package_dir.mkdir(parents=True, exist_ok=True)
     shutil.copy2(wheel, package_dir / wheel.name)
     nbformat.write(
-        _packaged_notebook(
-            commit=commit, wheel=wheel, wheel_sha256=wheel_sha256
-        ),
+        _packaged_notebook(commit=commit, wheel=wheel, wheel_sha256=wheel_sha256),
         package_dir / "bedrock_iam_attestation.ipynb",
     )
     shutil.copy2(RUNNER, package_dir / RUNNER.name)

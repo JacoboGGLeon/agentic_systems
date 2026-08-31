@@ -74,8 +74,8 @@ def test_alpha_version_surface_and_packaging_are_consistent():
     pyproject_text = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
     project = tomllib.loads(pyproject_text)
 
-    assert project["project"]["version"] == "2.1.0"
-    assert agentic_systems.__version__ == "2.1.0"
+    assert project["project"]["version"] == "2.1.1"
+    assert agentic_systems.__version__ == "2.1.1"
     assert len(PUBLIC_API) == 89
     assert "InspectReport" not in PUBLIC_API
     assert not hasattr(agentic_systems, "build_single_agent_step_graph")

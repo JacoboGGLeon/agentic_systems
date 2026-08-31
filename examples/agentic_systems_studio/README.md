@@ -43,6 +43,18 @@ the chat shows the normalized failure and preserves the declared identity.
 
 ## Install in an isolated kernel
 
+From the standalone `agentic-systems-studio-2.1.1.zip`, extract the archive,
+enter its root and run:
+
+```text
+python -m venv .venv-studio
+.venv-studio/Scripts/python -m pip install "agentic-systems==2.1.1"
+.venv-studio/Scripts/python -m pip install -e ".[ui,notebook]"
+```
+
+The Studio package pins the same Agentic Systems version, so pip rejects a
+mismatched runtime instead of silently mixing releases.
+
 For local development:
 
 ```text

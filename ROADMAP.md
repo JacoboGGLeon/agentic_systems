@@ -1,6 +1,6 @@
 # Agentic Systems Roadmap
 
-Current stable release: `2.1.0`.
+Current stable release: `2.1.1`.
 Current release line: `2.1`. Next development line: `2.2`.
 
 Agentic Systems 2.1 establishes the five-Provider by four-Framework execution

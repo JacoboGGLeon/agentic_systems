@@ -113,7 +113,7 @@ def test_curriculum_order_and_reviewed_narrative_are_1_to_1():
         source = _source(notebook)
 
         assert metadata["curriculum_order"] == index, relative
-        assert metadata["narrative_reviewed"] == "2.1.0", relative
+        assert metadata["narrative_reviewed"] == "2.1.1", relative
         expected_scenarios = [
             scenario["id"]
             for scenario in SHARED_SCENARIOS

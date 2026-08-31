@@ -10,8 +10,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 GENERATOR = ROOT / "scripts" / "generate_vllm_colab_e2e_package.py"
-PACKAGE_STEM = "agentic-systems-2.1.0-vllm-qwen4b-colab-final"
-WHEEL_NAME = "agentic_systems-2.1.0-py3-none-any.whl"
+PACKAGE_STEM = "agentic-systems-2.1.1-vllm-qwen4b-colab-final"
+WHEEL_NAME = "agentic_systems-2.1.1-py3-none-any.whl"
 
 
 def test_final_vllm_kit_derives_identity_from_real_artifacts(tmp_path: Path) -> None:

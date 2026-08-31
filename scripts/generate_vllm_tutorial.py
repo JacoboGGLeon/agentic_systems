@@ -49,7 +49,7 @@ def _metadata() -> dict[str, object]:
             "execution_mode": "live-optional",
             "framework": "native",
             "layer": "providers",
-            "narrative_reviewed": "2.1.0",
+            "narrative_reviewed": "2.1.1",
             "provider": "vllm-runtime",
         },
         "kernelspec": {

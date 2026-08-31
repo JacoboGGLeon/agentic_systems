@@ -51,6 +51,21 @@ the request.
 7. Use references/testing.md for contract, notebook, provider/framework and
    bundle acceptance gates.
 
+## Product delivery
+
+Keep the Python distribution and reference applications distinct. The
+`agentic-systems` wheel contains the computational grammar and CLI. Studio is a
+portable reference application distributed as its own ZIP and installed
+against the exact wheel version. Do not imply that `pip install
+agentic-systems` materializes Studio notebooks or application source.
+
+For Studio and other portable applications, use one credential-free `.env`
+contract for provider signals, model identifiers, endpoints, live flags and
+provider priority. Provider and framework remain independent session choices.
+Reject unavailable routes explicitly and never replace them through silent
+fallback. Read references/release-distribution.md when building a release,
+Studio delivery, offline bundle or shareable skill archive.
+
 Never write credentials into source, notebooks, manifests, SQLite or bundles.
 Do not silently fall back to another provider or framework in a conformance
 test. Report installed, configured, compatible and live-verified as separate

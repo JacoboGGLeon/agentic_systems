@@ -37,7 +37,7 @@ def _notebook(cells: list[dict], *, entrypoint: str) -> dict:
             },
             "language_info": {"name": "python", "version": "3"},
             "agentic_systems": {
-                "version": "2.1.0",
+                "version": "2.1.1",
                 "application": "conversational-studio",
                 "entrypoint": entrypoint,
                 "configuration": ".env",

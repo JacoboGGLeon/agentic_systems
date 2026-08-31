@@ -71,4 +71,4 @@ is never sufficient.
 The downloadable `final-certification-summary.json` records the exact wheel
 hash, source identity, evidence filenames and hashes. The release workflow
 verifies that summary and every public artifact against
-`SHA256SUMS-2.1.0.txt` before publishing the Python distributions.
+`SHA256SUMS-2.1.1.txt` before publishing the Python distributions.

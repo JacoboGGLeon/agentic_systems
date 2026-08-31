@@ -10,8 +10,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 GENERATOR = ROOT / "scripts" / "generate_ada_iam_validation_package.py"
-PACKAGE_STEM = "agentic-systems-2.1.0-bedrock-iam-ada-validation"
-WHEEL_NAME = "agentic_systems-2.1.0-py3-none-any.whl"
+PACKAGE_STEM = "agentic-systems-2.1.1-bedrock-iam-ada-validation"
+WHEEL_NAME = "agentic_systems-2.1.1-py3-none-any.whl"
 
 
 def test_ada_iam_validation_kit_is_offline_first_and_semantic(tmp_path: Path) -> None:
@@ -72,9 +72,7 @@ def test_ada_iam_validation_kit_is_offline_first_and_semantic(tmp_path: Path) ->
         assert manifest["wheel"]["sha256"] == expected_wheel_sha
         assert manifest["provenance"]["core_source_equivalent"] is True
 
-        notebook = json.loads(
-            archive.read(prefix + "bedrock_iam_attestation.ipynb")
-        )
+        notebook = json.loads(archive.read(prefix + "bedrock_iam_attestation.ipynb"))
         code = "\n".join(
             "".join(cell.get("source", ""))
             for cell in notebook["cells"]
@@ -85,7 +83,9 @@ def test_ada_iam_validation_kit_is_offline_first_and_semantic(tmp_path: Path) ->
 
         for line in archive.read(prefix + "SHA256SUMS.txt").decode().splitlines():
             expected, filename = line.split("  ", 1)
-            assert hashlib.sha256(archive.read(prefix + filename)).hexdigest() == expected
+            assert (
+                hashlib.sha256(archive.read(prefix + filename)).hexdigest() == expected
+            )
 
         combined = "\n".join(
             archive.read(name).decode(errors="ignore")

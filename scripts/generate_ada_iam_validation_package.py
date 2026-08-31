@@ -19,10 +19,10 @@ from generate_bedrock_iam_package import _dotenv, _packaged_notebook
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_WHEEL = ROOT / "dist" / "agentic_systems-2.1.0-py3-none-any.whl"
+DEFAULT_WHEEL = ROOT / "dist" / "agentic_systems-2.1.1-py3-none-any.whl"
 DEFAULT_OUTPUT = ROOT / "dist"
-PACKAGE_STEM = "agentic-systems-2.1.0-bedrock-iam-ada-validation"
-WHEEL_NAME = "agentic_systems-2.1.0-py3-none-any.whl"
+PACKAGE_STEM = "agentic-systems-2.1.1-bedrock-iam-ada-validation"
+WHEEL_NAME = "agentic_systems-2.1.1-py3-none-any.whl"
 VALIDATION_SCRIPTS = (
     "run_ada_semantic_matrix.py",
     "run_semantic_matrix.py",
@@ -89,7 +89,7 @@ def _requirements() -> str:
 def _readme(*, commit: str, wheel_sha256: str) -> str:
     return textwrap.dedent(
         f"""\
-        # Agentic Systems 2.1.0 · Bedrock IAM validation for ADA
+        # Agentic Systems 2.1.1 · Bedrock IAM validation for ADA
 
         Este paquete no requiere GitHub ni PyPI. Usa exclusivamente el wheel
         incluido, el Artifactory aprobado para dependencias y el execution role
@@ -198,16 +198,12 @@ def build(*, wheel: Path, commit: str, output_dir: Path) -> Path:
         artifacts.mkdir()
         shutil.copy2(wheel, artifacts / wheel.name)
 
-        dotenv = _dotenv(
-            commit=commit, wheel=wheel, wheel_sha256=wheel_sha256
-        ).replace(
+        dotenv = _dotenv(commit=commit, wheel=wheel, wheel_sha256=wheel_sha256).replace(
             f"AGENTIC_SYSTEMS_WHEEL={wheel.name}",
             f"AGENTIC_SYSTEMS_WHEEL=artifacts/{wheel.name}",
         )
         (package / ".env").write_text(dotenv, encoding="utf-8")
-        (package / "requirements-ada.txt").write_text(
-            _requirements(), encoding="utf-8"
-        )
+        (package / "requirements-ada.txt").write_text(_requirements(), encoding="utf-8")
         (package / "README.md").write_text(
             _readme(commit=commit, wheel_sha256=wheel_sha256), encoding="utf-8"
         )
@@ -232,7 +228,7 @@ def build(*, wheel: Path, commit: str, output_dir: Path) -> Path:
 
         manifest = {
             "schema_version": "agentic-systems.ada-iam-validation/v1",
-            "package_version": "2.1.0",
+            "package_version": "2.1.1",
             "configuration_source": ".env",
             "credentials_included": False,
             "wheel": {"filename": wheel.name, "sha256": wheel_sha256},
@@ -246,9 +242,7 @@ def build(*, wheel: Path, commit: str, output_dir: Path) -> Path:
             json.dumps(manifest, indent=2) + "\n", encoding="utf-8"
         )
         _audit(package)
-        (package / "SHA256SUMS.txt").write_text(
-            _checksums(package), encoding="utf-8"
-        )
+        (package / "SHA256SUMS.txt").write_text(_checksums(package), encoding="utf-8")
         _zip_tree(package, destination)
 
     print(

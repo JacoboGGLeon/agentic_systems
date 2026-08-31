@@ -76,7 +76,7 @@ def test_studio_metadata_and_grounding_match_release_2_1():
         PROJECT_ROOT / "src/agentic_systems_studio/conversation.py"
     ).read_text(encoding="utf-8")
 
-    assert 'version = "2.1.0"' in pyproject
+    assert 'version = "2.1.1"' in pyproject
     assert "inspect_agentic_systems_grammar" in conversation
     assert 'name="agentic-systems-grammar"' in conversation
     assert "skills=[] if mock else [grammar_skill]" in conversation
@@ -87,7 +87,7 @@ def test_bundle_is_reproducible_conversational_delivery(tmp_path: Path):
     first = module.build_bundle(tmp_path / "first")
     second = module.build_bundle(tmp_path / "second")
     assert first.read_bytes() == second.read_bytes()
-    assert first.name == "agentic-systems-studio-2.1.0.zip"
+    assert first.name == "agentic-systems-studio-2.1.1.zip"
 
     with zipfile.ZipFile(first) as archive:
         names = set(archive.namelist())

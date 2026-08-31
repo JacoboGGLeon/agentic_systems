@@ -1,5 +1,31 @@
 # Changelog
 
+## 2.1.1 - 2026-08-30
+
+Patch release that keeps the 2.1 grammar stable while aligning the published
+wheel, Studio application, skill and enterprise bundles after the public 2.1.0
+tag.
+
+### Fixed
+
+- Bedrock now preserves an Agent's explicit empty Tool boundary instead of
+  interpreting it as access to every Tool registered on the System.
+- Studio returns human language, removes private reasoning markers, retains a
+  bounded public conversation window and reports normalized processing and
+  usage evidence across Providers and Frameworks.
+- Graph inspection exposes the selected orchestration boundary and available
+  topology without leaking native SDK objects.
+- Lineage Memory retains compact, masked business evidence from Tools, including
+  scalar values nested in the normalized Tool envelope.
+
+### Distribution
+
+- Studio remains a separate portable reference application: the PyPI wheel
+  provides the computational grammar, while the GitHub release provides Studio,
+  notebook, skill and offline enterprise ZIPs pinned to the same wheel hash.
+- The Agentic Systems skill now documents immutable release identity, portable
+  `.env` configuration and the distinction between PyPI and application assets.
+
 ## 2.1.0 - 2026-08-30
 
 Compatible hardening release. The 2.0 public facade remains stable while three

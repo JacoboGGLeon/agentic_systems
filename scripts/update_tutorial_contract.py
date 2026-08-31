@@ -101,7 +101,7 @@ def _normalize(relative: str, notebook: dict) -> dict:
         if relative in V2_INSERTIONS
         else "v1.1.3"
     )
-    metadata["narrative_reviewed"] = "2.1.0"
+    metadata["narrative_reviewed"] = "2.1.1"
     metadata["contract_scenarios"] = _scenario_ids(relative)
     metadata["api_coverage"] = _api_coverage(notebook)
 

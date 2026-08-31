@@ -29,9 +29,9 @@ STUDIO_EXPORTS = (
     "docs",
     "scripts/validate_conversation_live.py",
 )
-DEFAULT_WHEEL = ROOT / "dist" / "agentic_systems-2.1.0-py3-none-any.whl"
+DEFAULT_WHEEL = ROOT / "dist" / "agentic_systems-2.1.1-py3-none-any.whl"
 DEFAULT_OUTPUT = ROOT / "dist"
-PACKAGE_STEM = "agentic-systems-2.1.0-vllm-qwen4b-colab-final"
+PACKAGE_STEM = "agentic-systems-2.1.1-vllm-qwen4b-colab-final"
 NOTEBOOK_FILENAME = "03_vllm_qwen4b_colab_final.ipynb"
 DEFAULT_MODEL_ID = "unsloth/Qwen3-4B-Instruct-2507"
 DEFAULT_BASE_MODEL_ID = "Qwen/Qwen3-4B-Instruct-2507"
@@ -93,12 +93,10 @@ def _dotenv(
     )
 
 
-def _readme(
-    *, commit: str, wheel: Path, wheel_sha256: str, model_id: str
-) -> str:
+def _readme(*, commit: str, wheel: Path, wheel_sha256: str, model_id: str) -> str:
     return textwrap.dedent(
         f"""\
-        # Agentic Systems 2.1.0 · vLLM/Qwen 4B final live kit
+        # Agentic Systems 2.1.1 · vLLM/Qwen 4B final live kit
 
         1. Abre un Colab nuevo y selecciona una GPU L4.
         2. Sube `{PACKAGE_STEM}.zip` cuando lo solicite la primera celda.
@@ -181,7 +179,7 @@ def _configure_notebook_models(
 
 
 def _studio_cell() -> nbformat.NotebookNode:
-    source = '''from pathlib import Path
+    source = """from pathlib import Path
 import json
 import subprocess
 import sys
@@ -228,7 +226,7 @@ else:
     toolkit.show_json(
         {"status": "not-run", "scope": "vllm-studio-live"},
         title="vLLM Studio live gate",
-    )'''
+    )"""
     cell = nbformat.v4.new_code_cell(source)
     cell["id"] = "vllm-studio-live-gate"
     cell.metadata["tags"] = ["studio", "live-semantic-gate"]

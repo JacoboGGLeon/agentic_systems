@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/JacoboGGLeon/agentic_systems/releases/tag/v2.1.0"><img src="https://img.shields.io/badge/release-v2.1.0-blue.svg" alt="Agentic Systems 2.1.0 release" /></a>
+  <a href="https://github.com/JacoboGGLeon/agentic_systems/releases/tag/v2.1.1"><img src="https://img.shields.io/badge/release-v2.1.1-blue.svg" alt="Agentic Systems 2.1.1 release" /></a>
   <a href="INSTALL.md"><img src="https://img.shields.io/badge/python-%3E%3D3.10-blue.svg" alt="Python >=3.10" /></a>
   <img src="https://img.shields.io/badge/core%20coverage-100%25-brightgreen.svg" alt="Core coverage 100%; Bedrock separately gated" />
   <img src="https://img.shields.io/badge/tests-passing-brightgreen.svg" alt="Tests passing" />
@@ -47,7 +47,7 @@ surface must explain the same product without overstating its evidence.
 
 Public concepts are defined in the API, explained in the documentation, taught through the canonical tutorials, and checked by explicit release gates.
 
-Release status: `2.1.0` defines a canonical 5 Provider x 4 Framework registry,
+Release status: `2.1.1` defines a canonical 5 Provider x 4 Framework registry,
 strict versioned schemas, normalized reasoning-safe results and polymorphic
 adapter contracts. Its public surface contains 89 stable top-level exports and
 467 traced export/member IDs; all 2.0 serialization views remain compatible.
@@ -60,18 +60,16 @@ environment.
 
 ## Installation
 
-Agentic Systems 2.1.0 is currently distributed through the signed GitHub
-release assets. PyPI currently serves the earlier 2.0.0 line, so install the
-downloaded 2.1 wheel when you need the contracts documented here:
+Install the computational grammar from PyPI:
 
 ```bash
-python -m pip install ./agentic_systems-2.1.0-py3-none-any.whl
+python -m pip install "agentic-systems==2.1.1"
 ```
 
 OpenAI Agents is optional and uses a different distribution/import name:
 
 ```bash
-python -m pip install "./agentic_systems-2.1.0-py3-none-any.whl[openai-agents]"
+python -m pip install "agentic-systems[openai-agents]==2.1.1"
 # Dependency distribution: openai-agents; Python import: agents
 ```
 
@@ -79,42 +77,49 @@ For the complete portable Provider/Framework tutorial stack (excluding the
 platform-specific vLLM GPU server):
 
 ```bash
-python -m pip install "./agentic_systems-2.1.0-py3-none-any.whl[all]"
+python -m pip install "agentic-systems[all]==2.1.1"
 ```
 
 ```python
 import agentic_systems as toolkit
 ```
 
+The PyPI distribution contains the runtime, public API and CLI. Studio and its
+notebooks are a separate portable application so they can carry their own
+`.env.example`, tests and presentation dependencies without inflating the core
+wheel. Download `agentic-systems-studio-2.1.1.zip` from the matching GitHub
+release, then install its `ui,notebook` extras as described in the included
+README.
+
 ### Install the Agentic Systems skill
 
-The `v2.1.0` GitHub release includes a credential-free skill ZIP whose archive
+The `v2.1.1` GitHub release includes a credential-free skill ZIP whose archive
 root is `agentic-systems/`.
 
 ```powershell
-Expand-Archive .\agentic-systems-skill-2.1.0.zip `
+Expand-Archive .\agentic-systems-skill-2.1.1.zip `
   -DestinationPath "$env:USERPROFILE\.codex\skills" -Force
 ```
 
 ```bash
-unzip agentic-systems-skill-2.1.0.zip -d ~/.codex/skills
+unzip agentic-systems-skill-2.1.1.zip -d ~/.codex/skills
 ```
 
 Restart or reload Codex, then invoke `$agentic-systems`. OpenAI Skills upload
 surfaces that accept a ZIP can consume the same artifact. Download the
 standalone skill, conversational Studio and ADA offline bundle from the
-[v2.1.0 release](https://github.com/JacoboGGLeon/agentic_systems/releases/tag/v2.1.0).
+[v2.1.1 release](https://github.com/JacoboGGLeon/agentic_systems/releases/tag/v2.1.1).
 
 Release assets:
 
-- `agentic_systems-2.1.0-py3-none-any.whl`: certified universal Python wheel.
-- `agentic_systems-2.1.0.tar.gz`: matching source distribution.
-- `agentic-systems-skill-2.1.0.zip`: Codex/OpenAI skill package.
-- `agentic-systems-studio-2.1.0.zip`: one portable conversational Agentic System.
-- `agentic-systems-2.1.0-ada-offline.zip`: wheel, Studio, tutorials and live evidence for restricted environments.
-- `agentic-systems-2.1.0-strands-protocol-challenge.zip`: frozen MCP+A2A/LangGraph semantic gate for local, Colab, SageMaker and ADA execution.
+- `agentic_systems-2.1.1-py3-none-any.whl`: certified universal Python wheel.
+- `agentic_systems-2.1.1.tar.gz`: matching source distribution.
+- `agentic-systems-skill-2.1.1.zip`: Codex/OpenAI skill package.
+- `agentic-systems-studio-2.1.1.zip`: one portable conversational Agentic System.
+- `agentic-systems-2.1.1-ada-offline.zip`: wheel, Studio, tutorials and live evidence for restricted environments.
+- `agentic-systems-2.1.1-strands-protocol-challenge.zip`: frozen MCP+A2A/LangGraph semantic gate for local, Colab, SageMaker and ADA execution.
 - `final-certification-summary.json`: exact wheel identity and reviewed live evidence inventory.
-- `SHA256SUMS-2.1.0.txt`: hashes for the Python and product artifacts.
+- `SHA256SUMS-2.1.1.txt`: hashes for the Python and product artifacts.
 
 For an installed-package smoke test and provider notebook setup, follow
 [First Run Onboarding](docs/ONBOARDING_FIRST_RUN.md).
@@ -917,7 +922,7 @@ evidence belongs to GitHub Releases.
 Current verified status:
 
 ```text
-Version: 2.1.0
+Version: 2.1.1
 PyPI package: agentic-systems
 Tests: run `python -m pytest` for the current count
 Core coverage: 100.00%

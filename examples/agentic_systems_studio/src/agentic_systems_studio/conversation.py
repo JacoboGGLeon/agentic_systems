@@ -167,9 +167,7 @@ def _agentic_systems_grammar_contract(request: str) -> dict[str, Any]:
         "request": request[:1000],
         "package": "agentic_systems",
         "version": toolkit.__version__,
-        "public_symbols": {
-            name: name in toolkit.__all__ for name in public_symbols
-        },
+        "public_symbols": {name: name in toolkit.__all__ for name in public_symbols},
         "grammar": [
             {"term": "Tool", "role": "deterministic executable capability"},
             {
@@ -216,20 +214,20 @@ def _agentic_systems_grammar_contract(request: str) -> dict[str, Any]:
             "import agentic_systems as toolkit\n\n"
             "@toolkit.tool\n"
             "def greet(name: str) -> dict:\n"
-            "    return {\"message\": f\"Hello, {name}\"}\n\n"
+            '    return {"message": f"Hello, {name}"}\n\n'
             "greeting = toolkit.skill(\n"
-            "    name=\"greeting\",\n"
+            '    name="greeting",\n'
             "    tools=[greet],\n"
-            "    prompts={\"instructions\": \"Use greet for verified greetings.\"},\n"
+            '    prompts={"instructions": "Use greet for verified greetings."},\n'
             ")\n"
-            "runtime = toolkit.runtime(provider=\"auto\")\n"
+            'runtime = toolkit.runtime(provider="auto")\n'
             "system = toolkit.system(runtime=runtime)\n"
             "assistant = system.agent(\n"
-            "    name=\"assistant\",\n"
+            '    name="assistant",\n'
             "    instructions=greeting.instructions,\n"
             "    skills=[greeting],\n"
             ")\n"
-            "result = assistant.run(\"Greet Jacobo.\")\n"
+            'result = assistant.run("Greet Jacobo.")\n'
             "toolkit.human_result(result, show_lineage=True)"
         ),
     }
@@ -298,8 +296,7 @@ class ConversationConfig:
             pass
         return cls(
             provider=provider,
-            framework=framework
-            or os.getenv("AGENTIC_SYSTEMS_FRAMEWORK", "native"),
+            framework=framework or os.getenv("AGENTIC_SYSTEMS_FRAMEWORK", "native"),
             model=model,
             timeout_s=float(os.getenv("AGENTIC_SYSTEMS_TIMEOUT_S", "120")),
             max_turns=int(os.getenv("AGENTIC_SYSTEMS_MAX_TURNS", "6")),
@@ -421,14 +418,11 @@ class ConversationalStudio:
                 required_calls=required_calls,
             )
             missing = [
-                item
-                for item in tool_evidence
-                if str(item["result"]) not in response
+                item for item in tool_evidence if str(item["result"]) not in response
             ]
             if missing:
                 raise ValueError(
-                    "The public answer omitted scalar Tool evidence: "
-                    f"{missing}."
+                    f"The public answer omitted scalar Tool evidence: {missing}."
                 )
 
         validation = {
@@ -460,8 +454,7 @@ class ConversationalStudio:
             f"Canonical public example:\n```python\n{canonical_example}\n```\n\n"
             f"Previous answer:\n{answer[:5000]}\n\n"
             f"Observed public Tool evidence:\n{json.dumps(tool_evidence)}\n\n"
-            "Bounded conversation context:\n"
-            + json.dumps(context, ensure_ascii=False),
+            "Bounded conversation context:\n" + json.dumps(context, ensure_ascii=False),
         )
         results.append(repair_result)
         answer = repair_result.text
@@ -516,13 +509,10 @@ class ConversationalStudio:
         )
         context = dict(context_result.data)
         grammar_results: list[toolkit.RunResult] = []
-        if (
-            self.config.provider != "python-runtime"
-            and self._requests_grammar_evidence(message)
+        if self.config.provider != "python-runtime" and self._requests_grammar_evidence(
+            message
         ):
-            grammar_result = inspect_agentic_systems_grammar.run(
-                {"request": message}
-            )
+            grammar_result = inspect_agentic_systems_grammar.run({"request": message})
             grammar_results.append(grammar_result)
             current_message = context.pop("message", message)
             context["agentic_systems_grammar"] = dict(grammar_result.data)
@@ -555,11 +545,10 @@ class ConversationalStudio:
                 "Call safe_calculate only when the current message explicitly requests a new "
                 "arithmetic calculation. A reference to an earlier calculation in a design, "
                 "explanation or memory request is not permission to call it again. Never expose private "
-            "reasoning and never claim that an uncalled tool was executed.\n\n"
+                "reasoning and never claim that an uncalled tool was executed.\n\n"
                 "Answer only the current message; use history as context, never as text "
                 "to repeat or continue mechanically. Do not append unrelated prior "
-                "answers.\n\n"
-                + json.dumps(context, ensure_ascii=False),
+                "answers.\n\n" + json.dumps(context, ensure_ascii=False),
             )
             answer, assistant_results, response_validation = (
                 self._validate_or_repair_response(
@@ -604,9 +593,7 @@ class ConversationalStudio:
                     ),
                     "meta": {
                         "repairs": response_validation["repairs"],
-                        "required_factories": response_validation[
-                            "required_factories"
-                        ],
+                        "required_factories": response_validation["required_factories"],
                     },
                 }
             )
@@ -649,7 +636,7 @@ def build_conversational_system(
     mock = selected.provider == "python-runtime"
     grammar_skill = toolkit.skill(
         name="agentic-systems-grammar",
-        version="2.1.0",
+        version="2.1.1",
         description=(
             "Ground product questions and generated code in the installed "
             "Agentic Systems public grammar."
@@ -664,11 +651,11 @@ def build_conversational_system(
                 "Systems design or implementation, use the agentic_systems_grammar "
                 "evidence supplied deterministically in the bounded context. Use only "
                 "that public API evidence. Do not replace the grammar "
-            "with an ad hoc simulation. When generating code, preserve the canonical "
-            "imports, signatures and contracts exactly; every @toolkit.tool example "
-            "must return a dictionary. Apply this rule to the current turn even when "
-            "history already contains an earlier Agentic Systems answer; never invent "
-            "classes or APIs absent from the Tool evidence."
+                "with an ad hoc simulation. When generating code, preserve the canonical "
+                "imports, signatures and contracts exactly; every @toolkit.tool example "
+                "must return a dictionary. Apply this rule to the current turn even when "
+                "history already contains an earlier Agentic Systems answer; never invent "
+                "classes or APIs absent from the Tool evidence."
             )
         },
         contracts={"evidence_required_for_product_answers": True},
@@ -737,6 +724,8 @@ def build_conversational_system(
             "Studio canonical response validation"
         ),
     )
+
+
 __all__ = [
     "ConversationConfig",
     "ConversationalStudio",

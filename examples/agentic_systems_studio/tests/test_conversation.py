@@ -150,7 +150,7 @@ def test_conversational_tools_are_bounded_and_deterministic():
         {"request": "Generate an Agentic Systems application"}
     )
     assert grammar.ok is True
-    assert grammar.data["version"] == "2.1.0"
+    assert grammar.data["version"] == "2.1.1"
     assert all(grammar.data["public_symbols"].values())
     assert grammar.data["contracts"]["tool_output"].endswith("a dictionary.")
     assert "import agentic_systems as toolkit" in grammar.data["canonical_example"]
@@ -405,6 +405,7 @@ def test_conversational_studio_repairs_omitted_scalar_tool_evidence():
     assert result.ok is True
     assert result.text == "The verified result is 323."
     assert result.data["response_validation"]["repairs"] == 1
-    assert "omitted scalar Tool evidence" in result.data["response_validation"][
-        "initial_error"
-    ]
+    assert (
+        "omitted scalar Tool evidence"
+        in result.data["response_validation"]["initial_error"]
+    )

@@ -12,19 +12,20 @@ result construction.
 
 ## Install
 
-Download `agentic_systems-2.1.0-py3-none-any.whl` and
-`SHA256SUMS-2.1.0.txt` from the v2.1.0 GitHub release, verify the checksum, then
-install the exact artifact:
+Install the certified runtime from PyPI:
 
 ```bash
 python -m pip install -U pip
-python -m pip install "./agentic_systems-2.1.0-py3-none-any.whl[all]"
+python -m pip install "agentic-systems[all]==2.1.1"
 ```
 
-PyPI currently serves the earlier 2.0.0 line. Installing the release wheel is
-therefore required when following the 2.1 tutorials and contracts.
+Controlled environments may instead download the matching wheel and
+`SHA256SUMS-2.1.1.txt` from the GitHub release, verify its checksum and install
+that exact local artifact.
 
-The notebooks are repository content; clone the repository before opening them:
+Notebooks and Studio are application/repository content rather than package
+data in the core wheel. Clone the repository or download the matching Studio or
+ADA ZIP before opening them:
 
 ```bash
 git clone https://github.com/JacoboGGLeon/agentic_systems.git
@@ -61,7 +62,7 @@ import agentic_systems as toolkit
 runtime = toolkit.runtime(provider="python-runtime")
 system = toolkit.system(runtime=runtime)
 
-assert toolkit.__version__ == "2.1.0"
+assert toolkit.__version__ == "2.1.1"
 assert callable(toolkit.tool)
 assert callable(toolkit.skill)
 assert callable(toolkit.agent)

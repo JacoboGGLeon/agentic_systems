@@ -246,7 +246,7 @@ def test_attestation_rejects_duplicate_and_unexpected_scenarios() -> None:
         created_at=datetime(2026, 8, 22, tzinfo=timezone.utc),
         commit_sha="a" * 40,
         wheel_sha256="b" * 64,
-        wheel_filename="agentic_systems-2.1.0-py3-none-any.whl",
+        wheel_filename="agentic_systems-2.1.1-py3-none-any.whl",
         python_version="3.14",
         environment={},
         cases=(
