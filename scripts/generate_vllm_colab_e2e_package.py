@@ -112,8 +112,10 @@ def _readme(*, commit: str, wheel: Path, wheel_sha256: str, model_id: str) -> st
         - SHA256: `{wheel_sha256}`
         - Model: `{model_id}`
 
-        `.env` es la fuente canónica de configuración. El notebook verifica los
-        checksums internos antes de instalar y no permite fallback de provider.
+        `.env` es la fuente canónica y mutable de configuración. El notebook
+        verifica los materiales inmutables antes de instalar; `.env` queda fuera
+        del checksum para permitir cambiar modelo/recursos sin invalidar el ZIP. No se
+        permite fallback de provider.
         El cierre exige respuesta humana, linaje jerárquico, validación
         determinista y judge; `ok=true` por sí solo no certifica una celda.
         """
@@ -255,8 +257,9 @@ def _write_archive(
     package_dir: Path, files: tuple[str, ...], archive_path: Path
 ) -> None:
     checksum_path = package_dir / "SHA256SUMS.txt"
+    immutable_files = tuple(name for name in files if name != ".env")
     checksum_path.write_text(
-        "".join(f"{_sha256(package_dir / name)}  {name}\n" for name in files),
+        "".join(f"{_sha256(package_dir / name)}  {name}\n" for name in immutable_files),
         encoding="utf-8",
     )
     with zipfile.ZipFile(

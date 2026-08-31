@@ -43,7 +43,7 @@ def test_ada_iam_validation_kit_is_offline_first_and_semantic(tmp_path: Path) ->
         prefix = f"{PACKAGE_STEM}/"
         names = set(archive.namelist())
         required = {
-            ".env",
+            ".env.example",
             "README.md",
             "manifest.json",
             "requirements-ada.txt",
@@ -57,7 +57,8 @@ def test_ada_iam_validation_kit_is_offline_first_and_semantic(tmp_path: Path) ->
         }
         assert {prefix + name for name in required} <= names
 
-        dotenv = archive.read(prefix + ".env").decode()
+        assert prefix + ".env" not in names
+        dotenv = archive.read(prefix + ".env.example").decode()
         assert f"AGENTIC_SYSTEMS_COMMIT_SHA={commit}" in dotenv
         assert f"AGENTIC_SYSTEMS_WHEEL_SHA256={expected_wheel_sha}" in dotenv
         assert f"AGENTIC_SYSTEMS_WHEEL=artifacts/{WHEEL_NAME}" in dotenv
@@ -67,6 +68,9 @@ def test_ada_iam_validation_kit_is_offline_first_and_semantic(tmp_path: Path) ->
 
         manifest = json.loads(archive.read(prefix + "manifest.json"))
         assert manifest["credentials_included"] is False
+        assert manifest["configuration_source"] == ".env"
+        assert manifest["configuration_template"] == ".env.example"
+        assert manifest["mutable_configuration_excluded_from_checksums"] is True
         assert manifest["authentication_required"] == "aws-credential-chain"
         assert manifest["semantic_episodes"] == 16
         assert manifest["wheel"]["sha256"] == expected_wheel_sha
@@ -81,7 +85,9 @@ def test_ada_iam_validation_kit_is_offline_first_and_semantic(tmp_path: Path) ->
         assert 'Path.cwd() / "run_semantic_matrix.py"' in code
         assert 'authentication["authentication_mode"] == "aws-credential-chain"' in code
 
-        for line in archive.read(prefix + "SHA256SUMS.txt").decode().splitlines():
+        checksum_lines = archive.read(prefix + "SHA256SUMS.txt").decode().splitlines()
+        assert not any(line.endswith("  .env") for line in checksum_lines)
+        for line in checksum_lines:
             expected, filename = line.split("  ", 1)
             assert (
                 hashlib.sha256(archive.read(prefix + filename)).hexdigest() == expected

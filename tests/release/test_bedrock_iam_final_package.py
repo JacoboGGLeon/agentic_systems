@@ -90,7 +90,9 @@ def test_final_bedrock_iam_kit_is_portable_and_env_driven(tmp_path: Path) -> Non
         assert metadata["wheel_sha256"] == expected_wheel_sha
         assert metadata["semantic_episodes"] == 16
 
-        for line in archive.read("SHA256SUMS.txt").decode().splitlines():
+        checksum_lines = archive.read("SHA256SUMS.txt").decode().splitlines()
+        assert not any(line.endswith("  .env") for line in checksum_lines)
+        for line in checksum_lines:
             expected, filename = line.split("  ", 1)
             assert hashlib.sha256(archive.read(filename)).hexdigest() == expected
 

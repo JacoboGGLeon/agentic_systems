@@ -97,17 +97,23 @@ def _readme(*, commit: str, wheel_sha256: str) -> str:
 
         1. Descomprime el ZIP y entra al directorio `{PACKAGE_STEM}`.
         2. Ejecuta `python verify_bundle.py`.
-        3. Conserva `AWS_BEARER_TOKEN_BEDROCK=` vacío en `.env`; ajusta región o
+        3. Copia `.env.example` como `.env`; esa copia es configuración mutable y
+           queda fuera de los checksums del artefacto:
+
+               cp .env.example .env
+
+           En PowerShell usa `Copy-Item .env.example .env`.
+        4. Conserva `AWS_BEARER_TOKEN_BEDROCK=` vacío en `.env`; ajusta región o
            modelo únicamente si tu plataforma empresarial lo exige.
-        4. Instala dependencias mediante Artifactory:
+        5. Instala dependencias mediante Artifactory:
 
                python -m pip install -r requirements-ada.txt
 
-        5. Ejecuta la matriz E2E completa:
+        6. Ejecuta la matriz E2E completa:
 
                python validation/run_ada_semantic_matrix.py
 
-        6. Conserva los dos archivos creados en `outputs/`.
+        7. Conserva los dos archivos creados en `outputs/`.
 
         También puedes abrir `bedrock_iam_attestation.ipynb` y ejecutar Run All.
         El notebook ejecuta primero el smoke estructural y después los 16
@@ -202,7 +208,7 @@ def build(*, wheel: Path, commit: str, output_dir: Path) -> Path:
             f"AGENTIC_SYSTEMS_WHEEL={wheel.name}",
             f"AGENTIC_SYSTEMS_WHEEL=artifacts/{wheel.name}",
         )
-        (package / ".env").write_text(dotenv, encoding="utf-8")
+        (package / ".env.example").write_text(dotenv, encoding="utf-8")
         (package / "requirements-ada.txt").write_text(_requirements(), encoding="utf-8")
         (package / "README.md").write_text(
             _readme(commit=commit, wheel_sha256=wheel_sha256), encoding="utf-8"
@@ -230,6 +236,8 @@ def build(*, wheel: Path, commit: str, output_dir: Path) -> Path:
             "schema_version": "agentic-systems.ada-iam-validation/v1",
             "package_version": "2.1.1",
             "configuration_source": ".env",
+            "configuration_template": ".env.example",
+            "mutable_configuration_excluded_from_checksums": True,
             "credentials_included": False,
             "wheel": {"filename": wheel.name, "sha256": wheel_sha256},
             "provenance": provenance,

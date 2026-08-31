@@ -75,7 +75,8 @@ def _readme(*, commit: str, wheel: Path, wheel_sha256: str) -> str:
 
         1. Descomprime este ZIP en un directorio nuevo de SageMaker/ADA.
         2. Edita `.env`: conserva `AWS_BEARER_TOKEN_BEDROCK=` vacío para IAM y
-           ajusta únicamente región/modelo cuando tu cuenta lo requiera.
+           ajusta únicamente región/modelo cuando tu cuenta lo requiera. `.env` es
+           configuración mutable y queda fuera del checksum del artefacto.
         3. Abre `bedrock_iam_attestation.ipynb` y ejecuta **Run All**.
         4. Conserva `bedrock-attestation.json`,
            `bedrock-iam-semantic-attestation.json` y
@@ -244,8 +245,9 @@ def _packaged_notebook(
 
 def _write_archive(package_dir: Path, names: tuple[str, ...], output: Path) -> None:
     checksum_path = package_dir / "SHA256SUMS.txt"
+    immutable_names = tuple(name for name in names if name != ".env")
     checksum_path.write_text(
-        "".join(f"{_sha256(package_dir / name)}  {name}\n" for name in names),
+        "".join(f"{_sha256(package_dir / name)}  {name}\n" for name in immutable_names),
         encoding="utf-8",
     )
     with zipfile.ZipFile(output, "w", compression=zipfile.ZIP_DEFLATED) as archive:

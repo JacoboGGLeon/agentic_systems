@@ -93,7 +93,9 @@ def test_final_vllm_kit_derives_identity_from_real_artifacts(tmp_path: Path) -> 
         assert 'tool_choice="record_semantic_judgment"' in application
         assert '"poetic_calculation"' in application
 
-        for line in archive.read("SHA256SUMS.txt").decode().splitlines():
+        checksum_lines = archive.read("SHA256SUMS.txt").decode().splitlines()
+        assert not any(line.endswith("  .env") for line in checksum_lines)
+        for line in checksum_lines:
             expected, filename = line.split("  ", 1)
             assert hashlib.sha256(archive.read(filename)).hexdigest() == expected
 
