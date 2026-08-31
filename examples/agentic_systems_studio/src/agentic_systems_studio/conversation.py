@@ -40,7 +40,43 @@ _MAX_HISTORY_MESSAGES = 12
 _MAX_USER_HISTORY_CHARS = 2000
 _MAX_ASSISTANT_HISTORY_CHARS = 1200
 _MAX_CURRENT_MESSAGE_CHARS = 8000
+_CALCULATION_OPERATOR_PATTERN = re.compile(
+    r"\d(?:[\d.,]*\d)?\s*"
+    r"(?:[+\-*/%×]|\b(?:x|times|multiplied\s+by|divided\s+by|por|entre|más|menos)\b)"
+    r"\s*\d",
+    re.IGNORECASE,
+)
+_CALCULATOR_REQUEST_PATTERN = re.compile(
+    r"\b(?:use|call|run|usa|utiliza|ejecuta)\b.{0,24}"
+    r"\b(?:calculator|calculadora)\b",
+    re.IGNORECASE,
+)
+_CALCULATION_COMMAND_PATTERN = re.compile(
+    r"\b(?:calculate|compute|multiply|divide|add|subtract|"
+    r"calcula|calcule|multiplica|suma|resta)\b",
+    re.IGNORECASE,
+)
+_NUMBER_PATTERN = re.compile(r"(?<!\w)[+-]?\d+(?:[.,]\d+)?(?!\w)")
+_OMISSION_REQUEST_PATTERN = re.compile(
+    r"\b(?:sin\s+repetir(?:lo|la|los|las)?|no\s+(?:lo\s+)?repitas?|"
+    r"do\s+not\s+repeat|don't\s+repeat|without\s+repeating)\b",
+    re.IGNORECASE,
+)
+_NAMED_VALUE_PATTERN = re.compile(
+    r"\b(?:se\s+llama|is\s+(?:called|named))\s+[\"']?([^\s,.;:!?\"']+)",
+    re.IGNORECASE,
+)
+_QUOTED_VALUE_PATTERN = re.compile(r"[\"']([^\"']+)[\"']")
 
+
+def _contains_public_value(text: str, value: str) -> bool:
+    """Match a requested omission as a complete public value, not a substring."""
+
+    if not value:
+        return False
+    prefix = r"(?<!\w)" if value[0].isalnum() else ""
+    suffix = r"(?!\w)" if value[-1].isalnum() else ""
+    return re.search(prefix + re.escape(value) + suffix, text, re.IGNORECASE) is not None
 
 def _bounded_number(value: int | float) -> int | float:
     if isinstance(value, bool) or not isinstance(value, (int, float)):
@@ -251,7 +287,7 @@ class ConversationConfig:
     max_turns: int = 6
     max_tool_calls: int = 4
     max_tokens: int = 1024
-    max_response_repairs: int = 1
+    max_response_repairs: int = 2
 
     def __post_init__(self) -> None:
         if self.provider not in {"auto", *PROVIDER_NAMES}:
@@ -303,7 +339,7 @@ class ConversationConfig:
             max_tool_calls=int(os.getenv("AGENTIC_SYSTEMS_MAX_TOOL_CALLS", "4")),
             max_tokens=int(os.getenv("AGENTIC_SYSTEMS_MAX_TOKENS", "1024")),
             max_response_repairs=int(
-                os.getenv("AGENTIC_SYSTEMS_MAX_RESPONSE_REPAIRS", "1")
+                os.getenv("AGENTIC_SYSTEMS_MAX_RESPONSE_REPAIRS", "2")
             ),
         )
 
@@ -362,6 +398,7 @@ class ConversationalStudio:
     deterministic_system: Any
     assistant: Any
     context_agent: Any
+    calculation_agent: Any | None = None
     grammar_contract: Mapping[str, Any] | None = None
     grounded_assistant: Any | None = None
 
@@ -375,6 +412,51 @@ class ConversationalStudio:
                 requested.append(str(factory))
         return tuple(dict.fromkeys(requested))
 
+    def _requests_new_calculation_evidence(self, message: str) -> bool:
+        """Detect an explicit request for new deterministic arithmetic evidence."""
+
+        if _CALCULATOR_REQUEST_PATTERN.search(message):
+            return True
+        if _CALCULATION_OPERATOR_PATTERN.search(message):
+            return True
+        return bool(
+            _CALCULATION_COMMAND_PATTERN.search(message)
+            and len(_NUMBER_PATTERN.findall(message)) >= 2
+        )
+
+    def _requested_public_omissions(self, message: str) -> tuple[str, ...]:
+        """Return values the current message explicitly asks not to repeat."""
+
+        if not _OMISSION_REQUEST_PATTERN.search(message):
+            return ()
+        values = [match.group(1) for match in _QUOTED_VALUE_PATTERN.finditer(message)]
+        values.extend(match.group(1) for match in _NAMED_VALUE_PATTERN.finditer(message))
+        values.extend(_NUMBER_PATTERN.findall(message))
+        normalized = [value.strip() for value in values if value.strip()]
+        return tuple(dict.fromkeys(normalized))
+    def _public_omissions_for_turn(
+        self,
+        *,
+        message: str,
+        context: Mapping[str, Any],
+    ) -> tuple[str, ...]:
+        """Carry explicit non-repetition constraints through bounded public history."""
+
+        values = list(self._requested_public_omissions(message))
+        history = context.get("history")
+        if isinstance(history, list):
+            for item in history:
+                if not isinstance(item, Mapping) or item.get("role") != "user":
+                    continue
+                historical_values = self._requested_public_omissions(
+                    str(item.get("content", ""))
+                )
+                values.extend(
+                    value
+                    for value in historical_values
+                    if _NUMBER_PATTERN.fullmatch(value) is None
+                )
+        return tuple(dict.fromkeys(values))
     def _requests_grammar_evidence(self, message: str) -> bool:
         contract = dict(self.grammar_contract or {})
         terms = [
@@ -394,6 +476,7 @@ class ConversationalStudio:
         message: str,
         context: Mapping[str, Any],
         assistant_result: toolkit.RunResult,
+        evidence_results: Sequence[toolkit.RunResult] = (),
         execution_agent: Any | None = None,
     ) -> tuple[str, list[toolkit.RunResult], dict[str, Any]]:
         """Validate generated public API examples and perform one bounded repair."""
@@ -401,22 +484,55 @@ class ConversationalStudio:
         results = [assistant_result]
         answer = assistant_result.text
         required_calls = self._required_factory_calls(message)
+        omitted_values = self._public_omissions_for_turn(
+            message=message,
+            context=context,
+        )
         tool_evidence: list[dict[str, Any]] = []
-        for event in assistant_result.tool_events:
-            output = event.output if isinstance(event.output, dict) else {}
-            sources = [output]
-            if isinstance(output.get("data"), dict):
-                sources.append(output["data"])
-            for source in sources:
-                value = source.get("result")
-                if isinstance(value, (int, float)) and not isinstance(value, bool):
-                    tool_evidence.append({"tool": event.name, "result": value})
+        for evidence_result in (*evidence_results, assistant_result):
+            for event in evidence_result.tool_events:
+                output = event.output if isinstance(event.output, dict) else {}
+                sources = [output]
+                if isinstance(output.get("data"), dict):
+                    sources.append(output["data"])
+                for source in sources:
+                    value = source.get("result")
+                    if isinstance(value, (int, float)) and not isinstance(value, bool):
+                        tool_evidence.append({"tool": event.name, "result": value})
 
-        def validate_response(response: str) -> None:
+        def validate_response(
+            response: str,
+            *,
+            source_result: toolkit.RunResult,
+        ) -> None:
             validate_generated_agentic_systems_code(
                 response,
                 required_calls=required_calls,
             )
+            public_issue_codes = {
+                "reasoning_exposed_in_public_answer",
+                "technical_answer_exposed_in_public_answer",
+            }
+            public_issues = [
+                issue
+                for issue in source_result.check_invariants().issues
+                if issue.code in public_issue_codes
+            ]
+            if public_issues:
+                raise ValueError(
+                    "The public answer violates its presentation boundary: "
+                    + "; ".join(issue.message for issue in public_issues)
+                )
+            leaked_values = [
+                value
+                for value in omitted_values
+                if _contains_public_value(response, value)
+            ]
+            if leaked_values:
+                raise ValueError(
+                    "The current request explicitly forbids repeating these values: "
+                    f"{leaked_values}."
+                )
             missing = [
                 item for item in tool_evidence if str(item["result"]) not in response
             ]
@@ -433,7 +549,7 @@ class ConversationalStudio:
             "final_error": None,
         }
         try:
-            validate_response(answer)
+            validate_response(answer, source_result=assistant_result)
             return answer, results, validation
         except (SyntaxError, ValueError) as exc:
             validation["ok"] = False
@@ -444,27 +560,35 @@ class ConversationalStudio:
 
         contract = dict(self.grammar_contract or {})
         canonical_example = str(contract.get("canonical_example") or "")
-        repair_result = (execution_agent or self.assistant).run(
-            "Correct the previous answer so every Agentic Systems code example uses "
-            "only the canonical public grammar. Return the corrected answer only; do "
-            "not discuss validation and never expose private reasoning. Preserve the "
-            "user's requested language and intent.\n\n"
-            f"Current user request:\n{message}\n\n"
-            f"Validation failure:\n{validation['initial_error']}\n\n"
-            f"Canonical public example:\n```python\n{canonical_example}\n```\n\n"
-            f"Previous answer:\n{answer[:5000]}\n\n"
-            f"Observed public Tool evidence:\n{json.dumps(tool_evidence)}\n\n"
-            "Bounded conversation context:\n" + json.dumps(context, ensure_ascii=False),
-        )
-        results.append(repair_result)
-        answer = repair_result.text
-        validation["repairs"] = 1
-        try:
-            validate_response(answer)
-        except (SyntaxError, ValueError) as exc:
-            validation["final_error"] = str(exc)
-        else:
-            validation["ok"] = True
+        last_error = str(validation["initial_error"])
+        for attempt in range(1, self.config.max_response_repairs + 1):
+            repair_result = (execution_agent or self.assistant).run(
+                "Correct the previous answer so it satisfies the public response boundary. "
+                "Return a natural, human-readable answer, never a raw JSON object, Python "
+                "repr, ToolEnvelope, validation report or private reasoning. Obey explicit "
+                "omissions and output constraints from the current request. When code is "
+                "requested, use only the canonical Agentic Systems public grammar. Preserve "
+                "the user's requested language and intent.\n\n"
+                f"Current user request:\n{message}\n\n"
+                f"Validation failure:\n{last_error}\n\n"
+                f"Canonical public example:\n```python\n{canonical_example}\n```\n\n"
+                f"Previous answer:\n{answer[:5000]}\n\n"
+                f"Observed public Tool evidence:\n{json.dumps(tool_evidence)}\n\n"
+                "Bounded conversation context:\n"
+                + json.dumps(context, ensure_ascii=False),
+            )
+            results.append(repair_result)
+            answer = repair_result.text
+            validation["repairs"] = attempt
+            try:
+                validate_response(answer, source_result=repair_result)
+            except (SyntaxError, ValueError) as exc:
+                last_error = str(exc)
+                validation["final_error"] = last_error
+            else:
+                validation["ok"] = True
+                validation["final_error"] = None
+                return answer, results, validation
         return answer, results, validation
 
     def inspect(self) -> dict[str, Any]:
@@ -480,6 +604,11 @@ class ConversationalStudio:
             "agents": [
                 self.context_agent.info(),
                 self.assistant.info(),
+                *(
+                    [self.calculation_agent.info()]
+                    if self.calculation_agent is not None
+                    else []
+                ),
                 *(
                     [self.grounded_assistant.info()]
                     if self.grounded_assistant is not None
@@ -518,6 +647,32 @@ class ConversationalStudio:
             context["agentic_systems_grammar"] = dict(grammar_result.data)
             # Keep the current request last for recency-sensitive small models.
             context["message"] = current_message
+        calculation_results: list[toolkit.RunResult] = []
+        if (
+            self.config.provider != "python-runtime"
+            and self.calculation_agent is not None
+            and self._requests_new_calculation_evidence(message)
+        ):
+            calculation_result = self.calculation_agent.run(
+                "Interpret only the current request and call safe_calculate exactly "
+                "once with the arithmetic expression that requires verification. "
+                "Do not answer from memory and do not perform any other task.\n\n"
+                + json.dumps(context, ensure_ascii=False)
+            )
+            calculation_results.append(calculation_result)
+            verified_events = [
+                event
+                for event in calculation_result.tool_events
+                if event.name == "safe_calculate" and event.ok
+            ]
+            if verified_events:
+                output = verified_events[-1].output
+                if isinstance(output, dict):
+                    public_output = output.get("data", output)
+                    if isinstance(public_output, dict):
+                        current_message = context.pop("message", message)
+                        context["calculation_evidence"] = dict(public_output)
+                        context["message"] = current_message
         if self.config.provider == "python-runtime":
             assistant_result = self.assistant.run(
                 {
@@ -537,7 +692,8 @@ class ConversationalStudio:
         else:
             execution_agent = (
                 self.grounded_assistant
-                if grammar_results and self.grounded_assistant is not None
+                if (grammar_results or calculation_results)
+                and self.grounded_assistant is not None
                 else self.assistant
             )
             assistant_result = execution_agent.run(
@@ -555,13 +711,19 @@ class ConversationalStudio:
                     message=message,
                     context=context,
                     assistant_result=assistant_result,
+                    evidence_results=calculation_results,
                     execution_agent=execution_agent,
                 )
             )
         result = toolkit.compose_result(
             text=answer,
             data={"text": answer},
-            results=[context_result, *grammar_results, *assistant_results],
+            results=[
+                context_result,
+                *grammar_results,
+                *calculation_results,
+                *assistant_results,
+            ],
             mode=assistant_results[-1].mode,
             framework=self.config.framework,
             input=message,
@@ -692,8 +854,31 @@ def build_conversational_system(
             tool_choice="hello_world" if mock else "auto",
         ),
     )
+    calculation_agent = None
     grounded_assistant = None
     if not mock:
+        calculation_agent = reasoning.agent(
+            name="conversation.calculation_evidence",
+            instructions=(
+                "Interpret the current conversational request only to obtain deterministic "
+                "arithmetic evidence. Call safe_calculate exactly once with a normalized "
+                "Python arithmetic expression. Never answer from memory."
+            ),
+            tools=[safe_calculate],
+            engine=selected.provider,
+            framework=selected.framework_value,
+            model=selected.model,
+            contract=toolkit.AgentContract(
+                must_call=["safe_calculate"],
+                completion="when_required_tools_satisfied",
+            ),
+            policy=toolkit.RunPolicy(
+                max_turns=min(selected.max_turns, 3),
+                max_tool_calls=1,
+                max_tokens=selected.max_tokens,
+                tool_choice="safe_calculate",
+            ),
+        )
         grounded_assistant = reasoning.agent(
             name="conversation.grounded_assistant",
             instructions=assistant_instructions,
@@ -719,6 +904,7 @@ def build_conversational_system(
         deterministic_system=deterministic,
         assistant=assistant,
         context_agent=context_agent,
+        calculation_agent=calculation_agent,
         grounded_assistant=grounded_assistant,
         grammar_contract=_agentic_systems_grammar_contract(
             "Studio canonical response validation"

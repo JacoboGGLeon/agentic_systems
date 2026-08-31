@@ -11,11 +11,18 @@ a bounded context envelope and records tool evidence. A reasoning Agent handles
 language through the provider and framework selected by `.env`. Both boundaries
 return the same normalized `RunResult` contract used by the library.
 
-The reasoning Agent also receives one runtime Skill that grounds product
-questions in the installed Agentic Systems 2.1 grammar. The Skill exposes a
-deterministic public-API description and canonical code template, so a local
-model does not have to guess what this project means by Tool, Skill, Agent,
-System, Graph, Environment or Eval.
+The reasoning boundary uses two deterministic evidence paths before public
+synthesis. Explicit arithmetic is verified once by `safe_calculate`; product and
+code questions are grounded by a runtime Skill that exposes the installed
+Agentic Systems 2.1 grammar and canonical code template. A single conversational
+turn may compose both paths, so a request can calculate and explain the library
+without forcing one capability to suppress the other.
+
+The public answer is then checked against `RunResult` invariants, requested
+omissions, observed scalar Tool evidence and the canonical API grammar. Invalid
+answers may use the configured, bounded repair budget
+(`AGENTIC_SYSTEMS_MAX_RESPONSE_REPAIRS`, default `2`); exhausted repairs fail
+visibly and never trigger a provider fallback.
 
 ## Runtime portability
 

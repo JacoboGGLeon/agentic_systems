@@ -8,6 +8,7 @@ import agentic_systems as toolkit
 from agentic_systems.tools import ToolEvent
 
 from agentic_systems_studio.conversation import (
+    _contains_public_value,
     ConversationConfig,
     build_conversational_system,
     ConversationalStudio,
@@ -175,6 +176,222 @@ def test_python_runtime_is_an_explicit_deterministic_studio_mock():
     result.check_invariants().raise_if_failed()
 
 
+def test_mixed_grammar_and_calculation_request_composes_required_evidence():
+    context_payload = {
+        "message": "Explain Agentic Systems using verified 17 * 19.",
+        "history": [],
+        "history_turns": 0,
+        "policy": {"reasoning_is_private": True},
+    }
+    context_result = toolkit.RunResult(
+        text="context",
+        engine="python-runtime",
+        model="python-runtime",
+        data=context_payload,
+        tool_events=[
+            ToolEvent(
+                id="context-1",
+                name="prepare_conversation_context",
+                input={},
+                output=context_payload,
+                ok=True,
+            )
+        ],
+    )
+    calculation_result = toolkit.RunResult(
+        text="Verified result: 323",
+        engine="bedrock-runtime",
+        model="test-model",
+        tool_events=[
+            ToolEvent(
+                id="calculate-1",
+                name="safe_calculate",
+                input={"expression": "17 * 19"},
+                output={"result": 323},
+                ok=True,
+            )
+        ],
+    )
+    final_result = toolkit.RunResult(
+        text="Agentic Systems can compose deterministic evidence; the verified result is 323.",
+        engine="bedrock-runtime",
+        model="test-model",
+    )
+    calls: list[str] = []
+
+    def calculate(prompt: str):
+        calls.append(f"calculate:{prompt}")
+        return calculation_result
+
+    def synthesize(prompt: str):
+        calls.append(f"synthesize:{prompt}")
+        return final_result
+
+    def unexpected(_prompt: str):
+        raise AssertionError("The optional assistant must not bypass evidence synthesis.")
+
+    grammar = inspect_agentic_systems_grammar.run({"request": "validation"}).data
+    studio = ConversationalStudio(
+        config=ConversationConfig(provider="bedrock-runtime"),
+        reasoning_system=object(),
+        deterministic_system=object(),
+        assistant=SimpleNamespace(run=unexpected),
+        context_agent=SimpleNamespace(run=lambda *_args: context_result),
+        calculation_agent=SimpleNamespace(run=calculate),
+        grounded_assistant=SimpleNamespace(run=synthesize),
+        grammar_contract=grammar,
+    )
+
+    result = studio.run(context_payload["message"])
+
+    assert result.ok is True
+    assert result.text.endswith("verified result is 323.")
+    assert [event.name for event in result.tool_events] == [
+        "prepare_conversation_context",
+        "inspect_agentic_systems_grammar",
+        "safe_calculate",
+    ]
+    assert [call.split(":", 1)[0] for call in calls] == ["calculate", "synthesize"]
+    assert result.data["response_validation"]["ok"] is True
+    result.check_invariants().raise_if_failed()
+
+
+def test_calculation_evidence_intent_is_explicit_and_history_safe():
+    studio = ConversationalStudio(
+        config=ConversationConfig(provider="openai-runtime"),
+        reasoning_system=object(),
+        deterministic_system=object(),
+        assistant=object(),
+        context_agent=object(),
+    )
+
+    assert studio._requests_new_calculation_evidence(
+        "Usa la calculadora para verificar 17 por 19."
+    )
+    assert studio._requests_new_calculation_evidence("Explain 17 * 19.")
+    assert not studio._requests_new_calculation_evidence(
+        "Convierte el cálculo anterior en una Skill reutilizable."
+    )
+
+    assert studio._requested_public_omissions(
+        "El proyecto se llama Boreal; confirma sin repetirlo."
+    ) == ("Boreal",)
+    assert studio._requested_public_omissions(
+        "El número base es 17; confirma sin repetirlo."
+    ) == ("17",)
+    assert _contains_public_value("Ann received the context.", "Ann")
+    assert not _contains_public_value("Planning is complete.", "Ann")
+    assert not _contains_public_value("The result is 170.", "17")
+    assert studio._public_omissions_for_turn(
+        message="Ahora diseña la Tool.",
+        context={
+            "history": [
+                {
+                    "role": "user",
+                    "content": "El proyecto se llama Boreal; confirma sin repetirlo.",
+                },
+                {
+                    "role": "user",
+                    "content": "El número base es 17; confirma sin repetirlo.",
+                },
+            ]
+        },
+    ) == ("Boreal",)
+
+
+@pytest.mark.parametrize(
+    ("message", "initial_answer", "repaired_answer"),
+    [
+        (
+            "El proyecto se llama Boreal; confirma sin repetirlo.",
+            "Confirmo que el proyecto se llama Boreal.",
+            "Confirmo que recibí el contexto.",
+        ),
+        (
+            "Explica el resultado en lenguaje natural.",
+            '{"answer": "El resultado es 323."}',
+            "El resultado es 323.",
+        ),
+    ],
+)
+def test_public_response_boundary_performs_one_bounded_repair(
+    message: str,
+    initial_answer: str,
+    repaired_answer: str,
+):
+    initial_result = toolkit.RunResult(
+        text=initial_answer,
+        engine="ollama-runtime",
+        model="test-model",
+    )
+    repair_result = toolkit.RunResult(
+        text=repaired_answer,
+        engine="ollama-runtime",
+        model="test-model",
+    )
+    studio = ConversationalStudio(
+        config=ConversationConfig(provider="ollama-runtime"),
+        reasoning_system=object(),
+        deterministic_system=object(),
+        assistant=object(),
+        context_agent=object(),
+    )
+
+    answer, results, validation = studio._validate_or_repair_response(
+        message=message,
+        context={"message": message},
+        assistant_result=initial_result,
+        execution_agent=SimpleNamespace(run=lambda _prompt: repair_result),
+    )
+
+    assert answer == repaired_answer
+    assert results == [initial_result, repair_result]
+    assert validation["ok"] is True
+    assert validation["repairs"] == 1
+    assert validation["initial_error"]
+    assert validation["final_error"] is None
+
+def test_response_repair_budget_can_use_a_second_bounded_attempt():
+    initial_result = toolkit.RunResult(
+        text='{"answer": "technical"}',
+        engine="ollama-runtime",
+        model="test-model",
+    )
+    still_invalid = toolkit.RunResult(
+        text='{"answer": "still technical"}',
+        engine="ollama-runtime",
+        model="test-model",
+    )
+    repaired = toolkit.RunResult(
+        text="La respuesta pública ya es natural.",
+        engine="ollama-runtime",
+        model="test-model",
+    )
+    repairs = iter((still_invalid, repaired))
+    studio = ConversationalStudio(
+        config=ConversationConfig(
+            provider="ollama-runtime",
+            max_response_repairs=2,
+        ),
+        reasoning_system=object(),
+        deterministic_system=object(),
+        assistant=object(),
+        context_agent=object(),
+    )
+
+    answer, results, validation = studio._validate_or_repair_response(
+        message="Responde en lenguaje natural.",
+        context={"message": "Responde en lenguaje natural."},
+        assistant_result=initial_result,
+        execution_agent=SimpleNamespace(run=lambda _prompt: next(repairs)),
+    )
+
+    assert answer == repaired.text
+    assert results == [initial_result, still_invalid, repaired]
+    assert validation["ok"] is True
+    assert validation["repairs"] == 2
+    assert validation["final_error"] is None
+
 def test_context_agent_run_uses_public_default_mode_and_public_data():
     studio = build_conversational_system(
         ConversationConfig(provider="openai-runtime", model="offline-contract-model")
@@ -205,6 +422,7 @@ def test_conversational_studio_inspect_uses_public_report_projection():
     assert [agent["name"] for agent in report["agents"]] == [
         "conversation.context",
         "conversation.assistant",
+        "conversation.calculation_evidence",
         "conversation.grounded_assistant",
     ]
     assert (
