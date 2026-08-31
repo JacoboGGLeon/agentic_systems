@@ -113,7 +113,10 @@ def build_bundle(output_dir: str | Path | None = None) -> Path:
                 "notebook": "notebooks/00_conversational_system.ipynb",
                 "streamlit": "notebooks/01_launch_studio.ipynb",
             },
-            "providers": ["auto", *REASONING_PROVIDER_NAMES],
+            # Studio exposes every canonical runtime. Language-model providers
+            # run the conversational system; python-runtime is the explicit,
+            # deterministic Hello World control documented by the UI.
+            "providers": ["auto", "python-runtime", *REASONING_PROVIDER_NAMES],
             "frameworks": list(FRAMEWORK_NAMES),
             "normalized_result": "RunResult",
             "credentials_included": False,

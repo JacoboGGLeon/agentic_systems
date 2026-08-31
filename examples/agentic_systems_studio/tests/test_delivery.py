@@ -99,6 +99,7 @@ def test_bundle_is_reproducible_conversational_delivery(tmp_path: Path):
         assert manifest["normalized_result"] == "RunResult"
         assert manifest["providers"] == [
             "auto",
+            "python-runtime",
             *(
                 item.name
                 for item in PROVIDERS
