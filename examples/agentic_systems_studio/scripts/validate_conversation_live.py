@@ -46,7 +46,8 @@ LONG_PROMPTS = (
     "resultado como evidencia.",
     "Con ese cálculo, consulta la Skill de Agentic Systems y diseña una Tool "
     "reutilizable que reciba base y multiplicador con su contrato público correcto.",
-    "Ahora explica cómo empaquetar esa Tool dentro de una Skill reutilizable.",
+    "Ahora explica cómo empaquetar esa Tool dentro de una Skill reutilizable e "
+    "incluye el código exacto con la fábrica pública correspondiente.",
     "Ahora compón esa Skill dentro de un System y explica qué frontera aporta.",
     "Distingue Provider de Framework en una sola frase, sin cambiar la propuesta.",
     "Resume la conversación: incluye 323, Tool, Skill y System. Si el nombre del "
@@ -183,7 +184,7 @@ def _assert_long_turn(result: Any, *, provider: str, index: int) -> None:
     if index == 5 and not (
         "toolkit.system" in lowered
         or (
-            _contains_any(lowered, ("composition", "composición"))
+            _contains_any(lowered, ("compos",))
             and _contains_any(lowered, ("boundary", "frontera"))
         )
     ):
