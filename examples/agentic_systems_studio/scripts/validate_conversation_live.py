@@ -79,6 +79,15 @@ def _contains_any(text: str, alternatives: tuple[str, ...]) -> bool:
     return any(value in text for value in alternatives)
 
 
+def _claims_system_boundary(text: str) -> bool:
+    """Require the requested concept and boundary to share one public claim."""
+
+    for claim in re.split(r"[.!?\n]+", text.lower()):
+        if "system" in claim and _contains_any(claim, ("boundary", "frontera")):
+            return True
+    return False
+
+
 def _assert_reusable_binary_tool(text: str) -> None:
     blocks = re.findall(r"```(?:python)?\s*(.*?)```", text, flags=re.DOTALL)
     if not blocks and text.strip().startswith(
@@ -181,13 +190,7 @@ def _assert_long_turn(result: Any, *, provider: str, index: int) -> None:
         raise AssertionError({"composition_turn_failed": result.text})
     if index == 4 and "toolkit.skill" not in lowered:
         raise AssertionError({"canonical_skill_factory_missing": result.text})
-    if index == 5 and not (
-        "toolkit.system" in lowered
-        or (
-            _contains_any(lowered, ("compos",))
-            and _contains_any(lowered, ("boundary", "frontera"))
-        )
-    ):
+    if index == 5 and not _claims_system_boundary(lowered):
         raise AssertionError({"system_boundary_failed": result.text})
     if index == 6 and not (
         _contains_any(lowered, ("provider", "proveedor"))
