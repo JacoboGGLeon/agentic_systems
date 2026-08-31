@@ -79,6 +79,21 @@ def test_final_vllm_kit_derives_identity_from_real_artifacts(tmp_path: Path) -> 
         assert "Qwen3-0.6B" not in notebook_text
         assert "vllm-studio-live-gate" in notebook_text
         assert "vllm-studio-live.json" in notebook_text
+        studio_index = next(
+            index
+            for index, cell in enumerate(notebook["cells"])
+            if cell.get("id") == "vllm-studio-live-gate"
+        )
+        teardown_index = next(
+            index
+            for index, cell in enumerate(notebook["cells"])
+            if "model-server-teardown"
+            in cell.get("metadata", {}).get("tags", [])
+        )
+        assert studio_index < teardown_index
+        assert "server.stop()" in "".join(
+            notebook["cells"][teardown_index].get("source", "")
+        )
 
         studio_app = archive.read("studio/app.py").decode()
         assert "processing_mark(result)" in studio_app

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import ast
 import hashlib
 import re
 import shutil
@@ -235,6 +236,42 @@ else:
     return cell
 
 
+def _insert_before_model_server_teardown(
+    notebook: nbformat.NotebookNode,
+    cell: nbformat.NotebookNode,
+) -> None:
+    """Keep live consumers inside the explicit ModelServer lifecycle."""
+
+    teardown_indexes: list[int] = []
+    for index, candidate in enumerate(notebook.cells):
+        if candidate.get("cell_type") != "code":
+            continue
+        try:
+            tree = ast.parse(str(candidate.get("source", "")))
+        except SyntaxError:
+            continue
+        if any(
+            isinstance(node, ast.Call)
+            and isinstance(node.func, ast.Attribute)
+            and node.func.attr == "stop"
+            for node in ast.walk(tree)
+        ):
+            teardown_indexes.append(index)
+
+    if len(teardown_indexes) != 1:
+        raise ValueError(
+            "expected exactly one ModelServer teardown cell; "
+            f"observed={len(teardown_indexes)}"
+        )
+    teardown_index = teardown_indexes[0]
+    teardown = notebook.cells[teardown_index]
+    tags = list(teardown.metadata.get("tags", ()))
+    if "model-server-teardown" not in tags:
+        tags.append("model-server-teardown")
+    teardown.metadata["tags"] = tags
+    notebook.cells.insert(teardown_index, cell)
+
+
 def _assert_model_consistency(
     notebook: nbformat.NotebookNode,
     *,
@@ -333,7 +370,7 @@ def build(
         base_model_id=base_model_id,
     )
     notebook.cells.insert(0, _bootstrap(wheel.name))
-    notebook.cells.append(_studio_cell())
+    _insert_before_model_server_teardown(notebook, _studio_cell())
     notebook.metadata.setdefault("agentic_systems", {})["portable_package"] = {
         "filename": f"{PACKAGE_STEM}.zip",
         "model": model_id,
