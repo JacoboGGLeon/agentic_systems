@@ -17,6 +17,8 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+from agentic_systems.utils import mask_sensitive
+
 LINEAGE_SCHEMA_VERSION = "agentic_systems.lineage.v1"
 LineageKind = Literal[
     "input", "execution", "decision", "tool", "validation", "answer", "error", "context"
@@ -240,6 +242,24 @@ def _tool_output_facts(output: dict[str, Any], *, max_rows: int = 3) -> dict[str
             output["data"].get("row_count") or output["data"].get("n_rows") or len(rows)
         )
         facts["sample_rows"] = rows[:max_rows]
+
+    # Preserve compact business evidence such as {"result": 323}, including
+    # the common ToolEnvelope {"data": {...}} form. Complex collections stay
+    # out of Lineage Memory; sensitive-looking scalar keys are masked.
+    sources = [output]
+    if isinstance(output.get("data"), dict):
+        sources.append(output["data"])
+    for source in sources:
+        for key, value in source.items():
+            if key in facts or key in {"data", "rows"} or len(facts) >= 12:
+                continue
+            if value is None or isinstance(value, (bool, int, float, str)):
+                masked = mask_sensitive({str(key): value})[str(key)]
+                facts[str(key)] = (
+                    _short(masked, max_chars=240)
+                    if isinstance(masked, str)
+                    else masked
+                )
 
     return facts
 

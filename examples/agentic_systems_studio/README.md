@@ -80,6 +80,25 @@ persisted by the UI. Edit `.env` and restart Studio only when the available
 runtime contract itself changes. `python-runtime` remains visibly labeled as a
 deterministic mock without a language model.
 
+Every assistant turn renders two public observability lines below the natural
+language answer. The processing mark reports the Provider, Framework and Tools
+that actually ran. The usage mark projects every measurement supplied by the
+runtime (requests, tokens, latency and scheduler data when available) and says
+explicitly when a field was not reported; Studio never invents missing usage.
+
+To exercise the same conversational system without the UI, run the live gate:
+
+```text
+python examples/agentic_systems_studio/scripts/validate_conversation_live.py \
+  --providers python-runtime openai-runtime ollama-runtime bedrock-runtime \
+  --output .tmp/studio-live.json
+```
+
+The report keeps both human answers, exact Tools, complete normalized usage and
+full lineage. Passing requires semantic content and runtime identity, not only
+`ok=true`. Provider credentials and models still come exclusively from `.env`
+or the managed host.
+
 ## What the reference proves
 
 - the same source runs with or without a UI;
@@ -89,5 +108,6 @@ deterministic mock without a language model.
 - arithmetic is established by a deterministic Tool;
 - Agentic Systems code is grounded by a runtime Skill rather than model memory;
 - reasoning metadata stays private while tool evidence remains observable;
+- processing and usage are projected from the public `RunResult` API;
 - every turn produces a serializable, invariant-checked `RunResult`;
 - failures are visible and never trigger a silent provider fallback.

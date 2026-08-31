@@ -152,6 +152,7 @@ def test_runtime_auto_resolves_vllm_when_base_url_is_configured(monkeypatch) -> 
 def test_runtime_auto_unresolved_mentions_vllm(monkeypatch) -> None:
     import agentic_systems.core.runtime as runtime_module
 
+    monkeypatch.setenv("AGENTIC_SYSTEMS_PROVIDER_PRIORITY", "")
     for key in (
         "VLLM_BASE_URL",
         "OPENAI_API_KEY",

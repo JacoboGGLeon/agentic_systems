@@ -269,3 +269,26 @@ def test_lineage_preserves_status_usage_validation_and_evidence() -> None:
         step["kind"] == "tool" and step["evidence"]["ok"] is True
         for step in payload["steps"]
     )
+    tool_step = next(step for step in payload["steps"] if step["kind"] == "tool")
+    assert tool_step["evidence"]["facts"]["value"] == 1
+
+
+def test_lineage_preserves_scalar_tool_evidence_and_masks_secrets() -> None:
+    result = RunResult(
+        text="323",
+        tool_events=[
+            ToolEvent(
+                id="multiply-1",
+                name="multiply",
+                input={"a": 17, "b": 19},
+                output={"data": {"result": 323, "api_key": "private-value"}},
+                ok=True,
+            )
+        ],
+    )
+
+    lineage = result.lineage().to_dict()
+    tool_step = next(step for step in lineage["steps"] if step["kind"] == "tool")
+
+    assert tool_step["evidence"]["facts"]["result"] == 323
+    assert tool_step["evidence"]["facts"]["api_key"] != "private-value"

@@ -47,6 +47,7 @@ STUDIO_EXPORTS = (
     "src",
     "notebooks",
     "docs",
+    "scripts/validate_conversation_live.py",
 )
 VALIDATION_EXPORTS = (
     "run_ada_semantic_matrix.py",
@@ -363,6 +364,14 @@ def _readme(certification: dict[str, object], provenance: dict[str, object]) -> 
            sistema sin aplicación.
         3. `studio/notebooks/01_launch_studio.ipynb` para el mismo sistema mediante
            Streamlit y el proxy de JupyterLab/ADA.
+
+        El gate conversacional del Studio también puede ejecutarse sin UI:
+
+            python studio/scripts/validate_conversation_live.py \
+              --providers bedrock-runtime --output outputs/bedrock-studio-live.json
+
+        Su JSON conserva respuesta humana, Tools, usage completo disponible y
+        linaje; no considera suficiente un `ok=true` aislado.
 
         Para Bedrock IAM deja `AWS_BEARER_TOKEN_BEDROCK` vacío: boto3 hereda el
         execution role. Para vLLM configura `VLLM_BASE_URL`; Studio consume el

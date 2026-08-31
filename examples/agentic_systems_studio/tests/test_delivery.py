@@ -62,6 +62,10 @@ def test_streamlit_is_conversational_and_env_configured():
     assert "build_conversational_system(" in source
     assert "configured_provider_names()" in source
     assert source.count("st.selectbox(") == 2
+    assert "processing_mark(result)" in source
+    assert "usage_mark(result)" in source
+    assert 'message.get("processing")' in source
+    assert 'message.get("usage")' in source
     assert "create_application(" not in source
     assert "SYSTEM_SPECS" not in source
 
@@ -106,6 +110,8 @@ def test_bundle_is_reproducible_conversational_delivery(tmp_path: Path):
         assert "notebooks/00_conversational_system.ipynb" in names
         assert "notebooks/01_launch_studio.ipynb" in names
         assert "src/agentic_systems_studio/conversation.py" in names
+        assert "src/agentic_systems_studio/presentation.py" in names
+        assert "scripts/validate_conversation_live.py" in names
         assert "SHA256SUMS" in names
         assert not any(name.startswith("system-bundles/") for name in names)
         assert not any(".codex-backup" in name for name in names)

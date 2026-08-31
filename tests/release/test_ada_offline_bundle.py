@@ -207,6 +207,8 @@ def test_ada_bundle_is_reproducible_certified_and_offline(tmp_path: Path, monkey
         assert root + "studio/app.py" in names
         assert root + "studio/notebooks/00_conversational_system.ipynb" in names
         assert root + "studio/notebooks/01_launch_studio.ipynb" in names
+        assert root + "studio/src/agentic_systems_studio/presentation.py" in names
+        assert root + "studio/scripts/validate_conversation_live.py" in names
         assert root + "validation/run_ada_semantic_matrix.py" in names
         assert root + "validation/run_semantic_matrix.py" in names
         assert root + "validation/semantic_e2e_application.py" in names

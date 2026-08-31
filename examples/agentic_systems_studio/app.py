@@ -11,6 +11,7 @@ from agentic_systems_studio.conversation import (
 )
 from agentic_systems.registry import FRAMEWORK_NAMES
 from agentic_systems_studio.environment import load_studio_environment
+from agentic_systems_studio.presentation import processing_mark, usage_mark
 
 
 st.set_page_config(
@@ -121,6 +122,10 @@ messages = st.session_state.setdefault(
 for message in messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
+        if message.get("processing"):
+            st.caption(message["processing"])
+        if message.get("usage"):
+            st.caption(message["usage"])
 
 if prompt := st.chat_input("Message the Agentic System"):
     prior_history = list(messages)
@@ -133,7 +138,18 @@ if prompt := st.chat_input("Message the Agentic System"):
             try:
                 result = studio.run(prompt, history=prior_history)
                 st.markdown(result.text)
-                messages.append({"role": "assistant", "content": result.text})
+                mark = processing_mark(result)
+                usage = usage_mark(result)
+                st.caption(mark)
+                st.caption(usage)
+                messages.append(
+                    {
+                        "role": "assistant",
+                        "content": result.text,
+                        "processing": mark,
+                        "usage": usage,
+                    }
+                )
                 st.session_state["last_result"] = result
             except Exception as exc:
                 st.error("Execution failed without provider fallback.")

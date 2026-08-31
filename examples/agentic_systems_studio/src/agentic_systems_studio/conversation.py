@@ -7,6 +7,7 @@ from dataclasses import dataclass
 import json
 import math
 import os
+import re
 from typing import Any, Mapping, Sequence
 
 import agentic_systems as toolkit
@@ -16,6 +17,9 @@ from agentic_systems.registry import (
     provider_capability,
 )
 from agentic_systems_studio.environment import load_studio_environment
+from agentic_systems_studio.presentation import (
+    validate_generated_agentic_systems_code,
+)
 
 
 _BINARY_OPERATORS = {
@@ -32,6 +36,10 @@ _UNARY_OPERATORS = {
 }
 _MAX_ABSOLUTE_VALUE = 1_000_000_000_000
 _MAX_AST_NODES = 32
+_MAX_HISTORY_MESSAGES = 12
+_MAX_USER_HISTORY_CHARS = 2000
+_MAX_ASSISTANT_HISTORY_CHARS = 1200
+_MAX_CURRENT_MESSAGE_CHARS = 8000
 
 
 def _bounded_number(value: int | float) -> int | float:
@@ -65,7 +73,11 @@ def _evaluate_expression(node: ast.AST) -> int | float:
 
 @toolkit.tool
 def safe_calculate(expression: str) -> dict[str, Any]:
-    """Evaluate arithmetic without eval, imports, names or attribute access."""
+    """Evaluate arithmetic explicitly requested in the current user message.
+
+    Do not call this Tool merely because conversation history or a design question
+    references an earlier calculation.
+    """
 
     normalized = expression.strip().replace("^", "**")
     if not normalized or len(normalized) > 256:
@@ -90,20 +102,38 @@ def prepare_conversation_context(
     """Produce a bounded, deterministic context envelope for one chat turn."""
 
     bounded = []
-    for item in messages[-12:]:
+    truncated_messages = 0
+    for item in messages[-_MAX_HISTORY_MESSAGES:]:
         role = str(item.get("role", "user"))
-        content = str(item.get("content", ""))[:4000]
+        raw_content = str(item.get("content", ""))
+        limit = (
+            _MAX_ASSISTANT_HISTORY_CHARS
+            if role == "assistant"
+            else _MAX_USER_HISTORY_CHARS
+        )
+        content = raw_content[:limit]
+        truncated_messages += int(len(raw_content) > limit)
         if role in {"user", "assistant"} and content:
             bounded.append({"role": role, "content": content})
     return {
-        "message": message[:8000],
         "history": bounded,
         "history_turns": len(bounded),
+        "memory": {
+            "kind": "bounded-public-history",
+            "maximum_messages": _MAX_HISTORY_MESSAGES,
+            "maximum_user_characters": _MAX_USER_HISTORY_CHARS,
+            "maximum_assistant_characters": _MAX_ASSISTANT_HISTORY_CHARS,
+            "maximum_current_message_characters": _MAX_CURRENT_MESSAGE_CHARS,
+            "truncated_messages": truncated_messages,
+        },
         "policy": {
             "reasoning_is_private": True,
             "no_silent_fallback": True,
             "tools_are_evidence": True,
         },
+        # Keep the current request last so recency-sensitive runtimes do not
+        # mistake the final historical assistant message for the active turn.
+        "message": message[:_MAX_CURRENT_MESSAGE_CHARS],
     }
 
 
@@ -121,10 +151,7 @@ def hello_world(message: str) -> dict[str, Any]:
     }
 
 
-@toolkit.tool
-def inspect_agentic_systems_grammar(request: str) -> dict[str, Any]:
-    """Ground answers in the installed Agentic Systems public grammar."""
-
+def _agentic_systems_grammar_contract(request: str) -> dict[str, Any]:
     public_symbols = (
         "tool",
         "skill",
@@ -171,6 +198,20 @@ def inspect_agentic_systems_grammar(request: str) -> dict[str, Any]:
             "provider": "inference runtime",
             "framework": "orchestration owner",
         },
+        "contracts": {
+            "tool_output": "Every @toolkit.tool returns a dictionary.",
+            "canonical_import": "import agentic_systems as toolkit",
+            "result_boundary": "Every execution returns a normalized RunResult.",
+        },
+        "canonical_factories": {
+            "Tool": "tool",
+            "Skill": "skill",
+            "Agent": "agent",
+            "System": "system",
+            "Graph": "graph",
+            "Environment": "environment",
+            "Eval": "eval",
+        },
         "canonical_example": (
             "import agentic_systems as toolkit\n\n"
             "@toolkit.tool\n"
@@ -194,6 +235,13 @@ def inspect_agentic_systems_grammar(request: str) -> dict[str, Any]:
     }
 
 
+@toolkit.tool
+def inspect_agentic_systems_grammar(request: str) -> dict[str, Any]:
+    """Ground answers in the installed Agentic Systems public grammar."""
+
+    return _agentic_systems_grammar_contract(request)
+
+
 @dataclass(frozen=True)
 class ConversationConfig:
     """Environment-first configuration shared by the UI and notebook."""
@@ -205,6 +253,7 @@ class ConversationConfig:
     max_turns: int = 6
     max_tool_calls: int = 4
     max_tokens: int = 1024
+    max_response_repairs: int = 1
 
     def __post_init__(self) -> None:
         if self.provider not in {"auto", *PROVIDER_NAMES}:
@@ -213,7 +262,12 @@ class ConversationConfig:
             raise ValueError(f"Unknown framework: {self.framework!r}")
         if self.timeout_s <= 0:
             raise ValueError("timeout_s must be greater than zero")
-        if self.max_turns < 1 or self.max_tokens < 1 or self.max_tool_calls < 0:
+        if (
+            self.max_turns < 1
+            or self.max_tokens < 1
+            or self.max_tool_calls < 0
+            or self.max_response_repairs < 0
+        ):
             raise ValueError(
                 "turns/tokens must be positive and tool calls non-negative"
             )
@@ -251,6 +305,9 @@ class ConversationConfig:
             max_turns=int(os.getenv("AGENTIC_SYSTEMS_MAX_TURNS", "6")),
             max_tool_calls=int(os.getenv("AGENTIC_SYSTEMS_MAX_TOOL_CALLS", "4")),
             max_tokens=int(os.getenv("AGENTIC_SYSTEMS_MAX_TOKENS", "1024")),
+            max_response_repairs=int(
+                os.getenv("AGENTIC_SYSTEMS_MAX_RESPONSE_REPAIRS", "1")
+            ),
         )
 
     @property
@@ -308,6 +365,114 @@ class ConversationalStudio:
     deterministic_system: Any
     assistant: Any
     context_agent: Any
+    grammar_contract: Mapping[str, Any] | None = None
+    grounded_assistant: Any | None = None
+
+    def _required_factory_calls(self, message: str) -> tuple[str, ...]:
+        """Project explicitly requested grammar terms onto public factories."""
+
+        factories = dict((self.grammar_contract or {}).get("canonical_factories") or {})
+        requested: list[str] = []
+        for concept, factory in factories.items():
+            if re.search(rf"\b{re.escape(str(concept))}\b", message, re.IGNORECASE):
+                requested.append(str(factory))
+        return tuple(dict.fromkeys(requested))
+
+    def _requests_grammar_evidence(self, message: str) -> bool:
+        contract = dict(self.grammar_contract or {})
+        terms = [
+            *dict(contract.get("canonical_factories") or {}).keys(),
+            *dict(contract.get("independent_axes") or {}).keys(),
+            str(contract.get("package") or "").replace("_", " "),
+            "Agentic Systems",
+        ]
+        return any(
+            re.search(rf"\b{re.escape(str(term))}\b", message, re.IGNORECASE)
+            for term in terms
+        )
+
+    def _validate_or_repair_response(
+        self,
+        *,
+        message: str,
+        context: Mapping[str, Any],
+        assistant_result: toolkit.RunResult,
+        execution_agent: Any | None = None,
+    ) -> tuple[str, list[toolkit.RunResult], dict[str, Any]]:
+        """Validate generated public API examples and perform one bounded repair."""
+
+        results = [assistant_result]
+        answer = assistant_result.text
+        required_calls = self._required_factory_calls(message)
+        tool_evidence: list[dict[str, Any]] = []
+        for event in assistant_result.tool_events:
+            output = event.output if isinstance(event.output, dict) else {}
+            sources = [output]
+            if isinstance(output.get("data"), dict):
+                sources.append(output["data"])
+            for source in sources:
+                value = source.get("result")
+                if isinstance(value, (int, float)) and not isinstance(value, bool):
+                    tool_evidence.append({"tool": event.name, "result": value})
+
+        def validate_response(response: str) -> None:
+            validate_generated_agentic_systems_code(
+                response,
+                required_calls=required_calls,
+            )
+            missing = [
+                item
+                for item in tool_evidence
+                if str(item["result"]) not in response
+            ]
+            if missing:
+                raise ValueError(
+                    "The public answer omitted scalar Tool evidence: "
+                    f"{missing}."
+                )
+
+        validation = {
+            "ok": True,
+            "repairs": 0,
+            "required_factories": list(required_calls),
+            "initial_error": None,
+            "final_error": None,
+        }
+        try:
+            validate_response(answer)
+            return answer, results, validation
+        except (SyntaxError, ValueError) as exc:
+            validation["ok"] = False
+            validation["initial_error"] = str(exc)
+            if self.config.max_response_repairs < 1:
+                validation["final_error"] = str(exc)
+                return answer, results, validation
+
+        contract = dict(self.grammar_contract or {})
+        canonical_example = str(contract.get("canonical_example") or "")
+        repair_result = (execution_agent or self.assistant).run(
+            "Correct the previous answer so every Agentic Systems code example uses "
+            "only the canonical public grammar. Return the corrected answer only; do "
+            "not discuss validation and never expose private reasoning. Preserve the "
+            "user's requested language and intent.\n\n"
+            f"Current user request:\n{message}\n\n"
+            f"Validation failure:\n{validation['initial_error']}\n\n"
+            f"Canonical public example:\n```python\n{canonical_example}\n```\n\n"
+            f"Previous answer:\n{answer[:5000]}\n\n"
+            f"Observed public Tool evidence:\n{json.dumps(tool_evidence)}\n\n"
+            "Bounded conversation context:\n"
+            + json.dumps(context, ensure_ascii=False),
+        )
+        results.append(repair_result)
+        answer = repair_result.text
+        validation["repairs"] = 1
+        try:
+            validate_response(answer)
+        except (SyntaxError, ValueError) as exc:
+            validation["final_error"] = str(exc)
+        else:
+            validation["ok"] = True
+        return answer, results, validation
 
     def inspect(self) -> dict[str, Any]:
         return {
@@ -315,10 +480,19 @@ class ConversationalStudio:
                 "provider": self.config.provider,
                 "framework": self.config.framework,
                 "model": self.config.model,
+                "max_response_repairs": self.config.max_response_repairs,
             },
             "deterministic_system": self.deterministic_system.inspect().to_dict(),
             "reasoning_system": self.reasoning_system.inspect().to_dict(),
-            "agents": [self.context_agent.info(), self.assistant.info()],
+            "agents": [
+                self.context_agent.info(),
+                self.assistant.info(),
+                *(
+                    [self.grounded_assistant.info()]
+                    if self.grounded_assistant is not None
+                    else []
+                ),
+            ],
         }
 
     def run(
@@ -341,6 +515,19 @@ class ConversationalStudio:
             },
         )
         context = dict(context_result.data)
+        grammar_results: list[toolkit.RunResult] = []
+        if (
+            self.config.provider != "python-runtime"
+            and self._requests_grammar_evidence(message)
+        ):
+            grammar_result = inspect_agentic_systems_grammar.run(
+                {"request": message}
+            )
+            grammar_results.append(grammar_result)
+            current_message = context.pop("message", message)
+            context["agentic_systems_grammar"] = dict(grammar_result.data)
+            # Keep the current request last for recency-sensitive small models.
+            context["message"] = current_message
         if self.config.provider == "python-runtime":
             assistant_result = self.assistant.run(
                 {
@@ -349,23 +536,48 @@ class ConversationalStudio:
                 }
             )
             answer = str(assistant_result.data["message"])
+            assistant_results = [assistant_result]
+            response_validation = {
+                "ok": True,
+                "repairs": 0,
+                "required_factories": [],
+                "initial_error": None,
+                "final_error": None,
+            }
         else:
-            assistant_result = self.assistant.run(
+            execution_agent = (
+                self.grounded_assistant
+                if grammar_results and self.grounded_assistant is not None
+                else self.assistant
+            )
+            assistant_result = execution_agent.run(
                 "Respond to the current user message using the bounded conversation context. "
-                "Call safe_calculate when arithmetic evidence is useful. Never expose private "
-                "reasoning and never claim that an uncalled tool was executed.\n\n"
+                "Call safe_calculate only when the current message explicitly requests a new "
+                "arithmetic calculation. A reference to an earlier calculation in a design, "
+                "explanation or memory request is not permission to call it again. Never expose private "
+            "reasoning and never claim that an uncalled tool was executed.\n\n"
+                "Answer only the current message; use history as context, never as text "
+                "to repeat or continue mechanically. Do not append unrelated prior "
+                "answers.\n\n"
                 + json.dumps(context, ensure_ascii=False),
             )
-            answer = assistant_result.text
+            answer, assistant_results, response_validation = (
+                self._validate_or_repair_response(
+                    message=message,
+                    context=context,
+                    assistant_result=assistant_result,
+                    execution_agent=execution_agent,
+                )
+            )
         result = toolkit.compose_result(
             text=answer,
             data={"text": answer},
-            results=[context_result, assistant_result],
-            mode=assistant_result.mode,
+            results=[context_result, *grammar_results, *assistant_results],
+            mode=assistant_results[-1].mode,
             framework=self.config.framework,
             input=message,
-            engine=assistant_result.engine,
-            model=assistant_result.model,
+            engine=assistant_results[-1].engine,
+            model=assistant_results[-1].model,
             meta={"studio_application": "conversational"},
         )
         result.data.update(
@@ -373,12 +585,31 @@ class ConversationalStudio:
                 "answer": answer,
                 "context_summary": {
                     "history_turns": context.get("history_turns", 0),
+                    "memory": context.get("memory", {}),
                     "policy": context.get("policy", {}),
                 },
                 "provider": self.config.provider,
                 "framework": self.config.framework,
+                "response_validation": response_validation,
             }
         )
+        if not response_validation["ok"]:
+            result.ok = False
+            result.errors.append(
+                {
+                    "code": "studio_response_validation_failed",
+                    "message": str(
+                        response_validation.get("final_error")
+                        or response_validation.get("initial_error")
+                    ),
+                    "meta": {
+                        "repairs": response_validation["repairs"],
+                        "required_factories": response_validation[
+                            "required_factories"
+                        ],
+                    },
+                }
+            )
         result.check_invariants()
         return result
 
@@ -423,25 +654,39 @@ def build_conversational_system(
             "Ground product questions and generated code in the installed "
             "Agentic Systems public grammar."
         ),
-        tools=[inspect_agentic_systems_grammar],
+        # The Studio executes the grounding Tool deterministically before the
+        # LM turn. Keeping it out of the model-owned loop prevents duplicate
+        # calls while the Skill still owns prompts and contracts.
+        tools=[],
         prompts={
             "instructions": (
                 "When the user asks about Agentic Systems or requests an Agentic "
-                "Systems design or implementation, call inspect_agentic_systems_grammar "
-                "first and use only its public API evidence. Do not replace the grammar "
-                "with an ad hoc simulation."
+                "Systems design or implementation, use the agentic_systems_grammar "
+                "evidence supplied deterministically in the bounded context. Use only "
+                "that public API evidence. Do not replace the grammar "
+            "with an ad hoc simulation. When generating code, preserve the canonical "
+            "imports, signatures and contracts exactly; every @toolkit.tool example "
+            "must return a dictionary. Apply this rule to the current turn even when "
+            "history already contains an earlier Agentic Systems answer; never invent "
+            "classes or APIs absent from the Tool evidence."
             )
         },
         contracts={"evidence_required_for_product_answers": True},
     )
+    assistant_instructions = (
+        "You are a concise, evidence-aware conversational assistant. Respond in the "
+        "user's language, preserve context, follow the requested output format, use "
+        "deterministic tools when they add evidence, and never expose private reasoning. "
+        "When a Tool runs, explicitly incorporate its relevant returned evidence into "
+        "the final answer. Follow negative wording literally: when asked not to "
+        "repeat a value, acknowledge it without restating it. Do not call a Tool "
+        "when the current request only asks for acknowledgement, memory, explanation "
+        "or software design based on evidence already present in history. "
+        + ("" if mock else grammar_skill.instructions)
+    )
     assistant = reasoning.agent(
         name="conversation.assistant",
-        instructions=(
-            "You are a concise, evidence-aware conversational assistant. Respond in the "
-            "user's language, preserve context, follow the requested output format, use "
-            "deterministic tools when they add evidence, and never expose private reasoning. "
-            + ("" if mock else grammar_skill.instructions)
-        ),
+        instructions=assistant_instructions,
         tools=[hello_world] if mock else [safe_calculate],
         skills=[] if mock else [grammar_skill],
         engine=selected.provider,
@@ -460,6 +705,23 @@ def build_conversational_system(
             tool_choice="hello_world" if mock else "auto",
         ),
     )
+    grounded_assistant = None
+    if not mock:
+        grounded_assistant = reasoning.agent(
+            name="conversation.grounded_assistant",
+            instructions=assistant_instructions,
+            tools=[],
+            skills=[grammar_skill],
+            engine=selected.provider,
+            framework=selected.framework_value,
+            model=selected.model,
+            policy=toolkit.RunPolicy(
+                max_turns=selected.max_turns,
+                max_tool_calls=0,
+                max_tokens=selected.max_tokens,
+                tool_choice="auto",
+            ),
+        )
 
     for system in (deterministic, reasoning):
         system.inspect().raise_if_errors()
@@ -470,9 +732,11 @@ def build_conversational_system(
         deterministic_system=deterministic,
         assistant=assistant,
         context_agent=context_agent,
+        grounded_assistant=grounded_assistant,
+        grammar_contract=_agentic_systems_grammar_contract(
+            "Studio canonical response validation"
+        ),
     )
-
-
 __all__ = [
     "ConversationConfig",
     "ConversationalStudio",

@@ -117,6 +117,28 @@ def test_conversational_tools_are_bounded_and_deterministic():
     assert context.ok is True
     assert context.data["history_turns"] == 2
     assert all(item["role"] != "system" for item in context.data["history"])
+    assert context.data["memory"] == {
+        "kind": "bounded-public-history",
+        "maximum_messages": 12,
+        "maximum_user_characters": 2000,
+        "maximum_assistant_characters": 1200,
+        "maximum_current_message_characters": 8000,
+        "truncated_messages": 0,
+    }
+
+    long_context = prepare_conversation_context.run(
+        {
+            "messages": [
+                {"role": "assistant", "content": "x" * 5000},
+                {"role": "user", "content": "y" * 5000},
+            ],
+            "message": "z" * 9000,
+        }
+    )
+    assert len(long_context.data["history"][0]["content"]) == 1200
+    assert len(long_context.data["history"][1]["content"]) == 2000
+    assert len(long_context.data["message"]) == 8000
+    assert long_context.data["memory"]["truncated_messages"] == 2
 
     greeting = hello_world.run({"message": "hola"})
     assert greeting.ok is True
@@ -130,6 +152,7 @@ def test_conversational_tools_are_bounded_and_deterministic():
     assert grammar.ok is True
     assert grammar.data["version"] == "2.1.0"
     assert all(grammar.data["public_symbols"].values())
+    assert grammar.data["contracts"]["tool_output"].endswith("a dictionary.")
     assert "import agentic_systems as toolkit" in grammar.data["canonical_example"]
 
 
@@ -179,7 +202,15 @@ def test_conversational_studio_inspect_uses_public_report_projection():
     assert report["deterministic_system"]["ok"] is True
     assert report["reasoning_system"]["ok"] is True
     assert report["configuration"]["provider"] == "openai-runtime"
-    assert len(report["agents"]) == 2
+    assert [agent["name"] for agent in report["agents"]] == [
+        "conversation.context",
+        "conversation.assistant",
+        "conversation.grounded_assistant",
+    ]
+    assert (
+        "incorporate its relevant returned evidence"
+        in report["agents"][1]["instructions"]
+    )
 
 
 @pytest.mark.parametrize(
@@ -233,6 +264,7 @@ def test_conversational_studio_composes_real_run_results(framework, capsys):
     assert result.meta["engines_used"] == ["python-runtime", "vllm-runtime"]
     assert result.data["context_summary"] == {
         "history_turns": 0,
+        "memory": {},
         "policy": {"reasoning_is_private": True},
     }
 
@@ -240,3 +272,139 @@ def test_conversational_studio_composes_real_run_results(framework, capsys):
     rendered = capsys.readouterr().out
     assert "Respuesta:\n323" in rendered
     assert 'Respuesta:\n{"answer"' not in rendered
+
+
+def test_conversational_studio_repairs_invalid_public_grammar_once():
+    context_payload = {
+        "message": "Package the Tool into a Skill.",
+        "history": [],
+        "history_turns": 0,
+        "policy": {"reasoning_is_private": True},
+    }
+    context_result = toolkit.RunResult(
+        text="context",
+        engine="python-runtime",
+        model="python-runtime",
+        data=context_payload,
+    )
+    invalid = toolkit.RunResult(
+        text=(
+            "```python\nimport agentic_systems as toolkit\n"
+            "@toolkit.skill\nclass CalculatorSkill:\n    pass\n```"
+        ),
+        engine="openai-runtime",
+        model="test-model",
+        usage={"total_tokens": 10},
+    )
+    repaired = toolkit.RunResult(
+        text=(
+            "```python\nimport agentic_systems as toolkit\n"
+            "@toolkit.tool\ndef multiply(a: int, b: int) -> dict:\n"
+            "    return {'result': a * b}\n\n"
+            "calculator = toolkit.skill(name='calculator', tools=[multiply])\n```"
+        ),
+        engine="openai-runtime",
+        model="test-model",
+        usage={"total_tokens": 20},
+    )
+    responses = iter((invalid, repaired))
+    grammar = inspect_agentic_systems_grammar.run({"request": "validation"}).data
+    studio = ConversationalStudio(
+        config=ConversationConfig(provider="openai-runtime", max_response_repairs=1),
+        reasoning_system=object(),
+        deterministic_system=object(),
+        assistant=SimpleNamespace(run=lambda *_args: next(responses)),
+        context_agent=SimpleNamespace(run=lambda *_args: context_result),
+        grammar_contract=grammar,
+    )
+
+    result = studio.run("Package the Tool into a Skill.")
+
+    assert "toolkit.skill(" in result.text
+    assert result.data["response_validation"] == {
+        "ok": True,
+        "repairs": 1,
+        "required_factories": ["tool", "skill"],
+        "initial_error": (
+            "toolkit.skill is a factory, not a decorator; use "
+            "toolkit.skill(name=..., tools=[...])."
+        ),
+        "final_error": None,
+    }
+    assert result.usage["total_tokens"] == 30
+    result.check_invariants().raise_if_failed()
+
+
+def test_conversational_studio_fails_invalid_code_when_repairs_are_disabled():
+    context_result = toolkit.RunResult(
+        text="context",
+        engine="python-runtime",
+        model="python-runtime",
+        data={"message": "Build a Skill", "history_turns": 0},
+    )
+    invalid = toolkit.RunResult(
+        text="```python\n@toolkit.skill\nclass Invalid:\n    pass\n```",
+        engine="openai-runtime",
+        model="test-model",
+    )
+    grammar = inspect_agentic_systems_grammar.run({"request": "validation"}).data
+    studio = ConversationalStudio(
+        config=ConversationConfig(provider="openai-runtime", max_response_repairs=0),
+        reasoning_system=object(),
+        deterministic_system=object(),
+        assistant=SimpleNamespace(run=lambda *_args: invalid),
+        context_agent=SimpleNamespace(run=lambda *_args: context_result),
+        grammar_contract=grammar,
+    )
+
+    result = studio.run("Build a Skill")
+
+    assert result.ok is False
+    assert result.data["response_validation"]["repairs"] == 0
+    assert "factory, not a decorator" in result.errors[-1]["message"]
+    result.check_invariants().raise_if_failed()
+
+
+def test_conversational_studio_repairs_omitted_scalar_tool_evidence():
+    context_result = toolkit.RunResult(
+        text="context",
+        engine="python-runtime",
+        model="python-runtime",
+        data={"message": "Calculate", "history_turns": 0},
+    )
+    unsupported_answer = toolkit.RunResult(
+        text="I completed the calculation.",
+        engine="openai-runtime",
+        model="test-model",
+        tool_events=[
+            ToolEvent(
+                id="multiply-1",
+                name="multiply",
+                input={"a": 17, "b": 19},
+                output={"result": 323},
+                ok=True,
+            )
+        ],
+    )
+    repaired = toolkit.RunResult(
+        text="The verified result is 323.",
+        engine="openai-runtime",
+        model="test-model",
+    )
+    responses = iter((unsupported_answer, repaired))
+    studio = ConversationalStudio(
+        config=ConversationConfig(provider="openai-runtime"),
+        reasoning_system=object(),
+        deterministic_system=object(),
+        assistant=SimpleNamespace(run=lambda *_args: next(responses)),
+        context_agent=SimpleNamespace(run=lambda *_args: context_result),
+    )
+
+    result = studio.run("Calculate")
+
+    assert result.ok is True
+    assert result.text == "The verified result is 323."
+    assert result.data["response_validation"]["repairs"] == 1
+    assert "omitted scalar Tool evidence" in result.data["response_validation"][
+        "initial_error"
+    ]

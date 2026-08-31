@@ -129,6 +129,30 @@ def test_agent_run_uses_bedrock_engine_with_fake_client():
     assert result.trace()["trace_schema_version"] == "agentic_systems.trace.v1"
 
 
+def test_bedrock_agent_with_no_tools_does_not_inherit_system_tools():
+    system = build_system()
+    fake_runtime = FakeBedrockRuntime()
+    system._runtime.runtime = fake_runtime
+
+    @system.tool
+    def sumar(a: int, b: int) -> dict:
+        """Suma dos números."""
+        return {"result": a + b}
+
+    agent = system.agent(
+        name="grounded_agent",
+        instructions="Respond without executable capabilities.",
+        tools=[],
+        policy={"max_tool_calls": 0},
+    )
+
+    result = agent.run_sync("Describe the evidence.", mode="eval")
+
+    assert result.ok is True
+    assert result.tool_events == []
+    assert "toolConfig" not in fake_runtime.calls[0]
+
+
 def test_agent_as_node_returns_partial_update():
     system = build_system()
     system._runtime.runtime = FakeBedrockRuntime()

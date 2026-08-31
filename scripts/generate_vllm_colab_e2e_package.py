@@ -18,6 +18,17 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "release" / "notebooks" / "vllm_attestation.ipynb"
 SEMANTIC_RUNNER = ROOT / "scripts" / "run_semantic_matrix.py"
 SEMANTIC_APPLICATION = ROOT / "scripts" / "semantic_e2e_application.py"
+STUDIO = ROOT / "examples" / "agentic_systems_studio"
+STUDIO_EXPORTS = (
+    "README.md",
+    "pyproject.toml",
+    "app.py",
+    ".env.example",
+    "src",
+    "notebooks",
+    "docs",
+    "scripts/validate_conversation_live.py",
+)
 DEFAULT_WHEEL = ROOT / "dist" / "agentic_systems-2.1.0-py3-none-any.whl"
 DEFAULT_OUTPUT = ROOT / "dist"
 PACKAGE_STEM = "agentic-systems-2.1.0-vllm-qwen4b-colab-final"
@@ -92,7 +103,9 @@ def _readme(
         1. Abre un Colab nuevo y selecciona una GPU L4.
         2. Sube `{PACKAGE_STEM}.zip` cuando lo solicite la primera celda.
         3. Ejecuta **Run all** una sola vez.
-        4. Descarga `vllm-semantic-attestation.json` y `vllm-semantic-review.md`.
+        4. Descarga `vllm-semantic-attestation.json`, `vllm-semantic-review.md`
+           y `vllm-studio-live.json`. La última celda ejecuta el mismo Studio
+           conversacional usado por OpenAI, Ollama y Bedrock.
 
         Identidad certificable:
 
@@ -120,6 +133,7 @@ REQUIRED = (
     CONTENT / "{wheel_filename}",
     CONTENT / "run_semantic_matrix.py",
     CONTENT / "semantic_e2e_application.py",
+    CONTENT / "studio" / "scripts" / "validate_conversation_live.py",
 )
 
 from google.colab import files
@@ -164,6 +178,61 @@ def _configure_notebook_models(
             lambda match: replacements[match.group(0).split("/", 1)[0]],
             source,
         )
+
+
+def _studio_cell() -> nbformat.NotebookNode:
+    source = '''from pathlib import Path
+import json
+import subprocess
+import sys
+
+if RUN_VLLM_LIVE:
+    studio_root = Path("/content/studio")
+    studio_gate = studio_root / "scripts" / "validate_conversation_live.py"
+    if not studio_gate.is_file():
+        raise FileNotFoundError(studio_gate)
+    subprocess.run(
+        [sys.executable, "-m", "pip", "install", "--no-deps", "-e", str(studio_root)],
+        check=True,
+    )
+    studio_output = Path("/content/vllm-studio-live.json")
+    studio_run = subprocess.run(
+        [
+            sys.executable,
+            str(studio_gate),
+            "--providers",
+            "vllm-runtime",
+            "--output",
+            str(studio_output),
+            "--quiet",
+        ],
+        text=True,
+        capture_output=True,
+    )
+    toolkit.show_json(
+        {
+            "returncode": studio_run.returncode,
+            "stdout": studio_run.stdout,
+            "stderr": studio_run.stderr,
+        },
+        title="vLLM Studio live gate",
+    )
+    if studio_run.returncode:
+        raise RuntimeError("vLLM Studio live gate failed")
+    studio_report = json.loads(studio_output.read_text(encoding="utf-8"))
+    assert studio_report["ok"] is True
+    from IPython.display import FileLink, display
+
+    display(FileLink(str(studio_output)))
+else:
+    toolkit.show_json(
+        {"status": "not-run", "scope": "vllm-studio-live"},
+        title="vLLM Studio live gate",
+    )'''
+    cell = nbformat.v4.new_code_cell(source)
+    cell["id"] = "vllm-studio-live-gate"
+    cell.metadata["tags"] = ["studio", "live-semantic-gate"]
+    return cell
 
 
 def _assert_model_consistency(
@@ -220,12 +289,22 @@ def build(
 
     wheel_sha256 = _sha256(wheel)
     package_dir = output_dir / PACKAGE_STEM
+    if package_dir.exists():
+        shutil.rmtree(package_dir)
     package_dir.mkdir(parents=True, exist_ok=True)
 
     packaged_wheel = package_dir / wheel.name
     shutil.copy2(wheel, packaged_wheel)
     shutil.copy2(SEMANTIC_RUNNER, package_dir / "run_semantic_matrix.py")
     shutil.copy2(SEMANTIC_APPLICATION, package_dir / "semantic_e2e_application.py")
+    for relative in STUDIO_EXPORTS:
+        source = STUDIO / relative
+        target = package_dir / "studio" / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if source.is_dir():
+            shutil.copytree(source, target)
+        else:
+            shutil.copy2(source, target)
     (package_dir / ".env").write_text(
         _dotenv(
             commit=commit,
@@ -253,6 +332,7 @@ def build(
         base_model_id=base_model_id,
     )
     notebook.cells.insert(0, _bootstrap(wheel.name))
+    notebook.cells.append(_studio_cell())
     notebook.metadata.setdefault("agentic_systems", {})["portable_package"] = {
         "filename": f"{PACKAGE_STEM}.zip",
         "model": model_id,
@@ -275,6 +355,12 @@ def build(
         "README.md",
         "run_semantic_matrix.py",
         "semantic_e2e_application.py",
+        *(
+            path.relative_to(package_dir).as_posix()
+            for path in sorted(
+                item for item in (package_dir / "studio").rglob("*") if item.is_file()
+            )
+        ),
     )
     archive_path = output_dir / f"{PACKAGE_STEM}.zip"
     _write_archive(package_dir, package_files, archive_path)

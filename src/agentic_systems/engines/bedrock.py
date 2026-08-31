@@ -36,7 +36,9 @@ class BedrockEngine:
             instructions=agent.instructions,
             model_id=agent.model or self.system.model,
             tool_choice=policy.tool_choice,
-            tool_names=list(agent.tools) or None,
+            # Preserve the agent capability boundary. ``None`` means "all tools"
+            # to BedrockRuntime, while an explicit empty list means "no tools".
+            tool_names=list(agent.tools),
             max_turns=policy.max_turns,
             max_tool_calls=policy.max_tool_calls,
             max_tokens=policy.max_tokens,

@@ -19,6 +19,17 @@ RUNNER = ROOT / "scripts" / "run_live_matrix.py"
 VALIDATOR = ROOT / "scripts" / "validate_live_attestation.py"
 SEMANTIC_RUNNER = ROOT / "scripts" / "run_semantic_matrix.py"
 SEMANTIC_APPLICATION = ROOT / "scripts" / "semantic_e2e_application.py"
+STUDIO = ROOT / "examples" / "agentic_systems_studio"
+STUDIO_EXPORTS = (
+    "README.md",
+    "pyproject.toml",
+    "app.py",
+    ".env.example",
+    "src",
+    "notebooks",
+    "docs",
+    "scripts/validate_conversation_live.py",
+)
 DEFAULT_WHEEL = ROOT / "dist" / "agentic_systems-2.1.0-py3-none-any.whl"
 DEFAULT_OUTPUT = ROOT / "dist"
 PACKAGE_STEM = "agentic-systems-2.1.0-bedrock-iam-final"
@@ -68,7 +79,9 @@ def _readme(*, commit: str, wheel: Path, wheel_sha256: str) -> str:
         3. Abre `bedrock_iam_attestation.ipynb` y ejecuta **Run All**.
         4. Conserva `bedrock-attestation.json`,
            `bedrock-iam-semantic-attestation.json` y
-           `bedrock-iam-semantic-review.md` cuando ambos gates pasen.
+           `bedrock-iam-semantic-review.md` cuando ambos gates pasen. La última
+           celda ejecuta el mismo Studio conversacional validado localmente y
+           genera `bedrock-studio-live.json` con respuestas, Tools, usage y linaje.
 
         El kit no clona GitHub ni contiene credenciales. Pip utiliza la
         configuración del entorno; en ADA puede resolver dependencias desde
@@ -163,11 +176,62 @@ else:
     return cell
 
 
+def _studio_cell() -> nbformat.NotebookNode:
+    source = '''if RUN_BEDROCK_LIVE:
+    studio_root = Path.cwd() / "studio"
+    studio_gate = studio_root / "scripts" / "validate_conversation_live.py"
+    if not studio_gate.is_file():
+        raise FileNotFoundError(studio_gate)
+    subprocess.run(
+        [sys.executable, "-m", "pip", "install", "--no-deps", "-e", str(studio_root)],
+        check=True,
+    )
+    STUDIO_OUTPUT = Path.cwd() / "bedrock-studio-live.json"
+    studio_run = subprocess.run(
+        [
+            sys.executable,
+            str(studio_gate),
+            "--providers",
+            "bedrock-runtime",
+            "--output",
+            str(STUDIO_OUTPUT),
+            "--quiet",
+        ],
+        text=True,
+        capture_output=True,
+    )
+    toolkit.show_json(
+        {
+            "returncode": studio_run.returncode,
+            "stdout": studio_run.stdout,
+            "stderr": studio_run.stderr,
+        },
+        title="Bedrock Studio live gate",
+    )
+    if studio_run.returncode:
+        raise RuntimeError("Bedrock Studio live gate failed")
+    studio_report = json.loads(STUDIO_OUTPUT.read_text(encoding="utf-8"))
+    assert studio_report["ok"] is True
+    from IPython.display import FileLink, display
+
+    display(FileLink(str(STUDIO_OUTPUT)))
+else:
+    toolkit.show_json(
+        {"status": "not-run", "scope": "bedrock-studio-live"},
+        title="Bedrock Studio live gate",
+    )'''
+    cell = nbformat.v4.new_code_cell(source)
+    cell["id"] = "bedrock-studio-live-gate"
+    cell.metadata["tags"] = ["studio", "live-semantic-gate", "iam-contract"]
+    return cell
+
+
 def _packaged_notebook(
     *, commit: str, wheel: Path, wheel_sha256: str
 ) -> nbformat.NotebookNode:
     notebook = nbformat.read(NOTEBOOK, as_version=4)
     notebook.cells.append(_semantic_cell())
+    notebook.cells.append(_studio_cell())
     notebook.metadata.setdefault("agentic_systems", {})["portable_package"] = {
         "commit_sha": commit,
         "wheel_filename": wheel.name,
@@ -202,6 +266,8 @@ def build(*, wheel: Path, commit: str, output_dir: Path) -> Path:
 
     wheel_sha256 = _sha256(wheel)
     package_dir = output_dir / PACKAGE_STEM
+    if package_dir.exists():
+        shutil.rmtree(package_dir)
     package_dir.mkdir(parents=True, exist_ok=True)
     shutil.copy2(wheel, package_dir / wheel.name)
     nbformat.write(
@@ -214,6 +280,14 @@ def build(*, wheel: Path, commit: str, output_dir: Path) -> Path:
     shutil.copy2(VALIDATOR, package_dir / VALIDATOR.name)
     shutil.copy2(SEMANTIC_RUNNER, package_dir / SEMANTIC_RUNNER.name)
     shutil.copy2(SEMANTIC_APPLICATION, package_dir / SEMANTIC_APPLICATION.name)
+    for relative in STUDIO_EXPORTS:
+        source = STUDIO / relative
+        target = package_dir / "studio" / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if source.is_dir():
+            shutil.copytree(source, target)
+        else:
+            shutil.copy2(source, target)
     (package_dir / ".env").write_text(
         _dotenv(commit=commit, wheel=wheel, wheel_sha256=wheel_sha256),
         encoding="utf-8",
@@ -232,6 +306,12 @@ def build(*, wheel: Path, commit: str, output_dir: Path) -> Path:
         VALIDATOR.name,
         SEMANTIC_RUNNER.name,
         SEMANTIC_APPLICATION.name,
+        *(
+            path.relative_to(package_dir).as_posix()
+            for path in sorted(
+                item for item in (package_dir / "studio").rglob("*") if item.is_file()
+            )
+        ),
     )
     output = output_dir / f"{PACKAGE_STEM}.zip"
     _write_archive(package_dir, names, output)

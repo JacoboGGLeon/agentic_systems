@@ -350,6 +350,7 @@ def test_runtime_auto_does_not_treat_region_as_bedrock_credentials(monkeypatch) 
 def test_runtime_auto_describe_reports_unresolved_without_backend_signal(
     monkeypatch,
 ) -> None:
+    monkeypatch.setenv("AGENTIC_SYSTEMS_PROVIDER_PRIORITY", "")
     monkeypatch.setenv("VLLM_BASE_URL", "")
     monkeypatch.setenv("OPENAI_API_KEY", "")
     monkeypatch.setenv("AWS_BEARER_TOKEN_BEDROCK", "")

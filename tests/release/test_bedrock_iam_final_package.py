@@ -39,7 +39,7 @@ def test_final_bedrock_iam_kit_is_portable_and_env_driven(tmp_path: Path) -> Non
     expected_wheel_sha = hashlib.sha256(wheel.read_bytes()).hexdigest()
     with zipfile.ZipFile(archive_path) as archive:
         names = set(archive.namelist())
-        assert names == {
+        assert {
             ".env",
             "bedrock_iam_attestation.ipynb",
             WHEEL_NAME,
@@ -49,7 +49,11 @@ def test_final_bedrock_iam_kit_is_portable_and_env_driven(tmp_path: Path) -> Non
             "run_semantic_matrix.py",
             "semantic_e2e_application.py",
             "SHA256SUMS.txt",
-        }
+            "studio/app.py",
+            "studio/src/agentic_systems_studio/conversation.py",
+            "studio/src/agentic_systems_studio/presentation.py",
+            "studio/scripts/validate_conversation_live.py",
+        } <= names
         dotenv = archive.read(".env").decode()
         assert f"AGENTIC_SYSTEMS_COMMIT_SHA={commit}" in dotenv
         assert f"AGENTIC_SYSTEMS_WHEEL_FILENAME={WHEEL_NAME}" in dotenv
@@ -61,6 +65,13 @@ def test_final_bedrock_iam_kit_is_portable_and_env_driven(tmp_path: Path) -> Non
         assert "RUN_SEMANTIC_MATRIX_LIVE=1" in dotenv
 
         notebook = json.loads(archive.read("bedrock_iam_attestation.ipynb"))
+        notebook_text = json.dumps(notebook)
+        assert "bedrock-studio-live-gate" in notebook_text
+        assert "bedrock-studio-live.json" in notebook_text
+
+        studio_app = archive.read("studio/app.py").decode()
+        assert "processing_mark(result)" in studio_app
+        assert "usage_mark(result)" in studio_app
         code = "\n".join(
             "".join(cell.get("source", ""))
             for cell in notebook["cells"]

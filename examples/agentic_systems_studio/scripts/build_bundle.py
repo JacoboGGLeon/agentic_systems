@@ -97,6 +97,7 @@ def build_bundle(output_dir: str | Path | None = None) -> Path:
             "notebooks",
             "docs",
             "scripts/generate_notebooks.py",
+            "scripts/validate_conversation_live.py",
         ):
             source = PROJECT_ROOT / relative
             if source.exists():

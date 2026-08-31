@@ -41,7 +41,7 @@ def test_final_vllm_kit_derives_identity_from_real_artifacts(tmp_path: Path) -> 
 
     with zipfile.ZipFile(archive_path) as archive:
         names = set(archive.namelist())
-        assert names == {
+        assert {
             ".env",
             "03_vllm_qwen4b_colab_final.ipynb",
             WHEEL_NAME,
@@ -49,7 +49,11 @@ def test_final_vllm_kit_derives_identity_from_real_artifacts(tmp_path: Path) -> 
             "run_semantic_matrix.py",
             "semantic_e2e_application.py",
             "SHA256SUMS.txt",
-        }
+            "studio/app.py",
+            "studio/src/agentic_systems_studio/conversation.py",
+            "studio/src/agentic_systems_studio/presentation.py",
+            "studio/scripts/validate_conversation_live.py",
+        } <= names
         dotenv = archive.read(".env").decode()
         assert f"AGENTIC_SYSTEMS_COMMIT_SHA={commit}" in dotenv
         assert f"AGENTIC_SYSTEMS_WHEEL_FILENAME={WHEEL_NAME}" in dotenv
@@ -73,6 +77,12 @@ def test_final_vllm_kit_derives_identity_from_real_artifacts(tmp_path: Path) -> 
         assert "unsloth/Qwen3-4B-Instruct-2507" in notebook_text
         assert "Qwen/Qwen3-4B-Instruct-2507" in notebook_text
         assert "Qwen3-0.6B" not in notebook_text
+        assert "vllm-studio-live-gate" in notebook_text
+        assert "vllm-studio-live.json" in notebook_text
+
+        studio_app = archive.read("studio/app.py").decode()
+        assert "processing_mark(result)" in studio_app
+        assert "usage_mark(result)" in studio_app
 
         runner = archive.read("run_semantic_matrix.py").decode()
         application = archive.read("semantic_e2e_application.py").decode()
