@@ -79,10 +79,18 @@ def test_final_vllm_kit_derives_identity_from_real_artifacts(tmp_path: Path) -> 
         assert "Qwen3-0.6B" not in notebook_text
         assert "vllm-studio-live-gate" in notebook_text
         assert "vllm-studio-live.json" in notebook_text
+        assert "vllm-studio-colab-launcher" in notebook_text
+        assert "google.colab.kernel.proxyPort" in notebook_text
+        assert "streamlit>=1.37" in notebook_text
         studio_index = next(
             index
             for index, cell in enumerate(notebook["cells"])
             if cell.get("id") == "vllm-studio-live-gate"
+        )
+        launcher_index = next(
+            index
+            for index, cell in enumerate(notebook["cells"])
+            if cell.get("id") == "vllm-studio-colab-launcher"
         )
         teardown_index = next(
             index
@@ -90,10 +98,13 @@ def test_final_vllm_kit_derives_identity_from_real_artifacts(tmp_path: Path) -> 
             if "model-server-teardown"
             in cell.get("metadata", {}).get("tags", [])
         )
-        assert studio_index < teardown_index
-        assert "server.stop()" in "".join(
+        assert studio_index < launcher_index < teardown_index
+        teardown_source = "".join(
             notebook["cells"][teardown_index].get("source", "")
         )
+        assert "def close_studio_and_model_server" in teardown_source
+        assert "server.stop()" in teardown_source
+        assert "Studio remains available until explicit closure." in teardown_source
 
         studio_app = archive.read("studio/app.py").decode()
         assert "processing_mark(result)" in studio_app

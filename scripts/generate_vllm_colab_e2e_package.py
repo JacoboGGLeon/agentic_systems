@@ -103,8 +103,10 @@ def _readme(*, commit: str, wheel: Path, wheel_sha256: str, model_id: str) -> st
         2. Sube `{PACKAGE_STEM}.zip` cuando lo solicite la primera celda.
         3. Ejecuta **Run all** una sola vez.
         4. Descarga `vllm-semantic-attestation.json`, `vllm-semantic-review.md`
-           y `vllm-studio-live.json`. La última celda ejecuta el mismo Studio
-           conversacional usado por OpenAI, Ollama y Bedrock.
+           y `vllm-studio-live.json`.
+        5. El mismo notebook muestra el botón **Open Agentic Systems Studio**;
+           no necesitas abrir un notebook dentro de otro. El ModelServer permanece
+           activo hasta ejecutar `close_studio_and_model_server()`.
 
         Identidad certificable:
 
@@ -235,6 +237,81 @@ else:
     cell.metadata["tags"] = ["studio", "live-semantic-gate"]
     return cell
 
+
+def _studio_launcher_cell() -> nbformat.NotebookNode:
+    source = """import os
+import subprocess
+import sys
+from importlib.util import find_spec
+
+from IPython.display import HTML, display
+from agentic_systems_studio import start_studio_server, studio_button_html
+
+if RUN_VLLM_LIVE:
+    if find_spec("streamlit") is None:
+        subprocess.run(
+            [sys.executable, "-m", "pip", "install", "-q", "streamlit>=1.37"],
+            check=True,
+        )
+    studio_port = int(os.getenv("AGENTIC_SYSTEMS_STUDIO_PORT", "8501"))
+    studio_server = start_studio_server(port=studio_port)
+    try:
+        from google.colab import output as colab_output
+    except ImportError:
+        studio_url = studio_server.local_url
+    else:
+        studio_url = colab_output.eval_js(
+            f"google.colab.kernel.proxyPort({studio_port})"
+        )
+    print("Studio health: ok")
+    print("Studio URL:", studio_url)
+    print("When finished, run: close_studio_and_model_server()")
+    display(HTML(studio_button_html(studio_url)))
+else:
+    toolkit.show_json(
+        {"status": "not-run", "scope": "vllm-studio-ui"},
+        title="vLLM Studio UI",
+    )"""
+    cell = nbformat.v4.new_code_cell(source)
+    cell["id"] = "vllm-studio-colab-launcher"
+    cell.metadata["tags"] = ["studio", "colab-launcher"]
+    return cell
+
+
+def _defer_model_server_teardown(notebook: nbformat.NotebookNode) -> None:
+    teardown_cells = [
+        cell
+        for cell in notebook.cells
+        if "model-server-teardown" in cell.metadata.get("tags", ())
+    ]
+    if len(teardown_cells) != 1:
+        raise ValueError(
+            "expected exactly one tagged ModelServer teardown cell; "
+            f"observed={len(teardown_cells)}"
+        )
+    teardown_cells[0]["source"] = """def close_studio_and_model_server():
+    if not RUN_VLLM_LIVE:
+        return
+    try:
+        if "studio_server" in globals():
+            studio_server.stop()
+    finally:
+        server.stop()
+    toolkit.show_json(
+        {"status": "stopped", "owned_process_only": True},
+        title="Studio and ModelServer closure",
+    )
+
+
+if RUN_VLLM_LIVE:
+    toolkit.show_json(
+        {
+            "status": "running",
+            "reason": "Studio remains available until explicit closure.",
+            "close_with": "close_studio_and_model_server()",
+        },
+        title="Studio lifecycle",
+    )"""
 
 def _insert_before_model_server_teardown(
     notebook: nbformat.NotebookNode,
@@ -371,6 +448,8 @@ def build(
     )
     notebook.cells.insert(0, _bootstrap(wheel.name))
     _insert_before_model_server_teardown(notebook, _studio_cell())
+    _insert_before_model_server_teardown(notebook, _studio_launcher_cell())
+    _defer_model_server_teardown(notebook)
     notebook.metadata.setdefault("agentic_systems", {})["portable_package"] = {
         "filename": f"{PACKAGE_STEM}.zip",
         "model": model_id,
