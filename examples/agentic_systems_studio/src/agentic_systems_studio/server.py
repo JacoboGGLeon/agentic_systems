@@ -251,7 +251,7 @@ def colab_proxy_button_script(
     path: str = "/",
     label: str = "Open Agentic Systems Studio",
 ) -> str:
-    """Build the safe Colab JavaScript that renders a proxied HTML button."""
+    """Build Colab JavaScript for a user-initiated proxied Studio window."""
 
     if port < 1 or port > 65535:
         raise ValueError("port must be between 1 and 65535")
@@ -264,29 +264,57 @@ def colab_proxy_button_script(
         )
     )
     return (
-        """(async (port, path, label, element) => {
-  if (!google.colab.kernel.accessAllowed) {
-    element.textContent = 'Colab kernel-port access is not allowed.';
-    return;
-  }
+        """((port, path, label, element) => {
   element.appendChild(document.createTextNode(''));
-  const baseUrl = await google.colab.kernel.proxyPort(port);
-  const anchor = document.createElement('a');
-  anchor.href = new URL(path, baseUrl).toString();
-  anchor.target = '_blank';
-  anchor.rel = 'noopener noreferrer';
-  anchor.textContent = label;
-  anchor.style.cssText = [
+
+  const container = document.createElement('div');
+  const button = document.createElement('button');
+  const status = document.createElement('span');
+
+  button.type = 'button';
+  button.textContent = label;
+  button.style.cssText = [
     'display:inline-block',
     'padding:11px 18px',
+    'border:0',
     'border-radius:9px',
     'background:#ff4b4b',
     'color:white',
-    'text-decoration:none',
+    'cursor:pointer',
     'font-weight:700',
-    'margin:8px 0'
+    'margin:8px 10px 8px 0'
   ].join(';');
-  element.appendChild(anchor);
+  status.style.cssText = 'font-family:system-ui,sans-serif;color:#68707c';
+
+  button.addEventListener('click', async () => {
+    button.disabled = true;
+    status.textContent = ' Resolving the authenticated Colab proxy...';
+
+    // Open synchronously from the click so browser popup protection permits it.
+    const studioWindow = window.open('about:blank', '_blank');
+    if (!studioWindow) {
+      button.disabled = false;
+      status.textContent = ' The browser blocked the new tab; allow popups and retry.';
+      return;
+    }
+
+    try {
+      const baseUrl = await google.colab.kernel.proxyPort(port);
+      const studioUrl = new URL(path, baseUrl).toString();
+      studioWindow.location.replace(studioUrl);
+      studioWindow.opener = null;
+      status.textContent = ' Studio opened in a new tab.';
+    } catch (error) {
+      studioWindow.close();
+      button.disabled = false;
+      status.textContent = ' Colab could not authorize the kernel-port proxy.';
+      console.error('Agentic Systems Studio proxy failure', error);
+    }
+  });
+
+  container.appendChild(button);
+  container.appendChild(status);
+  element.appendChild(container);
 })"""
         + f"({arguments})"
     )

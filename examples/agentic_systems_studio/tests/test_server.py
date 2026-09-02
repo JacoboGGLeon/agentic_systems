@@ -119,9 +119,11 @@ def test_colab_transport_renders_proxy_button_that_opens_a_new_tab(
 
     script = colab_proxy_button_script(8501)
     assert "google.colab.kernel.proxyPort(port)" in script
-    assert "document.createElement('a')" in script
-    assert "anchor.target = '_blank'" in script
-    assert "noopener noreferrer" in script
+    assert "document.createElement('button')" in script
+    assert "button.addEventListener('click'" in script
+    assert "window.open('about:blank', '_blank')" in script
+    assert "studioWindow.location.replace(studioUrl)" in script
+    assert "accessAllowed" not in script
     assert "iframe" not in script.lower()
 
 
