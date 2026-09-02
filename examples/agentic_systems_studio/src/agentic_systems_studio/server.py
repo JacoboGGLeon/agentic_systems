@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import errno
 import html
+import json
 import os
 import signal
 import subprocess
@@ -244,20 +245,78 @@ def _colab_output() -> Any | None:
     return colab_output
 
 
+def colab_proxy_button_script(
+    port: int,
+    *,
+    path: str = "/",
+    label: str = "Open Agentic Systems Studio",
+) -> str:
+    """Build the safe Colab JavaScript that renders a proxied HTML button."""
+
+    if port < 1 or port > 65535:
+        raise ValueError("port must be between 1 and 65535")
+    arguments = ", ".join(
+        (
+            str(port),
+            json.dumps(path),
+            json.dumps(label),
+            "window.element",
+        )
+    )
+    return (
+        """(async (port, path, label, element) => {
+  if (!google.colab.kernel.accessAllowed) {
+    element.textContent = 'Colab kernel-port access is not allowed.';
+    return;
+  }
+  element.appendChild(document.createTextNode(''));
+  const baseUrl = await google.colab.kernel.proxyPort(port);
+  const anchor = document.createElement('a');
+  anchor.href = new URL(path, baseUrl).toString();
+  anchor.target = '_blank';
+  anchor.rel = 'noopener noreferrer';
+  anchor.textContent = label;
+  anchor.style.cssText = [
+    'display:inline-block',
+    'padding:11px 18px',
+    'border-radius:9px',
+    'background:#ff4b4b',
+    'color:white',
+    'text-decoration:none',
+    'font-weight:700',
+    'margin:8px 0'
+  ].join(';');
+  element.appendChild(anchor);
+})"""
+        + f"({arguments})"
+    )
+
+
+def _display_colab_proxy_button(
+    port: int,
+    *,
+    path: str = "/",
+    label: str = "Open Agentic Systems Studio",
+) -> Any:
+    from IPython.display import Javascript, display
+
+    return display(Javascript(colab_proxy_button_script(port, path=path, label=label)))
+
+
 def present_studio_server(
     server: StudioServer,
     *,
     transport: StudioTransport = "auto",
     proxy_prefix: str | None = None,
-    width: str = "100%",
-    height: int = 900,
+    label: str = "Open Agentic Systems Studio",
 ) -> StudioPresentation:
     """Present one running Streamlit Studio through the current notebook host.
 
     Provider and framework selection never influence this decision. Auto only
-    detects the presentation host: Colab uses its authenticated kernel-port proxy,
-    Jupyter/SageMaker exposes the configured proxy URL, and a local process exposes
-    the loopback URL. Notebook-native Studio remains a separate explicit adapter.
+    detects the presentation host: Colab renders a proxied HTML button that opens
+    Studio in a new tab, Jupyter/SageMaker exposes the configured proxy URL, and a
+    local process exposes the loopback URL. Notebook-native Studio remains a
+    separate explicit adapter.
     """
 
     if transport not in {"auto", "colab-proxy", "jupyter-proxy", "local"}:
@@ -283,11 +342,10 @@ def present_studio_server(
             raise RuntimeError(
                 "The colab-proxy transport requires google.colab.output."
             )
-        displayed = colab_output.serve_kernel_port_as_iframe(
+        displayed = _display_colab_proxy_button(
             server.port,
             path="/",
-            width=width,
-            height=height,
+            label=label,
         )
         return StudioPresentation(
             server=server,
@@ -310,7 +368,7 @@ def present_studio_server(
                 label=(
                     "Open Agentic Systems Studio through Jupyter proxy"
                     if proxy_url
-                    else "Open Agentic Systems Studio"
+                    else label
                 ),
                 alternate_url=(server.local_url if proxy_url else None),
                 alternate_label="Open directly on this host",
@@ -336,8 +394,7 @@ def launch_studio(
     stop_previous: bool = True,
     transport: StudioTransport = "auto",
     proxy_prefix: str | None = None,
-    width: str = "100%",
-    height: int = 900,
+    label: str = "Open Agentic Systems Studio",
 ) -> StudioPresentation:
     """Start Streamlit and present it through an explicit host transport."""
 
@@ -354,8 +411,7 @@ def launch_studio(
             server,
             transport=transport,
             proxy_prefix=proxy_prefix,
-            width=width,
-            height=height,
+            label=label,
         )
     except Exception:
         server.stop()
@@ -402,6 +458,7 @@ __all__ = [
     "StudioPresentation",
     "StudioServer",
     "StudioTransport",
+    "colab_proxy_button_script",
     "launch_studio",
     "present_studio_server",
     "resolve_studio_app",

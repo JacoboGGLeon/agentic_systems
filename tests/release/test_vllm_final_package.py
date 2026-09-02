@@ -128,7 +128,9 @@ def test_final_vllm_kit_derives_identity_from_real_artifacts(tmp_path: Path) -> 
         studio_server = archive.read(
             "studio/src/agentic_systems_studio/server.py"
         ).decode()
-        assert "serve_kernel_port_as_iframe" in studio_server
+        assert "google.colab.kernel.proxyPort(port)" in studio_server
+        assert "document.createElement('a')" in studio_server
+        assert "serve_kernel_port_as_iframe" not in studio_server
         assert "def launch_studio(" in studio_server
         assert "Provider and framework selection never influence" in studio_server
 

@@ -119,7 +119,8 @@ def _readme(
         4. Descarga `vllm-semantic-attestation.json`, `vllm-semantic-review.md`
            y `vllm-studio-live.json`.
         5. Colab renderiza **Agentic Systems Studio** en Streamlit mediante el
-           proxy autenticado del puerto del kernel. La UI notebook-native queda
+           proxy autenticado del puerto del kernel; muestra un botón HTML que abre
+           Studio en una pestaña nueva. La UI notebook-native queda
            disponible sólo como alternativa explícita configurando
            AGENTIC_SYSTEMS_STUDIO_PRESENTATION=notebook; ambas presentaciones
            ejecutan el mismo ConversationalStudio, RunResult, lineage y usage.
@@ -297,12 +298,12 @@ if RUN_VLLM_LIVE:
             host=studio_host,
             port=studio_port,
             transport=studio_transport,
-            height=900,
         )
         studio_server = studio_presentation.server
         print(
             "Studio presentation: Streamlit via "
             + studio_presentation.transport
+            + " (HTML button opens a new tab)"
         )
         print("Studio health: ok")
     elif studio_mode == "notebook":

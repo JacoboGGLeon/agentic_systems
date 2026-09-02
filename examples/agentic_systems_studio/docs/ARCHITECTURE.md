@@ -22,8 +22,9 @@ configured route or editing `.env` when the runtime contract itself changes.
 
 Streamlit and the notebook widget call the same ConversationalStudio.run()
 method and render the same normalized RunResult, lineage, processing and usage
-projections. The host capability changes only transport: Colab uses its
-authenticated kernel-port proxy, ADA/JupyterLab uses its platform proxy path and
+projections. The host capability changes only transport: Colab renders an HTML
+button backed by its authenticated kernel-port proxy and opens Studio in a new
+tab; ADA/JupyterLab uses its platform proxy path and
 local execution uses loopback. Notebook-native presentation is an explicit
 alternative, never a provider-specific branch or silent fallback.
 No credential, model cache, conversation database or live evidence is embedded

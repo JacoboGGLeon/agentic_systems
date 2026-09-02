@@ -8,6 +8,7 @@ from agentic_systems_studio import studio_button_html, studio_proxy_url
 from agentic_systems_studio.server import (
     DEFAULT_HOST,
     StudioServer,
+    colab_proxy_button_script,
     present_studio_server,
     resolve_studio_app,
     stop_recorded_studio,
@@ -80,15 +81,10 @@ def test_launch_notebook_uses_public_launcher_and_proxy_button():
     assert "cli_equivalent" not in metadata
 
 
-def test_colab_transport_uses_authenticated_kernel_port_proxy(monkeypatch, tmp_path):
+def test_colab_transport_renders_proxy_button_that_opens_a_new_tab(
+    monkeypatch, tmp_path
+):
     calls = []
-
-    class FakeColabOutput:
-        @staticmethod
-        def serve_kernel_port_as_iframe(port, **kwargs):
-            calls.append({"port": port, **kwargs})
-            return "iframe-result"
-
     server = StudioServer(
         process=SimpleNamespace(),
         app_path=tmp_path / "app.py",
@@ -99,22 +95,34 @@ def test_colab_transport_uses_authenticated_kernel_port_proxy(monkeypatch, tmp_p
     )
     monkeypatch.setattr(
         "agentic_systems_studio.server._colab_output",
-        lambda: FakeColabOutput,
+        lambda: SimpleNamespace(),
+    )
+    monkeypatch.setattr(
+        "agentic_systems_studio.server._display_colab_proxy_button",
+        lambda port, **kwargs: (
+            calls.append({"port": port, **kwargs}) or "button-result"
+        ),
     )
 
-    presentation = present_studio_server(server, transport="auto", height=720)
+    presentation = present_studio_server(server, transport="auto")
 
     assert presentation.server is server
     assert presentation.transport == "colab-proxy"
-    assert presentation.display_result == "iframe-result"
+    assert presentation.display_result == "button-result"
     assert calls == [
         {
             "port": 8501,
             "path": "/",
-            "width": "100%",
-            "height": 720,
+            "label": "Open Agentic Systems Studio",
         }
     ]
+
+    script = colab_proxy_button_script(8501)
+    assert "google.colab.kernel.proxyPort(port)" in script
+    assert "document.createElement('a')" in script
+    assert "anchor.target = '_blank'" in script
+    assert "noopener noreferrer" in script
+    assert "iframe" not in script.lower()
 
 
 def test_explicit_colab_transport_fails_without_colab_instead_of_falling_back(
