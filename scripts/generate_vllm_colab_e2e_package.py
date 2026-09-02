@@ -55,6 +55,7 @@ def _git_commit() -> str:
 def _dotenv(
     *,
     commit: str,
+    application_commit: str,
     wheel: Path,
     wheel_sha256: str,
     model_id: str,
@@ -65,6 +66,7 @@ def _dotenv(
         RUN_VLLM_LIVE=1
 
         AGENTIC_SYSTEMS_COMMIT_SHA={commit}
+        AGENTIC_SYSTEMS_APPLICATION_COMMIT_SHA={application_commit}
         AGENTIC_SYSTEMS_WHEEL=/content/{wheel.name}
         AGENTIC_SYSTEMS_WHEEL_FILENAME={wheel.name}
         AGENTIC_SYSTEMS_WHEEL_SHA256={wheel_sha256}
@@ -85,6 +87,11 @@ def _dotenv(
         VLLM_MAX_MODEL_LEN=8192
         VLLM_MAX_NUM_SEQS=2
 
+        AGENTIC_SYSTEMS_STUDIO_PRESENTATION=streamlit
+        AGENTIC_SYSTEMS_STUDIO_TRANSPORT=colab-proxy
+        AGENTIC_SYSTEMS_STUDIO_HOST=127.0.0.1
+        AGENTIC_SYSTEMS_STUDIO_PORT=8501
+
         AGENTIC_SYSTEMS_PROVIDER=vllm-runtime
         AGENTIC_SYSTEMS_FRAMEWORK=native
         AGENTIC_SYSTEMS_PROVIDER_PRIORITY=vllm-runtime
@@ -94,7 +101,14 @@ def _dotenv(
     )
 
 
-def _readme(*, commit: str, wheel: Path, wheel_sha256: str, model_id: str) -> str:
+def _readme(
+    *,
+    commit: str,
+    application_commit: str,
+    wheel: Path,
+    wheel_sha256: str,
+    model_id: str,
+) -> str:
     return textwrap.dedent(
         f"""\
         # Agentic Systems 2.1.1 · vLLM/Qwen 4B final live kit
@@ -104,16 +118,18 @@ def _readme(*, commit: str, wheel: Path, wheel_sha256: str, model_id: str) -> st
         3. Ejecuta **Run all** una sola vez.
         4. Descarga `vllm-semantic-attestation.json`, `vllm-semantic-review.md`
            y `vllm-studio-live.json`.
-        5. Colab renderiza **Agentic Systems Studio** con widgets nativos del
-           notebook porque su proxy no transporta el WebSocket requerido por
-           Streamlit. Se ejecuta el mismo ConversationalStudio, RunResult, lineage
-           y usage; sólo cambia el adaptador de presentación. El ModelServer
-           permanece activo hasta ejecutar
-           `close_studio_and_model_server()`.
+        5. Colab renderiza **Agentic Systems Studio** en Streamlit mediante el
+           proxy autenticado del puerto del kernel. La UI notebook-native queda
+           disponible sólo como alternativa explícita configurando
+           AGENTIC_SYSTEMS_STUDIO_PRESENTATION=notebook; ambas presentaciones
+           ejecutan el mismo ConversationalStudio, RunResult, lineage y usage.
+           El ModelServer permanece activo hasta ejecutar
+           close_studio_and_model_server().
 
         Identidad certificable:
 
-        - Commit: `{commit}`
+        - Wheel commit: `{commit}`
+        - Studio application commit: `{application_commit}`
         - Wheel: `{wheel.name}`
         - SHA256: `{wheel_sha256}`
         - Model: `{model_id}`
@@ -248,8 +264,6 @@ import sys
 from importlib.util import find_spec
 from pathlib import Path
 
-from IPython.display import HTML, display
-
 if RUN_VLLM_LIVE:
     studio_root = Path("/content/studio")
     studio_source = studio_root / "src"
@@ -262,24 +276,42 @@ if RUN_VLLM_LIVE:
     studio_source_text = str(studio_source)
     if studio_source_text not in sys.path:
         sys.path.insert(0, studio_source_text)
-    try:
-        from google.colab import output as colab_output
-    except ImportError:
+
+    studio_mode = os.getenv(
+        "AGENTIC_SYSTEMS_STUDIO_PRESENTATION", "streamlit"
+    ).strip().lower()
+    if studio_mode == "streamlit":
         if find_spec("streamlit") is None:
             subprocess.run(
                 [sys.executable, "-m", "pip", "install", "-q", "streamlit>=1.37"],
                 check=True,
             )
-        from agentic_systems_studio import start_studio_server, studio_button_html
+        from agentic_systems_studio import launch_studio
 
         studio_port = int(os.getenv("AGENTIC_SYSTEMS_STUDIO_PORT", "8501"))
-        studio_server = start_studio_server(port=studio_port)
-        studio_url = studio_server.local_url
-        print("Studio presentation: Streamlit")
-        print("Studio URL:", studio_url)
-        display(HTML(studio_button_html(studio_url)))
-    else:
-        colab_output.enable_custom_widget_manager()
+        studio_host = os.getenv("AGENTIC_SYSTEMS_STUDIO_HOST", "127.0.0.1")
+        studio_transport = os.getenv(
+            "AGENTIC_SYSTEMS_STUDIO_TRANSPORT", "auto"
+        )
+        studio_presentation = launch_studio(
+            host=studio_host,
+            port=studio_port,
+            transport=studio_transport,
+            height=900,
+        )
+        studio_server = studio_presentation.server
+        print(
+            "Studio presentation: Streamlit via "
+            + studio_presentation.transport
+        )
+        print("Studio health: ok")
+    elif studio_mode == "notebook":
+        try:
+            from google.colab import output as colab_output
+        except ImportError:
+            colab_output = None
+        if colab_output is not None:
+            colab_output.enable_custom_widget_manager()
         if find_spec("ipywidgets") is None:
             subprocess.run(
                 [sys.executable, "-m", "pip", "install", "-q", "ipywidgets>=8.1"],
@@ -288,7 +320,12 @@ if RUN_VLLM_LIVE:
         from agentic_systems_studio import display_notebook_studio
 
         studio_view = display_notebook_studio()
-        print("Studio presentation: notebook-native (Colab WebSocket-safe)")
+        print("Studio presentation: notebook-native (explicit)")
+    else:
+        raise ValueError(
+            "AGENTIC_SYSTEMS_STUDIO_PRESENTATION must be streamlit or notebook; "
+            f"observed {studio_mode!r}."
+        )
     print("When finished, run: close_studio_and_model_server()")
 else:
     toolkit.show_json(
@@ -415,6 +452,7 @@ def build(
     *,
     wheel: Path,
     commit: str,
+    application_commit: str,
     output_dir: Path,
     model_id: str = DEFAULT_MODEL_ID,
     base_model_id: str = DEFAULT_BASE_MODEL_ID,
@@ -425,6 +463,8 @@ def build(
         raise FileNotFoundError(wheel)
     if len(commit) != 40:
         raise ValueError("commit must be the full 40-character Git SHA")
+    if len(application_commit) != 40:
+        raise ValueError("application_commit must be the full 40-character Git SHA")
 
     wheel_sha256 = _sha256(wheel)
     package_dir = output_dir / PACKAGE_STEM
@@ -447,6 +487,7 @@ def build(
     (package_dir / ".env").write_text(
         _dotenv(
             commit=commit,
+            application_commit=application_commit,
             wheel=wheel,
             wheel_sha256=wheel_sha256,
             model_id=model_id,
@@ -457,6 +498,7 @@ def build(
     (package_dir / "README.md").write_text(
         _readme(
             commit=commit,
+            application_commit=application_commit,
             wheel=wheel,
             wheel_sha256=wheel_sha256,
             model_id=model_id,
@@ -479,6 +521,7 @@ def build(
         "model": model_id,
         "base_model": base_model_id,
         "commit_sha": commit,
+        "application_commit_sha": application_commit,
         "wheel_filename": wheel.name,
         "wheel_sha256": wheel_sha256,
     }
@@ -508,6 +551,7 @@ def build(
     print(
         f"{archive_path}\n"
         f"commit={commit}\n"
+        f"application_commit={application_commit}\n"
         f"wheel={wheel.name}\n"
         f"wheel_sha256={wheel_sha256}\n"
         f"package_sha256={_sha256(archive_path)}"
@@ -519,6 +563,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--wheel", type=Path, default=DEFAULT_WHEEL)
     parser.add_argument("--commit", default=None)
+    parser.add_argument("--application-commit", default=None)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--model", default=DEFAULT_MODEL_ID)
     parser.add_argument("--base-model", default=DEFAULT_BASE_MODEL_ID)
@@ -526,6 +571,7 @@ def main() -> None:
     build(
         wheel=args.wheel,
         commit=args.commit or _git_commit(),
+        application_commit=args.application_commit or _git_commit(),
         output_dir=args.output_dir,
         model_id=args.model,
         base_model_id=args.base_model,

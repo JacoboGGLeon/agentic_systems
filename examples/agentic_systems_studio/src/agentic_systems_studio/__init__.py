@@ -20,7 +20,10 @@ from .notebook import (
 )
 from .scaffolder import ScaffoldReport, scaffold_application
 from .server import (
+    StudioPresentation,
     StudioServer,
+    launch_studio,
+    present_studio_server,
     serve_studio,
     start_studio_server,
     studio_button_html,
@@ -50,6 +53,7 @@ __all__ = [
     "StudioConfig",
     "StudioStore",
     "StudioSystem",
+    "StudioPresentation",
     "SystemSpec",
     "build_all",
     "build_conversational_system",
@@ -60,6 +64,8 @@ __all__ = [
     "find_studio_environment",
     "get_system_spec",
     "load_studio_environment",
+    "launch_studio",
+    "present_studio_server",
     "prepare_conversation_context",
     "safe_calculate",
     "scaffold_application",

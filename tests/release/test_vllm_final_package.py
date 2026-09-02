@@ -18,6 +18,7 @@ def test_final_vllm_kit_derives_identity_from_real_artifacts(tmp_path: Path) -> 
     wheel = tmp_path / WHEEL_NAME
     wheel.write_bytes(b"certified-wheel")
     commit = "a" * 40
+    application_commit = "b" * 40
     subprocess.run(
         [
             sys.executable,
@@ -26,6 +27,8 @@ def test_final_vllm_kit_derives_identity_from_real_artifacts(tmp_path: Path) -> 
             str(wheel),
             "--commit",
             commit,
+            "--application-commit",
+            application_commit,
             "--output-dir",
             str(tmp_path),
         ],
@@ -57,6 +60,7 @@ def test_final_vllm_kit_derives_identity_from_real_artifacts(tmp_path: Path) -> 
         } <= names
         dotenv = archive.read(".env").decode()
         assert f"AGENTIC_SYSTEMS_COMMIT_SHA={commit}" in dotenv
+        assert f"AGENTIC_SYSTEMS_APPLICATION_COMMIT_SHA={application_commit}" in dotenv
         assert f"AGENTIC_SYSTEMS_WHEEL_FILENAME={WHEEL_NAME}" in dotenv
         assert f"AGENTIC_SYSTEMS_WHEEL_SHA256={expected_wheel_sha}" in dotenv
         assert f"AGENTIC_SYSTEMS_WHEEL=/content/{WHEEL_NAME}" in dotenv
@@ -67,10 +71,14 @@ def test_final_vllm_kit_derives_identity_from_real_artifacts(tmp_path: Path) -> 
         assert "VLLM_PROFILE=custom" in dotenv
         assert "VLLM_GPU_MEMORY_UTILIZATION=0.75" in dotenv
         assert "VLLM_MAX_NUM_SEQS=2" in dotenv
+        assert "AGENTIC_SYSTEMS_STUDIO_PRESENTATION=streamlit" in dotenv
+        assert "AGENTIC_SYSTEMS_STUDIO_TRANSPORT=colab-proxy" in dotenv
+        assert "AGENTIC_SYSTEMS_STUDIO_PORT=8501" in dotenv
 
         notebook = json.loads(archive.read("03_vllm_qwen4b_colab_final.ipynb"))
         metadata = notebook["metadata"]["agentic_systems"]["portable_package"]
         assert metadata["commit_sha"] == commit
+        assert metadata["application_commit_sha"] == application_commit
         assert metadata["wheel_sha256"] == expected_wheel_sha
         assert metadata["model"] == "unsloth/Qwen3-4B-Instruct-2507"
         assert metadata["base_model"] == "Qwen/Qwen3-4B-Instruct-2507"
@@ -81,11 +89,11 @@ def test_final_vllm_kit_derives_identity_from_real_artifacts(tmp_path: Path) -> 
         assert "vllm-studio-live-gate" in notebook_text
         assert "vllm-studio-live.json" in notebook_text
         assert "vllm-studio-colab-launcher" in notebook_text
+        assert "launch_studio" in notebook_text
+        assert "AGENTIC_SYSTEMS_STUDIO_PRESENTATION" in notebook_text
+        assert "AGENTIC_SYSTEMS_STUDIO_TRANSPORT" in notebook_text
         assert "display_notebook_studio" in notebook_text
-        assert "enable_custom_widget_manager" in notebook_text
-        assert "ipywidgets>=8.1" in notebook_text
-        assert "serve_kernel_port_as_iframe" not in notebook_text
-        assert "google.colab.kernel.proxyPort" not in notebook_text
+        assert "notebook-native (explicit)" in notebook_text
         assert "streamlit>=1.37" in notebook_text
         studio_index = next(
             index
@@ -117,6 +125,12 @@ def test_final_vllm_kit_derives_identity_from_real_artifacts(tmp_path: Path) -> 
         studio_app = archive.read("studio/app.py").decode()
         assert "processing_mark(result)" in studio_app
         assert "usage_mark(result)" in studio_app
+        studio_server = archive.read(
+            "studio/src/agentic_systems_studio/server.py"
+        ).decode()
+        assert "serve_kernel_port_as_iframe" in studio_server
+        assert "def launch_studio(" in studio_server
+        assert "Provider and framework selection never influence" in studio_server
 
         runner = archive.read("run_semantic_matrix.py").decode()
         application = archive.read("semantic_e2e_application.py").decode()

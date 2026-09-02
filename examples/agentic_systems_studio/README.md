@@ -4,11 +4,11 @@ Studio is one conversational Agentic System with one direct execution path and
 two equivalent presentation adapters:
 
 - `notebooks/00_conversational_system.ipynb` runs the system directly;
-- `app.py` presents that system through Streamlit on hosts with WebSocket
-  proxying, including local, SageMaker and ADA;
-- `display_notebook_studio()` presents the same system through Jupyter widgets
-  on Colab, whose kernel proxy does not transport Streamlit's WebSocket.
-
+- app.py presents that system through Streamlit on local, SageMaker, ADA and
+  Colab; launch_studio() selects only the host transport (direct,
+  Jupyter/SageMaker proxy or authenticated Colab kernel-port proxy);
+- display_notebook_studio() presents the same system through Jupyter widgets
+  only when notebook-native presentation is selected explicitly.
 Both presentation adapters call `ConversationalStudio.run()`; neither
 reimplements the agentic logic or exposes a public tunnel.
 
@@ -98,11 +98,12 @@ Open `notebooks/01_launch_studio.ipynb` and run both cells on local,
 SageMaker or ADA. The launcher binds Streamlit to loopback, checks health and
 provides both the local URL and the ADA/JupyterLab proxy URL.
 
-The vLLM Colab release notebook detects Colab and calls
-`display_notebook_studio()` instead. Its provider/framework selectors,
-conversation history, normalized RunResult, processing mark and usage come from
-the same application API without depending on an unsupported WebSocket proxy.
-
+The vLLM Colab release notebook starts the same Streamlit application and
+presents it through Colab's authenticated kernel-port proxy. This is a
+presentation concern only: provider/framework selectors, conversation history,
+normalized RunResult, processing mark and usage come from the same application
+API. Set AGENTIC_SYSTEMS_STUDIO_PRESENTATION=notebook only to request the
+notebook-native adapter explicitly; there is no silent UI fallback.
 Studio discovers the routes configured by the canonical `.env` and managed host
 environment. The sidebar can select any discovered Provider and any installed
 Framework for the current session; credentials are never entered, copied or

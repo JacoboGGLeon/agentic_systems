@@ -13,11 +13,13 @@ import urllib.request
 import webbrowser
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any, Literal
 
 
 DEFAULT_HOST = "127.0.0.1"
 DEFAULT_PORT = 8501
 DEFAULT_PROXY_PREFIX = "/jupyterlab/default/proxy"
+StudioTransport = Literal["auto", "colab-proxy", "jupyter-proxy", "local"]
 
 
 @dataclass(slots=True)
@@ -48,6 +50,21 @@ class StudioServer:
             recorded = self.pid_path.read_text(encoding="utf-8").strip()
             if recorded == str(self.process.pid):
                 self.pid_path.unlink()
+
+
+@dataclass(slots=True)
+class StudioPresentation:
+    """A running Studio plus the host transport used to present it."""
+
+    server: StudioServer
+    transport: str
+    local_url: str
+    proxy_url: str | None = None
+    display_result: Any | None = None
+
+    @property
+    def url(self) -> str:
+        return self.proxy_url or self.local_url
 
 
 def resolve_studio_app(app_path: str | Path | None = None) -> Path:
@@ -217,6 +234,134 @@ def studio_button_html(
     )
 
 
+def _colab_output() -> Any | None:
+    """Return Colab's public notebook-output module on a Colab host."""
+
+    try:
+        from google.colab import output as colab_output
+    except ImportError:
+        return None
+    return colab_output
+
+
+def present_studio_server(
+    server: StudioServer,
+    *,
+    transport: StudioTransport = "auto",
+    proxy_prefix: str | None = None,
+    width: str = "100%",
+    height: int = 900,
+) -> StudioPresentation:
+    """Present one running Streamlit Studio through the current notebook host.
+
+    Provider and framework selection never influence this decision. Auto only
+    detects the presentation host: Colab uses its authenticated kernel-port proxy,
+    Jupyter/SageMaker exposes the configured proxy URL, and a local process exposes
+    the loopback URL. Notebook-native Studio remains a separate explicit adapter.
+    """
+
+    if transport not in {"auto", "colab-proxy", "jupyter-proxy", "local"}:
+        raise ValueError(
+            "Unknown Studio transport "
+            f"{transport!r}; use auto, colab-proxy, jupyter-proxy or local."
+        )
+
+    colab_output = _colab_output()
+    selected = transport
+    if selected == "auto":
+        if colab_output is not None:
+            selected = "colab-proxy"
+        elif os.getenv("JUPYTERHUB_SERVICE_PREFIX") or os.getenv(
+            "AGENTIC_STUDIO_PROXY_PREFIX"
+        ):
+            selected = "jupyter-proxy"
+        else:
+            selected = "local"
+
+    if selected == "colab-proxy":
+        if colab_output is None:
+            raise RuntimeError(
+                "The colab-proxy transport requires google.colab.output."
+            )
+        displayed = colab_output.serve_kernel_port_as_iframe(
+            server.port,
+            path="/",
+            width=width,
+            height=height,
+        )
+        return StudioPresentation(
+            server=server,
+            transport=selected,
+            local_url=server.local_url,
+            display_result=displayed,
+        )
+
+    from IPython.display import HTML, display
+
+    proxy_url = (
+        studio_proxy_url(server.port, prefix=proxy_prefix)
+        if selected == "jupyter-proxy"
+        else None
+    )
+    displayed = display(
+        HTML(
+            studio_button_html(
+                proxy_url or server.local_url,
+                label=(
+                    "Open Agentic Systems Studio through Jupyter proxy"
+                    if proxy_url
+                    else "Open Agentic Systems Studio"
+                ),
+                alternate_url=(server.local_url if proxy_url else None),
+                alternate_label="Open directly on this host",
+            )
+        )
+    )
+    return StudioPresentation(
+        server=server,
+        transport=selected,
+        local_url=server.local_url,
+        proxy_url=proxy_url,
+        display_result=displayed,
+    )
+
+
+def launch_studio(
+    *,
+    app_path: str | Path | None = None,
+    host: str = DEFAULT_HOST,
+    port: int = DEFAULT_PORT,
+    log_dir: str | Path | None = None,
+    timeout_s: float = 60.0,
+    stop_previous: bool = True,
+    transport: StudioTransport = "auto",
+    proxy_prefix: str | None = None,
+    width: str = "100%",
+    height: int = 900,
+) -> StudioPresentation:
+    """Start Streamlit and present it through an explicit host transport."""
+
+    server = start_studio_server(
+        app_path=app_path,
+        host=host,
+        port=port,
+        log_dir=log_dir,
+        timeout_s=timeout_s,
+        stop_previous=stop_previous,
+    )
+    try:
+        return present_studio_server(
+            server,
+            transport=transport,
+            proxy_prefix=proxy_prefix,
+            width=width,
+            height=height,
+        )
+    except Exception:
+        server.stop()
+        raise
+
+
 def serve_studio(
     *,
     app_path: str | Path | None = None,
@@ -254,7 +399,11 @@ __all__ = [
     "DEFAULT_HOST",
     "DEFAULT_PORT",
     "DEFAULT_PROXY_PREFIX",
+    "StudioPresentation",
     "StudioServer",
+    "StudioTransport",
+    "launch_studio",
+    "present_studio_server",
     "resolve_studio_app",
     "serve_studio",
     "start_studio_server",

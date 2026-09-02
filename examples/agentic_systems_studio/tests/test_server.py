@@ -2,10 +2,13 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from types import SimpleNamespace
 
 from agentic_systems_studio import studio_button_html, studio_proxy_url
 from agentic_systems_studio.server import (
     DEFAULT_HOST,
+    StudioServer,
+    present_studio_server,
     resolve_studio_app,
     stop_recorded_studio,
     streamlit_command,
@@ -75,3 +78,59 @@ def test_launch_notebook_uses_public_launcher_and_proxy_button():
     assert metadata["entrypoint"] == "streamlit"
     assert metadata["configuration"] == ".env"
     assert "cli_equivalent" not in metadata
+
+
+def test_colab_transport_uses_authenticated_kernel_port_proxy(monkeypatch, tmp_path):
+    calls = []
+
+    class FakeColabOutput:
+        @staticmethod
+        def serve_kernel_port_as_iframe(port, **kwargs):
+            calls.append({"port": port, **kwargs})
+            return "iframe-result"
+
+    server = StudioServer(
+        process=SimpleNamespace(),
+        app_path=tmp_path / "app.py",
+        log_path=tmp_path / "streamlit.log",
+        pid_path=tmp_path / "streamlit.pid",
+        host="127.0.0.1",
+        port=8501,
+    )
+    monkeypatch.setattr(
+        "agentic_systems_studio.server._colab_output",
+        lambda: FakeColabOutput,
+    )
+
+    presentation = present_studio_server(server, transport="auto", height=720)
+
+    assert presentation.server is server
+    assert presentation.transport == "colab-proxy"
+    assert presentation.display_result == "iframe-result"
+    assert calls == [
+        {
+            "port": 8501,
+            "path": "/",
+            "width": "100%",
+            "height": 720,
+        }
+    ]
+
+
+def test_explicit_colab_transport_fails_without_colab_instead_of_falling_back(
+    monkeypatch, tmp_path
+):
+    server = StudioServer(
+        process=SimpleNamespace(),
+        app_path=tmp_path / "app.py",
+        log_path=tmp_path / "streamlit.log",
+        pid_path=tmp_path / "streamlit.pid",
+        host="127.0.0.1",
+        port=8501,
+    )
+    monkeypatch.setattr("agentic_systems_studio.server._colab_output", lambda: None)
+
+    import pytest
+
+    with pytest.raises(RuntimeError, match="requires google.colab.output"):
+        present_studio_server(server, transport="colab-proxy")
