@@ -69,6 +69,14 @@ _NAMED_VALUE_PATTERN = re.compile(
 _QUOTED_VALUE_PATTERN = re.compile(r"[\"']([^\"']+)[\"']")
 
 
+_CODE_REQUEST_PATTERN = re.compile(
+    r"\b(?:code|codigo|código|class|clase|function|funcion|función|"
+    r"implementation|implementacion|implementación|snippet|script|"
+    r"program|programa|python)\b",
+    re.IGNORECASE,
+)
+
+
 def _contains_public_value(text: str, value: str) -> bool:
     """Match a requested omission as a complete public value, not a substring."""
 
@@ -76,7 +84,10 @@ def _contains_public_value(text: str, value: str) -> bool:
         return False
     prefix = r"(?<!\w)" if value[0].isalnum() else ""
     suffix = r"(?!\w)" if value[-1].isalnum() else ""
-    return re.search(prefix + re.escape(value) + suffix, text, re.IGNORECASE) is not None
+    return (
+        re.search(prefix + re.escape(value) + suffix, text, re.IGNORECASE) is not None
+    )
+
 
 def _bounded_number(value: int | float) -> int | float:
     if isinstance(value, bool) or not isinstance(value, (int, float)):
@@ -430,10 +441,13 @@ class ConversationalStudio:
         if not _OMISSION_REQUEST_PATTERN.search(message):
             return ()
         values = [match.group(1) for match in _QUOTED_VALUE_PATTERN.finditer(message)]
-        values.extend(match.group(1) for match in _NAMED_VALUE_PATTERN.finditer(message))
+        values.extend(
+            match.group(1) for match in _NAMED_VALUE_PATTERN.finditer(message)
+        )
         values.extend(_NUMBER_PATTERN.findall(message))
         normalized = [value.strip() for value in values if value.strip()]
         return tuple(dict.fromkeys(normalized))
+
     def _public_omissions_for_turn(
         self,
         *,
@@ -457,6 +471,7 @@ class ConversationalStudio:
                     if _NUMBER_PATTERN.fullmatch(value) is None
                 )
         return tuple(dict.fromkeys(values))
+
     def _requests_grammar_evidence(self, message: str) -> bool:
         contract = dict(self.grammar_contract or {})
         terms = [
@@ -505,9 +520,11 @@ class ConversationalStudio:
             *,
             source_result: toolkit.RunResult,
         ) -> None:
+            code_requested = bool(_CODE_REQUEST_PATTERN.search(message))
             validate_generated_agentic_systems_code(
                 response,
                 required_calls=required_calls,
+                allow_code=bool(required_calls) or not tool_evidence or code_requested,
             )
             public_issue_codes = {
                 "reasoning_exposed_in_public_answer",

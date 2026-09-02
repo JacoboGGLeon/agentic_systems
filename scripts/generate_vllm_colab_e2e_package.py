@@ -104,9 +104,10 @@ def _readme(*, commit: str, wheel: Path, wheel_sha256: str, model_id: str) -> st
         3. Ejecuta **Run all** una sola vez.
         4. Descarga `vllm-semantic-attestation.json`, `vllm-semantic-review.md`
            y `vllm-studio-live.json`.
-        5. El mismo notebook muestra el botón **Open Agentic Systems Studio**;
-           no necesitas abrir un notebook dentro de otro. El ModelServer permanece
-           activo hasta ejecutar `close_studio_and_model_server()`.
+        5. El mismo notebook renderiza **Agentic Systems Studio** en línea mediante
+           el proxy autenticado de Colab; no necesitas abrir un notebook dentro de
+           otro. El ModelServer permanece activo hasta ejecutar
+           `close_studio_and_model_server()`.
 
         Identidad certificable:
 
@@ -272,14 +273,18 @@ if RUN_VLLM_LIVE:
         from google.colab import output as colab_output
     except ImportError:
         studio_url = studio_server.local_url
+        print("Studio health: ok")
+        print("Studio URL:", studio_url)
+        display(HTML(studio_button_html(studio_url)))
     else:
-        studio_url = colab_output.eval_js(
-            f"google.colab.kernel.proxyPort({studio_port})"
+        print("Studio health: ok")
+        print("Studio is embedded below through the authenticated Colab proxy.")
+        colab_output.serve_kernel_port_as_iframe(
+            studio_port,
+            width="100%",
+            height="900",
         )
-    print("Studio health: ok")
-    print("Studio URL:", studio_url)
     print("When finished, run: close_studio_and_model_server()")
-    display(HTML(studio_button_html(studio_url)))
 else:
     toolkit.show_json(
         {"status": "not-run", "scope": "vllm-studio-ui"},
@@ -289,6 +294,7 @@ else:
     cell["id"] = "vllm-studio-colab-launcher"
     cell.metadata["tags"] = ["studio", "colab-launcher"]
     return cell
+
 
 def _defer_model_server_teardown(notebook: nbformat.NotebookNode) -> None:
     teardown_cells = [
@@ -324,6 +330,7 @@ if RUN_VLLM_LIVE:
         },
         title="Studio lifecycle",
     )"""
+
 
 def _insert_before_model_server_teardown(
     notebook: nbformat.NotebookNode,

@@ -80,7 +80,8 @@ def test_final_vllm_kit_derives_identity_from_real_artifacts(tmp_path: Path) -> 
         assert "vllm-studio-live-gate" in notebook_text
         assert "vllm-studio-live.json" in notebook_text
         assert "vllm-studio-colab-launcher" in notebook_text
-        assert "google.colab.kernel.proxyPort" in notebook_text
+        assert "serve_kernel_port_as_iframe" in notebook_text
+        assert "google.colab.kernel.proxyPort" not in notebook_text
         assert "streamlit>=1.37" in notebook_text
         studio_index = next(
             index
@@ -95,21 +96,16 @@ def test_final_vllm_kit_derives_identity_from_real_artifacts(tmp_path: Path) -> 
         teardown_index = next(
             index
             for index, cell in enumerate(notebook["cells"])
-            if "model-server-teardown"
-            in cell.get("metadata", {}).get("tags", [])
+            if "model-server-teardown" in cell.get("metadata", {}).get("tags", [])
         )
         assert studio_index < launcher_index < teardown_index
-        launcher_source = "".join(
-            notebook["cells"][launcher_index].get("source", "")
-        )
+        launcher_source = "".join(notebook["cells"][launcher_index].get("source", ""))
         install_index = launcher_source.index('"pip", "install", "--no-deps", "-e"')
         path_index = launcher_source.index("sys.path.insert")
         import_index = launcher_source.index("from agentic_systems_studio import")
         assert install_index < path_index < import_index
         assert 'studio_root / "src"' in launcher_source
-        teardown_source = "".join(
-            notebook["cells"][teardown_index].get("source", "")
-        )
+        teardown_source = "".join(notebook["cells"][teardown_index].get("source", ""))
         assert "def close_studio_and_model_server" in teardown_source
         assert "server.stop()" in teardown_source
         assert "Studio remains available until explicit closure." in teardown_source

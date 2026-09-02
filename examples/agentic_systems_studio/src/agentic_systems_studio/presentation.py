@@ -11,6 +11,9 @@ from typing import Any
 import agentic_systems as toolkit
 
 
+_DYNAMIC_EXECUTION_PRIMITIVES = frozenset({"__import__", "compile", "eval", "exec"})
+
+
 def _generated_python_blocks(text: str) -> list[str]:
     blocks = re.findall(r"```(?:python)?\s*(.*?)```", text, flags=re.DOTALL)
     if blocks:
@@ -95,19 +98,52 @@ def validate_generated_tool_contracts(text: str) -> None:
                 )
 
 
+def validate_generated_python_safety(
+    text: str,
+    *,
+    allow_code: bool = True,
+) -> None:
+    """Reject unsolicited code and unsafe dynamic execution in public answers."""
+
+    blocks = _generated_python_blocks(text)
+    if blocks and not allow_code:
+        raise ValueError(
+            "The current request did not ask for Python code; return only the "
+            "natural-language result supported by Tool evidence."
+        )
+    for block in blocks:
+        tree = ast.parse(block)
+        unsafe_calls = {
+            node.func.id if isinstance(node.func, ast.Name) else node.func.attr
+            for node in ast.walk(tree)
+            if isinstance(node, ast.Call)
+            and (
+                isinstance(node.func, ast.Name)
+                and node.func.id in _DYNAMIC_EXECUTION_PRIMITIVES
+                or isinstance(node.func, ast.Attribute)
+                and node.func.attr in _DYNAMIC_EXECUTION_PRIMITIVES
+            )
+        }
+        if unsafe_calls:
+            raise ValueError(
+                "Generated Python code may not call dynamic execution primitives: "
+                f"{sorted(unsafe_calls)}."
+            )
+
+
 def validate_generated_agentic_systems_code(
     text: str,
     *,
     required_calls: tuple[str, ...] = (),
+    allow_code: bool = True,
 ) -> None:
     """Validate generated examples against the canonical public grammar."""
 
+    validate_generated_python_safety(text, allow_code=allow_code)
     validate_generated_tool_contracts(text)
     blocks = _generated_python_blocks(text)
     relevant = [
-        block
-        for block in blocks
-        if "agentic_systems" in block or "toolkit." in block
+        block for block in blocks if "agentic_systems" in block or "toolkit." in block
     ]
     if not relevant:
         return
@@ -198,5 +234,6 @@ __all__ = [
     "processing_mark",
     "usage_mark",
     "validate_generated_agentic_systems_code",
+    "validate_generated_python_safety",
     "validate_generated_tool_contracts",
 ]

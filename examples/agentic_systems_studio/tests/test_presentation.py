@@ -7,6 +7,7 @@ from agentic_systems_studio.presentation import (
     processing_mark,
     usage_mark,
     validate_generated_agentic_systems_code,
+    validate_generated_python_safety,
     validate_generated_tool_contracts,
 )
 
@@ -105,6 +106,35 @@ def multiply(a: int, b: int) -> int:
         )
 
 
+def test_generated_python_safety_rejects_dynamic_execution():
+    with pytest.raises(ValueError, match="dynamic execution primitives.*eval"):
+        validate_generated_python_safety(
+            """```python
+def calculate(expression: str) -> dict:
+    return {"result": eval(expression)}
+```"""
+        )
+
+
+def test_generated_python_safety_rejects_unsolicited_code():
+    with pytest.raises(ValueError, match="did not ask for Python code"):
+        validate_generated_python_safety(
+            """```python
+result = 3 + 5 * 2
+```""",
+            allow_code=False,
+        )
+
+
+def test_generated_python_safety_accepts_requested_safe_code():
+    validate_generated_python_safety(
+        """```python
+result = 3 + 5 * 2
+```""",
+        allow_code=True,
+    )
+
+
 def test_canonical_skill_and_system_factories_are_validated():
     text = """```python
 import agentic_systems as toolkit
@@ -116,9 +146,7 @@ def add(a: int, b: int) -> dict:
 addition = toolkit.skill(name="addition", tools=[add])
 system = toolkit.system(runtime=toolkit.runtime(provider="auto"))
 ```"""
-    validate_generated_agentic_systems_code(
-        text, required_calls=("skill", "system")
-    )
+    validate_generated_agentic_systems_code(text, required_calls=("skill", "system"))
 
 
 def test_plain_python_without_markdown_fences_is_validated():

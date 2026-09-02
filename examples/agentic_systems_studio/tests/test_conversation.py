@@ -228,7 +228,9 @@ def test_mixed_grammar_and_calculation_request_composes_required_evidence():
         return final_result
 
     def unexpected(_prompt: str):
-        raise AssertionError("The optional assistant must not bypass evidence synthesis.")
+        raise AssertionError(
+            "The optional assistant must not bypass evidence synthesis."
+        )
 
     grammar = inspect_agentic_systems_grammar.run({"request": "validation"}).data
     studio = ConversationalStudio(
@@ -351,6 +353,7 @@ def test_public_response_boundary_performs_one_bounded_repair(
     assert validation["initial_error"]
     assert validation["final_error"] is None
 
+
 def test_response_repair_budget_can_use_a_second_bounded_attempt():
     initial_result = toolkit.RunResult(
         text='{"answer": "technical"}',
@@ -391,6 +394,100 @@ def test_response_repair_budget_can_use_a_second_bounded_attempt():
     assert validation["ok"] is True
     assert validation["repairs"] == 2
     assert validation["final_error"] is None
+
+
+def test_calculation_response_repairs_unsolicited_unsafe_code():
+    initial_result = toolkit.RunResult(
+        text=(
+            "```python\n"
+            "def calculate(expression: str) -> dict:\n"
+            '    return {"result": eval(expression)}\n'
+            "```\n\nLe résultat est 13."
+        ),
+        engine="bedrock-runtime",
+        model="test-model",
+    )
+    repaired = toolkit.RunResult(
+        text="Le résultat de 3 + 5 × 2 est 13.",
+        engine="bedrock-runtime",
+        model="test-model",
+    )
+    evidence = toolkit.RunResult(
+        text="13",
+        engine="python-runtime",
+        tool_events=[
+            ToolEvent(
+                id="calculate-unsafe-code",
+                name="safe_calculate",
+                input={"expression": "3 + 5 * 2"},
+                output={"result": 13},
+                ok=True,
+            )
+        ],
+    )
+    studio = ConversationalStudio(
+        config=ConversationConfig(provider="bedrock-runtime"),
+        reasoning_system=object(),
+        deterministic_system=object(),
+        assistant=object(),
+        context_agent=object(),
+    )
+
+    answer, results, validation = studio._validate_or_repair_response(
+        message='Calcule "3 + 5 * 2" et réponds en français.',
+        context={"message": 'Calcule "3 + 5 * 2" et réponds en français.'},
+        assistant_result=initial_result,
+        evidence_results=[evidence],
+        execution_agent=SimpleNamespace(run=lambda _prompt: repaired),
+    )
+
+    assert answer == repaired.text
+    assert results == [initial_result, repaired]
+    assert validation["ok"] is True
+    assert validation["repairs"] == 1
+    assert "eval(" not in answer
+    assert "```" not in answer
+
+
+def test_explicit_safe_code_request_is_accepted():
+    answer_result = toolkit.RunResult(
+        text="```python\nresult = 3 + 5 * 2\n```\n\nEl resultado es 13.",
+        engine="openai-runtime",
+        model="test-model",
+    )
+    evidence = toolkit.RunResult(
+        text="13",
+        engine="python-runtime",
+        tool_events=[
+            ToolEvent(
+                id="calculate-safe-code",
+                name="safe_calculate",
+                input={"expression": "3 + 5 * 2"},
+                output={"result": 13},
+                ok=True,
+            )
+        ],
+    )
+    studio = ConversationalStudio(
+        config=ConversationConfig(provider="openai-runtime"),
+        reasoning_system=object(),
+        deterministic_system=object(),
+        assistant=object(),
+        context_agent=object(),
+    )
+
+    answer, results, validation = studio._validate_or_repair_response(
+        message="Dame código Python para calcular 3 + 5 * 2.",
+        context={"message": "Dame código Python para calcular 3 + 5 * 2."},
+        assistant_result=answer_result,
+        evidence_results=[evidence],
+    )
+
+    assert answer == answer_result.text
+    assert results == [answer_result]
+    assert validation["ok"] is True
+    assert validation["repairs"] == 0
+
 
 def test_context_agent_run_uses_public_default_mode_and_public_data():
     studio = build_conversational_system(
