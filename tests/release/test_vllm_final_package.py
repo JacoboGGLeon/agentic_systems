@@ -99,6 +99,14 @@ def test_final_vllm_kit_derives_identity_from_real_artifacts(tmp_path: Path) -> 
             in cell.get("metadata", {}).get("tags", [])
         )
         assert studio_index < launcher_index < teardown_index
+        launcher_source = "".join(
+            notebook["cells"][launcher_index].get("source", "")
+        )
+        install_index = launcher_source.index('"pip", "install", "--no-deps", "-e"')
+        path_index = launcher_source.index("sys.path.insert")
+        import_index = launcher_source.index("from agentic_systems_studio import")
+        assert install_index < path_index < import_index
+        assert 'studio_root / "src"' in launcher_source
         teardown_source = "".join(
             notebook["cells"][teardown_index].get("source", "")
         )

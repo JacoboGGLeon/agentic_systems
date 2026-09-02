@@ -184,7 +184,7 @@ def _studio_cell() -> nbformat.NotebookNode:
     if not studio_gate.is_file():
         raise FileNotFoundError(studio_gate)
     subprocess.run(
-        [sys.executable, "-m", "pip", "install", "--no-deps", "-e", str(studio_root)],
+        [sys.executable, "-m", "pip", "install", "-e", f"{studio_root}[ui,notebook]"],
         check=True,
     )
     STUDIO_OUTPUT = Path.cwd() / "bedrock-studio-live.json"

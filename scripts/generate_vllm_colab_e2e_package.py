@@ -243,16 +243,29 @@ def _studio_launcher_cell() -> nbformat.NotebookNode:
 import subprocess
 import sys
 from importlib.util import find_spec
+from pathlib import Path
 
 from IPython.display import HTML, display
-from agentic_systems_studio import start_studio_server, studio_button_html
 
 if RUN_VLLM_LIVE:
+    studio_root = Path("/content/studio")
+    studio_source = studio_root / "src"
+    if not studio_source.is_dir():
+        raise FileNotFoundError(studio_source)
+    subprocess.run(
+        [sys.executable, "-m", "pip", "install", "--no-deps", "-e", str(studio_root)],
+        check=True,
+    )
     if find_spec("streamlit") is None:
         subprocess.run(
             [sys.executable, "-m", "pip", "install", "-q", "streamlit>=1.37"],
             check=True,
         )
+    studio_source_text = str(studio_source)
+    if studio_source_text not in sys.path:
+        sys.path.insert(0, studio_source_text)
+    from agentic_systems_studio import start_studio_server, studio_button_html
+
     studio_port = int(os.getenv("AGENTIC_SYSTEMS_STUDIO_PORT", "8501"))
     studio_server = start_studio_server(port=studio_port)
     try:
@@ -276,7 +289,6 @@ else:
     cell["id"] = "vllm-studio-colab-launcher"
     cell.metadata["tags"] = ["studio", "colab-launcher"]
     return cell
-
 
 def _defer_model_server_teardown(notebook: nbformat.NotebookNode) -> None:
     teardown_cells = [

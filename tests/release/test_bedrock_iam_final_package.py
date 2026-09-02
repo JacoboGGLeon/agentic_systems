@@ -84,6 +84,7 @@ def test_final_bedrock_iam_kit_is_portable_and_env_driven(tmp_path: Path) -> Non
         assert 'Path.cwd() / "run_semantic_matrix.py"' in code
         assert 'Path.cwd() / "semantic_e2e_application.py"' in code
         assert '"episodes_total": 16' in code
+        assert 'f"{studio_root}[ui,notebook]"' in code
         assert 'authentication["authentication_mode"] == "aws-credential-chain"' in code
         metadata = notebook["metadata"]["agentic_systems"]["portable_package"]
         assert metadata["commit_sha"] == commit

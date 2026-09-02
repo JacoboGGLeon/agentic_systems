@@ -91,6 +91,7 @@ def test_ada_iam_validation_kit_is_offline_first_and_semantic(tmp_path: Path) ->
         )
         assert 'Path.cwd() / "run_semantic_matrix.py"' in code
         assert 'authentication["authentication_mode"] == "aws-credential-chain"' in code
+        assert 'f"{studio_root}[ui,notebook]"' in code
         assert "bedrock-studio-live-gate" in json.dumps(notebook)
 
         requirements = archive.read(prefix + "requirements-ada.txt").decode()
