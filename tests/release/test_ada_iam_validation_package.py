@@ -70,6 +70,7 @@ def test_ada_iam_validation_kit_is_offline_first_and_semantic(tmp_path: Path) ->
         assert f"AGENTIC_SYSTEMS_WHEEL=artifacts/{WHEEL_NAME}" in dotenv
         assert "AGENTIC_SYSTEMS_PROVIDER=bedrock-runtime" in dotenv
         assert "AWS_BEARER_TOKEN_BEDROCK=" in dotenv.splitlines()
+        assert "AWS_STS_IDENTITY_REQUIRED=1" in dotenv
         assert "RUN_SEMANTIC_MATRIX_LIVE=1" in dotenv
 
         manifest = json.loads(archive.read(prefix + "manifest.json"))
@@ -91,6 +92,8 @@ def test_ada_iam_validation_kit_is_offline_first_and_semantic(tmp_path: Path) ->
         )
         assert 'Path.cwd() / "run_semantic_matrix.py"' in code
         assert 'authentication["authentication_mode"] == "aws-credential-chain"' in code
+        assert "from agentic_systems.utils import mask_sensitive" in code
+        assert "toolkit.mask_sensitive" not in code
         assert 'f"{studio_root}[ui,notebook]"' in code
         assert "bedrock-studio-live-gate" in json.dumps(notebook)
 

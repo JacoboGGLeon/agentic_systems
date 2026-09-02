@@ -56,6 +56,7 @@ LangGraph, OpenAI Agents y Strands, todos con engine bedrock-runtime."""
 | AWS_REGION | us-east-2 | Endpoint regional de Bedrock. |
 | BEDROCK_MODEL_ID | us.amazon.nova-pro-v1:0 | Modelo o inference profile ya habilitado. |
 | BEDROCK_STREAMING | 0 | Usa Converse; 1 opta por ConverseStream y requiere su permiso IAM. |
+| AWS_STS_IDENTITY_REQUIRED | 1 | En IAM, exige que STS GetCallerIdentity resuelva la identidad sanitizada. |
 | AGENTIC_SYSTEMS_COMMIT_SHA | candidato 2.1.1 | Commit que produjo el wheel. |
 | AGENTIC_SYSTEMS_WHEEL_SHA256 | candidato 2.1.1 | Hash del wheel esperado. |
 
@@ -178,6 +179,7 @@ if loaded_package is not None and getattr(loaded_package, "__version__", None) !
         nbformat.v4.new_code_cell(
             """import boto3
 import agentic_systems as toolkit
+from agentic_systems.utils import mask_sensitive
 
 required_api = ("aws_environment_snapshot", "boto3_session_snapshot")
 missing_api = [name for name in required_api if not hasattr(toolkit, name)]
@@ -191,6 +193,9 @@ if toolkit.__version__ != "2.1.1" or missing_api:
 # This public snapshot loads the nearest .env. The notebook never mutates auth.
 aws_environment = toolkit.aws_environment_snapshot()
 RUN_BEDROCK_LIVE = os.getenv("RUN_BEDROCK_LIVE", "1").strip().lower() in {"1", "true", "yes"}
+STS_IDENTITY_REQUIRED = os.getenv(
+    "AWS_STS_IDENTITY_REQUIRED", "1"
+).strip().lower() in {"1", "true", "yes"}
 REGION = os.getenv("AWS_REGION") or os.getenv("AWS_DEFAULT_REGION") or "us-east-2"
 MODEL = os.getenv("BEDROCK_MODEL_ID") or "us.amazon.nova-pro-v1:0"
 aws_session = toolkit.boto3_session_snapshot(region_name=REGION)
@@ -216,18 +221,40 @@ if RUN_BEDROCK_LIVE:
 
     if aws_session["authentication_mode"] == "aws-credential-chain":
         try:
-            raw_identity = boto3.client("sts", region_name=REGION).get_caller_identity()
-            identity = toolkit.mask_sensitive({
+            raw_identity = (
+                boto3.Session(region_name=REGION)
+                .client("sts")
+                .get_caller_identity()
+            )
+        except Exception as exc:
+            error_response = getattr(exc, "response", {})
+            error_code = (
+                error_response.get("Error", {}).get("Code")
+                if isinstance(error_response, dict)
+                else None
+            )
+            identity = {
+                "available": False,
+                "status": "unavailable",
+                "diagnostic_stage": "sts:GetCallerIdentity",
+                "error_type": type(exc).__name__,
+                "error_code": error_code,
+                "note": "STS identity could not be resolved; no raw exception or identity is persisted.",
+            }
+        else:
+            identity = mask_sensitive({
+                "available": True,
+                "status": "resolved",
+                "diagnostic_stage": "sts:GetCallerIdentity",
                 "account": raw_identity.get("Account"),
                 "arn": raw_identity.get("Arn"),
                 "user_id": raw_identity.get("UserId"),
             })
-        except Exception as exc:
-            identity = {
-                "available": False,
-                "error_type": type(exc).__name__,
-                "note": "STS is diagnostic; the Bedrock Converse call remains the live gate.",
-            }
+        if STS_IDENTITY_REQUIRED and not identity["available"]:
+            raise RuntimeError({
+                "message": "AWS STS identity is required by the release contract.",
+                "identity": identity,
+            })
     else:
         identity = {
             "available": False,
@@ -241,6 +268,7 @@ toolkit.show_json({
     "wheel_sha256": wheel_sha256,
     "region": REGION,
     "model": MODEL,
+    "sts_identity_required": STS_IDENTITY_REQUIRED,
     "environment": aws_environment,
     "session": aws_session,
     "identity": identity,

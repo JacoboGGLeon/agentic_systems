@@ -120,6 +120,8 @@ def _readme(*, commit: str, wheel_sha256: str) -> str:
            En PowerShell usa `Copy-Item .env.example .env`.
         4. Conserva `AWS_BEARER_TOKEN_BEDROCK=` vacío en `.env`; ajusta región o
            modelo únicamente si tu plataforma empresarial lo exige.
+           Conserva `AWS_STS_IDENTITY_REQUIRED=1`: la certificación IAM sólo
+           termina cuando `sts:GetCallerIdentity` devuelve identidad sanitizada.
         5. Instala dependencias mediante Artifactory:
 
                python -m pip install -r requirements-ada.txt

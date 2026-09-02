@@ -59,6 +59,7 @@ def _dotenv(*, commit: str, wheel: Path, wheel_sha256: str) -> str:
         AWS_BEARER_TOKEN_BEDROCK=
         AWS_REGION=us-east-2
         AWS_DEFAULT_REGION=us-east-2
+        AWS_STS_IDENTITY_REQUIRED=1
         BEDROCK_MODEL_ID=us.amazon.nova-pro-v1:0
         BEDROCK_STREAMING=0
         RUN_BEDROCK_LIVE=1
@@ -77,6 +78,8 @@ def _readme(*, commit: str, wheel: Path, wheel_sha256: str) -> str:
         2. Edita `.env`: conserva `AWS_BEARER_TOKEN_BEDROCK=` vacío para IAM y
            ajusta únicamente región/modelo cuando tu cuenta lo requiera. `.env` es
            configuración mutable y queda fuera del checksum del artefacto.
+           Conserva `AWS_STS_IDENTITY_REQUIRED=1` para que la certificación IAM
+           exija una identidad sanitizada de `sts:GetCallerIdentity`.
         3. Abre `bedrock_iam_attestation.ipynb` y ejecuta **Run All**.
         4. Conserva `bedrock-attestation.json`,
            `bedrock-iam-semantic-attestation.json` y

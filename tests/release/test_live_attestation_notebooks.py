@@ -124,6 +124,12 @@ def test_bedrock_attestation_respects_dotenv_auth_and_runs_full_framework_matrix
     assert "assert len(COMMIT_SHA) == 40" in code
     assert "assert len(EXPECTED_WHEEL_SHA256) == 64" in code
     assert "toolkit.aws_environment_snapshot()" in code
+    assert "from agentic_systems.utils import mask_sensitive" in code
+    assert "toolkit.mask_sensitive" not in code
+    assert "boto3.Session(region_name=REGION)" in code
+    assert '"diagnostic_stage": "sts:GetCallerIdentity"' in code
+    assert '"AWS_STS_IDENTITY_REQUIRED", "1"' in code
+    assert 'if STS_IDENTITY_REQUIRED and not identity["available"]' in code
     assert "El .env resolvió otro modo" not in code
     assert 'os.environ["AWS_BEARER_TOKEN_BEDROCK"]' not in code
     assert "toolkit.repair_ada_credential_chain" not in code

@@ -62,6 +62,7 @@ def test_final_bedrock_iam_kit_is_portable_and_env_driven(tmp_path: Path) -> Non
         assert "AGENTIC_SYSTEMS_PROVIDER=bedrock-runtime" in dotenv
         assert "AGENTIC_SYSTEMS_PROVIDER_PRIORITY=bedrock-runtime" in dotenv
         assert "AWS_BEARER_TOKEN_BEDROCK=" in dotenv.splitlines()
+        assert "AWS_STS_IDENTITY_REQUIRED=1" in dotenv
         assert "RUN_SEMANTIC_MATRIX_LIVE=1" in dotenv
 
         notebook = json.loads(archive.read("bedrock_iam_attestation.ipynb"))
@@ -86,6 +87,8 @@ def test_final_bedrock_iam_kit_is_portable_and_env_driven(tmp_path: Path) -> Non
         assert '"episodes_total": 16' in code
         assert 'f"{studio_root}[ui,notebook]"' in code
         assert 'authentication["authentication_mode"] == "aws-credential-chain"' in code
+        assert "from agentic_systems.utils import mask_sensitive" in code
+        assert "toolkit.mask_sensitive" not in code
         metadata = notebook["metadata"]["agentic_systems"]["portable_package"]
         assert metadata["commit_sha"] == commit
         assert metadata["wheel_sha256"] == expected_wheel_sha
