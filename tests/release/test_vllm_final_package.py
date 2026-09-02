@@ -52,6 +52,7 @@ def test_final_vllm_kit_derives_identity_from_real_artifacts(tmp_path: Path) -> 
             "studio/app.py",
             "studio/src/agentic_systems_studio/conversation.py",
             "studio/src/agentic_systems_studio/presentation.py",
+            "studio/src/agentic_systems_studio/notebook.py",
             "studio/scripts/validate_conversation_live.py",
         } <= names
         dotenv = archive.read(".env").decode()
@@ -80,7 +81,10 @@ def test_final_vllm_kit_derives_identity_from_real_artifacts(tmp_path: Path) -> 
         assert "vllm-studio-live-gate" in notebook_text
         assert "vllm-studio-live.json" in notebook_text
         assert "vllm-studio-colab-launcher" in notebook_text
-        assert "serve_kernel_port_as_iframe" in notebook_text
+        assert "display_notebook_studio" in notebook_text
+        assert "enable_custom_widget_manager" in notebook_text
+        assert "ipywidgets>=8.1" in notebook_text
+        assert "serve_kernel_port_as_iframe" not in notebook_text
         assert "google.colab.kernel.proxyPort" not in notebook_text
         assert "streamlit>=1.37" in notebook_text
         studio_index = next(

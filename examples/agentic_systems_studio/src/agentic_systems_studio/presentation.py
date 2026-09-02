@@ -76,6 +76,28 @@ def usage_mark(result: Any) -> str:
     return "Usage: " + " | ".join(f"{key}={value}" for key, value in usage)
 
 
+def public_result_payload(result: Any) -> Any:
+    """Project a RunResult without exposing provider-native/private objects."""
+
+    if not hasattr(result, "normalized"):
+        return result
+    payload = result.normalized()
+    runtime = dict(payload.get("runtime") or {})
+    public_runtime = {
+        "provider": runtime.get("provider")
+        or runtime.get("runtime_engine")
+        or runtime.get("engine"),
+        "framework": runtime.get("framework"),
+        "model": runtime.get("model"),
+        "mode": runtime.get("mode"),
+    }
+    payload["runtime"] = public_runtime
+    blocks = dict(payload.get("blocks") or {})
+    blocks["runtime"] = public_runtime
+    payload["blocks"] = blocks
+    return payload
+
+
 def validate_generated_tool_contracts(text: str) -> None:
     """Reject generated Python Tools whose declared output violates the public API."""
 
@@ -232,6 +254,7 @@ def validate_generated_agentic_systems_code(
 
 __all__ = [
     "processing_mark",
+    "public_result_payload",
     "usage_mark",
     "validate_generated_agentic_systems_code",
     "validate_generated_python_safety",

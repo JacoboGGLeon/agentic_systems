@@ -13,6 +13,11 @@ from .environment import (
     load_studio_environment,
 )
 from .creator import create_application
+from .notebook import (
+    NotebookStudioSession,
+    NotebookStudioView,
+    display_notebook_studio,
+)
 from .scaffolder import ScaffoldReport, scaffold_application
 from .server import (
     StudioServer,
@@ -37,6 +42,8 @@ __all__ = [
     "SYSTEM_SPECS",
     "ConversationConfig",
     "ConversationalStudio",
+    "NotebookStudioSession",
+    "NotebookStudioView",
     "ScaffoldReport",
     "StageSpec",
     "StudioComposition",
@@ -49,6 +56,7 @@ __all__ = [
     "build_system",
     "compose_systems",
     "create_application",
+    "display_notebook_studio",
     "find_studio_environment",
     "get_system_spec",
     "load_studio_environment",

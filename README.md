@@ -860,8 +860,9 @@ Integration-specific arguments stay owned by the selected framework. Agentic Sys
 
 [Agentic Systems Studio](examples/agentic_systems_studio/README.md) is the
 installable conversational reference application. It lives under `examples/`
-because it consumes the public grammar; Streamlit is not a dependency of the
-core runtime. The notebook and UI build the same System and return the same
+because it consumes the public grammar; Streamlit and ipywidgets are optional
+presentation dependencies, not core runtime dependencies. Direct notebooks,
+Streamlit and the Colab-native widget call the same System and return the same
 normalized `RunResult`.
 
 Studio reads one canonical `.env`, discovers configured inference routes and
@@ -876,8 +877,10 @@ python -m streamlit run examples/agentic_systems_studio/app.py
 ```
 
 OpenAI, Ollama and Bedrock need only their provider settings in `.env` or the
-managed environment. vLLM uses the same Studio contract after its OpenAI-compatible
-model server has been started.
+managed environment. vLLM uses the same Studio contract after its
+OpenAI-compatible model server has started. Local, SageMaker and ADA use the
+Streamlit adapter; Colab uses the notebook-native adapter because its kernel
+proxy does not transport Streamlit's WebSocket. No public tunnel is created.
 
 ## Tutorials
 

@@ -11,7 +11,11 @@ from agentic_systems_studio.conversation import (
 )
 from agentic_systems.registry import FRAMEWORK_NAMES
 from agentic_systems_studio.environment import load_studio_environment
-from agentic_systems_studio.presentation import processing_mark, usage_mark
+from agentic_systems_studio.presentation import (
+    processing_mark,
+    public_result_payload,
+    usage_mark,
+)
 
 
 st.set_page_config(
@@ -19,26 +23,6 @@ st.set_page_config(
     page_icon="🤖",
     layout="centered",
 )
-
-
-def _result_payload(result):
-    if not hasattr(result, "normalized"):
-        return result
-    payload = result.normalized()
-    runtime = dict(payload.get("runtime") or {})
-    public_runtime = {
-        "provider": runtime.get("provider")
-        or runtime.get("runtime_engine")
-        or runtime.get("engine"),
-        "framework": runtime.get("framework"),
-        "model": runtime.get("model"),
-        "mode": runtime.get("mode"),
-    }
-    payload["runtime"] = public_runtime
-    blocks = dict(payload.get("blocks") or {})
-    blocks["runtime"] = public_runtime
-    payload["blocks"] = blocks
-    return payload
 
 
 @st.cache_resource(show_spinner="Compiling Agentic System...")
@@ -158,7 +142,7 @@ if prompt := st.chat_input("Message the Agentic System"):
 result = st.session_state.get("last_result")
 if result is not None:
     with st.expander("Latest normalized RunResult"):
-        st.json(_result_payload(result), expanded=False)
+        st.json(public_result_payload(result), expanded=False)
 
 with st.expander("Compiled system contract"):
     st.json(studio.inspect(), expanded=False)

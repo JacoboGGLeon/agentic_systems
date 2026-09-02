@@ -1,10 +1,16 @@
 # Agentic Systems Studio 2.1
 
-Studio is one conversational Agentic System presented through two equivalent
-entry points:
+Studio is one conversational Agentic System with one direct execution path and
+two equivalent presentation adapters:
 
 - `notebooks/00_conversational_system.ipynb` runs the system directly;
-- `app.py` wraps that same system in a Streamlit chat application.
+- `app.py` presents that system through Streamlit on hosts with WebSocket
+  proxying, including local, SageMaker and ADA;
+- `display_notebook_studio()` presents the same system through Jupyter widgets
+  on Colab, whose kernel proxy does not transport Streamlit's WebSocket.
+
+Both presentation adapters call `ConversationalStudio.run()`; neither
+reimplements the agentic logic or exposes a public tunnel.
 
 The application is intentionally small. A deterministic Python boundary creates
 a bounded context envelope and records tool evidence. A reasoning Agent handles
@@ -88,9 +94,14 @@ From the repository root, launch the application directly:
 python -m streamlit run examples/agentic_systems_studio/app.py
 ```
 
-Open `notebooks/01_launch_studio.ipynb` and run both cells. The launcher binds
-Streamlit to loopback, checks health and provides both the local URL and the
-ADA/JupyterLab proxy URL.
+Open `notebooks/01_launch_studio.ipynb` and run both cells on local,
+SageMaker or ADA. The launcher binds Streamlit to loopback, checks health and
+provides both the local URL and the ADA/JupyterLab proxy URL.
+
+The vLLM Colab release notebook detects Colab and calls
+`display_notebook_studio()` instead. Its provider/framework selectors,
+conversation history, normalized RunResult, processing mark and usage come from
+the same application API without depending on an unsupported WebSocket proxy.
 
 Studio discovers the routes configured by the canonical `.env` and managed host
 environment. The sidebar can select any discovered Provider and any installed

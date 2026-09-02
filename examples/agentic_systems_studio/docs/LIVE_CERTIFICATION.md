@@ -11,4 +11,4 @@ Release evidence belongs to the top-level release bundle, not inside Studio. The
 Studio application consumes the same public runtime, Agent, System and RunResult
 contracts; it does not claim that every local ADA environment has the same network,
 IAM, model-access or GPU configuration. Run the direct notebook in the target
-environment before exposing the Streamlit entry point.
+environment before exposing the host-compatible Studio presentation adapter.

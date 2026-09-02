@@ -104,9 +104,11 @@ def _readme(*, commit: str, wheel: Path, wheel_sha256: str, model_id: str) -> st
         3. Ejecuta **Run all** una sola vez.
         4. Descarga `vllm-semantic-attestation.json`, `vllm-semantic-review.md`
            y `vllm-studio-live.json`.
-        5. El mismo notebook renderiza **Agentic Systems Studio** en línea mediante
-           el proxy autenticado de Colab; no necesitas abrir un notebook dentro de
-           otro. El ModelServer permanece activo hasta ejecutar
+        5. Colab renderiza **Agentic Systems Studio** con widgets nativos del
+           notebook porque su proxy no transporta el WebSocket requerido por
+           Streamlit. Se ejecuta el mismo ConversationalStudio, RunResult, lineage
+           y usage; sólo cambia el adaptador de presentación. El ModelServer
+           permanece activo hasta ejecutar
            `close_studio_and_model_server()`.
 
         Identidad certificable:
@@ -257,33 +259,36 @@ if RUN_VLLM_LIVE:
         [sys.executable, "-m", "pip", "install", "--no-deps", "-e", str(studio_root)],
         check=True,
     )
-    if find_spec("streamlit") is None:
-        subprocess.run(
-            [sys.executable, "-m", "pip", "install", "-q", "streamlit>=1.37"],
-            check=True,
-        )
     studio_source_text = str(studio_source)
     if studio_source_text not in sys.path:
         sys.path.insert(0, studio_source_text)
-    from agentic_systems_studio import start_studio_server, studio_button_html
-
-    studio_port = int(os.getenv("AGENTIC_SYSTEMS_STUDIO_PORT", "8501"))
-    studio_server = start_studio_server(port=studio_port)
     try:
         from google.colab import output as colab_output
     except ImportError:
+        if find_spec("streamlit") is None:
+            subprocess.run(
+                [sys.executable, "-m", "pip", "install", "-q", "streamlit>=1.37"],
+                check=True,
+            )
+        from agentic_systems_studio import start_studio_server, studio_button_html
+
+        studio_port = int(os.getenv("AGENTIC_SYSTEMS_STUDIO_PORT", "8501"))
+        studio_server = start_studio_server(port=studio_port)
         studio_url = studio_server.local_url
-        print("Studio health: ok")
+        print("Studio presentation: Streamlit")
         print("Studio URL:", studio_url)
         display(HTML(studio_button_html(studio_url)))
     else:
-        print("Studio health: ok")
-        print("Studio is embedded below through the authenticated Colab proxy.")
-        colab_output.serve_kernel_port_as_iframe(
-            studio_port,
-            width="100%",
-            height="900",
-        )
+        colab_output.enable_custom_widget_manager()
+        if find_spec("ipywidgets") is None:
+            subprocess.run(
+                [sys.executable, "-m", "pip", "install", "-q", "ipywidgets>=8.1"],
+                check=True,
+            )
+        from agentic_systems_studio import display_notebook_studio
+
+        studio_view = display_notebook_studio()
+        print("Studio presentation: notebook-native (Colab WebSocket-safe)")
     print("When finished, run: close_studio_and_model_server()")
 else:
     toolkit.show_json(
