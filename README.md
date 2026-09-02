@@ -52,11 +52,12 @@ strict versioned schemas, normalized reasoning-safe results and polymorphic
 adapter contracts. Its public surface contains 89 stable top-level exports and
 467 traced export/member IDs; all 2.0 serialization views remain compatible.
 
-The certified release passed all 20 Provider x Framework routes and 108/108
+The certified release passed all 20 Provider x Framework routes and 92/92
 reviewed semantic episodes across deterministic Python, OpenAI, Ollama, Bedrock
-API key, Bedrock IAM in AWS/ADA and vLLM. These are artifact-specific results,
-not a claim that every credential, endpoint or model is available in every
-environment.
+API key, Bedrock IAM in AWS and vLLM. ADA receives the same checksum-verified
+wheel and runs its own environment gate after installation. These are
+artifact-specific results, not a claim that every credential, endpoint or
+model is available in every environment.
 
 ## Installation
 

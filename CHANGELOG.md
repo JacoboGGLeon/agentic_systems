@@ -25,6 +25,9 @@ tag.
   notebook, skill and offline enterprise ZIPs pinned to the same wheel hash.
 - The Agentic Systems skill now documents immutable release identity, portable
   `.env` configuration and the distinction between PyPI and application assets.
+- Release certification is generated from validated live artifacts and records
+  certified/assembly commit equivalence instead of relying on a hand-edited
+  summary.
 
 ## 2.1.0 - 2026-08-30
 

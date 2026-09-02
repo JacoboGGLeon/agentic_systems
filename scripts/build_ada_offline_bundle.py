@@ -319,7 +319,7 @@ def _readme(certification: dict[str, object], provenance: dict[str, object]) -> 
         - `studio/`: un solo sistema agéntico conversacional, directo y Streamlit.
         - `tutorials/`: los 21 notebooks canónicos; no hay duplicado CLI.
         - `validation/`: matriz semántica E2E ejecutable desde el wheel incluido.
-        - `evidence/`: matriz primaria 20/20, Bedrock IAM en AWS/ADA y 108/108
+        - `evidence/`: matriz primaria 20/20, Bedrock IAM en AWS y 92/92
           episodios semánticos revisados.
         - `.env.example`: contrato único para provider, framework y modelo.
         - `verify_bundle.py`: verificación offline de todos los checksums.
@@ -385,8 +385,8 @@ def _readme(certification: dict[str, object], provenance: dict[str, object]) -> 
         - materials commit: `{provenance["materials_commit"]}`
         - core source equivalente: `true`
         - combinaciones primarias y ruta IAM adicional: `24/24`, sin fallback
-        - corroboración ADA: `4/4`
-        - episodios semánticos revisados: `108/108`
+        - gate ADA posterior a instalación: requerido en el sandbox destino
+        - episodios semánticos revisados: `92/92`
 
         El commit de materiales puede ser posterior porque sólo mejora tutoriales,
         Studio y tests. El builder comprueba que el árbol `src/agentic_systems`

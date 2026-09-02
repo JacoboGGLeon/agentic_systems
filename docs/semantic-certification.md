@@ -63,12 +63,15 @@ the complete execution path.
 
 The final 2.1 gate covers all 20 canonical Provider x Framework routes. The
 primary matrix passed 76/76 semantic episodes. Bedrock's AWS credential-chain
-route passed another 16/16 episodes in SageMaker and was independently repeated
-16/16 in the ADA enterprise sandbox, for 108/108 manually reviewed episodes in
-total. Review includes the public answer and complete lineage; `ok=true` alone
-is never sufficient.
+route passed another 16/16 episodes in SageMaker, for 92/92 reviewed episodes
+in the 2.1.1 candidate. ADA receives the same checksum-verified wheel and owns
+an environment-specific live gate after installation; compatibility is not
+presented as a live result until that gate runs. Review includes the public
+answer and complete lineage; `ok=true` alone is never sufficient.
 
 The downloadable `final-certification-summary.json` records the exact wheel
-hash, source identity, evidence filenames and hashes. The release workflow
-verifies that summary and every public artifact against
-`SHA256SUMS-2.1.1.txt` before publishing the Python distributions.
+hash, certified runtime commit, release-assembly commit, core-tree equivalence,
+evidence filenames and hashes. `scripts/build_release_certification.py`
+constructs this summary from validated live artifacts; it is not edited by
+hand. The release workflow verifies that summary and every public artifact
+against `SHA256SUMS-2.1.1.txt` before publishing the Python distributions.
