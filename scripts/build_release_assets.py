@@ -8,7 +8,6 @@ import json
 import re
 import shutil
 import tarfile
-from email.parser import BytesParser
 
 try:
     import tomllib
@@ -183,8 +182,11 @@ def validate_distribution_narrative(
         ]
         if len(metadata_names) != 1:
             raise ValueError(f"Wheel metadata is ambiguous: {metadata_names!r}")
-        metadata = BytesParser().parsebytes(archive.read(metadata_names[0]))
-        wheel_readme = metadata.get_payload()
+        metadata = archive.read(metadata_names[0]).replace(b"\r\n", b"\n")
+        headers, separator, description = metadata.partition(b"\n\n")
+        if not separator or b"Metadata-Version:" not in headers:
+            raise ValueError("Wheel metadata has no RFC 822 description payload")
+        wheel_readme = description.decode("utf-8")
     with tarfile.open(sdist, "r:gz") as archive:
         readme_members = [
             member
