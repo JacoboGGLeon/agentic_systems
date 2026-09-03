@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import errno
 import html
-import json
 import os
 import signal
 import subprocess
@@ -245,90 +244,26 @@ def _colab_output() -> Any | None:
     return colab_output
 
 
-def colab_proxy_button_script(
-    port: int,
-    *,
-    path: str = "/",
-    label: str = "Open Agentic Systems Studio",
-) -> str:
-    """Build Colab JavaScript for a user-initiated proxied Studio window."""
+def resolve_colab_proxy_url(port: int) -> str:
+    """Resolve the authenticated Colab URL for a kernel port."""
 
     if port < 1 or port > 65535:
         raise ValueError("port must be between 1 and 65535")
-    arguments = ", ".join(
-        (
-            str(port),
-            json.dumps(path),
-            json.dumps(label),
-            "window.element",
-        )
-    )
-    return (
-        """((port, path, label, element) => {
-  element.appendChild(document.createTextNode(''));
-
-  const container = document.createElement('div');
-  const button = document.createElement('button');
-  const status = document.createElement('span');
-
-  button.type = 'button';
-  button.textContent = label;
-  button.style.cssText = [
-    'display:inline-block',
-    'padding:11px 18px',
-    'border:0',
-    'border-radius:9px',
-    'background:#ff4b4b',
-    'color:white',
-    'cursor:pointer',
-    'font-weight:700',
-    'margin:8px 10px 8px 0'
-  ].join(';');
-  status.style.cssText = 'font-family:system-ui,sans-serif;color:#68707c';
-
-  button.addEventListener('click', async () => {
-    button.disabled = true;
-    status.textContent = ' Resolving the authenticated Colab proxy...';
-
-    // Open synchronously from the click so browser popup protection permits it.
-    const studioWindow = window.open('about:blank', '_blank');
-    if (!studioWindow) {
-      button.disabled = false;
-      status.textContent = ' The browser blocked the new tab; allow popups and retry.';
-      return;
-    }
-
-    try {
-      const baseUrl = await google.colab.kernel.proxyPort(port);
-      const studioUrl = new URL(path, baseUrl).toString();
-      studioWindow.location.replace(studioUrl);
-      studioWindow.opener = null;
-      status.textContent = ' Studio opened in a new tab.';
-    } catch (error) {
-      studioWindow.close();
-      button.disabled = false;
-      status.textContent = ' Colab could not authorize the kernel-port proxy.';
-      console.error('Agentic Systems Studio proxy failure', error);
-    }
-  });
-
-  container.appendChild(button);
-  container.appendChild(status);
-  element.appendChild(container);
-})"""
-        + f"({arguments})"
-    )
+    colab_output = _colab_output()
+    if colab_output is None:
+        raise RuntimeError("The colab-proxy transport requires google.colab.output.")
+    resolved = colab_output.eval_js(f"google.colab.kernel.proxyPort({port})")
+    if not isinstance(resolved, str) or not resolved.startswith(
+        ("https://", "http://")
+    ):
+        raise RuntimeError("Colab did not return a valid kernel-port proxy URL.")
+    return resolved.rstrip("/") + "/"
 
 
-def _display_colab_proxy_button(
-    port: int,
-    *,
-    path: str = "/",
-    label: str = "Open Agentic Systems Studio",
-) -> Any:
-    from IPython.display import Javascript, display
+def _display_html(payload: str) -> Any:
+    from IPython.display import HTML, display
 
-    return display(Javascript(colab_proxy_button_script(port, path=path, label=label)))
+    return display(HTML(payload))
 
 
 def present_studio_server(
@@ -370,37 +305,36 @@ def present_studio_server(
             raise RuntimeError(
                 "The colab-proxy transport requires google.colab.output."
             )
-        displayed = _display_colab_proxy_button(
-            server.port,
-            path="/",
-            label=label,
+        proxy_url = resolve_colab_proxy_url(server.port)
+        displayed = _display_html(
+            studio_button_html(
+                proxy_url,
+                label=label,
+            )
         )
         return StudioPresentation(
             server=server,
             transport=selected,
             local_url=server.local_url,
+            proxy_url=proxy_url,
             display_result=displayed,
         )
-
-    from IPython.display import HTML, display
 
     proxy_url = (
         studio_proxy_url(server.port, prefix=proxy_prefix)
         if selected == "jupyter-proxy"
         else None
     )
-    displayed = display(
-        HTML(
-            studio_button_html(
-                proxy_url or server.local_url,
-                label=(
-                    "Open Agentic Systems Studio through Jupyter proxy"
-                    if proxy_url
-                    else label
-                ),
-                alternate_url=(server.local_url if proxy_url else None),
-                alternate_label="Open directly on this host",
-            )
+    displayed = _display_html(
+        studio_button_html(
+            proxy_url or server.local_url,
+            label=(
+                "Open Agentic Systems Studio through Jupyter proxy"
+                if proxy_url
+                else label
+            ),
+            alternate_url=(server.local_url if proxy_url else None),
+            alternate_label="Open directly on this host",
         )
     )
     return StudioPresentation(
@@ -486,7 +420,7 @@ __all__ = [
     "StudioPresentation",
     "StudioServer",
     "StudioTransport",
-    "colab_proxy_button_script",
+    "resolve_colab_proxy_url",
     "launch_studio",
     "present_studio_server",
     "resolve_studio_app",

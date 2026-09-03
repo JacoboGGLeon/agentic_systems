@@ -4,11 +4,14 @@ import json
 from pathlib import Path
 from types import SimpleNamespace
 
-from agentic_systems_studio import studio_button_html, studio_proxy_url
+from agentic_systems_studio import (
+    resolve_colab_proxy_url,
+    studio_button_html,
+    studio_proxy_url,
+)
 from agentic_systems_studio.server import (
     DEFAULT_HOST,
     StudioServer,
-    colab_proxy_button_script,
     present_studio_server,
     resolve_studio_app,
     stop_recorded_studio,
@@ -84,7 +87,8 @@ def test_launch_notebook_uses_public_launcher_and_proxy_button():
 def test_colab_transport_renders_proxy_button_that_opens_a_new_tab(
     monkeypatch, tmp_path
 ):
-    calls = []
+    scripts = []
+    html_payloads = []
     server = StudioServer(
         process=SimpleNamespace(),
         app_path=tmp_path / "app.py",
@@ -93,38 +97,43 @@ def test_colab_transport_renders_proxy_button_that_opens_a_new_tab(
         host="127.0.0.1",
         port=8501,
     )
+
+    class ColabOutput:
+        def eval_js(self, script):
+            scripts.append(script)
+            return "https://colab.example/proxy/8501"
+
+    monkeypatch.setattr("agentic_systems_studio.server._colab_output", ColabOutput)
     monkeypatch.setattr(
-        "agentic_systems_studio.server._colab_output",
-        lambda: SimpleNamespace(),
-    )
-    monkeypatch.setattr(
-        "agentic_systems_studio.server._display_colab_proxy_button",
-        lambda port, **kwargs: (
-            calls.append({"port": port, **kwargs}) or "button-result"
-        ),
+        "agentic_systems_studio.server._display_html",
+        lambda payload: html_payloads.append(payload) or "button-result",
     )
 
     presentation = present_studio_server(server, transport="auto")
 
     assert presentation.server is server
     assert presentation.transport == "colab-proxy"
+    assert presentation.proxy_url == "https://colab.example/proxy/8501/"
     assert presentation.display_result == "button-result"
-    assert calls == [
-        {
-            "port": 8501,
-            "path": "/",
-            "label": "Open Agentic Systems Studio",
-        }
-    ]
+    assert scripts == ["google.colab.kernel.proxyPort(8501)"]
+    assert len(html_payloads) == 1
+    assert "href='https://colab.example/proxy/8501/'" in html_payloads[0]
+    assert "target='_blank'" in html_payloads[0]
+    assert "Open Agentic Systems Studio" in html_payloads[0]
+    assert "iframe" not in html_payloads[0].lower()
 
-    script = colab_proxy_button_script(8501)
-    assert "google.colab.kernel.proxyPort(port)" in script
-    assert "document.createElement('button')" in script
-    assert "button.addEventListener('click'" in script
-    assert "window.open('about:blank', '_blank')" in script
-    assert "studioWindow.location.replace(studioUrl)" in script
-    assert "accessAllowed" not in script
-    assert "iframe" not in script.lower()
+
+def test_resolve_colab_proxy_url_validates_port_and_result(monkeypatch):
+    import pytest
+
+    monkeypatch.setattr(
+        "agentic_systems_studio.server._colab_output",
+        lambda: SimpleNamespace(eval_js=lambda _script: "not-a-url"),
+    )
+    with pytest.raises(ValueError, match="port must be"):
+        resolve_colab_proxy_url(0)
+    with pytest.raises(RuntimeError, match="valid kernel-port proxy URL"):
+        resolve_colab_proxy_url(8501)
 
 
 def test_explicit_colab_transport_fails_without_colab_instead_of_falling_back(
