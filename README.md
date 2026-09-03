@@ -52,12 +52,13 @@ strict versioned schemas, normalized reasoning-safe results and polymorphic
 adapter contracts. Its public surface contains 89 stable top-level exports and
 467 traced export/member IDs; all 2.0 serialization views remain compatible.
 
-The certified release passed all 20 Provider x Framework routes and 92/92
-reviewed semantic episodes across deterministic Python, OpenAI, Ollama, Bedrock
-API key, Bedrock IAM in AWS and vLLM. ADA receives the same checksum-verified
-wheel and runs its own environment gate after installation. These are
-artifact-specific results, not a claim that every credential, endpoint or
-model is available in every environment.
+The certified release passed the 20-route primary Provider x Framework matrix
+and 76/76 primary semantic episodes across deterministic Python, OpenAI,
+Ollama, Bedrock API key and vLLM. The same checksum-verified wheel also passed
+Bedrock's four-framework AWS credential-chain matrix in AWS SageMaker and in
+the ADA enterprise sandbox: 28/28 certified routes and 108/108 reviewed
+semantic episodes in total. These are artifact-specific results, not a claim
+that every credential, endpoint or model is available in every environment.
 
 ## Installation
 

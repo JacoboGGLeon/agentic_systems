@@ -79,7 +79,9 @@ def test_normative_docs_preserve_orthogonal_boundaries_and_example_identity() ->
     run_result = _text(ROOT / "docs" / "RUNRESULT_CONTRACT.md")
 
     assert "Computation: function -> Tool -> Skill -> Agent -> System" in model
-    assert "Composition: Agent pipeline | System execution plan | Graph topology" in model
+    assert (
+        "Composition: Agent pipeline | System execution plan | Graph topology" in model
+    )
     assert "Time:        Environment -> Episode -> Step" in model
     assert "Evidence:    Eval observes Agent, System or Episode behavior" in model
     assert "System -> Graph -> Environment -> Eval" not in model
@@ -98,11 +100,26 @@ def test_current_onboarding_does_not_claim_an_unpublished_pypi_release() -> None
     narrative = "\n".join(_text(path) for path in CORE_NARRATIVES)
     onboarding = _text(ROOT / "docs" / "ONBOARDING_FIRST_RUN.md")
 
-    assert not re.search(r"pip install .*agentic-systems(?:\[[^]]+\])?==2\.1\.0", narrative)
+    assert not re.search(
+        r"pip install .*agentic-systems(?:\[[^]]+\])?==2\.1\.0", narrative
+    )
     assert f'assert toolkit.__version__ == "{toolkit.__version__}"' in onboarding
     assert "OLLAMA_BASE_URL" in onboarding
     assert "OLLAMA_MODEL" in onboarding
     assert "RUN_OLLAMA_LIVE" in onboarding
+
+
+def test_release_narrative_uses_one_certification_total() -> None:
+    readme = _text(ROOT / "README.md")
+    certification = _text(ROOT / "docs" / "semantic-certification.md")
+    changelog = _text(ROOT / "CHANGELOG.md")
+
+    for narrative in (readme, certification, changelog):
+        assert "108/108" in narrative
+    assert "28/28 certified routes" in readme
+    assert "28/28 certified routes" in certification
+    assert "92/92" not in readme
+    assert "92/92" not in certification
 
 
 def test_auto_tutorial_derives_provider_inventory_from_the_public_registry() -> None:
@@ -115,7 +132,7 @@ def test_auto_tutorial_derives_provider_inventory_from_the_public_registry() -> 
     )
 
     assert "toolkit.providers.provider_profiles()" in source
-    assert "profile.capability(\"model_generation\")" in source
+    assert 'profile.capability("model_generation")' in source
     assert "model_provider_names" in source
 
 
@@ -156,13 +173,18 @@ def test_zero_to_hero_is_a_progressive_grammar_not_a_snippet_catalog() -> None:
     assert zero_to_hero.count("structured_request") >= 5
     assert "system.skill(calculator_skill)" in zero_to_hero
     assert "calculator_agent = calculator_agent.bind(system)" in zero_to_hero
-    assert "calculator_agent.pipeline(name=\"calculator_pipeline\")" in zero_to_hero
+    assert 'calculator_agent.pipeline(name="calculator_pipeline")' in zero_to_hero
     assert "result = agent_pipeline.run(structured_request)" in zero_to_hero
     assert "system.compile(" in zero_to_hero
-    assert "name=\"calculator_system_pipeline\"" in zero_to_hero
-    assert "toolkit.show(system_pipeline.inspect(), title=\"System execution plan\")" in zero_to_hero
+    assert 'name="calculator_system_pipeline"' in zero_to_hero
+    assert (
+        'toolkit.show(system_pipeline.inspect(), title="System execution plan")'
+        in zero_to_hero
+    )
     assert "result = system_pipeline.run(structured_request)" in zero_to_hero
-    assert "toolkit.show(graph.inspect(), title=\"Native Graph inspection\")" in zero_to_hero
+    assert (
+        'toolkit.show(graph.inspect(), title="Native Graph inspection")' in zero_to_hero
+    )
     for reference in (
         "[API: Agent and `Agent.pipeline`](docs/API.md#agents)",
         "[Notebook: Core 03 - Agent](tutorials/core/03_agent.ipynb)",

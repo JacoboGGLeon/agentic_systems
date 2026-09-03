@@ -158,6 +158,7 @@ def _certified_fixture(module, tmp_path: Path, monkeypatch) -> dict[str, object]
         "package_version": "2.1.1",
         "commit_sha": commit_sha,
         "wheel_sha256": wheel_sha256,
+        "sdist_sha256": module.sha256(sdist),
         "no_fallback": True,
         "secrets_redacted": True,
         "primary_matrix": primary,
@@ -165,6 +166,7 @@ def _certified_fixture(module, tmp_path: Path, monkeypatch) -> dict[str, object]
             "bedrock-runtime/aws-credential-chain": {
                 "artifact": authentication.name,
                 "authentication_mode": "aws-credential-chain",
+                "environment": "Synthetic managed environment",
                 "frameworks": list(FRAMEWORKS),
                 "passed": 4,
                 "failed": 0,
@@ -173,10 +175,19 @@ def _certified_fixture(module, tmp_path: Path, monkeypatch) -> dict[str, object]
         },
         "evidence_inventory": {"vllm_semantic_review": {"artifact": vllm_review.name}},
         "totals": {
+            "primary_combinations": 20,
+            "primary_passed": 20,
+            "additional_route_combinations": 4,
+            "additional_route_passed": 4,
             "certified_live_executions": 24,
+            "certified_live_passed": 24,
             "certified_live_failed": 0,
+            "semantic_episodes": 76,
             "semantic_episodes_passed": 76,
             "semantic_episodes_failed": 0,
+            "total_semantic_episodes_reviewed": 92,
+            "total_semantic_episodes_passed": 92,
+            "total_semantic_episodes_failed": 0,
         },
     }
     _write_json(summary, certification)

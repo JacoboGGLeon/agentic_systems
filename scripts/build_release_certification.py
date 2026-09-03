@@ -11,10 +11,13 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import subprocess
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
+
+from pydantic import BaseModel, ConfigDict, field_validator
 
 try:
     import tomllib
@@ -31,6 +34,37 @@ PRIMARY_PROVIDERS = {
     "bedrock-runtime",
     "vllm-runtime",
 }
+ROUTE_KEY = re.compile(r"^[a-z0-9][a-z0-9._-]*$")
+
+
+class AuthenticationEvidenceSpec(BaseModel):
+    """Typed description of one externally executed authentication route."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    key: str
+    environment: str
+    attestation: Path
+    semantic_attestation: Path
+    review: Path
+
+    @field_validator("key")
+    @classmethod
+    def validate_key(cls, value: str) -> str:
+        if not ROUTE_KEY.fullmatch(value):
+            raise ValueError("key must be a lowercase filesystem-safe identifier")
+        return value
+
+    @field_validator("environment")
+    @classmethod
+    def validate_environment(cls, value: str) -> str:
+        value = value.strip()
+        if not value:
+            raise ValueError("environment must not be empty")
+        return value
+
+
+AuthenticationEvidenceSpec.model_rebuild(_types_namespace={"Path": Path})
 
 
 def _sha256(path: Path) -> str:
@@ -43,6 +77,46 @@ def _sha256(path: Path) -> str:
 
 def _read_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _load_authentication_specs(
+    paths: list[Path],
+) -> tuple[AuthenticationEvidenceSpec, ...]:
+    specs: list[AuthenticationEvidenceSpec] = []
+    keys: set[str] = set()
+    for path in paths:
+        spec = AuthenticationEvidenceSpec.model_validate_json(
+            path.read_text(encoding="utf-8")
+        )
+        base = path.resolve().parent
+        spec = spec.model_copy(
+            update={
+                field: (
+                    value.resolve() if value.is_absolute() else (base / value).resolve()
+                )
+                for field, value in (
+                    ("attestation", spec.attestation),
+                    ("semantic_attestation", spec.semantic_attestation),
+                    ("review", spec.review),
+                )
+            }
+        )
+        missing = [
+            str(value)
+            for value in (spec.attestation, spec.semantic_attestation, spec.review)
+            if not value.is_file()
+        ]
+        if missing:
+            raise ValueError(
+                f"Authentication route {spec.key!r} has missing evidence: {missing}"
+            )
+        if spec.key in keys:
+            raise ValueError(f"Duplicate authentication route key: {spec.key}")
+        keys.add(spec.key)
+        specs.append(spec)
+    if not specs:
+        raise ValueError("At least one authentication route spec is required")
+    return tuple(specs)
 
 
 def _git(*args: str) -> str:
@@ -154,6 +228,7 @@ def _authentication_row(
     *,
     semantic_path: Path,
     review_path: Path,
+    environment_name: str,
     version: str,
     commit: str,
     wheel_sha256: str,
@@ -203,7 +278,8 @@ def _authentication_row(
         "evidence_kind": "live-authentication-and-semantic",
         "authentication_mode": "aws-credential-chain",
         "credential_method": environment.get("bedrock_credential_method"),
-        "environment": environment.get("execution_environment", "AWS SageMaker AI"),
+        "environment": environment_name,
+        "observed_environment": environment.get("execution_environment"),
         "region": environment.get("aws_region"),
         "model": semantic["model"],
         "frameworks": sorted(FRAMEWORKS),
@@ -269,14 +345,20 @@ def build_summary(args: argparse.Namespace) -> dict[str, Any]:
     if set(primary) != PRIMARY_PROVIDERS:
         raise ValueError(f"Primary provider set is incomplete: {set(primary)!r}")
 
-    iam_row = _authentication_row(
-        args.bedrock_iam_attestation,
-        semantic_path=args.bedrock_iam_semantic_attestation,
-        review_path=args.bedrock_iam_review,
-        version=version,
-        commit=certified_commit,
-        wheel_sha256=wheel_sha256,
-    )
+    authentication_routes: dict[str, dict[str, Any]] = {}
+    authentication_specs = _load_authentication_specs(args.authentication_route_spec)
+    for spec in authentication_specs:
+        row = _authentication_row(
+            spec.attestation,
+            semantic_path=spec.semantic_attestation,
+            review_path=spec.review,
+            environment_name=spec.environment,
+            version=version,
+            commit=certified_commit,
+            wheel_sha256=wheel_sha256,
+        )
+        route_key = f"bedrock-runtime/{row['authentication_mode']}/{spec.key}"
+        authentication_routes[route_key] = row
 
     evidence_inventory: dict[str, Any] = {
         "local_semantic_review": {
@@ -291,11 +373,12 @@ def build_summary(args: argparse.Namespace) -> dict[str, Any]:
             "artifact": args.vllm_review.name,
             "sha256": _sha256(args.vllm_review),
         },
-        "aws_iam_semantic_review": {
-            "artifact": args.bedrock_iam_review.name,
-            "sha256": _sha256(args.bedrock_iam_review),
-        },
     }
+    for spec in authentication_specs:
+        evidence_inventory[f"authentication_{spec.key}_semantic_review"] = {
+            "artifact": spec.review.name,
+            "sha256": _sha256(spec.review),
+        }
     if args.studio_attestation is not None:
         studio = _read_json(args.studio_attestation)
         if studio.get("ok") is not True:
@@ -310,6 +393,13 @@ def build_summary(args: argparse.Namespace) -> dict[str, Any]:
         raise ValueError(
             f"Primary semantic episode total is {primary_episodes}, not 76"
         )
+    primary_combinations = len(primary) * len(FRAMEWORKS)
+    additional_combinations = len(authentication_routes) * len(FRAMEWORKS)
+    additional_episodes = sum(
+        row["semantic_episodes_passed"] for row in authentication_routes.values()
+    )
+    certified_combinations = primary_combinations + additional_combinations
+    reviewed_episodes = primary_episodes + additional_episodes
     return {
         "schema_version": "agentic_systems.release-certification.v1",
         "package_version": version,
@@ -340,25 +430,23 @@ def build_summary(args: argparse.Namespace) -> dict[str, Any]:
             "pytest_skipped": args.pytest_skipped,
         },
         "primary_matrix": primary,
-        "additional_authentication_routes": {
-            "bedrock-runtime/aws-credential-chain": iam_row
-        },
+        "additional_authentication_routes": authentication_routes,
         "evidence_inventory": evidence_inventory,
         "totals": {
-            "primary_combinations": 20,
-            "primary_passed": 20,
+            "primary_combinations": primary_combinations,
+            "primary_passed": primary_combinations,
             "primary_failed": 0,
             "semantic_episodes": 76,
             "semantic_episodes_passed": 76,
             "semantic_episodes_failed": 0,
-            "additional_route_combinations": 4,
-            "additional_route_passed": 4,
+            "additional_route_combinations": additional_combinations,
+            "additional_route_passed": additional_combinations,
             "additional_route_failed": 0,
-            "certified_live_executions": 24,
-            "certified_live_passed": 24,
+            "certified_live_executions": certified_combinations,
+            "certified_live_passed": certified_combinations,
             "certified_live_failed": 0,
-            "total_semantic_episodes_reviewed": 92,
-            "total_semantic_episodes_passed": 92,
+            "total_semantic_episodes_reviewed": reviewed_episodes,
+            "total_semantic_episodes_passed": reviewed_episodes,
             "total_semantic_episodes_failed": 0,
         },
     }
@@ -382,9 +470,16 @@ def main() -> int:
     parser.add_argument("--bedrock-api-review", required=True, type=_path)
     parser.add_argument("--vllm-attestation", required=True, type=_path)
     parser.add_argument("--vllm-review", required=True, type=_path)
-    parser.add_argument("--bedrock-iam-attestation", required=True, type=_path)
-    parser.add_argument("--bedrock-iam-semantic-attestation", required=True, type=_path)
-    parser.add_argument("--bedrock-iam-review", required=True, type=_path)
+    parser.add_argument(
+        "--authentication-route-spec",
+        action="append",
+        required=True,
+        type=_path,
+        help=(
+            "Repeatable typed JSON descriptor containing key, environment, "
+            "attestation, semantic_attestation and review paths."
+        ),
+    )
     parser.add_argument("--studio-attestation", type=_path)
     parser.add_argument("--pytest-passed", required=True, type=int)
     parser.add_argument("--pytest-skipped", required=True, type=int)

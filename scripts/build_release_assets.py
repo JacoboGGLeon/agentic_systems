@@ -8,6 +8,7 @@ import json
 import re
 import shutil
 import tarfile
+from email.parser import BytesParser
 
 try:
     import tomllib
@@ -133,8 +134,85 @@ def audit_archive(path: Path, secrets: list[bytes]) -> dict[str, object]:
     }
 
 
+def validate_certification_identity(
+    summary_path: Path,
+    *,
+    wheel: Path,
+    sdist: Path,
+) -> dict[str, object]:
+    payload = json.loads(summary_path.read_text(encoding="utf-8"))
+    totals = payload.get("totals", {})
+    expected = {
+        "schema_version": "agentic_systems.release-certification.v1",
+        "package_version": VERSION,
+        "wheel_sha256": sha256(wheel),
+        "sdist_sha256": sha256(sdist),
+        "no_fallback": True,
+        "secrets_redacted": True,
+        "certified_live_failed": 0,
+        "total_semantic_episodes_failed": 0,
+    }
+    observed = {
+        "schema_version": payload.get("schema_version"),
+        "package_version": payload.get("package_version"),
+        "wheel_sha256": payload.get("wheel_sha256"),
+        "sdist_sha256": payload.get("sdist_sha256"),
+        "no_fallback": payload.get("no_fallback"),
+        "secrets_redacted": payload.get("secrets_redacted"),
+        "certified_live_failed": totals.get("certified_live_failed"),
+        "total_semantic_episodes_failed": totals.get("total_semantic_episodes_failed"),
+    }
+    if observed != expected:
+        raise ValueError(
+            "Certification does not describe the release artifacts: "
+            f"observed={observed!r}, expected={expected!r}"
+        )
+    return payload
+
+
+def validate_distribution_narrative(
+    *,
+    wheel: Path,
+    sdist: Path,
+    readme: Path | None = None,
+) -> None:
+    canonical = (readme or (ROOT / "README.md")).read_text(encoding="utf-8")
+    with zipfile.ZipFile(wheel) as archive:
+        metadata_names = [
+            name for name in archive.namelist() if name.endswith(".dist-info/METADATA")
+        ]
+        if len(metadata_names) != 1:
+            raise ValueError(f"Wheel metadata is ambiguous: {metadata_names!r}")
+        metadata = BytesParser().parsebytes(archive.read(metadata_names[0]))
+        wheel_readme = metadata.get_payload()
+    with tarfile.open(sdist, "r:gz") as archive:
+        readme_members = [
+            member
+            for member in archive.getmembers()
+            if member.isfile() and Path(member.name).name == "README.md"
+        ]
+        if len(readme_members) != 1:
+            raise ValueError(f"Sdist README is ambiguous: {readme_members!r}")
+        stream = archive.extractfile(readme_members[0])
+        if stream is None:  # pragma: no cover - guarded by member.isfile().
+            raise ValueError("Sdist README could not be read")
+        sdist_readme = stream.read().decode("utf-8")
+
+    def normalize(value: str) -> str:
+        return value.replace("\r\n", "\n").rstrip()
+
+    if normalize(wheel_readme) != normalize(canonical):
+        raise ValueError("Wheel long description does not match the canonical README")
+    if normalize(sdist_readme) != normalize(canonical):
+        raise ValueError("Sdist README does not match the canonical README")
+
+
 def build_release_assets(*, require_certification: bool = False) -> dict[str, object]:
     DIST.mkdir(parents=True, exist_ok=True)
+    if require_certification and not CERTIFICATION_SUMMARY.exists():
+        raise FileNotFoundError(
+            f"Final release assembly requires {CERTIFICATION_SUMMARY}"
+        )
     if not STUDIO_SOURCE.exists():
         raise FileNotFoundError(
             "Build the Studio bundle first with "
@@ -152,13 +230,17 @@ def build_release_assets(*, require_certification: bool = False) -> dict[str, ob
         skill,
         CHALLENGE_SOURCE,
     ]
+    wheel = DIST / f"agentic_systems-{VERSION}-py3-none-any.whl"
+    sdist = DIST / f"agentic_systems-{VERSION}.tar.gz"
+    validate_distribution_narrative(wheel=wheel, sdist=sdist)
     if CERTIFICATION_SUMMARY.exists():
+        validate_certification_identity(
+            CERTIFICATION_SUMMARY,
+            wheel=wheel,
+            sdist=sdist,
+        )
         shutil.copy2(CERTIFICATION_SUMMARY, CERTIFICATION_ASSET)
         artifacts.append(CERTIFICATION_ASSET)
-    elif require_certification:
-        raise FileNotFoundError(
-            f"Final release assembly requires {CERTIFICATION_SUMMARY}"
-        )
     ada_bundle = DIST / f"agentic-systems-{VERSION}-ada-offline.zip"
     if ada_bundle.exists():
         artifacts.append(ada_bundle)

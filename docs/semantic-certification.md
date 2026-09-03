@@ -61,13 +61,13 @@ the complete execution path.
 
 ## Certified 2.1 release evidence
 
-The final 2.1 gate covers all 20 canonical Provider x Framework routes. The
-primary matrix passed 76/76 semantic episodes. Bedrock's AWS credential-chain
-route passed another 16/16 episodes in SageMaker, for 92/92 reviewed episodes
-in the 2.1.1 candidate. ADA receives the same checksum-verified wheel and owns
-an environment-specific live gate after installation; compatibility is not
-presented as a live result until that gate runs. Review includes the public
-answer and complete lineage; `ok=true` alone is never sufficient.
+The final 2.1 gate covers the 20 canonical routes in the primary Provider x
+Framework matrix and 76/76 primary semantic episodes. Bedrock's AWS
+credential-chain route then passed the same four Framework routes and 16/16
+episodes in AWS SageMaker and again in the ADA enterprise sandbox. The final
+total is therefore 28/28 certified routes and 108/108 reviewed semantic
+episodes, all using the same checksum-verified wheel. Review includes the
+public answer and complete lineage; `ok=true` alone is never sufficient.
 
 The downloadable `final-certification-summary.json` records the exact wheel
 hash, certified runtime commit, release-assembly commit, core-tree equivalence,

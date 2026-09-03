@@ -119,20 +119,40 @@ jobs:
             candidate/ada
           bundle="candidate/ada/agentic-systems-${RELEASE_VERSION}-ada-offline"
           python "$bundle/verify_bundle.py"
-          python - "$bundle/manifest.json" <<'PY'
+          python - "$bundle/manifest.json" \
+            "candidate/final-certification-summary.json" <<'PY'
           import json
           import os
           import sys
           from pathlib import Path
 
           manifest = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+          summary = json.loads(Path(sys.argv[2]).read_text(encoding="utf-8"))
+          totals = summary["totals"]
           assert manifest["package_version"] == os.environ["RELEASE_VERSION"]
           assert manifest["wheel"]["sha256"] == os.environ["EXPECTED_WHEEL_SHA256"]
           assert manifest["credentials_included"] is False
           certification = manifest["certification"]
-          assert certification["primary"] == "20/20"
-          assert certification["semantic_episodes"] == "76/76"
-          assert certification["bedrock_iam"] == "4/4"
+          assert summary["wheel_sha256"] == os.environ["EXPECTED_WHEEL_SHA256"]
+          assert summary["sdist_sha256"] == os.environ["EXPECTED_SDIST_SHA256"]
+          assert certification["primary"] == (
+              f"{totals['primary_passed']}/{totals['primary_combinations']}"
+          )
+          assert certification["semantic_episodes"] == (
+              f"{totals['semantic_episodes_passed']}/"
+              f"{totals['semantic_episodes']}"
+          )
+          assert certification["bedrock_iam"] == (
+              f"{totals['additional_route_passed']}/"
+              f"{totals['additional_route_combinations']}"
+          )
+          assert certification["authentication_routes"] == len(
+              summary["additional_authentication_routes"]
+          )
+          assert certification["total"] == (
+              f"{totals['certified_live_passed']}/"
+              f"{totals['certified_live_executions']}"
+          )
           assert certification["no_fallback"] is True
           PY
       - name: Verify package metadata

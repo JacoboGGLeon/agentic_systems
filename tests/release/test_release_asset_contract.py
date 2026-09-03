@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 import importlib.util
+import json
+import tarfile
+import zipfile
 from pathlib import Path
 
 import pytest
@@ -99,3 +102,80 @@ def test_certification_source_and_public_asset_have_distinct_locations() -> None
     assert module.CERTIFICATION_SUMMARY.parent.name == "release-evidence"
     assert module.CERTIFICATION_ASSET.parent == module.DIST
     assert module.CERTIFICATION_ASSET.name == module.CERTIFICATION_SUMMARY.name
+
+
+def test_certification_identity_rejects_a_different_release_artifact(
+    monkeypatch, tmp_path: Path
+) -> None:
+    module = _builder()
+    monkeypatch.setattr(module, "VERSION", "2.1.1")
+    wheel = tmp_path / "agentic_systems-2.1.1-py3-none-any.whl"
+    sdist = tmp_path / "agentic_systems-2.1.1.tar.gz"
+    wheel.write_bytes(b"final wheel")
+    sdist.write_bytes(b"final sdist")
+    summary = tmp_path / "final-certification-summary.json"
+    summary.write_text(
+        json.dumps(
+            {
+                "schema_version": "agentic_systems.release-certification.v1",
+                "package_version": "2.1.1",
+                "wheel_sha256": "0" * 64,
+                "sdist_sha256": module.sha256(sdist),
+                "no_fallback": True,
+                "secrets_redacted": True,
+                "totals": {
+                    "certified_live_failed": 0,
+                    "total_semantic_episodes_failed": 0,
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="does not describe"):
+        module.validate_certification_identity(
+            summary,
+            wheel=wheel,
+            sdist=sdist,
+        )
+
+
+def _synthetic_distributions(tmp_path: Path, readme: str) -> tuple[Path, Path]:
+    wheel = tmp_path / "agentic_systems-2.1.1-py3-none-any.whl"
+    metadata = (
+        "Metadata-Version: 2.4\n"
+        "Name: agentic-systems\n"
+        "Version: 2.1.1\n"
+        "Description-Content-Type: text/markdown\n\n" + readme
+    )
+    with zipfile.ZipFile(wheel, "w") as archive:
+        archive.writestr("agentic_systems-2.1.1.dist-info/METADATA", metadata)
+    sdist = tmp_path / "agentic_systems-2.1.1.tar.gz"
+    source = tmp_path / "README.md"
+    source.write_text(readme, encoding="utf-8")
+    with tarfile.open(sdist, "w:gz") as archive:
+        archive.add(source, arcname="agentic_systems-2.1.1/README.md")
+    return wheel, sdist
+
+
+def test_distribution_narrative_must_match_the_canonical_readme(
+    tmp_path: Path,
+) -> None:
+    module = _builder()
+    readme = tmp_path / "canonical.md"
+    readme.write_text("# Canonical\n\nOne contract.\n", encoding="utf-8")
+    wheel, sdist = _synthetic_distributions(tmp_path, "# Canonical\n\nOne contract.\n")
+
+    module.validate_distribution_narrative(
+        wheel=wheel,
+        sdist=sdist,
+        readme=readme,
+    )
+
+    readme.write_text("# Changed after the build\n", encoding="utf-8")
+    with pytest.raises(ValueError, match="Wheel long description"):
+        module.validate_distribution_narrative(
+            wheel=wheel,
+            sdist=sdist,
+            readme=readme,
+        )

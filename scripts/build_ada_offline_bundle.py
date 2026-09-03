@@ -198,11 +198,21 @@ def _load_certification() -> dict[str, object]:
         )
     certification = json.loads(SUMMARY.read_text(encoding="utf-8"))
     totals = certification.get("totals", {})
+    primary = certification.get("primary_matrix", {})
+    authentication_routes = certification.get("additional_authentication_routes", {})
+    primary_combinations = len(PROVIDER_NAMES) * len(FRAMEWORK_NAMES)
+    additional_combinations = len(authentication_routes) * len(FRAMEWORK_NAMES)
+    certified_combinations = primary_combinations + additional_combinations
     if (
         certification.get("schema_version")
         != "agentic_systems.release-certification.v1"
         or certification.get("package_version") != VERSION
-        or totals.get("certified_live_executions") != 24
+        or set(primary) != set(PROVIDER_NAMES)
+        or not authentication_routes
+        or totals.get("primary_combinations") != primary_combinations
+        or totals.get("additional_route_combinations") != additional_combinations
+        or totals.get("certified_live_executions") != certified_combinations
+        or totals.get("certified_live_passed") != certified_combinations
         or totals.get("certified_live_failed") != 0
         or not certification.get("no_fallback")
         or not certification.get("secrets_redacted")
@@ -210,8 +220,8 @@ def _load_certification() -> dict[str, object]:
         raise ValueError("Release certification is incomplete or inconsistent")
     if not WHEEL.is_file() or sha256(WHEEL) != certification.get("wheel_sha256"):
         raise ValueError("Certified wheel is missing or its SHA256 changed")
-    if not SDIST.is_file():
-        raise FileNotFoundError(SDIST)
+    if not SDIST.is_file() or sha256(SDIST) != certification.get("sdist_sha256"):
+        raise ValueError("Certified sdist is missing or its SHA256 changed")
 
     for provider, row in certification.get("primary_matrix", {}).items():
         evidence = EVIDENCE / str(row["artifact"])
@@ -295,6 +305,11 @@ def _requirements() -> str:
 
 
 def _readme(certification: dict[str, object], provenance: dict[str, object]) -> str:
+    totals = certification["totals"]
+    authentication_routes = certification["additional_authentication_routes"]
+    environments = ", ".join(
+        sorted(str(row["environment"]) for row in authentication_routes.values())
+    )
     return textwrap.dedent(
         f"""\
         # Agentic Systems {VERSION} · entrega industrial para ADA
@@ -319,8 +334,12 @@ def _readme(certification: dict[str, object], provenance: dict[str, object]) -> 
         - `studio/`: un solo sistema agéntico conversacional, directo y Streamlit.
         - `tutorials/`: los 21 notebooks canónicos; no hay duplicado CLI.
         - `validation/`: matriz semántica E2E ejecutable desde el wheel incluido.
-        - `evidence/`: matriz primaria 20/20, Bedrock IAM en AWS y 92/92
-          episodios semánticos revisados.
+        - `evidence/`: matriz primaria
+          {totals["primary_passed"]}/{totals["primary_combinations"]}, rutas
+          Bedrock IAM en {environments} y
+          {totals["total_semantic_episodes_passed"]}/
+          {totals["total_semantic_episodes_reviewed"]} episodios semánticos
+          revisados.
         - `.env.example`: contrato único para provider, framework y modelo.
         - `verify_bundle.py`: verificación offline de todos los checksums.
 
@@ -384,9 +403,13 @@ def _readme(certification: dict[str, object], provenance: dict[str, object]) -> 
         - source commit certificado: `{provenance["certified_commit"]}`
         - materials commit: `{provenance["materials_commit"]}`
         - core source equivalente: `true`
-        - combinaciones primarias y ruta IAM adicional: `24/24`, sin fallback
+        - combinaciones certificadas:
+          `{totals["certified_live_passed"]}/
+          {totals["certified_live_executions"]}`, sin fallback
         - gate ADA posterior a instalación: requerido en el sandbox destino
-        - episodios semánticos revisados: `92/92`
+        - episodios semánticos revisados:
+          `{totals["total_semantic_episodes_passed"]}/
+          {totals["total_semantic_episodes_reviewed"]}`
 
         El commit de materiales puede ser posterior porque sólo mejora tutoriales,
         Studio y tests. El builder comprueba que el árbol `src/agentic_systems`
@@ -501,10 +524,25 @@ def build_bundle(
             "provenance": provenance,
             "certification": {
                 "schema_version": certification["schema_version"],
-                "primary": "20/20",
-                "semantic_episodes": "76/76",
-                "bedrock_iam": "4/4",
-                "total": "24/24",
+                "primary": (
+                    f"{certification['totals']['primary_passed']}/"
+                    f"{certification['totals']['primary_combinations']}"
+                ),
+                "semantic_episodes": (
+                    f"{certification['totals']['semantic_episodes_passed']}/"
+                    f"{certification['totals']['semantic_episodes']}"
+                ),
+                "bedrock_iam": (
+                    f"{certification['totals']['additional_route_passed']}/"
+                    f"{certification['totals']['additional_route_combinations']}"
+                ),
+                "authentication_routes": len(
+                    certification["additional_authentication_routes"]
+                ),
+                "total": (
+                    f"{certification['totals']['certified_live_passed']}/"
+                    f"{certification['totals']['certified_live_executions']}"
+                ),
                 "no_fallback": True,
             },
             "providers": list(PROVIDER_NAMES),
