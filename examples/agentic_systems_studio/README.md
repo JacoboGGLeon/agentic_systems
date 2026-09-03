@@ -99,13 +99,18 @@ Open `notebooks/01_launch_studio.ipynb` and run both cells on local,
 SageMaker or ADA. The launcher binds Streamlit to loopback, checks health and
 provides both the local URL and the ADA/JupyterLab proxy URL.
 
-The vLLM Colab release notebook starts the same Streamlit application and
-renders an HTML button backed by Colab's authenticated kernel-port proxy; a
-click opens Studio in a new tab. This is a
-presentation concern only: provider/framework selectors, conversation history,
-normalized RunResult, processing mark and usage come from the same application
-API. Set AGENTIC_SYSTEMS_STUDIO_PRESENTATION=notebook only to request the
-notebook-native adapter explicitly; there is no silent UI fallback.
+The vLLM Colab bundle contains a direct Studio notebook and a separate release
+certification notebook. Both start the same Streamlit application and render an
+HTML button backed by Colab's authenticated kernel-port proxy; a click opens
+Studio in a new tab. The `colab-proxy` transport keeps Streamlit on loopback and
+relaxes its origin/XSRF checks only at that authenticated notebook boundary so
+the proxied WebSocket can connect. Local and Jupyter/SageMaker transports retain
+their normal protection profile.
+
+This is a presentation concern only: provider/framework selectors, conversation
+history, normalized RunResult, processing mark and usage come from the same
+application API. Set `AGENTIC_SYSTEMS_STUDIO_PRESENTATION=notebook` only to
+request the notebook-native adapter explicitly; there is no silent UI fallback.
 Studio discovers the routes configured by the canonical `.env` and managed host
 environment. The sidebar can select any discovered Provider and any installed
 Framework for the current session; credentials are never entered, copied or

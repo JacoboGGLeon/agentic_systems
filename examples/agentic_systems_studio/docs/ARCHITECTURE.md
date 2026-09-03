@@ -24,8 +24,12 @@ Streamlit and the notebook widget call the same ConversationalStudio.run()
 method and render the same normalized RunResult, lineage, processing and usage
 projections. The host capability changes only transport: Colab renders an HTML
 button backed by its authenticated kernel-port proxy and opens Studio in a new
-tab; ADA/JupyterLab uses its platform proxy path and
-local execution uses loopback. Notebook-native presentation is an explicit
-alternative, never a provider-specific branch or silent fallback.
+tab; ADA/JupyterLab uses its platform proxy path and local execution uses
+loopback. The Colab transport selects a trusted-proxy server policy: it remains
+bound to loopback while CORS/XSRF and WebSocket compression are adjusted for the
+authenticated proxy. That policy is rejected on a non-loopback bind. Other
+transports preserve Streamlit's secure defaults. Notebook-native presentation
+is an explicit alternative, never a provider-specific branch or silent
+fallback.
 No credential, model cache, conversation database or live evidence is embedded
 in the Studio bundle.

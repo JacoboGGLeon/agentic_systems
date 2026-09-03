@@ -97,8 +97,18 @@ def streamlit_command(
     *,
     host: str = DEFAULT_HOST,
     port: int = DEFAULT_PORT,
+    trusted_proxy: bool = False,
 ) -> list[str]:
-    return [
+    """Build a Streamlit command for a local or authenticated proxy boundary.
+
+    The default keeps Streamlit's origin protections. ``trusted_proxy`` is an
+    explicit host-transport policy for loopback servers whose external access
+    is authenticated by the notebook host (for example, Colab's kernel proxy).
+    """
+
+    if trusted_proxy and host not in {"127.0.0.1", "localhost", "::1"}:
+        raise ValueError("trusted_proxy requires a loopback Studio host")
+    command = [
         sys.executable,
         "-m",
         "streamlit",
@@ -115,6 +125,18 @@ def streamlit_command(
         "--server.fileWatcherType",
         "none",
     ]
+    if trusted_proxy:
+        command.extend(
+            [
+                "--server.enableCORS",
+                "false",
+                "--server.enableXsrfProtection",
+                "false",
+                "--server.enableWebsocketCompression",
+                "false",
+            ]
+        )
+    return command
 
 
 def wait_for_studio(
@@ -161,6 +183,7 @@ def start_studio_server(
     log_dir: str | Path | None = None,
     timeout_s: float = 60.0,
     stop_previous: bool = True,
+    trusted_proxy: bool = False,
 ) -> StudioServer:
     app = resolve_studio_app(app_path)
     logs = Path(log_dir).resolve() if log_dir is not None else app.parent / "logs"
@@ -173,7 +196,7 @@ def start_studio_server(
     creationflags = subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0
     with log_path.open("w", encoding="utf-8") as log_handle:
         process = subprocess.Popen(
-            streamlit_command(app, host=host, port=port),
+            streamlit_command(app, host=host, port=port, trusted_proxy=trusted_proxy),
             cwd=str(app.parent),
             stdout=log_handle,
             stderr=subprocess.STDOUT,
@@ -244,6 +267,27 @@ def _colab_output() -> Any | None:
     return colab_output
 
 
+def resolve_studio_transport(
+    transport: StudioTransport = "auto",
+) -> StudioTransport:
+    """Resolve presentation from host capabilities, never from the LM provider."""
+
+    if transport not in {"auto", "colab-proxy", "jupyter-proxy", "local"}:
+        raise ValueError(
+            "Unknown Studio transport "
+            f"{transport!r}; use auto, colab-proxy, jupyter-proxy or local."
+        )
+    if transport != "auto":
+        return transport
+    if _colab_output() is not None:
+        return "colab-proxy"
+    if os.getenv("JUPYTERHUB_SERVICE_PREFIX") or os.getenv(
+        "AGENTIC_STUDIO_PROXY_PREFIX"
+    ):
+        return "jupyter-proxy"
+    return "local"
+
+
 def resolve_colab_proxy_url(port: int) -> str:
     """Resolve the authenticated Colab URL for a kernel port."""
 
@@ -282,23 +326,8 @@ def present_studio_server(
     separate explicit adapter.
     """
 
-    if transport not in {"auto", "colab-proxy", "jupyter-proxy", "local"}:
-        raise ValueError(
-            "Unknown Studio transport "
-            f"{transport!r}; use auto, colab-proxy, jupyter-proxy or local."
-        )
-
+    selected = resolve_studio_transport(transport)
     colab_output = _colab_output()
-    selected = transport
-    if selected == "auto":
-        if colab_output is not None:
-            selected = "colab-proxy"
-        elif os.getenv("JUPYTERHUB_SERVICE_PREFIX") or os.getenv(
-            "AGENTIC_STUDIO_PROXY_PREFIX"
-        ):
-            selected = "jupyter-proxy"
-        else:
-            selected = "local"
 
     if selected == "colab-proxy":
         if colab_output is None:
@@ -360,6 +389,7 @@ def launch_studio(
 ) -> StudioPresentation:
     """Start Streamlit and present it through an explicit host transport."""
 
+    selected_transport = resolve_studio_transport(transport)
     server = start_studio_server(
         app_path=app_path,
         host=host,
@@ -367,11 +397,12 @@ def launch_studio(
         log_dir=log_dir,
         timeout_s=timeout_s,
         stop_previous=stop_previous,
+        trusted_proxy=selected_transport == "colab-proxy",
     )
     try:
         return present_studio_server(
             server,
-            transport=transport,
+            transport=selected_transport,
             proxy_prefix=proxy_prefix,
             label=label,
         )
@@ -421,6 +452,7 @@ __all__ = [
     "StudioServer",
     "StudioTransport",
     "resolve_colab_proxy_url",
+    "resolve_studio_transport",
     "launch_studio",
     "present_studio_server",
     "resolve_studio_app",

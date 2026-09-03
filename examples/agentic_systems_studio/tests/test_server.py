@@ -12,6 +12,7 @@ from agentic_systems_studio import (
 from agentic_systems_studio.server import (
     DEFAULT_HOST,
     StudioServer,
+    launch_studio,
     present_studio_server,
     resolve_studio_app,
     stop_recorded_studio,
@@ -31,6 +32,19 @@ def test_server_defaults_are_loopback_and_proxy_compatible():
     assert "--server.enableCORS" not in command
     assert "--server.enableXsrfProtection" not in command
     assert studio_proxy_url(8765) == "/jupyterlab/default/proxy/8765/"
+
+
+def test_trusted_proxy_command_relaxes_origin_only_on_loopback():
+    app = resolve_studio_app(PROJECT_ROOT / "app.py")
+    command = streamlit_command(app, port=8765, trusted_proxy=True)
+    assert command[command.index("--server.enableCORS") + 1] == "false"
+    assert command[command.index("--server.enableXsrfProtection") + 1] == "false"
+    assert command[command.index("--server.enableWebsocketCompression") + 1] == "false"
+
+    import pytest
+
+    with pytest.raises(ValueError, match="requires a loopback"):
+        streamlit_command(app, host="0.0.0.0", trusted_proxy=True)
 
 
 def test_html_button_escapes_urls_and_opens_two_explicit_targets():
@@ -134,6 +148,39 @@ def test_resolve_colab_proxy_url_validates_port_and_result(monkeypatch):
         resolve_colab_proxy_url(0)
     with pytest.raises(RuntimeError, match="valid kernel-port proxy URL"):
         resolve_colab_proxy_url(8501)
+
+
+def test_launch_studio_applies_trusted_proxy_policy_for_colab(monkeypatch, tmp_path):
+    calls = {}
+    server = StudioServer(
+        process=SimpleNamespace(),
+        app_path=tmp_path / "app.py",
+        log_path=tmp_path / "streamlit.log",
+        pid_path=tmp_path / "streamlit.pid",
+        host="127.0.0.1",
+        port=8501,
+    )
+    presentation = SimpleNamespace(server=server)
+    monkeypatch.setattr(
+        "agentic_systems_studio.server._colab_output", lambda: SimpleNamespace()
+    )
+
+    def fake_start(**kwargs):
+        calls["start"] = kwargs
+        return server
+
+    def fake_present(observed_server, **kwargs):
+        calls["present"] = {"server": observed_server, **kwargs}
+        return presentation
+
+    monkeypatch.setattr("agentic_systems_studio.server.start_studio_server", fake_start)
+    monkeypatch.setattr(
+        "agentic_systems_studio.server.present_studio_server", fake_present
+    )
+
+    assert launch_studio(transport="auto") is presentation
+    assert calls["start"]["trusted_proxy"] is True
+    assert calls["present"]["transport"] == "colab-proxy"
 
 
 def test_explicit_colab_transport_fails_without_colab_instead_of_falling_back(

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import ast
+import copy
 import hashlib
 import re
 import shutil
@@ -34,6 +35,7 @@ DEFAULT_WHEEL = ROOT / "dist" / "agentic_systems-2.1.1-py3-none-any.whl"
 DEFAULT_OUTPUT = ROOT / "dist"
 PACKAGE_STEM = "agentic-systems-2.1.1-vllm-qwen4b-colab-final"
 NOTEBOOK_FILENAME = "03_vllm_qwen4b_colab_final.ipynb"
+STUDIO_NOTEBOOK_FILENAME = "04_vllm_qwen4b_colab_studio.ipynb"
 DEFAULT_MODEL_ID = "unsloth/Qwen3-4B-Instruct-2507"
 DEFAULT_BASE_MODEL_ID = "Qwen/Qwen3-4B-Instruct-2507"
 
@@ -113,19 +115,24 @@ def _readme(
         f"""\
         # Agentic Systems 2.1.1 · vLLM/Qwen 4B final live kit
 
+        El bundle contiene dos recorridos sobre el mismo wheel, modelo y Studio:
+
         1. Abre un Colab nuevo y selecciona una GPU L4.
-        2. Sube `{PACKAGE_STEM}.zip` cuando lo solicite la primera celda.
-        3. Ejecuta **Run all** una sola vez.
-        4. Descarga `vllm-semantic-attestation.json`, `vllm-semantic-review.md`
-           y `vllm-studio-live.json`.
-        5. Colab renderiza **Agentic Systems Studio** en Streamlit mediante el
-           proxy autenticado del puerto del kernel; muestra un botón HTML que abre
-           Studio en una pestaña nueva. La UI notebook-native queda
-           disponible sólo como alternativa explícita configurando
-           AGENTIC_SYSTEMS_STUDIO_PRESENTATION=notebook; ambas presentaciones
-           ejecutan el mismo ConversationalStudio, RunResult, lineage y usage.
-           El ModelServer permanece activo hasta ejecutar
-           close_studio_and_model_server().
+        2. Para conversar de inmediato, abre `{STUDIO_NOTEBOOK_FILENAME}`, sube
+           `{PACKAGE_STEM}.zip` y ejecuta **Run all**. Este notebook sólo instala,
+           levanta vLLM/Qwen y presenta Studio; no ejecuta la attestation.
+        3. Para certificar el release, abre `{NOTEBOOK_FILENAME}`. Ese recorrido sí
+           produce `vllm-semantic-attestation.json`, `vllm-semantic-review.md` y
+           `vllm-studio-live.json`.
+        4. En ambos casos, el ModelServer permanece activo hasta ejecutar
+           `close_studio_and_model_server()`.
+
+        Colab presenta **Agentic Systems Studio** mediante un botón HTML que abre
+        una pestaña nueva sobre su proxy autenticado. El perfil `colab-proxy`
+        mantiene Streamlit en loopback y adapta CORS/XSRF y WebSocket sólo para esa
+        frontera confiable; no cambia provider, framework ni lógica de aplicación.
+        La UI notebook-native sigue disponible como alternativa explícita con
+        `AGENTIC_SYSTEMS_STUDIO_PRESENTATION=notebook`.
 
         Identidad certificable:
 
@@ -135,28 +142,43 @@ def _readme(
         - SHA256: `{wheel_sha256}`
         - Model: `{model_id}`
 
-        `.env` es la fuente canónica y mutable de configuración. El notebook
-        verifica los materiales inmutables antes de instalar; `.env` queda fuera
-        del checksum para permitir cambiar modelo/recursos sin invalidar el ZIP. No se
-        permite fallback de provider.
-        El cierre exige respuesta humana, linaje jerárquico, validación
-        determinista y judge; `ok=true` por sí solo no certifica una celda.
+        `.env` es la fuente canónica y mutable de configuración. El notebook de
+        certificación verifica los materiales inmutables antes de instalar; `.env`
+        queda fuera del checksum para permitir cambiar recursos sin invalidar el
+        ZIP. No se permite fallback de provider. La certificación exige respuesta
+        humana, linaje, validación determinista y judge; `ok=true` por sí solo no
+        certifica una celda.
         """
     )
 
 
-def _bootstrap(wheel_filename: str) -> nbformat.NotebookNode:
-    source = f'''from pathlib import Path
+def _bootstrap(
+    wheel_filename: str,
+    *,
+    include_attestation: bool = True,
+) -> nbformat.NotebookNode:
+    required = [
+        ".env",
+        wheel_filename,
+        "studio/app.py",
+        "studio/src/agentic_systems_studio/__init__.py",
+    ]
+    if include_attestation:
+        required.extend(
+            [
+                "run_semantic_matrix.py",
+                "semantic_e2e_application.py",
+                "studio/scripts/validate_conversation_live.py",
+            ]
+        )
+    required_source = "\n".join(f"    CONTENT / {name!r}," for name in required)
+    source = f"""from pathlib import Path
 import hashlib
 import zipfile
 
 CONTENT = Path("/content")
 REQUIRED = (
-    CONTENT / ".env",
-    CONTENT / "{wheel_filename}",
-    CONTENT / "run_semantic_matrix.py",
-    CONTENT / "semantic_e2e_application.py",
-    CONTENT / "studio" / "scripts" / "validate_conversation_live.py",
+{required_source}
 )
 
 from google.colab import files
@@ -180,7 +202,7 @@ for line in manifest_path.read_text(encoding="utf-8").splitlines():
         "actual": actual,
         "expected": expected,
     }}
-print("Agentic Systems vLLM final package ready")'''
+print("Agentic Systems vLLM final package ready")"""
     cell = nbformat.v4.new_code_cell(source)
     cell["id"] = "vllm-final-bootstrap"
     cell.metadata["tags"] = ["colab-bootstrap", "package-contract"]
@@ -337,6 +359,70 @@ else:
     cell["id"] = "vllm-studio-colab-launcher"
     cell.metadata["tags"] = ["studio", "colab-launcher"]
     return cell
+
+
+def _studio_only_notebook(
+    source: nbformat.NotebookNode,
+    *,
+    wheel_filename: str,
+    model_id: str,
+    base_model_id: str,
+    commit: str,
+    application_commit: str,
+    wheel_sha256: str,
+) -> nbformat.NotebookNode:
+    """Build the direct Colab path: install → ModelServer → Studio."""
+
+    selected_ids = [f"vllm-21-{index:02d}" for index in range(10)] + ["vllm-21-18"]
+    cells_by_id = {cell.get("id"): cell for cell in source.cells}
+    missing = [cell_id for cell_id in selected_ids if cell_id not in cells_by_id]
+    if missing:
+        raise ValueError(f"missing Studio notebook source cells: {missing}")
+    notebook = nbformat.v4.new_notebook(
+        metadata=copy.deepcopy(source.metadata),
+        cells=[copy.deepcopy(cells_by_id[cell_id]) for cell_id in selected_ids],
+    )
+    notebook.cells[0]["source"] = """# Agentic Systems Studio · vLLM + Qwen 4B
+
+Este recorrido operativo hace una sola cosa de principio a fin:
+
+`instalar → levantar Qwen con vLLM → abrir Agentic Systems Studio`
+
+No ejecuta smokes, matrices, judges ni attestations antes de presentar Studio.
+El servidor permanece activo hasta llamar `close_studio_and_model_server()`."""
+    notebook.cells[1]["source"] = """## Parámetros de ejecución
+
+`.env` conserva la identidad del wheel y permite ajustar recursos de vLLM. El
+modelo predeterminado es `unsloth/Qwen3-4B-Instruct-2507` sobre una GPU L4."""
+    notebook.cells[2]["source"] = """## Frontera operativa
+
+ModelArtifact identifica el modelo; ModelServer posee el proceso vLLM; Runtime
+conecta Agentic Systems con su endpoint OpenAI-compatible; Studio utiliza esa
+misma API pública sin redefinir el sistema."""
+    _configure_notebook_models(
+        notebook,
+        model_id=model_id,
+        base_model_id=base_model_id,
+    )
+    notebook.cells.insert(0, _bootstrap(wheel_filename, include_attestation=False))
+    _insert_before_model_server_teardown(notebook, _studio_launcher_cell())
+    _defer_model_server_teardown(notebook)
+    notebook.metadata.setdefault("agentic_systems", {})["portable_package"] = {
+        "filename": f"{PACKAGE_STEM}.zip",
+        "role": "studio-direct",
+        "model": model_id,
+        "base_model": base_model_id,
+        "commit_sha": commit,
+        "application_commit_sha": application_commit,
+        "wheel_filename": wheel_filename,
+        "wheel_sha256": wheel_sha256,
+    }
+    _assert_model_consistency(
+        notebook,
+        model_id=model_id,
+        base_model_id=base_model_id,
+    )
+    return notebook
 
 
 def _defer_model_server_teardown(notebook: nbformat.NotebookNode) -> None:
@@ -507,7 +593,8 @@ def build(
         encoding="utf-8",
     )
 
-    notebook = nbformat.read(SOURCE, as_version=4)
+    source_notebook = nbformat.read(SOURCE, as_version=4)
+    notebook = copy.deepcopy(source_notebook)
     _configure_notebook_models(
         notebook,
         model_id=model_id,
@@ -532,10 +619,20 @@ def build(
         base_model_id=base_model_id,
     )
     nbformat.write(notebook, package_dir / NOTEBOOK_FILENAME)
-
+    studio_notebook = _studio_only_notebook(
+        source_notebook,
+        wheel_filename=wheel.name,
+        model_id=model_id,
+        base_model_id=base_model_id,
+        commit=commit,
+        application_commit=application_commit,
+        wheel_sha256=wheel_sha256,
+    )
+    nbformat.write(studio_notebook, package_dir / STUDIO_NOTEBOOK_FILENAME)
     package_files = (
         ".env",
         NOTEBOOK_FILENAME,
+        STUDIO_NOTEBOOK_FILENAME,
         wheel.name,
         "README.md",
         "run_semantic_matrix.py",

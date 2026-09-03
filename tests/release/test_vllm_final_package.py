@@ -47,6 +47,7 @@ def test_final_vllm_kit_derives_identity_from_real_artifacts(tmp_path: Path) -> 
         assert {
             ".env",
             "03_vllm_qwen4b_colab_final.ipynb",
+            "04_vllm_qwen4b_colab_studio.ipynb",
             WHEEL_NAME,
             "README.md",
             "run_semantic_matrix.py",
@@ -122,6 +123,33 @@ def test_final_vllm_kit_derives_identity_from_real_artifacts(tmp_path: Path) -> 
         assert "server.stop()" in teardown_source
         assert "Studio remains available until explicit closure." in teardown_source
 
+        studio_notebook = json.loads(archive.read("04_vllm_qwen4b_colab_studio.ipynb"))
+        studio_metadata = studio_notebook["metadata"]["agentic_systems"][
+            "portable_package"
+        ]
+        assert studio_metadata["role"] == "studio-direct"
+        assert studio_metadata["commit_sha"] == commit
+        assert studio_metadata["application_commit_sha"] == application_commit
+        studio_notebook_text = json.dumps(studio_notebook)
+        assert "server.start()" in studio_notebook_text
+        assert "launch_studio" in studio_notebook_text
+        assert "close_studio_and_model_server" in studio_notebook_text
+        assert "run_semantic_matrix.py" not in studio_notebook_text
+        assert "semantic_e2e_application.py" not in studio_notebook_text
+        assert "vllm-studio-live-gate" not in studio_notebook_text
+        assert "record_semantic_judgment" not in studio_notebook_text
+        direct_launcher_index = next(
+            index
+            for index, cell in enumerate(studio_notebook["cells"])
+            if cell.get("id") == "vllm-studio-colab-launcher"
+        )
+        direct_teardown_index = next(
+            index
+            for index, cell in enumerate(studio_notebook["cells"])
+            if "model-server-teardown" in cell.get("metadata", {}).get("tags", [])
+        )
+        assert direct_launcher_index < direct_teardown_index
+
         studio_app = archive.read("studio/app.py").decode()
         assert "processing_mark(result)" in studio_app
         assert "usage_mark(result)" in studio_app
@@ -132,6 +160,10 @@ def test_final_vllm_kit_derives_identity_from_real_artifacts(tmp_path: Path) -> 
         assert "google.colab.kernel.proxyPort({port})" in studio_server
         assert "studio_button_html(" in studio_server
         assert "_display_html(" in studio_server
+        assert 'trusted_proxy=selected_transport == "colab-proxy"' in studio_server
+        assert '"--server.enableCORS"' in studio_server
+        assert '"--server.enableXsrfProtection"' in studio_server
+        assert '"--server.enableWebsocketCompression"' in studio_server
         assert "document.createElement" not in studio_server
         assert "accessAllowed" not in studio_server
         assert "serve_kernel_port_as_iframe" not in studio_server
