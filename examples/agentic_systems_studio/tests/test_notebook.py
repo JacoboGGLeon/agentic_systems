@@ -3,11 +3,40 @@ from __future__ import annotations
 import agentic_systems as toolkit
 import pytest
 
+from agentic_systems_studio import notebook as notebook_module
 from agentic_systems_studio.notebook import (
     NotebookStudioSession,
     _message_html,
     display_notebook_studio,
 )
+
+
+@pytest.fixture(autouse=True)
+def isolated_notebook_environment(monkeypatch, tmp_path):
+    """Controller tests own their config; never discover the developer's .env."""
+    settings = {
+        "AGENTIC_SYSTEMS_PROVIDER": "vllm-runtime",
+        "AGENTIC_SYSTEMS_FRAMEWORK": "native",
+        "AGENTIC_SYSTEMS_MODEL": "",
+        "VLLM_MODEL": "test-model",
+        "VLLM_BASE_URL": "http://127.0.0.1:1/v1",
+    }
+    environment = tmp_path / ".env"
+    environment.write_text(
+        "".join(f"{key}={value}\n" for key, value in settings.items()),
+        encoding="utf-8",
+    )
+    # Register every key with monkeypatch so dotenv writes are restored too.
+    for key, value in settings.items():
+        monkeypatch.setenv(key, value)
+    monkeypatch.setenv("AGENTIC_SYSTEMS_ENV_FILE", str(environment))
+    monkeypatch.chdir(tmp_path)
+    # Provider discovery is exercised separately; widget tests must not probe AWS.
+    monkeypatch.setattr(
+        notebook_module,
+        "configured_provider_names",
+        lambda: ("python-runtime", "vllm-runtime"),
+    )
 
 
 class _FakeStudio:
@@ -42,6 +71,8 @@ def test_notebook_session_runs_the_canonical_system_and_preserves_history():
     assert session.messages[-1]["processing"].startswith("✓ Procesado")
     assert "total_tokens=12" in session.messages[-1]["usage"]
     assert session.last_result is second
+    assert session.config.provider == "vllm-runtime"
+    assert session.config.model == "test-model"
 
     session.clear()
 
