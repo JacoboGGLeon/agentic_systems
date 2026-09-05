@@ -252,7 +252,7 @@ def _notebook(manifest: dict[str, Any]) -> str:
                 ],
                 "curriculum_origin": "2.0",
                 "curriculum_order": 20,
-                "narrative_reviewed": "2.1.1",
+                "narrative_reviewed": "2.1.2",
                 "expected_api_checksum": manifest["checksum"],
                 "expected_api_entries": manifest["entry_count"],
                 "expected_scenario_count": manifest["scenario_count"],

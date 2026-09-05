@@ -10,8 +10,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 GENERATOR = ROOT / "scripts" / "generate_ada_iam_validation_package.py"
-PACKAGE_STEM = "agentic-systems-2.1.1-bedrock-iam-ada-validation"
-WHEEL_NAME = "agentic_systems-2.1.1-py3-none-any.whl"
+PACKAGE_STEM = "agentic-systems-2.1.2-bedrock-iam-ada-validation"
+WHEEL_NAME = "agentic_systems-2.1.2-py3-none-any.whl"
 
 
 def test_ada_iam_validation_kit_is_offline_first_and_semantic(tmp_path: Path) -> None:

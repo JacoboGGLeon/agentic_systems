@@ -97,8 +97,8 @@ def _certified_fixture(module, tmp_path: Path, monkeypatch) -> dict[str, object]
 
     dist = tmp_path / "dist"
     evidence = dist / "release-evidence"
-    wheel = dist / "agentic_systems-2.1.1-py3-none-any.whl"
-    sdist = dist / "agentic_systems-2.1.1.tar.gz"
+    wheel = dist / "agentic_systems-2.1.2-py3-none-any.whl"
+    sdist = dist / "agentic_systems-2.1.2.tar.gz"
     summary = evidence / "final-certification-summary.json"
     dist.mkdir(parents=True)
     evidence.mkdir()
@@ -155,7 +155,7 @@ def _certified_fixture(module, tmp_path: Path, monkeypatch) -> dict[str, object]
 
     certification: dict[str, object] = {
         "schema_version": "agentic_systems.release-certification.v1",
-        "package_version": "2.1.1",
+        "package_version": "2.1.2",
         "commit_sha": commit_sha,
         "wheel_sha256": wheel_sha256,
         "sdist_sha256": module.sha256(sdist),
@@ -201,7 +201,7 @@ def test_ada_bundle_is_reproducible_certified_and_offline(tmp_path: Path, monkey
     second = module.build_bundle(tmp_path / "second", enforce_materials_clean=False)
     assert first.read_bytes() == second.read_bytes()
 
-    root = "agentic-systems-2.1.1-ada-offline/"
+    root = "agentic-systems-2.1.2-ada-offline/"
     with zipfile.ZipFile(first) as archive:
         names = set(archive.namelist())
         manifest = json.loads(archive.read(root + "manifest.json"))

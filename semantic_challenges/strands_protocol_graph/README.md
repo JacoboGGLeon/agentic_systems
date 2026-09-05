@@ -29,7 +29,7 @@ every provider and prevents a mutated argument from being certified as valid.
 Install the exact candidate wheel, followed by the challenge dependencies:
 
 ```bash
-python -m pip install --force-reinstall --no-deps ./agentic_systems-2.1.1-py3-none-any.whl
+python -m pip install --force-reinstall --no-deps ./agentic_systems-2.1.2-py3-none-any.whl
 python -m pip install -r semantic_challenges/strands_protocol_graph/requirements.txt
 ```
 
@@ -44,7 +44,7 @@ With OpenAI, Bedrock API key, and Ollama configured:
 ```bash
 python -m semantic_challenges.strands_protocol_graph.run_matrix \
   --providers openai-runtime bedrock-runtime ollama-runtime \
-  --wheel ./agentic_systems-2.1.1-py3-none-any.whl \
+  --wheel ./agentic_systems-2.1.2-py3-none-any.whl \
   --output-dir ./outputs
 
 python -m semantic_challenges.strands_protocol_graph.validate_attestation \
@@ -60,7 +60,7 @@ configure the `VLLM_*` values in `.env`, start the tested vLLM server, then run:
 
 ```bash
 python -m semantic_challenges.strands_protocol_graph.run_matrix \
-  --providers vllm-runtime --wheel ./agentic_systems-2.1.1-py3-none-any.whl
+  --providers vllm-runtime --wheel ./agentic_systems-2.1.2-py3-none-any.whl
 ```
 
 ## SageMaker / ADA Bedrock IAM
@@ -70,7 +70,7 @@ the normal AWS credential chain; do not copy local keys into ADA.
 
 ```bash
 python -m semantic_challenges.strands_protocol_graph.run_matrix \
-  --providers bedrock-runtime --wheel ./agentic_systems-2.1.1-py3-none-any.whl
+  --providers bedrock-runtime --wheel ./agentic_systems-2.1.2-py3-none-any.whl
 
 python -m semantic_challenges.strands_protocol_graph.validate_attestation \
   ./outputs/strands-protocol-graph-attestation.json \

@@ -31,9 +31,9 @@ STUDIO_EXPORTS = (
     "docs",
     "scripts/validate_conversation_live.py",
 )
-DEFAULT_WHEEL = ROOT / "dist" / "agentic_systems-2.1.1-py3-none-any.whl"
+DEFAULT_WHEEL = ROOT / "dist" / "agentic_systems-2.1.2-py3-none-any.whl"
 DEFAULT_OUTPUT = ROOT / "dist"
-PACKAGE_STEM = "agentic-systems-2.1.1-vllm-qwen4b-colab-final"
+PACKAGE_STEM = "agentic-systems-2.1.2-vllm-qwen4b-colab-final"
 NOTEBOOK_FILENAME = "03_vllm_qwen4b_colab_final.ipynb"
 STUDIO_NOTEBOOK_FILENAME = "04_vllm_qwen4b_colab_studio.ipynb"
 DEFAULT_MODEL_ID = "unsloth/Qwen3-4B-Instruct-2507"
@@ -113,7 +113,7 @@ def _readme(
 ) -> str:
     return textwrap.dedent(
         f"""\
-        # Agentic Systems 2.1.1 · vLLM/Qwen 4B final live kit
+        # Agentic Systems 2.1.2 · vLLM/Qwen 4B final live kit
 
         El bundle contiene dos recorridos sobre el mismo wheel, modelo y Studio:
 

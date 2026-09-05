@@ -1,6 +1,10 @@
 # Agentic Systems Roadmap
 
 Current stable release: `2.1.1`.
+
+Next candidate: `2.1.2`, with immutable release manifests, fail-closed index
+reconciliation and Trusted Publishing. Its new-wheel live evidence and actual
+OIDC publication runs are acceptance gates, not inherited results from 2.1.1.
 Current release line: `2.1`. Next development line: `2.2`.
 
 Agentic Systems 2.1 establishes the five-Provider by four-Framework execution

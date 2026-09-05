@@ -48,7 +48,7 @@ def _metadata() -> dict[str, object]:
             "execution_mode": "live-optional",
             "framework": "native",
             "layer": "providers",
-            "narrative_reviewed": "2.1.1",
+            "narrative_reviewed": "2.1.2",
             "provider": "vllm-runtime",
         },
         "kernelspec": {
@@ -84,8 +84,8 @@ Requisito live: Runtime de Colab con GPU. Para certificar un release, sube el wh
 | Variable | Default | Proposito |
 |---|---|---|
 | RUN_VLLM_LIVE | 1 | Usa 0 para ejecutar sólo el contrato offline. |
-| COMMIT_SHA | candidato 2.1.1 | Commit exacto que produjo el wheel candidato. |
-| EXPECTED_WHEEL_SHA256 | candidato 2.1.1 | Hash que debe tener el wheel subido. |
+| COMMIT_SHA | candidato 2.1.2 | Commit exacto que produjo el wheel candidato. |
+| EXPECTED_WHEEL_SHA256 | candidato 2.1.2 | Hash que debe tener el wheel subido. |
 | MODEL_ID | unsloth/Qwen3-4B-Instruct-2507 | Modelo Instruct probado con tool calling para Colab. |
 | PROFILE | auto | Resuelve fast, medium o power desde VRAM; admite override. |
 | VLLM_DTYPE | automático | half en T4; bfloat16 desde compute capability 8.0. |
@@ -264,7 +264,7 @@ if RUN_VLLM_LIVE:
             else None
         ),
     )
-    assert toolkit.__version__ == "2.1.1"
+    assert toolkit.__version__ == "2.1.2"
     assert torch.cuda.is_available(), "Selecciona Runtime > Change runtime type > GPU"
 
     cuda_major, cuda_minor = torch.cuda.get_device_capability(0)

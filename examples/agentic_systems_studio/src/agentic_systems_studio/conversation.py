@@ -815,7 +815,7 @@ def build_conversational_system(
     mock = selected.provider == "python-runtime"
     grammar_skill = toolkit.skill(
         name="agentic-systems-grammar",
-        version="2.1.1",
+        version="2.1.2",
         description=(
             "Ground product questions and generated code in the installed "
             "Agentic Systems public grammar."

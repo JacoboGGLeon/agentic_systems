@@ -51,7 +51,7 @@ def main() -> int:
     parser.add_argument(
         "--wheel",
         type=Path,
-        default=ROOT / "dist" / "agentic_systems-2.1.1-py3-none-any.whl",
+        default=ROOT / "dist" / "agentic_systems-2.1.2-py3-none-any.whl",
     )
     parser.add_argument(
         "--evidence",
@@ -66,7 +66,7 @@ def main() -> int:
     commit = subprocess.check_output(
         ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
     ).strip()
-    bundle_name = "agentic-systems-2.1.1-strands-protocol-challenge"
+    bundle_name = "agentic-systems-2.1.2-strands-protocol-challenge"
     args.output_dir.mkdir(parents=True, exist_ok=True)
     output = args.output_dir / f"{bundle_name}.zip"
     with tempfile.TemporaryDirectory(prefix="agentic-systems-challenge-") as temp:

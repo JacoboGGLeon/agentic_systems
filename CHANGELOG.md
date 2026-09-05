@@ -1,5 +1,25 @@
 # Changelog
 
+## 2.1.2 - Release candidate
+
+The 2.1 grammar and execution contracts remain stable. This delivery hardens
+publication and aligns versioned notebooks, Studio and validation bundles.
+
+### Changed
+
+- Pydantic is constrained to the supported v2 major (`>=2.7.0,<3`).
+- Publication uses typed, hash-addressed manifests and sealed candidate assets;
+  a matching index is a no-upload repeat, while partial or conflicting files
+  fail closed. No published version, tag or asset is overwritten.
+- GitHub finalization verifies uploaded bytes before closing a draft and supports
+  an exact no-op repeat. OIDC jobs and environments have scoped permissions.
+- Quality CI tests both Python 3.10 and 3.14; Studio notebook tests isolate
+  configuration instead of depending on a developer's private `.env`.
+- Live CI records disabled routes as not-run, never as successful live evidence.
+
+Registration of a Trusted Publisher is not proof of an OIDC upload. Release
+acceptance still requires the actual workflow runs and new exact-wheel evidence.
+
 ## 2.1.1 - 2026-08-30
 
 Patch release that keeps the 2.1 grammar stable while aligning the published

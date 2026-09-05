@@ -38,7 +38,7 @@ def build_notebook() -> nbformat.NotebookNode:
         nbformat.v4.new_markdown_cell(
             """# Bedrock attestation - SageMaker JupyterLab
 
-Objetivo: certificar el wheel exacto de Agentic Systems 2.1.1 con el modo de
+Objetivo: certificar el wheel exacto de Agentic Systems 2.1.2 con el modo de
 autenticación que seleccione .env y sin fallback. En SageMaker, un bearer vacío
 delega en la cadena normal de boto3 y hereda el execution role del JupyterLab
 space; un bearer con valor selecciona la API key nativa de Bedrock.
@@ -57,8 +57,8 @@ LangGraph, OpenAI Agents y Strands, todos con engine bedrock-runtime."""
 | BEDROCK_MODEL_ID | us.amazon.nova-pro-v1:0 | Modelo o inference profile ya habilitado. |
 | BEDROCK_STREAMING | 0 | Usa Converse; 1 opta por ConverseStream y requiere su permiso IAM. |
 | AWS_STS_IDENTITY_REQUIRED | 1 | En IAM, exige que STS GetCallerIdentity resuelva la identidad sanitizada. |
-| AGENTIC_SYSTEMS_COMMIT_SHA | candidato 2.1.1 | Commit que produjo el wheel. |
-| AGENTIC_SYSTEMS_WHEEL_SHA256 | candidato 2.1.1 | Hash del wheel esperado. |
+| AGENTIC_SYSTEMS_COMMIT_SHA | candidato 2.1.2 | Commit que produjo el wheel. |
+| AGENTIC_SYSTEMS_WHEEL_SHA256 | candidato 2.1.2 | Hash del wheel esperado. |
 
 Sube el wheel al mismo directorio del notebook o define AGENTIC_SYSTEMS_WHEEL.
 El .env es el selector único: configura ahí RUN_BEDROCK_LIVE, región y modelo.
@@ -169,11 +169,11 @@ subprocess.run([
 ], check=True)
 
 loaded_package = sys.modules.get("agentic_systems")
-if loaded_package is not None and getattr(loaded_package, "__version__", None) != "2.1.1":
+if loaded_package is not None and getattr(loaded_package, "__version__", None) != "2.1.2":
     raise RuntimeError(
         "El kernel conserva agentic_systems "
         f"{getattr(loaded_package, '__version__', 'desconocido')} en memoria. "
-        "El wheel 2.1.1 ya se instaló: reinicia el kernel y ejecuta Run All."
+        "El wheel 2.1.2 ya se instaló: reinicia el kernel y ejecuta Run All."
     )"""
         ),
         nbformat.v4.new_code_cell(
@@ -183,7 +183,7 @@ from agentic_systems.utils import mask_sensitive
 
 required_api = ("aws_environment_snapshot", "boto3_session_snapshot")
 missing_api = [name for name in required_api if not hasattr(toolkit, name)]
-if toolkit.__version__ != "2.1.1" or missing_api:
+if toolkit.__version__ != "2.1.2" or missing_api:
     raise RuntimeError(
         "Se importó un paquete distinto al wheel candidato. "
         f"version={toolkit.__version__!r}, file={toolkit.__file__!r}, "
@@ -201,7 +201,7 @@ MODEL = os.getenv("BEDROCK_MODEL_ID") or "us.amazon.nova-pro-v1:0"
 aws_session = toolkit.boto3_session_snapshot(region_name=REGION)
 identity = {"available": False, "status": "not-run"}
 
-assert toolkit.__version__ == "2.1.1"
+assert toolkit.__version__ == "2.1.2"
 if RUN_BEDROCK_LIVE:
     assert WHEEL_PATH is not None, (
         "Sube el wheel exacto o configura AGENTIC_SYSTEMS_WHEEL antes de certificar live."

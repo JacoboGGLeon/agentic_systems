@@ -151,7 +151,7 @@ def test_conversational_tools_are_bounded_and_deterministic():
         {"request": "Generate an Agentic Systems application"}
     )
     assert grammar.ok is True
-    assert grammar.data["version"] == "2.1.1"
+    assert grammar.data["version"] == "2.1.2"
     assert all(grammar.data["public_symbols"].values())
     assert grammar.data["contracts"]["tool_output"].endswith("a dictionary.")
     assert "import agentic_systems as toolkit" in grammar.data["canonical_example"]

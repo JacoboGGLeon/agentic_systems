@@ -30,9 +30,9 @@ STUDIO_EXPORTS = (
     "docs",
     "scripts/validate_conversation_live.py",
 )
-DEFAULT_WHEEL = ROOT / "dist" / "agentic_systems-2.1.1-py3-none-any.whl"
+DEFAULT_WHEEL = ROOT / "dist" / "agentic_systems-2.1.2-py3-none-any.whl"
 DEFAULT_OUTPUT = ROOT / "dist"
-PACKAGE_STEM = "agentic-systems-2.1.1-bedrock-iam-final"
+PACKAGE_STEM = "agentic-systems-2.1.2-bedrock-iam-final"
 
 
 def _sha256(path: Path) -> str:
@@ -72,7 +72,7 @@ def _dotenv(*, commit: str, wheel: Path, wheel_sha256: str) -> str:
 def _readme(*, commit: str, wheel: Path, wheel_sha256: str) -> str:
     return textwrap.dedent(
         f"""\
-        # Agentic Systems 2.1.1 · Bedrock IAM final kit
+        # Agentic Systems 2.1.2 · Bedrock IAM final kit
 
         1. Descomprime este ZIP en un directorio nuevo de SageMaker/ADA.
         2. Edita `.env`: conserva `AWS_BEARER_TOKEN_BEDROCK=` vacío para IAM y

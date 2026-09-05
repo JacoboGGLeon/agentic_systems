@@ -16,11 +16,11 @@ Install the certified runtime from PyPI:
 
 ```bash
 python -m pip install -U pip
-python -m pip install "agentic-systems[all]==2.1.1"
+python -m pip install "agentic-systems[all]==2.1.2"
 ```
 
 Controlled environments may instead download the matching wheel and
-`SHA256SUMS-2.1.1.txt` from the GitHub release, verify its checksum and install
+`SHA256SUMS-2.1.2.txt` from the GitHub release, verify its checksum and install
 that exact local artifact.
 
 Notebooks and Studio are application/repository content rather than package
@@ -62,7 +62,7 @@ import agentic_systems as toolkit
 runtime = toolkit.runtime(provider="python-runtime")
 system = toolkit.system(runtime=runtime)
 
-assert toolkit.__version__ == "2.1.1"
+assert toolkit.__version__ == "2.1.2"
 assert callable(toolkit.tool)
 assert callable(toolkit.skill)
 assert callable(toolkit.agent)

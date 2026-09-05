@@ -10,8 +10,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 GENERATOR = ROOT / "scripts" / "generate_bedrock_iam_package.py"
-PACKAGE_STEM = "agentic-systems-2.1.1-bedrock-iam-final"
-WHEEL_NAME = "agentic_systems-2.1.1-py3-none-any.whl"
+PACKAGE_STEM = "agentic-systems-2.1.2-bedrock-iam-final"
+WHEEL_NAME = "agentic_systems-2.1.2-py3-none-any.whl"
 
 
 def test_final_bedrock_iam_kit_is_portable_and_env_driven(tmp_path: Path) -> None:

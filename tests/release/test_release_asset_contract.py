@@ -95,9 +95,9 @@ def test_certification_identity_rejects_a_different_release_artifact(
     monkeypatch, tmp_path: Path
 ) -> None:
     module = _builder()
-    monkeypatch.setattr(module, "VERSION", "2.1.1")
-    wheel = tmp_path / "agentic_systems-2.1.1-py3-none-any.whl"
-    sdist = tmp_path / "agentic_systems-2.1.1.tar.gz"
+    monkeypatch.setattr(module, "VERSION", "2.1.2")
+    wheel = tmp_path / "agentic_systems-2.1.2-py3-none-any.whl"
+    sdist = tmp_path / "agentic_systems-2.1.2.tar.gz"
     wheel.write_bytes(b"final wheel")
     sdist.write_bytes(b"final sdist")
     summary = tmp_path / "final-certification-summary.json"
@@ -105,7 +105,7 @@ def test_certification_identity_rejects_a_different_release_artifact(
         json.dumps(
             {
                 "schema_version": "agentic_systems.release-certification.v1",
-                "package_version": "2.1.1",
+                "package_version": "2.1.2",
                 "wheel_sha256": "0" * 64,
                 "sdist_sha256": module.sha256(sdist),
                 "no_fallback": True,
@@ -128,20 +128,20 @@ def test_certification_identity_rejects_a_different_release_artifact(
 
 
 def _synthetic_distributions(tmp_path: Path, readme: str) -> tuple[Path, Path]:
-    wheel = tmp_path / "agentic_systems-2.1.1-py3-none-any.whl"
+    wheel = tmp_path / "agentic_systems-2.1.2-py3-none-any.whl"
     metadata = (
         "Metadata-Version: 2.4\n"
         "Name: agentic-systems\n"
-        "Version: 2.1.1\n"
+        "Version: 2.1.2\n"
         "Description-Content-Type: text/markdown\n\n" + readme
     )
     with zipfile.ZipFile(wheel, "w") as archive:
-        archive.writestr("agentic_systems-2.1.1.dist-info/METADATA", metadata)
-    sdist = tmp_path / "agentic_systems-2.1.1.tar.gz"
+        archive.writestr("agentic_systems-2.1.2.dist-info/METADATA", metadata)
+    sdist = tmp_path / "agentic_systems-2.1.2.tar.gz"
     source = tmp_path / "README.md"
     source.write_text(readme, encoding="utf-8")
     with tarfile.open(sdist, "w:gz") as archive:
-        archive.add(source, arcname="agentic_systems-2.1.1/README.md")
+        archive.add(source, arcname="agentic_systems-2.1.2/README.md")
     return wheel, sdist
 
 

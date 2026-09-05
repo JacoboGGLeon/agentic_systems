@@ -1,13 +1,15 @@
 # Install
 
-The Python distribution is named `agentic-systems`. PyPI and the signed GitHub
-release publish the same certified 2.1.1 wheel and source archive.
+The Python distribution is named `agentic-systems`. The commands below target
+2.1.2. A development checkout may precede publication: check PyPI first, or
+install the supplied candidate wheel. Final PyPI and GitHub distributions must
+match the artifact hashes in the release manifest and certification summary.
 
 ## Core Package
 
 ```bash
 python -m pip install -U pip
-python -m pip install "agentic-systems==2.1.1"
+python -m pip install "agentic-systems==2.1.2"
 ```
 
 The core install includes the public API, CLI, deterministic Python runtime,
@@ -20,14 +22,14 @@ provider/framework SDKs.
 Install only the boundaries you use:
 
 ```bash
-python -m pip install "agentic-systems[openai]==2.1.1"
-python -m pip install "agentic-systems[openai-agents]==2.1.1"
-python -m pip install "agentic-systems[bedrock]==2.1.1"
-python -m pip install "agentic-systems[langgraph]==2.1.1"
-python -m pip install "agentic-systems[strands]==2.1.1"
-python -m pip install "agentic-systems[vllm-client]==2.1.1"
-python -m pip install "agentic-systems[vllm-server]==2.1.1"  # GPU/Linux host only
-python -m pip install "agentic-systems[dev]==2.1.1"
+python -m pip install "agentic-systems[openai]==2.1.2"
+python -m pip install "agentic-systems[openai-agents]==2.1.2"
+python -m pip install "agentic-systems[bedrock]==2.1.2"
+python -m pip install "agentic-systems[langgraph]==2.1.2"
+python -m pip install "agentic-systems[strands]==2.1.2"
+python -m pip install "agentic-systems[vllm-client]==2.1.2"
+python -m pip install "agentic-systems[vllm-server]==2.1.2"  # GPU/Linux host only
+python -m pip install "agentic-systems[dev]==2.1.2"
 ```
 
 | Extra | Purpose |
@@ -50,7 +52,7 @@ To connect to an already running vLLM endpoint, the lighter OpenAI extra is
 sufficient:
 
 ```bash
-python -m pip install "agentic-systems[openai]==2.1.1"
+python -m pip install "agentic-systems[openai]==2.1.2"
 export VLLM_BASE_URL="http://127.0.0.1:8000/v1"
 export VLLM_MODEL="your-model"
 export VLLM_API_KEY="EMPTY"
@@ -60,7 +62,7 @@ Ollama uses that same lightweight client dependency, but retains its own
 Provider identity and environment contract:
 
 ```bash
-python -m pip install "agentic-systems[openai]==2.1.1"
+python -m pip install "agentic-systems[openai]==2.1.2"
 export OLLAMA_BASE_URL="http://127.0.0.1:11434/v1"
 export OLLAMA_MODEL="qwen3:4b-instruct-2507-q4_K_M"
 export RUN_OLLAMA_LIVE=1
@@ -75,16 +77,16 @@ process.
 Install the exact downloaded artifact when reproducibility matters:
 
 ```bash
-python -m pip install ./agentic_systems-2.1.1-py3-none-any.whl
+python -m pip install ./agentic_systems-2.1.2-py3-none-any.whl
 ```
 
-Verify its SHA256 against `SHA256SUMS-2.1.1.txt` from the same GitHub release
+Verify its SHA256 against `SHA256SUMS-2.1.2.txt` from the same GitHub release
 before installing it in a controlled environment.
 
 ## From GitHub
 
 Use this only when you intentionally want the current `main` branch rather than
-the certified 2.1.1 release artifact:
+the versioned release artifact:
 
 ```bash
 python -m pip install git+https://github.com/JacoboGGLeon/agentic_systems.git

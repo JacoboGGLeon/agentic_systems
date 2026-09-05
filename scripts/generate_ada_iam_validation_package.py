@@ -19,10 +19,10 @@ from generate_bedrock_iam_package import _dotenv, _packaged_notebook
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_WHEEL = ROOT / "dist" / "agentic_systems-2.1.1-py3-none-any.whl"
+DEFAULT_WHEEL = ROOT / "dist" / "agentic_systems-2.1.2-py3-none-any.whl"
 DEFAULT_OUTPUT = ROOT / "dist"
-PACKAGE_STEM = "agentic-systems-2.1.1-bedrock-iam-ada-validation"
-WHEEL_NAME = "agentic_systems-2.1.1-py3-none-any.whl"
+PACKAGE_STEM = "agentic-systems-2.1.2-bedrock-iam-ada-validation"
+WHEEL_NAME = "agentic_systems-2.1.2-py3-none-any.whl"
 STUDIO = ROOT / "examples" / "agentic_systems_studio"
 STUDIO_EXPORTS = (
     "README.md",
@@ -104,7 +104,7 @@ def _requirements() -> str:
 def _readme(*, commit: str, wheel_sha256: str) -> str:
     return textwrap.dedent(
         f"""\
-        # Agentic Systems 2.1.1 · Bedrock IAM validation for ADA
+        # Agentic Systems 2.1.2 · Bedrock IAM validation for ADA
 
         Este paquete no requiere GitHub ni PyPI. Usa exclusivamente el wheel
         incluido, el Artifactory aprobado para dependencias y el execution role
@@ -267,7 +267,7 @@ def build(*, wheel: Path, commit: str, output_dir: Path) -> Path:
 
         manifest = {
             "schema_version": "agentic-systems.ada-iam-validation/v1",
-            "package_version": "2.1.1",
+            "package_version": "2.1.2",
             "configuration_source": ".env",
             "configuration_template": ".env.example",
             "mutable_configuration_excluded_from_checksums": True,

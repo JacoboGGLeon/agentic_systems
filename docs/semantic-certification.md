@@ -74,4 +74,4 @@ hash, certified runtime commit, release-assembly commit, core-tree equivalence,
 evidence filenames and hashes. `scripts/build_release_certification.py`
 constructs this summary from validated live artifacts; it is not edited by
 hand. The release workflow verifies that summary and every public artifact
-against `SHA256SUMS-2.1.1.txt` before publishing the Python distributions.
+against `SHA256SUMS-2.1.2.txt` before publishing the Python distributions.

@@ -1,6 +1,6 @@
 # Triple Quality Gate
 
-Agentic Systems 2.1.1 uses three blocking gates over the same release candidate.
+Agentic Systems 2.1.2 uses three blocking gates over the same release candidate.
 Passing unit tests alone is not a release certification.
 
 ## Sources of truth
