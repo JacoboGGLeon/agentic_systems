@@ -7,8 +7,7 @@
 <p align="center">
   <a href="https://github.com/JacoboGGLeon/agentic_systems/releases/tag/v2.1.1"><img src="https://img.shields.io/badge/release-v2.1.1-blue.svg" alt="Agentic Systems 2.1.1 release" /></a>
   <a href="INSTALL.md"><img src="https://img.shields.io/badge/python-%3E%3D3.10-blue.svg" alt="Python >=3.10" /></a>
-  <img src="https://img.shields.io/badge/core%20coverage-100%25-brightgreen.svg" alt="Core coverage 100%; Bedrock separately gated" />
-  <img src="https://img.shields.io/badge/tests-passing-brightgreen.svg" alt="Tests passing" />
+  <a href="https://github.com/JacoboGGLeon/agentic_systems/actions/workflows/quality.yml"><img src="https://github.com/JacoboGGLeon/agentic_systems/actions/workflows/quality.yml/badge.svg" alt="Quality and coverage gates" /></a>
 </p>
 
 **Agentic Systems is a computational grammar for building intelligent systems
@@ -951,6 +950,10 @@ python -m compileall -q src tests tutorials
 
 The complete production, Pydantic and POO/polymorphism certification is
 documented in [Triple Quality Gate](docs/QUALITY_GATES.md).
+
+Maintainers publish through the [Trusted Publishing runbook](docs/RELEASE_PUBLISHING.md):
+one certified artifact set, explicit hash checks, and repeatable publication
+without replacing an existing release.
 
 For full coverage validation:
 

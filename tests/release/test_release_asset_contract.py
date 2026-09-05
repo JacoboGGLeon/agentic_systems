@@ -25,28 +25,15 @@ def test_release_workflow_mirrors_every_public_delivery() -> None:
     workflow = (ROOT / ".github" / "workflows" / "release.yml").read_text(
         encoding="utf-8"
     )
-    for filename in (
-        "agentic_systems-${RELEASE_VERSION}-py3-none-any.whl",
-        "agentic_systems-${RELEASE_VERSION}.tar.gz",
-        "agentic-systems-${RELEASE_VERSION}-ada-offline.zip",
-        "agentic-systems-studio-${RELEASE_VERSION}.zip",
-        "agentic-systems-skill-${RELEASE_VERSION}.zip",
-        "agentic-systems-${RELEASE_VERSION}-strands-protocol-challenge.zip",
-        "final-certification-summary.json",
-        "SHA256SUMS-${RELEASE_VERSION}.txt",
-    ):
-        assert filename in workflow
-    for checksum_input in (
-        "wheel_sha256",
-        "sdist_sha256",
-        "ada_sha256",
-        "studio_sha256",
-        "skill_sha256",
-        "certification_sha256",
-        "challenge_sha256",
-    ):
-        assert f"inputs.{checksum_input}" in workflow
-    assert "candidate/*.json" in workflow
+    assert "inputs.manifest_sha256" in workflow
+    assert "inputs.candidate_run_id" in workflow
+    assert "scripts/release_publication.py" in workflow
+    assert "steps.reconcile.outputs.decision == 'absent'" in workflow
+    assert "--require-present" in workflow
+    assert "needs: [candidate, post-publish-smoke]" in workflow
+    assert "scripts/finalize_release.py" in workflow
+    assert "skip-existing: true" not in workflow
+    assert "password:" not in workflow
 
 
 def test_quality_audits_the_clean_built_runtime_not_the_dev_host() -> None:

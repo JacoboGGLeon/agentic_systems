@@ -13,7 +13,7 @@ import hashlib
 import json
 import re
 import subprocess
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -408,7 +408,7 @@ def build_summary(args: argparse.Namespace) -> dict[str, Any]:
         "core_tree_sha": certified_tree,
         "wheel_sha256": wheel_sha256,
         "sdist_sha256": _sha256(sdist),
-        "generated_at": datetime.now(UTC).isoformat(),
+        "generated_at": datetime.now(timezone.utc).isoformat(),
         "no_fallback": True,
         "secrets_redacted": True,
         "artifact_equivalence": {

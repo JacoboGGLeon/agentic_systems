@@ -1,4 +1,3 @@
-
 from __future__ import annotations
 
 import asyncio
@@ -62,7 +61,6 @@ def install_fake_langgraph(monkeypatch):
     return module
 
 
-
 def test_langgraph_node_helpers_and_graph_app(monkeypatch):
     install_fake_langgraph(monkeypatch)
     assert lg._edge_endpoint("START", start="S", end="E") == "S"
@@ -77,22 +75,29 @@ def test_langgraph_node_helpers_and_graph_app(monkeypatch):
 
     result = RunResult(text="ok", data={"answer": "ok"}, meta={"input": "q"})
     assert lg._result_text(result) == "ok"
-    mapped = lg._map_node_update(result, {"prompt": "q"}, output="answer", trace="trace", result_key="result")
+    mapped = lg._map_node_update(
+        result, {"prompt": "q"}, output="answer", trace="trace", result_key="result"
+    )
     assert mapped["answer"] == "ok"
     assert mapped["result"]["normalized"]["answer"]["text"] == "ok"
     assert mapped["trace"]["text"] == "ok"
     with pytest.raises(TypeError):
-        lg._map_node_update(result, {}, output=lambda result, state: "bad", trace=None, result_key=None)
+        lg._map_node_update(
+            result, {}, output=lambda result, state: "bad", trace=None, result_key=None
+        )
 
     class Agent:
         name = "agent"
+
         def run(self, prompt, mode="default", config=None):
             return RunResult(text=f"sync:{prompt}", data={"prompt": prompt}, mode=mode)
 
         async def arun(self, prompt, mode="default", config=None):
             return RunResult(text=f"async:{prompt}", data={"prompt": prompt}, mode=mode)
 
-    sync_node = lg.build_langgraph_agent_node(Agent(), output="text", result_key="result", trace="trace", mode="eval")
+    sync_node = lg.build_langgraph_agent_node(
+        Agent(), output="text", result_key="result", trace="trace", mode="eval"
+    )
     assert sync_node({"prompt": "hello"})["text"] == "sync:hello"
     async_node = lg.build_langgraph_agent_node(Agent(), async_node=True, output="text")
     assert asyncio.run(async_node({"prompt": "hello"}))["text"] == "async:hello"
@@ -100,11 +105,16 @@ def test_langgraph_node_helpers_and_graph_app(monkeypatch):
     class NodeFactoryAgent:
         def as_node(self, **kwargs):
             return lambda state: {"factory": kwargs["mode"]}
+
         def as_async_node(self, **kwargs):
             return lambda state: {"async_factory": kwargs["mode"]}
 
-    assert lg.build_langgraph_agent_node(NodeFactoryAgent(), mode="factory")({}) == {"factory": "factory"}
-    assert lg.build_langgraph_agent_node(NodeFactoryAgent(), async_node=True, mode="afactory")({}) == {"async_factory": "afactory"}
+    assert lg.build_langgraph_agent_node(NodeFactoryAgent(), mode="factory")({}) == {
+        "factory": "factory"
+    }
+    assert lg.build_langgraph_agent_node(
+        NodeFactoryAgent(), async_node=True, mode="afactory"
+    )({}) == {"async_factory": "afactory"}
     with pytest.raises(TypeError):
         lg.build_langgraph_agent_node(object())
     with pytest.raises(TypeError):
@@ -137,6 +147,7 @@ def test_langgraph_builders_and_agentic_graph(monkeypatch):
 
     class Agent:
         name = "worker"
+
         def run(self, prompt, mode="default", config=None):
             return RunResult(text=f"done:{prompt}")
 
@@ -151,7 +162,9 @@ def test_langgraph_builders_and_agentic_graph(monkeypatch):
 
     planned_native = lg.build_langgraph_planned_graph(Planned(), compile_graph=False)
     assert planned_native.nodes[0][0] == "planned_step"
-    planned_compiled = lg.build_langgraph_planned_graph(planned_graph=Planned(), compile_graph=True)
+    planned_compiled = lg.build_langgraph_planned_graph(
+        planned_graph=Planned(), compile_graph=True
+    )
     assert planned_compiled.invoke({"x": 3})["planned"] == 3
     with pytest.raises(TypeError):
         lg.build_langgraph_planned_graph()
@@ -170,12 +183,21 @@ def test_langgraph_builders_and_agentic_graph(monkeypatch):
     assert isinstance(builder.compile(), FakeCompiled)
 
 
-
 def test_langgraph_lineage_projection_helpers_cover_business_shapes():
     assert lg._short_text("x" * 20, max_chars=8).endswith("...")
-    assert lg._public_payload_summary({"a": 1, "_hidden": 2, "meta": {}, "b": None}) == "a: 1; b: None"
+    assert (
+        lg._public_payload_summary({"a": 1, "_hidden": 2, "meta": {}, "b": None})
+        == "a: 1; b: None"
+    )
     assert lg._tool_output_payload({"output": {"data": {"result": 7}}}) == {"result": 7}
-    facts = lg._tool_facts({"name": "query", "ok": True, "input": {"q": 1}, "output": {"rows": [{"a": 1}, {"a": 2}], "route": "sqlite"}})
+    facts = lg._tool_facts(
+        {
+            "name": "query",
+            "ok": True,
+            "input": {"q": 1},
+            "output": {"rows": [{"a": 1}, {"a": 2}], "route": "sqlite"},
+        }
+    )
     assert facts["tool"] == "query"
     assert facts["row_count"] == 2
     assert facts["sample_rows"] == [{"a": 1}, {"a": 2}]
@@ -203,8 +225,14 @@ def test_langgraph_lineage_projection_helpers_cover_business_shapes():
     assert lg._mapping(DumpOnly())["answer"] == "dump"
     assert lg._mapping("scalar") == {"value": "scalar"}
 
-    assert lg._answer_from_payload({"answer": {"data": {"summary": "nested summary"}}}) == "nested summary"
-    assert lg._answer_from_payload({"answer": {"resultado": 42, "color": "azul"}}) == "resultado: 42; color: azul"
+    assert (
+        lg._answer_from_payload({"answer": {"data": {"summary": "nested summary"}}})
+        == "nested summary"
+    )
+    assert (
+        lg._answer_from_payload({"answer": {"resultado": 42, "color": "azul"}})
+        == "resultado: 42; color: azul"
+    )
     assert lg._answer_from_payload({"value": 3}) == "value: 3"
 
     class ToolDump:
@@ -213,37 +241,65 @@ def test_langgraph_lineage_projection_helpers_cover_business_shapes():
 
     tools = lg._run_tools({"normalized": {"tools": [ToolDump()]}})
     assert tools[0]["name"] == "dumped"
-    assert lg._run_tools({"blocks": {"tool_actions": [{"name": "block"}]}})[0]["name"] == "block"
+    assert (
+        lg._run_tools({"blocks": {"tool_actions": [{"name": "block"}]}})[0]["name"]
+        == "block"
+    )
     assert lg._tool_summary({"name": "direct", "summary": "done"}) == "done"
     assert lg._tool_summary({"name": "out", "output": {"error": "bad"}}) == "bad"
-    assert lg._tool_summary({"name": "calc", "output": {"operation": "sum", "result": 3}}) == "calc: sum -> 3"
-    assert lg._tool_summary({"name": "calc", "output": {"result": 3}}) == "calc: resultado 3"
-    assert lg._tool_summary({"name": "classify", "output": {"number": 2, "text": "dos"}}) == "dos"
+    assert (
+        lg._tool_summary({"name": "calc", "output": {"operation": "sum", "result": 3}})
+        == "calc: sum -> 3"
+    )
+    assert (
+        lg._tool_summary({"name": "calc", "output": {"result": 3}})
+        == "calc: resultado 3"
+    )
+    assert (
+        lg._tool_summary({"name": "classify", "output": {"number": 2, "text": "dos"}})
+        == "dos"
+    )
     assert "row(s)" in lg._tool_summary({"name": "rows", "output": {"row_count": 5}})
     assert lg._tool_summary({"name": "noop"}) == "noop executed."
 
     state = {
         "prompt": "Pregunta",
         "plan": {"route": "worker", "reason": "because"},
-        "result": {"answer": {"data": {"summary": "answer from trace"}}, "validation": {"ok": False, "node": "worker"}},
-        "worker_trace": {"tools": [{"name": "calc", "output": {"operation": "sum", "result": 42}}], "runtime": {"engine": "python-runtime"}, "ok": True},
+        "result": {
+            "answer": {"data": {"summary": "answer from trace"}},
+            "validation": {"ok": False, "node": "worker"},
+        },
+        "worker_trace": {
+            "tools": [{"name": "calc", "output": {"operation": "sum", "result": 42}}],
+            "runtime": {"engine": "python-runtime"},
+            "ok": True,
+        },
         "graph_validation": {"ok": False, "node": "graph"},
     }
-    memory = lg.lineage_from_langgraph_state(state, name="lg", goal="g", metadata={"m": 1})
+    memory = lg.lineage_from_langgraph_state(
+        state, name="lg", goal="g", metadata={"m": 1}
+    )
     assert memory.name == "lg"
     assert memory.ok is False
     assert memory.metadata["m"] == 1
     assert any(step.kind == "tool" for step in memory.steps)
     assert any(step.kind == "validation" for step in memory.steps)
 
-    memory_no_trace_validation = lg.lineage_from_langgraph_state({"user_prompt": "q", "graph_validation": {"ok": True}, "answer": {"summary": "ok"}})
+    memory_no_trace_validation = lg.lineage_from_langgraph_state(
+        {
+            "user_prompt": "q",
+            "graph_validation": {"ok": True},
+            "answer": {"summary": "ok"},
+        }
+    )
     assert memory_no_trace_validation.ok is True
-    assert any(step.step_id == "graph_validation" for step in memory_no_trace_validation.steps)
+    assert any(
+        step.step_id == "graph_validation" for step in memory_no_trace_validation.steps
+    )
 
     with pytest.raises(TypeError):
         lg.lineage_from_langgraph_state("bad")
     assert lg.lineage_from_langgraph_result({"answer": "ok"}).answer == "ok"
-
 
 
 def test_langgraph_validation_import_and_invoke_errors(monkeypatch):
@@ -268,12 +324,15 @@ def test_langgraph_validation_import_and_invoke_errors(monkeypatch):
     memory = lg.lineage_from_langgraph_state(trace_only)
     assert memory.answer == "from trace"
 
-    plan_memory = lg.lineage_from_langgraph_state({"prompt": "q", "plan": {"reason": "only reason"}, "answer": "a"})
+    plan_memory = lg.lineage_from_langgraph_state(
+        {"prompt": "q", "plan": {"reason": "only reason"}, "answer": "a"}
+    )
     assert any(step.summary == "only reason" for step in plan_memory.steps)
 
     class RunOnlyNative:
         def __init__(self):
             self.called = False
+
         def invoke(self, state):
             self.called = True
             return {"answer": "invoked"}
@@ -282,36 +341,48 @@ def test_langgraph_validation_import_and_invoke_errors(monkeypatch):
     assert asyncio.run(app.arun({"prompt": "x"}))["answer"] == "invoked"
     assert app.lineage("raw-state").answer == "invoked"
 
-    app2 = lg.graph(nodes={"n": lambda state: {"ok": True}}, conditional_edges=[("n", lambda state: "END")])
+    app2 = lg.graph(
+        nodes={"n": lambda state: {"ok": True}},
+        conditional_edges=[("n", lambda state: "END")],
+    )
     assert app2.run({})["ok"] is True
 
     class MiniAgent:
         def run(self, prompt, mode="default", config=None):
             return RunResult(text="ok")
 
-    planned = lg.build_langgraph_planned_graph(agents={"a": MiniAgent()}, compile_graph=True)
+    planned = lg.build_langgraph_planned_graph(
+        agents={"a": MiniAgent()}, compile_graph=True
+    )
     assert isinstance(planned, FakeCompiled)
 
     class BadPlanned:
         def invoke(self, state):
             return "bad"
 
-    bad_graph = lg.build_langgraph_planned_graph(planned_graph=BadPlanned(), compile_graph=True)
+    bad_graph = lg.build_langgraph_planned_graph(
+        planned_graph=BadPlanned(), compile_graph=True
+    )
     with pytest.raises(TypeError):
         bad_graph.invoke({})
-
 
 
 def test_langgraph_state_projection_and_boundary_metadata():
     class DumpWithNormalized:
         def model_dump(self, mode="json"):
             return {"raw": True}
+
         def normalized(self):
             return {"ok": True}
 
     assert lg._json_result(DumpWithNormalized())["normalized"] == {"ok": True}
     assert lg._json_result(object()).__class__ is object
-    assert lg._tool_summary({"name": "nested", "output": {"data": {"number": 2, "text": "dos"}}}) == "nested: 2 -> dos"
+    assert (
+        lg._tool_summary(
+            {"name": "nested", "output": {"data": {"number": 2, "text": "dos"}}}
+        )
+        == "nested: 2 -> dos"
+    )
 
     class Agent:
         def run(self, prompt, mode="default", config=None):
@@ -319,3 +390,14 @@ def test_langgraph_state_projection_and_boundary_metadata():
 
     node = lg.agent_node(Agent(), output="text")
     assert node({"prompt": "q"})["text"] == "ok"
+
+
+@pytest.mark.parametrize("edges", [[], ["invalid"], [("a",)], [("a", "b"), None]])
+def test_graph_inspection_omits_incomplete_topology(edges):
+    class Native:
+        pass
+
+    native = Native()
+    native.edges = edges
+    app = lg.GraphApp(native=native, engine="langgraph", name="inspection")
+    assert "edges" not in app.inspect()

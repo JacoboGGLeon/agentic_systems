@@ -1,0 +1,60 @@
+name: release-candidate
+
+on:
+  workflow_dispatch:
+    inputs:
+      staging_release_id:
+        description: Public prerelease ID containing the audited candidate assets and manifest
+        required: true
+        type: string
+      manifest_sha256:
+        description: SHA256 of the reviewed release-manifest.json
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  seal:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RELEASE_ID: ${{ inputs.staging_release_id }}
+      MANIFEST_SHA256: ${{ inputs.manifest_sha256 }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.14"
+      - run: python -m pip install "pydantic>=2.7,<3"
+      - name: Require green quality on this commit
+        run: |
+          gh api "repos/$GITHUB_REPOSITORY/actions/workflows/quality.yml/runs?head_sha=$GITHUB_SHA&status=success" | jq -e --arg commit "$GITHUB_SHA" '.workflow_runs | any(.head_sha == $commit and .conclusion == "success")'
+      - name: Download reviewed staging release
+        run: |
+          [[ "$RELEASE_ID" =~ ^[0-9]+$ ]]
+          gh api "repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID" > release.json
+          jq -e '.draft == false and .prerelease == true' release.json
+          mkdir candidate
+          manifest_id="$(jq -er '[.assets[] | select(.name == "release-manifest.json")] | if length == 1 then .[0].id else error("ambiguous manifest") end' release.json)"
+          gh api "repos/$GITHUB_REPOSITORY/releases/assets/$manifest_id" -H 'Accept: application/octet-stream' > candidate/release-manifest.json
+          python -c "import sys,os; from pathlib import Path; sys.path.insert(0,'scripts'); from release_publication import load_manifest; m=load_manifest(Path('candidate/release-manifest.json'),os.environ['MANIFEST_SHA256']); assert m.commit_sha==os.environ['GITHUB_SHA']"
+          while IFS= read -r name; do
+            asset_id="$(jq -er --arg name "$name" '[.assets[] | select(.name == $name)] | if length == 1 then .[0].id else error("missing or duplicate asset") end' release.json)"
+            gh api "repos/$GITHUB_REPOSITORY/releases/assets/$asset_id" -H 'Accept: application/octet-stream' > "candidate/$name"
+          done < <(jq -r '.artifacts[].filename' candidate/release-manifest.json)
+      - name: Verify artifacts and ADA bundle
+        run: |
+          python scripts/release_publication.py --manifest candidate/release-manifest.json --manifest-sha256 "$MANIFEST_SHA256" --directory candidate --verify-only
+          version="$(jq -r .version candidate/release-manifest.json)"
+          python -m zipfile -e "candidate/agentic-systems-$version-ada-offline.zip" extracted
+          python "extracted/agentic-systems-$version-ada-offline/verify_bundle.py"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: certified-release-candidate
+          path: candidate/*
+          if-no-files-found: error
+          retention-days: 90
