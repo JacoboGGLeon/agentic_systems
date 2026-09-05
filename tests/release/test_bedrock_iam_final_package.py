@@ -39,6 +39,9 @@ def test_final_bedrock_iam_kit_is_portable_and_env_driven(tmp_path: Path) -> Non
     expected_wheel_sha = hashlib.sha256(wheel.read_bytes()).hexdigest()
     with zipfile.ZipFile(archive_path) as archive:
         names = set(archive.namelist())
+        assert not any(
+            "__pycache__" in name or name.endswith((".pyc", ".pyo")) for name in names
+        )
         assert {
             ".env",
             "bedrock_iam_attestation.ipynb",

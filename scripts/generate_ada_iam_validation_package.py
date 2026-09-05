@@ -234,7 +234,13 @@ def build(*, wheel: Path, commit: str, output_dir: Path) -> Path:
             target = package / "studio" / relative
             target.parent.mkdir(parents=True, exist_ok=True)
             if source.is_dir():
-                shutil.copytree(source, target)
+                shutil.copytree(
+                    source,
+                    target,
+                    ignore=shutil.ignore_patterns(
+                        "__pycache__", "*.pyc", "*.pyo", ".ipynb_checkpoints"
+                    ),
+                )
             else:
                 shutil.copy2(source, target)
         dotenv = _dotenv(commit=commit, wheel=wheel, wheel_sha256=wheel_sha256).replace(

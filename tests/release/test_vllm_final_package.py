@@ -44,6 +44,9 @@ def test_final_vllm_kit_derives_identity_from_real_artifacts(tmp_path: Path) -> 
 
     with zipfile.ZipFile(archive_path) as archive:
         names = set(archive.namelist())
+        assert not any(
+            "__pycache__" in name or name.endswith((".pyc", ".pyo")) for name in names
+        )
         assert {
             ".env",
             "03_vllm_qwen4b_colab_final.ipynb",

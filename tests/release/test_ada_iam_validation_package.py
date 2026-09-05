@@ -42,6 +42,9 @@ def test_ada_iam_validation_kit_is_offline_first_and_semantic(tmp_path: Path) ->
     with zipfile.ZipFile(archive_path) as archive:
         prefix = f"{PACKAGE_STEM}/"
         names = set(archive.namelist())
+        assert not any(
+            "__pycache__" in name or name.endswith((".pyc", ".pyo")) for name in names
+        )
         required = {
             ".env.example",
             "README.md",

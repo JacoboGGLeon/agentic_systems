@@ -568,7 +568,13 @@ def build(
         target = package_dir / "studio" / relative
         target.parent.mkdir(parents=True, exist_ok=True)
         if source.is_dir():
-            shutil.copytree(source, target)
+            shutil.copytree(
+                source,
+                target,
+                ignore=shutil.ignore_patterns(
+                    "__pycache__", "*.pyc", "*.pyo", ".ipynb_checkpoints"
+                ),
+            )
         else:
             shutil.copy2(source, target)
     (package_dir / ".env").write_text(
