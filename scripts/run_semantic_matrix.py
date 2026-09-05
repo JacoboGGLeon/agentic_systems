@@ -261,9 +261,12 @@ def _review(
     elif name == "poetic_calculation":
         if not states_verified_product(answer):
             failures.append("poetic calculation does not state 323")
-        if supports_model_generation(provider) and not looks_like_short_poem(answer):
+        if supports_model_generation(provider) and not looks_like_short_poem(
+            result.text
+        ):
             failures.append(
-                "poetic calculation is not a substantive poem of at least three lines"
+                "poetic calculation must have exactly three textual lines, "
+                "with the middle line exactly 323 and no digits on the outer lines"
             )
     elif name == "text_analysis" and not ("4" in answer and "29" in answer):
         failures.append("text answer does not state exact 4/29 metrics")

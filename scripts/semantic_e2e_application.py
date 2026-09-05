@@ -51,38 +51,24 @@ def states_verified_product(answer: str) -> bool:
 
 
 def looks_like_short_poem(answer: str) -> bool:
-    """Require a visibly textual result without prescribing exact wording."""
+    """Enforce the case's literal middle line, leaving the poetry unrestricted."""
 
-    lines = [line.strip(" -*\t") for line in answer.splitlines() if line.strip()]
+    # Do not repair formatting before validation: the request explicitly forbids
+    # spaces and punctuation on the middle line and requires exactly three lines.
+    lines = answer.splitlines()
     if len(lines) != 3:
         return False
-    middle_digits = "".join(character for character in lines[1] if character.isdigit())
     outer_word_counts = [
         sum(1 for token in line.split() if any(ch.isalpha() for ch in token))
         for line in (lines[0], lines[2])
     ]
     return (
-        states_verified_product(answer)
-        and not _contains_spelled_number_sequence(answer)
-        and middle_digits == "323"
-        and not any(character.isalpha() for character in lines[1])
+        lines[1] == "323"
         and not any(
             character.isdigit() for line in (lines[0], lines[2]) for character in line
         )
         and all(count >= 2 for count in outer_word_counts)
     )
-
-
-def _contains_spelled_number_sequence(answer: str) -> bool:
-    """Reject multi-token written numbers when the case requires literal digits."""
-
-    number_word = (
-        r"zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|"
-        r"twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|"
-        r"twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand"
-    )
-    pattern = rf"\b(?:{number_word})(?:[-\s]+(?:{number_word}))+\b"
-    return re.search(pattern, answer, flags=re.IGNORECASE) is not None
 
 
 class CalculationInput(BaseModel):
@@ -175,9 +161,7 @@ def record_semantic_judgment(
     rationale = (
         "No evidence-backed rubric violations were recorded."
         if not failed_items
-        else "; ".join(
-            f"{item.criterion}: {item.evidence}" for item in failed_items
-        )
+        else "; ".join(f"{item.criterion}: {item.evidence}" for item in failed_items)
     )
     decision = JudgeDecision(
         score=sum(criteria.model_dump().values()) / 5,
