@@ -24,6 +24,7 @@ from semantic_e2e_application import (
     FRAMEWORKS,
     PROVIDERS,
     build_semantic_cell,
+    assert_semantic_response,
     expected_paths,
     looks_like_short_poem,
     semantic_cases,
@@ -364,6 +365,7 @@ def _run_cell(provider: str, framework: str) -> dict[str, Any]:
         report = toolkit.Evaluator().evaluate(
             cell.executable,
             [declared],
+            assertions=[assert_semantic_response],
             judge=cell.judge,
             rubric=toolkit.JudgeRubric(
                 threshold=0.8,

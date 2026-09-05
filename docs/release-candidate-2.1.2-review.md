@@ -3,6 +3,74 @@
 This is a review checkpoint, not a release attestation. Agentic Systems 2.1.1
 remains the published version; its artifacts are not replaced by this candidate.
 
+## Eval hardening checkpoint (2026-09-05)
+
+The development source now differs from the frozen artifact below. No new wheel
+has been certified. Do not reuse the old bundle hashes to attest these changes.
+
+- Public Eval accepts typed deterministic assertions and retains their failures
+  inside the report before the judge. The literal poem predicate now participates
+  in this boundary; it does not repair the candidate's answer.
+- Default deterministic authority is empty: structural passes cannot promote
+  negative model judgments. Explicit legacy opt-in remains available, but the
+  release runners do not use it.
+- Studio's two/eight-turn runner observes each completed turn through Eval with
+  a same-provider native model judge and a typed certification Tool. It preserves
+  candidate/judge usage separately, human_result and hierarchical lineage.
+- The full offline run reached 100% core statement coverage, with 1,296 passed,
+  six skipped and five failures. Three coherence failures were subsequently
+  resolved by regenerating the API/notebook contracts. Two packaging guards
+  correctly rejected dirty core provenance; they must pass after a clean checkpoint.
+- A subsequent Studio/API suite passed 570 tests. New runner regression verifies
+  no duplicate candidate inference, strict rejection, usage separation and timeout
+  aggregation. This is offline behavior, not evidence of model judgment quality.
+
+Live judge calibration remains **blocking**. Four instruction/schema experiments
+classified respectively 7/9, 7/9, 4/9 and 6/9 regression fixtures correctly. Reading
+the verdicts exposed both false approvals of echoed requests and false rejections
+of faithful summaries. No rejection was promoted or candidate answer rewritten.
+The final instructions classified all 12 independent translation/summary holdout
+fixtures correctly; this does not cancel the remaining regression failures.
+
+All calibration candidates are explicitly fixtures, not application executions.
+SDK-reported judge tokens for the five runs: 29,872 + 28,841 + 29,157 + 28,731 +
+32,479 = **149,080**. They are additional to the historical 374,515 below, giving
+**523,595** observed tokens before the new conversation runs. Failed experiments
+remain in `.tmp/eval-hardening/`; none is silently replaced by a passing sample.
+
+Fresh eight-turn native Studio conversations completed for four providers. The
+automated results were Python 8/8 (mock control), OpenAI 8/8, Bedrock 8/8 and
+Ollama 4/8. These source-development runs are not frozen-wheel attestations.
+Manual reading distinguishes the following issues:
+
+- OpenAI and Bedrock produced grounded arithmetic, public Tool/Skill/System code
+  and substantive final summaries. Bedrock's Provider/Framework phrasing mixes
+  English and Spanish; neither provider's success certifies arbitrary dialogue.
+- Ollama's calculation has real `safe_calculate` evidence for 323, despite an
+  internally contradictory negative judge finding. Its final answer really does
+  echo the summary request. Its ownership explanation incorrectly assigns Tool
+  execution to the inference Provider; the System answer primarily explains Skill.
+- Ollama judge turns 6–8 did not produce semantic verdicts: the SDK rejected
+  prompts of 5,065, 4,929 and 5,121 tokens against the server's 4,096-token context.
+  These are operational failures, not zero-quality semantic assessments. Unknown
+  SDK usage for these failures is not counted as zero billing.
+- Reviewing lineage exposed a separate gap: Studio's `compose_result` aggregates
+  Tool events but does not retain child RunResults or execution IDs. The existing
+  flat route is observable, but cannot certify the promised execution hierarchy.
+  Fix composition at the public API boundary and add a hierarchy gate before a
+  new release. Do not manufacture child execution evidence in the renderer.
+
+New conversations consumed candidate/judge tokens respectively: OpenAI
+12,416/44,670, Ollama 16,615/25,348, Bedrock 12,986/51,241. Total: **163,276**.
+The complete observed ledger is now **686,871** tokens (historical runs plus all
+calibrations and these conversations). Python invoked no LM. Candidate network
+retries were zero; response repairs were OpenAI one, Ollama two, Bedrock zero.
+
+Next: preserve composition lineage, supply a bounded but sufficient judge context
+without silently discarding evidence, and verify judge calibration and complete
+conversation semantics again. Publication and new external validation bundles
+remain blocked until candidate and evaluation quality are demonstrated together.
+
 ## Artifact identity
 
 - Core source commit: `c3aca9cabd0ebc16d66fa7f85bb45dddb1d60b36`.

@@ -228,10 +228,7 @@ def test_judge_rubric_defines_contract_aware_fulfillment() -> None:
     assert "must never reduce no_unsupported_claims" in rubric.instructions
     assert "child RunResult" in rubric.instructions
     assert rubric.threshold == 0.80
-    assert rubric.deterministic_authority == (
-        "request_fulfillment",
-        "evidence_correctness",
-    )
+    assert rubric.deterministic_authority == ()
 
 
 class Candidate:
@@ -356,7 +353,9 @@ def test_deterministic_contract_authority_is_explicit_and_auditable() -> None:
             }
         ],
         judge=DriftedJudge(),
-        rubric=toolkit.JudgeRubric(),
+        rubric=toolkit.JudgeRubric(
+            deterministic_authority=("request_fulfillment", "evidence_correctness")
+        ),
         determinism="deterministic",
     )
 

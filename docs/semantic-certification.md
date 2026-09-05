@@ -30,6 +30,43 @@ Each focused challenge records:
 An ok=true value alone never certifies a challenge. The runner applies an
 independent semantic review and the validator rejects incomplete cells.
 
+## Assertions belong inside Eval
+
+`Evaluator.evaluate`, `evaluate_agent`, `run` and `run_eval` accept `assertions`:
+an ordered sequence of deterministic callables receiving `(RunResult, case)` and
+returning `agentic_systems.contracts.ValidationResult`. They run after the built-in
+contract checks and before the judge. Use them for application-specific exact
+requirements; the library does not contain provider-specific answer predicates.
+
+```python
+import agentic_systems as toolkit
+from agentic_systems.contracts import ValidationResult
+
+def assert_line_count(result, case) -> ValidationResult:
+    checked = ValidationResult()
+    if len(result.text.splitlines()) != case["expected"]["line_count"]:
+        checked.add("line_count_mismatch", "Unexpected number of lines.", path="text")
+    return checked
+
+# executable, cases and judge are the application's existing declarations.
+report = toolkit.eval().evaluate(
+    executable, cases, assertions=[assert_line_count], judge=judge,
+    rubric=toolkit.JudgeRubric(deterministic_authority=()),
+)
+```
+
+Assertions are trusted application code: keep them deterministic and read-only.
+Their issues are retained in both `validation` and `deterministic_validation` of
+the v2 report. Exceptions, invalid return types and unexplained rejections fail
+closed; exception messages are not exported. No answer is trimmed or rewritten to
+pass. Preserve assertion source with the release evidence for reproducibility.
+
+The default verdict is strict AND: a passing judge cannot override an assertion
+failure, and a passing structural check cannot promote a negative model verdict.
+`deterministic_authority` is now empty by default. Its legacy score-projection
+behavior remains an explicit opt-in for callers with exhaustive criterion proofs;
+keyword presence is not such a proof. Release gates do not opt in.
+
 ## Judge budgets
 
 Judge limits are derived from their declared Tool contract through
@@ -59,9 +96,9 @@ inside a System-owned LangGraph. `Evaluator` executes that graph inside an
 `AgenticEnvironment`, and a Python/native judge certifies the public answer and
 the complete execution path.
 
-## Certified 2.1 release evidence
+## Historical 2.1.1 release evidence
 
-The final 2.1 gate covers the 20 canonical routes in the primary Provider x
+The recorded 2.1.1 gate covers the 20 canonical routes in the primary Provider x
 Framework matrix and 76/76 primary semantic episodes. Bedrock's AWS
 credential-chain route then passed the same four Framework routes and 16/16
 episodes in AWS SageMaker and again in the ADA enterprise sandbox. The final
@@ -74,4 +111,5 @@ hash, certified runtime commit, release-assembly commit, core-tree equivalence,
 evidence filenames and hashes. `scripts/build_release_certification.py`
 constructs this summary from validated live artifacts; it is not edited by
 hand. The release workflow verifies that summary and every public artifact
-against `SHA256SUMS-2.1.2.txt` before publishing the Python distributions.
+against the version-specific checksum inventory before publication. These historical
+counts do not certify the unreleased 2.1.2 candidate or its corrected assertions.

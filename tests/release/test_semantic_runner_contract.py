@@ -129,6 +129,16 @@ def test_poem_shape_is_semantic_not_exact_text() -> None:
     )
     assert scored["criteria"]["request_fulfillment"] == 0.0
     assert scored["criteria"]["evidence_correctness"] == 1.0
+    import agentic_systems as toolkit
+    from types import SimpleNamespace
+    recorded = toolkit.RunResult(ok=True, text=malformed)
+    report = toolkit.eval().evaluate(
+        SimpleNamespace(run=lambda *args, **kwargs: recorded),
+        [{"name": "poetic_calculation", "input": "Produce the declared poem."}],
+        assertions=[module.assert_semantic_response],
+    )
+    assert not report.ok
+    assert report.cases[0].deterministic_validation["issues"][0]["code"] == "poem_format_mismatch"
     assert not module.looks_like_short_poem("🌟\n323\n🌙")
     assert not module.looks_like_short_poem(
         "Seventeen meets nineteen,\nTheir measured paths combine,\nThree hundred twenty-three shines."

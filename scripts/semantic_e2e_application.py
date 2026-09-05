@@ -11,6 +11,7 @@ from typing import Any, Literal
 from pydantic import AliasChoices, BaseModel, ConfigDict, Field, model_validator
 
 import agentic_systems as toolkit
+from agentic_systems.contracts import ValidationResult
 from agentic_systems.evals import JudgeFinding
 from agentic_systems.providers import provider_profile
 from agentic_systems.registry import FRAMEWORK_NAMES, PROVIDER_NAMES
@@ -21,6 +22,23 @@ PROVIDERS = PROVIDER_NAMES
 FRAMEWORKS = FRAMEWORK_NAMES
 TEXT_SAMPLE = " Agentic   systems are reliable. "
 NORMALIZED_TEXT = "Agentic systems are reliable."
+
+
+def assert_semantic_response(
+    result: toolkit.RunResult, case: dict[str, Any]
+) -> ValidationResult:
+    """Put scenario-specific formatting inside eval, not only its release consumer."""
+
+    validation = ValidationResult()
+    if case.get("name") == "poetic_calculation" and not looks_like_short_poem(
+        result.text
+    ):
+        validation.add(
+            "poem_format_mismatch",
+            "Expected exactly three textual lines with the middle line exactly 323.",
+            path="text",
+        )
+    return validation
 
 
 def supports_model_generation(provider: str) -> bool:
