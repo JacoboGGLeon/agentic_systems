@@ -28,14 +28,17 @@ The first automated matrix reported 43 passing and 17 failing episodes out of 60
 Those numbers describe the old gate's output, **not manual certification**:
 
 - Python: 12 deterministic control episodes passed.
-- OpenAI: 16 episodes passed the automated gate; complete manual certification
-  remains pending.
+- OpenAI: 16 episodes passed the old automated gate. Subsequent manual reading
+  found forbidden trailing spaces in its native poem too. This is another false
+  positive, not a provider-specific Ollama defect.
 - Ollama: one native calculation timed out at 120 seconds; the other 15 episodes
   passed the old gate. An isolated four-episode repeat finished, but manual review
   then found a false positive in its poem.
-- Bedrock: all 16 episodes failed with an expired bearer token. This is an
-  authentication failure, not a semantic verdict. Renew credentials without
-  placing them in reports, then rerun.
+- Bedrock: the initial 16 episodes failed with an expired bearer token. After the
+  user renewed it, a fresh strict-gate matrix completed 16/16 episodes across four
+  frameworks. All 16 human results and rendered lineages were read: correct
+  evidence, one specialist per supported case, none for unsupported requests, and
+  literal three-line poems.
 
 ### Blocking false positive: exact poem formatting
 
@@ -49,6 +52,13 @@ three lines. Regression tests replay the observed response: arithmetic evidence
 remains valid, but request fulfillment fails. Creative wording on the outer lines
 is not prescribed. No provider/model branch or automatic answer rewrite was added.
 
+A fresh Ollama native run reproduced the malformed poem and the corrected release
+gate rejected it (three episodes passed, one failed). The nested generic eval and
+model judge still reported success: the generic deterministic contract does not
+yet express this text-format predicate. Move explicit scenario predicates into
+the eval validation boundary so nested verdicts also reflect this failure.
+The changed gate passed 147 release tests; six tests were skipped.
+
 ### Blocking false positives: Studio conversation semantics
 
 Eight-turn Studio runs completed for Python, OpenAI and Ollama. Python is a mock,
@@ -60,6 +70,12 @@ instead of summarizing the conversation. Another turn inaccurately attributed
 tool execution to the provider. Keyword checks approved both. Consequently the
 Studio report's `ok` is insufficient for semantic release approval. Strengthen
 the evidence-backed conversational evaluation and rerun before closing this item.
+
+Bedrock's renewed eight-turn Studio run also completed, without response repairs
+or network retries. Reading its answers confirmed real arithmetic evidence,
+public Tool/Skill/System code and the Provider/Framework distinction. Its System
+explanation loosely attributes episode handling to System; review this against
+Environment ownership rather than approving the narrative unconditionally.
 
 ## Observed token ledger
 
@@ -73,9 +89,13 @@ usage are unavailable and must not be interpreted as zero billed tokens.
 | Isolated Ollama native repeat | 3,805 | 19,787 |
 | OpenAI Studio, eight turns | 12,578 | Not run |
 | Ollama Studio, eight turns | 16,615 | Not run |
+| Ollama native, corrected strict gate | 3,798 | 19,919 |
+| Bedrock matrix, renewed token and strict gate | 31,435 | 85,279 |
+| Bedrock Studio, renewed token, eight turns | 12,963 | Not run |
 
-Observed total for these runs: **221,121 tokens**. Bedrock usage was unavailable;
-Python control did not invoke a language model. Later runs must be added as new
+Observed total for these runs: **374,515 tokens**. Usage for the initial expired
+Bedrock calls was unavailable; Python control did not invoke a language model.
+Later runs must be added as new
 ledger entries rather than silently replacing failed attempts.
 
 ## Remaining release gates
@@ -83,7 +103,8 @@ ledger entries rather than silently replacing failed attempts.
 1. Rerun corrected semantic validation, preserving initial failure evidence.
 2. Resolve conversational false positives with evidence-backed evaluation, not
    additional approval keywords; verify final answers and lineage manually.
-3. Renew the local Bedrock token and rerun matrix and Studio.
+3. Preserve the renewed Bedrock evidence; rerun affected scenarios after the
+   remaining evaluation changes.
 4. Regenerate validated kits with the corrected gate assets, then obtain fresh
    AWS IAM, ADA IAM and vLLM evidence for this exact wheel.
 5. Seal the reviewed release manifest, prove TestPyPI OIDC publication and
