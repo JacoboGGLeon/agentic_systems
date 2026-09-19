@@ -1,0 +1,18 @@
+{
+  "version": "claim-acceptance-v1",
+  "purpose": "first-held-out-sample-not-statistical-certification",
+  "evidence": [
+    {"id": "lookup-1", "tool": "lookup", "ok": true, "input": {"key": "A"}, "output": {"value": 47}},
+    {"id": "lookup-2", "tool": "lookup", "ok": true, "input": {"key": "B"}, "output": {"value": 58}},
+    {"id": "export-1", "tool": "export", "ok": false, "input": {"format": "csv"}, "output": null, "error": {"code": "timeout"}}
+  ],
+  "cases": [
+    {"id": "partial_success", "answer": "Both lookups succeeded. The export failed.", "expected": "pass"},
+    {"id": "reversed_status", "answer": "Both lookups failed. The export succeeded.", "expected": "fail"},
+    {"id": "distinct_values", "answer": "The lookup for A returned 47. The lookup for B returned 58.", "expected": "pass"},
+    {"id": "swapped_values", "answer": "The lookup for A returned 58. The lookup for B returned 47.", "expected": "fail"},
+    {"id": "unsupported_cause", "answer": "The lookup for A returned 47. That lookup caused the export timeout.", "expected": "unknown"},
+    {"id": "metaphor_and_fact", "answer": "The lookup for B returned 58. Hope dances like a lantern in the dusk.", "expected": "pass"}
+  ],
+  "acceptance": "One execution per case; expected grounding and clarity=true; manual fragment/reference review. Unknown only matches the explicitly insufficient causal evidence case; it is not an approved answer. Any execution failure blocks acceptance. No retuning on these cases."
+}

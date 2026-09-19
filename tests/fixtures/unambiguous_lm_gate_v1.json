@@ -1,0 +1,103 @@
+{
+  "case_id": "typed-equality-core-v1",
+  "observations": [
+    {
+      "id": "lookup-a",
+      "tool": "lookup",
+      "ok": true,
+      "output": {
+        "value": 47,
+        "label": "47"
+      }
+    },
+    {
+      "id": "lookup-b",
+      "tool": "lookup",
+      "ok": true,
+      "output": {
+        "value": 58
+      }
+    },
+    {
+      "id": "export-csv",
+      "tool": "export",
+      "ok": false,
+      "output": null,
+      "error": {
+        "code": "timeout"
+      }
+    }
+  ],
+  "assertions": [
+    {
+      "assertion_id": "a01-supported-bool",
+      "record_id": "lookup-a",
+      "path": ["ok"],
+      "operator": "eq",
+      "expected": true
+    },
+    {
+      "assertion_id": "a02-contradicted-bool",
+      "record_id": "lookup-a",
+      "path": ["ok"],
+      "operator": "eq",
+      "expected": false
+    },
+    {
+      "assertion_id": "a03-supported-failure",
+      "record_id": "export-csv",
+      "path": ["ok"],
+      "operator": "eq",
+      "expected": false
+    },
+    {
+      "assertion_id": "a04-contradicted-success",
+      "record_id": "export-csv",
+      "path": ["ok"],
+      "operator": "eq",
+      "expected": true
+    },
+    {
+      "assertion_id": "a05-supported-number",
+      "record_id": "lookup-a",
+      "path": ["output", "value"],
+      "operator": "eq",
+      "expected": 47
+    },
+    {
+      "assertion_id": "a06-contradicted-json-type",
+      "record_id": "lookup-a",
+      "path": ["output", "value"],
+      "operator": "eq",
+      "expected": "47"
+    },
+    {
+      "assertion_id": "a07-supported-string",
+      "record_id": "lookup-a",
+      "path": ["output", "label"],
+      "operator": "eq",
+      "expected": "47"
+    },
+    {
+      "assertion_id": "a08-unknown-missing-path",
+      "record_id": "lookup-b",
+      "path": ["error", "code"],
+      "operator": "eq",
+      "expected": "timeout"
+    },
+    {
+      "assertion_id": "a09-supported-nested",
+      "record_id": "export-csv",
+      "path": ["error", "code"],
+      "operator": "eq",
+      "expected": "timeout"
+    },
+    {
+      "assertion_id": "a10-unknown-record",
+      "record_id": "not-observed",
+      "path": ["ok"],
+      "operator": "eq",
+      "expected": true
+    }
+  ]
+}

@@ -22,6 +22,19 @@ PROVIDERS = PROVIDER_NAMES
 FRAMEWORKS = FRAMEWORK_NAMES
 TEXT_SAMPLE = " Agentic   systems are reliable. "
 NORMALIZED_TEXT = "Agentic systems are reliable."
+PLAIN_TEXT_INSTRUCTIONS = (
+    "For exact multiline formats, output plain text, not Markdown. "
+    "Separate lines with literal newline characters only. Do not append spaces "
+    "before a newline: Markdown's two-space hard-break syntax is forbidden. "
+    "Check each line literally, including invisible leading and trailing spaces. "
+)
+LITERAL_JUDGE_INSTRUCTIONS = (
+    "Evaluate the literal answer string, not its rendered Markdown appearance. "
+    "For exact-line requirements, leading and trailing spaces count: '323  ' "
+    "is not '323'. Markdown hard-break spaces violate a no-spaces requirement. "
+    "Report such violations under request_fulfillment, citing the offending "
+    "line with whitespace escaped or explicitly counted. "
+)
 
 
 def assert_semantic_response(
@@ -169,6 +182,11 @@ def record_semantic_judgment(
     scores, findings, and rationale from the same structured evidence.
     """
 
+    return project_semantic_judgment(judgment)
+
+
+def project_semantic_judgment(judgment: SemanticJudgmentInput) -> dict[str, Any]:
+    """Shared deterministic rubric projection for application-level judge tools."""
     normalized = list(judgment.assessments)
     failed_items = [item for item in normalized if not item.passed]
     failed = {item.criterion for item in failed_items}
@@ -668,7 +686,8 @@ def build_semantic_cell(
             "requests, explicitly state that the requested "
             "capability is outside scope, name the supported tasks, and ask the user to "
             "choose one. Never expose JSON, ToolEnvelope, "
-            "Python repr, private reasoning, or implementation details."
+            "Python repr, private reasoning, or implementation details. "
+            + PLAIN_TEXT_INSTRUCTIONS
         ),
         tools=[calculator_tool, text_tool, clarify_scope],
         framework=framework,
@@ -738,7 +757,7 @@ def build_semantic_cell(
                 "only; never fail it for formatting, line count, length, structure, "
                 "wording, or artistic style. Those requirements belong only to "
                 "request_fulfillment. Raw JSON or technical envelopes must fail clarity "
-                "and no_technical_noise."
+                "and no_technical_noise. " + LITERAL_JUDGE_INSTRUCTIONS
             ),
             tools=judge_tools,
             framework=framework,

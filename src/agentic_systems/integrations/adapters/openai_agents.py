@@ -24,7 +24,7 @@ from ...protocols import AsyncRunner, SyncRunner
 from ...registry import provider_capability
 from ...results import RunResult, public_answer_text
 from ...tools.events import ToolEvent, classify_tool_failures
-from ...usage import normalize_usage
+from ...usage import merge_usage, normalize_usage
 from .base import (
     FrameworkAdapter,
     attach_native_result,
@@ -37,7 +37,21 @@ from .tools import (
     decode_tool_output,
     merge_tools,
     tool_name_aliases,
+    _TOOL_RESULT_MARKER,
 )
+
+
+def _sdk_tool_failure(_context: Any, error: Exception) -> str:
+    """Preserve SDK validation failures without guessing from message text."""
+    return json.dumps(
+        {
+            _TOOL_RESULT_MARKER: {
+                "ok": False,
+                "data": None,
+                "error": {"code": type(error).__name__, "message": str(error)},
+            }
+        }
+    )
 
 
 class OpenAIAgentsFrameworkAdapter(FrameworkAdapter):
@@ -65,18 +79,29 @@ class OpenAIAgentsFrameworkAdapter(FrameworkAdapter):
                     name_override=aliases.native(tool.name),
                     description_override=tool.description or None,
                     strict_mode=tool.strict,
+                    failure_error_function=_sdk_tool_failure,
                 )
                 for tool in canonical_tools
             ]
             tools = merge_tools(converted, native_tools)
             model = _materialize_model(agent, engine)
-            return NativeAgent(
+            native_agent = NativeAgent(
                 name=agent.name,
                 instructions=agent.instructions,
                 model=model,
                 tools=tools,
                 **kwargs,
             )
+            # Native SDK handoffs invoke this prepared object directly, without
+            # passing through run()/arun(). Preserve its declared output bound.
+            declared_policy = getattr(agent, "policy", None)
+            if isinstance(declared_policy, Mapping):
+                declared_policy = RunPolicy.model_validate(declared_policy)
+            if declared_policy is not None and declared_policy.max_tokens is not None:
+                native_agent.model_settings = dataclasses.replace(
+                    native_agent.model_settings, max_tokens=declared_policy.max_tokens
+                )
+            return native_agent
 
         return self.native_agent(agent, build)
 
@@ -112,24 +137,76 @@ class OpenAIAgentsFrameworkAdapter(FrameworkAdapter):
         native_agent = _execution_agent(self.prepare(agent, engine))
         _configure_model(native_agent.model, policy, mode)
         kwargs = _runner_kwargs(agent, agent.framework_config.run_kwargs)
-        _configure_native_agent(native_agent, policy)
         max_turns = effective_max_turns(policy, kwargs)
         aliases = tool_name_aliases(agent.available_tools())
-        observed = _observe_tools(native_agent, aliases)
-        try:
-            native_result = Runner.run_sync(
+        split = _uses_structured_tool_phases(native_agent, policy)
+        if split and max_turns < 2:
+            return _phase_budget_failure(agent, input_value, mode, max_turns)
+        action_agent = (
+            _phase_agent(
                 native_agent,
+                output_type=None,
+                output_guardrails=[],
+            )
+            if split
+            else native_agent
+        )
+        _configure_native_agent(action_agent, policy)
+        observed = _observe_tools(action_agent, aliases)
+        action_result: Any | None = None
+        action_normalized: RunResult | None = None
+        action_turns = 0
+        try:
+            action_result = Runner.run_sync(
+                action_agent,
                 _input_text(aliases.map_input(input_value)),
-                max_turns=max_turns,
+                max_turns=max_turns - 1 if split else max_turns,
                 **kwargs,
             )
+            if split:
+                action_turns = _native_turn_count(
+                    action_result,
+                    conservative_default=max_turns - 1,
+                )
+                action_normalized = _normalize_result(
+                    agent,
+                    action_result,
+                    input_value,
+                    mode,
+                    aliases,
+                )
+                native_result = _run_structured_synthesis_sync(
+                    Runner,
+                    native_agent,
+                    action_result,
+                    policy,
+                    max_turns=max_turns,
+                    kwargs=kwargs,
+                )
+            else:
+                native_result = action_result
         except (TypeError, ValueError, ImportError):
             raise
         except Exception as exc:  # noqa: BLE001 - operational SDK failures normalize.
             result = _failure(agent, input_value, mode, exc)
-            result.tool_events = copy.deepcopy(observed)
+            result = _preserve_failed_action(
+                action_normalized,
+                result,
+                observed,
+            )
+            if split:
+                result.meta["structured_execution"] = {
+                    "strategy": "tools_then_output",
+                    "failed_phase": "action_or_synthesis",
+                }
             return result
         result = _normalize_result(agent, native_result, input_value, mode, aliases)
+        if split:
+            result = _merge_structured_phases(
+                cast(RunResult, action_normalized),
+                action_turns,
+                result,
+            )
         return attach_native_result(result, native_result)
 
     async def arun(
@@ -163,25 +240,77 @@ class OpenAIAgentsFrameworkAdapter(FrameworkAdapter):
             ) from exc
         native_agent = _execution_agent(self.prepare(agent, engine))
         _configure_model(native_agent.model, policy, mode)
-        _configure_native_agent(native_agent, policy)
         kwargs = _runner_kwargs(agent, agent.framework_config.run_kwargs)
         max_turns = effective_max_turns(policy, kwargs)
         aliases = tool_name_aliases(agent.available_tools())
-        observed = _observe_tools(native_agent, aliases)
-        try:
-            native_result = await Runner.run(
+        split = _uses_structured_tool_phases(native_agent, policy)
+        if split and max_turns < 2:
+            return _phase_budget_failure(agent, input_value, mode, max_turns)
+        action_agent = (
+            _phase_agent(
                 native_agent,
+                output_type=None,
+                output_guardrails=[],
+            )
+            if split
+            else native_agent
+        )
+        _configure_native_agent(action_agent, policy)
+        observed = _observe_tools(action_agent, aliases)
+        action_result: Any | None = None
+        action_normalized: RunResult | None = None
+        action_turns = 0
+        try:
+            action_result = await Runner.run(
+                action_agent,
                 _input_text(aliases.map_input(input_value)),
-                max_turns=max_turns,
+                max_turns=max_turns - 1 if split else max_turns,
                 **kwargs,
             )
+            if split:
+                action_turns = _native_turn_count(
+                    action_result,
+                    conservative_default=max_turns - 1,
+                )
+                action_normalized = _normalize_result(
+                    agent,
+                    action_result,
+                    input_value,
+                    mode,
+                    aliases,
+                )
+                native_result = await _run_structured_synthesis_async(
+                    Runner,
+                    native_agent,
+                    action_result,
+                    policy,
+                    max_turns=max_turns,
+                    kwargs=kwargs,
+                )
+            else:
+                native_result = action_result
         except (TypeError, ValueError, ImportError):
             raise
         except Exception as exc:  # noqa: BLE001 - operational SDK failures normalize.
             result = _failure(agent, input_value, mode, exc)
-            result.tool_events = copy.deepcopy(observed)
+            result = _preserve_failed_action(
+                action_normalized,
+                result,
+                observed,
+            )
+            if split:
+                result.meta["structured_execution"] = {
+                    "strategy": "tools_then_output",
+                    "failed_phase": "action_or_synthesis",
+                }
             return result
         result = _normalize_result(agent, native_result, input_value, mode, aliases)
+        if split:
+            result = _merge_structured_phases(
+                cast(RunResult, action_normalized),
+                action_turns,
+                result,
+            )
         return attach_native_result(result, native_result)
 
 
@@ -285,11 +414,16 @@ def _materialize_model(agent: Any, engine: Any) -> Any:
                 if isinstance(secret, SecretStr)
                 else secret or os.getenv("OLLAMA_API_KEY") or "ollama"
             )
-        from .openai_models import ToolCallNormalizingModel
+        from openai import DefaultAsyncHttpxClient
+        from .openai_models import ChatCompletionTermination, ToolCallNormalizingModel
 
+        termination = ChatCompletionTermination()
         client = AsyncOpenAI(
             base_url=base_url,
             api_key=api_key,
+            http_client=DefaultAsyncHttpxClient(
+                event_hooks={"response": [termination.observe]}
+            ),
             **client_options,
         )
         delegate = OpenAIChatCompletionsModel(
@@ -301,6 +435,7 @@ def _materialize_model(agent: Any, engine: Any) -> Any:
         return ToolCallNormalizingModel(
             delegate,
             [aliases.native(tool.name) for tool in available_tools],
+            termination=termination,
         )
     from .openai_models import ScriptedOpenAIModel
 
@@ -401,6 +536,28 @@ def _configure_tool_budget(native_agent: Any, policy: RunPolicy) -> None:
         native_agent.tools = []
         _set_tool_choice(native_agent, None)
         return
+    # Enforce at the executable boundary too: model settings are advisory and
+    # a provider may emit multiple calls in a single response.
+    invoked = 0
+
+    def bounded(invoke: Any) -> Any:
+        async def run(context: Any, arguments: str) -> Any:
+            nonlocal invoked
+            if invoked >= limit:
+                return _sdk_tool_failure(
+                    context, RuntimeError("max_tool_calls_exhausted")
+                )
+            invoked += 1
+            return await invoke(context, arguments)
+
+        return run
+
+    native_agent.tools = [
+        dataclasses.replace(tool, on_invoke_tool=bounded(tool.on_invoke_tool))
+        if dataclasses.is_dataclass(tool) and hasattr(tool, "on_invoke_tool")
+        else tool
+        for tool in native_agent.tools
+    ]
     if getattr(native_agent, "tool_use_behavior", "run_llm_again") != "run_llm_again":
         return
 
@@ -447,6 +604,215 @@ def _runner_kwargs(agent: Any, configured: Mapping[str, Any]) -> dict[str, Any]:
 
     kwargs["run_config"] = RunConfig(tracing_disabled=True)
     return kwargs
+
+
+def _uses_structured_tool_phases(native_agent: Any, policy: RunPolicy) -> bool:
+    """Separate executable work from typed synthesis when both are requested.
+
+    A tool call and a final structured value are different protocol boundaries.
+    Keeping them in separate SDK runs avoids asking an OpenAI-compatible endpoint
+    to satisfy both boundaries in one response, while retaining one public Agent
+    invocation and one portable turn/tool budget.
+    """
+
+    output_type = getattr(native_agent, "output_type", None)
+    executables = bool(
+        getattr(native_agent, "tools", ()) or getattr(native_agent, "mcp_servers", ())
+    )
+    return output_type is not None and executables and policy.max_tool_calls != 0
+
+
+def _phase_agent(native_agent: Any, **updates: Any) -> Any:
+    """Clone a prepared SDK Agent and change only fields present in its version."""
+
+    if dataclasses.is_dataclass(native_agent):
+        fields = {field.name for field in dataclasses.fields(native_agent)}
+        selected = {key: value for key, value in updates.items() if key in fields}
+        return cast(Any, dataclasses.replace(cast(Any, native_agent), **selected))
+    phase = copy.copy(native_agent)
+    for key, value in updates.items():
+        if hasattr(phase, key):
+            setattr(phase, key, value)
+    return phase
+
+
+def _native_turn_count(native_result: Any, *, conservative_default: int) -> int:
+    """Read SDK request count, falling back to captured responses or the bound."""
+
+    usage = getattr(getattr(native_result, "context_wrapper", None), "usage", None)
+    requests = getattr(usage, "requests", None)
+    if isinstance(requests, int) and requests > 0:
+        return requests
+    raw_responses = getattr(native_result, "raw_responses", None)
+    if isinstance(raw_responses, (list, tuple)) and raw_responses:
+        return len(raw_responses)
+    return conservative_default
+
+
+def _synthesis_agent(native_agent: Any, policy: RunPolicy) -> Any:
+    """Create the non-executable typed-output phase without mutating the cache."""
+
+    phase = _phase_agent(
+        native_agent,
+        tools=[],
+        mcp_servers=[],
+        handoffs=[],
+        input_guardrails=[],
+    )
+    synthesis_policy = policy.model_copy(
+        update={"max_tool_calls": 0, "tool_choice": "none"}
+    )
+    _configure_native_agent(phase, synthesis_policy)
+    return phase
+
+
+def _remaining_turns(
+    action_result: Any,
+    *,
+    max_turns: int,
+    action_bound: int,
+) -> int:
+    consumed = _native_turn_count(
+        action_result,
+        conservative_default=action_bound,
+    )
+    return max(1, max_turns - min(consumed, action_bound))
+
+
+def _run_structured_synthesis_sync(
+    runner: Any,
+    native_agent: Any,
+    action_result: Any,
+    policy: RunPolicy,
+    *,
+    max_turns: int,
+    kwargs: Mapping[str, Any],
+) -> Any:
+    action_bound = max_turns - 1
+    phase = _synthesis_agent(native_agent, policy)
+    return runner.run_sync(
+        phase,
+        action_result.to_input_list(),
+        max_turns=_remaining_turns(
+            action_result,
+            max_turns=max_turns,
+            action_bound=action_bound,
+        ),
+        **dict(kwargs),
+    )
+
+
+async def _run_structured_synthesis_async(
+    runner: Any,
+    native_agent: Any,
+    action_result: Any,
+    policy: RunPolicy,
+    *,
+    max_turns: int,
+    kwargs: Mapping[str, Any],
+) -> Any:
+    action_bound = max_turns - 1
+    phase = _synthesis_agent(native_agent, policy)
+    return await runner.run(
+        phase,
+        action_result.to_input_list(),
+        max_turns=_remaining_turns(
+            action_result,
+            max_turns=max_turns,
+            action_bound=action_bound,
+        ),
+        **dict(kwargs),
+    )
+
+
+def _phase_budget_failure(
+    agent: Any,
+    input_value: Any,
+    mode: str,
+    max_turns: int,
+) -> RunResult:
+    message = (
+        "Structured output with executable tools requires max_turns >= 2 "
+        f"(received {max_turns})."
+    )
+    result = _failure(agent, input_value, mode, RuntimeError(message))
+    result.data = {
+        "ok": False,
+        "error": {
+            "code": "structured_tool_turn_budget",
+            "message": message,
+        },
+    }
+    result.errors = [cast(dict[str, Any], result.data["error"])]
+    result.meta["structured_execution"] = {
+        "strategy": "tools_then_output",
+        "failed_phase": "budget_validation",
+    }
+    return result
+
+
+def _merge_structured_phases(
+    action_result: RunResult,
+    action_turns: int,
+    synthesis_result: RunResult,
+) -> RunResult:
+    """Preserve action evidence while exposing the typed synthesis as the answer."""
+
+    synthesis_ok = synthesis_result.ok
+    synthesis_usage = copy.deepcopy(synthesis_result.usage)
+    synthesis_result.tool_events = [
+        *copy.deepcopy(action_result.tool_events),
+        *copy.deepcopy(synthesis_result.tool_events),
+    ]
+    synthesis_result.raw_responses = [
+        *copy.deepcopy(action_result.raw_responses),
+        *copy.deepcopy(synthesis_result.raw_responses),
+    ]
+    synthesis_result.usage = merge_usage(action_result.usage, synthesis_result.usage)
+    for error in action_result.errors:
+        if error not in synthesis_result.errors:
+            synthesis_result.errors.append(copy.deepcopy(error))
+    if not action_result.ok:
+        synthesis_result.ok = False
+    synthesis_result.meta["structured_execution"] = {
+        "strategy": "tools_then_output",
+        "phases": (
+            {
+                "name": "action",
+                "turns": action_turns,
+                "tool_events": len(action_result.tool_events),
+                "ok": action_result.ok,
+            },
+            {
+                "name": "synthesis",
+                "turns": int(synthesis_usage.get("requests") or 0),
+                "tool_events": len(synthesis_result.tool_events)
+                - len(action_result.tool_events),
+                "ok": synthesis_ok,
+            },
+        ),
+    }
+    return synthesis_result
+
+
+def _preserve_failed_action(
+    action: RunResult | None,
+    failure: RunResult,
+    observed: list[ToolEvent],
+) -> RunResult:
+    """Retain completed phase-one evidence if typed synthesis fails later."""
+
+    if action is None:
+        failure.tool_events = copy.deepcopy(observed)
+        return failure
+    failure.tool_events = copy.deepcopy(action.tool_events or observed)
+    failure.messages = copy.deepcopy(action.messages)
+    failure.raw_responses = copy.deepcopy(action.raw_responses)
+    failure.usage = copy.deepcopy(action.usage)
+    for error in action.errors:
+        if error not in failure.errors:
+            failure.errors.append(copy.deepcopy(error))
+    return failure
 
 
 def _normalize_result(
@@ -560,6 +926,7 @@ def _failure(agent: Any, input_value: Any, mode: str, exc: Exception) -> RunResu
             "source_result_type": type(exc).__name__,
             "framework_adapter": "openai-agents",
             "input": _jsonable(input_value),
+            **({"termination": exc.termination} if hasattr(exc, "termination") else {}),
         },
     )
 

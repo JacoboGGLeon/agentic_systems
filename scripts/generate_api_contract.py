@@ -169,6 +169,9 @@ def _notebook(manifest: dict[str, Any]) -> str:
             "modelos. La matriz live de providers/frameworks se valida antes.\n"
         ),
         _code(
+            "from pathlib import Path\n"
+            "import sys\n\n"
+            "sys.path.insert(0, str(Path.cwd() / 'src'))\n"
             "import agentic_systems as toolkit\n\n"
             "api_coverage = [\n"
             "    'toolkit.api_contract',\n"

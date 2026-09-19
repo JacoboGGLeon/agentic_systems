@@ -1,0 +1,18 @@
+{
+  "version": "claim-regression-annotations-v1",
+  "purpose": "Oracle for exposed regression examples; never model input",
+  "cases": {
+    "partial_success": [
+      {"text": "Both lookups succeeded.", "status": "supported", "required_ids": ["lookup-1", "lookup-2"], "allowed_ids": ["lookup-1", "lookup-2"]},
+      {"text": "The export failed.", "status": "supported", "required_ids": ["export-1"], "allowed_ids": ["export-1"]}
+    ],
+    "unsupported_cause": [
+      {"text": "The lookup for A returned 47.", "status": "supported", "required_ids": ["lookup-1"], "allowed_ids": ["lookup-1"]},
+      {"text": "That lookup caused the export timeout.", "status": "unknown", "required_ids": [], "allowed_ids": ["lookup-1", "export-1"]}
+    ],
+    "metaphor_and_fact": [
+      {"text": "The lookup for B returned 58.", "status": "supported", "required_ids": ["lookup-2"], "allowed_ids": ["lookup-2"]},
+      {"text": "Hope dances like a lantern in the dusk.", "status": "nonfactual", "required_ids": [], "allowed_ids": []}
+    ]
+  }
+}

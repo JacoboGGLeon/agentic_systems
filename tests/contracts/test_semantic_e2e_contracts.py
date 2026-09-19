@@ -33,6 +33,12 @@ class StructuredAnswer(BaseModel):
     answer: str
 
 
+class StructuredProduct(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    result: int
+
+
 @toolkit.tool
 def multiply(a: int, b: int) -> dict:
     return {"result": a * b}
@@ -214,6 +220,70 @@ def test_openai_agents_receives_pydantic_output_contract_natively() -> None:
 
     assert agent.native_agent is not None
     assert agent.native_agent.output_type is StructuredAnswer
+
+
+@pytest.mark.parametrize("asynchronous", [False, True])
+def test_openai_agents_structured_tools_use_bounded_protocol_phases(
+    asynchronous: bool,
+) -> None:
+    pytest.importorskip("agents")
+    runtime = toolkit.runtime(provider="python-runtime", model="python-runtime")
+    system = toolkit.system(runtime=runtime, model="python-runtime")
+    agent = system.agent(
+        name="structured_calculator",
+        instructions="Call multiply, then return its structured result.",
+        engine="python-runtime",
+        framework="openai-agents",
+        tools=[multiply],
+        output=StructuredProduct,
+        contract=toolkit.AgentContract(must_call=["multiply"]),
+        policy=toolkit.RunPolicy(max_turns=3, max_tool_calls=1),
+    )
+    input_value = {"tool": "multiply", "input": {"a": 17, "b": 19}}
+
+    result = (
+        __import__("asyncio").run(agent.arun(input_value))
+        if asynchronous
+        else agent.run(input_value)
+    )
+
+    assert result.ok is True
+    assert result.data == {"result": 323}
+    assert [(event.name, event.ok) for event in result.tool_events] == [
+        ("multiply", True)
+    ]
+    assert result.usage["requests"] == 3
+    assert result.meta["structured_execution"]["strategy"] == "tools_then_output"
+    assert [
+        phase["name"] for phase in result.meta["structured_execution"]["phases"]
+    ] == [
+        "action",
+        "synthesis",
+    ]
+    assert sum(step.kind == "tool" for step in result.lineage().steps) == 1
+
+
+def test_openai_agents_structured_tools_reject_impossible_turn_budget() -> None:
+    pytest.importorskip("agents")
+    runtime = toolkit.runtime(provider="python-runtime", model="python-runtime")
+    system = toolkit.system(runtime=runtime, model="python-runtime")
+    agent = system.agent(
+        name="bounded_structured_calculator",
+        instructions="Call multiply, then return its structured result.",
+        engine="python-runtime",
+        framework="openai-agents",
+        tools=[multiply],
+        output=StructuredProduct,
+        contract=toolkit.AgentContract(must_call=["multiply"]),
+        policy=toolkit.RunPolicy(max_turns=1, max_tool_calls=1),
+    )
+
+    result = agent.run({"tool": "multiply", "input": {"a": 17, "b": 19}})
+
+    assert result.ok is False
+    assert result.data["error"]["code"] == "structured_tool_turn_budget"
+    assert result.tool_events == []
+    assert result.meta["structured_execution"]["failed_phase"] == "budget_validation"
 
 
 def test_judge_rubric_defines_contract_aware_fulfillment() -> None:

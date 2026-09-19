@@ -7,6 +7,7 @@ import dataclasses
 import json
 import uuid
 from collections.abc import AsyncIterator, Mapping
+from contextvars import ContextVar
 from typing import Any, cast
 
 from agents import ModelResponse
@@ -21,12 +22,60 @@ from openai.types.responses import (
 from agentic_systems.tools.parsing import parse_textual_tool_call
 
 
+class IncompleteModelResponse(RuntimeError):
+    """An observed protocol termination, not a request to retry the workflow."""
+
+    def __init__(self, reason: str, usage: Any) -> None:
+        super().__init__(f"Model response incomplete: {reason}.")
+        self.termination = {
+            "reason": reason,
+            "response_usage": usage,
+            "usage_scope": "terminating_response_only",
+        }
+
+
+class ChatCompletionTermination:
+    """Retain termination metadata discarded by the SDK's ModelResponse bridge."""
+
+    def __init__(self) -> None:
+        self.reason: ContextVar[str | None] = ContextVar(
+            "completion_reason", default=None
+        )
+        self.usage: ContextVar[dict[str, Any] | None] = ContextVar(
+            "completion_usage", default=None
+        )
+
+    async def observe(self, response: Any) -> None:
+        if (
+            response.status_code != 200
+            or "application/json" not in response.headers.get("content-type", "")
+        ):
+            return
+        await response.aread()
+        try:
+            payload = response.json()
+        except ValueError:
+            return
+        choices = payload.get("choices") if isinstance(payload, Mapping) else None
+        if isinstance(choices, list) and choices and isinstance(choices[0], Mapping):
+            self.reason.set(choices[0].get("finish_reason"))
+            usage = payload.get("usage")
+            self.usage.set(dict(usage) if isinstance(usage, Mapping) else None)
+
+
 class ToolCallNormalizingModel(Model):
     """Normalize strict textual Tool calls before the Runner owns the loop."""
 
-    def __init__(self, delegate: Model, tool_names: list[str]) -> None:
+    def __init__(
+        self,
+        delegate: Model,
+        tool_names: list[str],
+        termination: ChatCompletionTermination | None = None,
+    ) -> None:
         self.delegate = delegate
+        self.termination = termination
         self.tool_names = tuple(tool_names)
+        self.structured_output_transport = "prompt_json_schema"
         self._max_tool_calls: int | None = None
         self._emitted_tool_calls = 0
         self.rejected_tool_calls: list[dict[str, Any]] = []
@@ -41,7 +90,19 @@ class ToolCallNormalizingModel(Model):
 
     async def get_response(self, *args: Any, **kwargs: Any) -> ModelResponse:
         args, kwargs = self._without_tools_when_exhausted(args, kwargs)
-        response = await self.delegate.get_response(*args, **kwargs)
+        args, kwargs = _project_portable_output_schema(args, kwargs)
+        token = self.termination.reason.set(None) if self.termination else None
+        usage_token = self.termination.usage.set(None) if self.termination else None
+        try:
+            response = await self.delegate.get_response(*args, **kwargs)
+            reason = self.termination.reason.get() if self.termination else None
+            if reason in {"length", "content_filter"}:
+                raise IncompleteModelResponse(reason, self.termination.usage.get())
+        finally:
+            if self.termination is not None and token is not None:
+                self.termination.reason.reset(token)
+            if self.termination is not None and usage_token is not None:
+                self.termination.usage.reset(usage_token)
         if any(isinstance(item, ResponseFunctionToolCall) for item in response.output):
             return self._budget_response(response)
         text = ""
@@ -136,6 +197,56 @@ def _without_tool_choice(settings: Any) -> Any:
     if dataclasses.is_dataclass(settings) and not isinstance(settings, type):
         return dataclasses.replace(cast(Any, settings), tool_choice=None)
     return settings
+
+
+def _project_portable_output_schema(
+    args: tuple[Any, ...],
+    kwargs: dict[str, Any],
+) -> tuple[tuple[Any, ...], dict[str, Any]]:
+    """Express typed output in the prompt for OpenAI-compatible endpoints.
+
+    The compatibility protocol does not guarantee native response-format
+    JSON-schema support. The Runner still owns validation against the original
+    output schema; only the delegate transport is changed here.
+    """
+
+    values = list(args)
+    updated = dict(kwargs)
+    if "output_schema" in updated:
+        output_schema = updated["output_schema"]
+        output_schema_location: tuple[str, int | str] = ("keyword", "output_schema")
+    elif len(values) > 4:
+        output_schema = values[4]
+        output_schema_location = ("positional", 4)
+    else:
+        return args, kwargs
+    if output_schema is None or output_schema.is_plain_text():
+        return args, kwargs
+
+    schema = output_schema.json_schema()
+    directive = (
+        "Return exactly one JSON object that validates against this JSON Schema. "
+        "Do not include Markdown, code fences, commentary, or additional fields.\n"
+        + json.dumps(schema, ensure_ascii=False, sort_keys=True)
+    )
+    if "system_instructions" in updated:
+        current = updated.get("system_instructions")
+        updated["system_instructions"] = _append_instruction(current, directive)
+    elif values:
+        values[0] = _append_instruction(values[0], directive)
+    else:
+        updated["system_instructions"] = directive
+
+    if output_schema_location[0] == "keyword":
+        updated[cast(str, output_schema_location[1])] = None
+    else:
+        values[cast(int, output_schema_location[1])] = None
+    return tuple(values), updated
+
+
+def _append_instruction(current: Any, directive: str) -> str:
+    text = str(current).strip() if current is not None else ""
+    return f"{text}\n\n{directive}" if text else directive
 
 
 class ScriptedOpenAIModel(Model):

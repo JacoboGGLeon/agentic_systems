@@ -485,7 +485,13 @@ class AgenticSystem:
             skills=skill_names,
             engine=engine,
             framework=framework,
-            model=model or self.model,
+            model=(
+                model
+                if model is not None
+                else runtime_config.model_id
+                if runtime is not None and runtime_config is not None
+                else self.model
+            ),
             contract=contract,
             policy=policy,
             input_contract=input,
@@ -626,6 +632,7 @@ class AgenticSystem:
             )
 
         return (matches[0],), matches[0].name
+
     def inspect(self) -> InspectReport:
         warnings: list[dict[str, Any]] = []
         errors: list[dict[str, Any]] = []
