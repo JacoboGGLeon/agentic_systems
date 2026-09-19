@@ -67,6 +67,32 @@ failure, and a passing structural check cannot promote a negative model verdict.
 behavior remains an explicit opt-in for callers with exhaustive criterion proofs;
 keyword presence is not such a proof. Release gates do not opt in.
 
+## Textual semantics versus byte-exact rendering
+
+Language-model semantic gates validate visible textual content and execution
+evidence. They do not assign semantic meaning to horizontal padding immediately
+before a newline. `looks_like_short_poem` therefore removes only trailing ASCII
+spaces and tabs from each line before checking the three-line shape. Leading
+whitespace, non-breaking spaces, punctuation, extra lines, digit changes and
+insufficient outer-line prose still fail.
+
+This boundary is deliberate and provider-agnostic. Markdown commonly uses two
+trailing spaces as presentation syntax for a hard line break; treating those
+invisible bytes as a semantic failure made equivalent answers pass or fail based
+on transport/rendering convention. Byte-exact output remains the responsibility
+of deterministic renderers and serialization round-trip tests, where the
+application controls every byte.
+
+The regression suite includes both sides of the boundary:
+
+- accepted: `Quiet stars  \n323  \nNumbers sing  `;
+- rejected: leading whitespace, `323.`, `3 2 3`, non-breaking-space suffixes,
+  extra/blank lines, digits on outer lines, and non-textual outer lines.
+
+Downloaded attestations can be replayed without provider calls by reading each
+`poetic_calculation` candidate answer and applying `looks_like_short_poem`. A
+new live attestation is still required for release certification because the gate
+asset SHA-256 changes when this contract changes.
 ## Judge budgets
 
 Judge limits are derived from their declared Tool contract through

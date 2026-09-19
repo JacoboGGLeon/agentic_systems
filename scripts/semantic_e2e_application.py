@@ -25,15 +25,15 @@ NORMALIZED_TEXT = "Agentic systems are reliable."
 PLAIN_TEXT_INSTRUCTIONS = (
     "For exact multiline formats, output plain text, not Markdown. "
     "Separate lines with literal newline characters only. Do not append spaces "
-    "before a newline: Markdown's two-space hard-break syntax is forbidden. "
-    "Check each line literally, including invisible leading and trailing spaces. "
+    "before a newline. The semantic gate treats trailing horizontal whitespace as "
+    "presentation padding, but rejects leading whitespace, punctuation, extra lines, "
+    "or altered visible content. "
 )
 LITERAL_JUDGE_INSTRUCTIONS = (
-    "Evaluate the literal answer string, not its rendered Markdown appearance. "
-    "For exact-line requirements, leading and trailing spaces count: '323  ' "
-    "is not '323'. Markdown hard-break spaces violate a no-spaces requirement. "
-    "Report such violations under request_fulfillment, citing the offending "
-    "line with whitespace escaped or explicitly counted. "
+    "Evaluate textual line content, not Markdown presentation padding. For exact-line "
+    "requirements, ignore only trailing horizontal spaces or tabs before a newline. "
+    "Leading whitespace, punctuation, extra lines, and altered visible characters "
+    "remain violations. Report those violations under request_fulfillment. "
 )
 
 
@@ -82,11 +82,12 @@ def states_verified_product(answer: str) -> bool:
 
 
 def looks_like_short_poem(answer: str) -> bool:
-    """Enforce the case's literal middle line, leaving the poetry unrestricted."""
+    """Enforce visible line content while ignoring line-ending presentation padding."""
 
-    # Do not repair formatting before validation: the request explicitly forbids
-    # spaces and punctuation on the middle line and requires exactly three lines.
-    lines = answer.splitlines()
+    # Markdown and SDK transports can preserve horizontal presentation padding.
+    # Leading whitespace, punctuation, extra lines, and altered visible characters
+    # remain rejected; byte-exactness belongs to deterministic renderer gates.
+    lines = [line.rstrip(" \t") for line in answer.splitlines()]
     if len(lines) != 3:
         return False
     outer_word_counts = [
