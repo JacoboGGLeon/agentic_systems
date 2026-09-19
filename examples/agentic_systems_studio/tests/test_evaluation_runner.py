@@ -11,9 +11,12 @@ def test_live_runner_evaluates_each_observation_once_and_separates_usage(monkeyp
     spec = spec_from_file_location("studio_evaluation_runner_test", path)
     runner = module_from_spec(spec)
     spec.loader.exec_module(runner)
-    assert runner._episode_usage(
-        {"scheduler.timed_out": False}, {"scheduler.timed_out": True}
-    )["scheduler.timed_out"] is True
+    assert (
+        runner._episode_usage(
+            {"scheduler.timed_out": False}, {"scheduler.timed_out": True}
+        )["scheduler.timed_out"]
+        is True
+    )
     calls = []
 
     def candidate_run(prompt, history):

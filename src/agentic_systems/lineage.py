@@ -256,9 +256,7 @@ def _tool_output_facts(output: dict[str, Any], *, max_rows: int = 3) -> dict[str
             if value is None or isinstance(value, (bool, int, float, str)):
                 masked = mask_sensitive({str(key): value})[str(key)]
                 facts[str(key)] = (
-                    _short(masked, max_chars=240)
-                    if isinstance(masked, str)
-                    else masked
+                    _short(masked, max_chars=240) if isinstance(masked, str) else masked
                 )
 
     return facts
@@ -556,11 +554,14 @@ class LineageMemory(BaseModel):
             pending = list(children)
             while pending:
                 descendant = pending.pop()
-                descendant_events.extend(getattr(descendant, 'tool_events', []) or [])
-                pending.extend(getattr(descendant, 'children', []) or [])
+                descendant_events.extend(getattr(descendant, "tool_events", []) or [])
+                pending.extend(getattr(descendant, "children", []) or [])
             node_tools = [
-                event for event in (getattr(node, 'tool_events', []) or [])
-                if not any(event is other or event == other for other in descendant_events)
+                event
+                for event in (getattr(node, "tool_events", []) or [])
+                if not any(
+                    event is other or event == other for other in descendant_events
+                )
             ]
             tools.extend(node_tools)
             for tool_index, event in enumerate(node_tools, start=1):
