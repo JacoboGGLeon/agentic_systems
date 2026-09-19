@@ -8,6 +8,7 @@ import json
 import os
 from collections.abc import Mapping
 from typing import Any, cast
+from uuid import uuid4
 
 from pydantic import SecretStr
 
@@ -114,6 +115,7 @@ class OpenAIAgentsFrameworkAdapter(FrameworkAdapter):
         _configure_native_agent(native_agent, policy)
         max_turns = effective_max_turns(policy, kwargs)
         aliases = tool_name_aliases(agent.available_tools())
+        observed = _observe_tools(native_agent, aliases)
         try:
             native_result = Runner.run_sync(
                 native_agent,
@@ -124,7 +126,9 @@ class OpenAIAgentsFrameworkAdapter(FrameworkAdapter):
         except (TypeError, ValueError, ImportError):
             raise
         except Exception as exc:  # noqa: BLE001 - operational SDK failures normalize.
-            return _failure(agent, input_value, mode, exc)
+            result = _failure(agent, input_value, mode, exc)
+            result.tool_events = copy.deepcopy(observed)
+            return result
         result = _normalize_result(agent, native_result, input_value, mode, aliases)
         return attach_native_result(result, native_result)
 
@@ -163,6 +167,7 @@ class OpenAIAgentsFrameworkAdapter(FrameworkAdapter):
         kwargs = _runner_kwargs(agent, agent.framework_config.run_kwargs)
         max_turns = effective_max_turns(policy, kwargs)
         aliases = tool_name_aliases(agent.available_tools())
+        observed = _observe_tools(native_agent, aliases)
         try:
             native_result = await Runner.run(
                 native_agent,
@@ -173,9 +178,50 @@ class OpenAIAgentsFrameworkAdapter(FrameworkAdapter):
         except (TypeError, ValueError, ImportError):
             raise
         except Exception as exc:  # noqa: BLE001 - operational SDK failures normalize.
-            return _failure(agent, input_value, mode, exc)
+            result = _failure(agent, input_value, mode, exc)
+            result.tool_events = copy.deepcopy(observed)
+            return result
         result = _normalize_result(agent, native_result, input_value, mode, aliases)
         return attach_native_result(result, native_result)
+
+
+def _observe_tools(native_agent: Any, aliases: ToolNameAliases) -> list[ToolEvent]:
+    """Keep completed calls if the SDK fails before returning its final result.
+
+    Wrappers and evidence belong to this execution, never the cached SDK agent.
+    Successful runs still use SDK normalization, so projections are not doubled.
+    """
+    observed: list[ToolEvent] = []
+
+    def wrap(tool: Any) -> Any:
+        invoke = getattr(tool, "on_invoke_tool", None)
+        if not callable(invoke):
+            return tool
+        isolated = copy.copy(tool)
+
+        async def record(context: Any, arguments: str) -> Any:
+            identity = str(getattr(context, "tool_call_id", None) or uuid4().hex)
+            inputs = copy.deepcopy(_json_object(arguments))
+            output = await cast(Any, invoke)(context, arguments)
+            data, ok, error = decode_tool_output(_jsonable(output))
+            observed.append(
+                ToolEvent(
+                    id=identity,
+                    name=aliases.canonical(tool.name),
+                    input=inputs,
+                    output=copy.deepcopy({"data": _jsonable(data)}),
+                    ok=ok,
+                    error=copy.deepcopy(error),
+                    meta={"source": "openai-agents"},
+                )
+            )
+            return output
+
+        isolated.on_invoke_tool = record
+        return isolated
+
+    native_agent.tools = [wrap(tool) for tool in getattr(native_agent, "tools", ())]
+    return observed
 
 
 def _materialize_model(agent: Any, engine: Any) -> Any:

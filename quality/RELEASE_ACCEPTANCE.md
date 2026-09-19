@@ -4,6 +4,7 @@ No release is certified by this file alone. Each mandatory row requires evidence
 
 | Release | Promise | Implementation/test | Evidence | Status |
 |---|---|---|---|---|
+| 2.1.2 | Completed tools survive a later OpenAI Agents SDK failure | openai_agents.py / test_openai_partial_evidence.py | Five offline cases cover sync/async, failed tools, repeated calls, concurrent isolation and output snapshots | Offline verified; corrected-wheel live pending |
 | 2.1.2 | Parent actions survive child projection | lineage.py / test_lineage_ownership.py | Regression reproduced before fix; full suite on cbbfa14 passes | Offline verified |
 | 2.1.2 | Compatible lineage across all boundaries | Existing API, contract and lineage suites | 1303 passed; 6 opt-in live notebook skips, not approvals | Offline verified; live pending |
 | 2.1.2 | Agreed live matrix | Python, Ollama, OpenAI and Bedrock API key across supported frameworks | Fresh exact-wheel attestations required | Pending |
@@ -27,3 +28,11 @@ Lint, strict typing, legacy typing ratchet (191 errors, no regressions), license
 secret scan, complexity and performance gates passed. The reused editable
 environment requires PYTHONPATH pointing to this checkout's src; these checks
 do not replace isolated wheel certification or Python 3.10-3.14 installation.
+
+Update 2026-09-19: the first final-matrix allocation reached 240 requests.
+Offline audit accepted 141 of 160 original records; 19 Ollama records remain
+uncertified. All original evidence is retained outside this checkout. The owner
+authorized a separate additional allocation of at most USD 5 AND 240 inference
+requests, including retries and judges, for configured OpenAI, Bedrock API-key
+and Ollama routes. Neither the original candidate nor this corrected source is
+declared release-certified. The new allocation must use its own persistent ledger.
