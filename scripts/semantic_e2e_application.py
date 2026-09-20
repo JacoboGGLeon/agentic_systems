@@ -6,13 +6,12 @@ from dataclasses import dataclass
 import json
 import os
 import re
-from typing import Any, Literal
+from typing import Any
 
-from pydantic import AliasChoices, BaseModel, ConfigDict, Field, model_validator
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
 import agentic_systems as toolkit
 from agentic_systems.contracts import ValidationResult
-from agentic_systems.evals import JudgeFinding
 from agentic_systems.providers import provider_profile
 from agentic_systems.registry import FRAMEWORK_NAMES, PROVIDER_NAMES
 from agentic_systems.schemas import ContractExecutionBudget
@@ -137,36 +136,25 @@ class JudgeDecision(BaseModel):
     rationale: str = Field(validation_alias=AliasChoices("rationale", "comment"))
 
 
-SemanticCriterion = Literal[
-    "request_fulfillment",
-    "evidence_correctness",
-    "clarity",
-    "no_technical_noise",
-    "no_unsupported_claims",
-]
+class SemanticCriterionAssessment(BaseModel):
+    """One criterion verdict; its identity is supplied by the enclosing field."""
 
-
-class SemanticCriterionAssessment(JudgeFinding):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
-    criterion: SemanticCriterion
+    evidence: str = Field(min_length=1, max_length=1000)
     passed: bool
 
 
 class SemanticJudgmentInput(BaseModel):
+    """Closed judgment shape whose schema makes every criterion mandatory once."""
+
     model_config = ConfigDict(extra="forbid", frozen=True)
 
-    assessments: list[SemanticCriterionAssessment]
-
-    @model_validator(mode="after")
-    def validate_complete_unique_criteria(self) -> "SemanticJudgmentInput":
-        criteria = [item.criterion for item in self.assessments]
-        if len(criteria) != len(set(criteria)):
-            raise ValueError("Each rubric criterion must appear exactly once")
-        if set(criteria) != set(JudgeCriteria.model_fields):
-            raise ValueError("Every rubric criterion must be assessed exactly once")
-        return self
-
+    request_fulfillment: SemanticCriterionAssessment
+    evidence_correctness: SemanticCriterionAssessment
+    clarity: SemanticCriterionAssessment
+    no_technical_noise: SemanticCriterionAssessment
+    no_unsupported_claims: SemanticCriterionAssessment
 
 @toolkit.tool(
     name="record_semantic_judgment",
@@ -176,7 +164,7 @@ class SemanticJudgmentInput(BaseModel):
 def record_semantic_judgment(
     judgment: SemanticJudgmentInput,
 ) -> dict[str, Any]:
-    """Record evidence-backed assessments and project them onto the public rubric.
+    """Record named evidence-backed criteria and project them onto the public rubric.
 
     The model cannot submit a free-form score or contradictory global rationale.
     Pydantic validates a closed criterion vocabulary and this deterministic Tool derives
@@ -188,17 +176,22 @@ def record_semantic_judgment(
 
 def project_semantic_judgment(judgment: SemanticJudgmentInput) -> dict[str, Any]:
     """Shared deterministic rubric projection for application-level judge tools."""
-    normalized = list(judgment.assessments)
-    failed_items = [item for item in normalized if not item.passed]
-    failed = {item.criterion for item in failed_items}
+    normalized = [
+        (name, getattr(judgment, name)) for name in JudgeCriteria.model_fields
+    ]
+    failed_items = [(name, item) for name, item in normalized if not item.passed]
+    failed = {name for name, _ in failed_items}
     criteria = JudgeCriteria(
         **{name: 0.0 if name in failed else 1.0 for name in JudgeCriteria.model_fields}
     )
-    findings = [item.model_dump(mode="json") for item in failed_items]
+    findings = [
+        {"criterion": name, **item.model_dump(mode="json")}
+        for name, item in failed_items
+    ]
     rationale = (
         "No evidence-backed rubric violations were recorded."
         if not failed_items
-        else "; ".join(f"{item.criterion}: {item.evidence}" for item in failed_items)
+        else "; ".join(f"{name}: {item.evidence}" for name, item in failed_items)
     )
     decision = JudgeDecision(
         score=sum(criteria.model_dump().values()) / 5,

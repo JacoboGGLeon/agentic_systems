@@ -406,12 +406,17 @@ def test_single_sentence_constraint_performs_one_bounded_repair():
         context_agent=object(),
     )
     message = "Resume nuestra propuesta en una sola frase que conserve 323, Skill y System."
+    repair_prompts = []
+
+    def repair(prompt):
+        repair_prompts.append(prompt)
+        return repaired
 
     answer, results, validation = studio._validate_or_repair_response(
         message=message,
         context={"message": message, "history": []},
         assistant_result=initial,
-        execution_agent=SimpleNamespace(run=lambda _prompt: repaired),
+        execution_agent=SimpleNamespace(run=repair),
     )
 
     assert answer == repaired.text
@@ -422,6 +427,9 @@ def test_single_sentence_constraint_performs_one_bounded_repair():
         "The current request explicitly requires exactly one sentence."
     )
     assert validation["final_error"] is None
+    assert len(repair_prompts) == 1
+    assert "Canonical public example" not in repair_prompts[0]
+    assert "```python" not in repair_prompts[0]
 
 def test_response_repair_budget_can_use_a_second_bounded_attempt():
     initial_result = toolkit.RunResult(

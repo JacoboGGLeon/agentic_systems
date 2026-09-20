@@ -5,9 +5,9 @@ from __future__ import annotations
 from collections.abc import Callable
 from dataclasses import dataclass
 import json
-from typing import Any, Literal
+from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field, StrictBool, model_validator
+from pydantic import BaseModel, ConfigDict, Field, StrictBool
 
 import agentic_systems as toolkit
 from agentic_systems.contracts import ValidationResult
@@ -16,43 +16,37 @@ from agentic_systems.registry import provider_capability
 from .conversation import ConversationConfig
 
 
-Criterion = Literal[
-    "request_fulfillment",
-    "evidence_correctness",
-    "clarity",
-    "no_technical_noise",
-    "no_unsupported_claims",
-]
-
-
 class Assessment(BaseModel):
+    """One criterion verdict; the enclosing field supplies its identity."""
+
     model_config = ConfigDict(extra="forbid", frozen=True)
-    criterion: Criterion
+
     evidence: str = Field(min_length=1, max_length=1000)
     passed: StrictBool
 
 
 class ConversationJudgment(BaseModel):
+    """Closed judgment shape whose schema requires each criterion exactly once."""
+
     model_config = ConfigDict(extra="forbid", frozen=True)
-    assessments: list[Assessment]
 
-    @model_validator(mode="after")
-    def complete(self) -> "ConversationJudgment":
-        names = [item.criterion for item in self.assessments]
-        if len(names) != len(set(names)) or set(names) != set(
-            toolkit.JudgeRubric().criteria
-        ):
-            raise ValueError("Assess each rubric criterion exactly once")
-        return self
-
+    request_fulfillment: Assessment
+    evidence_correctness: Assessment
+    clarity: Assessment
+    no_technical_noise: Assessment
+    no_unsupported_claims: Assessment
 
 @toolkit.tool(input=ConversationJudgment)
 def record_conversation_judgment(judgment: ConversationJudgment) -> dict:
     """Certify all criteria from explicit assessments, deriving scores and findings."""
-    criteria = {item.criterion: float(item.passed) for item in judgment.assessments}
+    assessments = [
+        (name, getattr(judgment, name))
+        for name in toolkit.JudgeRubric().criteria
+    ]
+    criteria = {name: float(item.passed) for name, item in assessments}
     findings = [
-        {"criterion": item.criterion, "evidence": item.evidence}
-        for item in judgment.assessments
+        {"criterion": name, "evidence": item.evidence}
+        for name, item in assessments
         if not item.passed
     ]
     return {
@@ -88,7 +82,7 @@ class ConversationJudge:
                 "A command to write an answer is not that answer. Do not invent requirements. "
                 "For each criterion first cite concise observable evidence comparing the "
                 "answer to the request/context, then give the boolean verdict. "
-                "Call record_conversation_judgment once with all five assessments. "
+                "Call record_conversation_judgment once with all five named criterion fields. "
                 "No private reasoning or alternative answer."
             ),
             tools=[record_conversation_judgment],

@@ -16,16 +16,15 @@ from agentic_systems_studio.evaluation import (
 
 def judgment(passed=True):
     return ConversationJudgment(
-        assessments=[
-            {
-                "criterion": name,
+        **{
+            name: {
                 "passed": passed if name == "request_fulfillment" else True,
                 "evidence": "The answer echoes the request."
                 if not passed
                 else "The response fulfills the supplied task.",
             }
             for name in toolkit.JudgeRubric().criteria
-        ]
+        }
     )
 
 
@@ -66,17 +65,19 @@ def test_tool_derives_scores_and_valid_findings():
     assert set(payload["findings"][0]) == {"criterion", "evidence"}
 
 
-@pytest.mark.parametrize("change", ["missing", "duplicate", "extra", "coerce_bool"])
+@pytest.mark.parametrize(
+    "change", ["missing", "extra", "coerce_bool", "malformed_assessment"]
+)
 def test_judge_input_is_closed_complete_and_strict(change):
     payload = judgment().model_dump()
     if change == "missing":
-        payload["assessments"].pop()
-    elif change == "duplicate":
-        payload["assessments"].append(payload["assessments"][0])
+        payload.pop("evidence_correctness")
     elif change == "extra":
         payload["score"] = 1.0
+    elif change == "coerce_bool":
+        payload["request_fulfillment"]["passed"] = "true"
     else:
-        payload["assessments"][0]["passed"] = "true"
+        payload["clarity"]["criterion"] = "clarity"
     with pytest.raises(ValidationError):
         ConversationJudgment.model_validate(payload)
 

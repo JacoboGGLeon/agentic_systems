@@ -223,29 +223,27 @@ def test_model_judge_uses_typed_evidence_backed_assessments(monkeypatch) -> None
         module.record_semantic_judgment.function,
     )
     properties = schema["properties"]
-    assert set(properties) == {"assessments"}
-    assert properties["assessments"]["type"] == "array"
+    criteria_names = set(module.JudgeCriteria.model_fields)
+    assert set(properties) == criteria_names
+    assert set(schema["required"]) == criteria_names
     assessment_schema = schema["$defs"]["SemanticCriterionAssessment"]
-    assert set(assessment_schema["properties"]["criterion"]["enum"]) == set(
-        module.JudgeCriteria.model_fields
-    )
+    assert set(assessment_schema["properties"]) == {"evidence", "passed"}
     assert assessment_schema["properties"]["passed"]["type"] == "boolean"
     assert assessment_schema["properties"]["evidence"]["minLength"] == 1
     assert assessment_schema["properties"]["evidence"]["maxLength"] == 1000
 
     passed = module.record_semantic_judgment.function(
         module.SemanticJudgmentInput(
-            assessments=[
-                {"criterion": criterion, "passed": True, "evidence": "Satisfied."}
+            **{
+                criterion: {"passed": True, "evidence": "Satisfied."}
                 for criterion in module.JudgeCriteria.model_fields
-            ]
+            }
         )
     )
     failed = module.record_semantic_judgment.function(
         module.SemanticJudgmentInput(
-            assessments=[
-                {
-                    "criterion": criterion,
+            **{
+                criterion: {
                     "passed": criterion not in {"clarity", "no_technical_noise"},
                     "evidence": (
                         "Answer is unreadable."
@@ -256,14 +254,12 @@ def test_model_judge_uses_typed_evidence_backed_assessments(monkeypatch) -> None
                     ),
                 }
                 for criterion in module.JudgeCriteria.model_fields
-            ]
+            }
         )
     )
-    with pytest.raises(ValueError, match="Every rubric criterion"):
+    with pytest.raises(ValueError, match="Field required"):
         module.SemanticJudgmentInput(
-            assessments=[
-                {"criterion": "clarity", "passed": True, "evidence": "Satisfied."}
-            ]
+            clarity={"passed": True, "evidence": "Satisfied."}
         )
     assert passed["score"] == 1.0
     assert set(passed["criteria"].values()) == {1.0}
@@ -284,8 +280,6 @@ def test_model_judge_uses_typed_evidence_backed_assessments(monkeypatch) -> None
     assert cell.judge.agent.policy.max_turns == 5
     assert cell.judge.agent.policy.repair is True
     assert cell.judge.agent.policy.max_tokens == 900
-
-
 def test_attestation_binds_external_gate_assets_by_hash() -> None:
     source = (SCRIPTS / "run_semantic_matrix.py").read_text(encoding="utf-8")
 

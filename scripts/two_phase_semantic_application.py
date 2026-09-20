@@ -56,7 +56,7 @@ class Verses(BaseModel):
 
 
 class RecordedDecision(JudgeDecision):
-    findings: list[SemanticCriterionAssessment] = Field(default_factory=list)
+    findings: list[dict[str, Any]] = Field(default_factory=list)
 
 
 class LiteralObservation(BaseModel):
@@ -98,16 +98,16 @@ def record_observed_judgment(judgment: ObservedJudgment) -> dict[str, Any]:
     return dict(
         decision=project_semantic_judgment(
             SemanticJudgmentInput(
-                assessments=[
-                    SemanticCriterionAssessment.model_validate(
+                **{
+                    item["criterion"]: SemanticCriterionAssessment.model_validate(
                         {
                             key: value
                             for key, value in item.items()
-                            if key != "references"
+                            if key not in {"criterion", "references"}
                         }
                     )
                     for item in assessments
-                ]
+                }
             )
         ),
         claims=judgment.observations.model_dump(mode="json"),

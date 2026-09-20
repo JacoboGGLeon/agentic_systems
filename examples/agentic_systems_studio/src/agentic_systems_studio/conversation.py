@@ -622,6 +622,16 @@ class ConversationalStudio:
 
         contract = dict(self.grammar_contract or {})
         canonical_example = str(contract.get("canonical_example") or "")
+        code_repair = bool(
+            required_calls
+            or _CODE_REQUEST_PATTERN.search(message)
+            or _IMPLEMENTATION_REQUEST_PATTERN.search(message)
+        )
+        canonical_guidance = (
+            f"Canonical public example:\n```python\n{canonical_example}\n```\n\n"
+            if code_repair
+            else ""
+        )
         last_error = str(validation["initial_error"])
         for attempt in range(1, self.config.max_response_repairs + 1):
             repair_result = (execution_agent or self.assistant).run(
@@ -633,8 +643,8 @@ class ConversationalStudio:
                 "the user's requested language and intent.\n\n"
                 f"Current user request:\n{message}\n\n"
                 f"Validation failure:\n{last_error}\n\n"
-                f"Canonical public example:\n```python\n{canonical_example}\n```\n\n"
-                f"Previous answer:\n{answer[:5000]}\n\n"
+                + canonical_guidance
+                + f"Previous answer:\n{answer[:5000]}\n\n"
                 f"Observed public Tool evidence:\n{json.dumps(tool_evidence)}\n\n"
                 "Bounded conversation context:\n"
                 + json.dumps(context, ensure_ascii=False),
