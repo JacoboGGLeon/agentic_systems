@@ -270,6 +270,18 @@ def test_model_judge_uses_typed_evidence_backed_assessments(monkeypatch) -> None
         "no_technical_noise",
     ]
     assert "implementation envelope" in failed["rationale"]
+    long_failure = module.project_semantic_judgment(
+        module.SemanticJudgmentInput(
+            **{
+                criterion: {
+                    "passed": criterion != "request_fulfillment",
+                    "evidence": "x" * 4000,
+                }
+                for criterion in module.JudgeCriteria.model_fields
+            }
+        )
+    )
+    assert len(long_failure["findings"][0]["evidence"]) == 1000
 
     monkeypatch.delenv("AGENTIC_SYSTEMS_SEMANTIC_JUDGE_MAX_TOKENS", raising=False)
     assert module.semantic_judge_max_tokens() == 4096

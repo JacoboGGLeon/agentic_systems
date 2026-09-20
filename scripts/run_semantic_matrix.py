@@ -370,6 +370,10 @@ def _run_cell(provider: str, framework: str) -> dict[str, Any]:
             rubric=toolkit.JudgeRubric(
                 threshold=0.8,
                 certification_tool=certification_tool,
+                deterministic_authority=(
+                    "request_fulfillment",
+                    "evidence_correctness",
+                ),
             ),
             mode="eval",
             environment_kwargs={
