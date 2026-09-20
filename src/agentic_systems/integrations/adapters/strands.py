@@ -93,6 +93,7 @@ class StrandsFrameworkAdapter(FrameworkAdapter):
         message_cursor = _message_cursor(native_agent)
         _configure_model(native_agent.model, policy, mode)
         kwargs = _run_kwargs(agent, policy)
+        _configure_output(native_agent, kwargs)
         aliases = tool_name_aliases(agent.available_tools())
         try:
             native_result = native_agent(
@@ -137,6 +138,7 @@ class StrandsFrameworkAdapter(FrameworkAdapter):
         message_cursor = _message_cursor(native_agent)
         _configure_model(native_agent.model, policy, mode)
         kwargs = _run_kwargs(agent, policy)
+        _configure_output(native_agent, kwargs)
         aliases = tool_name_aliases(agent.available_tools())
         try:
             native_result = await native_agent.invoke_async(
@@ -222,7 +224,10 @@ def _materialize_model(agent: Any, engine: Any) -> Any:
                 # after ToolUse, but the next turn must still see exhausted budget.
                 _record_emitted_tool_calls(
                     self,
-                    sum(_stream_tool_use_count(event) for event in authorized_events),
+                    sum(
+                        _business_tool_use_count(self, event)
+                        for event in authorized_events
+                    ),
                 )
                 for event in authorized_events:
                     yield event
@@ -309,7 +314,10 @@ def _materialize_model(agent: Any, engine: Any) -> Any:
                 )
                 _record_emitted_tool_calls(
                     self,
-                    sum(_stream_tool_use_count(event) for event in normalized_events),
+                    sum(
+                        _business_tool_use_count(self, event)
+                        for event in normalized_events
+                    ),
                 )
                 for event in normalized_events:
                     yield event
@@ -493,6 +501,7 @@ def _limit_tool_use_events(
     emitted = int(getattr(model, "_agentic_systems_emitted_tool_calls", 0) or 0)
     remaining = 0 if suppress_tools else max(0, limit - emitted)
     accepted = 0
+    materialized = 0
     suppress_block = False
     rejected_in_batch = False
     filtered: list[Any] = []
@@ -506,6 +515,11 @@ def _limit_tool_use_events(
             public.get("contentBlockStart"), Mapping
         )
         if starts_tool:
+            if _is_output_tool_event(model, public):
+                materialized += 1
+                suppress_block = False
+                filtered.append(event)
+                continue
             if accepted >= remaining:
                 rejected.append(
                     {
@@ -533,6 +547,7 @@ def _limit_tool_use_events(
         if (
             rejected_in_batch
             and accepted == 0
+            and materialized == 0
             and isinstance(public, Mapping)
             and isinstance(public.get("messageStop"), Mapping)
         ):
@@ -713,7 +728,7 @@ def _schema_backed_function(tool: Any, function: Any) -> Any:
         return function
 
     def invoke(**payload: Any) -> Any:
-        result = run(payload)
+        result = cast(RunResult, run(payload))
         if not result.ok:
             message = result.text or f"Tool '{tool.name}' failed."
             raise ValueError(message)
@@ -852,12 +867,89 @@ def _declared_model_config_keys(model: Any) -> set[str]:
 
 def _run_kwargs(agent: Any, policy: RunPolicy) -> dict[str, Any]:
     kwargs = dict(agent.framework_config.run_kwargs)
+    defaults = getattr(agent.framework_config, "agent_kwargs", {})
+    if (
+        "structured_output_model" not in kwargs
+        and defaults.get("structured_output_model") is not None
+    ):
+        kwargs["structured_output_model"] = defaults["structured_output_model"]
+    from pydantic import BaseModel
+
+    schema = getattr(agent, "output_contract", None)
+    if isinstance(schema, type) and issubclass(schema, BaseModel):
+        configured_schema = kwargs.get("structured_output_model", schema)
+        if configured_schema is not schema:
+            raise ValueError("output and structured_output_model must agree.")
+        kwargs["structured_output_model"] = schema
     max_turns = effective_max_turns(policy, kwargs)
     limits = dict(kwargs.pop("limits", {}) or {})
     configured = int(limits.get("turns", max_turns))
     limits["turns"] = min(configured, max_turns)
     kwargs["limits"] = limits
     return kwargs
+
+
+def _configure_output(native_agent: Any, kwargs: dict[str, Any]) -> None:
+    """Bind SDK-owned materialization to this invocation, never a guessed name."""
+    schema = kwargs.get("structured_output_model")
+    if schema is None:
+        schema = getattr(native_agent, "structured_output_model", None)
+    model = native_agent.model
+    if schema is None and not hasattr(model, "_agentic_systems_output_schema"):
+        return
+    model._agentic_systems_output_ids = set()
+    model._agentic_systems_output_schema = schema
+    model._agentic_systems_tool_registry = getattr(native_agent, "tool_registry", None)
+    if schema is None:
+        return
+    from strands.tools.structured_output.structured_output_tool import (
+        StructuredOutputTool,
+    )
+
+    name = StructuredOutputTool(schema).tool_name
+    registry = model._agentic_systems_tool_registry
+    if registry is None:
+        raise ValueError("Structured output requires an inspectable SDK tool registry.")
+    if name in registry.registry or name in registry.dynamic_tools:
+        raise ValueError("Structured output collides with a registered tool.")
+    stream = getattr(model, "stream", None)
+    if callable(stream) and not hasattr(model, "_agentic_systems_observed_stream"):
+
+        async def observe_stream(*args: Any, **stream_kwargs: Any) -> Any:
+            async for event in cast(Any, stream)(*args, **stream_kwargs):
+                _is_output_tool_event(model, event)
+                yield event
+
+        model._agentic_systems_observed_stream = stream
+        model.stream = observe_stream
+
+
+def _is_output_tool_event(model: Any, event: Any) -> bool:
+    schema = getattr(model, "_agentic_systems_output_schema", None)
+    registry = getattr(model, "_agentic_systems_tool_registry", None)
+    if schema is None or registry is None:
+        return False
+    from strands.tools.structured_output.structured_output_tool import (
+        StructuredOutputTool,
+    )
+
+    tool = registry.dynamic_tools.get(_stream_tool_use_name(event))
+    if (
+        not isinstance(tool, StructuredOutputTool)
+        or tool.structured_output_model is not schema
+    ):
+        return False
+    identity = event["contentBlockStart"]["start"]["toolUse"].get("toolUseId")
+    if not identity:
+        return False
+    model._agentic_systems_output_ids.add(str(identity))
+    return True
+
+
+def _business_tool_use_count(model: Any, event: Any) -> int:
+    return int(
+        bool(_stream_tool_use_count(event)) and not _is_output_tool_event(model, event)
+    )
 
 
 def _normalize_result(
@@ -886,13 +978,16 @@ def _normalize_result(
     text = public_answer_text(raw_value) or raw_text
     data = _output_data(raw_value, raw_text)
     messages = _invocation_messages(native_agent, message_cursor)
+    events = _tool_events(messages, aliases)
+    output_ids = getattr(native_agent.model, "_agentic_systems_output_ids", set())
+    materialization = [event for event in events if event.id in output_ids]
     return RunResult(
         text=text,
         final={"text": text},
         data=data,
         ok=True,
         messages=messages,
-        tool_events=_tool_events(messages, aliases),
+        tool_events=[event for event in events if event.id not in output_ids],
         raw_responses=[_jsonable(getattr(native_result, "message", {}))],
         usage=_strands_usage(getattr(native_result, "metrics", {})),
         engine=agent.engine,
@@ -904,8 +999,23 @@ def _normalize_result(
             "input": _jsonable(input_value),
             "stop_reason": getattr(native_result, "stop_reason", None),
             "rejected_tool_calls": rejected_tool_calls,
+            "output_materialization": [
+                event.model_dump(mode="json") for event in materialization
+            ],
         },
     )
+
+
+class _TranscriptCursor(int):
+    """Keep prior message identities alive across SDK history compaction."""
+
+    snapshot: tuple[Any, ...]
+
+    def __new__(cls, messages: Any) -> _TranscriptCursor:
+        snapshot = tuple(messages)
+        value = super().__new__(cls, len(snapshot))
+        value.snapshot = snapshot
+        return value
 
 
 def _message_cursor(native_agent: Any) -> int:
@@ -913,7 +1023,8 @@ def _message_cursor(native_agent: Any) -> int:
 
     messages = getattr(native_agent, "messages", ())
     try:
-        return len(messages)
+        len(messages)
+        return _TranscriptCursor(messages)
     except TypeError:
         return 0
 
@@ -927,6 +1038,9 @@ def _invocation_messages(native_agent: Any, cursor: int) -> list[Any]:
     """
 
     messages = getattr(native_agent, "messages", ())
+    if isinstance(cursor, _TranscriptCursor):
+        previous = {id(item) for item in cursor.snapshot}
+        return [_jsonable(item) for item in messages if id(item) not in previous]
     try:
         current = messages[cursor:]
     except (IndexError, TypeError):

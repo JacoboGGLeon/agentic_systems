@@ -6,6 +6,7 @@ or graph-based agent runs.
 """
 
 from __future__ import annotations
+from collections.abc import Callable, Sequence
 import json
 
 from typing import Any, Literal
@@ -57,10 +58,9 @@ class JudgeRubric(BaseModel):
     threshold: float = Field(default=0.80, ge=0.0, le=1.0)
     instructions: str = DEFAULT_JUDGE_INSTRUCTIONS
     certification_tool: str | None = None
-    deterministic_authority: tuple[str, ...] = (
-        "request_fulfillment",
-        "evidence_correctness",
-    )
+    # Strict AND by default: passing structural checks does not certify meaning.
+    # Explicit authority remains available for callers with exhaustive proofs.
+    deterministic_authority: tuple[str, ...] = ()
     require_failure_findings: bool = True
 
 
@@ -113,9 +113,7 @@ class JudgeResult(BaseModel):
             and all(score >= self.threshold for score in self.criteria.values())
         )
         if self.consistent != (not self.consistency_issues):
-            raise ValueError(
-                "JudgeResult.consistent must reflect consistency_issues"
-            )
+            raise ValueError("JudgeResult.consistent must reflect consistency_issues")
         if self.ok != criteria_ok:
             raise ValueError(
                 "JudgeResult.ok must equal the threshold verdict for every criterion"
@@ -433,6 +431,9 @@ class Evaluator:
         *,
         mode: str = "eval",
         environment_kwargs: dict[str, Any] | None = None,
+        assertions: Sequence[
+            Callable[[RunResult, dict[str, Any]], ValidationResult]
+        ] = (),
         judge: Any | None = None,
         rubric: JudgeRubric | dict[str, Any] | None = None,
         determinism: Literal[
@@ -452,6 +453,7 @@ class Evaluator:
             cases,
             mode=mode,
             environment_kwargs=environment_kwargs,
+            assertions=assertions,
             judge=judge,
             rubric=rubric,
             determinism=determinism,
@@ -466,6 +468,9 @@ class Evaluator:
         *,
         mode: str = "eval",
         environment_kwargs: dict[str, Any] | None = None,
+        assertions: Sequence[
+            Callable[[RunResult, dict[str, Any]], ValidationResult]
+        ] = (),
         judge: Any | None = None,
         rubric: JudgeRubric | dict[str, Any] | None = None,
         determinism: Literal[
@@ -481,6 +486,7 @@ class Evaluator:
             cases,
             mode=mode,
             environment_kwargs=environment_kwargs,
+            assertions=assertions,
             judge=judge,
             rubric=rubric,
             determinism=determinism,
@@ -495,6 +501,9 @@ class Evaluator:
         *,
         mode: str = "eval",
         environment_kwargs: dict[str, Any] | None = None,
+        assertions: Sequence[
+            Callable[[RunResult, dict[str, Any]], ValidationResult]
+        ] = (),
         judge: Any | None = None,
         rubric: JudgeRubric | dict[str, Any] | None = None,
         determinism: Literal[
@@ -510,6 +519,7 @@ class Evaluator:
             cases,
             mode=mode,
             environment_kwargs=environment_kwargs,
+            assertions=assertions,
             judge=judge,
             rubric=rubric,
             determinism=determinism,
@@ -522,12 +532,21 @@ class _EvalStepGraph:
     """Graph-shaped adapter that evaluates one case per environment step."""
 
     def __init__(
-        self, agent: Any, *, mode: str, judge: Any | None, rubric: JudgeRubric
+        self,
+        agent: Any,
+        *,
+        mode: str,
+        judge: Any | None,
+        rubric: JudgeRubric,
+        assertions: Sequence[
+            Callable[[RunResult, dict[str, Any]], ValidationResult]
+        ] = (),
     ) -> None:
         self.agent = agent
         self.mode = mode
         self.judge = judge
         self.rubric = rubric
+        self.assertions = tuple(assertions)
 
     def invoke(self, state: GraphState) -> GraphState:
         case = state["row"]
@@ -540,6 +559,7 @@ class _EvalStepGraph:
         )
         validation = result.validate(contract)
         _apply_expected_assertions(validation, result, expected)
+        _apply_case_assertions(validation, result, case, self.assertions)
         deterministic_ok = result.ok and validation.ok
         judge_result = _run_judge(
             self.judge,
@@ -583,6 +603,7 @@ def run_eval(
     *,
     mode: str = "eval",
     environment_kwargs: dict[str, Any] | None = None,
+    assertions: Sequence[Callable[[RunResult, dict[str, Any]], ValidationResult]] = (),
     judge: Any | None = None,
     rubric: JudgeRubric | dict[str, Any] | None = None,
     determinism: Literal[
@@ -600,11 +621,20 @@ def run_eval(
     """
 
     resolved_rubric = JudgeRubric.model_validate(rubric or {})
+    resolved_assertions = tuple(assertions)
+    if not all(callable(assertion) for assertion in resolved_assertions):
+        raise TypeError("Eval assertions must be callable deterministic validators")
     kwargs = dict(environment_kwargs or {})
     kwargs.setdefault("name", "agent_eval")
     env = AgenticEnvironment(
         records=cases,
-        graph=_EvalStepGraph(agent, mode=mode, judge=judge, rubric=resolved_rubric),
+        graph=_EvalStepGraph(
+            agent,
+            mode=mode,
+            judge=judge,
+            rubric=resolved_rubric,
+            assertions=resolved_assertions,
+        ),
         reward_fn=_eval_reward,
         **kwargs,
     )
@@ -699,14 +729,18 @@ def _run_judge(
         judged = judge.run(request, mode="eval")
     except TypeError:
         judged = judge.run(request)
-    payload, certification_recorded, certification_issues = (
-        _certification_payload(judged, rubric.certification_tool)
+    payload, certification_recorded, certification_issues = _certification_payload(
+        judged, rubric.certification_tool
     )
     consistency_issues = list(certification_issues)
     payload_criteria = payload.get("criteria")
     payload_criteria = payload_criteria if isinstance(payload_criteria, dict) else {}
-    missing_criteria = [name for name in rubric.criteria if name not in payload_criteria]
-    unknown_criteria = [name for name in payload_criteria if name not in rubric.criteria]
+    missing_criteria = [
+        name for name in rubric.criteria if name not in payload_criteria
+    ]
+    unknown_criteria = [
+        name for name in payload_criteria if name not in rubric.criteria
+    ]
     if missing_criteria:
         consistency_issues.append(
             "missing judge criteria: " + ", ".join(sorted(missing_criteria))
@@ -774,7 +808,12 @@ def _run_judge(
     usage: dict[str, Any] = {}
     execution_ok = True
     if isinstance(judged, RunResult):
-        execution_ok = judged.ok
+        # A uniquely recorded, successful certification Tool event is the
+        # verdict boundary. Presentation/transport failures after that event
+        # must not erase the structured decision already preserved in lineage.
+        execution_ok = judged.ok or (
+            rubric.certification_tool is not None and certification_recorded
+        )
         provider = judged.engine
         framework = judged.meta.get("framework_adapter") or judged.meta.get("framework")
         model = judged.model
@@ -976,6 +1015,39 @@ def _eval_reward(
     graph_state: GraphState, row: dict[str, Any], action: Any, env: AgenticEnvironment
 ) -> float:
     return 1.0 if graph_state.get("eval", {}).get("ok") else 0.0
+
+
+def _apply_case_assertions(
+    validation: ValidationResult,
+    result: RunResult,
+    case: dict[str, Any],
+    assertions: Sequence[Callable[[RunResult, dict[str, Any]], ValidationResult]],
+) -> None:
+    """Run trusted, read-only case validators before the judge; fail closed."""
+
+    for index, assertion in enumerate(assertions):
+        try:
+            checked = assertion(result, case)
+            if not isinstance(checked, ValidationResult):
+                raise TypeError("An assertion must return ValidationResult")
+        except Exception as exc:
+            # Exception messages can contain user data or secrets. Retain only type.
+            validation.add(
+                "eval_assertion_error",
+                f"Assertion {index} could not validate the result ({type(exc).__name__}).",
+                path=f"assertions[{index}]",
+            )
+            continue
+        for issue in checked.issues:
+            validation.add(**issue.model_dump())
+        if not checked.ok and not any(
+            issue.severity == "error" for issue in checked.issues
+        ):
+            validation.add(
+                "eval_assertion_rejected",
+                f"Assertion {index} rejected the result.",
+                path=f"assertions[{index}]",
+            )
 
 
 def _apply_expected_assertions(

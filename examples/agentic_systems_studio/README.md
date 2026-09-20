@@ -137,6 +137,36 @@ full lineage. Passing requires semantic content and runtime identity, not only
 `ok=true`. Provider credentials and models still come exclusively from `.env`
 or the managed host.
 
+Use `--long` for the eight-turn bounded-history scenario. Both lengths now use
+`toolkit.eval()` with deterministic assertions and a native judge on the selected
+provider/model. The judge records five complete, evidence-backed assessments via
+`record_conversation_judgment`; keyword checks alone cannot certify a response.
+Python remains a deterministic control and does not invoke a model judge.
+
+Each turn includes its typed evaluation, judge execution and judge lineage.
+`usage_totals` retains candidate usage; `judge_usage_totals` is separate and
+`episode_usage_totals` aggregates the two. Evaluation observes the completed turn
+without executing the candidate a second time, rewriting its answer or repairing
+it into a pass. This validation is not automatically charged on every UI turn.
+
+Before interpreting a judge's live verdicts, calibrate it on negative and positive
+fixtures:
+
+```text
+python examples/agentic_systems_studio/scripts/validate_judge_live.py \
+  --providers openai-runtime ollama-runtime bedrock-runtime \
+  --output .tmp/studio-judge-calibration.json
+```
+
+Calibration invokes real model judges, but its candidates are explicitly fixtures,
+not application E2E evidence. Preserve failed calibrations. Passing fixtures does
+not guarantee correctness on arbitrary conversations; review the live answers too.
+Use `--suite holdout` with a separate output file to run independent translation
+and factual-summary examples. These do not replace the regression cases. The
+current 2.1.2 judge is still under calibration; consult the
+[candidate review](../../docs/release-candidate-2.1.2-review.md) before treating
+its verdicts as release evidence.
+
 ## What the reference proves
 
 - the same source runs with or without a UI;

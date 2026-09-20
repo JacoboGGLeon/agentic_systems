@@ -6,12 +6,12 @@ from dataclasses import dataclass
 import json
 import os
 import re
-from typing import Any, Literal
+from typing import Any
 
-from pydantic import AliasChoices, BaseModel, ConfigDict, Field, model_validator
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
 import agentic_systems as toolkit
-from agentic_systems.evals import JudgeFinding
+from agentic_systems.contracts import ValidationResult
 from agentic_systems.providers import provider_profile
 from agentic_systems.registry import FRAMEWORK_NAMES, PROVIDER_NAMES
 from agentic_systems.schemas import ContractExecutionBudget
@@ -21,6 +21,36 @@ PROVIDERS = PROVIDER_NAMES
 FRAMEWORKS = FRAMEWORK_NAMES
 TEXT_SAMPLE = " Agentic   systems are reliable. "
 NORMALIZED_TEXT = "Agentic systems are reliable."
+PLAIN_TEXT_INSTRUCTIONS = (
+    "For exact multiline formats, output plain text, not Markdown. "
+    "Separate lines with literal newline characters only. Do not append spaces "
+    "before a newline. The semantic gate treats trailing horizontal whitespace as "
+    "presentation padding, but rejects leading whitespace, punctuation, extra lines, "
+    "or altered visible content. "
+)
+LITERAL_JUDGE_INSTRUCTIONS = (
+    "Evaluate textual line content, not Markdown presentation padding. For exact-line "
+    "requirements, ignore only trailing horizontal spaces or tabs before a newline. "
+    "Leading whitespace, punctuation, extra lines, and altered visible characters "
+    "remain violations. Report those violations under request_fulfillment. "
+)
+
+
+def assert_semantic_response(
+    result: toolkit.RunResult, case: dict[str, Any]
+) -> ValidationResult:
+    """Put scenario-specific formatting inside eval, not only its release consumer."""
+
+    validation = ValidationResult()
+    if case.get("name") == "poetic_calculation" and not looks_like_short_poem(
+        result.text
+    ):
+        validation.add(
+            "poem_format_mismatch",
+            "Expected exactly three textual lines with the middle line exactly 323.",
+            path="text",
+        )
+    return validation
 
 
 def supports_model_generation(provider: str) -> bool:
@@ -51,11 +81,12 @@ def states_verified_product(answer: str) -> bool:
 
 
 def looks_like_short_poem(answer: str) -> bool:
-    """Enforce the case's literal middle line, leaving the poetry unrestricted."""
+    """Enforce visible line content while ignoring line-ending presentation padding."""
 
-    # Do not repair formatting before validation: the request explicitly forbids
-    # spaces and punctuation on the middle line and requires exactly three lines.
-    lines = answer.splitlines()
+    # Markdown and SDK transports can preserve horizontal presentation padding.
+    # Leading whitespace, punctuation, extra lines, and altered visible characters
+    # remain rejected; byte-exactness belongs to deterministic renderer gates.
+    lines = [line.rstrip(" \t") for line in answer.splitlines()]
     if len(lines) != 3:
         return False
     outer_word_counts = [
@@ -105,35 +136,25 @@ class JudgeDecision(BaseModel):
     rationale: str = Field(validation_alias=AliasChoices("rationale", "comment"))
 
 
-SemanticCriterion = Literal[
-    "request_fulfillment",
-    "evidence_correctness",
-    "clarity",
-    "no_technical_noise",
-    "no_unsupported_claims",
-]
+class SemanticCriterionAssessment(BaseModel):
+    """One criterion verdict; its identity is supplied by the enclosing field."""
 
-
-class SemanticCriterionAssessment(JudgeFinding):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
-    criterion: SemanticCriterion
+    evidence: str = Field(min_length=1, max_length=4000)
     passed: bool
 
 
 class SemanticJudgmentInput(BaseModel):
+    """Closed judgment shape whose schema makes every criterion mandatory once."""
+
     model_config = ConfigDict(extra="forbid", frozen=True)
 
-    assessments: list[SemanticCriterionAssessment]
-
-    @model_validator(mode="after")
-    def validate_complete_unique_criteria(self) -> "SemanticJudgmentInput":
-        criteria = [item.criterion for item in self.assessments]
-        if len(criteria) != len(set(criteria)):
-            raise ValueError("Each rubric criterion must appear exactly once")
-        if set(criteria) != set(JudgeCriteria.model_fields):
-            raise ValueError("Every rubric criterion must be assessed exactly once")
-        return self
+    request_fulfillment: SemanticCriterionAssessment
+    evidence_correctness: SemanticCriterionAssessment
+    clarity: SemanticCriterionAssessment
+    no_technical_noise: SemanticCriterionAssessment
+    no_unsupported_claims: SemanticCriterionAssessment
 
 
 @toolkit.tool(
@@ -144,24 +165,34 @@ class SemanticJudgmentInput(BaseModel):
 def record_semantic_judgment(
     judgment: SemanticJudgmentInput,
 ) -> dict[str, Any]:
-    """Record evidence-backed assessments and project them onto the public rubric.
+    """Record named evidence-backed criteria and project them onto the public rubric.
 
     The model cannot submit a free-form score or contradictory global rationale.
     Pydantic validates a closed criterion vocabulary and this deterministic Tool derives
     scores, findings, and rationale from the same structured evidence.
     """
 
-    normalized = list(judgment.assessments)
-    failed_items = [item for item in normalized if not item.passed]
-    failed = {item.criterion for item in failed_items}
+    return project_semantic_judgment(judgment)
+
+
+def project_semantic_judgment(judgment: SemanticJudgmentInput) -> dict[str, Any]:
+    """Shared deterministic rubric projection for application-level judge tools."""
+    normalized = [
+        (name, getattr(judgment, name)) for name in JudgeCriteria.model_fields
+    ]
+    failed_items = [(name, item) for name, item in normalized if not item.passed]
+    failed = {name for name, _ in failed_items}
     criteria = JudgeCriteria(
         **{name: 0.0 if name in failed else 1.0 for name in JudgeCriteria.model_fields}
     )
-    findings = [item.model_dump(mode="json") for item in failed_items]
+    findings = [
+        {"criterion": name, "evidence": item.evidence[:1000]}
+        for name, item in failed_items
+    ]
     rationale = (
         "No evidence-backed rubric violations were recorded."
         if not failed_items
-        else "; ".join(f"{item.criterion}: {item.evidence}" for item in failed_items)
+        else "; ".join(f"{name}: {item.evidence}" for name, item in failed_items)
     )
     decision = JudgeDecision(
         score=sum(criteria.model_dump().values()) / 5,
@@ -435,11 +466,12 @@ def _case_input(provider: str, name: str) -> Any:
     if supports_model_generation(provider):
         return {
             "calculation": (
-                "Calculate 17 × 19. Delegate to exactly one specialist and explain "
+                "Calculate 17 × 19. Delegate to exactly one worker specialist and explain "
                 "the verified result in natural language."
             ),
             "poetic_calculation": (
-                "Use exactly one specialist to calculate 17 × 19. After receiving the "
+                "Use exactly one worker specialist to calculate 17 × 19. The parent "
+                "orchestrator routes the request and is not itself a specialist. After receiving the "
                 "verified result, answer only with a three-line textual poem. The first "
                 "and last lines must each contain at least two alphabetic words and no "
                 "digits. The middle line must be exactly the verified digits 323, with "
@@ -448,7 +480,8 @@ def _case_input(provider: str, name: str) -> Any:
             ),
             "text_analysis": (
                 f"Analyze this exact text: {TEXT_SAMPLE!r}. Delegate to exactly one "
-                "specialist and explain its normalized text and exact metrics."
+                "worker specialist; the parent orchestrator is not a specialist. Explain "
+                "the normalized text and exact metrics."
             ),
             "out_of_scope": (
                 "What will the weather be tomorrow? If this is outside your supported "
@@ -650,7 +683,8 @@ def build_semantic_cell(
             "requests, explicitly state that the requested "
             "capability is outside scope, name the supported tasks, and ask the user to "
             "choose one. Never expose JSON, ToolEnvelope, "
-            "Python repr, private reasoning, or implementation details."
+            "Python repr, private reasoning, or implementation details. "
+            + PLAIN_TEXT_INSTRUCTIONS
         ),
         tools=[calculator_tool, text_tool, clarify_scope],
         framework=framework,
@@ -708,6 +742,8 @@ def build_semantic_cell(
                 "wording, or artistic taste when the explicit contract is satisfied. "
                 "A parent delegation may summarize or omit output when its child lineage "
                 "contains the authoritative specialist and Tool evidence. "
+                "In topology requirements, specialist means a delegated worker Agent; "
+                "do not count its parent orchestrator as another specialist. "
                 "Return one typed semantic judgment by calling the "
                 "record_semantic_judgment Tool exactly once. Assess every rubric criterion "
                 "exactly once with passed=true or passed=false and a short public-evidence "
@@ -720,7 +756,7 @@ def build_semantic_cell(
                 "only; never fail it for formatting, line count, length, structure, "
                 "wording, or artistic style. Those requirements belong only to "
                 "request_fulfillment. Raw JSON or technical envelopes must fail clarity "
-                "and no_technical_noise."
+                "and no_technical_noise. " + LITERAL_JUDGE_INSTRUCTIONS
             ),
             tools=judge_tools,
             framework=framework,

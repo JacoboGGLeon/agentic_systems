@@ -87,7 +87,6 @@ def test_poem_shape_is_semantic_not_exact_text() -> None:
     for middle in (
         "323,",
         "3 2 3",
-        "323  ",
         " 323",
         "\t323",
         "**323**",
@@ -104,8 +103,8 @@ def test_poem_shape_is_semantic_not_exact_text() -> None:
     assert module.looks_like_short_poem(
         "A hundred thousand stars,\n323\nLeaves whisper softly."
     )
-    # Replay the observed live false positive: real arithmetic evidence must not
-    # override a failed response-format requirement in deterministic judging.
+    # Replay the observed live Markdown hard-break form: horizontal padding before
+    # line endings is presentation metadata, not visible textual content.
     malformed = (
         "beneath the moon's soft glow  \n323  \nwhispers of the night's deep flow"
     )
@@ -127,8 +126,18 @@ def test_poem_shape_is_semantic_not_exact_text() -> None:
         ),
         candidate_json=json.dumps(candidate),
     )
-    assert scored["criteria"]["request_fulfillment"] == 0.0
+    assert scored["criteria"]["request_fulfillment"] == 1.0
     assert scored["criteria"]["evidence_correctness"] == 1.0
+    import agentic_systems as toolkit
+    from types import SimpleNamespace
+
+    recorded = toolkit.RunResult(ok=True, text=malformed)
+    report = toolkit.eval().evaluate(
+        SimpleNamespace(run=lambda *args, **kwargs: recorded),
+        [{"name": "poetic_calculation", "input": "Produce the declared poem."}],
+        assertions=[module.assert_semantic_response],
+    )
+    assert report.ok
     assert not module.looks_like_short_poem("🌟\n323\n🌙")
     assert not module.looks_like_short_poem(
         "Seventeen meets nineteen,\nTheir measured paths combine,\nThree hundred twenty-three shines."
@@ -214,29 +223,27 @@ def test_model_judge_uses_typed_evidence_backed_assessments(monkeypatch) -> None
         module.record_semantic_judgment.function,
     )
     properties = schema["properties"]
-    assert set(properties) == {"assessments"}
-    assert properties["assessments"]["type"] == "array"
+    criteria_names = set(module.JudgeCriteria.model_fields)
+    assert set(properties) == criteria_names
+    assert set(schema["required"]) == criteria_names
     assessment_schema = schema["$defs"]["SemanticCriterionAssessment"]
-    assert set(assessment_schema["properties"]["criterion"]["enum"]) == set(
-        module.JudgeCriteria.model_fields
-    )
+    assert set(assessment_schema["properties"]) == {"evidence", "passed"}
     assert assessment_schema["properties"]["passed"]["type"] == "boolean"
     assert assessment_schema["properties"]["evidence"]["minLength"] == 1
-    assert assessment_schema["properties"]["evidence"]["maxLength"] == 1000
+    assert assessment_schema["properties"]["evidence"]["maxLength"] == 4000
 
     passed = module.record_semantic_judgment.function(
         module.SemanticJudgmentInput(
-            assessments=[
-                {"criterion": criterion, "passed": True, "evidence": "Satisfied."}
+            **{
+                criterion: {"passed": True, "evidence": "Satisfied."}
                 for criterion in module.JudgeCriteria.model_fields
-            ]
+            }
         )
     )
     failed = module.record_semantic_judgment.function(
         module.SemanticJudgmentInput(
-            assessments=[
-                {
-                    "criterion": criterion,
+            **{
+                criterion: {
                     "passed": criterion not in {"clarity", "no_technical_noise"},
                     "evidence": (
                         "Answer is unreadable."
@@ -247,17 +254,14 @@ def test_model_judge_uses_typed_evidence_backed_assessments(monkeypatch) -> None
                     ),
                 }
                 for criterion in module.JudgeCriteria.model_fields
-            ]
+            }
         )
     )
-    with pytest.raises(ValueError, match="Every rubric criterion"):
-        module.SemanticJudgmentInput(
-            assessments=[
-                {"criterion": "clarity", "passed": True, "evidence": "Satisfied."}
-            ]
-        )
+    with pytest.raises(ValueError, match="Field required"):
+        module.SemanticJudgmentInput(clarity={"passed": True, "evidence": "Satisfied."})
     assert passed["score"] == 1.0
     assert set(passed["criteria"].values()) == {1.0}
+    assert all(set(item) == {"criterion", "evidence"} for item in failed["findings"])
     assert failed["criteria"]["clarity"] == 0.0
     assert failed["criteria"]["no_technical_noise"] == 0.0
     assert failed["criteria"]["evidence_correctness"] == 1.0
@@ -266,6 +270,18 @@ def test_model_judge_uses_typed_evidence_backed_assessments(monkeypatch) -> None
         "no_technical_noise",
     ]
     assert "implementation envelope" in failed["rationale"]
+    long_failure = module.project_semantic_judgment(
+        module.SemanticJudgmentInput(
+            **{
+                criterion: {
+                    "passed": criterion != "request_fulfillment",
+                    "evidence": "x" * 4000,
+                }
+                for criterion in module.JudgeCriteria.model_fields
+            }
+        )
+    )
+    assert len(long_failure["findings"][0]["evidence"]) == 1000
 
     monkeypatch.delenv("AGENTIC_SYSTEMS_SEMANTIC_JUDGE_MAX_TOKENS", raising=False)
     assert module.semantic_judge_max_tokens() == 4096
@@ -275,6 +291,14 @@ def test_model_judge_uses_typed_evidence_backed_assessments(monkeypatch) -> None
     assert cell.judge.agent.policy.max_turns == 5
     assert cell.judge.agent.policy.repair is True
     assert cell.judge.agent.policy.max_tokens == 900
+
+
+def test_wheel_subprocess_preserves_prepared_dependency_path() -> None:
+    source = (SCRIPTS / "run_semantic_matrix.py").read_text(encoding="utf-8")
+
+    assert 'existing_pythonpath = child_environment.get("PYTHONPATH", "")' in source
+    assert "(str(target), existing_pythonpath)" in source
+    assert 'child_environment["PYTHONPATH"] = str(target)' not in source
 
 
 def test_attestation_binds_external_gate_assets_by_hash() -> None:

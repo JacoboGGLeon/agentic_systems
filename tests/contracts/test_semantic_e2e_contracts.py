@@ -33,6 +33,12 @@ class StructuredAnswer(BaseModel):
     answer: str
 
 
+class StructuredProduct(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    result: int
+
+
 @toolkit.tool
 def multiply(a: int, b: int) -> dict:
     return {"result": a * b}
@@ -216,6 +222,70 @@ def test_openai_agents_receives_pydantic_output_contract_natively() -> None:
     assert agent.native_agent.output_type is StructuredAnswer
 
 
+@pytest.mark.parametrize("asynchronous", [False, True])
+def test_openai_agents_structured_tools_use_bounded_protocol_phases(
+    asynchronous: bool,
+) -> None:
+    pytest.importorskip("agents")
+    runtime = toolkit.runtime(provider="python-runtime", model="python-runtime")
+    system = toolkit.system(runtime=runtime, model="python-runtime")
+    agent = system.agent(
+        name="structured_calculator",
+        instructions="Call multiply, then return its structured result.",
+        engine="python-runtime",
+        framework="openai-agents",
+        tools=[multiply],
+        output=StructuredProduct,
+        contract=toolkit.AgentContract(must_call=["multiply"]),
+        policy=toolkit.RunPolicy(max_turns=3, max_tool_calls=1),
+    )
+    input_value = {"tool": "multiply", "input": {"a": 17, "b": 19}}
+
+    result = (
+        __import__("asyncio").run(agent.arun(input_value))
+        if asynchronous
+        else agent.run(input_value)
+    )
+
+    assert result.ok is True
+    assert result.data == {"result": 323}
+    assert [(event.name, event.ok) for event in result.tool_events] == [
+        ("multiply", True)
+    ]
+    assert result.usage["requests"] == 3
+    assert result.meta["structured_execution"]["strategy"] == "tools_then_output"
+    assert [
+        phase["name"] for phase in result.meta["structured_execution"]["phases"]
+    ] == [
+        "action",
+        "synthesis",
+    ]
+    assert sum(step.kind == "tool" for step in result.lineage().steps) == 1
+
+
+def test_openai_agents_structured_tools_reject_impossible_turn_budget() -> None:
+    pytest.importorskip("agents")
+    runtime = toolkit.runtime(provider="python-runtime", model="python-runtime")
+    system = toolkit.system(runtime=runtime, model="python-runtime")
+    agent = system.agent(
+        name="bounded_structured_calculator",
+        instructions="Call multiply, then return its structured result.",
+        engine="python-runtime",
+        framework="openai-agents",
+        tools=[multiply],
+        output=StructuredProduct,
+        contract=toolkit.AgentContract(must_call=["multiply"]),
+        policy=toolkit.RunPolicy(max_turns=1, max_tool_calls=1),
+    )
+
+    result = agent.run({"tool": "multiply", "input": {"a": 17, "b": 19}})
+
+    assert result.ok is False
+    assert result.data["error"]["code"] == "structured_tool_turn_budget"
+    assert result.tool_events == []
+    assert result.meta["structured_execution"]["failed_phase"] == "budget_validation"
+
+
 def test_judge_rubric_defines_contract_aware_fulfillment() -> None:
     rubric = toolkit.JudgeRubric()
 
@@ -228,10 +298,7 @@ def test_judge_rubric_defines_contract_aware_fulfillment() -> None:
     assert "must never reduce no_unsupported_claims" in rubric.instructions
     assert "child RunResult" in rubric.instructions
     assert rubric.threshold == 0.80
-    assert rubric.deterministic_authority == (
-        "request_fulfillment",
-        "evidence_correctness",
-    )
+    assert rubric.deterministic_authority == ()
 
 
 class Candidate:
@@ -356,7 +423,9 @@ def test_deterministic_contract_authority_is_explicit_and_auditable() -> None:
             }
         ],
         judge=DriftedJudge(),
-        rubric=toolkit.JudgeRubric(),
+        rubric=toolkit.JudgeRubric(
+            deterministic_authority=("request_fulfillment", "evidence_correctness")
+        ),
         determinism="deterministic",
     )
 
@@ -492,7 +561,7 @@ def test_eval_requires_one_successful_judge_certification_tool() -> None:
     assert missing.cases[0].judge is not None
     assert missing.cases[0].judge.certification_recorded is False
 
-    invalid_run = toolkit.Evaluator().evaluate(
+    certified_before_post_tool_failure = toolkit.Evaluator().evaluate(
         Candidate("17 multiplied by 19 is 323."),
         case,
         judge=ToolCertifiedJudge(
@@ -501,9 +570,11 @@ def test_eval_requires_one_successful_judge_certification_tool() -> None:
         ),
         rubric=rubric,
     )
-    assert invalid_run.ok is False
-    assert invalid_run.cases[0].judge is not None
-    assert invalid_run.cases[0].judge.execution_ok is False
+    assert certified_before_post_tool_failure.ok is True
+    preserved = certified_before_post_tool_failure.cases[0].judge
+    assert preserved is not None
+    assert preserved.certification_recorded is True
+    assert preserved.execution_ok is True
 
     certified = toolkit.Evaluator().evaluate(
         Candidate("17 multiplied by 19 is 323."),

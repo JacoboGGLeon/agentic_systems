@@ -144,7 +144,11 @@ def tool_identity(tool: Any) -> str:
         spec: Mapping[Any, Any] = candidate if isinstance(candidate, Mapping) else tool
         value = spec.get("name")
     else:
-        value = getattr(tool, "name", None) or getattr(tool, "__name__", None)
+        value = (
+            getattr(tool, "tool_name", None)
+            or getattr(tool, "name", None)
+            or getattr(tool, "__name__", None)
+        )
     identity = str(value or "").strip()
     if not identity:
         identity = f"{type(tool).__module__}.{type(tool).__qualname__}:{id(tool)}"

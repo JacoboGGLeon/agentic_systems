@@ -9,6 +9,7 @@ from agentic_systems.tools import ToolEvent
 
 from agentic_systems_studio.conversation import (
     _contains_public_value,
+    _is_single_sentence,
     ConversationConfig,
     build_conversational_system,
     ConversationalStudio,
@@ -352,6 +353,87 @@ def test_public_response_boundary_performs_one_bounded_repair(
     assert validation["repairs"] == 1
     assert validation["initial_error"]
     assert validation["final_error"] is None
+
+
+@pytest.mark.parametrize(
+    ("answer", "expected"),
+    [
+        ("323 vive en una Skill dentro de un System.", True),
+        ("Primera frase. Segunda frase.", False),
+        ("Primera línea.\nSegunda línea.", False),
+        ("- Una lista sin punto", False),
+        ("```python\nprint(323)\n```", False),
+    ],
+)
+def test_single_sentence_shape_is_deterministic(answer, expected):
+    assert _is_single_sentence(answer) is expected
+
+
+def test_summary_mentions_do_not_trigger_fresh_grammar_or_code_contracts():
+    studio = ConversationalStudio(
+        config=ConversationConfig(provider="vllm-runtime"),
+        reasoning_system=object(),
+        deterministic_system=object(),
+        assistant=object(),
+        context_agent=object(),
+        grammar_contract={
+            "canonical_factories": {"Skill": "skill", "System": "system"},
+            "package": "agentic_systems",
+        },
+    )
+    message = (
+        "Resume nuestra propuesta en una sola frase que conserve 323, Skill y System."
+    )
+
+    assert studio._requests_grammar_evidence(message) is False
+    assert studio._required_factory_calls(message) == ()
+
+
+def test_single_sentence_constraint_performs_one_bounded_repair():
+    initial = toolkit.RunResult(
+        text="La propuesta usa 323.\n\nAquí tienes además una implementación completa.",
+        engine="vllm-runtime",
+        model="test-model",
+    )
+    repaired = toolkit.RunResult(
+        text="La propuesta conserva 323 mediante una Skill reutilizable compuesta en un System.",
+        engine="vllm-runtime",
+        model="test-model",
+    )
+    studio = ConversationalStudio(
+        config=ConversationConfig(provider="vllm-runtime"),
+        reasoning_system=object(),
+        deterministic_system=object(),
+        assistant=object(),
+        context_agent=object(),
+    )
+    message = (
+        "Resume nuestra propuesta en una sola frase que conserve 323, Skill y System."
+    )
+    repair_prompts = []
+
+    def repair(prompt):
+        repair_prompts.append(prompt)
+        return repaired
+
+    answer, results, validation = studio._validate_or_repair_response(
+        message=message,
+        context={"message": message, "history": []},
+        assistant_result=initial,
+        execution_agent=SimpleNamespace(run=repair),
+    )
+
+    assert answer == repaired.text
+    assert results == [initial, repaired]
+    assert validation["ok"] is True
+    assert validation["repairs"] == 1
+    assert validation["initial_error"] == (
+        "The current request explicitly requires exactly one sentence."
+    )
+    assert validation["final_error"] is None
+    assert len(repair_prompts) == 1
+    assert "Canonical public example" not in repair_prompts[0]
+    assert "```python" not in repair_prompts[0]
 
 
 def test_response_repair_budget_can_use_a_second_bounded_attempt():

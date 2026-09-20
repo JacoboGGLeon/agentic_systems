@@ -60,7 +60,8 @@ def _dotenv(*, commit: str, wheel: Path, wheel_sha256: str) -> str:
         AWS_REGION=us-east-2
         AWS_DEFAULT_REGION=us-east-2
         AWS_STS_IDENTITY_REQUIRED=1
-        BEDROCK_MODEL_ID=us.amazon.nova-pro-v1:0
+        AWS_STS_REGIONAL_ENDPOINTS=regional
+        BEDROCK_MODEL_ID=qwen.qwen3-32b-v1:0
         BEDROCK_STREAMING=0
         RUN_BEDROCK_LIVE=1
         RUN_SEMANTIC_MATRIX_LIVE=1
@@ -186,9 +187,14 @@ def _studio_cell() -> nbformat.NotebookNode:
     studio_gate = studio_root / "scripts" / "validate_conversation_live.py"
     if not studio_gate.is_file():
         raise FileNotFoundError(studio_gate)
-    subprocess.run(
-        [sys.executable, "-m", "pip", "install", "-e", f"{studio_root}[ui,notebook]"],
-        check=True,
+    studio_source = (studio_root / "src").resolve()
+    if not studio_source.is_dir():
+        raise FileNotFoundError(studio_source)
+    if str(studio_source) not in sys.path:
+        sys.path.insert(0, str(studio_source))
+    studio_pythonpath = os.environ.get("PYTHONPATH", "")
+    os.environ["PYTHONPATH"] = os.pathsep.join(
+        part for part in (str(studio_source), studio_pythonpath) if part
     )
     STUDIO_OUTPUT = Path.cwd() / "bedrock-studio-live.json"
     studio_run = subprocess.run(
@@ -234,8 +240,10 @@ def _packaged_notebook(
     *, commit: str, wheel: Path, wheel_sha256: str
 ) -> nbformat.NotebookNode:
     notebook = nbformat.read(NOTEBOOK, as_version=4)
-    notebook.cells.append(_semantic_cell())
     notebook.cells.append(_studio_cell())
+    # Keep the semantic gate last so a failure cannot prevent Studio evidence
+    # from being produced during Run All.
+    notebook.cells.append(_semantic_cell())
     notebook.metadata.setdefault("agentic_systems", {})["portable_package"] = {
         "commit_sha": commit,
         "wheel_filename": wheel.name,

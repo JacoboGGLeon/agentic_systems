@@ -24,6 +24,7 @@ from semantic_e2e_application import (
     FRAMEWORKS,
     PROVIDERS,
     build_semantic_cell,
+    assert_semantic_response,
     expected_paths,
     looks_like_short_poem,
     semantic_cases,
@@ -364,10 +365,15 @@ def _run_cell(provider: str, framework: str) -> dict[str, Any]:
         report = toolkit.Evaluator().evaluate(
             cell.executable,
             [declared],
+            assertions=[assert_semantic_response],
             judge=cell.judge,
             rubric=toolkit.JudgeRubric(
                 threshold=0.8,
                 certification_tool=certification_tool,
+                deterministic_authority=(
+                    "request_fulfillment",
+                    "evidence_correctness",
+                ),
             ),
             mode="eval",
             environment_kwargs={
@@ -532,7 +538,14 @@ def _run_from_wheel(argv: list[str], wheel: Path) -> int:
             cwd=ROOT,
         )
         child_environment = dict(os.environ)
-        child_environment["PYTHONPATH"] = str(target)
+        # Keep the dependency root prepared by portable notebooks/ADA while
+        # forcing the certified wheel to win import precedence. Replacing
+        # PYTHONPATH here made framework SDKs disappear (or silently fall back
+        # to unrelated packages preinstalled in the managed kernel).
+        existing_pythonpath = child_environment.get("PYTHONPATH", "")
+        child_environment["PYTHONPATH"] = os.pathsep.join(
+            part for part in (str(target), existing_pythonpath) if part
+        )
         child_environment["AGENTIC_SYSTEMS_WHEEL_TARGET"] = str(target)
         completed = subprocess.run(
             [

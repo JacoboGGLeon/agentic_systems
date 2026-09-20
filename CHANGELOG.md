@@ -7,6 +7,10 @@ publication and aligns versioned notebooks, Studio and validation bundles.
 
 ### Changed
 
+- OpenAI Agents preserves completed function-tool evidence when a subsequent
+  SDK operation fails, in both synchronous and asynchronous execution. Recording
+  is execution-local and snapshots outputs without changing the public API.
+
 - Pydantic is constrained to the supported v2 major (`>=2.7.0,<3`).
 - Publication uses typed, hash-addressed manifests and sealed candidate assets;
   a matching index is a no-upload repeat, while partial or conflicting files

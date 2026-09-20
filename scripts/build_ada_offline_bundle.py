@@ -105,7 +105,7 @@ def _validate_semantic_evidence(
     payload = _read_json(path)
     if (
         payload.get("schema_version") != "agentic_systems.semantic-attestation.v1"
-        or payload.get("commit_sha") != certification["commit_sha"]
+        or not _evidence_identity_matches(payload, certification, row)
         or payload.get("wheel_sha256") != certification["wheel_sha256"]
         or not payload.get("wheel_runtime_verified")
     ):
@@ -150,7 +150,7 @@ def _validate_authentication_evidence(
     environment = payload.get("environment", {})
     if (
         payload.get("schema_version") != "agentic_systems.live-attestation.v1"
-        or payload.get("commit_sha") != certification["commit_sha"]
+        or not _evidence_identity_matches(payload, certification, row)
         or payload.get("wheel_sha256") != certification["wheel_sha256"]
         or environment.get("bedrock_authentication_mode")
         != row.get("authentication_mode")
@@ -173,6 +173,21 @@ def _validate_authentication_evidence(
 
 def _git(*args: str) -> str:
     return subprocess.check_output(["git", *args], cwd=ROOT, text=True).strip()
+
+
+def _evidence_identity_matches(
+    payload: dict[str, object],
+    certification: dict[str, object],
+    row: dict[str, object],
+) -> bool:
+    evidence_commit = row.get("evidence_commit_sha", certification["commit_sha"])
+    if payload.get("commit_sha") != evidence_commit:
+        return False
+    try:
+        evidence_tree = _git("rev-parse", f"{evidence_commit}:src/agentic_systems")
+    except subprocess.CalledProcessError:
+        return False
+    return evidence_tree == certification.get("core_tree_sha")
 
 
 def _copy(source: Path, target: Path) -> None:

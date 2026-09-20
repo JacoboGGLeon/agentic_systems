@@ -1013,6 +1013,63 @@ def test_openai_compatible_textual_call_normalizes_before_runner():
     assert call.arguments == '{"value": 7}'
 
 
+def test_openai_compatible_schema_transport_is_prompt_backed_and_sdk_validated():
+    class Schema:
+        @staticmethod
+        def is_plain_text():
+            return False
+
+        @staticmethod
+        def json_schema():
+            return {
+                "type": "object",
+                "properties": {"value": {"type": "integer"}},
+                "required": ["value"],
+                "additionalProperties": False,
+            }
+
+    class Delegate:
+        def __init__(self) -> None:
+            self.calls = []
+
+        async def get_response(self, *args, **kwargs):
+            self.calls.append((args, kwargs))
+            return om._text_response('{"value":7}')
+
+        async def stream_response(self, *args, **kwargs):
+            if False:
+                yield None
+
+    delegate = Delegate()
+    model = om.ToolCallNormalizingModel(delegate, [])
+
+    response = asyncio.run(
+        model.get_response(
+            system_instructions="Follow the application contract.",
+            input="Return the value.",
+            model_settings=object(),
+            tools=[],
+            output_schema=Schema(),
+            handoffs=[],
+        )
+    )
+
+    assert response.output
+    _, projected = delegate.calls[0]
+    assert projected["output_schema"] is None
+    assert "Follow the application contract." in projected["system_instructions"]
+    assert "additionalProperties" in projected["system_instructions"]
+    assert model.structured_output_transport == "prompt_json_schema"
+
+    positional, keyword = om._project_portable_output_schema(
+        ("base", "input", object(), [], Schema()),
+        {},
+    )
+    assert keyword == {}
+    assert positional[4] is None
+    assert "required" in positional[0]
+
+
 def test_openai_agents_bridge_enforces_tool_budget_per_model_response():
     class Delegate:
         def __init__(self) -> None:
@@ -1236,3 +1293,147 @@ def test_strands_event_budget_handles_immutable_model_and_variadic_tool() -> Non
     tool = SimpleNamespace(name="variadic", input_schema=None)
     with pytest.raises(TypeError, match=r"cannot use \*args"):
         sa._tool_input_json_schema(tool, variadic)
+
+
+def test_openai_phase_helpers_cover_mutable_shims_turns_and_error_merge() -> None:
+    mutable = SimpleNamespace(existing="old")
+    phased = oa._phase_agent(mutable, existing="new", missing="ignored")
+    assert phased is not mutable
+    assert phased.existing == "new"
+    assert not hasattr(phased, "missing")
+
+    assert (
+        oa._native_turn_count(
+            SimpleNamespace(raw_responses=[object(), object()]),
+            conservative_default=5,
+        )
+        == 2
+    )
+    assert oa._native_turn_count(SimpleNamespace(), conservative_default=5) == 5
+
+    @dataclass
+    class Settings:
+        tool_choice: str | None = None
+
+    configured = SimpleNamespace(model_settings=Settings())
+    oa._set_tool_choice(configured, "none")
+    assert configured.model_settings.tool_choice == "none"
+    oa._set_tool_choice(SimpleNamespace(), "none")
+
+    action = RunResult(
+        text="action",
+        ok=False,
+        engine="python-runtime",
+        model="model",
+        usage={"requests": 1},
+        errors=[{"code": "action_failed"}],
+    )
+    synthesis = RunResult(
+        text="typed",
+        ok=True,
+        engine="python-runtime",
+        model="model",
+        usage={"requests": 1},
+    )
+    merged = oa._merge_structured_phases(action, 1, synthesis)
+    assert merged.ok is False
+    assert merged.errors == [{"code": "action_failed"}]
+    assert merged.usage["requests"] == 2
+    assert merged.meta["structured_execution"]["phases"][0]["ok"] is False
+
+    failure = RunResult(text="failed", ok=False, engine="python-runtime", model="m")
+    preserved = oa._preserve_failed_action(action, failure, [])
+    assert {error["code"] for error in preserved.errors} == {
+        "run_failed",
+        "action_failed",
+    }
+
+
+def test_openai_completion_termination_ignores_unusable_response_bodies() -> None:
+    class Response:
+        def __init__(
+            self, *, status_code: int, content_type: str, broken: bool
+        ) -> None:
+            self.status_code = status_code
+            self.headers = {"content-type": content_type}
+            self.broken = broken
+
+        async def aread(self) -> None:
+            return None
+
+        def json(self) -> object:
+            if self.broken:
+                raise ValueError("not json")
+            return {"choices": [{"finish_reason": "length"}]}
+
+    termination = om.ChatCompletionTermination()
+    asyncio.run(
+        termination.observe(
+            Response(status_code=503, content_type="application/json", broken=False)
+        )
+    )
+    assert termination.reason.get() is None
+
+    asyncio.run(
+        termination.observe(
+            Response(status_code=200, content_type="application/json", broken=True)
+        )
+    )
+    assert termination.reason.get() is None
+
+
+def test_strands_structured_output_configuration_edges() -> None:
+    agent = SimpleNamespace(
+        framework_config=SimpleNamespace(
+            run_kwargs={},
+            agent_kwargs={"structured_output_model": Payload},
+        ),
+        output_contract=None,
+    )
+    kwargs = sa._run_kwargs(agent, RunPolicy(max_turns=4))
+    assert kwargs["structured_output_model"] is Payload
+
+    stale_model = SimpleNamespace(_agentic_systems_output_schema=None)
+    sa._configure_output(SimpleNamespace(model=stale_model), {})
+    assert stale_model._agentic_systems_output_schema is None
+
+    with pytest.raises(ValueError, match="inspectable SDK tool registry"):
+        sa._configure_output(
+            SimpleNamespace(model=SimpleNamespace()),
+            {"structured_output_model": Payload},
+        )
+
+    model = SimpleNamespace(
+        _agentic_systems_output_schema=Payload,
+        _agentic_systems_tool_registry=SimpleNamespace(dynamic_tools={}),
+    )
+    assert (
+        sa._is_output_tool_event(
+            model,
+            {"contentBlockStart": {"start": {"toolUse": {"toolUseId": "missing"}}}},
+        )
+        is False
+    )
+
+    from strands.tools.structured_output.structured_output_tool import (
+        StructuredOutputTool,
+    )
+
+    output_tool = StructuredOutputTool(Payload)
+    registered = SimpleNamespace(
+        _agentic_systems_output_schema=Payload,
+        _agentic_systems_tool_registry=SimpleNamespace(
+            dynamic_tools={output_tool.tool_name: output_tool}
+        ),
+    )
+    assert (
+        sa._is_output_tool_event(
+            registered,
+            {
+                "contentBlockStart": {
+                    "start": {"toolUse": {"name": output_tool.tool_name}}
+                }
+            },
+        )
+        is False
+    )

@@ -46,6 +46,7 @@ def test_ada_iam_validation_kit_is_offline_first_and_semantic(tmp_path: Path) ->
             "__pycache__" in name or name.endswith((".pyc", ".pyo")) for name in names
         )
         required = {
+            ".env",
             ".env.example",
             "README.md",
             "manifest.json",
@@ -66,14 +67,16 @@ def test_ada_iam_validation_kit_is_offline_first_and_semantic(tmp_path: Path) ->
         }
         assert {prefix + name for name in required} <= names
 
-        assert prefix + ".env" not in names
-        dotenv = archive.read(prefix + ".env.example").decode()
+        dotenv = archive.read(prefix + ".env").decode()
+        assert dotenv == archive.read(prefix + ".env.example").decode()
         assert f"AGENTIC_SYSTEMS_COMMIT_SHA={commit}" in dotenv
         assert f"AGENTIC_SYSTEMS_WHEEL_SHA256={expected_wheel_sha}" in dotenv
         assert f"AGENTIC_SYSTEMS_WHEEL=artifacts/{WHEEL_NAME}" in dotenv
         assert "AGENTIC_SYSTEMS_PROVIDER=bedrock-runtime" in dotenv
         assert "AWS_BEARER_TOKEN_BEDROCK=" in dotenv.splitlines()
-        assert "AWS_STS_IDENTITY_REQUIRED=1" in dotenv
+        assert "AWS_STS_IDENTITY_REQUIRED=0" in dotenv
+        assert "BEDROCK_MODEL_ID=qwen.qwen3-32b-v1:0" in dotenv
+        assert "AWS_STS_REGIONAL_ENDPOINTS=regional" in dotenv
         assert "RUN_SEMANTIC_MATRIX_LIVE=1" in dotenv
 
         manifest = json.loads(archive.read(prefix + "manifest.json"))
@@ -97,8 +100,16 @@ def test_ada_iam_validation_kit_is_offline_first_and_semantic(tmp_path: Path) ->
         assert 'authentication["authentication_mode"] == "aws-credential-chain"' in code
         assert "from agentic_systems.utils import mask_sensitive" in code
         assert "toolkit.mask_sensitive" not in code
-        assert 'f"{studio_root}[ui,notebook]"' in code
+        assert 'studio_root / "src"' in code
+        assert 'f"{studio_root}[ui,notebook]"' not in code
+        assert "framework_preflight" in code
         assert "bedrock-studio-live-gate" in json.dumps(notebook)
+        assert 'Path.cwd() / ".agentic-systems-runtime"' in code
+        assert '"--ignore-installed"' in code
+        assert '"--target"' in code
+        assert 'os.environ["PYTHONPATH"]' in code
+        assert "from botocore.config import Config" in code
+        assert '.client("sts", region_name=REGION, config=sts_config)' in code
 
         requirements = archive.read(prefix + "requirements-ada.txt").decode()
         assert "streamlit>=1.37" in requirements

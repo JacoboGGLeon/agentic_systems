@@ -4,11 +4,17 @@ from __future__ import annotations
 
 import argparse
 import ast
+from contextlib import redirect_stdout
 from datetime import datetime, timezone
+from io import StringIO
 import json
 from pathlib import Path
 import re
 from typing import Any
+import agentic_systems as toolkit
+from agentic_systems.contracts import ValidationResult
+from agentic_systems.usage import merge_usage
+from agentic_systems_studio.evaluation import build_conversation_judge, evaluate_turn
 
 from agentic_systems_studio import (
     ConversationConfig,
@@ -119,7 +125,9 @@ def _assert_common_result(result: Any, *, provider: str) -> list[str]:
 
     tools = _tool_names(result)
     if "prepare_conversation_context" not in tools:
-        raise AssertionError({"missing_tool": "prepare_conversation_context", "tools": tools})
+        raise AssertionError(
+            {"missing_tool": "prepare_conversation_context", "tools": tools}
+        )
     return tools
 
 
@@ -128,7 +136,9 @@ def _assert_live_result(result: Any, *, provider: str, follow_up: bool) -> None:
 
     if provider == "python-runtime":
         if "hello_world" not in tools or "no tengo mente" not in result.text.lower():
-            raise AssertionError({"invalid_python_control": result.text, "tools": tools})
+            raise AssertionError(
+                {"invalid_python_control": result.text, "tools": tools}
+            )
         return
 
     required = (
@@ -153,7 +163,9 @@ def _assert_long_turn(result: Any, *, provider: str, index: int) -> None:
     lowered = result.text.lower()
     if provider == "python-runtime":
         if "hello_world" not in tools or "no tengo mente" not in lowered:
-            raise AssertionError({"invalid_python_control": result.text, "tools": tools})
+            raise AssertionError(
+                {"invalid_python_control": result.text, "tools": tools}
+            )
         return
 
     usage = result.normalized().get("usage") or {}
@@ -227,42 +239,7 @@ def _assert_long_turn(result: Any, *, provider: str, index: int) -> None:
 
 
 def _run_provider(provider: str) -> dict[str, Any]:
-    config = ConversationConfig.from_environment(provider=provider, framework="native")
-    studio = build_conversational_system(config)
-    first = studio.run(PROMPT)
-    _assert_live_result(first, provider=provider, follow_up=False)
-    history = [
-        {"role": "user", "content": PROMPT},
-        {"role": "assistant", "content": first.text},
-    ]
-    second = studio.run(FOLLOW_UP, history=history)
-    _assert_live_result(second, provider=provider, follow_up=True)
-    return {
-        "provider": provider,
-        "framework": "native",
-        "model": second.model,
-        "ok": True,
-        "turns": [
-            {
-                "prompt": PROMPT,
-                "answer": first.text,
-                "tools": _tool_names(first),
-                "processing": processing_mark(first),
-                "usage": first.normalized().get("usage") or {},
-                "usage_mark": usage_mark(first),
-                "lineage": first.lineage().to_dict(),
-            },
-            {
-                "prompt": FOLLOW_UP,
-                "answer": second.text,
-                "tools": _tool_names(second),
-                "processing": processing_mark(second),
-                "usage": second.normalized().get("usage") or {},
-                "usage_mark": usage_mark(second),
-                "lineage": second.lineage().to_dict(),
-            },
-        ],
-    }
+    return _run_conversation(provider, long=False)
 
 
 def _accumulate_usage(
@@ -292,9 +269,13 @@ def _turn_payload(
     *,
     cumulative_usage: dict[str, int | float | bool] | None = None,
 ) -> dict[str, Any]:
+    rendered = StringIO()
+    with redirect_stdout(rendered):
+        toolkit.human_result(result, pretty=False, show_lineage=True)
     return {
         "prompt": prompt,
         "answer": result.text,
+        "human_result": rendered.getvalue(),
         "tools": _tool_names(result),
         "processing": processing_mark(result),
         "usage": result.normalized().get("usage") or {},
@@ -310,34 +291,78 @@ def _turn_payload(
 
 
 def _run_long_provider(provider: str) -> dict[str, Any]:
+    return _run_conversation(provider, long=True)
+
+
+def _episode_usage(candidate: dict, judge: dict) -> dict:
+    combined = merge_usage(candidate, judge)
+    combined["scheduler.timed_out"] = bool(
+        candidate.get("scheduler.timed_out") or judge.get("scheduler.timed_out")
+    )
+    return combined
+
+
+def _run_conversation(provider: str, *, long: bool) -> dict[str, Any]:
     config = ConversationConfig.from_environment(provider=provider, framework="native")
     studio = build_conversational_system(config)
-    history: list[dict[str, str]] = [
-        {
-            "role": "assistant",
-            "content": "Ready. Ask a question or request a verified calculation.",
-        }
-    ]
+    judge = build_conversation_judge(config)
+    history: list[dict[str, str]] = (
+        [
+            {
+                "role": "assistant",
+                "content": "Ready. Ask a question or request a verified calculation.",
+            }
+        ]
+        if long
+        else []
+    )
     turns: list[dict[str, Any]] = []
     cumulative_usage: dict[str, int | float | bool] = {}
+    judge_usage: dict[str, int | float | bool] = {}
     validation_errors: list[dict[str, Any]] = []
     model = config.model
-    for index, prompt in enumerate(LONG_PROMPTS):
+    for index, prompt in enumerate(LONG_PROMPTS if long else (PROMPT, FOLLOW_UP)):
         result = studio.run(prompt, history=history)
-        validation_error: str | None = None
-        try:
-            _assert_long_turn(result, provider=provider, index=index)
-        except (AssertionError, SyntaxError, ValueError) as exc:
-            validation_error = str(exc)
+
+        def assertion(candidate, case):
+            checked = ValidationResult()
+            try:
+                if long:
+                    _assert_long_turn(candidate, provider=provider, index=index)
+                else:
+                    _assert_live_result(
+                        candidate, provider=provider, follow_up=index > 0
+                    )
+            except (AssertionError, SyntaxError, ValueError) as exc:
+                checked.add("studio_contract_failed", str(exc), path="text")
+            return checked
+
+        evaluated = evaluate_turn(result, prompt, judge=judge, assertion=assertion)
+        validation_error = None
+        if not evaluated.ok:
+            validation_error = (
+                (
+                    "; ".join(evaluated.judge.consistency_issues)
+                    or evaluated.judge.rationale
+                    or "Judge execution failed; inspect judge_execution.errors."
+                )
+                if evaluated.judge and not evaluated.judge.ok
+                else "Deterministic Studio contract failed; inspect evaluation.validation."
+            )
             validation_errors.append(
                 {"turn": index + 1, "prompt": prompt, "error": validation_error}
             )
         quota = _accumulate_usage(cumulative_usage, result)
         payload = _turn_payload(prompt, result, cumulative_usage=quota)
         payload["semantic_validation"] = {
-            "ok": validation_error is None,
+            "ok": evaluated.ok,
             "error": validation_error,
         }
+        payload["evaluation"] = evaluated.to_dict()
+        if judge is not None and judge.last_result is not None:
+            _accumulate_usage(judge_usage, judge.last_result)
+            payload["judge_execution"] = judge.last_result.normalized()
+            payload["judge_lineage"] = judge.last_result.lineage().to_dict()
         turns.append(payload)
         history.extend(
             [
@@ -354,6 +379,11 @@ def _run_long_provider(provider: str) -> dict[str, Any]:
         "validation_errors": validation_errors,
         "turns": turns,
         "usage_totals": dict(cumulative_usage),
+        "judge_usage_totals": dict(judge_usage),
+        "episode_usage_totals": _episode_usage(cumulative_usage, judge_usage),
+        "evaluation_kind": "deterministic-and-model-judge"
+        if judge
+        else "deterministic-control",
         "context_memory": {
             **turns[-1]["context_memory"],
             "final_observed_messages": turns[-1]["context_history_turns"],

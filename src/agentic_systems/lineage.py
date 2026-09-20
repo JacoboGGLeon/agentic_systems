@@ -256,9 +256,7 @@ def _tool_output_facts(output: dict[str, Any], *, max_rows: int = 3) -> dict[str
             if value is None or isinstance(value, (bool, int, float, str)):
                 masked = mask_sensitive({str(key): value})[str(key)]
                 facts[str(key)] = (
-                    _short(masked, max_chars=240)
-                    if isinstance(masked, str)
-                    else masked
+                    _short(masked, max_chars=240) if isinstance(masked, str) else masked
                 )
 
     return facts
@@ -551,11 +549,20 @@ class LineageMemory(BaseModel):
         for node_index, (node, depth) in enumerate(hierarchy, start=1):
             steps.append(_execution_lineage_step(node, index=node_index, depth=depth))
             children = list(getattr(node, "children", []) or [])
-            node_tools = (
-                []
-                if depth == 0 and children
-                else list(getattr(node, "tool_events", []) or [])
-            )
+            # Remove descendant projections, not tools owned by the parent.
+            descendant_events = []
+            pending = list(children)
+            while pending:
+                descendant = pending.pop()
+                descendant_events.extend(getattr(descendant, "tool_events", []) or [])
+                pending.extend(getattr(descendant, "children", []) or [])
+            node_tools = [
+                event
+                for event in (getattr(node, "tool_events", []) or [])
+                if not any(
+                    event is other or event == other for other in descendant_events
+                )
+            ]
             tools.extend(node_tools)
             for tool_index, event in enumerate(node_tools, start=1):
                 steps.append(
