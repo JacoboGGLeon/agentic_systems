@@ -88,7 +88,10 @@ def test_final_bedrock_iam_kit_is_portable_and_env_driven(tmp_path: Path) -> Non
         assert 'Path.cwd() / "run_semantic_matrix.py"' in code
         assert 'Path.cwd() / "semantic_e2e_application.py"' in code
         assert '"episodes_total": 16' in code
-        assert 'f"{studio_root}[ui,notebook]"' in code
+        assert 'studio_root / "src"' in code
+        assert 'f"{studio_root}[ui,notebook]"' not in code
+        assert 'BEDROCK_MODEL_ID=qwen.qwen3-32b-v1:0' in dotenv
+        assert 'framework_preflight' in code
         assert 'authentication["authentication_mode"] == "aws-credential-chain"' in code
         assert "from agentic_systems.utils import mask_sensitive" in code
         assert "toolkit.mask_sensitive" not in code

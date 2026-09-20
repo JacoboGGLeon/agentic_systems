@@ -181,6 +181,38 @@ existing_pythonpath = os.environ.get("PYTHONPATH", "")
 os.environ["PYTHONPATH"] = os.pathsep.join(
     part for part in (str(RUNTIME_PATH), existing_pythonpath) if part
 )
+os.environ["AGENTIC_SYSTEMS_CERTIFIED_RUNTIME"] = str(RUNTIME_PATH)
+
+from importlib import metadata as importlib_metadata
+from importlib.util import find_spec
+
+framework_modules = {
+    "langgraph": ("langgraph", "langgraph"),
+    "openai-agents": ("agents", "openai-agents"),
+    "strands": ("strands", "strands-agents"),
+}
+framework_preflight = {}
+for framework_name, (module_name, distribution_name) in framework_modules.items():
+    spec = find_spec(module_name)
+    locations = []
+    if spec is not None:
+        if spec.origin and spec.origin not in {"built-in", "frozen"}:
+            locations.append(Path(spec.origin).resolve())
+        locations.extend(
+            Path(item).resolve() for item in (spec.submodule_search_locations or [])
+        )
+    if spec is None or not locations:
+        raise RuntimeError(f"Framework {framework_name!r} is not importable.")
+    if not any(RUNTIME_PATH == path or RUNTIME_PATH in path.parents for path in locations):
+        raise RuntimeError(
+            f"Framework {framework_name!r} resolved outside the certified runtime: "
+            f"{[str(path) for path in locations]!r}"
+        )
+    framework_preflight[framework_name] = {
+        "module": module_name,
+        "version": importlib_metadata.version(distribution_name),
+        "locations": [str(path) for path in locations],
+    }
 loaded_package = sys.modules.get("agentic_systems")
 if loaded_package is not None and getattr(loaded_package, "__version__", None) != "2.1.2":
     raise RuntimeError(
@@ -211,7 +243,7 @@ STS_IDENTITY_REQUIRED = os.getenv(
     "AWS_STS_IDENTITY_REQUIRED", "1"
 ).strip().lower() in {"1", "true", "yes"}
 REGION = os.getenv("AWS_REGION") or os.getenv("AWS_DEFAULT_REGION") or "us-east-2"
-MODEL = os.getenv("BEDROCK_MODEL_ID") or "us.amazon.nova-pro-v1:0"
+MODEL = os.getenv("BEDROCK_MODEL_ID") or "qwen.qwen3-32b-v1:0"
 aws_session = toolkit.boto3_session_snapshot(region_name=REGION)
 identity = {"available": False, "status": "not-run"}
 
@@ -291,6 +323,7 @@ toolkit.show_json({
     "environment": aws_environment,
     "session": aws_session,
     "identity": identity,
+    "frameworks": framework_preflight,
 }, title="Bedrock authentication preflight")"""
         ),
         nbformat.v4.new_markdown_cell(

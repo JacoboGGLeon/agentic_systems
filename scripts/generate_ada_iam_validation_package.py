@@ -112,16 +112,15 @@ def _readme(*, commit: str, wheel_sha256: str) -> str:
 
         1. Descomprime el ZIP y entra al directorio `{PACKAGE_STEM}`.
         2. Ejecuta `python verify_bundle.py`.
-        3. Copia `.env.example` como `.env`; esa copia es configuración mutable y
-           queda fuera de los checksums del artefacto:
-
-               cp .env.example .env
-
-           En PowerShell usa `Copy-Item .env.example .env`.
+        3. El bundle ya incluye `.env` listo para Run All y `.env.example` como
+           referencia. `.env` es configuración mutable y queda fuera de los
+           checksums del artefacto.
         4. Conserva `AWS_BEARER_TOKEN_BEDROCK=` vacío en `.env`; ajusta región o
            modelo únicamente si tu plataforma empresarial lo exige.
-           Conserva `AWS_STS_IDENTITY_REQUIRED=1`: la certificación IAM sólo
-           termina cuando `sts:GetCallerIdentity` devuelve identidad sanitizada.
+           En ADA, `AWS_STS_IDENTITY_REQUIRED=0` permite certificar mediante una
+           invocación Bedrock autenticada cuando la red no expone STS. Cambia el
+           valor a `1` únicamente cuando tu plataforma tenga acceso al endpoint
+           `sts:GetCallerIdentity` y necesites registrar la identidad sanitizada.
         5. Para la ruta CLI, crea un entorno aislado antes de instalar mediante
            Artifactory; no instales sobre el kernel administrado de ADA:
 
@@ -187,7 +186,10 @@ def _verifier() -> str:
 def _checksums(root: Path) -> str:
     rows = []
     for path in sorted(item for item in root.rglob("*") if item.is_file()):
-        if path.name == "SHA256SUMS.txt":
+        if (
+            path.name == "SHA256SUMS.txt"
+            or path.relative_to(root).as_posix() == ".env"
+        ):
             continue
         rows.append(f"{_sha256(path)}  {path.relative_to(root).as_posix()}")
     return "\n".join(rows) + "\n"
@@ -252,7 +254,8 @@ def build(*, wheel: Path, commit: str, output_dir: Path) -> Path:
         dotenv = _dotenv(commit=commit, wheel=wheel, wheel_sha256=wheel_sha256).replace(
             f"AGENTIC_SYSTEMS_WHEEL={wheel.name}",
             f"AGENTIC_SYSTEMS_WHEEL=artifacts/{wheel.name}",
-        )
+        ).replace("AWS_STS_IDENTITY_REQUIRED=1", "AWS_STS_IDENTITY_REQUIRED=0")
+        (package / ".env").write_text(dotenv, encoding="utf-8")
         (package / ".env.example").write_text(dotenv, encoding="utf-8")
         (package / "requirements-ada.txt").write_text(_requirements(), encoding="utf-8")
         (package / "README.md").write_text(

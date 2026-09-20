@@ -293,6 +293,14 @@ def test_model_judge_uses_typed_evidence_backed_assessments(monkeypatch) -> None
     assert cell.judge.agent.policy.max_tokens == 900
 
 
+def test_wheel_subprocess_preserves_prepared_dependency_path() -> None:
+    source = (SCRIPTS / "run_semantic_matrix.py").read_text(encoding="utf-8")
+
+    assert 'existing_pythonpath = child_environment.get("PYTHONPATH", "")' in source
+    assert "(str(target), existing_pythonpath)" in source
+    assert 'child_environment["PYTHONPATH"] = str(target)' not in source
+
+
 def test_attestation_binds_external_gate_assets_by_hash() -> None:
     source = (SCRIPTS / "run_semantic_matrix.py").read_text(encoding="utf-8")
 

@@ -538,7 +538,14 @@ def _run_from_wheel(argv: list[str], wheel: Path) -> int:
             cwd=ROOT,
         )
         child_environment = dict(os.environ)
-        child_environment["PYTHONPATH"] = str(target)
+        # Keep the dependency root prepared by portable notebooks/ADA while
+        # forcing the certified wheel to win import precedence. Replacing
+        # PYTHONPATH here made framework SDKs disappear (or silently fall back
+        # to unrelated packages preinstalled in the managed kernel).
+        existing_pythonpath = child_environment.get("PYTHONPATH", "")
+        child_environment["PYTHONPATH"] = os.pathsep.join(
+            part for part in (str(target), existing_pythonpath) if part
+        )
         child_environment["AGENTIC_SYSTEMS_WHEEL_TARGET"] = str(target)
         completed = subprocess.run(
             [
