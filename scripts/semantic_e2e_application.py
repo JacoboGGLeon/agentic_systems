@@ -156,6 +156,7 @@ class SemanticJudgmentInput(BaseModel):
     no_technical_noise: SemanticCriterionAssessment
     no_unsupported_claims: SemanticCriterionAssessment
 
+
 @toolkit.tool(
     name="record_semantic_judgment",
     description="Record one typed semantic judgment after reviewing all evidence.",
@@ -185,8 +186,7 @@ def project_semantic_judgment(judgment: SemanticJudgmentInput) -> dict[str, Any]
         **{name: 0.0 if name in failed else 1.0 for name in JudgeCriteria.model_fields}
     )
     findings = [
-        {"criterion": name, "evidence": item.evidence}
-        for name, item in failed_items
+        {"criterion": name, "evidence": item.evidence} for name, item in failed_items
     ]
     rationale = (
         "No evidence-backed rubric violations were recorded."

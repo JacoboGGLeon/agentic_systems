@@ -381,7 +381,9 @@ def test_summary_mentions_do_not_trigger_fresh_grammar_or_code_contracts():
             "package": "agentic_systems",
         },
     )
-    message = "Resume nuestra propuesta en una sola frase que conserve 323, Skill y System."
+    message = (
+        "Resume nuestra propuesta en una sola frase que conserve 323, Skill y System."
+    )
 
     assert studio._requests_grammar_evidence(message) is False
     assert studio._required_factory_calls(message) == ()
@@ -405,7 +407,9 @@ def test_single_sentence_constraint_performs_one_bounded_repair():
         assistant=object(),
         context_agent=object(),
     )
-    message = "Resume nuestra propuesta en una sola frase que conserve 323, Skill y System."
+    message = (
+        "Resume nuestra propuesta en una sola frase que conserve 323, Skill y System."
+    )
     repair_prompts = []
 
     def repair(prompt):
@@ -430,6 +434,7 @@ def test_single_sentence_constraint_performs_one_bounded_repair():
     assert len(repair_prompts) == 1
     assert "Canonical public example" not in repair_prompts[0]
     assert "```python" not in repair_prompts[0]
+
 
 def test_response_repair_budget_can_use_a_second_bounded_attempt():
     initial_result = toolkit.RunResult(

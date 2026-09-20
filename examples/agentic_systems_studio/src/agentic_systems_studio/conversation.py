@@ -560,9 +560,9 @@ class ConversationalStudio:
             source_result: toolkit.RunResult,
         ) -> None:
             code_requested = bool(_CODE_REQUEST_PATTERN.search(message))
-            if _SINGLE_SENTENCE_REQUEST_PATTERN.search(message) and not _is_single_sentence(
-                response
-            ):
+            if _SINGLE_SENTENCE_REQUEST_PATTERN.search(
+                message
+            ) and not _is_single_sentence(response):
                 raise ValueError(
                     "The current request explicitly requires exactly one sentence."
                 )

@@ -104,7 +104,7 @@ def test_ada_iam_validation_kit_is_offline_first_and_semantic(tmp_path: Path) ->
         assert '"--ignore-installed"' in code
         assert '"--target"' in code
         assert 'os.environ["PYTHONPATH"]' in code
-        assert 'from botocore.config import Config' in code
+        assert "from botocore.config import Config" in code
         assert '.client("sts", region_name=REGION, config=sts_config)' in code
 
         requirements = archive.read(prefix + "requirements-ada.txt").decode()

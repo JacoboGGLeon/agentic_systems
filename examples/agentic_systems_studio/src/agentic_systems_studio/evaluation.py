@@ -36,12 +36,12 @@ class ConversationJudgment(BaseModel):
     no_technical_noise: Assessment
     no_unsupported_claims: Assessment
 
+
 @toolkit.tool(input=ConversationJudgment)
 def record_conversation_judgment(judgment: ConversationJudgment) -> dict:
     """Certify all criteria from explicit assessments, deriving scores and findings."""
     assessments = [
-        (name, getattr(judgment, name))
-        for name in toolkit.JudgeRubric().criteria
+        (name, getattr(judgment, name)) for name in toolkit.JudgeRubric().criteria
     ]
     criteria = {name: float(item.passed) for name, item in assessments}
     findings = [

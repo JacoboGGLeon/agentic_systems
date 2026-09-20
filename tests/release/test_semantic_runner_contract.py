@@ -258,9 +258,7 @@ def test_model_judge_uses_typed_evidence_backed_assessments(monkeypatch) -> None
         )
     )
     with pytest.raises(ValueError, match="Field required"):
-        module.SemanticJudgmentInput(
-            clarity={"passed": True, "evidence": "Satisfied."}
-        )
+        module.SemanticJudgmentInput(clarity={"passed": True, "evidence": "Satisfied."})
     assert passed["score"] == 1.0
     assert set(passed["criteria"].values()) == {1.0}
     assert all(set(item) == {"criterion", "evidence"} for item in failed["findings"])
@@ -281,6 +279,8 @@ def test_model_judge_uses_typed_evidence_backed_assessments(monkeypatch) -> None
     assert cell.judge.agent.policy.max_turns == 5
     assert cell.judge.agent.policy.repair is True
     assert cell.judge.agent.policy.max_tokens == 900
+
+
 def test_attestation_binds_external_gate_assets_by_hash() -> None:
     source = (SCRIPTS / "run_semantic_matrix.py").read_text(encoding="utf-8")
 
