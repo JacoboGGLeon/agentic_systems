@@ -1318,6 +1318,7 @@ def test_openai_phase_helpers_cover_mutable_shims_turns_and_error_merge() -> Non
     configured = SimpleNamespace(model_settings=Settings())
     oa._set_tool_choice(configured, "none")
     assert configured.model_settings.tool_choice == "none"
+    oa._set_tool_choice(SimpleNamespace(), "none")
 
     action = RunResult(
         text="action",
