@@ -561,7 +561,7 @@ def test_eval_requires_one_successful_judge_certification_tool() -> None:
     assert missing.cases[0].judge is not None
     assert missing.cases[0].judge.certification_recorded is False
 
-    invalid_run = toolkit.Evaluator().evaluate(
+    certified_before_post_tool_failure = toolkit.Evaluator().evaluate(
         Candidate("17 multiplied by 19 is 323."),
         case,
         judge=ToolCertifiedJudge(
@@ -570,9 +570,11 @@ def test_eval_requires_one_successful_judge_certification_tool() -> None:
         ),
         rubric=rubric,
     )
-    assert invalid_run.ok is False
-    assert invalid_run.cases[0].judge is not None
-    assert invalid_run.cases[0].judge.execution_ok is False
+    assert certified_before_post_tool_failure.ok is True
+    preserved = certified_before_post_tool_failure.cases[0].judge
+    assert preserved is not None
+    assert preserved.certification_recorded is True
+    assert preserved.execution_ok is True
 
     certified = toolkit.Evaluator().evaluate(
         Candidate("17 multiplied by 19 is 323."),

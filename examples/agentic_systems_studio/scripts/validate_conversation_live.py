@@ -342,8 +342,8 @@ def _run_conversation(provider: str, *, long: bool) -> dict[str, Any]:
         if not evaluated.ok:
             validation_error = (
                 (
-                    evaluated.judge.rationale
-                    or "; ".join(evaluated.judge.consistency_issues)
+                    "; ".join(evaluated.judge.consistency_issues)
+                    or evaluated.judge.rationale
                     or "Judge execution failed; inspect judge_execution.errors."
                 )
                 if evaluated.judge and not evaluated.judge.ok

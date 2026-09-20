@@ -127,6 +127,10 @@ def test_bedrock_attestation_respects_dotenv_auth_and_runs_full_framework_matrix
     assert "from agentic_systems.utils import mask_sensitive" in code
     assert "toolkit.mask_sensitive" not in code
     assert "boto3.Session(region_name=REGION)" in code
+    assert "from botocore.config import Config" in code
+    assert '.client("sts", region_name=REGION, config=sts_config)' in code
+    assert 'retries={"max_attempts": 3, "mode": "standard"}' in code
+    assert 'Path.cwd() / ".agentic-systems-runtime"' in code
     assert '"diagnostic_stage": "sts:GetCallerIdentity"' in code
     assert '"AWS_STS_IDENTITY_REQUIRED", "1"' in code
     assert 'if STS_IDENTITY_REQUIRED and not identity["available"]' in code
@@ -152,7 +156,8 @@ def test_bedrock_attestation_respects_dotenv_auth_and_runs_full_framework_matrix
     assert code.index("if not wheel_candidates:") < code.index(
         "import agentic_systems as toolkit"
     )
-    assert '"--force-reinstall"' in code
+    assert '"--ignore-installed"' in code
+    assert '"--target"' in code
     assert '"--no-deps"' in code
     assert (
         'required_api = ("aws_environment_snapshot", "boto3_session_snapshot")' in code

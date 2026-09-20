@@ -808,7 +808,12 @@ def _run_judge(
     usage: dict[str, Any] = {}
     execution_ok = True
     if isinstance(judged, RunResult):
-        execution_ok = judged.ok
+        # A uniquely recorded, successful certification Tool event is the
+        # verdict boundary. Presentation/transport failures after that event
+        # must not erase the structured decision already preserved in lineage.
+        execution_ok = judged.ok or (
+            rubric.certification_tool is not None and certification_recorded
+        )
         provider = judged.engine
         framework = judged.meta.get("framework_adapter") or judged.meta.get("framework")
         model = judged.model

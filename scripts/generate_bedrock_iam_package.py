@@ -60,6 +60,7 @@ def _dotenv(*, commit: str, wheel: Path, wheel_sha256: str) -> str:
         AWS_REGION=us-east-2
         AWS_DEFAULT_REGION=us-east-2
         AWS_STS_IDENTITY_REQUIRED=1
+        AWS_STS_REGIONAL_ENDPOINTS=regional
         BEDROCK_MODEL_ID=us.amazon.nova-pro-v1:0
         BEDROCK_STREAMING=0
         RUN_BEDROCK_LIVE=1

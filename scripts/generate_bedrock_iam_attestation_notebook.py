@@ -143,22 +143,30 @@ assert wheel_sha256 == EXPECTED_WHEEL_SHA256, (
     wheel_sha256,
     EXPECTED_WHEEL_SHA256,
 )
-subprocess.run([
+RUNTIME_PATH = (Path.cwd() / ".agentic-systems-runtime").resolve()
+RUNTIME_PATH.mkdir(parents=True, exist_ok=True)
+install_target = [
     sys.executable,
     "-m",
     "pip",
     "install",
     "-q",
-    "--force-reinstall",
+    "--upgrade",
+    "--ignore-installed",
+    "--target",
+    str(RUNTIME_PATH),
+]
+subprocess.run([
+    *install_target,
     "--no-deps",
     str(WHEEL_PATH),
 ], check=True)
 subprocess.run([
-    sys.executable,
-    "-m",
-    "pip",
-    "install",
-    "-q",
+    *install_target,
+    "pydantic>=2.7,<3",
+    "pandas>=2",
+    "typing-extensions>=4.10",
+    "rich>=13",
     "boto3>=1.39",
     "botocore>=1.39",
     "openai>=2.45,<3",
@@ -167,7 +175,12 @@ subprocess.run([
     "strands-agents>=1.29,<2",
     "mcp>=1,<2",
 ], check=True)
-
+if str(RUNTIME_PATH) not in sys.path:
+    sys.path.insert(0, str(RUNTIME_PATH))
+existing_pythonpath = os.environ.get("PYTHONPATH", "")
+os.environ["PYTHONPATH"] = os.pathsep.join(
+    part for part in (str(RUNTIME_PATH), existing_pythonpath) if part
+)
 loaded_package = sys.modules.get("agentic_systems")
 if loaded_package is not None and getattr(loaded_package, "__version__", None) != "2.1.2":
     raise RuntimeError(
@@ -178,6 +191,7 @@ if loaded_package is not None and getattr(loaded_package, "__version__", None) !
         ),
         nbformat.v4.new_code_cell(
             """import boto3
+from botocore.config import Config
 import agentic_systems as toolkit
 from agentic_systems.utils import mask_sensitive
 
@@ -221,9 +235,14 @@ if RUN_BEDROCK_LIVE:
 
     if aws_session["authentication_mode"] == "aws-credential-chain":
         try:
+            sts_config = Config(
+                connect_timeout=10,
+                read_timeout=20,
+                retries={"max_attempts": 3, "mode": "standard"},
+            )
             raw_identity = (
                 boto3.Session(region_name=REGION)
-                .client("sts")
+                .client("sts", region_name=REGION, config=sts_config)
                 .get_caller_identity()
             )
         except Exception as exc:

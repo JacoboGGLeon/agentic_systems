@@ -122,13 +122,19 @@ def _readme(*, commit: str, wheel_sha256: str) -> str:
            modelo únicamente si tu plataforma empresarial lo exige.
            Conserva `AWS_STS_IDENTITY_REQUIRED=1`: la certificación IAM sólo
            termina cuando `sts:GetCallerIdentity` devuelve identidad sanitizada.
-        5. Instala dependencias mediante Artifactory:
+        5. Para la ruta CLI, crea un entorno aislado antes de instalar mediante
+           Artifactory; no instales sobre el kernel administrado de ADA:
 
-               python -m pip install -r requirements-ada.txt
+               python -m venv .venv-agentic-systems
+               .venv-agentic-systems/bin/python -m pip install -r requirements-ada.txt
+               .venv-agentic-systems/bin/python -m pip install --no-deps artifacts/{WHEEL_NAME}
+
+           El notebook Run All usa su propio directorio `.agentic-systems-runtime`
+           y tampoco modifica las dependencias preinstaladas de SageMaker.
 
         6. Ejecuta la matriz E2E completa:
 
-               python validation/run_ada_semantic_matrix.py
+               .venv-agentic-systems/bin/python validation/run_ada_semantic_matrix.py
 
         7. Conserva los dos archivos creados en `outputs/`.
         8. Para probar el mismo sistema conversacional, instala el paquete local de
