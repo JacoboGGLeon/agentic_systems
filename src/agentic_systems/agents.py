@@ -7,7 +7,7 @@ import json
 import uuid
 from collections import Counter
 from collections.abc import Callable, Iterable
-from typing import Any
+from typing import Any, cast
 
 from .contracts import (
     AgentContract,
@@ -260,7 +260,7 @@ class Agent:
             raise TypeError("Agent.pipeline(...) stages must implement run(...).")
         return CompiledSystem(
             name=name or f"agent:{self.name}:pipeline",
-            units=units,
+            units=cast(Any, units),
             plan=execution or SequentialPlan(),
         )
 
@@ -591,7 +591,7 @@ class Agent:
     def _scheduler(self) -> SchedulerConfig | None:
         if self.runtime_config is None:
             return None
-        return self.runtime_config.scheduler
+        return cast(SchedulerConfig | None, self.runtime_config.scheduler)
 
     def _policy_for_runtime(self, policy: RunPolicy) -> RunPolicy:
         return merge_policy_with_scheduler(policy, self._scheduler())

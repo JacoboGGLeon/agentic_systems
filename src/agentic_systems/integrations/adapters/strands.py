@@ -728,7 +728,7 @@ def _schema_backed_function(tool: Any, function: Any) -> Any:
         return function
 
     def invoke(**payload: Any) -> Any:
-        result = run(payload)
+        result = cast(RunResult, run(payload))
         if not result.ok:
             message = result.text or f"Tool '{tool.name}' failed."
             raise ValueError(message)
@@ -916,7 +916,7 @@ def _configure_output(native_agent: Any, kwargs: dict[str, Any]) -> None:
     if callable(stream) and not hasattr(model, "_agentic_systems_observed_stream"):
 
         async def observe_stream(*args: Any, **stream_kwargs: Any) -> Any:
-            async for event in stream(*args, **stream_kwargs):
+            async for event in cast(Any, stream)(*args, **stream_kwargs):
                 _is_output_tool_event(model, event)
                 yield event
 
@@ -1009,7 +1009,9 @@ def _normalize_result(
 class _TranscriptCursor(int):
     """Keep prior message identities alive across SDK history compaction."""
 
-    def __new__(cls, messages: Any) -> Any:
+    snapshot: tuple[Any, ...]
+
+    def __new__(cls, messages: Any) -> _TranscriptCursor:
         snapshot = tuple(messages)
         value = super().__new__(cls, len(snapshot))
         value.snapshot = snapshot

@@ -5,7 +5,7 @@ from __future__ import annotations
 import os
 from importlib import resources
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Iterable, cast
 
 from pydantic import SecretStr
 
@@ -203,10 +203,10 @@ def model_server(
     if spec is not None:
         if model is not None or configuration:
             raise ValueError("spec cannot be combined with model or configuration.")
-        return VLLMServer(spec)
+        return VLLMServer(cast(Any, spec))
     if model is None:
         raise ValueError("model_server requires model or spec.")
-    return VLLMServer(vllm_server_spec(model, **configuration))
+    return VLLMServer(vllm_server_spec(cast(Any, model), **configuration))
 
 
 def toolset(system: AgenticSystem, name: str) -> ToolSet:
@@ -273,7 +273,7 @@ def runtime(
         region_name=selected_region,
         endpoint=endpoint,
         api_key=api_key,
-        scheduler=SchedulerConfig.coerce(scheduler),
+        scheduler=cast(Any, SchedulerConfig.coerce(scheduler)),
         metadata=merged_metadata,
         provider_priority=priority,
         allow_python_fallback=allow_python_fallback,

@@ -553,7 +553,10 @@ def _configure_tool_budget(native_agent: Any, policy: RunPolicy) -> None:
         return run
 
     native_agent.tools = [
-        dataclasses.replace(tool, on_invoke_tool=bounded(tool.on_invoke_tool))
+        dataclasses.replace(
+            cast(Any, tool),
+            on_invoke_tool=bounded(getattr(tool, "on_invoke_tool")),
+        )
         if dataclasses.is_dataclass(tool) and hasattr(tool, "on_invoke_tool")
         else tool
         for tool in native_agent.tools
@@ -926,7 +929,11 @@ def _failure(agent: Any, input_value: Any, mode: str, exc: Exception) -> RunResu
             "source_result_type": type(exc).__name__,
             "framework_adapter": "openai-agents",
             "input": _jsonable(input_value),
-            **({"termination": exc.termination} if hasattr(exc, "termination") else {}),
+            **(
+                {"termination": getattr(exc, "termination")}
+                if hasattr(exc, "termination")
+                else {}
+            ),
         },
     )
 
