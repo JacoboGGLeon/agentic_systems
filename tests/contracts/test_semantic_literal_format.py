@@ -20,6 +20,7 @@ def test_visible_or_leading_format_changes_are_rejected(middle):
     ).ok
     assert looks_like_short_poem("Quiet stars\n323\nNumbers sing")
 
+
 @pytest.mark.parametrize("padding", ["  ", "\t", " \t"])
 def test_trailing_horizontal_padding_is_not_textual_content(padding):
     assert looks_like_short_poem(
