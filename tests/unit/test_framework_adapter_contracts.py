@@ -1311,6 +1311,14 @@ def test_openai_phase_helpers_cover_mutable_shims_turns_and_error_merge() -> Non
     )
     assert oa._native_turn_count(SimpleNamespace(), conservative_default=5) == 5
 
+    @dataclass
+    class Settings:
+        tool_choice: str | None = None
+
+    configured = SimpleNamespace(model_settings=Settings())
+    oa._set_tool_choice(configured, "none")
+    assert configured.model_settings.tool_choice == "none"
+
     action = RunResult(
         text="action",
         ok=False,
