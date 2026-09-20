@@ -75,6 +75,35 @@ _CODE_REQUEST_PATTERN = re.compile(
     r"program|programa|python)\b",
     re.IGNORECASE,
 )
+_IMPLEMENTATION_REQUEST_PATTERN = re.compile(
+    r"\b(?:package|pack|build|create|implement|define|scaffold|"
+    r"empaqueta|empaca|construye|crea|implementa|define)\b",
+    re.IGNORECASE,
+)
+_SUMMARY_REQUEST_PATTERN = re.compile(
+    r"\b(?:resume|resumir|resumen|sintetiza|síntesis|sintesis|"
+    r"summarize|summary|recap)\b",
+    re.IGNORECASE,
+)
+_SINGLE_SENTENCE_REQUEST_PATTERN = re.compile(
+    r"\b(?:una\s+sola\s+(?:frase|oración)|en\s+una\s+(?:frase|oración)|"
+    r"single\s+sentence|one\s+sentence)\b",
+    re.IGNORECASE,
+)
+
+
+def _is_single_sentence(text: str) -> bool:
+    """Validate an explicit one-sentence presentation constraint."""
+
+    stripped = text.strip()
+    if not stripped or "```" in stripped:
+        return False
+    if len([line for line in stripped.splitlines() if line.strip()]) != 1:
+        return False
+    if re.match(r"^\s*(?:[-*+]\s+|\d+[.)]\s+)", stripped):
+        return False
+    sentence_boundaries = re.findall(r"[.!?]+(?=\s|$)", stripped)
+    return len(sentence_boundaries) <= 1
 
 
 def _contains_public_value(text: str, value: str) -> bool:
@@ -414,8 +443,13 @@ class ConversationalStudio:
     grounded_assistant: Any | None = None
 
     def _required_factory_calls(self, message: str) -> tuple[str, ...]:
-        """Project explicitly requested grammar terms onto public factories."""
+        """Project explicitly requested code terms onto public factories."""
 
+        if not (
+            _CODE_REQUEST_PATTERN.search(message)
+            or _IMPLEMENTATION_REQUEST_PATTERN.search(message)
+        ):
+            return ()
         factories = dict((self.grammar_contract or {}).get("canonical_factories") or {})
         requested: list[str] = []
         for concept, factory in factories.items():
@@ -473,6 +507,11 @@ class ConversationalStudio:
         return tuple(dict.fromkeys(values))
 
     def _requests_grammar_evidence(self, message: str) -> bool:
+        # A summary is a transformation of bounded public history, not a fresh
+        # product-design request. Reinjecting the full grammar distracts small models
+        # from the active format constraint and can provoke an unrelated rewrite.
+        if _SUMMARY_REQUEST_PATTERN.search(message):
+            return False
         contract = dict(self.grammar_contract or {})
         terms = [
             *dict(contract.get("canonical_factories") or {}).keys(),
@@ -521,6 +560,12 @@ class ConversationalStudio:
             source_result: toolkit.RunResult,
         ) -> None:
             code_requested = bool(_CODE_REQUEST_PATTERN.search(message))
+            if _SINGLE_SENTENCE_REQUEST_PATTERN.search(message) and not _is_single_sentence(
+                response
+            ):
+                raise ValueError(
+                    "The current request explicitly requires exactly one sentence."
+                )
             validate_generated_agentic_systems_code(
                 response,
                 required_calls=required_calls,
