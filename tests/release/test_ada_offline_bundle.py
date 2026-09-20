@@ -157,6 +157,9 @@ def _certified_fixture(module, tmp_path: Path, monkeypatch) -> dict[str, object]
         "schema_version": "agentic_systems.release-certification.v1",
         "package_version": "2.1.2",
         "commit_sha": commit_sha,
+        "core_tree_sha": module._git(
+            "rev-parse", f"{commit_sha}:src/agentic_systems"
+        ),
         "wheel_sha256": wheel_sha256,
         "sdist_sha256": module.sha256(sdist),
         "no_fallback": True,
