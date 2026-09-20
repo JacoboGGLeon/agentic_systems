@@ -230,7 +230,7 @@ def test_model_judge_uses_typed_evidence_backed_assessments(monkeypatch) -> None
     assert set(assessment_schema["properties"]) == {"evidence", "passed"}
     assert assessment_schema["properties"]["passed"]["type"] == "boolean"
     assert assessment_schema["properties"]["evidence"]["minLength"] == 1
-    assert assessment_schema["properties"]["evidence"]["maxLength"] == 1000
+    assert assessment_schema["properties"]["evidence"]["maxLength"] == 4000
 
     passed = module.record_semantic_judgment.function(
         module.SemanticJudgmentInput(
@@ -263,6 +263,7 @@ def test_model_judge_uses_typed_evidence_backed_assessments(monkeypatch) -> None
         )
     assert passed["score"] == 1.0
     assert set(passed["criteria"].values()) == {1.0}
+    assert all(set(item) == {"criterion", "evidence"} for item in failed["findings"])
     assert failed["criteria"]["clarity"] == 0.0
     assert failed["criteria"]["no_technical_noise"] == 0.0
     assert failed["criteria"]["evidence_correctness"] == 1.0

@@ -141,7 +141,7 @@ class SemanticCriterionAssessment(BaseModel):
 
     model_config = ConfigDict(extra="forbid", frozen=True)
 
-    evidence: str = Field(min_length=1, max_length=1000)
+    evidence: str = Field(min_length=1, max_length=4000)
     passed: bool
 
 
@@ -185,7 +185,7 @@ def project_semantic_judgment(judgment: SemanticJudgmentInput) -> dict[str, Any]
         **{name: 0.0 if name in failed else 1.0 for name in JudgeCriteria.model_fields}
     )
     findings = [
-        {"criterion": name, **item.model_dump(mode="json")}
+        {"criterion": name, "evidence": item.evidence}
         for name, item in failed_items
     ]
     rationale = (
@@ -465,11 +465,12 @@ def _case_input(provider: str, name: str) -> Any:
     if supports_model_generation(provider):
         return {
             "calculation": (
-                "Calculate 17 × 19. Delegate to exactly one specialist and explain "
+                "Calculate 17 × 19. Delegate to exactly one worker specialist and explain "
                 "the verified result in natural language."
             ),
             "poetic_calculation": (
-                "Use exactly one specialist to calculate 17 × 19. After receiving the "
+                "Use exactly one worker specialist to calculate 17 × 19. The parent "
+                "orchestrator routes the request and is not itself a specialist. After receiving the "
                 "verified result, answer only with a three-line textual poem. The first "
                 "and last lines must each contain at least two alphabetic words and no "
                 "digits. The middle line must be exactly the verified digits 323, with "
@@ -478,7 +479,8 @@ def _case_input(provider: str, name: str) -> Any:
             ),
             "text_analysis": (
                 f"Analyze this exact text: {TEXT_SAMPLE!r}. Delegate to exactly one "
-                "specialist and explain its normalized text and exact metrics."
+                "worker specialist; the parent orchestrator is not a specialist. Explain "
+                "the normalized text and exact metrics."
             ),
             "out_of_scope": (
                 "What will the weather be tomorrow? If this is outside your supported "
@@ -739,6 +741,8 @@ def build_semantic_cell(
                 "wording, or artistic taste when the explicit contract is satisfied. "
                 "A parent delegation may summarize or omit output when its child lineage "
                 "contains the authoritative specialist and Tool evidence. "
+                "In topology requirements, specialist means a delegated worker Agent; "
+                "do not count its parent orchestrator as another specialist. "
                 "Return one typed semantic judgment by calling the "
                 "record_semantic_judgment Tool exactly once. Assess every rubric criterion "
                 "exactly once with passed=true or passed=false and a short public-evidence "
