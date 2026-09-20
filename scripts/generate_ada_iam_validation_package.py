@@ -186,10 +186,7 @@ def _verifier() -> str:
 def _checksums(root: Path) -> str:
     rows = []
     for path in sorted(item for item in root.rglob("*") if item.is_file()):
-        if (
-            path.name == "SHA256SUMS.txt"
-            or path.relative_to(root).as_posix() == ".env"
-        ):
+        if path.name == "SHA256SUMS.txt" or path.relative_to(root).as_posix() == ".env":
             continue
         rows.append(f"{_sha256(path)}  {path.relative_to(root).as_posix()}")
     return "\n".join(rows) + "\n"
@@ -251,10 +248,14 @@ def build(*, wheel: Path, commit: str, output_dir: Path) -> Path:
                 )
             else:
                 shutil.copy2(source, target)
-        dotenv = _dotenv(commit=commit, wheel=wheel, wheel_sha256=wheel_sha256).replace(
-            f"AGENTIC_SYSTEMS_WHEEL={wheel.name}",
-            f"AGENTIC_SYSTEMS_WHEEL=artifacts/{wheel.name}",
-        ).replace("AWS_STS_IDENTITY_REQUIRED=1", "AWS_STS_IDENTITY_REQUIRED=0")
+        dotenv = (
+            _dotenv(commit=commit, wheel=wheel, wheel_sha256=wheel_sha256)
+            .replace(
+                f"AGENTIC_SYSTEMS_WHEEL={wheel.name}",
+                f"AGENTIC_SYSTEMS_WHEEL=artifacts/{wheel.name}",
+            )
+            .replace("AWS_STS_IDENTITY_REQUIRED=1", "AWS_STS_IDENTITY_REQUIRED=0")
+        )
         (package / ".env").write_text(dotenv, encoding="utf-8")
         (package / ".env.example").write_text(dotenv, encoding="utf-8")
         (package / "requirements-ada.txt").write_text(_requirements(), encoding="utf-8")

@@ -102,7 +102,7 @@ def test_ada_iam_validation_kit_is_offline_first_and_semantic(tmp_path: Path) ->
         assert "toolkit.mask_sensitive" not in code
         assert 'studio_root / "src"' in code
         assert 'f"{studio_root}[ui,notebook]"' not in code
-        assert 'framework_preflight' in code
+        assert "framework_preflight" in code
         assert "bedrock-studio-live-gate" in json.dumps(notebook)
         assert 'Path.cwd() / ".agentic-systems-runtime"' in code
         assert '"--ignore-installed"' in code
