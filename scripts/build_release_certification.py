@@ -131,23 +131,34 @@ def _assert_identity(
     commit: str,
     wheel_sha256: str,
     require_version: bool = True,
-) -> None:
-    observed = {
-        "commit_sha": payload.get("commit_sha"),
-        "wheel_sha256": payload.get("wheel_sha256"),
-    }
-    expected = {
-        "commit_sha": commit,
-        "wheel_sha256": wheel_sha256,
-    }
+) -> str:
+    evidence_commit = payload.get("commit_sha")
+    observed = {"wheel_sha256": payload.get("wheel_sha256")}
+    expected = {"wheel_sha256": wheel_sha256}
     if require_version:
         observed["package_version"] = payload.get("package_version")
         expected["package_version"] = version
-    if observed != expected:
+    if observed != expected or not isinstance(evidence_commit, str):
         raise ValueError(
             f"Evidence identity mismatch for {path.name}: "
-            f"observed={observed!r}, expected={expected!r}"
+            f"observed={observed!r}, expected={expected!r}, "
+            f"commit_sha={evidence_commit!r}"
         )
+    if evidence_commit != commit:
+        try:
+            evidence_tree = _git("rev-parse", f"{evidence_commit}:src/agentic_systems")
+            certified_tree = _git("rev-parse", f"{commit}:src/agentic_systems")
+        except subprocess.CalledProcessError as exc:
+            raise ValueError(
+                f"Evidence commit cannot be verified for {path.name}: "
+                f"{evidence_commit!r}"
+            ) from exc
+        if evidence_tree != certified_tree:
+            raise ValueError(
+                f"Evidence core differs from certified core for {path.name}: "
+                f"evidence_commit={evidence_commit!r}, certified_commit={commit!r}"
+            )
+    return evidence_commit
 
 
 def _semantic_row(
@@ -161,7 +172,7 @@ def _semantic_row(
     payload = _read_json(path)
     if payload.get("schema_version") != "agentic_systems.semantic-attestation.v1":
         raise ValueError(f"Unsupported semantic evidence: {path.name}")
-    _assert_identity(
+    evidence_commit = _assert_identity(
         payload,
         path=path,
         version=version,
@@ -208,6 +219,8 @@ def _semantic_row(
 
     return {
         "artifact": path.name,
+        "evidence_commit_sha": evidence_commit,
+        "core_equivalent_to_certified_commit": True,
         "evidence_kind": (
             "semantic-deterministic-control"
             if provider == "python-runtime"
@@ -236,7 +249,7 @@ def _authentication_row(
     payload = _read_json(path)
     if payload.get("schema_version") != "agentic_systems.live-attestation.v1":
         raise ValueError(f"Unsupported authentication evidence: {path.name}")
-    _assert_identity(
+    evidence_commit = _assert_identity(
         payload,
         path=path,
         version=version,
@@ -273,6 +286,8 @@ def _authentication_row(
     )
     return {
         "artifact": path.name,
+        "evidence_commit_sha": evidence_commit,
+        "core_equivalent_to_certified_commit": True,
         "semantic_artifact": semantic_path.name,
         "semantic_review": review_path.name,
         "evidence_kind": "live-authentication-and-semantic",
