@@ -52,11 +52,24 @@ def build(directory: Path) -> Path:
     )
     required = {
         "final-certification-summary.json",
-        f"agentic-systems-{version}-ada-offline.zip",
         f"agentic-systems-{version}-strands-protocol-challenge.zip",
         f"agentic-systems-studio-{version}.zip",
         f"agentic-systems-skill-{version}.zip",
     }
+    if summary.get("acceptance_profile") == "core-12-live-v1":
+        from core_release_certification import validate_core_summary
+
+        validate_core_summary(summary)
+        if any("ada-offline" in item.filename for item in manifest.artifacts):
+            raise ValueError("Core profile cannot publish an uncertified ADA delivery")
+        identities_by_name = {item.filename: item.sha256 for item in manifest.artifacts}
+        for evidence in summary["evidence_inventory"].values():
+            if identities_by_name.get(evidence["artifact"]) != evidence["sha256"]:
+                raise ValueError("Core evidence missing from sealed release")
+    elif summary.get("acceptance_profile") is not None:
+        raise ValueError("Unknown acceptance profile")
+    else:
+        required.add(f"agentic-systems-{version}-ada-offline.zip")
     if not required <= {item.filename for item in manifest.artifacts}:
         raise ValueError("Missing required release deliveries")
     verify_artifacts(manifest, directory)

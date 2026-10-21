@@ -7,6 +7,14 @@ publication and aligns versioned notebooks, Studio and validation bundles.
 
 ### Changed
 
+- Public release acceptance is scoped to OpenAI, Bedrock API key and Ollama
+  across four Frameworks, with deterministic Python controls. vLLM/Colab,
+  AWS IAM and ADA IAM require subsequent exact-wheel validation. ADA bundles
+  are separate from the mandatory public release assets.
+- Release inference uses a persistent allocation capped at USD 10 and 1000
+  transport attempts, including pilots, evaluators and retries. Reservations
+  are conservative bounds, not billed costs.
+
 - OpenAI Agents preserves completed function-tool evidence when a subsequent
   SDK operation fails, in both synchronous and asynchronous execution. Recording
   is execution-local and snapshots outputs without changing the public API.

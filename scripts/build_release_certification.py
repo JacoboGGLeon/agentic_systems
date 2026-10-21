@@ -328,6 +328,17 @@ def build_summary(args: argparse.Namespace) -> dict[str, Any]:
     ).returncode:
         raise ValueError("The release-assembly core tree is dirty")
 
+    if getattr(args, "profile", "full") == "core":
+        from core_release_certification import build_core_summary
+
+        return build_core_summary(
+            args,
+            version=version,
+            commit=certified_commit,
+            assembly=assembly_commit,
+            tree=certified_tree,
+        )
+
     local_rows = {
         provider: _semantic_row(
             args.local_attestation,
@@ -476,19 +487,21 @@ def _path(value: str) -> Path:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
+    parser.add_argument("--profile", choices=("full", "core"), default="full")
+    parser.add_argument("--core-evidence", type=Path)
+    parser.add_argument("--offline-report", type=_path)
     parser.add_argument("--commit", required=True)
     parser.add_argument("--wheel", required=True, type=_path)
     parser.add_argument("--sdist", required=True, type=_path)
-    parser.add_argument("--local-attestation", required=True, type=_path)
-    parser.add_argument("--local-review", required=True, type=_path)
-    parser.add_argument("--bedrock-api-attestation", required=True, type=_path)
-    parser.add_argument("--bedrock-api-review", required=True, type=_path)
-    parser.add_argument("--vllm-attestation", required=True, type=_path)
-    parser.add_argument("--vllm-review", required=True, type=_path)
+    parser.add_argument("--local-attestation", type=_path)
+    parser.add_argument("--local-review", type=_path)
+    parser.add_argument("--bedrock-api-attestation", type=_path)
+    parser.add_argument("--bedrock-api-review", type=_path)
+    parser.add_argument("--vllm-attestation", type=_path)
+    parser.add_argument("--vllm-review", type=_path)
     parser.add_argument(
         "--authentication-route-spec",
         action="append",
-        required=True,
         type=_path,
         help=(
             "Repeatable typed JSON descriptor containing key, environment, "
@@ -496,10 +509,27 @@ def main() -> int:
         ),
     )
     parser.add_argument("--studio-attestation", type=_path)
-    parser.add_argument("--pytest-passed", required=True, type=int)
-    parser.add_argument("--pytest-skipped", required=True, type=int)
+    parser.add_argument("--pytest-passed", type=int)
+    parser.add_argument("--pytest-skipped", type=int)
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
+    required = (
+        ("core_evidence", "offline_report")
+        if args.profile == "core"
+        else (
+            "local_attestation",
+            "local_review",
+            "bedrock_api_attestation",
+            "bedrock_api_review",
+            "vllm_attestation",
+            "vllm_review",
+            "authentication_route_spec",
+            "pytest_passed",
+            "pytest_skipped",
+        )
+    )
+    if any(getattr(args, field) is None for field in required):
+        parser.error(f"Profile {args.profile} requires {', '.join(required)}")
     summary = build_summary(args)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(

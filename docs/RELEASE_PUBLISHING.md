@@ -10,6 +10,27 @@ Record the actual Actions run URLs before claiming that either index was tested.
 
 ## What users receive
 
+For 2.1.2 the public profile is `core-12-live-v1`: OpenAI, Bedrock API key and
+Ollama across four Frameworks, two passes each, plus Python controls. The ADA
+bundle is not a required public asset. vLLM/Colab GPU, Bedrock IAM/AWS and
+Bedrock IAM/ADA are pending; use `docs/POST_RELEASE_VALIDATION.md` afterwards.
+The historical full profile remains available for separately validated deliveries.
+
+Run `scripts/run_release_offline.py --directory <new-directory>` to retain logs
+and `offline-gates.json`. After freezing the commit and installing the exact
+wheel in a non-editable environment, use `scripts/run_core_acceptance.py` for
+each provider/framework and both `--repetition 1` and `--repetition 2` with
+`--phase acceptance`. Pilot records use `--phase pilot` and never satisfy a
+mandatory acceptance record. All processes share one evidence directory and
+`requests.json`; never reset or edit its allocation. Gate assets and models are
+frozen across the sample. A failed mandatory record blocks publication.
+
+Build the scoped summary using `scripts/build_release_certification.py
+--profile core --core-evidence <directory> --offline-report <report>
+--commit <certified-sha> --wheel <wheel> --sdist <sdist> --output <summary>`.
+Copy the inventory's evidence and gate logs alongside the summary before final
+asset assembly. The sealed manifest must include their hashes.
+
 - PyPI: the `agentic-systems` wheel and source distribution, including the CLI.
 - GitHub Release: matching Studio and skill ZIPs, enterprise and challenge
   bundles, certification summary, checksums and `release-manifest.json`.

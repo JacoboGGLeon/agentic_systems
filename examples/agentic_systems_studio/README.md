@@ -1,5 +1,10 @@
 # Agentic Systems Studio 2.1
 
+For 2.1.2, live release acceptance covers OpenAI, Bedrock API key and Ollama
+across four Frameworks. Target-environment certification for vLLM/Colab GPU,
+AWS IAM and ADA IAM remains pending. Host presentation support alone does not
+certify a Provider route. Consult the core release certification summary.
+
 Studio is one conversational Agentic System with one direct execution path and
 two equivalent presentation adapters:
 

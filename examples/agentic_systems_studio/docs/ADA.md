@@ -1,9 +1,13 @@
 # Run in ADA or restricted JupyterLab
 
+ADA acceptance for 2.1.2 is pending. The public release profile does not certify
+Bedrock IAM in this environment. Use the exact published wheel and collect
+target-environment evidence before describing an ADA delivery as validated.
+
 1. Create a clean virtual environment or kernel.
 2. Configure pip to use the approved Artifactory (`PIP_INDEX_URL`; credentials are
    platform configuration and never belong in this bundle).
-3. Install the certified `agentic_systems-2.1.2-py3-none-any.whl` and the local
+3. Install the exact `agentic_systems-2.1.2-py3-none-any.whl` and the local
    Studio package with the `ui,notebook` extras.
 4. At the ADA bundle root, copy `.env.example` to `.env`. This is the only runtime
    configuration file; select one provider/framework and keep credentials in the

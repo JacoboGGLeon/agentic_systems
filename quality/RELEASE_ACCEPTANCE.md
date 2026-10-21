@@ -2,6 +2,20 @@
 
 No release is certified by this file alone. Each mandatory row requires evidence.
 
+## Current allocation and scope (2026-10-21)
+
+The owner authorized a new, separate allocation capped at USD 10 AND 1000
+inference transport attempts, including pilots, judges, retries and Ollama cloud.
+Do not reset the persistent ledger or infer billed cost from reservations.
+The `core-12-live-v1` profile requires OpenAI, Bedrock API key and Ollama across
+native, LangGraph, OpenAI Agents and Strands in two passes, plus four Python
+controls. Current models/endpoints are frozen from the configured environment.
+vLLM/Colab GPU, AWS IAM and ADA IAM are deferred to target-environment validation
+of the published wheel. Additional passing evidence alone does not require a
+version bump. Runtime corrections or new package metadata require a new release.
+The historical allocations and deferral to 2.2 below are superseded by this scope.
+No historical live result certifies the new wheel.
+
 | Release | Promise | Implementation/test | Evidence | Status |
 |---|---|---|---|---|
 | 2.1.2 | Completed tools survive a later OpenAI Agents SDK failure | openai_agents.py / test_openai_partial_evidence.py | Five offline cases cover sync/async, failed tools, repeated calls, concurrent isolation and output snapshots | Offline verified; corrected-wheel live pending |

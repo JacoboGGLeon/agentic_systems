@@ -1,5 +1,11 @@
 # Release and distribution contract
 
+Version 2.1.2 uses the `core-12-live-v1` acceptance profile: OpenAI, Bedrock API
+key and Ollama across four Frameworks, plus deterministic Python controls.
+vLLM/Colab GPU, AWS IAM and ADA IAM remain pending until separately validated
+against the exact wheel. Do not require an ADA bundle to publish the core or
+advertise an `[ada]` extra. Enterprise delivery is versioned separately.
+
 Treat public versions, tags and artifact hashes as immutable identities. A
 change to runtime behavior, public contracts or packaged application material
 requires a new version and renewed evidence; do not move a published tag or

@@ -272,6 +272,7 @@ def test_openai_runtime_reads_environment_config_without_leaking_secret(
 def test_ollama_runtime_description_projects_selected_configuration(
     monkeypatch,
 ) -> None:
+    monkeypatch.setenv("OLLAMA_API_KEY", "")
     monkeypatch.setenv("OLLAMA_MODEL", "qwen-test")
     monkeypatch.setenv("OLLAMA_BASE_URL", "http://127.0.0.1:11434/v1")
 

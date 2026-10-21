@@ -46,12 +46,15 @@ jobs:
             asset_id="$(jq -er --arg name "$name" '[.assets[] | select(.name == $name)] | if length == 1 then .[0].id else error("missing or duplicate asset") end' release.json)"
             gh api "repos/$GITHUB_REPOSITORY/releases/assets/$asset_id" -H 'Accept: application/octet-stream' > "candidate/$name"
           done < <(jq -r '.artifacts[].filename' candidate/release-manifest.json)
-      - name: Verify artifacts and ADA bundle
+      - name: Verify artifacts and declared delivery profile
         run: |
           python scripts/release_publication.py --manifest candidate/release-manifest.json --manifest-sha256 "$MANIFEST_SHA256" --directory candidate --verify-only
           version="$(jq -r .version candidate/release-manifest.json)"
-          python -m zipfile -e "candidate/agentic-systems-$version-ada-offline.zip" extracted
-          python "extracted/agentic-systems-$version-ada-offline/verify_bundle.py"
+          python scripts/build_release_manifest.py --directory candidate
+          if [ "$(jq -r '.acceptance_profile // "full"' candidate/final-certification-summary.json)" = full ]; then
+            python -m zipfile -e "candidate/agentic-systems-$version-ada-offline.zip" extracted
+            python "extracted/agentic-systems-$version-ada-offline/verify_bundle.py"
+          fi
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: certified-release-candidate
