@@ -152,6 +152,7 @@ def core_evidence(tmp_path, monkeypatch):
                     "wheel_sha256": core.sha256(wheel),
                     "commit_sha": "a" * 40,
                     "wheel_runtime_verified": True,
+                    "runtime_dependencies": {"synthetic-sdk": "1.0"},
                     "gate_assets": {"runner": "frozen"},
                     "routes": routes(),
                     "semantic": {

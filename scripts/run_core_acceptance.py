@@ -172,6 +172,19 @@ def main() -> int:
             text=True,
         ).strip(),
         "wheel_runtime_verified": True,
+        "runtime_dependencies": {
+            name: importlib.metadata.version(name)
+            for name in (
+                "pydantic",
+                "openai",
+                "openai-agents",
+                "langgraph",
+                "strands-agents",
+                "boto3",
+                "botocore",
+                "httpx",
+            )
+        },
         "routes": routes,
         "gate_assets": {
             p.name: sha256(p)

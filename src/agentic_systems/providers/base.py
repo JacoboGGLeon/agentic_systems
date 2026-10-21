@@ -63,7 +63,12 @@ class ToolRegistryRuntime:
         temperature_default: float = 0.0,
     ) -> None:
         self.model_id = model_id
-        self.region_name = region_name or os.getenv("AWS_REGION") or os.getenv("AWS_DEFAULT_REGION") or DEFAULT_AWS_REGION
+        self.region_name = (
+            region_name
+            or os.getenv("AWS_REGION")
+            or os.getenv("AWS_DEFAULT_REGION")
+            or DEFAULT_AWS_REGION
+        )
         self.max_tokens_default = int(max_tokens_default)
         self.temperature_default = float(temperature_default)
         self._tools: dict[str, RuntimeToolSpec] = {}
@@ -113,7 +118,12 @@ class ToolRegistryRuntime:
                     return fn
                 if policy == "error":
                     raise ValueError(
-                        conflict_message("Tool", tool_name, "runtime registry", "runtime registration")
+                        conflict_message(
+                            "Tool",
+                            tool_name,
+                            "runtime registry",
+                            "runtime registration",
+                        )
                     )
                 self._composition_events.append(
                     {"kind": "tool", "identity": tool_name, "decision": policy}
@@ -169,27 +179,38 @@ class ToolRegistryRuntime:
                     "Define referenced types at module scope or pass an explicit "
                     "Pydantic input schema."
                 ) from exc
-        fields: dict[str, tuple[Any, Any]] = {}
+        # Pydantic's dynamic keyword API also declares reserved keyword names;
+        # the field-name dictionary cannot express that exclusion statically.
+        fields: dict[str, Any] = {}
         for param_name, param in signature.parameters.items():
-            if param.kind in {inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD}:
+            if param.kind in {
+                inspect.Parameter.VAR_POSITIONAL,
+                inspect.Parameter.VAR_KEYWORD,
+            }:
                 raise TypeError(
                     f"Tool '{tool_name}' cannot use *args or **kwargs. "
                     "Use explicit typed parameters so a JSON schema can be generated."
                 )
             annotation = type_hints.get(
                 param_name,
-                Any if param.annotation is inspect.Signature.empty else param.annotation,
+                Any
+                if param.annotation is inspect.Signature.empty
+                else param.annotation,
             )
             default = ... if param.default is inspect.Signature.empty else param.default
             fields[param_name] = (annotation, default)
-        model_name = "".join(part.capitalize() for part in tool_name.split("_")) + "Input"
+        model_name = (
+            "".join(part.capitalize() for part in tool_name.split("_")) + "Input"
+        )
         return create_model(
             model_name,
             __config__=ConfigDict(extra="forbid", arbitrary_types_allowed=True),
             **fields,
         )
 
-    def _select_tools(self, tool_names: Sequence[str] | None = None) -> list[RuntimeToolSpec]:
+    def _select_tools(
+        self, tool_names: Sequence[str] | None = None
+    ) -> list[RuntimeToolSpec]:
         if tool_names is None:
             return list(self._tools.values())
         missing = [name for name in tool_names if name not in self._tools]
@@ -197,7 +218,9 @@ class ToolRegistryRuntime:
             raise KeyError(f"Unknown tools requested: {missing}")
         return [self._tools[name] for name in tool_names]
 
-    def export_tool_specs(self, tool_names: Sequence[str] | None = None) -> list[dict[str, Any]]:
+    def export_tool_specs(
+        self, tool_names: Sequence[str] | None = None
+    ) -> list[dict[str, Any]]:
         """Return neutral, serializable tool metadata."""
 
         return [
@@ -213,30 +236,42 @@ class ToolRegistryRuntime:
     def print_tool_specs(self) -> None:
         print(json.dumps(self.export_tool_specs(), indent=2, ensure_ascii=False))
 
-    def validate_tool_registry(self, tool_names: Sequence[str] | None = None) -> dict[str, Any]:
+    def validate_tool_registry(
+        self, tool_names: Sequence[str] | None = None
+    ) -> dict[str, Any]:
         """Run static checks over registered tools before invoking any provider."""
 
         issues: list[dict[str, Any]] = []
         selected = self._select_tools(tool_names)
         for spec in selected:
             if not spec.name or not isinstance(spec.name, str):
-                issues.append({"tool": spec.name, "issue": "tool_name_must_be_non_empty_string"})
+                issues.append(
+                    {"tool": spec.name, "issue": "tool_name_must_be_non_empty_string"}
+                )
             if not spec.description or not spec.description.strip():
                 issues.append({"tool": spec.name, "issue": "tool_description_is_empty"})
             schema = spec.input_schema or {}
             if schema.get("type") != "object":
-                issues.append({"tool": spec.name, "issue": "input_schema_type_must_be_object"})
+                issues.append(
+                    {"tool": spec.name, "issue": "input_schema_type_must_be_object"}
+                )
             if "properties" not in schema:
-                issues.append({"tool": spec.name, "issue": "input_schema_missing_properties"})
+                issues.append(
+                    {"tool": spec.name, "issue": "input_schema_missing_properties"}
+                )
             if schema.get("additionalProperties") is not False:
-                issues.append({"tool": spec.name, "issue": "additionalProperties_should_be_false"})
+                issues.append(
+                    {"tool": spec.name, "issue": "additionalProperties_should_be_false"}
+                )
             for param_name, param in spec.signature.parameters.items():
                 if param.annotation is inspect.Signature.empty:
-                    issues.append({
-                        "tool": spec.name,
-                        "parameter": param_name,
-                        "issue": "parameter_missing_type_annotation",
-                    })
+                    issues.append(
+                        {
+                            "tool": spec.name,
+                            "parameter": param_name,
+                            "issue": "parameter_missing_type_annotation",
+                        }
+                    )
         return {
             "ok": not issues,
             "tool_count": len(selected),
@@ -267,9 +302,17 @@ class ToolRegistryRuntime:
     @staticmethod
     def _payload_parts(value: Any) -> tuple[str, dict[str, Any], dict[str, Any]]:
         if isinstance(value, BaseModel):
-            return "pydantic", value.model_dump(mode="json"), {"model": value.__class__.__name__}
+            return (
+                "pydantic",
+                value.model_dump(mode="json"),
+                {"model": value.__class__.__name__},
+            )
         if dataclasses.is_dataclass(value):
-            return "dataclass", dataclasses.asdict(value), {"model": value.__class__.__name__}
+            return (
+                "dataclass",
+                dataclasses.asdict(value),
+                {"model": value.__class__.__name__},
+            )
         if isinstance(value, dict):
             return "object", _jsonable(value), {}
         if isinstance(value, list):
@@ -282,7 +325,9 @@ class ToolRegistryRuntime:
             return "number" if value is not None else "null", {"value": value}, {}
         return "repr", {"repr": repr(value)}, {"python_type": type(value).__name__}
 
-    def execute_tool(self, tool_name: str, tool_input: dict[str, Any] | None = None) -> ToolEnvelope:
+    def execute_tool(
+        self, tool_name: str, tool_input: dict[str, Any] | None = None
+    ) -> ToolEnvelope:
         """Execute one registered tool locally and return a ToolEnvelope."""
 
         tool_input = tool_input or {}
@@ -306,7 +351,12 @@ class ToolRegistryRuntime:
                     f"Tool '{tool_name}' is async. Use an async-capable provider/runtime for this tool."
                 )
             value = spec.func(**clean_input)
-            return self.to_envelope(value, tool_name=tool_name, ok=True, extra_meta={"validated_input": clean_input})
+            return self.to_envelope(
+                value,
+                tool_name=tool_name,
+                ok=True,
+                extra_meta={"validated_input": clean_input},
+            )
         except Exception as exc:  # noqa: BLE001 - structured local failure.
             return self.to_envelope(
                 {"error_type": type(exc).__name__, "message": str(exc)},

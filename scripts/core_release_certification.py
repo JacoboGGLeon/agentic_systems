@@ -45,6 +45,7 @@ def build_core_summary(
     records = []
     assets = None
     routes = None
+    dependencies = None
     for path in sorted(directory.glob("acceptance-*.json")):
         row = json.loads(path.read_text(encoding="utf-8"))
         key = (row.get("provider"), row.get("framework"), row.get("repetition"))
@@ -63,8 +64,11 @@ def build_core_summary(
             raise ValueError(f"Failed or mismatching acceptance: {path.name}")
         if assets is None:
             assets, routes = row["gate_assets"], row["routes"]
+            dependencies = row.get("runtime_dependencies")
         if row["gate_assets"] != assets or row["routes"] != routes:
             raise ValueError("Acceptance assets or routes changed between runs")
+        if not dependencies or row.get("runtime_dependencies") != dependencies:
+            raise ValueError("Acceptance dependencies changed between runs")
         cell = row.get("semantic", {})
         episodes = cell.get("episodes", [])
         expected_names = {"calculation", "text_analysis", "out_of_scope"}
