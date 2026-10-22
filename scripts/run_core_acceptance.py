@@ -34,7 +34,10 @@ def routes_from_environment() -> dict[str, dict]:
     allowed = {
         "openai-runtime": {"gpt-4.1-mini": (1, 4)},
         "bedrock-runtime": {"qwen.qwen3-32b-v1:0": (1, 4)},
-        "ollama-runtime": {"qwen3.5:397b-cloud": (1, 5)},
+        "ollama-runtime": {
+            "qwen3.5:397b-cloud": (1, 5),
+            "gemma4:31b-cloud": (0.25, 1),
+        },
     }
     for provider in PROVIDERS[1:]:
         runtime = toolkit.runtime(provider=provider)

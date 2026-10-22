@@ -53,6 +53,40 @@ class ReleaseBudget:
                 else:
                     fcntl.flock(stream.fileno(), fcntl.LOCK_UN)
 
+    def amend_routes(self, *, reason: str):
+        """Apply the owner's explicit retired-Qwen to Gemma replacement, retaining charges."""
+        with self.locked():
+            ledger = json.loads(self.path.read_text(encoding="utf-8"))
+            old = ledger["routes"]
+            provider = "ollama-runtime"
+            if (
+                ledger["limits"] != {"usd": 10, "requests": 1000}
+                or not reason.strip()
+                or set(old) != set(self.routes)
+                or any(old[p] != self.routes[p] for p in old if p != provider)
+                or old[provider]["model"] != "qwen3.5:397b-cloud"
+                or self.routes[provider]["model"] != "gemma4:31b-cloud"
+                or old[provider]["endpoint"] != self.routes[provider]["endpoint"]
+            ):
+                raise ValueError(
+                    "Model amendment differs from the authorized replacement"
+                )
+            history = ledger.setdefault(
+                "route_history", [{"start_attempt": 1, "routes": old}]
+            )
+            history.append(
+                {
+                    "start_attempt": len(ledger["attempts"]) + 1,
+                    "routes": self.routes,
+                    "reason": reason,
+                    "created_at": datetime.now(timezone.utc).isoformat(),
+                }
+            )
+            ledger["routes"] = self.routes
+            temporary = self.path.with_suffix(".pending")
+            temporary.write_text(json.dumps(ledger, indent=2) + "\n", encoding="utf-8")
+            os.replace(temporary, self.path)
+
     def reserve(self, url, body, *, bearer: bool = False):
         endpoint = urlsplit(str(url))
         raw = body.encode() if isinstance(body, str) else body

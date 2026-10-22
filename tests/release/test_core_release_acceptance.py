@@ -29,6 +29,120 @@ def request():
     return json.dumps({"model": "test", "max_tokens": 512}).encode()
 
 
+def test_authorized_model_amendment_preserves_spend_and_rejects_old_model(
+    budget_module, tmp_path
+):
+    import copy
+
+    path = tmp_path / "requests.json"
+    original_routes = routes()
+    original_routes["ollama-runtime"] = {
+        "model": "qwen3.5:397b-cloud",
+        "endpoint": "https://ollama.com/v1",
+        "input_usd_per_million": 1,
+        "output_usd_per_million": 5,
+    }
+    original = budget_module.ReleaseBudget(path, original_routes, "pilot")
+    original.reserve(
+        "https://ollama.com/v1/chat/completions",
+        json.dumps({"model": "qwen3.5:397b-cloud", "max_tokens": 512}).encode(),
+    )
+    previous = json.loads(path.read_text())
+    replacement_routes = copy.deepcopy(original_routes)
+    replacement_routes["ollama-runtime"].update(
+        model="gemma4:31b-cloud", input_usd_per_million=0.25, output_usd_per_million=1
+    )
+    replacement = budget_module.ReleaseBudget(path, replacement_routes, "pilot-gemma")
+    with pytest.raises(ValueError, match="Frozen"):
+        replacement.reserve(
+            "https://ollama.com/v1/chat/completions",
+            json.dumps({"model": "gemma4:31b-cloud", "max_tokens": 512}).encode(),
+        )
+    replacement.amend_routes(reason="Owner explicitly selected Gemma after retirement")
+    amended = json.loads(path.read_text())
+    assert amended["attempts"] == previous["attempts"]
+    assert amended["limits"] == previous["limits"]
+    assert amended["route_history"][0]["routes"] == original_routes
+    assert amended["route_history"][1]["start_attempt"] == 2
+    with pytest.raises(ValueError, match="outside frozen"):
+        replacement.reserve(
+            "https://ollama.com/v1/chat/completions",
+            json.dumps({"model": "qwen3.5:397b-cloud", "max_tokens": 512}).encode(),
+        )
+    replacement.reserve(
+        "https://ollama.com/v1/chat/completions",
+        json.dumps({"model": "gemma4:31b-cloud", "max_tokens": 512}).encode(),
+    )
+    assert len(json.loads(path.read_text())["attempts"]) == 2
+
+
+def test_model_amendment_rejects_unapproved_provider_changes(budget_module, tmp_path):
+    import copy
+
+    path = tmp_path / "requests.json"
+    original_routes = routes()
+    original_routes["ollama-runtime"] = {
+        "model": "qwen3.5:397b-cloud",
+        "endpoint": "https://ollama.com/v1",
+        "input_usd_per_million": 1,
+        "output_usd_per_million": 5,
+    }
+    budget_module.ReleaseBudget(path, original_routes, "pilot").reserve(
+        "https://api.openai.com/v1/responses", request()
+    )
+    before = path.read_bytes()
+    modified = copy.deepcopy(original_routes)
+    modified["openai-runtime"]["model"] = "another-model"
+    modified["ollama-runtime"]["model"] = "gemma4:31b-cloud"
+    with pytest.raises(ValueError, match="authorized"):
+        budget_module.ReleaseBudget(path, modified, "pilot").amend_routes(
+            reason="Not authorized"
+        )
+    assert path.read_bytes() == before
+
+
+@pytest.mark.parametrize("change_case", [False, True])
+def test_model_amendment_proves_unchanged_acceptance_code(
+    budget_module, tmp_path, monkeypatch, change_case
+):
+    core = importlib.import_module("core_release_certification")
+    path = tmp_path / "model-amendment.json"
+    path.write_text(
+        json.dumps(
+            {
+                "schema_version": "agentic_systems.model-amendment.v1",
+                "previous_commit": "old",
+                "replacement_commit": "new",
+                "provider": "ollama-runtime",
+                "previous_model": "qwen3.5:397b-cloud",
+                "replacement_model": "gemma4:31b-cloud",
+                "authorization": "Explicit owner selection",
+            }
+        )
+    )
+
+    def source(command, **kwargs):
+        if command[1] == "rev-parse":
+            return b"identical-core-tree"
+        commit, name = command[2].split(":scripts/")
+        if name == "run_core_acceptance.py":
+            result = 2 if change_case and commit == "new" else 1
+            return f"def routes_from_environment():\n return '{commit}'\ndef failure_case():\n return {result}\n".encode()
+        if name == "live_release_budget.py":
+            extra = " def amend_routes(self):\n  pass\n" if commit == "new" else ""
+            return f"class ReleaseBudget:\n def reserve(self):\n  return 1\n{extra}".encode()
+        return b"def canonical_semantics():\n return True\n"
+
+    monkeypatch.setattr(core.subprocess, "check_output", source)
+    if change_case:
+        with pytest.raises(ValueError, match="acceptance behavior"):
+            core.validate_model_amendment(path, "old")
+    else:
+        assert set(
+            core.validate_model_amendment(path, "old")["verified_gate_hashes"]
+        ) == {"old", "new"}
+
+
 def test_budget_serializes_concurrent_attempts_and_resumes(budget_module, tmp_path):
     path = tmp_path / "requests.json"
     first = budget_module.ReleaseBudget(path, routes(), "pilot")
