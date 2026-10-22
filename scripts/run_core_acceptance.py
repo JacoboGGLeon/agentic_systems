@@ -29,14 +29,14 @@ def sha256(path: Path) -> str:
 
 def routes_from_environment() -> dict[str, dict]:
     routes = {}
-    # Conservative ceilings above published standard prices for the configured
-    # models. Unknown models fail before inference rather than inheriting rates.
+    # Reviewed standard text rates; the ledger adds token/framing bounds and 25%.
+    # Unknown models fail before inference rather than inheriting rates.
     allowed = {
-        "openai-runtime": {"gpt-4.1-mini": (1, 4)},
-        "bedrock-runtime": {"qwen.qwen3-32b-v1:0": (1, 4)},
+        "openai-runtime": {"gpt-4.1-mini": (0.4, 1.6)},
+        "bedrock-runtime": {"qwen.qwen3-32b-v1:0": (0.16, 0.64)},
         "ollama-runtime": {
             "qwen3.5:397b-cloud": (1, 5),
-            "gemma4:31b-cloud": (0.25, 1),
+            "gemma4:31b-cloud": (0.14, 0.4),
         },
     }
     for provider in PROVIDERS[1:]:
@@ -141,6 +141,9 @@ def main() -> int:
     parser.add_argument("--wheel", type=Path, required=True)
     parser.add_argument("--env", type=Path, required=True)
     parser.add_argument("--directory", type=Path, required=True)
+    parser.add_argument(
+        "--budget", type=Path, help="Shared allocation across acceptance revisions"
+    )
     parser.add_argument("--provider", choices=PROVIDERS, required=True)
     parser.add_argument("--framework", choices=FRAMEWORKS, required=True)
     parser.add_argument("--phase", choices=("pilot", "acceptance"), required=True)
@@ -158,7 +161,9 @@ def main() -> int:
     # Exclusive claim prevents replacing evidence or overlapping the same cell.
     with (args.directory / f"{name}.claim").open("x", encoding="utf-8") as stream:
         stream.write("claimed\n")
-    budget = ReleaseBudget(args.directory / "requests.json", routes, name)
+    budget = ReleaseBudget(
+        args.budget or (args.directory / "requests.json"), routes, name
+    )
     budget.install()
     started = perf_counter()
     row = {

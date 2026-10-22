@@ -87,6 +87,43 @@ class ReleaseBudget:
             temporary.write_text(json.dumps(ledger, indent=2) + "\n", encoding="utf-8")
             os.replace(temporary, self.path)
 
+    def amend_price_ceiling(self, *, reason: str):
+        """Record reviewed standard pricing for future reservations; never refund old attempts."""
+        with self.locked():
+            ledger = json.loads(self.path.read_text(encoding="utf-8"))
+            old = ledger["routes"]
+            if (
+                not reason.strip()
+                or set(old) != set(self.routes)
+                or ledger["limits"] != {"usd": 10, "requests": 1000}
+                or any(
+                    old[p]["model"] != self.routes[p]["model"]
+                    or old[p]["endpoint"] != self.routes[p]["endpoint"]
+                    or any(
+                        not 0 < self.routes[p][rate] <= old[p][rate]
+                        for rate in ("input_usd_per_million", "output_usd_per_million")
+                    )
+                    for p in old
+                )
+            ):
+                raise ValueError(
+                    "Price revision must preserve models, endpoints and allocation"
+                )
+            ledger.setdefault(
+                "route_history", [{"start_attempt": 1, "routes": old}]
+            ).append(
+                {
+                    "start_attempt": len(ledger["attempts"]) + 1,
+                    "routes": self.routes,
+                    "reason": reason,
+                    "created_at": datetime.now(timezone.utc).isoformat(),
+                }
+            )
+            ledger["routes"] = self.routes
+            temporary = self.path.with_suffix(".pending")
+            temporary.write_text(json.dumps(ledger, indent=2) + "\n", encoding="utf-8")
+            os.replace(temporary, self.path)
+
     def reserve(self, url, body, *, bearer: bool = False):
         endpoint = urlsplit(str(url))
         raw = body.encode() if isinstance(body, str) else body

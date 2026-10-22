@@ -143,6 +143,34 @@ def test_model_amendment_proves_unchanged_acceptance_code(
         ) == {"old", "new"}
 
 
+def test_price_revision_preserves_all_existing_reservations(budget_module, tmp_path):
+    import copy
+
+    path = tmp_path / "requests.json"
+    original_routes = routes()
+    original = budget_module.ReleaseBudget(path, original_routes, "pilot")
+    original.reserve("https://api.openai.com/v1/responses", request())
+    before = json.loads(path.read_text())
+    reviewed = copy.deepcopy(original_routes)
+    reviewed["openai-runtime"].update(
+        input_usd_per_million=0.4, output_usd_per_million=1.6
+    )
+    current = budget_module.ReleaseBudget(path, reviewed, "acceptance-v2")
+    current.amend_price_ceiling(
+        reason="Reviewed standard prices, 25% ledger margin remains"
+    )
+    after = json.loads(path.read_text())
+    assert after["attempts"] == before["attempts"]
+    assert after["limits"] == before["limits"]
+    current.reserve("https://api.openai.com/v1/responses", request())
+    assert len(json.loads(path.read_text())["attempts"]) == 2
+    reviewed["openai-runtime"]["model"] = "not-approved"
+    with pytest.raises(ValueError, match="preserve"):
+        budget_module.ReleaseBudget(path, reviewed, "bad").amend_price_ceiling(
+            reason="bad"
+        )
+
+
 def test_budget_serializes_concurrent_attempts_and_resumes(budget_module, tmp_path):
     path = tmp_path / "requests.json"
     first = budget_module.ReleaseBudget(path, routes(), "pilot")

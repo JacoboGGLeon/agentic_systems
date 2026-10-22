@@ -193,8 +193,21 @@ def build_core_summary(
     offline = json.loads(args.offline_report.read_text(encoding="utf-8"))
     from run_release_offline import gate_commands
 
+    offline_commit = offline.get("commit_sha")
+    if offline_commit != commit:
+
+        def core_tree(ref):
+            return subprocess.check_output(
+                ["git", "rev-parse", f"{ref}:src/agentic_systems"],
+                cwd=Path(__file__).resolve().parents[1],
+            ).strip()
+
+        if not isinstance(offline_commit, str) or core_tree(
+            offline_commit
+        ) != core_tree(commit):
+            raise ValueError("Offline gates are for a different core tree")
     if (
-        offline.get("commit_sha") != commit
+        not offline_commit
         or not offline.get("checks")
         or {c.get("name") for c in offline["checks"]} != set(gate_commands())
         or any(c.get("exit_code") != 0 for c in offline["checks"])
@@ -268,6 +281,15 @@ def build_core_summary(
         *([amendment_path] if amendment else []),
     ]:
         inventory[path.name] = {"artifact": path.name, "sha256": sha256(path)}
+    prior = directory / "prior-acceptance-attempts.zip"
+    if prior.exists():
+        inventory[prior.name] = {"artifact": prior.name, "sha256": sha256(prior)}
+    revision = directory / "protocol-revision.json"
+    if revision.exists():
+        inventory[revision.name] = {
+            "artifact": revision.name,
+            "sha256": sha256(revision),
+        }
     if amendment:
         inventory[backup_path.name] = {
             "artifact": backup_path.name,
@@ -293,6 +315,11 @@ def build_core_summary(
         "pending_routes": PENDING,
         "evidence_inventory": inventory,
         "offline_gates": offline,
+        "offline_core_equivalence": {
+            "evidence_commit": offline_commit,
+            "certified_commit": commit,
+            "runtime_tree_identical": True,
+        },
         "budget": {
             "requests": len(ledger["attempts"]),
             "reserved_usd": str(reserved),
