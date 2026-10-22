@@ -86,7 +86,8 @@ class _ToolsMixin:
                     "Pydantic input schema."
                 ) from exc
 
-        fields: Dict[str, tuple[Any, Any]] = {}
+        # Dynamic field names flow through Pydantic's keyword-based factory.
+        fields: Dict[str, Any] = {}
 
         for param_name, param in signature.parameters.items():
             if param.kind in {
@@ -100,7 +101,9 @@ class _ToolsMixin:
 
             annotation = type_hints.get(
                 param_name,
-                Any if param.annotation is inspect.Signature.empty else param.annotation,
+                Any
+                if param.annotation is inspect.Signature.empty
+                else param.annotation,
             )
             default = ... if param.default is inspect.Signature.empty else param.default
             fields[param_name] = (annotation, default)

@@ -1,11 +1,22 @@
 # Changelog
 
-## 2.1.2 - Release candidate
+## 2.1.2 - 2026-10-22
 
 The 2.1 grammar and execution contracts remain stable. This delivery hardens
 publication and aligns versioned notebooks, Studio and validation bundles.
 
 ### Changed
+
+- The semantic evaluator exposes identical, flat criterion arguments through
+  its public Tool schema and OpenAI Agents callable, preserving the strict
+  evidence-backed rubric across Frameworks.
+- Public release acceptance is scoped to OpenAI, Bedrock API key and Ollama
+  across four Frameworks, with deterministic Python controls. vLLM/Colab,
+  AWS IAM and ADA IAM require subsequent exact-wheel validation. ADA bundles
+  are separate from the mandatory public release assets.
+- Release inference uses a persistent allocation capped at USD 10 and 1000
+  transport attempts, including pilots, evaluators and retries. Reservations
+  are conservative bounds, not billed costs.
 
 - OpenAI Agents preserves completed function-tool evidence when a subsequent
   SDK operation fails, in both synchronous and asynchronous execution. Recording

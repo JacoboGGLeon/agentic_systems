@@ -163,7 +163,11 @@ class SemanticJudgmentInput(BaseModel):
     input=SemanticJudgmentInput,
 )
 def record_semantic_judgment(
-    judgment: SemanticJudgmentInput,
+    request_fulfillment: SemanticCriterionAssessment,
+    evidence_correctness: SemanticCriterionAssessment,
+    clarity: SemanticCriterionAssessment,
+    no_technical_noise: SemanticCriterionAssessment,
+    no_unsupported_claims: SemanticCriterionAssessment,
 ) -> dict[str, Any]:
     """Record named evidence-backed criteria and project them onto the public rubric.
 
@@ -172,7 +176,17 @@ def record_semantic_judgment(
     scores, findings, and rationale from the same structured evidence.
     """
 
-    return project_semantic_judgment(judgment)
+    # SDKs that derive schemas from Python signatures must expose the same root
+    # fields as SDKs that consume the explicit public input schema.
+    return project_semantic_judgment(
+        SemanticJudgmentInput(
+            request_fulfillment=request_fulfillment,
+            evidence_correctness=evidence_correctness,
+            clarity=clarity,
+            no_technical_noise=no_technical_noise,
+            no_unsupported_claims=no_unsupported_claims,
+        )
+    )
 
 
 def project_semantic_judgment(judgment: SemanticJudgmentInput) -> dict[str, Any]:
@@ -746,8 +760,14 @@ def build_semantic_cell(
                 "do not count its parent orchestrator as another specialist. "
                 "Return one typed semantic judgment by calling the "
                 "record_semantic_judgment Tool exactly once. Assess every rubric criterion "
-                "exactly once with passed=true or passed=false and a short public-evidence "
-                "reason. Do not omit passing criteria. The Tool derives all scores and "
+                "at the root of the Tool arguments: request_fulfillment, "
+                "evidence_correctness, clarity, no_technical_noise, and "
+                "no_unsupported_claims. Do not add a judgment or criteria wrapper. "
+                "Use these exact five field names. Assess each criterion "
+                "exactly once as an object with exactly two fields: passed (a boolean) "
+                "and evidence (a nonempty string citing public evidence). The field "
+                "name is evidence; do not use reason or rationale as a field name. "
+                "Do not omit passing criteria. The Tool derives all scores and "
                 "the rationale, so never submit either yourself. Call the Tool "
                 "immediately instead of drafting analysis. A claim unsupported by Tool "
                 "evidence must fail "

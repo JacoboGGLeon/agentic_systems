@@ -54,9 +54,38 @@ def test_manifest_binds_every_delivery_and_is_repeatable(candidate):
     first = path.read_bytes()
     assert module.build(directory).read_bytes() == first
     manifest = module.ReleaseManifest.model_validate_json(first)
+    assert first == manifest.model_dump_json(indent=2).encode("utf-8") + b"\n"
     assert {item.filename for item in manifest.artifacts} == set(names) | {
         "SHA256SUMS-2.4.6.txt"
     }
+
+
+def test_core_manifest_excludes_ada_and_requires_all_twelve_live_pairs(candidate):
+    module, directory, summary, names, seal = candidate
+    from core_release_certification import PENDING, PROVIDERS, FRAMEWORKS
+
+    names.remove("agentic-systems-2.4.6-ada-offline.zip")
+    summary.update(
+        acceptance_profile="core-12-live-v1",
+        pending_routes=PENDING,
+        primary_matrix={
+            p: {
+                "frameworks": sorted(FRAMEWORKS),
+                "passed": 4,
+                "failed": 0,
+                "repetitions": 2,
+            }
+            for p in PROVIDERS
+        },
+        evidence_inventory={},
+    )
+    summary["totals"]["certified_live_executions"] = 12
+    seal()
+    module.build(directory)
+    del summary["primary_matrix"]["ollama-runtime"]
+    seal()
+    with pytest.raises(ValueError, match="scope"):
+        module.build(directory)
 
 
 @pytest.mark.parametrize(

@@ -236,15 +236,29 @@ def build_release_assets(*, require_certification: bool = False) -> dict[str, ob
     sdist = DIST / f"agentic_systems-{VERSION}.tar.gz"
     validate_distribution_narrative(wheel=wheel, sdist=sdist)
     if CERTIFICATION_SUMMARY.exists():
-        validate_certification_identity(
+        certification = validate_certification_identity(
             CERTIFICATION_SUMMARY,
             wheel=wheel,
             sdist=sdist,
         )
         shutil.copy2(CERTIFICATION_SUMMARY, CERTIFICATION_ASSET)
         artifacts.append(CERTIFICATION_ASSET)
+        if certification.get("acceptance_profile") == "core-12-live-v1":
+            for row in certification["evidence_inventory"].values():
+                name = row["artifact"]
+                if Path(name).name != name or "\\" in name:
+                    raise ValueError("Evidence filename must be a plain filename")
+                source = CERTIFICATION_SUMMARY.parent / name
+                if sha256(source) != row["sha256"]:
+                    raise ValueError("Core evidence identity differs")
+                target = DIST / name
+                shutil.copy2(source, target)
+                artifacts.append(target)
     ada_bundle = DIST / f"agentic-systems-{VERSION}-ada-offline.zip"
-    if ada_bundle.exists():
+    if ada_bundle.exists() and not (
+        CERTIFICATION_SUMMARY.exists()
+        and certification.get("acceptance_profile") == "core-12-live-v1"
+    ):
         artifacts.append(ada_bundle)
     missing = [str(path) for path in artifacts if not path.exists()]
     if missing:

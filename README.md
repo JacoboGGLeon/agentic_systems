@@ -61,6 +61,14 @@ that every credential, endpoint or model is available in every environment.
 They do not certify a different wheel. Each subsequent release must supply its
 own exact-wheel certification summary and publication evidence.
 
+The `2.1.2` release acceptance profile requires OpenAI, Bedrock API key and
+Ollama across native, LangGraph, OpenAI Agents and Strands (12 live combinations),
+plus a four-framework deterministic Python control. Each route is checked in
+two independent passes against the exact wheel. The matching certification
+summary records results; this declaration alone is not evidence of a pass.
+vLLM on Colab GPU, Bedrock IAM on AWS and Bedrock IAM in ADA remain pending
+for this version. ADA is a deployment environment, not another Provider.
+
 ## Installation
 
 The examples below target `2.1.2`. A development checkout may precede publication:
@@ -115,7 +123,7 @@ unzip agentic-systems-skill-2.1.2.zip -d ~/.codex/skills
 
 Restart or reload Codex, then invoke `$agentic-systems`. OpenAI Skills upload
 surfaces that accept a ZIP can consume the same artifact. Download the
-standalone skill, conversational Studio and ADA offline bundle from the
+standalone skill and conversational Studio from the
 [v2.1.2 release](https://github.com/JacoboGGLeon/agentic_systems/releases/tag/v2.1.2).
 
 Release assets:
@@ -124,11 +132,14 @@ Release assets:
 - `agentic_systems-2.1.2.tar.gz`: matching source distribution.
 - `agentic-systems-skill-2.1.2.zip`: Codex/OpenAI skill package.
 - `agentic-systems-studio-2.1.2.zip`: one portable conversational Agentic System.
-- `agentic-systems-2.1.2-ada-offline.zip`: wheel, Studio, tutorials and live evidence for restricted environments.
 - `agentic-systems-2.1.2-strands-protocol-challenge.zip`: frozen MCP+A2A/LangGraph semantic gate for local, Colab, SageMaker and ADA execution.
 - `final-certification-summary.json`: exact wheel identity and reviewed live evidence inventory.
 - `SHA256SUMS-2.1.2.txt`: hashes for the Python and product artifacts.
 - `release-manifest.json`: typed artifact inventory used to verify and repeat publication without replacing bytes.
+
+ADA deployment bundles are delivered separately after validation in the target
+environment. There is no `[ada]` extra in 2.1.2. Bedrock IAM uses the existing
+`bedrock` extra; installing dependencies does not certify an execution route.
 
 For an installed-package smoke test and provider notebook setup, follow
 [First Run Onboarding](docs/ONBOARDING_FIRST_RUN.md).
