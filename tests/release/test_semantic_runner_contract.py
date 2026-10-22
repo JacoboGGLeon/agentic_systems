@@ -207,6 +207,44 @@ def test_deterministic_multiply_exposes_only_public_evidence() -> None:
     )
 
 
+def test_judge_sdk_and_public_schema_accept_identical_arguments() -> None:
+    import asyncio
+
+    agents = pytest.importorskip("agents")
+    from agents.tool_context import ToolContext
+    from agentic_systems.integrations.adapters.tools import canonical_tool_callable
+    from semantic_e2e_application import record_semantic_judgment
+
+    native = agents.function_tool(canonical_tool_callable(record_semantic_judgment))
+    public_schema = record_semantic_judgment.input_schema.model_json_schema()
+    assert native.params_json_schema["properties"] == public_schema["properties"]
+    assert set(native.params_json_schema["required"]) == set(public_schema["required"])
+    assert native.params_json_schema["additionalProperties"] is False
+    payload = {
+        name: {"passed": name != "clarity", "evidence": "Observed public evidence."}
+        for name in public_schema["required"]
+    }
+    direct = record_semantic_judgment.run(payload)
+    assert direct.ok
+    arguments = json.dumps(payload)
+    context = ToolContext(
+        context=None,
+        tool_name=native.name,
+        tool_call_id="offline-schema-regression",
+        tool_arguments=arguments,
+    )
+    sdk = asyncio.run(native.on_invoke_tool(context, arguments))
+    assert sdk == direct.data
+    assert sdk["criteria"]["clarity"] == 0.0
+    assert sdk["criteria"]["no_unsupported_claims"] == 1.0
+    for malformed in (
+        {"judgment": payload},
+        {"criteria": payload},
+        {**payload, "no_supported_claims": payload["no_unsupported_claims"]},
+    ):
+        assert not record_semantic_judgment.run(malformed).ok
+
+
 def test_model_judge_uses_typed_evidence_backed_assessments(monkeypatch) -> None:
     spec = importlib.util.spec_from_file_location(
         "semantic_e2e_judge_contract", SCRIPTS / "semantic_e2e_application.py"
@@ -232,7 +270,7 @@ def test_model_judge_uses_typed_evidence_backed_assessments(monkeypatch) -> None
     assert assessment_schema["properties"]["evidence"]["minLength"] == 1
     assert assessment_schema["properties"]["evidence"]["maxLength"] == 4000
 
-    passed = module.record_semantic_judgment.function(
+    passed = module.project_semantic_judgment(
         module.SemanticJudgmentInput(
             **{
                 criterion: {"passed": True, "evidence": "Satisfied."}
@@ -240,7 +278,7 @@ def test_model_judge_uses_typed_evidence_backed_assessments(monkeypatch) -> None
             }
         )
     )
-    failed = module.record_semantic_judgment.function(
+    failed = module.project_semantic_judgment(
         module.SemanticJudgmentInput(
             **{
                 criterion: {
