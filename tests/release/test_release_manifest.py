@@ -54,6 +54,7 @@ def test_manifest_binds_every_delivery_and_is_repeatable(candidate):
     first = path.read_bytes()
     assert module.build(directory).read_bytes() == first
     manifest = module.ReleaseManifest.model_validate_json(first)
+    assert first == manifest.model_dump_json(indent=2).encode("utf-8") + b"\n"
     assert {item.filename for item in manifest.artifacts} == set(names) | {
         "SHA256SUMS-2.4.6.txt"
     }

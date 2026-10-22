@@ -91,7 +91,10 @@ def build(directory: Path) -> Path:
     if type(reviewed) is not int or reviewed <= 0:
         raise ValueError("Semantic certification is incomplete")
     output = directory / "release-manifest.json"
-    output.write_text(manifest.model_dump_json(indent=2) + "\n", encoding="utf-8")
+    # Linux sealing regenerates this file; its bytes must match a Windows build.
+    output.write_text(
+        manifest.model_dump_json(indent=2) + "\n", encoding="utf-8", newline="\n"
+    )
     return output
 
 
