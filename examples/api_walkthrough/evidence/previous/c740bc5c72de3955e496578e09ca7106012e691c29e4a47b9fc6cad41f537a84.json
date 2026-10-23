@@ -1,0 +1,107 @@
+{
+  "example": "api_walkthrough",
+  "passed": true,
+  "source_sha256": "ef0c5c984845546132ab9e1fc8bb707c34043d0074def4db734fc00dd3b5c489",
+  "report": {
+    "rows": [
+      {
+        "backend": "native",
+        "unit": "agent_sequence",
+        "output": {
+          "value": 8
+        }
+      },
+      {
+        "backend": "native",
+        "unit": "agent_parallel",
+        "output": {
+          "value": 10
+        }
+      },
+      {
+        "backend": "native",
+        "unit": "agent_decision",
+        "output": {
+          "value": 8
+        }
+      },
+      {
+        "backend": "native",
+        "unit": "system_sequence",
+        "output": {
+          "value": 8
+        }
+      },
+      {
+        "backend": "native",
+        "unit": "system_parallel",
+        "output": {
+          "value": 10
+        }
+      },
+      {
+        "backend": "native",
+        "unit": "system_decision",
+        "output": {
+          "value": 8
+        }
+      },
+      {
+        "backend": "langgraph",
+        "unit": "agent_sequence",
+        "output": {
+          "value": 8
+        }
+      },
+      {
+        "backend": "langgraph",
+        "unit": "agent_parallel",
+        "output": {
+          "value": 10
+        }
+      },
+      {
+        "backend": "langgraph",
+        "unit": "agent_decision",
+        "output": {
+          "value": 8
+        }
+      },
+      {
+        "backend": "langgraph",
+        "unit": "system_sequence",
+        "output": {
+          "value": 8
+        }
+      },
+      {
+        "backend": "langgraph",
+        "unit": "system_parallel",
+        "output": {
+          "value": 10
+        }
+      },
+      {
+        "backend": "langgraph",
+        "unit": "system_decision",
+        "output": {
+          "value": 8
+        }
+      }
+    ],
+    "output": [
+      {
+        "total": 200,
+        "status": "approved"
+      },
+      {
+        "total": 1500,
+        "status": "manual_review"
+      }
+    ],
+    "memory": {
+      "approved": 1
+    },
+    "inference_requests": 0
+  }
+}

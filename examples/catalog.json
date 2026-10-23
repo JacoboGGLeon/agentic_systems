@@ -1,0 +1,2199 @@
+{
+  "schema_version": "agentic-systems.examples-catalog.v1",
+  "reviewed_at": "2026-10-22",
+  "inference_executed_during_catalog_update": false,
+  "baseline": {
+    "version": "2.1.2",
+    "wheel_sha256": "2c14a8e6f871fcc455acbf899db851130c49a129ba988821d6656e90ebc3d47b",
+    "assembly_commit": "d2ea0d7a0fa1da8f4c38e24bc057c700eb4a31ab",
+    "release_url": "https://github.com/JacoboGGLeon/agentic_systems/releases/"
+  },
+  "entries": [
+    {
+      "id": "agentic_systems_creator",
+      "title": "Generar un proyecto",
+      "group": "applications",
+      "purpose": "Crear una aplicación con el scaffolder instalado.",
+      "flow": "Destino nuevo → CLI → fuente, notebook y tests; generar no acredita su ejecución.",
+      "readiness": "offline execution passed",
+      "implementation": "Explicit SDK declarations and run(); synthetic, supplied or saved inputs. Historical model evidence is not transferred.",
+      "sources": [
+        {
+          "label": "Current implementation",
+          "target": "examples/applications/agentic_systems_creator/example.py"
+        }
+      ],
+      "validation": {
+        "status": "offline-only",
+        "scope": "Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.",
+        "evidence": [
+          {
+            "label": "Ejecución actual",
+            "target": "examples/applications/agentic_systems_creator/evidence/current.json"
+          }
+        ]
+      },
+      "next_action": "Importar run y consultar su resultado y evidencia.",
+      "api_version": "2.1.3",
+      "historical_validation": {
+        "status": "historical-pass",
+        "scope": "Historical Ollama record dated 2026-08-20: qwen3:4b-instruct, framework identity recorded as agentic-systems (native path). This entry passed its recorded stage/engine/invariant checks in the 10/10 batch. No wheel hash establishes acceptance of the published 2.1.2 artifact; this is not an independent semantic certification.",
+        "evidence": [
+          {
+            "label": "Original historical 10-system record",
+            "target": "examples/agentic_systems_studio/evidence/ollama-native.json"
+          }
+        ]
+      },
+      "historical_sources": [
+        {
+          "label": "System catalog",
+          "target": "examples/history/2.1.2/studio/src/agentic_systems_studio/catalog.py"
+        },
+        {
+          "label": "Shared system implementation",
+          "target": "examples/history/2.1.2/studio/src/agentic_systems_studio/systems.py"
+        }
+      ],
+      "entrypoint": "examples.applications.agentic_systems_creator.example:run"
+    },
+    {
+      "id": "research_synthesis",
+      "title": "Separar afirmaciones y fuentes",
+      "group": "applications",
+      "purpose": "Distinguir afirmaciones con una referencia declarada de las que no la tienen.",
+      "flow": "Dos afirmaciones y una fuente → Tool de clasificación → supported y unverified. No comprueba el contenido de la fuente.",
+      "readiness": "offline execution passed",
+      "implementation": "Explicit SDK declarations and run(); synthetic, supplied or saved inputs. Historical model evidence is not transferred.",
+      "sources": [
+        {
+          "label": "Current implementation",
+          "target": "examples/applications/research_synthesis/example.py"
+        }
+      ],
+      "validation": {
+        "status": "offline-only",
+        "scope": "Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.",
+        "evidence": [
+          {
+            "label": "Ejecución actual",
+            "target": "examples/applications/research_synthesis/evidence/current.json"
+          }
+        ]
+      },
+      "next_action": "Importar run y consultar su resultado y evidencia.",
+      "api_version": "2.1.3",
+      "historical_validation": {
+        "status": "historical-pass",
+        "scope": "Historical Ollama record dated 2026-08-20: qwen3:4b-instruct, framework identity recorded as agentic-systems (native path). This entry passed its recorded stage/engine/invariant checks in the 10/10 batch. No wheel hash establishes acceptance of the published 2.1.2 artifact; this is not an independent semantic certification.",
+        "evidence": [
+          {
+            "label": "Original historical 10-system record",
+            "target": "examples/agentic_systems_studio/evidence/ollama-native.json"
+          }
+        ]
+      },
+      "historical_sources": [
+        {
+          "label": "System catalog",
+          "target": "examples/history/2.1.2/studio/src/agentic_systems_studio/catalog.py"
+        },
+        {
+          "label": "Shared system implementation",
+          "target": "examples/history/2.1.2/studio/src/agentic_systems_studio/systems.py"
+        }
+      ],
+      "entrypoint": "examples.applications.research_synthesis.example:run"
+    },
+    {
+      "id": "decision_intelligence",
+      "title": "Comparar opciones",
+      "group": "applications",
+      "purpose": "Aplicar una regla de puntuación explícita.",
+      "flow": "Calidad y coste de A/B → quality − cost → B, con puntuación 5.",
+      "readiness": "offline execution passed",
+      "implementation": "Explicit SDK declarations and run(); synthetic, supplied or saved inputs. Historical model evidence is not transferred.",
+      "sources": [
+        {
+          "label": "Current implementation",
+          "target": "examples/applications/decision_intelligence/example.py"
+        }
+      ],
+      "validation": {
+        "status": "offline-only",
+        "scope": "Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.",
+        "evidence": [
+          {
+            "label": "Ejecución actual",
+            "target": "examples/applications/decision_intelligence/evidence/current.json"
+          }
+        ]
+      },
+      "next_action": "Importar run y consultar su resultado y evidencia.",
+      "api_version": "2.1.3",
+      "historical_validation": {
+        "status": "historical-pass",
+        "scope": "Historical Ollama record dated 2026-08-20: qwen3:4b-instruct, framework identity recorded as agentic-systems (native path). This entry passed its recorded stage/engine/invariant checks in the 10/10 batch. No wheel hash establishes acceptance of the published 2.1.2 artifact; this is not an independent semantic certification.",
+        "evidence": [
+          {
+            "label": "Original historical 10-system record",
+            "target": "examples/agentic_systems_studio/evidence/ollama-native.json"
+          }
+        ]
+      },
+      "historical_sources": [
+        {
+          "label": "System catalog",
+          "target": "examples/history/2.1.2/studio/src/agentic_systems_studio/catalog.py"
+        },
+        {
+          "label": "Shared system implementation",
+          "target": "examples/history/2.1.2/studio/src/agentic_systems_studio/systems.py"
+        }
+      ],
+      "entrypoint": "examples.applications.decision_intelligence.example:run"
+    },
+    {
+      "id": "incident_response",
+      "title": "Clasificar incidentes",
+      "group": "applications",
+      "purpose": "Convertir eventos en una decisión reproducible.",
+      "flow": "Tres eventos, dos errores → regla de severidad → high e investigación.",
+      "readiness": "offline execution passed",
+      "implementation": "Explicit SDK declarations and run(); synthetic, supplied or saved inputs. Historical model evidence is not transferred.",
+      "sources": [
+        {
+          "label": "Current implementation",
+          "target": "examples/applications/incident_response/example.py"
+        }
+      ],
+      "validation": {
+        "status": "offline-only",
+        "scope": "Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.",
+        "evidence": [
+          {
+            "label": "Ejecución actual",
+            "target": "examples/applications/incident_response/evidence/current.json"
+          }
+        ]
+      },
+      "next_action": "Importar run y consultar su resultado y evidencia.",
+      "api_version": "2.1.3",
+      "historical_validation": {
+        "status": "historical-pass",
+        "scope": "Historical Ollama record dated 2026-08-20: qwen3:4b-instruct, framework identity recorded as agentic-systems (native path). This entry passed its recorded stage/engine/invariant checks in the 10/10 batch. No wheel hash establishes acceptance of the published 2.1.2 artifact; this is not an independent semantic certification.",
+        "evidence": [
+          {
+            "label": "Original historical 10-system record",
+            "target": "examples/agentic_systems_studio/evidence/ollama-native.json"
+          }
+        ]
+      },
+      "historical_sources": [
+        {
+          "label": "System catalog",
+          "target": "examples/history/2.1.2/studio/src/agentic_systems_studio/catalog.py"
+        },
+        {
+          "label": "Shared system implementation",
+          "target": "examples/history/2.1.2/studio/src/agentic_systems_studio/systems.py"
+        }
+      ],
+      "entrypoint": "examples.applications.incident_response.example:run"
+    },
+    {
+      "id": "code_review",
+      "title": "Inspeccionar código",
+      "group": "applications",
+      "purpose": "Revisar sintaxis y anotaciones de retorno con AST.",
+      "flow": "Código Python → parseo sin ejecutarlo → función sin anotación. No es una revisión semántica completa.",
+      "readiness": "offline execution passed",
+      "implementation": "Explicit SDK declarations and run(); synthetic, supplied or saved inputs. Historical model evidence is not transferred.",
+      "sources": [
+        {
+          "label": "Current implementation",
+          "target": "examples/applications/code_review/example.py"
+        }
+      ],
+      "validation": {
+        "status": "offline-only",
+        "scope": "Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.",
+        "evidence": [
+          {
+            "label": "Ejecución actual",
+            "target": "examples/applications/code_review/evidence/current.json"
+          }
+        ]
+      },
+      "next_action": "Importar run y consultar su resultado y evidencia.",
+      "api_version": "2.1.3",
+      "historical_validation": {
+        "status": "historical-pass",
+        "scope": "Historical Ollama record dated 2026-08-20: qwen3:4b-instruct, framework identity recorded as agentic-systems (native path). This entry passed its recorded stage/engine/invariant checks in the 10/10 batch. No wheel hash establishes acceptance of the published 2.1.2 artifact; this is not an independent semantic certification.",
+        "evidence": [
+          {
+            "label": "Original historical 10-system record",
+            "target": "examples/agentic_systems_studio/evidence/ollama-native.json"
+          }
+        ]
+      },
+      "historical_sources": [
+        {
+          "label": "System catalog",
+          "target": "examples/history/2.1.2/studio/src/agentic_systems_studio/catalog.py"
+        },
+        {
+          "label": "Shared system implementation",
+          "target": "examples/history/2.1.2/studio/src/agentic_systems_studio/systems.py"
+        }
+      ],
+      "entrypoint": "examples.applications.code_review.example:run"
+    },
+    {
+      "id": "data_quality",
+      "title": "Perfilar datos",
+      "group": "applications",
+      "purpose": "Detectar duplicados y valores ausentes.",
+      "flow": "Dos registros → conteos deterministas → un ID duplicado y un importe ausente.",
+      "readiness": "offline execution passed",
+      "implementation": "Explicit SDK declarations and run(); synthetic, supplied or saved inputs. Historical model evidence is not transferred.",
+      "sources": [
+        {
+          "label": "Current implementation",
+          "target": "examples/applications/data_quality/example.py"
+        }
+      ],
+      "validation": {
+        "status": "offline-only",
+        "scope": "Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.",
+        "evidence": [
+          {
+            "label": "Ejecución actual",
+            "target": "examples/applications/data_quality/evidence/current.json"
+          }
+        ]
+      },
+      "next_action": "Importar run y consultar su resultado y evidencia.",
+      "api_version": "2.1.3",
+      "historical_validation": {
+        "status": "historical-pass",
+        "scope": "Historical Ollama record dated 2026-08-20: qwen3:4b-instruct, framework identity recorded as agentic-systems (native path). This entry passed its recorded stage/engine/invariant checks in the 10/10 batch. No wheel hash establishes acceptance of the published 2.1.2 artifact; this is not an independent semantic certification.",
+        "evidence": [
+          {
+            "label": "Original historical 10-system record",
+            "target": "examples/agentic_systems_studio/evidence/ollama-native.json"
+          }
+        ]
+      },
+      "historical_sources": [
+        {
+          "label": "System catalog",
+          "target": "examples/history/2.1.2/studio/src/agentic_systems_studio/catalog.py"
+        },
+        {
+          "label": "Shared system implementation",
+          "target": "examples/history/2.1.2/studio/src/agentic_systems_studio/systems.py"
+        }
+      ],
+      "entrypoint": "examples.applications.data_quality.example:run"
+    },
+    {
+      "id": "prompt_security",
+      "title": "Detectar señales en un prompt",
+      "group": "applications",
+      "purpose": "Marcar instrucciones sospechosas mediante reglas visibles.",
+      "flow": "Texto → coincidencias léxicas → flags y revisión requerida. No constituye una defensa completa.",
+      "readiness": "offline execution passed",
+      "implementation": "Explicit SDK declarations and run(); synthetic, supplied or saved inputs. Historical model evidence is not transferred.",
+      "sources": [
+        {
+          "label": "Current implementation",
+          "target": "examples/applications/prompt_security/example.py"
+        }
+      ],
+      "validation": {
+        "status": "offline-only",
+        "scope": "Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.",
+        "evidence": [
+          {
+            "label": "Ejecución actual",
+            "target": "examples/applications/prompt_security/evidence/current.json"
+          }
+        ]
+      },
+      "next_action": "Importar run y consultar su resultado y evidencia.",
+      "api_version": "2.1.3",
+      "historical_validation": {
+        "status": "historical-pass",
+        "scope": "Historical Ollama record dated 2026-08-20: qwen3:4b-instruct, framework identity recorded as agentic-systems (native path). This entry passed its recorded stage/engine/invariant checks in the 10/10 batch. No wheel hash establishes acceptance of the published 2.1.2 artifact; this is not an independent semantic certification.",
+        "evidence": [
+          {
+            "label": "Original historical 10-system record",
+            "target": "examples/agentic_systems_studio/evidence/ollama-native.json"
+          }
+        ]
+      },
+      "historical_sources": [
+        {
+          "label": "System catalog",
+          "target": "examples/history/2.1.2/studio/src/agentic_systems_studio/catalog.py"
+        },
+        {
+          "label": "Shared system implementation",
+          "target": "examples/history/2.1.2/studio/src/agentic_systems_studio/systems.py"
+        }
+      ],
+      "entrypoint": "examples.applications.prompt_security.example:run"
+    },
+    {
+      "id": "meeting_action_center",
+      "title": "Estructurar tareas",
+      "group": "applications",
+      "purpose": "Convertir notas de formato conocido en tareas.",
+      "flow": "Responsable | tarea | fecha → Tool de parseo → lista de acciones.",
+      "readiness": "offline execution passed",
+      "implementation": "Explicit SDK declarations and run(); synthetic, supplied or saved inputs. Historical model evidence is not transferred.",
+      "sources": [
+        {
+          "label": "Current implementation",
+          "target": "examples/applications/meeting_action_center/example.py"
+        }
+      ],
+      "validation": {
+        "status": "offline-only",
+        "scope": "Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.",
+        "evidence": [
+          {
+            "label": "Ejecución actual",
+            "target": "examples/applications/meeting_action_center/evidence/current.json"
+          }
+        ]
+      },
+      "next_action": "Importar run y consultar su resultado y evidencia.",
+      "api_version": "2.1.3",
+      "historical_validation": {
+        "status": "historical-pass",
+        "scope": "Historical Ollama record dated 2026-08-20: qwen3:4b-instruct, framework identity recorded as agentic-systems (native path). This entry passed its recorded stage/engine/invariant checks in the 10/10 batch. No wheel hash establishes acceptance of the published 2.1.2 artifact; this is not an independent semantic certification.",
+        "evidence": [
+          {
+            "label": "Original historical 10-system record",
+            "target": "examples/agentic_systems_studio/evidence/ollama-native.json"
+          }
+        ]
+      },
+      "historical_sources": [
+        {
+          "label": "System catalog",
+          "target": "examples/history/2.1.2/studio/src/agentic_systems_studio/catalog.py"
+        },
+        {
+          "label": "Shared system implementation",
+          "target": "examples/history/2.1.2/studio/src/agentic_systems_studio/systems.py"
+        }
+      ],
+      "entrypoint": "examples.applications.meeting_action_center.example:run"
+    },
+    {
+      "id": "quantitative_analysis",
+      "title": "Calcular margen",
+      "group": "applications",
+      "purpose": "Sumar importes con Decimal.",
+      "flow": "Ingresos y costes → cálculo exacto → beneficio 50.25.",
+      "readiness": "offline execution passed",
+      "implementation": "Explicit SDK declarations and run(); synthetic, supplied or saved inputs. Historical model evidence is not transferred.",
+      "sources": [
+        {
+          "label": "Current implementation",
+          "target": "examples/applications/quantitative_analysis/example.py"
+        }
+      ],
+      "validation": {
+        "status": "offline-only",
+        "scope": "Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.",
+        "evidence": [
+          {
+            "label": "Ejecución actual",
+            "target": "examples/applications/quantitative_analysis/evidence/current.json"
+          }
+        ]
+      },
+      "next_action": "Importar run y consultar su resultado y evidencia.",
+      "api_version": "2.1.3",
+      "historical_validation": {
+        "status": "historical-pass",
+        "scope": "Historical Ollama record dated 2026-08-20: qwen3:4b-instruct, framework identity recorded as agentic-systems (native path). This entry passed its recorded stage/engine/invariant checks in the 10/10 batch. No wheel hash establishes acceptance of the published 2.1.2 artifact; this is not an independent semantic certification.",
+        "evidence": [
+          {
+            "label": "Original historical 10-system record",
+            "target": "examples/agentic_systems_studio/evidence/ollama-native.json"
+          }
+        ]
+      },
+      "historical_sources": [
+        {
+          "label": "System catalog",
+          "target": "examples/history/2.1.2/studio/src/agentic_systems_studio/catalog.py"
+        },
+        {
+          "label": "Shared system implementation",
+          "target": "examples/history/2.1.2/studio/src/agentic_systems_studio/systems.py"
+        }
+      ],
+      "entrypoint": "examples.applications.quantitative_analysis.example:run"
+    },
+    {
+      "id": "customer_support",
+      "title": "Enrutar un ticket",
+      "group": "applications",
+      "purpose": "Asignar un equipo mediante una regla explícita.",
+      "flow": "Solicitud con refund → clasificación → billing.",
+      "readiness": "offline execution passed",
+      "implementation": "Explicit SDK declarations and run(); synthetic, supplied or saved inputs. Historical model evidence is not transferred.",
+      "sources": [
+        {
+          "label": "Current implementation",
+          "target": "examples/applications/customer_support/example.py"
+        }
+      ],
+      "validation": {
+        "status": "offline-only",
+        "scope": "Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.",
+        "evidence": [
+          {
+            "label": "Ejecución actual",
+            "target": "examples/applications/customer_support/evidence/current.json"
+          }
+        ]
+      },
+      "next_action": "Importar run y consultar su resultado y evidencia.",
+      "api_version": "2.1.3",
+      "historical_validation": {
+        "status": "historical-pass",
+        "scope": "Historical Ollama record dated 2026-08-20: qwen3:4b-instruct, framework identity recorded as agentic-systems (native path). This entry passed its recorded stage/engine/invariant checks in the 10/10 batch. No wheel hash establishes acceptance of the published 2.1.2 artifact; this is not an independent semantic certification.",
+        "evidence": [
+          {
+            "label": "Original historical 10-system record",
+            "target": "examples/agentic_systems_studio/evidence/ollama-native.json"
+          }
+        ]
+      },
+      "historical_sources": [
+        {
+          "label": "System catalog",
+          "target": "examples/history/2.1.2/studio/src/agentic_systems_studio/catalog.py"
+        },
+        {
+          "label": "Shared system implementation",
+          "target": "examples/history/2.1.2/studio/src/agentic_systems_studio/systems.py"
+        }
+      ],
+      "entrypoint": "examples.applications.customer_support.example:run"
+    },
+    {
+      "id": "semantic_calculation",
+      "title": "Calcular una factura",
+      "group": "patterns",
+      "purpose": "Separar cálculo verificable de presentación.",
+      "flow": "Tres unidades de 100 → subtotal e impuesto del 16% → total 348.",
+      "readiness": "offline execution passed",
+      "implementation": "Explicit SDK declarations and run(); synthetic, supplied or saved inputs. Historical model evidence is not transferred.",
+      "sources": [
+        {
+          "label": "Current implementation",
+          "target": "examples/patterns/semantic_calculation/example.py"
+        }
+      ],
+      "validation": {
+        "status": "offline-only",
+        "scope": "Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.",
+        "evidence": [
+          {
+            "label": "Ejecución actual",
+            "target": "examples/patterns/semantic_calculation/evidence/current.json"
+          }
+        ]
+      },
+      "next_action": "Importar run y consultar su resultado y evidencia.",
+      "api_version": "2.1.3",
+      "historical_validation": {
+        "status": "accepted-2.1.2",
+        "scope": "Published 2.1.2 core-12-live-v1 acceptance: OpenAI, Bedrock API key and Ollama Ã— native/LangGraph/OpenAI Agents/Strands, two passes. Four-framework Python controls are deterministic. This accepts the declared cases and routes only, not all SDK-specific features or arbitrary models.",
+        "evidence": [
+          {
+            "label": "Published exact-wheel acceptance summary",
+            "target": "https://github.com/JacoboGGLeon/agentic_systems/releases/download/v2.1.2/final-certification-summary.json"
+          },
+          {
+            "label": "Published release",
+            "target": "https://github.com/JacoboGGLeon/agentic_systems/releases/tag/v2.1.2"
+          }
+        ],
+        "wheel_sha256": "2c14a8e6f871fcc455acbf899db851130c49a129ba988821d6656e90ebc3d47b"
+      },
+      "historical_sources": [
+        {
+          "label": "Implementation",
+          "target": "scripts/semantic_e2e_application.py"
+        }
+      ],
+      "entrypoint": "examples.patterns.semantic_calculation.example:run"
+    },
+    {
+      "id": "text_analysis",
+      "title": "Contar texto",
+      "group": "patterns",
+      "purpose": "Usar un Tool para análisis básico reproducible.",
+      "flow": "Tres palabras → conteos → dos palabras únicas y dos menciones de evidence.",
+      "readiness": "offline execution passed",
+      "implementation": "Explicit SDK declarations and run(); synthetic, supplied or saved inputs. Historical model evidence is not transferred.",
+      "sources": [
+        {
+          "label": "Current implementation",
+          "target": "examples/patterns/text_analysis/example.py"
+        }
+      ],
+      "validation": {
+        "status": "offline-only",
+        "scope": "Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.",
+        "evidence": [
+          {
+            "label": "Ejecución actual",
+            "target": "examples/patterns/text_analysis/evidence/current.json"
+          }
+        ]
+      },
+      "next_action": "Importar run y consultar su resultado y evidencia.",
+      "api_version": "2.1.3",
+      "historical_validation": {
+        "status": "accepted-2.1.2",
+        "scope": "Published 2.1.2 core-12-live-v1 acceptance: OpenAI, Bedrock API key and Ollama Ã— native/LangGraph/OpenAI Agents/Strands, two passes. Four-framework Python controls are deterministic. This accepts the declared cases and routes only, not all SDK-specific features or arbitrary models.",
+        "evidence": [
+          {
+            "label": "Published exact-wheel acceptance summary",
+            "target": "https://github.com/JacoboGGLeon/agentic_systems/releases/download/v2.1.2/final-certification-summary.json"
+          },
+          {
+            "label": "Published release",
+            "target": "https://github.com/JacoboGGLeon/agentic_systems/releases/tag/v2.1.2"
+          }
+        ],
+        "wheel_sha256": "2c14a8e6f871fcc455acbf899db851130c49a129ba988821d6656e90ebc3d47b"
+      },
+      "historical_sources": [
+        {
+          "label": "Implementation",
+          "target": "scripts/semantic_e2e_application.py"
+        }
+      ],
+      "entrypoint": "examples.patterns.text_analysis.example:run"
+    },
+    {
+      "id": "scope_clarification",
+      "title": "Respetar el alcance",
+      "group": "patterns",
+      "purpose": "Rechazar una operación no declarada.",
+      "flow": "transfer_money → consulta de capacidades → accepted=False y operaciones disponibles.",
+      "readiness": "offline execution passed",
+      "implementation": "Explicit SDK declarations and run(); synthetic, supplied or saved inputs. Historical model evidence is not transferred.",
+      "sources": [
+        {
+          "label": "Current implementation",
+          "target": "examples/patterns/scope_clarification/example.py"
+        }
+      ],
+      "validation": {
+        "status": "offline-only",
+        "scope": "Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.",
+        "evidence": [
+          {
+            "label": "Ejecución actual",
+            "target": "examples/patterns/scope_clarification/evidence/current.json"
+          }
+        ]
+      },
+      "next_action": "Importar run y consultar su resultado y evidencia.",
+      "api_version": "2.1.3",
+      "historical_validation": {
+        "status": "accepted-2.1.2",
+        "scope": "Published 2.1.2 core-12-live-v1 acceptance: OpenAI, Bedrock API key and Ollama Ã— native/LangGraph/OpenAI Agents/Strands, two passes. Four-framework Python controls are deterministic. This accepts the declared cases and routes only, not all SDK-specific features or arbitrary models.",
+        "evidence": [
+          {
+            "label": "Published exact-wheel acceptance summary",
+            "target": "https://github.com/JacoboGGLeon/agentic_systems/releases/download/v2.1.2/final-certification-summary.json"
+          },
+          {
+            "label": "Published release",
+            "target": "https://github.com/JacoboGGLeon/agentic_systems/releases/tag/v2.1.2"
+          }
+        ],
+        "wheel_sha256": "2c14a8e6f871fcc455acbf899db851130c49a129ba988821d6656e90ebc3d47b"
+      },
+      "historical_sources": [
+        {
+          "label": "Implementation",
+          "target": "scripts/semantic_e2e_application.py"
+        }
+      ],
+      "entrypoint": "examples.patterns.scope_clarification.example:run"
+    },
+    {
+      "id": "evidence_grounded_poem",
+      "title": "Evaluar versos guardados",
+      "group": "patterns",
+      "purpose": "Comprobar formato y una cifra en candidatos suministrados.",
+      "flow": "Dos textos guardados → Eval → uno aceptado y otro rechazado; sin generación ni juez semántico.",
+      "readiness": "offline execution passed",
+      "implementation": "Explicit SDK declarations and run(); synthetic, supplied or saved inputs. Historical model evidence is not transferred.",
+      "sources": [
+        {
+          "label": "Current implementation",
+          "target": "examples/patterns/evidence_grounded_poem/example.py"
+        }
+      ],
+      "validation": {
+        "status": "offline-only",
+        "scope": "Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.",
+        "evidence": [
+          {
+            "label": "Ejecución actual",
+            "target": "examples/patterns/evidence_grounded_poem/evidence/current.json"
+          }
+        ]
+      },
+      "next_action": "Importar run y consultar su resultado y evidencia.",
+      "api_version": "2.1.3",
+      "historical_validation": {
+        "status": "accepted-2.1.2",
+        "scope": "Published 2.1.2 core-12-live-v1 acceptance: OpenAI, Bedrock API key and Ollama Ã— native/LangGraph/OpenAI Agents/Strands, two passes. Four-framework Python controls are deterministic. This accepts the declared cases and routes only, not all SDK-specific features or arbitrary models. The poem case is a language-model case; Python does not demonstrate creative generation.",
+        "evidence": [
+          {
+            "label": "Published exact-wheel acceptance summary",
+            "target": "https://github.com/JacoboGGLeon/agentic_systems/releases/download/v2.1.2/final-certification-summary.json"
+          },
+          {
+            "label": "Published release",
+            "target": "https://github.com/JacoboGGLeon/agentic_systems/releases/tag/v2.1.2"
+          }
+        ],
+        "wheel_sha256": "2c14a8e6f871fcc455acbf899db851130c49a129ba988821d6656e90ebc3d47b"
+      },
+      "historical_sources": [
+        {
+          "label": "Implementation",
+          "target": "scripts/semantic_e2e_application.py"
+        }
+      ],
+      "entrypoint": "examples.patterns.evidence_grounded_poem.example:run"
+    },
+    {
+      "id": "controlled_failure",
+      "title": "Conservar un fallo",
+      "group": "patterns",
+      "purpose": "Inspeccionar errores, eventos y linaje de una operación fallida.",
+      "flow": "Producto A17 → Tool lanza LookupError → RunResult fallido con evidencia e invariantes válidas.",
+      "readiness": "offline execution passed",
+      "implementation": "Explicit SDK declarations and run(); synthetic, supplied or saved inputs. Historical model evidence is not transferred.",
+      "sources": [
+        {
+          "label": "Current implementation",
+          "target": "examples/patterns/controlled_failure/example.py"
+        }
+      ],
+      "validation": {
+        "status": "offline-only",
+        "scope": "Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.",
+        "evidence": [
+          {
+            "label": "Ejecución actual",
+            "target": "examples/patterns/controlled_failure/evidence/current.json"
+          }
+        ]
+      },
+      "next_action": "Importar run y consultar su resultado y evidencia.",
+      "api_version": "2.1.3",
+      "historical_validation": {
+        "status": "accepted-2.1.2",
+        "scope": "Published acceptance includes one controlled failure/serialization check per route/pass (32 in total). Failure is the expected behavior; it remains visible in RunResult.",
+        "evidence": [
+          {
+            "label": "Published exact-wheel acceptance summary",
+            "target": "https://github.com/JacoboGGLeon/agentic_systems/releases/download/v2.1.2/final-certification-summary.json"
+          },
+          {
+            "label": "Published release",
+            "target": "https://github.com/JacoboGGLeon/agentic_systems/releases/tag/v2.1.2"
+          }
+        ],
+        "wheel_sha256": "2c14a8e6f871fcc455acbf899db851130c49a129ba988821d6656e90ebc3d47b"
+      },
+      "historical_sources": [
+        {
+          "label": "Implementation",
+          "target": "scripts/run_core_acceptance.py"
+        }
+      ],
+      "entrypoint": "examples.patterns.controlled_failure.example:run"
+    },
+    {
+      "id": "strands_protocol_graph",
+      "title": "Conectar MCP y A2A",
+      "group": "patterns",
+      "purpose": "Usar servicios locales reales desde Strands.",
+      "flow": "Valor conocido → MCP Streamable HTTP y agente A2A → evidencia remota; modelos deterministas y cero inferencia.",
+      "readiness": "offline execution passed",
+      "implementation": "Explicit SDK declarations and run(); synthetic, supplied or saved inputs. Historical model evidence is not transferred.",
+      "sources": [
+        {
+          "label": "Current implementation",
+          "target": "examples/patterns/strands_protocol_graph/example.py"
+        }
+      ],
+      "validation": {
+        "status": "offline-only",
+        "scope": "Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.",
+        "evidence": [
+          {
+            "label": "Ejecución actual",
+            "target": "examples/patterns/strands_protocol_graph/evidence/current.json"
+          }
+        ]
+      },
+      "next_action": "Importar run y consultar su resultado y evidencia.",
+      "api_version": "2.1.3",
+      "historical_validation": {
+        "status": "historical-pass",
+        "scope": "Three historical routes passed on a 2.1.0 wheel with SHA-256 46fa5e7e117d6482a4d15332d52d9520b897fd2beeef92bdcb816bf93896b9d5. This differs from the published 2.1.2 wheel. Shipping the source bundle does not transfer that acceptance.",
+        "evidence": [
+          {
+            "label": "Historical summary extract",
+            "target": "examples/evidence/historical-protocol-summary.json"
+          },
+          {
+            "label": "Challenge contract",
+            "target": "semantic_challenges/strands_protocol_graph/README.md"
+          }
+        ]
+      },
+      "historical_sources": [
+        {
+          "label": "Implementation",
+          "target": "semantic_challenges/strands_protocol_graph/application.py"
+        }
+      ],
+      "entrypoint": "examples.patterns.strands_protocol_graph.example:run"
+    },
+    {
+      "id": "bounded_conversation",
+      "title": "Acotar una conversación",
+      "group": "patterns",
+      "purpose": "Mantener una ventana de contexto explícita.",
+      "flow": "Cuatro mensajes → últimas tres entradas, longitud acotada → historia conservada.",
+      "readiness": "offline execution passed",
+      "implementation": "Explicit SDK declarations and run(); synthetic, supplied or saved inputs. Historical model evidence is not transferred.",
+      "sources": [
+        {
+          "label": "Current implementation",
+          "target": "examples/patterns/bounded_conversation/example.py"
+        }
+      ],
+      "validation": {
+        "status": "offline-only",
+        "scope": "Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.",
+        "evidence": [
+          {
+            "label": "Ejecución actual",
+            "target": "examples/patterns/bounded_conversation/evidence/current.json"
+          }
+        ]
+      },
+      "next_action": "Importar run y consultar su resultado y evidencia.",
+      "api_version": "2.1.3",
+      "historical_validation": {
+        "status": "mixed",
+        "scope": "Historical conversation runs include passes and failures. A local artifact named studio-long-certified.json recorded failures for all three LLM providers; its filename is not acceptance. Source reports also retain judge schema and explanation defects. No blanket 2.1.2 conversation certification is claimed.",
+        "evidence": [
+          {
+            "label": "Studio implementation and contract",
+            "target": "examples/agentic_systems_studio/README.md"
+          },
+          {
+            "label": "Preserved calibration and notebook limits",
+            "target": "docs/two-phase-212-status.md"
+          }
+        ]
+      },
+      "historical_sources": [
+        {
+          "label": "Implementation",
+          "target": "examples/history/2.1.2/studio/scripts/validate_conversation_live.py"
+        }
+      ],
+      "entrypoint": "examples.patterns.bounded_conversation.example:run"
+    },
+    {
+      "id": "two_phase_poem",
+      "title": "Calcular antes de presentar",
+      "group": "patterns",
+      "purpose": "Conservar evidencia de un Tool al formatear una respuesta.",
+      "flow": "3 × 116 → Tool exact_total → tres versos de una plantilla con total 348; sin generación de lenguaje.",
+      "readiness": "offline execution passed",
+      "implementation": "Explicit SDK declarations and run(); synthetic, supplied or saved inputs. Historical model evidence is not transferred.",
+      "sources": [
+        {
+          "label": "Current implementation",
+          "target": "examples/patterns/two_phase_poem/example.py"
+        }
+      ],
+      "validation": {
+        "status": "offline-only",
+        "scope": "Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.",
+        "evidence": [
+          {
+            "label": "Ejecución actual",
+            "target": "examples/patterns/two_phase_poem/evidence/current.json"
+          }
+        ]
+      },
+      "next_action": "Importar run y consultar su resultado y evidencia.",
+      "api_version": "2.1.3",
+      "historical_validation": {
+        "status": "mixed",
+        "scope": "The source report records deterministic candidate gates, but judge explanations and citation/schema experiments retain failures. Twelve automatic judge approvals were not twelve fully faithful explanations. This experiment is distinct from the final core release acceptance.",
+        "evidence": [
+          {
+            "label": "Detailed experiment status",
+            "target": "docs/two-phase-212-status.md"
+          }
+        ]
+      },
+      "historical_sources": [
+        {
+          "label": "Implementation",
+          "target": "scripts/two_phase_semantic_application.py"
+        }
+      ],
+      "entrypoint": "examples.patterns.two_phase_poem.example:run"
+    },
+    {
+      "id": "compact_evaluation",
+      "title": "Evaluar y resumir evidencia",
+      "group": "patterns",
+      "purpose": "Evaluar una ejecución guardada y consultar su traza.",
+      "flow": "Suma 2 + 3 → guardar RunResult → Eval, trace y lineage sin repetir el candidato.",
+      "readiness": "offline execution passed",
+      "implementation": "Explicit SDK declarations and run(); synthetic, supplied or saved inputs. Historical model evidence is not transferred.",
+      "sources": [
+        {
+          "label": "Current implementation",
+          "target": "examples/patterns/compact_evaluation/example.py"
+        }
+      ],
+      "validation": {
+        "status": "offline-only",
+        "scope": "Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.",
+        "evidence": [
+          {
+            "label": "Ejecución actual",
+            "target": "examples/patterns/compact_evaluation/evidence/current.json"
+          }
+        ]
+      },
+      "next_action": "Importar run y consultar su resultado y evidencia.",
+      "api_version": "2.1.3",
+      "historical_validation": {
+        "status": "mixed",
+        "scope": "Source matrix: 20/32 case gates passed; 8/16 routes passed both cases, including four deterministic Python controls. Ollama failed both cases on all four frameworks; OpenAI and Bedrock also retain failed cases. Not release certification.",
+        "evidence": [
+          {
+            "label": "Matrix and failure classification",
+            "target": "docs/compact-matrix-results.md"
+          }
+        ]
+      },
+      "historical_sources": [
+        {
+          "label": "Implementation",
+          "target": "scripts/compact_evaluation_system.py"
+        }
+      ],
+      "entrypoint": "examples.patterns.compact_evaluation.example:run"
+    },
+    {
+      "id": "claim_review",
+      "title": "Revisar referencias y causalidad",
+      "group": "patterns",
+      "purpose": "Aplicar comprobaciones explícitas sobre afirmaciones estructuradas.",
+      "flow": "Fuente ausente y causalidad sin evidencia declarada → dos hallazgos → accepted=False.",
+      "readiness": "offline execution passed",
+      "implementation": "Explicit SDK declarations and run(); synthetic, supplied or saved inputs. Historical model evidence is not transferred.",
+      "sources": [
+        {
+          "label": "Current implementation",
+          "target": "examples/patterns/claim_review/example.py"
+        }
+      ],
+      "validation": {
+        "status": "offline-only",
+        "scope": "Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.",
+        "evidence": [
+          {
+            "label": "Ejecución actual",
+            "target": "examples/patterns/claim_review/evidence/current.json"
+          }
+        ]
+      },
+      "next_action": "Importar run y consultar su resultado y evidencia.",
+      "api_version": "2.1.3",
+      "historical_validation": {
+        "status": "mixed",
+        "scope": "Held-out verdict matches were Bedrock/native 6/6, OpenAI/langgraph 5/6 and Ollama/native 5/6, with additional citation limits. Exposed v3/v4/v5 regressions are separate experiments; v5 accepted 4/6, not a complete matrix. Correct binary results do not certify citation quality.",
+        "evidence": [
+          {
+            "label": "Pilot",
+            "target": "docs/claim-evaluator-pilot.md"
+          },
+          {
+            "label": "Held-out and long-case sample",
+            "target": "docs/claim-acceptance-v1-results.md"
+          },
+          {
+            "label": "Regression v3",
+            "target": "docs/claim-regression-v3-results.md"
+          },
+          {
+            "label": "Regression v4",
+            "target": "docs/claim-regression-v4-results.md"
+          },
+          {
+            "label": "Regression v5",
+            "target": "docs/claim-regression-v5-results.md"
+          }
+        ]
+      },
+      "historical_sources": [
+        {
+          "label": "Implementation",
+          "target": "scripts/claim_evaluator.py"
+        }
+      ],
+      "entrypoint": "examples.patterns.claim_review.example:run"
+    },
+    {
+      "id": "typed_claim_review",
+      "title": "Validar una afirmación tipada",
+      "group": "patterns",
+      "purpose": "Rechazar datos que incumplen el esquema de entrada.",
+      "flow": "Una entrada válida y otra con texto numérico → Tool con esquema estricto → éxito y fallo conservados.",
+      "readiness": "offline execution passed",
+      "implementation": "Explicit SDK declarations and run(); synthetic, supplied or saved inputs. Historical model evidence is not transferred.",
+      "sources": [
+        {
+          "label": "Current implementation",
+          "target": "examples/patterns/typed_claim_review/example.py"
+        }
+      ],
+      "validation": {
+        "status": "offline-only",
+        "scope": "Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.",
+        "evidence": [
+          {
+            "label": "Ejecución actual",
+            "target": "examples/patterns/typed_claim_review/evidence/current.json"
+          }
+        ]
+      },
+      "next_action": "Importar run y consultar su resultado y evidencia.",
+      "api_version": "2.1.3",
+      "historical_validation": {
+        "status": "mixed",
+        "scope": "Live source pilots: v1 OpenAI/langgraph 3/6 and Ollama/native 0/6; v2 OpenAI/langgraph 1/3 and Ollama/native 0/3. Extraction/audit defects remain unresolved. Offline callback tests across frameworks do not supply live framework acceptance.",
+        "evidence": [
+          {
+            "label": "Results and limits",
+            "target": "docs/typed-claim-review-results.md"
+          }
+        ]
+      },
+      "historical_sources": [
+        {
+          "label": "Implementation",
+          "target": "scripts/typed_claim_evaluator.py"
+        }
+      ],
+      "entrypoint": "examples.patterns.typed_claim_review.example:run"
+    },
+    {
+      "id": "judge_calibration",
+      "title": "Comprobar un juez optimista",
+      "group": "patterns",
+      "purpose": "Combinar expectativas exactas y un juez fixture.",
+      "flow": "Respuestas VALID y WRONG → juez que siempre aprueba + expectativas → [True, False]; no es calibración empírica de un modelo.",
+      "readiness": "offline execution passed",
+      "implementation": "Explicit SDK declarations and run(); synthetic, supplied or saved inputs. Historical model evidence is not transferred.",
+      "sources": [
+        {
+          "label": "Current implementation",
+          "target": "examples/patterns/judge_calibration/example.py"
+        }
+      ],
+      "validation": {
+        "status": "offline-only",
+        "scope": "Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.",
+        "evidence": [
+          {
+            "label": "Ejecución actual",
+            "target": "examples/patterns/judge_calibration/evidence/current.json"
+          }
+        ]
+      },
+      "next_action": "Importar run y consultar su resultado y evidencia.",
+      "api_version": "2.1.3",
+      "historical_validation": {
+        "status": "mixed",
+        "scope": "Calibration includes false approvals, schema/citation failures and source-only observations. A local holdout report recorded ok=true, but that does not certify a full candidate matrix or a new wheel. Prior failures remain part of the record.",
+        "evidence": [
+          {
+            "label": "Judge contract",
+            "target": "docs/judge-contract-v6.md"
+          },
+          {
+            "label": "Fixed pilot results",
+            "target": "docs/judge-v6-pilot-results.md"
+          },
+          {
+            "label": "Two-phase experiments",
+            "target": "docs/two-phase-212-status.md"
+          }
+        ]
+      },
+      "historical_sources": [
+        {
+          "label": "Implementation",
+          "target": "scripts/semantic_judge_probes.py"
+        }
+      ],
+      "entrypoint": "examples.patterns.judge_calibration.example:run"
+    },
+    {
+      "id": "long_environment",
+      "title": "Recorrer un episodio",
+      "group": "patterns",
+      "purpose": "Acumular memoria sin contaminar la siguiente ejecución.",
+      "flow": "Treinta movimientos de +1 → Environment con memoria → balance 30 en dos episodios independientes.",
+      "readiness": "offline execution passed",
+      "implementation": "Explicit SDK declarations and run(); synthetic, supplied or saved inputs. Historical model evidence is not transferred.",
+      "sources": [
+        {
+          "label": "Current implementation",
+          "target": "examples/patterns/long_environment/example.py"
+        }
+      ],
+      "validation": {
+        "status": "offline-only",
+        "scope": "Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.",
+        "evidence": [
+          {
+            "label": "Ejecución actual",
+            "target": "examples/patterns/long_environment/evidence/current.json"
+          }
+        ]
+      },
+      "next_action": "Importar run y consultar su resultado y evidencia.",
+      "api_version": "2.1.3",
+      "historical_validation": {
+        "status": "offline-only",
+        "scope": "The control is deterministic. A separately reported hybrid saved candidate used eight Python Agents plus one LLM Agent on one route; it does not establish an all-LLM or complete long-case matrix.",
+        "evidence": [
+          {
+            "label": "Long-case topology and evaluation limits",
+            "target": "docs/long-evals-v1.md"
+          }
+        ]
+      },
+      "historical_sources": [
+        {
+          "label": "Implementation",
+          "target": "scripts/long_environment_control.py"
+        }
+      ],
+      "entrypoint": "examples.patterns.long_environment.example:run"
+    },
+    {
+      "id": "saved_execution_eval",
+      "title": "Evaluar sin repetir",
+      "group": "patterns",
+      "purpose": "Restaurar RunResult y evaluar evidencia guardada.",
+      "flow": "Suma 2 + 3 → serialización → Eval acepta total 5 sin volver a ejecutar el cálculo.",
+      "readiness": "offline execution passed",
+      "implementation": "Explicit SDK declarations and run(); synthetic, supplied or saved inputs. Historical model evidence is not transferred.",
+      "sources": [
+        {
+          "label": "Current implementation",
+          "target": "examples/patterns/saved_execution_eval/example.py"
+        }
+      ],
+      "validation": {
+        "status": "offline-only",
+        "scope": "Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.",
+        "evidence": [
+          {
+            "label": "Ejecución actual",
+            "target": "examples/patterns/saved_execution_eval/evidence/current.json"
+          }
+        ]
+      },
+      "next_action": "Importar run y consultar su resultado y evidencia.",
+      "api_version": "2.1.3",
+      "historical_validation": {
+        "status": "mixed",
+        "scope": "One OpenAI/openai-agents episode: 7/7 original verdicts accepted and 7/7 negatives rejected; one explanation invented an increment. Later claim-based review retained irrelevant citations for six nonfactual fragments. Neither result certifies every explanation or the full matrix.",
+        "evidence": [
+          {
+            "label": "Original semantic pilot",
+            "target": "docs/long-evals-v1.md"
+          },
+          {
+            "label": "Later claim-based evaluation",
+            "target": "docs/claim-acceptance-v1-results.md"
+          }
+        ]
+      },
+      "historical_sources": [
+        {
+          "label": "Implementation",
+          "target": "scripts/long_environment_evals.py"
+        }
+      ],
+      "entrypoint": "examples.patterns.saved_execution_eval.example:run"
+    },
+    {
+      "id": "api_contract_lab",
+      "title": "Comparar run y compile",
+      "group": "validation",
+      "purpose": "Comprobar que preparar una unidad conserva su ejecución.",
+      "flow": "value=3 → run directo y compile().run → mismo resultado; firmas públicas disponibles.",
+      "readiness": "offline execution passed",
+      "implementation": "Explicit SDK declarations and run(); synthetic, supplied or saved inputs. Historical model evidence is not transferred.",
+      "sources": [
+        {
+          "label": "Current implementation",
+          "target": "examples/validation/api_contract_lab/example.py"
+        }
+      ],
+      "validation": {
+        "status": "offline-only",
+        "scope": "Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.",
+        "evidence": [
+          {
+            "label": "Ejecución actual",
+            "target": "examples/validation/api_contract_lab/evidence/current.json"
+          }
+        ]
+      },
+      "next_action": "Importar run y consultar su resultado y evidencia.",
+      "api_version": "2.1.3",
+      "historical_validation": {
+        "status": "mixed",
+        "scope": "Exact published 2.1.2 wheel: 1435 offline tests, 223/223 concrete public callable entries observed and 16 Tool route cases passed. Twelve generation transports succeeded, but only eight literal READY checks passed; all four Bedrock results returned READY. The summary is not the full raw audit or a new release certification.",
+        "evidence": [
+          {
+            "label": "Preserved local audit summary",
+            "target": "examples/evidence/api-audit-2.1.2-summary.json"
+          }
+        ]
+      },
+      "historical_sources": [
+        {
+          "label": "Audit summary (not executable source)",
+          "target": "examples/evidence/api-audit-2.1.2-summary.json"
+        }
+      ],
+      "entrypoint": "examples.validation.api_contract_lab.example:run"
+    },
+    {
+      "id": "provider_framework_conformance",
+      "title": "Ejecutar cuatro frameworks",
+      "group": "validation",
+      "purpose": "Usar los cuatro SDKs con Python determinista.",
+      "flow": "value=3 → Tool echo en native, LangGraph, OpenAI Agents y Strands → misma evidencia; la matriz live se documenta aparte.",
+      "readiness": "offline execution passed",
+      "implementation": "Explicit SDK declarations and run(); synthetic, supplied or saved inputs. Historical model evidence is not transferred.",
+      "sources": [
+        {
+          "label": "Current implementation",
+          "target": "examples/validation/provider_framework_conformance/example.py"
+        }
+      ],
+      "validation": {
+        "status": "offline-only",
+        "scope": "Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.",
+        "evidence": [
+          {
+            "label": "Ejecución actual",
+            "target": "examples/validation/provider_framework_conformance/evidence/current.json"
+          }
+        ]
+      },
+      "next_action": "Importar run y consultar su resultado y evidencia.",
+      "api_version": "2.1.3",
+      "historical_validation": {
+        "status": "accepted-2.1.2",
+        "scope": "Published 2.1.2 core-12-live-v1 acceptance: OpenAI, Bedrock API key and Ollama Ã— native/LangGraph/OpenAI Agents/Strands, two passes. Four-framework Python controls are deterministic. This accepts the declared cases and routes only, not all SDK-specific features or arbitrary models. The published summary totals 120 episodes including deterministic controls; it is not 120 independent LLM episodes.",
+        "evidence": [
+          {
+            "label": "Published exact-wheel acceptance summary",
+            "target": "https://github.com/JacoboGGLeon/agentic_systems/releases/download/v2.1.2/final-certification-summary.json"
+          },
+          {
+            "label": "Published release",
+            "target": "https://github.com/JacoboGGLeon/agentic_systems/releases/tag/v2.1.2"
+          }
+        ],
+        "wheel_sha256": "2c14a8e6f871fcc455acbf899db851130c49a129ba988821d6656e90ebc3d47b"
+      },
+      "historical_sources": [
+        {
+          "label": "Implementation",
+          "target": "scripts/run_core_acceptance.py"
+        }
+      ],
+      "related_sources": [
+        {
+          "label": "Canonical implementation",
+          "target": "examples/provider_framework_conformance/example.py"
+        },
+        {
+          "label": "Walkthrough",
+          "target": "examples/provider_framework_conformance/README.md"
+        }
+      ],
+      "entrypoint": "examples.validation.provider_framework_conformance.example:run"
+    },
+    {
+      "id": "vllm_colab",
+      "title": "Preparar vLLM/Colab",
+      "group": "validation",
+      "purpose": "Inspeccionar la configuración antes de conectarse a una GPU.",
+      "flow": "Variables del entorno → runtime y Agent → contrato inspeccionable; GPU y endpoint pendientes.",
+      "readiness": "target environment pending",
+      "implementation": "Explicit SDK declarations and run(); synthetic, supplied or saved inputs. Historical model evidence is not transferred.",
+      "sources": [
+        {
+          "label": "Current implementation",
+          "target": "examples/validation/vllm_colab/example.py"
+        }
+      ],
+      "validation": {
+        "status": "configuration-only",
+        "scope": "Configuración construida e inspeccionada. El entorno de destino no se ejecutó.",
+        "evidence": [
+          {
+            "label": "Ejecución actual",
+            "target": "examples/validation/vllm_colab/evidence/current.json"
+          }
+        ]
+      },
+      "next_action": "Ejecutar en el entorno de destino.",
+      "api_version": "2.1.3",
+      "historical_validation": {
+        "status": "pending-2.1.2",
+        "scope": "Earlier-release evidence is recorded in the changelog. vLLM/Colab, AWS IAM and ADA IAM remain explicitly pending for the exact published 2.1.2 wheel. ADA is an enterprise environment, not a provider or an installed [ada] extra.",
+        "evidence": [
+          {
+            "label": "Published 2.1.2 pending routes",
+            "target": "https://github.com/JacoboGGLeon/agentic_systems/releases/download/v2.1.2/final-certification-summary.json"
+          },
+          {
+            "label": "Historical release scope",
+            "target": "CHANGELOG.md"
+          },
+          {
+            "label": "Post-release validation instructions",
+            "target": "docs/POST_RELEASE_VALIDATION.md"
+          }
+        ]
+      },
+      "historical_sources": [
+        {
+          "label": "Implementation",
+          "target": "release/notebooks/vllm_attestation.ipynb"
+        }
+      ],
+      "entrypoint": "examples.validation.vllm_colab.example:run"
+    },
+    {
+      "id": "aws_iam",
+      "title": "Preparar AWS IAM",
+      "group": "validation",
+      "purpose": "Declarar Bedrock sin una API key embebida.",
+      "flow": "Modelo y región → runtime → configuración; el proceso de destino debe usar su rol IAM sin bearer token. Autenticación pendiente.",
+      "readiness": "target environment pending",
+      "implementation": "Explicit SDK declarations and run(); synthetic, supplied or saved inputs. Historical model evidence is not transferred.",
+      "sources": [
+        {
+          "label": "Current implementation",
+          "target": "examples/validation/aws_iam/example.py"
+        }
+      ],
+      "validation": {
+        "status": "configuration-only",
+        "scope": "Configuración construida e inspeccionada. El entorno de destino no se ejecutó.",
+        "evidence": [
+          {
+            "label": "Ejecución actual",
+            "target": "examples/validation/aws_iam/evidence/current.json"
+          }
+        ]
+      },
+      "next_action": "Ejecutar en el entorno de destino.",
+      "api_version": "2.1.3",
+      "historical_validation": {
+        "status": "pending-2.1.2",
+        "scope": "Earlier-release evidence is recorded in the changelog. vLLM/Colab, AWS IAM and ADA IAM remain explicitly pending for the exact published 2.1.2 wheel. ADA is an enterprise environment, not a provider or an installed [ada] extra.",
+        "evidence": [
+          {
+            "label": "Published 2.1.2 pending routes",
+            "target": "https://github.com/JacoboGGLeon/agentic_systems/releases/download/v2.1.2/final-certification-summary.json"
+          },
+          {
+            "label": "Historical release scope",
+            "target": "CHANGELOG.md"
+          },
+          {
+            "label": "Post-release validation instructions",
+            "target": "docs/POST_RELEASE_VALIDATION.md"
+          }
+        ]
+      },
+      "historical_sources": [
+        {
+          "label": "Implementation",
+          "target": "release/notebooks/bedrock_iam_attestation.ipynb"
+        }
+      ],
+      "entrypoint": "examples.validation.aws_iam.example:run"
+    },
+    {
+      "id": "ada_iam",
+      "title": "Preparar ADA IAM",
+      "group": "validation",
+      "purpose": "Preparar el mismo contrato para un workload empresarial.",
+      "flow": "Modelo y región → runtime → configuración; rol, red y dependencias de ADA requieren prueba en ese entorno. Sin extra [ada].",
+      "readiness": "target environment pending",
+      "implementation": "Explicit SDK declarations and run(); synthetic, supplied or saved inputs. Historical model evidence is not transferred.",
+      "sources": [
+        {
+          "label": "Current implementation",
+          "target": "examples/validation/ada_iam/example.py"
+        }
+      ],
+      "validation": {
+        "status": "configuration-only",
+        "scope": "Configuración construida e inspeccionada. El entorno de destino no se ejecutó.",
+        "evidence": [
+          {
+            "label": "Ejecución actual",
+            "target": "examples/validation/ada_iam/evidence/current.json"
+          }
+        ]
+      },
+      "next_action": "Ejecutar en el entorno de destino.",
+      "api_version": "2.1.3",
+      "historical_validation": {
+        "status": "pending-2.1.2",
+        "scope": "Earlier-release evidence is recorded in the changelog. vLLM/Colab, AWS IAM and ADA IAM remain explicitly pending for the exact published 2.1.2 wheel. ADA is an enterprise environment, not a provider or an installed [ada] extra.",
+        "evidence": [
+          {
+            "label": "Published 2.1.2 pending routes",
+            "target": "https://github.com/JacoboGGLeon/agentic_systems/releases/download/v2.1.2/final-certification-summary.json"
+          },
+          {
+            "label": "Historical release scope",
+            "target": "CHANGELOG.md"
+          },
+          {
+            "label": "Post-release validation instructions",
+            "target": "docs/POST_RELEASE_VALIDATION.md"
+          }
+        ]
+      },
+      "historical_sources": [
+        {
+          "label": "Implementation",
+          "target": "scripts/generate_ada_iam_validation_package.py"
+        }
+      ],
+      "entrypoint": "examples.validation.ada_iam.example:run"
+    },
+    {
+      "id": "refund_resolution",
+      "title": "Resolver un reembolso",
+      "group": "applications",
+      "purpose": "Aplicar una política de negocio pequeña y visible.",
+      "flow": "280 MXN, cuenta de 90 días → regla declarada → approved; datos sintéticos.",
+      "readiness": "offline execution passed",
+      "implementation": "Explicit SDK declarations and run(); synthetic, supplied or saved inputs. Historical model evidence is not transferred.",
+      "sources": [
+        {
+          "label": "Current implementation",
+          "target": "examples/applications/refund_resolution/example.py"
+        }
+      ],
+      "validation": {
+        "status": "offline-only",
+        "scope": "Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.",
+        "evidence": [
+          {
+            "label": "Ejecución actual",
+            "target": "examples/applications/refund_resolution/evidence/current.json"
+          }
+        ]
+      },
+      "next_action": "Importar run y consultar su resultado y evidencia.",
+      "api_version": "2.1.3",
+      "historical_validation": {
+        "status": "designed",
+        "scope": "Not implemented, not executed and not certified. Native is the intended framework; Python is deterministic control and OpenAI/Bedrock API key/Ollama are intended LLM routes. The earlier eight-constructor matrix and proposed extra budget were not executed or authorized.",
+        "evidence": [
+          {
+            "label": "Design and execution boundary",
+            "target": "examples/applications/refund_resolution/DESIGN.md"
+          }
+        ]
+      },
+      "historical_sources": [
+        {
+          "label": "Design",
+          "target": "examples/applications/refund_resolution/DESIGN.md"
+        }
+      ],
+      "entrypoint": "examples.applications.refund_resolution.example:run"
+    },
+    {
+      "id": "fixed_judge_pilot",
+      "title": "Bloquear un falso positivo",
+      "group": "patterns",
+      "purpose": "Impedir que un juez fixture apruebe una respuesta incorrecta.",
+      "flow": "WRONG → expectativa VALID y juez optimista → caso rechazado, conservando ambos resultados.",
+      "readiness": "offline execution passed",
+      "implementation": "Explicit SDK declarations and run(); synthetic, supplied or saved inputs. Historical model evidence is not transferred.",
+      "sources": [
+        {
+          "label": "Current implementation",
+          "target": "examples/patterns/fixed_judge_pilot/example.py"
+        }
+      ],
+      "validation": {
+        "status": "offline-only",
+        "scope": "Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.",
+        "evidence": [
+          {
+            "label": "Ejecución actual",
+            "target": "examples/patterns/fixed_judge_pilot/evidence/current.json"
+          }
+        ]
+      },
+      "next_action": "Importar run y consultar su resultado y evidencia.",
+      "api_version": "2.1.3",
+      "historical_validation": {
+        "status": "mixed",
+        "scope": "Six native pilot cases, 14 guarded requests. OpenAI schema failures, Bedrock unsupported positive explanation and budget-interrupted negative, Ollama citation/type errors and false semantic approval. Expansion was blocked; no release certification.",
+        "evidence": [
+          {
+            "label": "Fixed v6 pilot report",
+            "target": "docs/judge-v6-pilot-results.md"
+          }
+        ]
+      },
+      "historical_sources": [
+        {
+          "label": "Implementation",
+          "target": "scripts/two_phase_semantic_application.py"
+        }
+      ],
+      "entrypoint": "examples.patterns.fixed_judge_pilot.example:run"
+    },
+    {
+      "id": "unambiguous_lm_gate",
+      "title": "Exigir una respuesta literal",
+      "group": "patterns",
+      "purpose": "Distinguir coincidencia exacta de parecido textual.",
+      "flow": "VALID, VALID., invalid y vacío → Eval → solo VALID aceptado; respuestas guardadas, sin modelo.",
+      "readiness": "offline execution passed",
+      "implementation": "Explicit SDK declarations and run(); synthetic, supplied or saved inputs. Historical model evidence is not transferred.",
+      "sources": [
+        {
+          "label": "Current implementation",
+          "target": "examples/patterns/unambiguous_lm_gate/example.py"
+        }
+      ],
+      "validation": {
+        "status": "offline-only",
+        "scope": "Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.",
+        "evidence": [
+          {
+            "label": "Ejecución actual",
+            "target": "examples/patterns/unambiguous_lm_gate/evidence/current.json"
+          }
+        ]
+      },
+      "next_action": "Importar run y consultar su resultado y evidencia.",
+      "api_version": "2.1.3",
+      "historical_validation": {
+        "status": "mixed",
+        "scope": "Historical source pilots: OpenAI/native and Ollama/native passed 10/10; Bedrock Nova/langgraph omitted two unknown decisions and failed 8/10. A separately recorded Qwen/langgraph A/B passed 10/10 without erasing Nova. This is not full matrix or exact-wheel acceptance.",
+        "evidence": [
+          {
+            "label": "Contract and observed pilot routes",
+            "target": "docs/unambiguous-lm-gate.md"
+          }
+        ]
+      },
+      "historical_sources": [
+        {
+          "label": "Implementation",
+          "target": "scripts/unambiguous_lm_gate.py"
+        }
+      ],
+      "entrypoint": "examples.patterns.unambiguous_lm_gate.example:run"
+    },
+    {
+      "id": "unified_grammar",
+      "title": "Agent y System: seis flujos",
+      "group": "applications",
+      "purpose": "Aprender secuencia, paralelo y decisiones con la misma interfaz.",
+      "flow": "value=3 → seis declaraciones en native y LangGraph, Environment y Eval → resultados y linaje verificables.",
+      "readiness": "offline execution passed",
+      "implementation": "Explicit SDK declarations and run(); synthetic, supplied or saved inputs. Historical model evidence is not transferred.",
+      "sources": [
+        {
+          "label": "Current implementation",
+          "target": "examples/applications/unified_grammar/example.py"
+        }
+      ],
+      "validation": {
+        "status": "offline-only",
+        "scope": "Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.",
+        "evidence": [
+          {
+            "label": "Ejecución actual",
+            "target": "examples/applications/unified_grammar/evidence/current.json"
+          }
+        ]
+      },
+      "next_action": "Importar run y consultar su resultado y evidencia.",
+      "api_version": "2.1.3",
+      "historical_validation": {
+        "status": "offline-only",
+        "scope": "Exact 2.1.2 installed wheel bytes verified. All 12 owner/flow/backend cells passed direct and compiled execution, plus 4 alternative decision cases. 79 offline tests passed, including direct-function/legacy-Route compatibility, invalid destinations, threshold behavior, negative controls and async. A fresh-kernel notebook passed all 20 code cells showing six explicit examples and their Skill/Environment/Eval connections. The added matrix passed 24 Environment steps, 24 Eval cases and two expected negative controls. The target-2.1.3 order challenge passed 14 contracts; its generated project ran outside the repository with 12 passing tests and a fresh-kernel notebook. The restricted Windows local-transport attempt and earlier socketpair guard failure remain documented separately. This is prototype acceptance, not release/model certification.",
+        "evidence": [
+          {
+            "label": "Measured report",
+            "target": "examples/history/prototype-213/evidence/REPORT.md"
+          },
+          {
+            "label": "Raw exact-wheel run",
+            "target": "examples/history/prototype-213/evidence/offline-run.json"
+          },
+          {
+            "label": "Final tests",
+            "target": "examples/history/prototype-213/evidence/tests.xml"
+          }
+        ]
+      },
+      "historical_sources": [
+        {
+          "label": "Runnable walkthrough and limitations",
+          "target": "examples/history/prototype-213/README.md"
+        },
+        {
+          "label": "Shared application",
+          "target": "examples/history/prototype-213/demo.py"
+        },
+        {
+          "label": "Prototype execution core",
+          "target": "examples/history/prototype-213/core.py"
+        },
+        {
+          "label": "Six executed examples",
+          "target": "examples/history/prototype-213/00_walkthrough.ipynb"
+        }
+      ],
+      "entrypoint": "examples.applications.unified_grammar.example:run"
+    },
+    {
+      "id": "order_fulfillment_213",
+      "title": "Pedidos con la API única 2.1.3",
+      "group": "applications",
+      "purpose": "Seven Agents and Skills coordinate validation, parallel checks and explicit business decisions through the single installed SDK API.",
+      "flow": "Order JSON → validate → parallel price/stock → policy → approve/review/reject; Environment and Eval reuse the unit.",
+      "sources": [
+        {
+          "label": "Application",
+          "target": "examples/order_fulfillment/README.md"
+        },
+        {
+          "label": "Single declaration",
+          "target": "examples/order_fulfillment/system.py"
+        }
+      ],
+      "api_version": "2.1.3",
+      "readiness": "runnable with the exact 2.1.3 candidate; offline validation passed",
+      "implementation": "The installed agentic_systems 2.1.3 wheel supplies the only API; no facade or compatibility package.",
+      "validation": {
+        "status": "offline-only",
+        "scope": "Canonical root implementation. Final wheel hash and measured offline scope are in implementation evidence; no real inference or publication.",
+        "evidence": [
+          {
+            "label": "Measured offline report",
+            "target": "revisions/2.1.3/closeout-evidence/REPORT.md"
+          },
+          {
+            "label": "Exact artifact and evidence hashes",
+            "target": "revisions/2.1.3/implementation-evidence/manifest.json"
+          }
+        ],
+        "wheel_sha256": "d64aad238e5c8a98f5ad383e6436ac9b79a344cb819f60fc431b64a663bbfbe3"
+      },
+      "next_action": "Use the root 2.1.3 SDK and its measured offline evidence; no compatibility layer.",
+      "entrypoint": "examples.order_fulfillment.example:run"
+    },
+    {
+      "id": "api_213_tutorials",
+      "title": "Tutoriales de la API única 2.1.3",
+      "group": "patterns",
+      "purpose": "Teach every public 2.1.3 symbol through ten offline notebooks using only import agentic_systems.",
+      "flow": "Install candidate wheel → Tools/Skills → Agent/System flows → Environment/Eval → runtimes/results/serving → full challenge.",
+      "sources": [
+        {
+          "label": "Tutorial course",
+          "target": "tutorials/README.md"
+        },
+        {
+          "label": "Complete API",
+          "target": "docs/API_213.md"
+        }
+      ],
+      "api_version": "2.1.3",
+      "readiness": "runnable with the exact 2.1.3 candidate; offline validation passed",
+      "implementation": "The installed agentic_systems 2.1.3 wheel supplies the only API; no facade or compatibility package.",
+      "validation": {
+        "status": "offline-only",
+        "scope": "Canonical root implementation. Final wheel hash and measured offline scope are in implementation evidence; no real inference or publication.",
+        "evidence": [
+          {
+            "label": "Measured offline report",
+            "target": "revisions/2.1.3/closeout-evidence/REPORT.md"
+          },
+          {
+            "label": "Exact artifact and evidence hashes",
+            "target": "revisions/2.1.3/implementation-evidence/manifest.json"
+          }
+        ],
+        "wheel_sha256": "d64aad238e5c8a98f5ad383e6436ac9b79a344cb819f60fc431b64a663bbfbe3"
+      },
+      "next_action": "Use the root 2.1.3 SDK and its measured offline evidence; no compatibility layer."
+    },
+    {
+      "id": "retired_accountability_otc",
+      "title": "Asignar responsables a evidencia",
+      "group": "applications",
+      "purpose": "Mostrar un reemplazo público y sintético del experimento retirado.",
+      "flow": "Dos afirmaciones → comprobar owner/evidence → C2 sin responsable ni respaldo. El código privado original no se recuperó.",
+      "api_version": "2.1.3",
+      "readiness": "offline execution passed",
+      "implementation": "Explicit SDK declarations and run(); synthetic, supplied or saved inputs. Historical model evidence is not transferred.",
+      "sources": [
+        {
+          "label": "Current implementation",
+          "target": "examples/applications/retired_accountability_otc/example.py"
+        }
+      ],
+      "validation": {
+        "status": "offline-only",
+        "scope": "Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.",
+        "evidence": [
+          {
+            "label": "Ejecución actual",
+            "target": "examples/applications/retired_accountability_otc/evidence/current.json"
+          }
+        ]
+      },
+      "next_action": "Importar run y consultar su resultado y evidencia.",
+      "historical_validation": {
+        "status": "retired",
+        "scope": "The previous catalog explicitly excluded this retired reference. It is now listed for completeness; no validation or migration is claimed.",
+        "evidence": [
+          {
+            "label": "Retirement scope",
+            "target": "examples/history/retired.md"
+          }
+        ]
+      },
+      "historical_sources": [],
+      "entrypoint": "examples.applications.retired_accountability_otc.example:run"
+    },
+    {
+      "id": "tool_contracts",
+      "title": "Tool Contracts — API 2.1.3",
+      "group": "patterns",
+      "purpose": "Pydantic input/output schemas, direct/async deterministic Tool and a controlled invalid input.",
+      "flow": "Synthetic JSON input → canonical SDK computation/configuration → asserted output and JSON evidence.",
+      "readiness": "runnable with the exact 2.1.3 candidate; offline validation passed",
+      "implementation": "One example.py declaration imported by tutorials; no copied SDK or compatibility facade.",
+      "sources": [
+        {
+          "label": "Runnable example",
+          "target": "examples/tool_contracts/example.py"
+        },
+        {
+          "label": "Walkthrough",
+          "target": "examples/tool_contracts/README.md"
+        }
+      ],
+      "api_version": "2.1.3",
+      "validation": {
+        "status": "offline-only",
+        "scope": "Pydantic input/output schemas, direct/async deterministic Tool and a controlled invalid input. Final artifact binding is recorded in implementation evidence. No real inference.",
+        "evidence": [
+          {
+            "label": "Measured offline report",
+            "target": "revisions/2.1.3/closeout-evidence/REPORT.md"
+          },
+          {
+            "label": "Exact artifact and evidence hashes",
+            "target": "revisions/2.1.3/implementation-evidence/manifest.json"
+          }
+        ],
+        "wheel_sha256": "d64aad238e5c8a98f5ad383e6436ac9b79a344cb819f60fc431b64a663bbfbe3"
+      },
+      "next_action": "Use the named wheel and scope from implementation evidence. External model/GPU/IAM routes require separate authorization and execution.",
+      "entrypoint": "examples.tool_contracts.example:run"
+    },
+    {
+      "id": "portable_skills",
+      "title": "Portable Skills — API 2.1.3",
+      "group": "patterns",
+      "purpose": "Exact path loading, relative imports including lazy use, instructions and versioned capability.",
+      "flow": "Synthetic JSON input → canonical SDK computation/configuration → asserted output and JSON evidence.",
+      "readiness": "runnable with the exact 2.1.3 candidate; offline validation passed",
+      "implementation": "One example.py declaration imported by tutorials; no copied SDK or compatibility facade.",
+      "sources": [
+        {
+          "label": "Runnable example",
+          "target": "examples/portable_skills/example.py"
+        },
+        {
+          "label": "Walkthrough",
+          "target": "examples/portable_skills/README.md"
+        }
+      ],
+      "api_version": "2.1.3",
+      "validation": {
+        "status": "offline-only",
+        "scope": "Exact path loading, relative imports including lazy use, instructions and versioned capability. Final artifact binding is recorded in implementation evidence. No real inference.",
+        "evidence": [
+          {
+            "label": "Measured offline report",
+            "target": "revisions/2.1.3/closeout-evidence/REPORT.md"
+          },
+          {
+            "label": "Exact artifact and evidence hashes",
+            "target": "revisions/2.1.3/implementation-evidence/manifest.json"
+          }
+        ],
+        "wheel_sha256": "d64aad238e5c8a98f5ad383e6436ac9b79a344cb819f60fc431b64a663bbfbe3"
+      },
+      "next_action": "Use the named wheel and scope from implementation evidence. External model/GPU/IAM routes require separate authorization and execution.",
+      "entrypoint": "examples.portable_skills.example:run"
+    },
+    {
+      "id": "flow_semantics",
+      "title": "Flow Semantics — API 2.1.3",
+      "group": "patterns",
+      "purpose": "Six Agent/System × flow forms, each on native and real LangGraph, direct and compiled.",
+      "flow": "Synthetic JSON input → canonical SDK computation/configuration → asserted output and JSON evidence.",
+      "readiness": "runnable with the exact 2.1.3 candidate; offline validation passed",
+      "implementation": "One example.py declaration imported by tutorials; no copied SDK or compatibility facade.",
+      "sources": [
+        {
+          "label": "Runnable example",
+          "target": "examples/flow_semantics/example.py"
+        },
+        {
+          "label": "Walkthrough",
+          "target": "examples/flow_semantics/README.md"
+        }
+      ],
+      "api_version": "2.1.3",
+      "validation": {
+        "status": "offline-only",
+        "scope": "Six forms: Agent/System with Sequence, Parallel or Graph, on native and real LangGraph, direct and compiled. Offline only; no inference.",
+        "evidence": [
+          {
+            "label": "Measured offline report",
+            "target": "revisions/2.1.3/closeout-evidence/REPORT.md"
+          },
+          {
+            "label": "Exact artifact and evidence hashes",
+            "target": "revisions/2.1.3/implementation-evidence/manifest.json"
+          }
+        ],
+        "wheel_sha256": "d64aad238e5c8a98f5ad383e6436ac9b79a344cb819f60fc431b64a663bbfbe3"
+      },
+      "next_action": "Use the named wheel and scope from implementation evidence. External model/GPU/IAM routes require separate authorization and execution.",
+      "entrypoint": "examples.flow_semantics.example:run"
+    },
+    {
+      "id": "execution_lifecycle",
+      "title": "Execution Lifecycle — API 2.1.3",
+      "group": "patterns",
+      "purpose": "Direct/compiled and async execution, shared action limits and controlled exhaustion.",
+      "flow": "Synthetic JSON input → canonical SDK computation/configuration → asserted output and JSON evidence.",
+      "readiness": "runnable with the exact 2.1.3 candidate; offline validation passed",
+      "implementation": "One example.py declaration imported by tutorials; no copied SDK or compatibility facade.",
+      "sources": [
+        {
+          "label": "Runnable example",
+          "target": "examples/execution_lifecycle/example.py"
+        },
+        {
+          "label": "Walkthrough",
+          "target": "examples/execution_lifecycle/README.md"
+        }
+      ],
+      "api_version": "2.1.3",
+      "validation": {
+        "status": "offline-only",
+        "scope": "Direct/compiled and async execution, shared action limits and controlled exhaustion. Final artifact binding is recorded in implementation evidence. No real inference.",
+        "evidence": [
+          {
+            "label": "Measured offline report",
+            "target": "revisions/2.1.3/closeout-evidence/REPORT.md"
+          },
+          {
+            "label": "Exact artifact and evidence hashes",
+            "target": "revisions/2.1.3/implementation-evidence/manifest.json"
+          }
+        ],
+        "wheel_sha256": "d64aad238e5c8a98f5ad383e6436ac9b79a344cb819f60fc431b64a663bbfbe3"
+      },
+      "next_action": "Use the named wheel and scope from implementation evidence. External model/GPU/IAM routes require separate authorization and execution.",
+      "entrypoint": "examples.execution_lifecycle.example:run"
+    },
+    {
+      "id": "results_lineage",
+      "title": "Results Lineage — API 2.1.3",
+      "group": "patterns",
+      "purpose": "JSON roundtrip, invariants, execution hierarchy, trace and evidence-derived lineage.",
+      "flow": "Synthetic JSON input → canonical SDK computation/configuration → asserted output and JSON evidence.",
+      "readiness": "runnable with the exact 2.1.3 candidate; offline validation passed",
+      "implementation": "One example.py declaration imported by tutorials; no copied SDK or compatibility facade.",
+      "sources": [
+        {
+          "label": "Runnable example",
+          "target": "examples/results_lineage/example.py"
+        },
+        {
+          "label": "Walkthrough",
+          "target": "examples/results_lineage/README.md"
+        }
+      ],
+      "api_version": "2.1.3",
+      "validation": {
+        "status": "offline-only",
+        "scope": "JSON roundtrip, invariants, execution hierarchy, trace and evidence-derived lineage. Final artifact binding is recorded in implementation evidence. No real inference.",
+        "evidence": [
+          {
+            "label": "Measured offline report",
+            "target": "revisions/2.1.3/closeout-evidence/REPORT.md"
+          },
+          {
+            "label": "Exact artifact and evidence hashes",
+            "target": "revisions/2.1.3/implementation-evidence/manifest.json"
+          }
+        ],
+        "wheel_sha256": "d64aad238e5c8a98f5ad383e6436ac9b79a344cb819f60fc431b64a663bbfbe3"
+      },
+      "next_action": "Use the named wheel and scope from implementation evidence. External model/GPU/IAM routes require separate authorization and execution.",
+      "entrypoint": "examples.results_lineage.example:run"
+    },
+    {
+      "id": "episode_memory",
+      "title": "Episode Memory — API 2.1.3",
+      "group": "patterns",
+      "purpose": "Record-to-record memory, observe/update/stop, deterministic replay and native/LangGraph.",
+      "flow": "Synthetic JSON input → canonical SDK computation/configuration → asserted output and JSON evidence.",
+      "readiness": "runnable with the exact 2.1.3 candidate; offline validation passed",
+      "implementation": "One example.py declaration imported by tutorials; no copied SDK or compatibility facade.",
+      "sources": [
+        {
+          "label": "Runnable example",
+          "target": "examples/episode_memory/example.py"
+        },
+        {
+          "label": "Walkthrough",
+          "target": "examples/episode_memory/README.md"
+        }
+      ],
+      "api_version": "2.1.3",
+      "validation": {
+        "status": "offline-only",
+        "scope": "Record-to-record memory, observe/update/stop, deterministic replay and native/LangGraph. Final artifact binding is recorded in implementation evidence. No real inference.",
+        "evidence": [
+          {
+            "label": "Measured offline report",
+            "target": "revisions/2.1.3/closeout-evidence/REPORT.md"
+          },
+          {
+            "label": "Exact artifact and evidence hashes",
+            "target": "revisions/2.1.3/implementation-evidence/manifest.json"
+          }
+        ],
+        "wheel_sha256": "d64aad238e5c8a98f5ad383e6436ac9b79a344cb819f60fc431b64a663bbfbe3"
+      },
+      "next_action": "Use the named wheel and scope from implementation evidence. External model/GPU/IAM routes require separate authorization and execution.",
+      "entrypoint": "examples.episode_memory.example:run"
+    },
+    {
+      "id": "evaluation_checks",
+      "title": "Evaluation Checks — API 2.1.3",
+      "group": "patterns",
+      "purpose": "Exact expected, custom checks, reward metrics, explicit fixture judge and negative control. No semantic model validation.",
+      "flow": "Synthetic JSON input → canonical SDK computation/configuration → asserted output and JSON evidence.",
+      "readiness": "runnable with the exact 2.1.3 candidate; offline validation passed",
+      "implementation": "One example.py declaration imported by tutorials; no copied SDK or compatibility facade.",
+      "sources": [
+        {
+          "label": "Runnable example",
+          "target": "examples/evaluation_checks/example.py"
+        },
+        {
+          "label": "Walkthrough",
+          "target": "examples/evaluation_checks/README.md"
+        }
+      ],
+      "api_version": "2.1.3",
+      "validation": {
+        "status": "offline-only",
+        "scope": "Exact expected, custom checks, reward metrics, explicit fixture judge and negative control. No semantic model validation. Final artifact binding is recorded in implementation evidence. No real inference.",
+        "evidence": [
+          {
+            "label": "Measured offline report",
+            "target": "revisions/2.1.3/closeout-evidence/REPORT.md"
+          },
+          {
+            "label": "Exact artifact and evidence hashes",
+            "target": "revisions/2.1.3/implementation-evidence/manifest.json"
+          }
+        ],
+        "wheel_sha256": "d64aad238e5c8a98f5ad383e6436ac9b79a344cb819f60fc431b64a663bbfbe3"
+      },
+      "next_action": "Use the named wheel and scope from implementation evidence. External model/GPU/IAM routes require separate authorization and execution.",
+      "entrypoint": "examples.evaluation_checks.example:run"
+    },
+    {
+      "id": "model_serving",
+      "title": "Model Serving — API 2.1.3",
+      "group": "patterns",
+      "purpose": "Artifact and explicit server configuration/inspection only. Lifecycle exercised separately with fake HTTP/process in SDK tests; no GPU or model started.",
+      "flow": "Synthetic JSON input → canonical SDK computation/configuration → asserted output and JSON evidence.",
+      "readiness": "runnable with the exact 2.1.3 candidate; offline validation passed",
+      "implementation": "One example.py declaration imported by tutorials; no copied SDK or compatibility facade.",
+      "sources": [
+        {
+          "label": "Runnable example",
+          "target": "examples/model_serving/example.py"
+        },
+        {
+          "label": "Walkthrough",
+          "target": "examples/model_serving/README.md"
+        }
+      ],
+      "api_version": "2.1.3",
+      "validation": {
+        "status": "offline-only",
+        "scope": "Artifact and explicit server configuration/inspection only. Lifecycle exercised separately with fake HTTP/process in SDK tests; no GPU or model started. Final artifact binding is recorded in implementation evidence. No real inference.",
+        "evidence": [
+          {
+            "label": "Measured offline report",
+            "target": "revisions/2.1.3/closeout-evidence/REPORT.md"
+          },
+          {
+            "label": "Exact artifact and evidence hashes",
+            "target": "revisions/2.1.3/implementation-evidence/manifest.json"
+          }
+        ],
+        "wheel_sha256": "d64aad238e5c8a98f5ad383e6436ac9b79a344cb819f60fc431b64a663bbfbe3"
+      },
+      "next_action": "Use the named wheel and scope from implementation evidence. External model/GPU/IAM routes require separate authorization and execution.",
+      "entrypoint": "examples.model_serving.example:run"
+    },
+    {
+      "id": "package_install",
+      "title": "Package Install — API 2.1.3",
+      "group": "patterns",
+      "purpose": "Installed version/API identity; CLI and generated projects are checked separately in SDK/distribution evidence.",
+      "flow": "Synthetic JSON input → canonical SDK computation/configuration → asserted output and JSON evidence.",
+      "readiness": "runnable with the exact 2.1.3 candidate; offline validation passed",
+      "implementation": "One example.py declaration imported by tutorials; no copied SDK or compatibility facade.",
+      "sources": [
+        {
+          "label": "Runnable example",
+          "target": "examples/package_install/example.py"
+        },
+        {
+          "label": "Walkthrough",
+          "target": "examples/package_install/README.md"
+        }
+      ],
+      "api_version": "2.1.3",
+      "validation": {
+        "status": "offline-only",
+        "scope": "Installed version/API identity; CLI and generated projects are checked separately in SDK/distribution evidence. Final artifact binding is recorded in implementation evidence. No real inference.",
+        "evidence": [
+          {
+            "label": "Measured offline report",
+            "target": "revisions/2.1.3/closeout-evidence/REPORT.md"
+          },
+          {
+            "label": "Exact artifact and evidence hashes",
+            "target": "revisions/2.1.3/implementation-evidence/manifest.json"
+          }
+        ],
+        "wheel_sha256": "d64aad238e5c8a98f5ad383e6436ac9b79a344cb819f60fc431b64a663bbfbe3"
+      },
+      "next_action": "Use the named wheel and scope from implementation evidence. External model/GPU/IAM routes require separate authorization and execution.",
+      "entrypoint": "examples.package_install.example:run"
+    },
+    {
+      "id": "agent_contracts",
+      "title": "Agent Contracts — API 2.1.3",
+      "group": "patterns",
+      "purpose": "Required/allowed Tools, actor budget and portable JSON Schema positive/negative on four Python Runtime frameworks.",
+      "flow": "Synthetic JSON input → canonical SDK computation/configuration → asserted output and JSON evidence.",
+      "readiness": "runnable with the exact 2.1.3 candidate; offline validation passed",
+      "implementation": "One example.py declaration imported by tutorials; no copied SDK or compatibility facade.",
+      "sources": [
+        {
+          "label": "Runnable example",
+          "target": "examples/agent_contracts/example.py"
+        },
+        {
+          "label": "Walkthrough",
+          "target": "examples/agent_contracts/README.md"
+        }
+      ],
+      "api_version": "2.1.3",
+      "validation": {
+        "status": "offline-only",
+        "scope": "Required/allowed Tools, actor budget and portable JSON Schema positive/negative on four Python Runtime frameworks. Final artifact binding is recorded in implementation evidence. No real inference.",
+        "evidence": [
+          {
+            "label": "Measured offline report",
+            "target": "revisions/2.1.3/closeout-evidence/REPORT.md"
+          },
+          {
+            "label": "Exact artifact and evidence hashes",
+            "target": "revisions/2.1.3/implementation-evidence/manifest.json"
+          }
+        ],
+        "wheel_sha256": "d64aad238e5c8a98f5ad383e6436ac9b79a344cb819f60fc431b64a663bbfbe3"
+      },
+      "next_action": "Use the named wheel and scope from implementation evidence. External model/GPU/IAM routes require separate authorization and execution.",
+      "entrypoint": "examples.agent_contracts.example:run"
+    },
+    {
+      "api_version": "2.1.3",
+      "id": "framework_interop",
+      "title": "Cuatro frameworks juntos",
+      "group": "applications",
+      "purpose": "Coordinar actores de cuatro SDKs y conservar la evidencia de cada Tool.",
+      "flow": "42 y trail vacío → native, LangGraph, OpenAI Agents y Strands → 46 y cuatro identidades. También se probó la asignación mixta Python/OpenAI/Ollama/Bedrock.",
+      "entrypoint": "examples.framework_interop.example:run",
+      "sources": [
+        {
+          "label": "Implementación",
+          "target": "examples/framework_interop/example.py"
+        }
+      ],
+      "validation": {
+        "status": "live-tested",
+        "scope": "Interop Python y mixta ejecutadas. La tarea exige argumentos intactos y resultados observados de Tools; no es una certificación de cualquier workflow.",
+        "evidence": [
+          {
+            "label": "Campaña y límites",
+            "target": "revisions/2.1.3/closeout-evidence/REPORT.md"
+          }
+        ]
+      }
+    },
+    {
+      "api_version": "2.1.3",
+      "id": "studio",
+      "title": "Studio",
+      "group": "applications",
+      "purpose": "Conversar, conservar contexto y usar una calculadora con un proveedor y framework explícitos.",
+      "flow": "Conversación de tres turnos → contexto acotado, Tool y actor → texto, evidencia y RunResult. Python es un mock visible.",
+      "sources": [
+        {
+          "label": "Abrir Studio",
+          "target": "examples/agentic_systems_studio/README.md"
+        },
+        {
+          "label": "Aplicación",
+          "target": "examples/agentic_systems_studio/src/agentic_systems_studio/conversation.py"
+        }
+      ],
+      "validation": {
+        "status": "live-tested",
+        "scope": "Backend: 16 combinaciones, tres turnos cada una. Las pruebas de widgets y sus límites se detallan en el informe; no implica cualquier consulta o entorno.",
+        "evidence": [
+          {
+            "label": "Resultados",
+            "target": "revisions/2.1.3/closeout-evidence/REPORT.md"
+          }
+        ]
+      }
+    },
+    {
+      "id": "api_walkthrough",
+      "title": "Toda la API: de Tool a Eval",
+      "group": "applications",
+      "api_version": "2.1.3",
+      "purpose": "Recorrer la gramática completa y una aprobación de pedidos con resultados observables.",
+      "flow": "Tools y Skills → seis flujos Agent/System → dos pedidos, decisiones, memoria y Eval → resultados y linaje.",
+      "entrypoint": "examples.api_walkthrough.example:run",
+      "sources": [
+        {
+          "label": "Notebook autónomo",
+          "target": "examples/api_walkthrough/01_api_user_guide.ipynb"
+        },
+        {
+          "label": "Declaración compartida",
+          "target": "examples/api_walkthrough/example.py"
+        }
+      ],
+      "validation": {
+        "status": "live-tested",
+        "scope": "Notebook ejecutado offline. La declaración integrada se probó en 16 combinaciones; quote es determinista y los actores approve/review usan el runtime explícito. Conserva fallos previos y evidencia de Tools.",
+        "evidence": [
+          {
+            "label": "Cierre final",
+            "target": "revisions/2.1.3/closeout-evidence/REPORT.md"
+          },
+          {
+            "label": "RunResult y lineage",
+            "target": "docs/RUNRESULTS_LINEAGE_213.md"
+          }
+        ]
+      }
+    }
+  ],
+  "current_api_version": "2.1.3",
+  "current_adaptations": {
+    "historical_experiments": 34,
+    "offline_executed": 34,
+    "target_configuration_only": 3
+  }
+}

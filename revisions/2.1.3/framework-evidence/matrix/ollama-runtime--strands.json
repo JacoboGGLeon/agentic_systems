@@ -1,0 +1,317 @@
+{
+  "name": "ollama-runtime--strands",
+  "passed": true,
+  "report": {
+    "provider": "ollama-runtime",
+    "framework": "strands",
+    "result": {
+      "text": "OK.",
+      "final": {
+        "text": "OK."
+      },
+      "data": {
+        "text": "OK.\n"
+      },
+      "ok": true,
+      "messages": [],
+      "raw_responses": [],
+      "usage": {
+        "inputTokens": 220,
+        "outputTokens": 20,
+        "totalTokens": 240,
+        "cacheReadInputTokens": 96,
+        "input_tokens": 220,
+        "output_tokens": 20,
+        "total_tokens": 240,
+        "client_duration_ms": 1734.118,
+        "requests": 2,
+        "inference_requests": 2,
+        "tool_calls": 1
+      },
+      "engine": "ollama-runtime",
+      "model": "gemma4:31b-cloud",
+      "mode": "default",
+      "trace_schema_version": "agentic_systems.trace.v1",
+      "validation": null,
+      "errors": [],
+      "meta": {
+        "name": "matrix",
+        "kind": "agent",
+        "backend": "native",
+        "skills": [
+          "evidence"
+        ],
+        "actions_observed": 1,
+        "input": "Call certify with value=37. The tool output is the required result."
+      },
+      "execution_id": "run-93d39d075c054f6683fc7bbfa0773941",
+      "parent_execution_id": null,
+      "children": [
+        {
+          "text": "OK.",
+          "final": {
+            "text": "OK."
+          },
+          "data": {
+            "text": "OK.\n"
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {
+            "inputTokens": 220,
+            "outputTokens": 20,
+            "totalTokens": 240,
+            "cacheReadInputTokens": 96,
+            "input_tokens": 220,
+            "output_tokens": 20,
+            "total_tokens": 240,
+            "client_duration_ms": 1734.118,
+            "requests": 2,
+            "inference_requests": 2,
+            "tool_calls": 1
+          },
+          "engine": "ollama-runtime",
+          "model": "gemma4:31b-cloud",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "matrix",
+            "kind": "model",
+            "framework": "strands"
+          },
+          "execution_id": "run-93d801da39cf485395e63d429ea3a5a8",
+          "parent_execution_id": "run-93d39d075c054f6683fc7bbfa0773941",
+          "children": [
+            {
+              "text": "OK.",
+              "final": {
+                "text": "OK."
+              },
+              "data": {
+                "text": "OK.\n"
+              },
+              "ok": true,
+              "messages": [
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "text": "Call certify with value=37. The tool output is the required result."
+                    }
+                  ],
+                  "tracking_id": "1b5b874f-8e4c-4df7-a255-79b6ed4b9da3"
+                },
+                {
+                  "role": "assistant",
+                  "content": [
+                    {
+                      "toolUse": {
+                        "toolUseId": "call_edogsch7",
+                        "name": "certify",
+                        "input": {
+                          "value": 37
+                        }
+                      }
+                    }
+                  ],
+                  "metadata": {
+                    "usage": {
+                      "inputTokens": 94,
+                      "outputTokens": 13,
+                      "totalTokens": 107,
+                      "cacheReadInputTokens": 32
+                    },
+                    "metrics": {
+                      "latencyMs": 0,
+                      "timeToFirstByteMs": 912
+                    }
+                  },
+                  "tracking_id": "04b5bc3a-0fce-4739-ad3f-ba6d546c5735"
+                },
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "toolResult": {
+                        "toolUseId": "call_edogsch7",
+                        "status": "success",
+                        "content": [
+                          {
+                            "text": "{\"value\": 37, \"verified\": true}"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "tracking_id": "4c83cbf3-6560-407e-b8a1-ead8eedfbfe8"
+                },
+                {
+                  "role": "assistant",
+                  "content": [
+                    {
+                      "text": "OK."
+                    }
+                  ],
+                  "metadata": {
+                    "usage": {
+                      "inputTokens": 126,
+                      "outputTokens": 7,
+                      "totalTokens": 133,
+                      "cacheReadInputTokens": 64
+                    },
+                    "metrics": {
+                      "latencyMs": 0,
+                      "timeToFirstByteMs": 819
+                    }
+                  },
+                  "tracking_id": "e396ed38-e645-45f1-97c3-0160dc8e73f0"
+                }
+              ],
+              "raw_responses": [
+                {
+                  "role": "assistant",
+                  "content": [
+                    {
+                      "text": "OK."
+                    }
+                  ],
+                  "metadata": {
+                    "usage": {
+                      "inputTokens": 126,
+                      "outputTokens": 7,
+                      "totalTokens": 133,
+                      "cacheReadInputTokens": 64
+                    },
+                    "metrics": {
+                      "latencyMs": 0,
+                      "timeToFirstByteMs": 819
+                    }
+                  },
+                  "tracking_id": "e396ed38-e645-45f1-97c3-0160dc8e73f0"
+                }
+              ],
+              "usage": {
+                "inputTokens": 220,
+                "outputTokens": 20,
+                "totalTokens": 240,
+                "cacheReadInputTokens": 96,
+                "input_tokens": 220,
+                "output_tokens": 20,
+                "total_tokens": 240,
+                "client_duration_ms": 1734.118,
+                "requests": 2,
+                "scheduler": {
+                  "attempts": 1,
+                  "retries": 0,
+                  "timed_out": false,
+                  "latency_ms": 1749.83
+                },
+                "inference_requests": 2,
+                "tool_calls": 1
+              },
+              "engine": "ollama-runtime",
+              "model": "gemma4:31b-cloud",
+              "mode": "eval",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": {
+                "ok": true,
+                "issues": []
+              },
+              "errors": [],
+              "meta": {
+                "source_result_type": "AgentResult",
+                "framework_adapter": "strands",
+                "input": "Call certify with value=37. The tool output is the required result.",
+                "stop_reason": "end_turn",
+                "rejected_tool_calls": [],
+                "output_materialization": [],
+                "runtime": {
+                  "provider": "ollama-runtime",
+                  "model_id": "gemma4:31b-cloud",
+                  "region_name": null,
+                  "endpoint": "https://ollama.com/v1",
+                  "metadata": {},
+                  "provider_priority": [
+                    "openai-runtime",
+                    "bedrock-runtime",
+                    "ollama-runtime"
+                  ],
+                  "allow_python_fallback": false,
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  }
+                },
+                "scheduler": {
+                  "max_turns": 5,
+                  "max_tool_calls": 3,
+                  "timeout_s": 60,
+                  "max_concurrency": 1,
+                  "max_retries": 0,
+                  "backoff_s": 0.0
+                },
+                "scheduler_execution": {
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "attempts": 1,
+                  "retries": 0,
+                  "timed_out": false,
+                  "latency_ms": 1749.83
+                },
+                "framework": "strands",
+                "framework_requested": "strands",
+                "framework_config": {
+                  "name": "strands",
+                  "agent_kwargs": {},
+                  "run_kwargs": {}
+                },
+                "agent_name": "matrix",
+                "requested_engine": "ollama-runtime",
+                "runtime_engine": "ollama-runtime",
+                "execution_engine": "ollama-runtime"
+              },
+              "execution_id": "run-9340473d7c2642f98077c6f9bc3fdfa0",
+              "parent_execution_id": "run-93d801da39cf485395e63d429ea3a5a8",
+              "children": [],
+              "tool_events": [
+                {
+                  "id": "call_edogsch7",
+                  "name": "certify",
+                  "input": {
+                    "value": 37
+                  },
+                  "output": {
+                    "value": 37,
+                    "verified": true
+                  },
+                  "ok": true,
+                  "error": null,
+                  "duration_ms": null,
+                  "meta": {
+                    "source": "strands"
+                  }
+                }
+              ]
+            }
+          ],
+          "tool_events": []
+        }
+      ],
+      "tool_events": []
+    }
+  },
+  "elapsed_s": 1.757
+}

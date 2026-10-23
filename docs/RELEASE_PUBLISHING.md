@@ -1,5 +1,7 @@
 # Publish once, verify every time
 
+> **Referencia anterior a la API 2.1.3.** Se conserva como diseño, operación o evidencia histórica. Para implementar con la API vigente, consulta [la guía actual](API_213.md) y [tutorials](../tutorials/README.md). Sus ejemplos antiguos no son otra API soportada.
+
 The release is an identity, not a fresh build on every retry. The wheel, source
 archive, Studio, skill and validation bundles travel together under one reviewed
 manifest. Repeating publication must not change their bytes or move their tag.

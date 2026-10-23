@@ -76,6 +76,7 @@ def resolve_studio_app(app_path: str | Path | None = None) -> Path:
         candidates.append(Path(configured))
     candidates.extend(
         [
+            Path(__file__).with_name("ui.py"),
             Path(__file__).resolve().parents[2] / "app.py",
             Path.cwd() / "examples" / "agentic_systems_studio" / "app.py",
             Path.cwd() / "app.py",
@@ -186,7 +187,13 @@ def start_studio_server(
     trusted_proxy: bool = False,
 ) -> StudioServer:
     app = resolve_studio_app(app_path)
-    logs = Path(log_dir).resolve() if log_dir is not None else app.parent / "logs"
+    # Resolve the caller's configuration before the child changes directory.
+    from .environment import load_studio_environment
+    try:
+        load_studio_environment()
+    except FileNotFoundError:
+        pass
+    logs = Path(log_dir).resolve() if log_dir is not None else Path.cwd() / ".agentic-studio"
     logs.mkdir(parents=True, exist_ok=True)
     pid_path = logs / "streamlit.pid"
     log_path = logs / "streamlit.log"

@@ -29,7 +29,7 @@ TOOL_ASSETS = tuple(
         name=name.replace("_", " ").title(),
         description=tool.description,
         capability="deterministic-operation",
-        metadata={"tool_identity": tool.identity, "input_schema": tool.input_schema},
+        metadata={"tool_name": tool.name, "input_schema": tool.inspect()["input_schema"]},
     )
     for name, tool in TOOLS.items()
 )

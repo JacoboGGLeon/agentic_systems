@@ -1,0 +1,278 @@
+{
+  "source": "examples/patterns/bounded_conversation",
+  "captured_boundaries": 2,
+  "root_results": 1,
+  "scope": "Observed SDK RunResult values; descendants retained inside parents. No fabricated results for configuration-only examples.",
+  "results": [
+    {
+      "run_result": {
+        "text": "",
+        "final": {
+          "history": [
+            "first",
+            "second",
+            "current"
+          ]
+        },
+        "data": {
+          "history": [
+            "first",
+            "second",
+            "current"
+          ]
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "memory",
+          "kind": "agent",
+          "backend": "native",
+          "skills": [],
+          "actions_observed": 1,
+          "input": {
+            "messages": [
+              "old",
+              "first",
+              "second",
+              "current"
+            ]
+          }
+        },
+        "execution_id": "run-8ccc42f8cc384b16b9e622a5010db40c",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "",
+            "final": {
+              "history": [
+                "first",
+                "second",
+                "current"
+              ]
+            },
+            "data": {
+              "history": [
+                "first",
+                "second",
+                "current"
+              ]
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 1,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "bound",
+              "kind": "action"
+            },
+            "execution_id": "run-fa56c8bd61994a3298baa326ef74a6e9",
+            "parent_execution_id": "run-8ccc42f8cc384b16b9e622a5010db40c",
+            "children": [
+              {
+                "text": "",
+                "final": {
+                  "history": [
+                    "first",
+                    "second",
+                    "current"
+                  ]
+                },
+                "data": {
+                  "history": [
+                    "first",
+                    "second",
+                    "current"
+                  ]
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "requests": 1,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "tool",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "tool_name": "",
+                  "input": {
+                    "messages": [
+                      "old",
+                      "first",
+                      "second",
+                      "current"
+                    ]
+                  },
+                  "tool_input": {
+                    "messages": [
+                      "old",
+                      "first",
+                      "second",
+                      "current"
+                    ]
+                  }
+                },
+                "execution_id": "run-f785f4ae055c4e80acb0e08d47084e55",
+                "parent_execution_id": "run-fa56c8bd61994a3298baa326ef74a6e9",
+                "children": [],
+                "tool_events": [
+                  {
+                    "id": "tool-a29cb7bb20b9478fa585da8144941fff",
+                    "name": "bound_history",
+                    "input": {
+                      "messages": [
+                        "old",
+                        "first",
+                        "second",
+                        "current"
+                      ]
+                    },
+                    "output": {
+                      "data": {
+                        "history": [
+                          "first",
+                          "second",
+                          "current"
+                        ]
+                      }
+                    },
+                    "ok": true,
+                    "error": null,
+                    "duration_ms": null,
+                    "meta": {}
+                  }
+                ]
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "examples/patterns/bounded_conversation",
+        "question": "{\"messages\": [\"old\", \"first\", \"second\", \"current\"]}",
+        "goal": "",
+        "answer": "{\"history\": [\"first\", \"second\", \"current\"]}",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-8ccc42f8cc384b16b9e622a5010db40c",
+            "kind": "execution",
+            "title": "memory",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "history": [
+                  "first",
+                  "second",
+                  "current"
+                ]
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-fa56c8bd61994a3298baa326ef74a6e9",
+            "kind": "execution",
+            "title": "bound",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "history": [
+                  "first",
+                  "second",
+                  "current"
+                ]
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-f785f4ae055c4e80acb0e08d47084e55",
+            "kind": "execution",
+            "title": "tool",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "history": [
+                  "first",
+                  "second",
+                  "current"
+                ]
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "tool-a29cb7bb20b9478fa585da8144941fff",
+            "kind": "tool",
+            "title": "bound_history",
+            "summary": "completed",
+            "source": "bound_history",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "history": [
+                  "first",
+                  "second",
+                  "current"
+                ]
+              }
+            }
+          }
+        ],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    }
+  ]
+}

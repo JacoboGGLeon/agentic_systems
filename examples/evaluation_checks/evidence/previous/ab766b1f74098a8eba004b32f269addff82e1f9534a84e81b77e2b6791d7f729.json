@@ -1,0 +1,1139 @@
+{
+  "example": "evaluation_checks",
+  "passed": true,
+  "source_sha256": "787cf8cbb46edb6a1dc18e09c77705cb1864adfbaa30af4b8b2d5a47c1466b45",
+  "report": {
+    "input": {
+      "value": 3
+    },
+    "process": "Exact expected + check + explicit fixture judge; separate episode check",
+    "output": {
+      "text": "",
+      "final": null,
+      "data": {
+        "ok": true,
+        "total": 1,
+        "passed": 1,
+        "failed": 0,
+        "pass_rate": 1.0,
+        "cases": [
+          {
+            "name": "0",
+            "ok": true,
+            "input": {
+              "value": 3
+            },
+            "expected": {
+              "data": {
+                "value": 4
+              }
+            },
+            "result": {
+              "text": "",
+              "final": null,
+              "data": {
+                "value": 4
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {},
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "calculator",
+                "kind": "agent",
+                "backend": "native",
+                "skills": []
+              },
+              "execution_id": "run-fe31ad0051f743a5bdb151eca8827832",
+              "parent_execution_id": null,
+              "children": [
+                {
+                  "text": "",
+                  "final": null,
+                  "data": {
+                    "value": 4
+                  },
+                  "ok": true,
+                  "messages": [],
+                  "raw_responses": [],
+                  "usage": {},
+                  "engine": "python-runtime",
+                  "model": "",
+                  "mode": "default",
+                  "trace_schema_version": "agentic_systems.trace.v1",
+                  "validation": null,
+                  "errors": [],
+                  "meta": {
+                    "name": "increment",
+                    "kind": "action"
+                  },
+                  "execution_id": "run-f2eb74744cf444f39c410cb371900c11",
+                  "parent_execution_id": "run-fe31ad0051f743a5bdb151eca8827832",
+                  "children": [],
+                  "tool_events": []
+                }
+              ],
+              "tool_events": []
+            },
+            "checks": [
+              {
+                "ok": true,
+                "issues": []
+              },
+              {
+                "ok": true,
+                "issues": []
+              }
+            ],
+            "judge": {
+              "ok": true,
+              "criteria": {
+                "correctness": 1.0
+              },
+              "score": 1.0,
+              "raw": {
+                "criteria": {
+                  "correctness": 1.0
+                },
+                "findings": [],
+                "rationale": "Fixture: deterministic oracle confirmed the supplied case."
+              },
+              "findings": [],
+              "consistent": true,
+              "certification_recorded": true,
+              "threshold": 0.9,
+              "usage": {}
+            },
+            "candidate_usage": {},
+            "judge_usage": {}
+          }
+        ]
+      },
+      "ok": true,
+      "messages": [],
+      "raw_responses": [],
+      "usage": {},
+      "engine": "python-runtime",
+      "model": "",
+      "mode": "default",
+      "trace_schema_version": "agentic_systems.trace.v1",
+      "validation": null,
+      "errors": [],
+      "meta": {
+        "name": "contract",
+        "kind": "eval",
+        "expected_failure_ids": [],
+        "actions_observed": 3,
+        "judge_mode": "deterministic-fixture"
+      },
+      "execution_id": "run-e6145384249746b1928a7ddbbc6a7788",
+      "parent_execution_id": null,
+      "children": [
+        {
+          "text": "",
+          "final": null,
+          "data": {
+            "value": 4
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {},
+          "engine": "python-runtime",
+          "model": "",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "calculator",
+            "kind": "agent",
+            "backend": "native",
+            "skills": []
+          },
+          "execution_id": "run-fe31ad0051f743a5bdb151eca8827832",
+          "parent_execution_id": "run-e6145384249746b1928a7ddbbc6a7788",
+          "children": [
+            {
+              "text": "",
+              "final": null,
+              "data": {
+                "value": 4
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {},
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "increment",
+                "kind": "action"
+              },
+              "execution_id": "run-f2eb74744cf444f39c410cb371900c11",
+              "parent_execution_id": "run-fe31ad0051f743a5bdb151eca8827832",
+              "children": [],
+              "tool_events": []
+            }
+          ],
+          "tool_events": []
+        },
+        {
+          "text": "",
+          "final": null,
+          "data": {
+            "criteria": {
+              "correctness": 1.0
+            },
+            "findings": [],
+            "rationale": "Fixture: deterministic oracle confirmed the supplied case."
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {},
+          "engine": "python-runtime",
+          "model": "",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "fixture_judge",
+            "kind": "agent",
+            "backend": "native",
+            "skills": []
+          },
+          "execution_id": "run-be975db497b147749684dd2bc69ab49d",
+          "parent_execution_id": "run-e6145384249746b1928a7ddbbc6a7788",
+          "children": [
+            {
+              "text": "",
+              "final": null,
+              "data": {
+                "criteria": {
+                  "correctness": 1.0
+                },
+                "findings": [],
+                "rationale": "Fixture: deterministic oracle confirmed the supplied case."
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {},
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "score",
+                "kind": "action"
+              },
+              "execution_id": "run-9e922c6724b34d03857a0a4f1b7ecb30",
+              "parent_execution_id": "run-be975db497b147749684dd2bc69ab49d",
+              "children": [],
+              "tool_events": []
+            }
+          ],
+          "tool_events": []
+        }
+      ],
+      "tool_events": []
+    },
+    "negative": {
+      "text": "",
+      "final": null,
+      "data": {
+        "ok": false,
+        "total": 1,
+        "passed": 0,
+        "failed": 1,
+        "pass_rate": 0.0,
+        "cases": [
+          {
+            "name": "0",
+            "ok": false,
+            "input": {
+              "value": 3
+            },
+            "expected": {
+              "data": {
+                "value": 999
+              }
+            },
+            "result": {
+              "text": "",
+              "final": null,
+              "data": {
+                "value": 4
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {},
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "calculator",
+                "kind": "agent",
+                "backend": "native",
+                "skills": []
+              },
+              "execution_id": "run-4fbe1078e9ee48d092ec4609e540e425",
+              "parent_execution_id": null,
+              "children": [
+                {
+                  "text": "",
+                  "final": null,
+                  "data": {
+                    "value": 4
+                  },
+                  "ok": true,
+                  "messages": [],
+                  "raw_responses": [],
+                  "usage": {},
+                  "engine": "python-runtime",
+                  "model": "",
+                  "mode": "default",
+                  "trace_schema_version": "agentic_systems.trace.v1",
+                  "validation": null,
+                  "errors": [],
+                  "meta": {
+                    "name": "increment",
+                    "kind": "action"
+                  },
+                  "execution_id": "run-aa75d9a5b3e64d29af6e9ad206b0b246",
+                  "parent_execution_id": "run-4fbe1078e9ee48d092ec4609e540e425",
+                  "children": [],
+                  "tool_events": []
+                }
+              ],
+              "tool_events": []
+            },
+            "checks": [
+              {
+                "ok": false,
+                "issues": [
+                  {
+                    "code": "expected_mismatch",
+                    "path": "data"
+                  }
+                ]
+              },
+              {
+                "ok": true,
+                "issues": []
+              }
+            ],
+            "judge": {
+              "ok": true,
+              "criteria": {
+                "correctness": 1.0
+              },
+              "score": 1.0,
+              "raw": {
+                "criteria": {
+                  "correctness": 1.0
+                },
+                "findings": [],
+                "rationale": "Fixture: deterministic oracle confirmed the supplied case."
+              },
+              "findings": [],
+              "consistent": true,
+              "certification_recorded": true,
+              "threshold": 0.9,
+              "usage": {}
+            },
+            "candidate_usage": {},
+            "judge_usage": {}
+          }
+        ]
+      },
+      "ok": false,
+      "messages": [],
+      "raw_responses": [],
+      "usage": {},
+      "engine": "python-runtime",
+      "model": "",
+      "mode": "default",
+      "trace_schema_version": "agentic_systems.trace.v1",
+      "validation": null,
+      "errors": [
+        {
+          "code": "eval_failed",
+          "message": "One or more required cases failed"
+        }
+      ],
+      "meta": {
+        "name": "contract",
+        "kind": "eval",
+        "expected_failure_ids": [],
+        "actions_observed": 3,
+        "judge_mode": "deterministic-fixture"
+      },
+      "execution_id": "run-3b1855b993974c2684512edeae2d51a0",
+      "parent_execution_id": null,
+      "children": [
+        {
+          "text": "",
+          "final": null,
+          "data": {
+            "value": 4
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {},
+          "engine": "python-runtime",
+          "model": "",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "calculator",
+            "kind": "agent",
+            "backend": "native",
+            "skills": []
+          },
+          "execution_id": "run-4fbe1078e9ee48d092ec4609e540e425",
+          "parent_execution_id": "run-3b1855b993974c2684512edeae2d51a0",
+          "children": [
+            {
+              "text": "",
+              "final": null,
+              "data": {
+                "value": 4
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {},
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "increment",
+                "kind": "action"
+              },
+              "execution_id": "run-aa75d9a5b3e64d29af6e9ad206b0b246",
+              "parent_execution_id": "run-4fbe1078e9ee48d092ec4609e540e425",
+              "children": [],
+              "tool_events": []
+            }
+          ],
+          "tool_events": []
+        },
+        {
+          "text": "",
+          "final": null,
+          "data": {
+            "criteria": {
+              "correctness": 1.0
+            },
+            "findings": [],
+            "rationale": "Fixture: deterministic oracle confirmed the supplied case."
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {},
+          "engine": "python-runtime",
+          "model": "",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "fixture_judge",
+            "kind": "agent",
+            "backend": "native",
+            "skills": []
+          },
+          "execution_id": "run-303ad6353442420e9918223ac7df1d1c",
+          "parent_execution_id": "run-3b1855b993974c2684512edeae2d51a0",
+          "children": [
+            {
+              "text": "",
+              "final": null,
+              "data": {
+                "criteria": {
+                  "correctness": 1.0
+                },
+                "findings": [],
+                "rationale": "Fixture: deterministic oracle confirmed the supplied case."
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {},
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "score",
+                "kind": "action"
+              },
+              "execution_id": "run-8af497c9088141718d6220a61f516622",
+              "parent_execution_id": "run-303ad6353442420e9918223ac7df1d1c",
+              "children": [],
+              "tool_events": []
+            }
+          ],
+          "tool_events": []
+        }
+      ],
+      "tool_events": []
+    },
+    "episode": {
+      "text": "",
+      "final": null,
+      "data": {
+        "ok": true,
+        "total": 1,
+        "passed": 1,
+        "failed": 0,
+        "pass_rate": 1.0,
+        "cases": [
+          {
+            "name": "0",
+            "ok": true,
+            "input": {},
+            "expected": {
+              "ok": true
+            },
+            "result": {
+              "text": "",
+              "final": null,
+              "data": {
+                "outputs": [
+                  {
+                    "total": 2
+                  },
+                  {
+                    "total": 5
+                  }
+                ],
+                "history": [
+                  {
+                    "step": 0,
+                    "record": {
+                      "amount": 2
+                    },
+                    "memory_before": {
+                      "total": 0
+                    },
+                    "memory_after": {
+                      "total": 2
+                    },
+                    "graph_state": {
+                      "run": {
+                        "text": "",
+                        "final": null,
+                        "data": {
+                          "total": 2
+                        },
+                        "ok": true,
+                        "messages": [],
+                        "raw_responses": [],
+                        "usage": {},
+                        "engine": "python-runtime",
+                        "model": "",
+                        "mode": "default",
+                        "trace_schema_version": "agentic_systems.trace.v1",
+                        "validation": null,
+                        "errors": [],
+                        "meta": {
+                          "name": "sum",
+                          "kind": "agent",
+                          "backend": "native",
+                          "skills": []
+                        },
+                        "execution_id": "run-2e293a71693448489ff6d57b66fdc737",
+                        "parent_execution_id": null,
+                        "children": [
+                          {
+                            "text": "",
+                            "final": null,
+                            "data": {
+                              "total": 2
+                            },
+                            "ok": true,
+                            "messages": [],
+                            "raw_responses": [],
+                            "usage": {},
+                            "engine": "python-runtime",
+                            "model": "",
+                            "mode": "default",
+                            "trace_schema_version": "agentic_systems.trace.v1",
+                            "validation": null,
+                            "errors": [],
+                            "meta": {
+                              "name": "sum",
+                              "kind": "action"
+                            },
+                            "execution_id": "run-cf91548168e645a98d1cba100db108bd",
+                            "parent_execution_id": "run-2e293a71693448489ff6d57b66fdc737",
+                            "children": [],
+                            "tool_events": []
+                          }
+                        ],
+                        "tool_events": []
+                      }
+                    }
+                  },
+                  {
+                    "step": 1,
+                    "record": {
+                      "amount": 3
+                    },
+                    "memory_before": {
+                      "total": 2
+                    },
+                    "memory_after": {
+                      "total": 5
+                    },
+                    "graph_state": {
+                      "run": {
+                        "text": "",
+                        "final": null,
+                        "data": {
+                          "total": 5
+                        },
+                        "ok": true,
+                        "messages": [],
+                        "raw_responses": [],
+                        "usage": {},
+                        "engine": "python-runtime",
+                        "model": "",
+                        "mode": "default",
+                        "trace_schema_version": "agentic_systems.trace.v1",
+                        "validation": null,
+                        "errors": [],
+                        "meta": {
+                          "name": "sum",
+                          "kind": "agent",
+                          "backend": "native",
+                          "skills": []
+                        },
+                        "execution_id": "run-f25655e69fbc4da9a3ee660a2a717d6e",
+                        "parent_execution_id": null,
+                        "children": [
+                          {
+                            "text": "",
+                            "final": null,
+                            "data": {
+                              "total": 5
+                            },
+                            "ok": true,
+                            "messages": [],
+                            "raw_responses": [],
+                            "usage": {},
+                            "engine": "python-runtime",
+                            "model": "",
+                            "mode": "default",
+                            "trace_schema_version": "agentic_systems.trace.v1",
+                            "validation": null,
+                            "errors": [],
+                            "meta": {
+                              "name": "sum",
+                              "kind": "action"
+                            },
+                            "execution_id": "run-9fe0a840be5342b69ea2d474937a72ff",
+                            "parent_execution_id": "run-f25655e69fbc4da9a3ee660a2a717d6e",
+                            "children": [],
+                            "tool_events": []
+                          }
+                        ],
+                        "tool_events": []
+                      }
+                    }
+                  }
+                ],
+                "summary": {
+                  "memory": {
+                    "total": 5
+                  },
+                  "processed": 2,
+                  "terminated": true,
+                  "truncated": false
+                }
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {},
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "ledger",
+                "kind": "environment",
+                "actions_observed": 8
+              },
+              "execution_id": "run-f3e8911dd751477784cd2dbecc018389",
+              "parent_execution_id": null,
+              "children": [
+                {
+                  "text": "",
+                  "final": null,
+                  "data": {
+                    "total": 2
+                  },
+                  "ok": true,
+                  "messages": [],
+                  "raw_responses": [],
+                  "usage": {},
+                  "engine": "python-runtime",
+                  "model": "",
+                  "mode": "default",
+                  "trace_schema_version": "agentic_systems.trace.v1",
+                  "validation": null,
+                  "errors": [],
+                  "meta": {
+                    "name": "sum",
+                    "kind": "agent",
+                    "backend": "native",
+                    "skills": []
+                  },
+                  "execution_id": "run-2e293a71693448489ff6d57b66fdc737",
+                  "parent_execution_id": "run-f3e8911dd751477784cd2dbecc018389",
+                  "children": [
+                    {
+                      "text": "",
+                      "final": null,
+                      "data": {
+                        "total": 2
+                      },
+                      "ok": true,
+                      "messages": [],
+                      "raw_responses": [],
+                      "usage": {},
+                      "engine": "python-runtime",
+                      "model": "",
+                      "mode": "default",
+                      "trace_schema_version": "agentic_systems.trace.v1",
+                      "validation": null,
+                      "errors": [],
+                      "meta": {
+                        "name": "sum",
+                        "kind": "action"
+                      },
+                      "execution_id": "run-cf91548168e645a98d1cba100db108bd",
+                      "parent_execution_id": "run-2e293a71693448489ff6d57b66fdc737",
+                      "children": [],
+                      "tool_events": []
+                    }
+                  ],
+                  "tool_events": []
+                },
+                {
+                  "text": "",
+                  "final": null,
+                  "data": {
+                    "total": 5
+                  },
+                  "ok": true,
+                  "messages": [],
+                  "raw_responses": [],
+                  "usage": {},
+                  "engine": "python-runtime",
+                  "model": "",
+                  "mode": "default",
+                  "trace_schema_version": "agentic_systems.trace.v1",
+                  "validation": null,
+                  "errors": [],
+                  "meta": {
+                    "name": "sum",
+                    "kind": "agent",
+                    "backend": "native",
+                    "skills": []
+                  },
+                  "execution_id": "run-f25655e69fbc4da9a3ee660a2a717d6e",
+                  "parent_execution_id": "run-f3e8911dd751477784cd2dbecc018389",
+                  "children": [
+                    {
+                      "text": "",
+                      "final": null,
+                      "data": {
+                        "total": 5
+                      },
+                      "ok": true,
+                      "messages": [],
+                      "raw_responses": [],
+                      "usage": {},
+                      "engine": "python-runtime",
+                      "model": "",
+                      "mode": "default",
+                      "trace_schema_version": "agentic_systems.trace.v1",
+                      "validation": null,
+                      "errors": [],
+                      "meta": {
+                        "name": "sum",
+                        "kind": "action"
+                      },
+                      "execution_id": "run-9fe0a840be5342b69ea2d474937a72ff",
+                      "parent_execution_id": "run-f25655e69fbc4da9a3ee660a2a717d6e",
+                      "children": [],
+                      "tool_events": []
+                    }
+                  ],
+                  "tool_events": []
+                }
+              ],
+              "tool_events": []
+            },
+            "checks": [
+              {
+                "ok": true,
+                "issues": []
+              },
+              {
+                "ok": true,
+                "issues": [],
+                "metrics": {
+                  "reward": 5
+                }
+              }
+            ],
+            "judge": null,
+            "candidate_usage": {},
+            "judge_usage": {}
+          }
+        ]
+      },
+      "ok": true,
+      "messages": [],
+      "raw_responses": [],
+      "usage": {},
+      "engine": "python-runtime",
+      "model": "",
+      "mode": "default",
+      "trace_schema_version": "agentic_systems.trace.v1",
+      "validation": null,
+      "errors": [],
+      "meta": {
+        "name": "episode_reward",
+        "kind": "eval",
+        "expected_failure_ids": [],
+        "actions_observed": 9,
+        "judge_mode": "none"
+      },
+      "execution_id": "run-d96fde7c4fab47b1a4c3a753252605c1",
+      "parent_execution_id": null,
+      "children": [
+        {
+          "text": "",
+          "final": null,
+          "data": {
+            "outputs": [
+              {
+                "total": 2
+              },
+              {
+                "total": 5
+              }
+            ],
+            "history": [
+              {
+                "step": 0,
+                "record": {
+                  "amount": 2
+                },
+                "memory_before": {
+                  "total": 0
+                },
+                "memory_after": {
+                  "total": 2
+                },
+                "graph_state": {
+                  "run": {
+                    "text": "",
+                    "final": null,
+                    "data": {
+                      "total": 2
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {},
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "default",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "name": "sum",
+                      "kind": "agent",
+                      "backend": "native",
+                      "skills": []
+                    },
+                    "execution_id": "run-2e293a71693448489ff6d57b66fdc737",
+                    "parent_execution_id": null,
+                    "children": [
+                      {
+                        "text": "",
+                        "final": null,
+                        "data": {
+                          "total": 2
+                        },
+                        "ok": true,
+                        "messages": [],
+                        "raw_responses": [],
+                        "usage": {},
+                        "engine": "python-runtime",
+                        "model": "",
+                        "mode": "default",
+                        "trace_schema_version": "agentic_systems.trace.v1",
+                        "validation": null,
+                        "errors": [],
+                        "meta": {
+                          "name": "sum",
+                          "kind": "action"
+                        },
+                        "execution_id": "run-cf91548168e645a98d1cba100db108bd",
+                        "parent_execution_id": "run-2e293a71693448489ff6d57b66fdc737",
+                        "children": [],
+                        "tool_events": []
+                      }
+                    ],
+                    "tool_events": []
+                  }
+                }
+              },
+              {
+                "step": 1,
+                "record": {
+                  "amount": 3
+                },
+                "memory_before": {
+                  "total": 2
+                },
+                "memory_after": {
+                  "total": 5
+                },
+                "graph_state": {
+                  "run": {
+                    "text": "",
+                    "final": null,
+                    "data": {
+                      "total": 5
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {},
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "default",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "name": "sum",
+                      "kind": "agent",
+                      "backend": "native",
+                      "skills": []
+                    },
+                    "execution_id": "run-f25655e69fbc4da9a3ee660a2a717d6e",
+                    "parent_execution_id": null,
+                    "children": [
+                      {
+                        "text": "",
+                        "final": null,
+                        "data": {
+                          "total": 5
+                        },
+                        "ok": true,
+                        "messages": [],
+                        "raw_responses": [],
+                        "usage": {},
+                        "engine": "python-runtime",
+                        "model": "",
+                        "mode": "default",
+                        "trace_schema_version": "agentic_systems.trace.v1",
+                        "validation": null,
+                        "errors": [],
+                        "meta": {
+                          "name": "sum",
+                          "kind": "action"
+                        },
+                        "execution_id": "run-9fe0a840be5342b69ea2d474937a72ff",
+                        "parent_execution_id": "run-f25655e69fbc4da9a3ee660a2a717d6e",
+                        "children": [],
+                        "tool_events": []
+                      }
+                    ],
+                    "tool_events": []
+                  }
+                }
+              }
+            ],
+            "summary": {
+              "memory": {
+                "total": 5
+              },
+              "processed": 2,
+              "terminated": true,
+              "truncated": false
+            }
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {},
+          "engine": "python-runtime",
+          "model": "",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "ledger",
+            "kind": "environment",
+            "actions_observed": 8
+          },
+          "execution_id": "run-f3e8911dd751477784cd2dbecc018389",
+          "parent_execution_id": "run-d96fde7c4fab47b1a4c3a753252605c1",
+          "children": [
+            {
+              "text": "",
+              "final": null,
+              "data": {
+                "total": 2
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {},
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "sum",
+                "kind": "agent",
+                "backend": "native",
+                "skills": []
+              },
+              "execution_id": "run-2e293a71693448489ff6d57b66fdc737",
+              "parent_execution_id": "run-f3e8911dd751477784cd2dbecc018389",
+              "children": [
+                {
+                  "text": "",
+                  "final": null,
+                  "data": {
+                    "total": 2
+                  },
+                  "ok": true,
+                  "messages": [],
+                  "raw_responses": [],
+                  "usage": {},
+                  "engine": "python-runtime",
+                  "model": "",
+                  "mode": "default",
+                  "trace_schema_version": "agentic_systems.trace.v1",
+                  "validation": null,
+                  "errors": [],
+                  "meta": {
+                    "name": "sum",
+                    "kind": "action"
+                  },
+                  "execution_id": "run-cf91548168e645a98d1cba100db108bd",
+                  "parent_execution_id": "run-2e293a71693448489ff6d57b66fdc737",
+                  "children": [],
+                  "tool_events": []
+                }
+              ],
+              "tool_events": []
+            },
+            {
+              "text": "",
+              "final": null,
+              "data": {
+                "total": 5
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {},
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "sum",
+                "kind": "agent",
+                "backend": "native",
+                "skills": []
+              },
+              "execution_id": "run-f25655e69fbc4da9a3ee660a2a717d6e",
+              "parent_execution_id": "run-f3e8911dd751477784cd2dbecc018389",
+              "children": [
+                {
+                  "text": "",
+                  "final": null,
+                  "data": {
+                    "total": 5
+                  },
+                  "ok": true,
+                  "messages": [],
+                  "raw_responses": [],
+                  "usage": {},
+                  "engine": "python-runtime",
+                  "model": "",
+                  "mode": "default",
+                  "trace_schema_version": "agentic_systems.trace.v1",
+                  "validation": null,
+                  "errors": [],
+                  "meta": {
+                    "name": "sum",
+                    "kind": "action"
+                  },
+                  "execution_id": "run-9fe0a840be5342b69ea2d474937a72ff",
+                  "parent_execution_id": "run-f25655e69fbc4da9a3ee660a2a717d6e",
+                  "children": [],
+                  "tool_events": []
+                }
+              ],
+              "tool_events": []
+            }
+          ],
+          "tool_events": []
+        }
+      ],
+      "tool_events": []
+    },
+    "judge_validation": "fixture-only; no semantic model inference"
+  }
+}

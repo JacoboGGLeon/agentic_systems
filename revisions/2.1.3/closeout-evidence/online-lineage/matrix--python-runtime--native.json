@@ -1,0 +1,311 @@
+{
+  "source_evidence": "revisions/2.1.3/closeout-evidence/matrix/20261023T025048258614/python-runtime--native.json",
+  "results": [
+    {
+      "run_result": {
+        "text": "certify -> {\"value\": 37, \"verified\": true}",
+        "final": {
+          "value": 37,
+          "verified": true,
+          "ok": true,
+          "tool": "certify"
+        },
+        "data": {
+          "value": 37,
+          "verified": true,
+          "ok": true,
+          "tool": "certify"
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "client_duration_ms": 2.244,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "python-runtime",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "matrix",
+          "kind": "agent",
+          "backend": "native",
+          "skills": [
+            "evidence"
+          ],
+          "actions_observed": 1,
+          "input": {
+            "tool": "certify",
+            "input": {
+              "value": 37
+            }
+          }
+        },
+        "execution_id": "run-f9d1a3bdafad4cee83a9a5ab1bcd9228",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "certify -> {\"value\": 37, \"verified\": true}",
+            "final": {
+              "value": 37,
+              "verified": true,
+              "ok": true,
+              "tool": "certify"
+            },
+            "data": {
+              "value": 37,
+              "verified": true,
+              "ok": true,
+              "tool": "certify"
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "client_duration_ms": 2.244,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "python-runtime",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "matrix",
+              "kind": "model",
+              "framework": "native"
+            },
+            "execution_id": "run-123b664b6fbe4d2dbe3639b7ee492a29",
+            "parent_execution_id": "run-f9d1a3bdafad4cee83a9a5ab1bcd9228",
+            "children": [
+              {
+                "text": "certify -> {\"value\": 37, \"verified\": true}",
+                "final": {
+                  "value": 37,
+                  "verified": true,
+                  "ok": true,
+                  "tool": "certify"
+                },
+                "data": {
+                  "value": 37,
+                  "verified": true,
+                  "ok": true,
+                  "tool": "certify"
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "scheduler": {
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 2.244
+                  },
+                  "client_duration_ms": 2.244,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "python-runtime",
+                "mode": "eval",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": {
+                  "ok": true,
+                  "issues": []
+                },
+                "errors": [],
+                "meta": {
+                  "source_result_type": "PythonRuntimeProvider",
+                  "agent_name": "matrix",
+                  "tool_count": 1,
+                  "planned_tool_calls": 1,
+                  "runtime": {
+                    "provider": "python-runtime",
+                    "model_id": "python-runtime",
+                    "region_name": null,
+                    "endpoint": null,
+                    "metadata": {},
+                    "provider_priority": [
+                      "openai-runtime",
+                      "bedrock-runtime",
+                      "ollama-runtime"
+                    ],
+                    "allow_python_fallback": false,
+                    "scheduler": {
+                      "max_turns": 5,
+                      "max_tool_calls": 3,
+                      "timeout_s": 60,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    }
+                  },
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "scheduler_execution": {
+                    "scheduler": {
+                      "max_turns": 5,
+                      "max_tool_calls": 3,
+                      "timeout_s": 60,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    },
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 2.244
+                  },
+                  "framework": "native",
+                  "framework_requested": "native",
+                  "framework_adapter": "native",
+                  "framework_config": {
+                    "name": "native",
+                    "agent_kwargs": {},
+                    "run_kwargs": {}
+                  },
+                  "input": {
+                    "tool": "certify",
+                    "input": {
+                      "value": 37
+                    }
+                  },
+                  "requested_engine": "python-runtime",
+                  "runtime_engine": "python-runtime",
+                  "execution_engine": "python-runtime"
+                },
+                "execution_id": "run-d0a356eb76094b769b7dc75982520194",
+                "parent_execution_id": "run-123b664b6fbe4d2dbe3639b7ee492a29",
+                "children": [],
+                "tool_events": [
+                  {
+                    "id": "tool-c6b4414eb5014dba873edf9b3db35cca",
+                    "name": "certify",
+                    "input": {
+                      "value": 37
+                    },
+                    "output": {
+                      "data": {
+                        "value": 37,
+                        "verified": true
+                      }
+                    },
+                    "ok": true,
+                    "error": null,
+                    "duration_ms": null,
+                    "meta": {}
+                  }
+                ]
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "matrix/python-runtime--native",
+        "question": "{\"tool\": \"certify\", \"input\": {\"value\": 37}}",
+        "goal": "",
+        "answer": "certify -> {\"value\": 37, \"verified\": true}",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-f9d1a3bdafad4cee83a9a5ab1bcd9228",
+            "kind": "execution",
+            "title": "matrix",
+            "summary": "certify -> {\"value\": 37, \"verified\": true}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 37,
+                "verified": true,
+                "ok": true,
+                "tool": "certify"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-123b664b6fbe4d2dbe3639b7ee492a29",
+            "kind": "execution",
+            "title": "matrix",
+            "summary": "certify -> {\"value\": 37, \"verified\": true}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 37,
+                "verified": true,
+                "ok": true,
+                "tool": "certify"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-d0a356eb76094b769b7dc75982520194",
+            "kind": "execution",
+            "title": "eval",
+            "summary": "certify -> {\"value\": 37, \"verified\": true}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 37,
+                "verified": true,
+                "ok": true,
+                "tool": "certify"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "tool-c6b4414eb5014dba873edf9b3db35cca",
+            "kind": "tool",
+            "title": "certify",
+            "summary": "completed",
+            "source": "certify",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "value": 37,
+                "verified": true
+              }
+            }
+          }
+        ],
+        "usage": {
+          "client_duration_ms": 2.244,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    }
+  ]
+}

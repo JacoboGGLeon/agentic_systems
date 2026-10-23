@@ -1,0 +1,317 @@
+{
+  "name": "openai-runtime--strands",
+  "passed": true,
+  "report": {
+    "provider": "openai-runtime",
+    "framework": "strands",
+    "result": {
+      "text": "The integer 37 has been certified as requested.",
+      "final": {
+        "text": "The integer 37 has been certified as requested."
+      },
+      "data": {
+        "text": "The integer 37 has been certified as requested.\n"
+      },
+      "ok": true,
+      "messages": [],
+      "raw_responses": [],
+      "usage": {
+        "inputTokens": 195,
+        "outputTokens": 25,
+        "totalTokens": 220,
+        "cacheReadInputTokens": 0,
+        "input_tokens": 195,
+        "output_tokens": 25,
+        "total_tokens": 220,
+        "client_duration_ms": 2952.095,
+        "requests": 2,
+        "inference_requests": 2,
+        "tool_calls": 1
+      },
+      "engine": "openai-runtime",
+      "model": "gpt-4.1-mini",
+      "mode": "default",
+      "trace_schema_version": "agentic_systems.trace.v1",
+      "validation": null,
+      "errors": [],
+      "meta": {
+        "name": "matrix",
+        "kind": "agent",
+        "backend": "native",
+        "skills": [
+          "evidence"
+        ],
+        "actions_observed": 1,
+        "input": "Call certify with value=37. The tool output is the required result."
+      },
+      "execution_id": "run-794b6768e4484f54b425c26b7eda9fc4",
+      "parent_execution_id": null,
+      "children": [
+        {
+          "text": "The integer 37 has been certified as requested.",
+          "final": {
+            "text": "The integer 37 has been certified as requested."
+          },
+          "data": {
+            "text": "The integer 37 has been certified as requested.\n"
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {
+            "inputTokens": 195,
+            "outputTokens": 25,
+            "totalTokens": 220,
+            "cacheReadInputTokens": 0,
+            "input_tokens": 195,
+            "output_tokens": 25,
+            "total_tokens": 220,
+            "client_duration_ms": 2952.095,
+            "requests": 2,
+            "inference_requests": 2,
+            "tool_calls": 1
+          },
+          "engine": "openai-runtime",
+          "model": "gpt-4.1-mini",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "matrix",
+            "kind": "model",
+            "framework": "strands"
+          },
+          "execution_id": "run-299c076e9f434c9987cd85cd671d81a2",
+          "parent_execution_id": "run-794b6768e4484f54b425c26b7eda9fc4",
+          "children": [
+            {
+              "text": "The integer 37 has been certified as requested.",
+              "final": {
+                "text": "The integer 37 has been certified as requested."
+              },
+              "data": {
+                "text": "The integer 37 has been certified as requested.\n"
+              },
+              "ok": true,
+              "messages": [
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "text": "Call certify with value=37. The tool output is the required result."
+                    }
+                  ],
+                  "tracking_id": "72a65e9d-2316-4f08-a9fa-946acac6cdc9"
+                },
+                {
+                  "role": "assistant",
+                  "content": [
+                    {
+                      "toolUse": {
+                        "toolUseId": "call_TWoYrIxuVX0Rc501n6xi8wRM",
+                        "name": "certify",
+                        "input": {
+                          "value": 37
+                        }
+                      }
+                    }
+                  ],
+                  "metadata": {
+                    "usage": {
+                      "inputTokens": 81,
+                      "outputTokens": 14,
+                      "totalTokens": 95,
+                      "cacheReadInputTokens": 0
+                    },
+                    "metrics": {
+                      "latencyMs": 0,
+                      "timeToFirstByteMs": 1305
+                    }
+                  },
+                  "tracking_id": "f40b1220-b67c-44f9-b9b8-24f894388880"
+                },
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "toolResult": {
+                        "toolUseId": "call_TWoYrIxuVX0Rc501n6xi8wRM",
+                        "status": "success",
+                        "content": [
+                          {
+                            "text": "{\"value\": 37, \"verified\": true}"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "tracking_id": "470c9549-7b4c-4091-aa99-00025cdfbfb9"
+                },
+                {
+                  "role": "assistant",
+                  "content": [
+                    {
+                      "text": "The integer 37 has been certified as requested."
+                    }
+                  ],
+                  "metadata": {
+                    "usage": {
+                      "inputTokens": 114,
+                      "outputTokens": 11,
+                      "totalTokens": 125,
+                      "cacheReadInputTokens": 0
+                    },
+                    "metrics": {
+                      "latencyMs": 0,
+                      "timeToFirstByteMs": 1643
+                    }
+                  },
+                  "tracking_id": "446d4f56-1e6c-4641-a7a1-f60da2e910ea"
+                }
+              ],
+              "raw_responses": [
+                {
+                  "role": "assistant",
+                  "content": [
+                    {
+                      "text": "The integer 37 has been certified as requested."
+                    }
+                  ],
+                  "metadata": {
+                    "usage": {
+                      "inputTokens": 114,
+                      "outputTokens": 11,
+                      "totalTokens": 125,
+                      "cacheReadInputTokens": 0
+                    },
+                    "metrics": {
+                      "latencyMs": 0,
+                      "timeToFirstByteMs": 1643
+                    }
+                  },
+                  "tracking_id": "446d4f56-1e6c-4641-a7a1-f60da2e910ea"
+                }
+              ],
+              "usage": {
+                "inputTokens": 195,
+                "outputTokens": 25,
+                "totalTokens": 220,
+                "cacheReadInputTokens": 0,
+                "input_tokens": 195,
+                "output_tokens": 25,
+                "total_tokens": 220,
+                "client_duration_ms": 2952.095,
+                "requests": 2,
+                "scheduler": {
+                  "attempts": 1,
+                  "retries": 0,
+                  "timed_out": false,
+                  "latency_ms": 2960.012
+                },
+                "inference_requests": 2,
+                "tool_calls": 1
+              },
+              "engine": "openai-runtime",
+              "model": "gpt-4.1-mini",
+              "mode": "eval",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": {
+                "ok": true,
+                "issues": []
+              },
+              "errors": [],
+              "meta": {
+                "source_result_type": "AgentResult",
+                "framework_adapter": "strands",
+                "input": "Call certify with value=37. The tool output is the required result.",
+                "stop_reason": "end_turn",
+                "rejected_tool_calls": [],
+                "output_materialization": [],
+                "runtime": {
+                  "provider": "openai-runtime",
+                  "model_id": "gpt-4.1-mini",
+                  "region_name": null,
+                  "endpoint": null,
+                  "metadata": {},
+                  "provider_priority": [
+                    "openai-runtime",
+                    "bedrock-runtime",
+                    "ollama-runtime"
+                  ],
+                  "allow_python_fallback": false,
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  }
+                },
+                "scheduler": {
+                  "max_turns": 5,
+                  "max_tool_calls": 3,
+                  "timeout_s": 60,
+                  "max_concurrency": 1,
+                  "max_retries": 0,
+                  "backoff_s": 0.0
+                },
+                "scheduler_execution": {
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "attempts": 1,
+                  "retries": 0,
+                  "timed_out": false,
+                  "latency_ms": 2960.012
+                },
+                "framework": "strands",
+                "framework_requested": "strands",
+                "framework_config": {
+                  "name": "strands",
+                  "agent_kwargs": {},
+                  "run_kwargs": {}
+                },
+                "agent_name": "matrix",
+                "requested_engine": "openai-runtime",
+                "runtime_engine": "openai-runtime",
+                "execution_engine": "openai-runtime"
+              },
+              "execution_id": "run-ba97e6cb86334d518883521b77110085",
+              "parent_execution_id": "run-299c076e9f434c9987cd85cd671d81a2",
+              "children": [],
+              "tool_events": [
+                {
+                  "id": "call_TWoYrIxuVX0Rc501n6xi8wRM",
+                  "name": "certify",
+                  "input": {
+                    "value": 37
+                  },
+                  "output": {
+                    "value": 37,
+                    "verified": true
+                  },
+                  "ok": true,
+                  "error": null,
+                  "duration_ms": null,
+                  "meta": {
+                    "source": "strands"
+                  }
+                }
+              ]
+            }
+          ],
+          "tool_events": []
+        }
+      ],
+      "tool_events": []
+    }
+  },
+  "elapsed_s": 2.969
+}

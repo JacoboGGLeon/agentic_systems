@@ -1,0 +1,90 @@
+export,kind,family,decision,rationale
+skill,function,Core grammar,Retain; introduce when capabilities are reused,A Skill packages capabilities and does not own an autonomous loop. It is not required to construct or compose Agents.
+agent,function,Core grammar,Teach first; preserve behavior,One semantic actor definition with its own flow is the target. Preserve current factory ownership and defaults; agent.pipeline still wraps the Agent rather than changing agent.run.
+system,function,Core grammar,Teach first; preserve behavior,System coordinates units using the same target flow vocabulary as Agent. Existing run already compiles internally; retain entrypoint and registration behavior.
+environment,function,Core grammar,Retain; introduce interaction/evaluation only when needed,"Environment and Eval are optional dimensions around Agent/System execution, not obligatory layers after graph."
+eval,function,Core grammar,Retain; introduce interaction/evaluation only when needed,"Environment and Eval are optional dimensions around Agent/System execution, not obligatory layers after graph."
+runtime,function,Core grammar,Teach first; preserve behavior,"Keep model provider, Agent framework and flow backend distinct. An outer flow backend must not silently override nested Agent configuration; preserve existing resolution."
+model_artifact,function,Model serving,Retain; optional infrastructure path,Managing a model server is different from consuming an endpoint.
+model_server,function,Model serving,Retain; optional infrastructure path,Managing a model server is different from consuming an endpoint.
+provider,function,Runtime configuration,Retain; group in configuration reference,Runtime selects provider/model; framework selects loop. Document current overrides before considering changes.
+framework,function,Runtime configuration,Retain; group in configuration reference,"Keep model provider, Agent framework and flow backend distinct. An outer flow backend must not silently override nested Agent configuration; preserve existing resolution."
+scheduler,function,Runtime configuration,Retain; group in configuration reference,Runtime selects provider/model; framework selects loop. Document current overrides before considering changes.
+load_skill,function,Reusable capabilities,Teach when needed; preserve,Grouping Tools and loading portable Skills serve distinct needs.
+AgenticSystem,class,Public construction types,Retain public types; teach direct construction later,"Retain public class contracts and identity. Shared owned-flow/run/compile semantics need an opt-in design with legacy adapters, not a silent pipeline reinterpretation."
+Agent,class,Public construction types,Retain public types; teach direct construction later,"Retain public class contracts and identity. Shared owned-flow/run/compile semantics need an opt-in design with legacy adapters, not a silent pipeline reinterpretation."
+Tool,class,Public construction types,Retain public types; teach direct construction later,"Factories are the normal learning path; retain classes for typing, extension and lifecycle."
+ToolSet,class,Public construction types,Retain public types; teach direct construction later,"Factories are the normal learning path; retain classes for typing, extension and lifecycle."
+Executable,class,Composition,Retain compatibility; unify owned-flow semantics before teaching compilation,"Target: sequential/parallel/graph flows for both Agent and System; run is usual and compile optional. Preserve current plan, forwarding, result and compiled-type behavior."
+AsyncExecutable,class,Composition,Retain compatibility; unify owned-flow semantics before teaching compilation,"Target: sequential/parallel/graph flows for both Agent and System; run is usual and compile optional. Preserve current plan, forwarding, result and compiled-type behavior."
+toolset,function,Reusable capabilities,Teach when needed; preserve,Grouping Tools and loading portable Skills serve distinct needs.
+api_contract,function,API maintenance,Retain; maintainer reference,Contract inventories and API probes are maintenance tools rather than application prerequisites.
+exercise_api,function,API maintenance,Retain; maintainer reference,Contract inventories and API probes are maintenance tools rather than application prerequisites.
+ExecutionPlan,class,Composition,Retain compatibility; unify owned-flow semantics before teaching compilation,"Target: sequential/parallel/graph flows for both Agent and System; run is usual and compile optional. Preserve current plan, forwarding, result and compiled-type behavior."
+CompiledSystem,class,Composition,Retain compatibility; unify owned-flow semantics before teaching compilation,"Target: sequential/parallel/graph flows for both Agent and System; run is usual and compile optional. Preserve current plan, forwarding, result and compiled-type behavior."
+SequentialPlan,class,Composition,Retain compatibility; unify owned-flow semantics before teaching compilation,"Target: sequential/parallel/graph flows for both Agent and System; run is usual and compile optional. Preserve current plan, forwarding, result and compiled-type behavior."
+ParallelPlan,class,Composition,Retain compatibility; unify owned-flow semantics before teaching compilation,"Target: sequential/parallel/graph flows for both Agent and System; run is usual and compile optional. Preserve current plan, forwarding, result and compiled-type behavior."
+tool,function,Core grammar,Teach first; preserve behavior,"One canonical factory per concept, with independent agent and shared system.agent contexts."
+expect,constant,Contracts and policy,Retain; clarify precedence,Acceptance contracts and execution limits remain distinct; explain the scope of each limit.
+human_result,function,Presentation,Retain compatibility; reduce initial choices,"Teach text, normalized(), lineage() and show; keep specialized projections in advanced reference."
+Skill,class,Public construction types,Retain public types; teach direct construction later,"Factories are the normal learning path; retain classes for typing, extension and lifecycle."
+LoadedSkill,class,Public construction types,Retain public types; teach direct construction later,"Factories are the normal learning path; retain classes for typing, extension and lifecycle."
+AgentContract,class,Contracts and policy,Retain; clarify precedence,Acceptance contracts and execution limits remain distinct; explain the scope of each limit.
+ContractPolicySpec,class,Contracts and policy,Retain; clarify precedence,Acceptance contracts and execution limits remain distinct; explain the scope of each limit.
+RunPolicy,class,Contracts and policy,Retain; clarify precedence,Acceptance contracts and execution limits remain distinct; explain the scope of each limit.
+validate_contract_policy,function,Contracts and policy,Retain; clarify precedence,Acceptance contracts and execution limits remain distinct; explain the scope of each limit.
+RunResult,class,Results and lineage,Retain stable schemas and all evidence,"Teach normalized and lineage views without flattening away children, errors or Tool events."
+LineageMemory,class,Results and lineage,Retain stable schemas and all evidence,"Teach normalized and lineage views without flattening away children, errors or Tool events."
+LineageStep,class,Results and lineage,Retain stable schemas and all evidence,"Teach normalized and lineage views without flattening away children, errors or Tool events."
+lineage_memory,function,Results and lineage,Retain stable schemas and all evidence,"Teach normalized and lineage views without flattening away children, errors or Tool events."
+LINEAGE_SCHEMA_VERSION,constant,Results and lineage,Retain stable schemas and all evidence,"Teach normalized and lineage views without flattening away children, errors or Tool events."
+AUTO_PROVIDER_ENV_VAR,constant,Runtime configuration,Retain; group in configuration reference,Runtime selects provider/model; framework selects loop. Document current overrides before considering changes.
+DEFAULT_AUTO_PROVIDER_PRIORITY,constant,Runtime configuration,Retain; group in configuration reference,Runtime selects provider/model; framework selects loop. Document current overrides before considering changes.
+RuntimeConfig,class,Public construction types,Retain public types; teach direct construction later,"Keep model provider, Agent framework and flow backend distinct. An outer flow backend must not silently override nested Agent configuration; preserve existing resolution."
+ModelArtifact,class,Model serving,Retain; optional infrastructure path,Managing a model server is different from consuming an endpoint.
+ModelServer,class,Model serving,Retain; optional infrastructure path,Managing a model server is different from consuming an endpoint.
+VLLMServerSpec,class,Model serving,Retain; optional infrastructure path,Managing a model server is different from consuming an endpoint.
+VLLMServer,class,Model serving,Retain; optional infrastructure path,Managing a model server is different from consuming an endpoint.
+EndpointInfo,class,Model serving,Retain; optional infrastructure path,Managing a model server is different from consuming an endpoint.
+ServerHealth,class,Model serving,Retain; optional infrastructure path,Managing a model server is different from consuming an endpoint.
+ModelProviderConfig,class,Runtime configuration,Retain; group in configuration reference,Runtime selects provider/model; framework selects loop. Document current overrides before considering changes.
+compatibility_matrix,function,Route diagnostics,Retain; advanced diagnostics,"Installed, configured, compatible and live-verified are distinct states."
+dependency_target,function,Route diagnostics,Retain; advanced diagnostics,"Installed, configured, compatible and live-verified are distinct states."
+compatibility_report,function,Route diagnostics,Retain; advanced diagnostics,"Installed, configured, compatible and live-verified are distinct states."
+normalize_provider_priority,function,Runtime configuration,Retain; group in configuration reference,Runtime selects provider/model; framework selects loop. Document current overrides before considering changes.
+resolve_auto_provider,function,Runtime configuration,Retain; group in configuration reference,Runtime selects provider/model; framework selects loop. Document current overrides before considering changes.
+SchedulerConfig,class,Runtime configuration,Retain; group in configuration reference,Runtime selects provider/model; framework selects loop. Document current overrides before considering changes.
+OutputSchema,class,Structured output,Retain; clarify responsibilities,"Schema validation, normalization and final-answer construction must not silently repair evidence."
+final_answer,function,Structured output,Retain; clarify responsibilities,"Schema validation, normalization and final-answer construction must not silently repair evidence."
+normalize_output,function,Structured output,Retain; clarify responsibilities,"Schema validation, normalization and final-answer construction must not silently repair evidence."
+output_schema,function,Structured output,Retain; clarify responsibilities,"Schema validation, normalization and final-answer construction must not silently repair evidence."
+FrameworkConfig,class,Runtime configuration,Retain; group in configuration reference,"Keep model provider, Agent framework and flow backend distinct. An outer flow backend must not silently override nested Agent configuration; preserve existing resolution."
+GraphApp,class,Graph adapters and types,Retain current state/native contracts; advanced flow adapters,Graph is a control-flow representation within either owner. Preserve legacy state returns and native invoke access; design shared RunResult facade separately.
+AgenticGraph,class,Graph adapters and types,Retain current state/native contracts; advanced flow adapters,Graph is a control-flow representation within either owner. Preserve legacy state returns and native invoke access; design shared RunResult facade separately.
+agent_node,function,Graph adapters and types,Retain current state/native contracts; advanced flow adapters,Graph is a control-flow representation within either owner. Preserve legacy state returns and native invoke access; design shared RunResult facade separately.
+graph,function,Core grammar,Retain; teach graph as an optional flow form inside Agent or System,"Current portable graph lacks parallel fan-out and auto depends on installed SDKs. Explicit flow backend/capability semantics are a future target, not changed legacy behavior."
+EvalReport,class,Evaluation types and convenience,Retain; teach eval().evaluate first,Mandatory failures cannot be averaged away; execution success is not semantic acceptance.
+JudgeRubric,class,Evaluation types and convenience,Retain; teach eval().evaluate first,Mandatory failures cannot be averaged away; execution success is not semantic acceptance.
+JudgeResult,class,Evaluation types and convenience,Retain; teach eval().evaluate first,Mandatory failures cannot be averaged away; execution success is not semantic acceptance.
+Evaluator,class,Public construction types,Retain public types; teach direct construction later,"Factories are the normal learning path; retain classes for typing, extension and lifecycle."
+run_eval,function,Evaluation types and convenience,Retain; teach eval().evaluate first,Mandatory failures cannot be averaged away; execution success is not semantic acceptance.
+AgenticEnvironment,class,Public construction types,Retain public types; teach direct construction later,"Factories are the normal learning path; retain classes for typing, extension and lifecycle."
+build_agent_step_graph,function,Graph adapters and types,Retain current state/native contracts; advanced flow adapters,Graph is a control-flow representation within either owner. Preserve legacy state returns and native invoke access; design shared RunResult facade separately.
+agent_output,function,Presentation,Retain compatibility; reduce initial choices,"Teach text, normalized(), lineage() and show; keep specialized projections in advanced reference."
+show_json,function,Presentation,Retain compatibility; reduce initial choices,"Teach text, normalized(), lineage() and show; keep specialized projections in advanced reference."
+show,function,Presentation,Retain compatibility; reduce initial choices,"Teach text, normalized(), lineage() and show; keep specialized projections in advanced reference."
+compose_result,function,Presentation,Retain compatibility; reduce initial choices,"Teach text, normalized(), lineage() and show; keep specialized projections in advanced reference."
+aws_environment_snapshot,function,Environment diagnostics,Retain; diagnostic reference,Infrastructure and credential snapshots are different from episodic Environments.
+boto3_session_snapshot,function,Environment diagnostics,Retain; diagnostic reference,Infrastructure and credential snapshots are different from episodic Environments.
+ollama_environment_snapshot,function,Environment diagnostics,Retain; diagnostic reference,Infrastructure and credential snapshots are different from episodic Environments.
+openai_environment_snapshot,function,Environment diagnostics,Retain; diagnostic reference,Infrastructure and credential snapshots are different from episodic Environments.
+vllm_environment_snapshot,function,Environment diagnostics,Retain; diagnostic reference,Infrastructure and credential snapshots are different from episodic Environments.
+run_result_output,function,Presentation,Retain compatibility; reduce initial choices,"Teach text, normalized(), lineage() and show; keep specialized projections in advanced reference."
+run_result_view,function,Presentation,Retain compatibility; reduce initial choices,"Teach text, normalized(), lineage() and show; keep specialized projections in advanced reference."
+run_result_summary,function,Presentation,Retain compatibility; reduce initial choices,"Teach text, normalized(), lineage() and show; keep specialized projections in advanced reference."
+environment_summary,function,Presentation,Retain compatibility; reduce initial choices,"Teach text, normalized(), lineage() and show; keep specialized projections in advanced reference."
+eval_report_summary,function,Presentation,Retain compatibility; reduce initial choices,"Teach text, normalized(), lineage() and show; keep specialized projections in advanced reference."
+core,namespace,Namespaces and metadata,Retain,Keep extension namespaces and version metadata; avoid teaching competing import paths.
+providers,namespace,Namespaces and metadata,Retain,Keep extension namespaces and version metadata; avoid teaching competing import paths.
+integrations,namespace,Namespaces and metadata,Retain,Keep extension namespaces and version metadata; avoid teaching competing import paths.
+__version__,constant,Namespaces and metadata,Retain,Keep extension namespaces and version metadata; avoid teaching competing import paths.

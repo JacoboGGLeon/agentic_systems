@@ -1,0 +1,97 @@
+{
+  "example": "tool_contracts",
+  "passed": true,
+  "source_sha256": "ef845df5665f28337be3c96ecc9ee5d7070985577bbfeeb9b182791551e9c6e8",
+  "report": {
+    "input": {
+      "value": 3
+    },
+    "process": {
+      "name": "increment",
+      "description": "Increment an explicitly typed integer.",
+      "metadata": {
+        "example": "tool_contracts"
+      },
+      "input_schema": {
+        "properties": {
+          "value": {
+            "title": "Value",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "value"
+        ],
+        "title": "Quantity",
+        "type": "object"
+      },
+      "output_schema": {
+        "properties": {
+          "value": {
+            "title": "Value",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "value"
+        ],
+        "title": "Quantity",
+        "type": "object"
+      }
+    },
+    "output": {
+      "text": "",
+      "final": {
+        "value": 4
+      },
+      "data": {
+        "value": 4
+      },
+      "ok": true,
+      "messages": [],
+      "raw_responses": [],
+      "usage": {
+        "requests": 1,
+        "inference_requests": 0,
+        "tool_calls": 1
+      },
+      "engine": "python-runtime",
+      "model": "",
+      "mode": "tool",
+      "trace_schema_version": "agentic_systems.trace.v1",
+      "validation": null,
+      "errors": [],
+      "meta": {
+        "tool_name": "",
+        "input": {
+          "value": 3
+        },
+        "tool_input": {
+          "value": 3
+        }
+      },
+      "execution_id": "run-a7f8596213bc488893ce701faf83ca05",
+      "parent_execution_id": null,
+      "children": [],
+      "tool_events": [
+        {
+          "id": "tool-98640fb2a0d442e597db2803adfbadb5",
+          "name": "increment",
+          "input": {
+            "value": 3
+          },
+          "output": {
+            "data": {
+              "value": 4
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        }
+      ]
+    },
+    "negative_detected": true
+  }
+}

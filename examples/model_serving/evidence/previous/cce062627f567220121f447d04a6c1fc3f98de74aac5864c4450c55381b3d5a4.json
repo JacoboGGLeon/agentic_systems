@@ -1,0 +1,108 @@
+{
+  "example": "model_serving",
+  "passed": true,
+  "source_sha256": "2bd193a8285b594fb4959c404a29f634ae42b7fd9af0e5f27df94ef4eb2c59cf",
+  "report": {
+    "input": {
+      "model": "fixture/model",
+      "base_model": "fixture/base",
+      "adapter_path": "adapter",
+      "tokenizer": "fixture/tokenizer",
+      "revision": "fixture-revision",
+      "quantization": "int8",
+      "metadata": {
+        "synthetic": true
+      }
+    },
+    "process": "Declare and inspect; no start, health request, model download or inference",
+    "output": {
+      "backend": "vllm",
+      "installed": false,
+      "command": [
+        "vllm",
+        "serve",
+        "fixture/model",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8123",
+        "--served-model-name",
+        "fixture",
+        "--gpu-memory-utilization",
+        "0.5",
+        "--max-model-len",
+        "1024",
+        "--max-num-seqs",
+        "2",
+        "--enable-auto-tool-choice",
+        "--tool-call-parser",
+        "hermes",
+        "--reasoning-parser",
+        "fixture-parser",
+        "--generation-config",
+        "vllm",
+        "--api-key",
+        "[REDACTED]",
+        "--dtype",
+        "auto"
+      ],
+      "endpoint": {
+        "url": "http://127.0.0.1:8123/v1",
+        "model": "fixture",
+        "backend": "vllm",
+        "api_key_configured": "[REDACTED]",
+        "pid": null,
+        "owned": false
+      },
+      "configuration": {
+        "schema_version": "agentic_systems.serving.v1",
+        "backend": "vllm",
+        "artifact": {
+          "schema_version": "agentic_systems.serving.v1",
+          "adapter_path": "adapter",
+          "revision": "fixture-revision",
+          "quantization": "int8",
+          "metadata": {
+            "synthetic": true
+          },
+          "model": "fixture/model",
+          "base_model": "fixture/base",
+          "tokenizer": "fixture/tokenizer"
+        },
+        "profile": "custom",
+        "served_model_name": "fixture",
+        "host": "127.0.0.1",
+        "port": 8123,
+        "gpu_memory_utilization": 0.5,
+        "max_model_len": 1024,
+        "max_num_seqs": 2,
+        "enable_auto_tool_choice": true,
+        "tool_call_parser": "hermes",
+        "reasoning_parser": "fixture-parser",
+        "generation_config": "vllm",
+        "startup_timeout_s": 10.0,
+        "log_path": "fixture-vllm.log",
+        "binary": "vllm",
+        "extra_args": [
+          "--dtype",
+          "auto"
+        ]
+      }
+    },
+    "runtime": {
+      "provider": "vllm-runtime",
+      "model": "fixture",
+      "region": null,
+      "endpoint": "http://127.0.0.1:8123/v1",
+      "api_key_configured": false,
+      "timeout_s": 60.0,
+      "max_retries": 0,
+      "max_tool_calls": 5,
+      "max_turns": 6,
+      "max_tokens": null,
+      "backoff_s": 0.0,
+      "max_concurrency": 1
+    },
+    "validation": "configured-only; lifecycle tested separately with fakes"
+  }
+}

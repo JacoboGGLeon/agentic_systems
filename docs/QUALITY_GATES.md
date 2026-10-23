@@ -1,5 +1,7 @@
 # Triple Quality Gate
 
+> **Referencia anterior a la API 2.1.3.** Se conserva como diseño, operación o evidencia histórica. Para implementar con la API vigente, consulta [la guía actual](API_213.md) y [tutorials](../tutorials/README.md). Sus ejemplos antiguos no son otra API soportada.
+
 Agentic Systems 2.1.2 uses three blocking gates over the same release candidate.
 Passing unit tests alone is not a release certification.
 

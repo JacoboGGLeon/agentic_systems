@@ -1,0 +1,541 @@
+{
+  "name": "bedrock-runtime--handoffs",
+  "passed": true,
+  "report": {
+    "provider": "bedrock-runtime",
+    "framework": "openai-agents",
+    "handoff_callback": [
+      {
+        "from": "triage",
+        "to": "billing_specialist"
+      }
+    ],
+    "result": {
+      "text": "SPECIALIST_OK. This is a handoff integration test.",
+      "final": {
+        "text": "SPECIALIST_OK. This is a handoff integration test."
+      },
+      "data": {
+        "text": "SPECIALIST_OK. This is a handoff integration test."
+      },
+      "ok": true,
+      "messages": [],
+      "raw_responses": [],
+      "usage": {
+        "requests": 2,
+        "input_tokens": 210,
+        "output_tokens": 33,
+        "total_tokens": 203,
+        "client_duration_ms": 2646.77,
+        "inference_requests": 2,
+        "tool_calls": 1
+      },
+      "engine": "bedrock-runtime",
+      "model": "qwen.qwen3-32b-v1:0",
+      "mode": "default",
+      "trace_schema_version": "agentic_systems.trace.v1",
+      "validation": null,
+      "errors": [],
+      "meta": {
+        "name": "triage",
+        "kind": "agent",
+        "backend": "native",
+        "skills": [],
+        "actions_observed": 1,
+        "input": "Transfer this billing question to billing_specialist now."
+      },
+      "execution_id": "run-d2f088f3dc2d42ff9fcd4659b0b77cce",
+      "parent_execution_id": null,
+      "children": [
+        {
+          "text": "SPECIALIST_OK. This is a handoff integration test.",
+          "final": {
+            "text": "SPECIALIST_OK. This is a handoff integration test."
+          },
+          "data": {
+            "text": "SPECIALIST_OK. This is a handoff integration test."
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {
+            "requests": 2,
+            "input_tokens": 210,
+            "output_tokens": 33,
+            "total_tokens": 203,
+            "client_duration_ms": 2646.77,
+            "inference_requests": 2,
+            "tool_calls": 1
+          },
+          "engine": "bedrock-runtime",
+          "model": "qwen.qwen3-32b-v1:0",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "triage",
+            "kind": "model",
+            "framework": "openai-agents"
+          },
+          "execution_id": "run-994a625bc2694ff69b57c06e4811a40f",
+          "parent_execution_id": "run-d2f088f3dc2d42ff9fcd4659b0b77cce",
+          "children": [
+            {
+              "text": "SPECIALIST_OK. This is a handoff integration test.",
+              "final": {
+                "text": "SPECIALIST_OK. This is a handoff integration test."
+              },
+              "data": {
+                "text": "SPECIALIST_OK. This is a handoff integration test."
+              },
+              "ok": true,
+              "messages": [
+                {
+                  "content": "Transfer this billing question to billing_specialist now.",
+                  "role": "user"
+                },
+                {
+                  "arguments": "{}",
+                  "call_id": "tooluse_AwAWOWJ49ANlyB40O3T69t",
+                  "name": "transfer_to_billing_specialist",
+                  "type": "function_call"
+                },
+                {
+                  "call_id": "tooluse_AwAWOWJ49ANlyB40O3T69t",
+                  "output": "{\"assistant\": \"billing_specialist\"}",
+                  "type": "function_call_output"
+                },
+                {
+                  "id": "msg_82f8330e6cea44aebf969e51c94de01b",
+                  "content": [
+                    {
+                      "annotations": [],
+                      "text": "SPECIALIST_OK. This is a handoff integration test.",
+                      "type": "output_text"
+                    }
+                  ],
+                  "role": "assistant",
+                  "status": "completed",
+                  "type": "message"
+                }
+              ],
+              "raw_responses": [
+                {
+                  "output": [
+                    {
+                      "arguments": "{}",
+                      "call_id": "tooluse_AwAWOWJ49ANlyB40O3T69t",
+                      "name": "transfer_to_billing_specialist",
+                      "type": "function_call",
+                      "id": null,
+                      "caller": null,
+                      "namespace": null,
+                      "status": null
+                    }
+                  ],
+                  "usage": {
+                    "requests": 1,
+                    "input_tokens": 184,
+                    "input_tokens_details": {
+                      "cache_write_tokens": 0,
+                      "cached_tokens": 0
+                    },
+                    "output_tokens": 19,
+                    "output_tokens_details": {
+                      "reasoning_tokens": 0
+                    },
+                    "total_tokens": 203,
+                    "request_usage_entries": []
+                  },
+                  "response_id": "913fcaf1-bd7d-46e7-80d9-68107e25eae7",
+                  "request_id": null
+                },
+                {
+                  "output": [
+                    {
+                      "id": "msg_82f8330e6cea44aebf969e51c94de01b",
+                      "content": [
+                        {
+                          "annotations": [],
+                          "text": "SPECIALIST_OK. This is a handoff integration test.",
+                          "type": "output_text",
+                          "logprobs": null
+                        }
+                      ],
+                      "role": "assistant",
+                      "status": "completed",
+                      "type": "message",
+                      "phase": null
+                    }
+                  ],
+                  "usage": {
+                    "requests": 1,
+                    "input_tokens": 26,
+                    "input_tokens_details": {
+                      "cache_write_tokens": 0,
+                      "cached_tokens": 0
+                    },
+                    "output_tokens": 14,
+                    "output_tokens_details": {
+                      "reasoning_tokens": 0
+                    },
+                    "total_tokens": 0,
+                    "request_usage_entries": []
+                  },
+                  "response_id": null,
+                  "request_id": null
+                }
+              ],
+              "usage": {
+                "requests": 2,
+                "input_tokens": 210,
+                "input_tokens_details": {
+                  "cache_write_tokens": 0,
+                  "cached_tokens": 0
+                },
+                "output_tokens": 33,
+                "output_tokens_details": {
+                  "reasoning_tokens": 0
+                },
+                "total_tokens": 203,
+                "request_usage_entries": [
+                  {
+                    "input_tokens": 184,
+                    "output_tokens": 19,
+                    "total_tokens": 203,
+                    "input_tokens_details": {
+                      "cache_write_tokens": 0,
+                      "cached_tokens": 0
+                    },
+                    "output_tokens_details": {
+                      "reasoning_tokens": 0
+                    }
+                  }
+                ],
+                "scheduler": {
+                  "attempts": 1,
+                  "retries": 0,
+                  "timed_out": false,
+                  "latency_ms": 2646.77
+                },
+                "client_duration_ms": 2646.77,
+                "inference_requests": 2,
+                "tool_calls": 1
+              },
+              "engine": "bedrock-runtime",
+              "model": "qwen.qwen3-32b-v1:0",
+              "mode": "eval",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": {
+                "ok": true,
+                "issues": []
+              },
+              "errors": [],
+              "meta": {
+                "source_result_type": "RunResult",
+                "framework_adapter": "openai-agents",
+                "input": "Transfer this billing question to billing_specialist now.",
+                "rejected_tool_calls": [],
+                "runtime": {
+                  "provider": "bedrock-runtime",
+                  "model_id": "qwen.qwen3-32b-v1:0",
+                  "region_name": "us-east-2",
+                  "endpoint": null,
+                  "metadata": {},
+                  "provider_priority": [
+                    "openai-runtime",
+                    "bedrock-runtime",
+                    "ollama-runtime"
+                  ],
+                  "allow_python_fallback": false,
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  }
+                },
+                "scheduler": {
+                  "max_turns": 5,
+                  "max_tool_calls": 3,
+                  "timeout_s": 60,
+                  "max_concurrency": 1,
+                  "max_retries": 0,
+                  "backoff_s": 0.0
+                },
+                "scheduler_execution": {
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "attempts": 1,
+                  "retries": 0,
+                  "timed_out": false,
+                  "latency_ms": 2646.77
+                },
+                "framework": "openai-agents",
+                "framework_requested": "openai-agents",
+                "framework_config": {
+                  "name": "openai-agents",
+                  "agent_kwargs": {
+                    "handoffs": "list",
+                    "input_guardrails": "list"
+                  },
+                  "run_kwargs": {
+                    "session": "SQLiteSession"
+                  }
+                },
+                "agent_name": "triage",
+                "requested_engine": "bedrock-runtime",
+                "runtime_engine": "bedrock-runtime",
+                "execution_engine": "bedrock-runtime"
+              },
+              "execution_id": "run-d61317a6d22b4bd297d6f755a3f182d7",
+              "parent_execution_id": "run-994a625bc2694ff69b57c06e4811a40f",
+              "children": [],
+              "tool_events": [
+                {
+                  "id": "tooluse_AwAWOWJ49ANlyB40O3T69t",
+                  "name": "transfer_to_billing_specialist",
+                  "input": {},
+                  "output": {
+                    "data": {
+                      "assistant": "billing_specialist"
+                    }
+                  },
+                  "ok": true,
+                  "error": null,
+                  "duration_ms": null,
+                  "meta": {
+                    "source": "openai-agents",
+                    "kind": "handoff",
+                    "from_agent": "triage",
+                    "to_agent": "billing_specialist"
+                  }
+                }
+              ]
+            }
+          ],
+          "tool_events": []
+        }
+      ],
+      "tool_events": []
+    },
+    "guardrail_negative": {
+      "text": "Guardrail InputGuardrail triggered tripwire",
+      "final": {
+        "ok": false,
+        "error": {
+          "code": "InputGuardrailTripwireTriggered",
+          "message": "Guardrail InputGuardrail triggered tripwire"
+        }
+      },
+      "data": {
+        "ok": false,
+        "error": {
+          "code": "InputGuardrailTripwireTriggered",
+          "message": "Guardrail InputGuardrail triggered tripwire"
+        }
+      },
+      "ok": false,
+      "messages": [],
+      "raw_responses": [],
+      "usage": {
+        "client_duration_ms": 4.498,
+        "inference_requests": 0,
+        "tool_calls": 0
+      },
+      "engine": "bedrock-runtime",
+      "model": "qwen.qwen3-32b-v1:0",
+      "mode": "default",
+      "trace_schema_version": "agentic_systems.trace.v1",
+      "validation": null,
+      "errors": [
+        {
+          "code": "run_failed",
+          "message": "Guardrail InputGuardrail triggered tripwire"
+        }
+      ],
+      "meta": {
+        "name": "triage",
+        "kind": "agent",
+        "backend": "native",
+        "skills": [],
+        "actions_observed": 1,
+        "input": "BLOCKED_REQUEST"
+      },
+      "execution_id": "run-06d1802c82a94435ac221b5f22e135b7",
+      "parent_execution_id": null,
+      "children": [
+        {
+          "text": "Guardrail InputGuardrail triggered tripwire",
+          "final": {
+            "ok": false,
+            "error": {
+              "code": "InputGuardrailTripwireTriggered",
+              "message": "Guardrail InputGuardrail triggered tripwire"
+            }
+          },
+          "data": {
+            "ok": false,
+            "error": {
+              "code": "InputGuardrailTripwireTriggered",
+              "message": "Guardrail InputGuardrail triggered tripwire"
+            }
+          },
+          "ok": false,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {
+            "client_duration_ms": 4.498,
+            "inference_requests": 0,
+            "tool_calls": 0
+          },
+          "engine": "bedrock-runtime",
+          "model": "qwen.qwen3-32b-v1:0",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [
+            {
+              "code": "run_failed",
+              "message": "Guardrail InputGuardrail triggered tripwire"
+            }
+          ],
+          "meta": {
+            "name": "triage",
+            "kind": "model",
+            "framework": "openai-agents"
+          },
+          "execution_id": "run-9e07a5733e9e490ca5d94c9080b0282f",
+          "parent_execution_id": "run-06d1802c82a94435ac221b5f22e135b7",
+          "children": [
+            {
+              "text": "Guardrail InputGuardrail triggered tripwire",
+              "final": {
+                "ok": false,
+                "error": {
+                  "code": "InputGuardrailTripwireTriggered",
+                  "message": "Guardrail InputGuardrail triggered tripwire"
+                }
+              },
+              "data": {
+                "ok": false,
+                "error": {
+                  "code": "InputGuardrailTripwireTriggered",
+                  "message": "Guardrail InputGuardrail triggered tripwire"
+                }
+              },
+              "ok": false,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {
+                "scheduler": {
+                  "attempts": 1,
+                  "retries": 0,
+                  "timed_out": false,
+                  "latency_ms": 4.498
+                },
+                "client_duration_ms": 4.498,
+                "inference_requests": 0,
+                "tool_calls": 0
+              },
+              "engine": "bedrock-runtime",
+              "model": "qwen.qwen3-32b-v1:0",
+              "mode": "eval",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": {
+                "ok": true,
+                "issues": []
+              },
+              "errors": [
+                {
+                  "code": "run_failed",
+                  "message": "Guardrail InputGuardrail triggered tripwire"
+                }
+              ],
+              "meta": {
+                "source_result_type": "InputGuardrailTripwireTriggered",
+                "framework_adapter": "openai-agents",
+                "input": "BLOCKED_REQUEST",
+                "runtime": {
+                  "provider": "bedrock-runtime",
+                  "model_id": "qwen.qwen3-32b-v1:0",
+                  "region_name": "us-east-2",
+                  "endpoint": null,
+                  "metadata": {},
+                  "provider_priority": [
+                    "openai-runtime",
+                    "bedrock-runtime",
+                    "ollama-runtime"
+                  ],
+                  "allow_python_fallback": false,
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  }
+                },
+                "scheduler": {
+                  "max_turns": 5,
+                  "max_tool_calls": 3,
+                  "timeout_s": 60,
+                  "max_concurrency": 1,
+                  "max_retries": 0,
+                  "backoff_s": 0.0
+                },
+                "scheduler_execution": {
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "attempts": 1,
+                  "retries": 0,
+                  "timed_out": false,
+                  "latency_ms": 4.498
+                },
+                "framework": "openai-agents",
+                "framework_requested": "openai-agents",
+                "framework_config": {
+                  "name": "openai-agents",
+                  "agent_kwargs": {
+                    "handoffs": "list",
+                    "input_guardrails": "list"
+                  },
+                  "run_kwargs": {
+                    "session": "SQLiteSession"
+                  }
+                },
+                "agent_name": "triage",
+                "requested_engine": "bedrock-runtime",
+                "runtime_engine": "bedrock-runtime",
+                "execution_engine": "bedrock-runtime"
+              },
+              "execution_id": "run-07ab61ecc9e5429fb5b8fca50f0dbc13",
+              "parent_execution_id": "run-9e07a5733e9e490ca5d94c9080b0282f",
+              "children": [],
+              "tool_events": []
+            }
+          ],
+          "tool_events": []
+        }
+      ],
+      "tool_events": []
+    }
+  },
+  "elapsed_s": 3.375
+}

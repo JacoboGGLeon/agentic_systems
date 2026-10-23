@@ -1,0 +1,402 @@
+{
+  "source_evidence": "revisions/2.1.3/closeout-evidence/matrix/20261023T025048258614/ollama-runtime--strands.json",
+  "results": [
+    {
+      "run_result": {
+        "text": "37",
+        "final": {
+          "text": "37"
+        },
+        "data": {
+          "value": 37
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "inputTokens": 220,
+          "outputTokens": 20,
+          "totalTokens": 240,
+          "cacheReadInputTokens": 96,
+          "input_tokens": 220,
+          "output_tokens": 20,
+          "total_tokens": 240,
+          "client_duration_ms": 2039.166,
+          "requests": 2,
+          "inference_requests": 2,
+          "tool_calls": 1
+        },
+        "engine": "ollama-runtime",
+        "model": "gemma4:31b-cloud",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "matrix",
+          "kind": "agent",
+          "backend": "native",
+          "skills": [
+            "evidence"
+          ],
+          "actions_observed": 1,
+          "input": "Call certify with value=37. The tool output is the required result."
+        },
+        "execution_id": "run-349d765d63164bdf820100bc349002e0",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "37",
+            "final": {
+              "text": "37"
+            },
+            "data": {
+              "value": 37
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "inputTokens": 220,
+              "outputTokens": 20,
+              "totalTokens": 240,
+              "cacheReadInputTokens": 96,
+              "input_tokens": 220,
+              "output_tokens": 20,
+              "total_tokens": 240,
+              "client_duration_ms": 2039.166,
+              "requests": 2,
+              "inference_requests": 2,
+              "tool_calls": 1
+            },
+            "engine": "ollama-runtime",
+            "model": "gemma4:31b-cloud",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "matrix",
+              "kind": "model",
+              "framework": "strands"
+            },
+            "execution_id": "run-de4d6992092e437a8fe4abbfae6a7e4b",
+            "parent_execution_id": "run-349d765d63164bdf820100bc349002e0",
+            "children": [
+              {
+                "text": "37",
+                "final": {
+                  "text": "37"
+                },
+                "data": {
+                  "value": 37
+                },
+                "ok": true,
+                "messages": [
+                  {
+                    "role": "user",
+                    "content": [
+                      {
+                        "text": "Call certify with value=37. The tool output is the required result."
+                      }
+                    ],
+                    "tracking_id": "9cf92463-0425-4e67-b1ac-f30426b219aa"
+                  },
+                  {
+                    "role": "assistant",
+                    "content": [
+                      {
+                        "toolUse": {
+                          "toolUseId": "call_1j6z5ofs",
+                          "name": "certify",
+                          "input": {
+                            "value": 37
+                          }
+                        }
+                      }
+                    ],
+                    "metadata": {
+                      "usage": {
+                        "inputTokens": 94,
+                        "outputTokens": 13,
+                        "totalTokens": 107,
+                        "cacheReadInputTokens": 32
+                      },
+                      "metrics": {
+                        "latencyMs": 0,
+                        "timeToFirstByteMs": 1005
+                      }
+                    },
+                    "tracking_id": "8a0b46fc-7f23-4cca-a48e-bc856e73d334"
+                  },
+                  {
+                    "role": "user",
+                    "content": [
+                      {
+                        "toolResult": {
+                          "toolUseId": "call_1j6z5ofs",
+                          "status": "success",
+                          "content": [
+                            {
+                              "text": "{\"value\": 37, \"verified\": true}"
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "tracking_id": "86d639f8-96b2-40f6-96a9-622608b822aa"
+                  },
+                  {
+                    "role": "assistant",
+                    "content": [
+                      {
+                        "text": "37"
+                      }
+                    ],
+                    "metadata": {
+                      "usage": {
+                        "inputTokens": 126,
+                        "outputTokens": 7,
+                        "totalTokens": 133,
+                        "cacheReadInputTokens": 64
+                      },
+                      "metrics": {
+                        "latencyMs": 0,
+                        "timeToFirstByteMs": 1030
+                      }
+                    },
+                    "tracking_id": "29d2832d-331a-4625-adb5-10a47d9278d6"
+                  }
+                ],
+                "raw_responses": [
+                  {
+                    "role": "assistant",
+                    "content": [
+                      {
+                        "text": "37"
+                      }
+                    ],
+                    "metadata": {
+                      "usage": {
+                        "inputTokens": 126,
+                        "outputTokens": 7,
+                        "totalTokens": 133,
+                        "cacheReadInputTokens": 64
+                      },
+                      "metrics": {
+                        "latencyMs": 0,
+                        "timeToFirstByteMs": 1030
+                      }
+                    },
+                    "tracking_id": "29d2832d-331a-4625-adb5-10a47d9278d6"
+                  }
+                ],
+                "usage": {
+                  "inputTokens": 220,
+                  "outputTokens": 20,
+                  "totalTokens": 240,
+                  "cacheReadInputTokens": 96,
+                  "input_tokens": 220,
+                  "output_tokens": 20,
+                  "total_tokens": 240,
+                  "client_duration_ms": 2039.166,
+                  "requests": 2,
+                  "scheduler": {
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 2054.078
+                  },
+                  "inference_requests": 2,
+                  "tool_calls": 1
+                },
+                "engine": "ollama-runtime",
+                "model": "gemma4:31b-cloud",
+                "mode": "eval",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": {
+                  "ok": true,
+                  "issues": []
+                },
+                "errors": [],
+                "meta": {
+                  "source_result_type": "AgentResult",
+                  "framework_adapter": "strands",
+                  "input": "Call certify with value=37. The tool output is the required result.",
+                  "stop_reason": "end_turn",
+                  "rejected_tool_calls": [],
+                  "output_materialization": [],
+                  "runtime": {
+                    "provider": "ollama-runtime",
+                    "model_id": "gemma4:31b-cloud",
+                    "region_name": null,
+                    "endpoint": "https://ollama.com/v1",
+                    "metadata": {},
+                    "provider_priority": [
+                      "openai-runtime",
+                      "bedrock-runtime",
+                      "ollama-runtime"
+                    ],
+                    "allow_python_fallback": false,
+                    "scheduler": {
+                      "max_turns": 5,
+                      "max_tool_calls": 3,
+                      "timeout_s": 60,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    }
+                  },
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "scheduler_execution": {
+                    "scheduler": {
+                      "max_turns": 5,
+                      "max_tool_calls": 3,
+                      "timeout_s": 60,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    },
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 2054.078
+                  },
+                  "framework": "strands",
+                  "framework_requested": "strands",
+                  "framework_config": {
+                    "name": "strands",
+                    "agent_kwargs": {},
+                    "run_kwargs": {}
+                  },
+                  "agent_name": "matrix",
+                  "requested_engine": "ollama-runtime",
+                  "runtime_engine": "ollama-runtime",
+                  "execution_engine": "ollama-runtime"
+                },
+                "execution_id": "run-5cffd93023954dd885115adaea8a18a0",
+                "parent_execution_id": "run-de4d6992092e437a8fe4abbfae6a7e4b",
+                "children": [],
+                "tool_events": [
+                  {
+                    "id": "call_1j6z5ofs",
+                    "name": "certify",
+                    "input": {
+                      "value": 37
+                    },
+                    "output": {
+                      "value": 37,
+                      "verified": true
+                    },
+                    "ok": true,
+                    "error": null,
+                    "duration_ms": null,
+                    "meta": {
+                      "source": "strands"
+                    }
+                  }
+                ]
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "matrix/ollama-runtime--strands",
+        "question": "\"Call certify with value=37. The tool output is the required result.\"",
+        "goal": "",
+        "answer": "37",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-349d765d63164bdf820100bc349002e0",
+            "kind": "execution",
+            "title": "matrix",
+            "summary": "37",
+            "source": "ollama-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 37
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-de4d6992092e437a8fe4abbfae6a7e4b",
+            "kind": "execution",
+            "title": "matrix",
+            "summary": "37",
+            "source": "ollama-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 37
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-5cffd93023954dd885115adaea8a18a0",
+            "kind": "execution",
+            "title": "eval",
+            "summary": "37",
+            "source": "ollama-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 37
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "call_1j6z5ofs",
+            "kind": "tool",
+            "title": "certify",
+            "summary": "completed",
+            "source": "certify",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "value": 37,
+              "verified": true
+            }
+          }
+        ],
+        "usage": {
+          "inputTokens": 220,
+          "outputTokens": 20,
+          "totalTokens": 240,
+          "cacheReadInputTokens": 96,
+          "input_tokens": 220,
+          "output_tokens": 20,
+          "total_tokens": 240,
+          "client_duration_ms": 2039.166,
+          "requests": 2,
+          "inference_requests": 2,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    }
+  ]
+}

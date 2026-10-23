@@ -1,147 +1,34 @@
-# Tutoriales
+# Tutorials
 
-Esta carpeta es la ruta ejecutable y canónica para aprender Agentic Systems 2.1.
-Los notebooks enseñan la API pública, no una segunda implementación de la
-librería.
+Abre un notebook, importa la librería y ejecuta sus celdas. Cada capítulo
+introduce una necesidad y muestra **input → proceso → output**.
 
-## Promesa de uso
+Empieza por 00–03. Añade Environment y Eval en 04–05. Los capítulos siguientes
+son para integrar proveedores, consultar trazas o preparar una aplicación mayor.
 
-    instalar -> configurar sólo si hay frontera externa -> abrir -> Run All
-
-Ningún notebook depende de celdas secretas. Los notebooks Python canónicos
-permanecen sin outputs; la evidencia se produce desde un kernel limpio.
-RUN_*_LIVE=0 mantiene offline las fronteras externas sin fabricar evidencia.
-
-## Modelo que enseñan
-
-    Tool / Skill -> Agent -> System -> Environment -> Eval
-                          |
-                          +-> Provider (dónde corre inferencia)
-                          +-> Framework (quién controla el loop)
-                          +-> RunResult (contrato de salida común)
-
-En los ejemplos, `toolkit` es el alias de todo el paquete `agentic_systems`;
-`ToolSet` es sólo un conjunto de Tools agrupadas bajo un namespace.
-
-`toolkit.load_skill(path)` devuelve una Skill portable de Agentic Systems. Ese
-formato reúne instrucciones, Tools y contratos, pero no afirma que cualquier
-carpeta de Skill de Claude/Anthropic o ChatGPT/OpenAI sea intercambiable sin un
-adaptador explícito.
-
-Agent conserva su pipeline propio de una unidad de cómputo. `toolkit.agent(...)`
-crea un System mínimo interno sólo para ownership, registros y defaults. System
-compila un plan de ejecución externo que conecta y ordena unidades. Environment
-añade episodios y pasos; Eval mide Agent, System o cualquier Executable.
-
-## Orden pedagógico canónico
-
-El orden conserva la progresión de 1.1.3. Los capítulos nuevos de 2.0 se
-insertan donde aclaran Provider x Framework y cierran la trazabilidad 1:1.
-
-| # | Notebook | Continuidad / evidencia |
-|---:|---|---|
-| 00 | providers/00_auto.ipynb | Runtime declarativo y resolución auto. |
-| 01 | providers/02_bedrock.ipynb | Runtime Bedrock por la fachada común. |
-| 02 | providers/01_openai.ipynb | Runtime OpenAI por la misma fachada. |
-| 03 | core/00_runtime_scheduler.ipynb | Scheduler, retry y timeout. |
-| 04 | providers/03_vllm.ipynb | Runtime vLLM OpenAI-compatible. |
-| 05 | providers/04_ollama.ipynb | Runtime Ollama local OpenAI-compatible. |
-| 06 | core/01_tool.ipynb | Tool, schemas y policy. |
-| 07 | core/02_skills.ipynb | Skill nativa y carga desde filesystem. |
-| 08 | core/03_agent.ipynb | Agent, contrato, pipeline y RunResult. |
-| 09 | core/04_results_lineage.ipynb | Human result, composición y lineage. |
-| 10 | frameworks/02_aws_strands.ipynb | Strands real: kwargs, hooks, MCP y A2A. |
-| 11 | frameworks/01_openai_agents.ipynb | Integración OpenAI Agents real. |
-| 12 | frameworks/00_langgraph.ipynb | LangGraph como lógica del Agent/System. |
-| 13 | core/05_system.ipynb | Ownership, registros y compilación. |
-| 14 | core/06_graph_native.ipynb | Graph portable sin SDK externo. |
-| 15 | core/07_environment_eval.ipynb | Episodios, pasos, rewards y Eval. |
-| 16 | core/08_single_agentic_system.ipynb | Sistema de un Agent end-to-end. |
-| 17 | core/09_multi_agentic_system.ipynb | Sistema secuencial de varios Agents. |
-| 18 | core/10_multi_agent_graph.ipynb | Sistema multi-agent con Graph. |
-| 19 | frameworks/03_provider_framework_matrix.ipynb | Matriz 5 x 4 y evidencia live. |
-| 20 | api/14_api_contract_matrix.ipynb | Contrato Source/API/Docs/Pytest 1:1. |
-
-## Capas, no rutas separadas
-
-| Capa | Pregunta | Regla |
-|---|---|---|
-| core | ¿Qué se construye y compone? | Python Runtime y Framework native. |
-| providers | ¿Dónde corre inferencia? | Preflight; llamada externa sólo si está habilitada. |
-| frameworks | ¿Quién controla el loop? | SDK real; Provider independiente. |
-| api | ¿Todo lo publicado es trazable? | IDs exactos generados desde Source. |
-
-El bloque A2A del tutorial Strands requiere la capacidad nativa opcional
-declarada en `frameworks/requirements-strands-a2a.txt`. Se instala al preparar
-el entorno, nunca desde una celda, para conservar kernels reproducibles.
-
-### Superficies nativas ejercitadas
-
-| Framework | Construcción (`agent_kwargs`) | Ejecución (`run_kwargs`) | Capacidad distintiva |
-|---|---|---|---|
-| native | No aplica | No aplica | Contrato portable de Agentic Systems. |
-| LangGraph | La topología se declara con `toolkit.graph` | La ejecución se observa vía `GraphApp` | Estado y rutas condicionales reales. |
-| OpenAI Agents | Guardrails y handoffs | `SQLiteSession` | Runner, sesión y handoff nativos. |
-| Strands | Hooks, Tools nativas, clientes MCP y A2A | Structured output | Lifecycle y protocolos nativos. |
-
-La matriz Provider × Framework mantiene los kwargs vacíos intencionalmente: su
-objetivo es medir sustituibilidad. Los notebooks individuales prueban las
-capacidades distintivas sin contaminar esa comparación.
-
-## Auto, provider explícito y credenciales
-
-Los notebooks específicos de Provider son explícitos: OpenAI, Bedrock,
-vLLM u Ollama. Los notebooks de Framework usan python-runtime offline; al activar
-live, auto elige el primer Provider listo según prioridad. La matriz 5 x 4 usa
-cada Provider de forma explícita para que ninguna combinación quede oculta.
-
-| Frontera | Configuración | Opt-out |
-|---|---|---|
-| OpenAI | OPENAI_API_KEY; OPENAI_MODEL opcional | RUN_OPENAI_LIVE=0 |
-| Bedrock | región y cadena AWS o AWS_BEARER_TOKEN_BEDROCK | RUN_BEDROCK_LIVE=0 |
-| vLLM | VLLM_BASE_URL y VLLM_MODEL | RUN_VLLM_LIVE=0 |
-| Ollama | OLLAMA_MODEL; OLLAMA_BASE_URL opcional | RUN_OLLAMA_LIVE=0 |
-| Matriz | RUN_MATRIX_LIVE=1 y Providers listos | RUN_MATRIX_LIVE=0 |
-
-No pegues secretos en notebooks. Un caso no ejecutado se reporta como not-run
-con motivo; nunca cuenta como passed. Un error live de credenciales, permisos,
-modelo o endpoint permanece visible.
-
-La matriz distingue estados que no deben confundirse:
-
-| Estado | Significado |
+| Capítulo | Pregunta que resuelve |
 |---|---|
-| declared | La combinación pertenece al contrato 5 x 4. |
-| ready | Su configuración y dependencias superaron el preflight. |
-| not-run | No cruzó la frontera externa; incluye el motivo y no cuenta como éxito. |
-| passed | Se ejecutó y sus invariantes fueron comprobados. |
-| failed | Se ejecutó y preserva el error real. |
+| [00](00_api.ipynb) | ¿Cómo construyo algo y obtengo su resultado? |
+| [01](01_tools_skills.ipynb) | ¿Cómo reutilizo operaciones con Tools y Skills? |
+| [02](02_agent_flows.ipynb) | ¿Cómo ordena su trabajo un Agent? |
+| [03](03_system_flows.ipynb) | ¿Cómo coordina varios Agents un System? |
+| [04](04_environment.ipynb) | ¿Cómo proceso registros y mantengo memoria? |
+| [05](05_eval.ipynb) | ¿Cómo compruebo que el resultado es correcto? |
+| [06](06_runtime_framework.ipynb) | ¿Cómo elijo proveedor y framework? |
+| [07](07_results_limits.ipynb) | ¿Cómo reutilizo, observo y limito una ejecución? |
+| [08](08_model_serving.ipynb) | ¿Cómo declaro un modelo y su servidor? |
+| [09](09_order_challenge.ipynb) | ¿Cómo se conectan todas las piezas en pedidos? |
+| [10](10_contracts_judges.ipynb) | ¿Cómo añado contratos, salida estructurada y un juez? |
 
-## Contrato de salida y narrativa
+Todos usan la API 2.1.3 instalada. Python Runtime ejecuta operaciones exactas;
+las celdas no llaman proveedores externos. La lección de serving prepara
+configuración y no inicia GPU. El juez fixture comprueba un protocolo, no la
+capacidad semántica de un modelo.
 
-Cada demostración declara objetivo, parámetros editables, construcción,
-ejecución o `not-run` explícito, resultado e interpretación y `api_coverage`.
-La igualdad de `RunResult` significa el mismo esquema público y los mismos
-invariantes en toda combinación; no significa que `data`, `final`,
-`native_result`, `messages`, `usage`, `meta` o el objeto del SDK sean idénticos.
-Los notebooks no fabrican resultados ni mutan sus campos para aparentar éxito.
+`lesson_examples.py` localiza las aplicaciones compartidas con independencia
+del directorio de trabajo. Las celdas de aprendizaje no contienen rutas,
+guardas ni banderas de validación. El validador las añade a una copia ejecutada;
+su funcionamiento está en la [guía de desarrollo](../docs/VALIDATION_213.md).
 
-## Gate de release
-
-Los 21 notebooks Python deben importar agentic_systems as toolkit, usar sólo
-la API pública estable, compilar, comenzar sin outputs y declarar metadata.
-La suite los ejecuta desde kernels limpios: 17 producen evidencia determinista
-y 4 prueban not-run de Providers. El notebook API verifica
-468 IDs y 10 escenarios compartidos.
-
-## Contribution Standard
-
-Every notebook must state its goal, editable inputs, ownership model, public API
-construction, execution or explicit not-run, result interpretation and literal
-api_coverage. Run All must not depend on hidden cells or fabricated results.
-
-Tutorial fixtures may contain small domain callbacks, but must not import
-package internals or duplicate provider/framework behavior. The canonical
-grammar is toolkit.tool(...), toolkit.skill(...), toolkit.agent(...),
-toolkit.system(...), toolkit.graph(...), toolkit.environment(...) and
-toolkit.eval(...).
+[Examples](../examples/README.md) · [Referencia completa](../docs/API_213_SURFACE.md) ·
+[Evidencia actual](../revisions/2.1.3/framework-evidence/REPORT.md)

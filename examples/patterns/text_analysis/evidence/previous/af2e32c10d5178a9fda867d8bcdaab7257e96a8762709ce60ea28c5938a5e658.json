@@ -1,0 +1,230 @@
+{
+  "example": "text_analysis",
+  "example_passed": true,
+  "source_sha256": "768295f17381c40dcf57e1806bdd8ea89fac7202bff9149b0989ace03cf98721",
+  "inference_requests": 0,
+  "scope": "offline contract or configuration; no model-generation/semantic/IAM/GPU certification",
+  "output": {
+    "text": "",
+    "final": {
+      "words": 3,
+      "unique": 2,
+      "mentions": 2
+    },
+    "data": {
+      "words": 3,
+      "unique": 2,
+      "mentions": 2
+    },
+    "ok": true,
+    "messages": [],
+    "raw_responses": [],
+    "usage": {
+      "requests": 1,
+      "inference_requests": 0,
+      "tool_calls": 1
+    },
+    "engine": "python-runtime",
+    "model": "",
+    "mode": "default",
+    "trace_schema_version": "agentic_systems.trace.v1",
+    "validation": null,
+    "errors": [],
+    "meta": {
+      "name": "application",
+      "kind": "system",
+      "backend": "native",
+      "skills": [],
+      "actions_observed": 1,
+      "input": {
+        "input": {
+          "text": "evidence supports evidence"
+        }
+      }
+    },
+    "execution_id": "run-c8e365ccb70c4519b057f6b2c2d26858",
+    "parent_execution_id": null,
+    "children": [
+      {
+        "text": "",
+        "final": {
+          "words": 3,
+          "unique": 2,
+          "mentions": 2
+        },
+        "data": {
+          "words": 3,
+          "unique": 2,
+          "mentions": 2
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "sequence",
+          "kind": "sequence",
+          "backend": "native"
+        },
+        "execution_id": "run-90533bec2ac6480fb7d8613bff50a6af",
+        "parent_execution_id": "run-c8e365ccb70c4519b057f6b2c2d26858",
+        "children": [
+          {
+            "text": "",
+            "final": {
+              "words": 3,
+              "unique": 2,
+              "mentions": 2
+            },
+            "data": {
+              "words": 3,
+              "unique": 2,
+              "mentions": 2
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 1,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "worker",
+              "kind": "agent",
+              "backend": "native",
+              "skills": [
+                "text_counts"
+              ],
+              "step": "worker"
+            },
+            "execution_id": "run-ce4d15a4453a43a897f6a374ec5bf0b7",
+            "parent_execution_id": "run-90533bec2ac6480fb7d8613bff50a6af",
+            "children": [
+              {
+                "text": "",
+                "final": {
+                  "words": 3,
+                  "unique": 2,
+                  "mentions": 2
+                },
+                "data": {
+                  "words": 3,
+                  "unique": 2,
+                  "mentions": 2
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "requests": 1,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "text_counts",
+                  "kind": "action"
+                },
+                "execution_id": "run-d10ea4b79ef740c5bb1b5d1c93939399",
+                "parent_execution_id": "run-ce4d15a4453a43a897f6a374ec5bf0b7",
+                "children": [
+                  {
+                    "text": "",
+                    "final": {
+                      "words": 3,
+                      "unique": 2,
+                      "mentions": 2
+                    },
+                    "data": {
+                      "words": 3,
+                      "unique": 2,
+                      "mentions": 2
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "requests": 1,
+                      "inference_requests": 0,
+                      "tool_calls": 1
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "tool",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "tool_name": "",
+                      "input": {
+                        "input": {
+                          "text": "evidence supports evidence"
+                        }
+                      },
+                      "tool_input": {
+                        "input": {
+                          "text": "evidence supports evidence"
+                        }
+                      }
+                    },
+                    "execution_id": "run-2d0f50eb17344bdc845be559121db77b",
+                    "parent_execution_id": "run-d10ea4b79ef740c5bb1b5d1c93939399",
+                    "children": [],
+                    "tool_events": [
+                      {
+                        "id": "tool-a8130acbf6a741598d6a9abc087a18c7",
+                        "name": "text_counts",
+                        "input": {
+                          "input": {
+                            "text": "evidence supports evidence"
+                          }
+                        },
+                        "output": {
+                          "data": {
+                            "words": 3,
+                            "unique": 2,
+                            "mentions": 2
+                          }
+                        },
+                        "ok": true,
+                        "error": null,
+                        "duration_ms": null,
+                        "meta": {}
+                      }
+                    ]
+                  }
+                ],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      }
+    ],
+    "tool_events": []
+  }
+}

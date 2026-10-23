@@ -1,5 +1,7 @@
 # Claim partition audit and first held-out sample
 
+> **Referencia anterior a la API 2.1.3.** Se conserva como diseño, operación o evidencia histórica. Para implementar con la API vigente, consulta [la guía actual](API_213.md) y [tutorials](../tutorials/README.md). Sus ejemplos antiguos no son otra API soportada.
+
 This is a source experiment, not release certification. Credentials were loaded
 from the canonical .env without recording secrets. Existing per-route allocations
 were not reset. The executable application was frozen during each live batch.

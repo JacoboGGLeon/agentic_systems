@@ -7,7 +7,7 @@ import html
 import json
 from typing import Any, Callable
 
-from agentic_systems.registry import FRAMEWORK_NAMES
+from .routes import FRAMEWORK_NAMES
 
 from .conversation import (
     ConversationConfig,
@@ -60,15 +60,7 @@ class NotebookStudioSession:
 
     def _system(self) -> Any:
         config = self.config
-        key = (
-            config.provider,
-            config.framework,
-            config.model,
-            config.timeout_s,
-        )
-        if key not in self._systems:
-            self._systems[key] = self.system_factory(config)
-        return self._systems[key]
+        return self.system_factory(config)
 
     def run(self, message: str) -> Any:
         """Run the canonical conversational System and preserve public history."""

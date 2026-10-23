@@ -1,0 +1,76 @@
+{
+  "schema_version": "agentic-systems.studio/v1",
+  "id": "research-synthesis",
+  "name": "Research Synthesis",
+  "agentic_systems_version": "2.0.0",
+  "size": "medium",
+  "stages": [
+    {
+      "id": "extract",
+      "name": "Evidence operator",
+      "kind": "operator",
+      "capability": "evidence-extraction",
+      "tool_key": "extract_research_evidence",
+      "instructions": "Extract claims, links, figures and uncertainty."
+    },
+    {
+      "id": "synthesize",
+      "name": "Research synthesizer",
+      "kind": "reasoner",
+      "capability": "evidence-synthesis",
+      "tool_key": "record_reasoning_evidence",
+      "instructions": "Synthesize only extracted evidence and retain uncertainty."
+    },
+    {
+      "id": "critic",
+      "name": "Adversarial critic",
+      "kind": "reasoner",
+      "capability": "claim-criticism",
+      "tool_key": "record_reasoning_evidence",
+      "instructions": "Find contradictions, missing evidence and overclaiming."
+    },
+    {
+      "id": "review",
+      "name": "Research editor",
+      "kind": "reviewer",
+      "capability": "editorial-review",
+      "tool_key": "validate_review_claim",
+      "instructions": "Produce the evidence-qualified synthesis."
+    }
+  ],
+  "capabilities": [
+    "evidence-extraction",
+    "evidence-synthesis",
+    "claim-criticism",
+    "editorial-review"
+  ],
+  "assets": [
+    "pyproject.toml",
+    "README.md",
+    ".env.example",
+    "manifest.json",
+    "src/incident_response_application/__init__.py",
+    "src/incident_response_application/__main__.py",
+    "src/incident_response_application/tools.py",
+    "src/incident_response_application/system.py",
+    "src/incident_response_application/environment.py",
+    "src/incident_response_application/evals.py",
+    "skills/codex-agentic-application/SKILL.md",
+    "skills/runtime/evidence-grounded-synthesis.json",
+    "assets/system.mmd",
+    "notebooks/00_walkthrough.ipynb",
+    "tests/test_contract.py",
+    "data/app.db"
+  ],
+  "catalog_assets": [
+    "manifest.json",
+    "README.md",
+    "system.mmd",
+    "run.py",
+    "notebook.ipynb",
+    "tests/test_system.py",
+    "skills/runtime-skill.json",
+    "data/studio.db",
+    "assets/evidence-template.md"
+  ]
+}

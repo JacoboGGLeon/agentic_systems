@@ -1,0 +1,27 @@
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[project]
+name = "agentic-systems-studio"
+version = "2.1.2"
+description = "Provider/framework-agnostic conversational reference for Agentic Systems 2.1"
+requires-python = ">=3.10"
+dependencies = [
+  "agentic-systems==2.1.2",
+  "rich>=13.7",
+]
+
+[project.optional-dependencies]
+ui = ["streamlit>=1.37"]
+notebook = [
+  "ipython>=8.0",
+  "ipywidgets>=8.1",
+  "nbclient>=0.10",
+  "nbconvert>=7.16",
+  "jupyter-server-proxy>=4.4",
+]
+test = ["pytest>=8.0"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/agentic_systems_studio"]

@@ -1,0 +1,422 @@
+{
+  "source_evidence": "revisions/2.1.3/closeout-evidence/matrix/20261023T025048258614/openai-runtime--openai-agents.json",
+  "results": [
+    {
+      "run_result": {
+        "text": "The integer 37 is verified as exact and deterministic evidence.",
+        "final": {
+          "text": "The integer 37 is verified as exact and deterministic evidence."
+        },
+        "data": {
+          "text": "The integer 37 is verified as exact and deterministic evidence."
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 2,
+          "input_tokens": 186,
+          "output_tokens": 29,
+          "total_tokens": 215,
+          "client_duration_ms": 3567.481,
+          "inference_requests": 2,
+          "tool_calls": 1
+        },
+        "engine": "openai-runtime",
+        "model": "gpt-4.1-mini",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "matrix",
+          "kind": "agent",
+          "backend": "native",
+          "skills": [
+            "evidence"
+          ],
+          "actions_observed": 1,
+          "input": "Call certify with value=37. The tool output is the required result."
+        },
+        "execution_id": "run-aa3048e60f1642e1a3a9367c94bcf44e",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "The integer 37 is verified as exact and deterministic evidence.",
+            "final": {
+              "text": "The integer 37 is verified as exact and deterministic evidence."
+            },
+            "data": {
+              "text": "The integer 37 is verified as exact and deterministic evidence."
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 2,
+              "input_tokens": 186,
+              "output_tokens": 29,
+              "total_tokens": 215,
+              "client_duration_ms": 3567.481,
+              "inference_requests": 2,
+              "tool_calls": 1
+            },
+            "engine": "openai-runtime",
+            "model": "gpt-4.1-mini",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "matrix",
+              "kind": "model",
+              "framework": "openai-agents"
+            },
+            "execution_id": "run-9a5aa13a730b4763884b36bc15a792e4",
+            "parent_execution_id": "run-aa3048e60f1642e1a3a9367c94bcf44e",
+            "children": [
+              {
+                "text": "The integer 37 is verified as exact and deterministic evidence.",
+                "final": {
+                  "text": "The integer 37 is verified as exact and deterministic evidence."
+                },
+                "data": {
+                  "text": "The integer 37 is verified as exact and deterministic evidence."
+                },
+                "ok": true,
+                "messages": [
+                  {
+                    "content": "Call certify with value=37. The tool output is the required result.",
+                    "role": "user"
+                  },
+                  {
+                    "arguments": "{\"value\":37}",
+                    "call_id": "call_4pbLAdOp5cHaBtesSuKO91LE",
+                    "name": "certify",
+                    "type": "function_call",
+                    "id": "fc_0da67f53f3f79618006adacba7c7bc87d1aa4dbc7add7302df",
+                    "status": "completed"
+                  },
+                  {
+                    "call_id": "call_4pbLAdOp5cHaBtesSuKO91LE",
+                    "output": "{'value': 37, 'verified': True}",
+                    "type": "function_call_output"
+                  },
+                  {
+                    "id": "msg_0da67f53f3f79618006adacba9547c87d19c57d4e86d520d01",
+                    "content": [
+                      {
+                        "annotations": [],
+                        "text": "The integer 37 is verified as exact and deterministic evidence.",
+                        "type": "output_text",
+                        "logprobs": []
+                      }
+                    ],
+                    "role": "assistant",
+                    "status": "completed",
+                    "type": "message"
+                  }
+                ],
+                "raw_responses": [
+                  {
+                    "output": [
+                      {
+                        "arguments": "{\"value\":37}",
+                        "call_id": "call_4pbLAdOp5cHaBtesSuKO91LE",
+                        "name": "certify",
+                        "type": "function_call",
+                        "id": "fc_0da67f53f3f79618006adacba7c7bc87d1aa4dbc7add7302df",
+                        "caller": null,
+                        "namespace": null,
+                        "status": "completed"
+                      }
+                    ],
+                    "usage": {
+                      "requests": 1,
+                      "input_tokens": 76,
+                      "input_tokens_details": {
+                        "cache_write_tokens": 0,
+                        "cached_tokens": 0
+                      },
+                      "output_tokens": 15,
+                      "output_tokens_details": {
+                        "reasoning_tokens": 0
+                      },
+                      "total_tokens": 91,
+                      "request_usage_entries": []
+                    },
+                    "response_id": "resp_0da67f53f3f79618006adacba7019c87d1bd7181663bb6c589",
+                    "request_id": "req_1fa05fe597a14e91b0238d406fe50c16"
+                  },
+                  {
+                    "output": [
+                      {
+                        "id": "msg_0da67f53f3f79618006adacba9547c87d19c57d4e86d520d01",
+                        "content": [
+                          {
+                            "annotations": [],
+                            "text": "The integer 37 is verified as exact and deterministic evidence.",
+                            "type": "output_text",
+                            "logprobs": []
+                          }
+                        ],
+                        "role": "assistant",
+                        "status": "completed",
+                        "type": "message",
+                        "phase": null
+                      }
+                    ],
+                    "usage": {
+                      "requests": 1,
+                      "input_tokens": 110,
+                      "input_tokens_details": {
+                        "cache_write_tokens": 0,
+                        "cached_tokens": 0
+                      },
+                      "output_tokens": 14,
+                      "output_tokens_details": {
+                        "reasoning_tokens": 0
+                      },
+                      "total_tokens": 124,
+                      "request_usage_entries": []
+                    },
+                    "response_id": "resp_0da67f53f3f79618006adacba854dc87d19c6a50c6e976d47c",
+                    "request_id": "req_5eab2d08ee6a47c3b45d2d4298211a9f"
+                  }
+                ],
+                "usage": {
+                  "requests": 2,
+                  "input_tokens": 186,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cached_tokens": 0
+                  },
+                  "output_tokens": 29,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 0
+                  },
+                  "total_tokens": 215,
+                  "request_usage_entries": [
+                    {
+                      "input_tokens": 76,
+                      "output_tokens": 15,
+                      "total_tokens": 91,
+                      "input_tokens_details": {
+                        "cache_write_tokens": 0,
+                        "cached_tokens": 0
+                      },
+                      "output_tokens_details": {
+                        "reasoning_tokens": 0
+                      }
+                    },
+                    {
+                      "input_tokens": 110,
+                      "output_tokens": 14,
+                      "total_tokens": 124,
+                      "input_tokens_details": {
+                        "cache_write_tokens": 0,
+                        "cached_tokens": 0
+                      },
+                      "output_tokens_details": {
+                        "reasoning_tokens": 0
+                      }
+                    }
+                  ],
+                  "scheduler": {
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 3567.481
+                  },
+                  "client_duration_ms": 3567.481,
+                  "inference_requests": 2,
+                  "tool_calls": 1
+                },
+                "engine": "openai-runtime",
+                "model": "gpt-4.1-mini",
+                "mode": "eval",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": {
+                  "ok": true,
+                  "issues": []
+                },
+                "errors": [],
+                "meta": {
+                  "source_result_type": "RunResult",
+                  "framework_adapter": "openai-agents",
+                  "input": "Call certify with value=37. The tool output is the required result.",
+                  "rejected_tool_calls": [],
+                  "runtime": {
+                    "provider": "openai-runtime",
+                    "model_id": "gpt-4.1-mini",
+                    "region_name": null,
+                    "endpoint": null,
+                    "metadata": {},
+                    "provider_priority": [
+                      "openai-runtime",
+                      "bedrock-runtime",
+                      "ollama-runtime"
+                    ],
+                    "allow_python_fallback": false,
+                    "scheduler": {
+                      "max_turns": 5,
+                      "max_tool_calls": 3,
+                      "timeout_s": 60,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    }
+                  },
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "scheduler_execution": {
+                    "scheduler": {
+                      "max_turns": 5,
+                      "max_tool_calls": 3,
+                      "timeout_s": 60,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    },
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 3567.481
+                  },
+                  "framework": "openai-agents",
+                  "framework_requested": "openai-agents",
+                  "framework_config": {
+                    "name": "openai-agents",
+                    "agent_kwargs": {},
+                    "run_kwargs": {}
+                  },
+                  "agent_name": "matrix",
+                  "requested_engine": "openai-runtime",
+                  "runtime_engine": "openai-runtime",
+                  "execution_engine": "openai-runtime"
+                },
+                "execution_id": "run-b6dab5b68c9f43eaa7e51be387604fd4",
+                "parent_execution_id": "run-9a5aa13a730b4763884b36bc15a792e4",
+                "children": [],
+                "tool_events": [
+                  {
+                    "id": "call_4pbLAdOp5cHaBtesSuKO91LE",
+                    "name": "certify",
+                    "input": {
+                      "value": 37
+                    },
+                    "output": {
+                      "data": {
+                        "value": 37,
+                        "verified": true
+                      }
+                    },
+                    "ok": true,
+                    "error": null,
+                    "duration_ms": null,
+                    "meta": {
+                      "source": "openai-agents"
+                    }
+                  }
+                ]
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "matrix/openai-runtime--openai-agents",
+        "question": "\"Call certify with value=37. The tool output is the required result.\"",
+        "goal": "",
+        "answer": "The integer 37 is verified as exact and deterministic evidence.",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-aa3048e60f1642e1a3a9367c94bcf44e",
+            "kind": "execution",
+            "title": "matrix",
+            "summary": "The integer 37 is verified as exact and deterministic evidence.",
+            "source": "openai-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "text": "The integer 37 is verified as exact and deterministic evidence."
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-9a5aa13a730b4763884b36bc15a792e4",
+            "kind": "execution",
+            "title": "matrix",
+            "summary": "The integer 37 is verified as exact and deterministic evidence.",
+            "source": "openai-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "text": "The integer 37 is verified as exact and deterministic evidence."
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-b6dab5b68c9f43eaa7e51be387604fd4",
+            "kind": "execution",
+            "title": "eval",
+            "summary": "The integer 37 is verified as exact and deterministic evidence.",
+            "source": "openai-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "text": "The integer 37 is verified as exact and deterministic evidence."
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "call_4pbLAdOp5cHaBtesSuKO91LE",
+            "kind": "tool",
+            "title": "certify",
+            "summary": "completed",
+            "source": "certify",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "value": 37,
+                "verified": true
+              }
+            }
+          }
+        ],
+        "usage": {
+          "requests": 2,
+          "input_tokens": 186,
+          "output_tokens": 29,
+          "total_tokens": 215,
+          "client_duration_ms": 3567.481,
+          "inference_requests": 2,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    }
+  ]
+}

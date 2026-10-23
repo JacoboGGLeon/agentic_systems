@@ -9,7 +9,7 @@ import re
 from statistics import mean
 
 import agentic_systems as toolkit
-from agentic_systems.registry import FRAMEWORK_NAMES, PROVIDER_NAMES
+from .routes import FRAMEWORK_NAMES, PROVIDER_NAMES
 
 
 def _lines(text: str) -> list[str]:

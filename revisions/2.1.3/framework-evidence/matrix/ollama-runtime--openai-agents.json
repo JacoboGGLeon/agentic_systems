@@ -1,0 +1,354 @@
+{
+  "name": "ollama-runtime--openai-agents",
+  "passed": true,
+  "report": {
+    "provider": "ollama-runtime",
+    "framework": "openai-agents",
+    "result": {
+      "text": "OK.",
+      "final": {
+        "text": "OK."
+      },
+      "data": {
+        "text": "OK."
+      },
+      "ok": true,
+      "messages": [],
+      "raw_responses": [],
+      "usage": {
+        "requests": 2,
+        "input_tokens": 206,
+        "output_tokens": 20,
+        "total_tokens": 226,
+        "client_duration_ms": 4475.716,
+        "inference_requests": 2,
+        "tool_calls": 1
+      },
+      "engine": "ollama-runtime",
+      "model": "gemma4:31b-cloud",
+      "mode": "default",
+      "trace_schema_version": "agentic_systems.trace.v1",
+      "validation": null,
+      "errors": [],
+      "meta": {
+        "name": "matrix",
+        "kind": "agent",
+        "backend": "native",
+        "skills": [
+          "evidence"
+        ],
+        "actions_observed": 1,
+        "input": "Call certify with value=37. The tool output is the required result."
+      },
+      "execution_id": "run-055b94a53fc24f3393f1d42d10372a8d",
+      "parent_execution_id": null,
+      "children": [
+        {
+          "text": "OK.",
+          "final": {
+            "text": "OK."
+          },
+          "data": {
+            "text": "OK."
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {
+            "requests": 2,
+            "input_tokens": 206,
+            "output_tokens": 20,
+            "total_tokens": 226,
+            "client_duration_ms": 4475.716,
+            "inference_requests": 2,
+            "tool_calls": 1
+          },
+          "engine": "ollama-runtime",
+          "model": "gemma4:31b-cloud",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "matrix",
+            "kind": "model",
+            "framework": "openai-agents"
+          },
+          "execution_id": "run-96eaf51cbb424c79932aec4fd147692a",
+          "parent_execution_id": "run-055b94a53fc24f3393f1d42d10372a8d",
+          "children": [
+            {
+              "text": "OK.",
+              "final": {
+                "text": "OK."
+              },
+              "data": {
+                "text": "OK."
+              },
+              "ok": true,
+              "messages": [
+                {
+                  "content": "Call certify with value=37. The tool output is the required result.",
+                  "role": "user"
+                },
+                {
+                  "arguments": "{\"value\":37}",
+                  "call_id": "call_ublzpdbm",
+                  "name": "certify",
+                  "type": "function_call",
+                  "id": "__fake_id__",
+                  "provider_data": {
+                    "model": "gemma4:31b-cloud",
+                    "response_id": "chatcmpl-808"
+                  }
+                },
+                {
+                  "call_id": "call_ublzpdbm",
+                  "output": "{'value': 37, 'verified': True}",
+                  "type": "function_call_output"
+                },
+                {
+                  "id": "__fake_id__",
+                  "content": [
+                    {
+                      "annotations": [],
+                      "text": "OK.",
+                      "type": "output_text",
+                      "logprobs": []
+                    }
+                  ],
+                  "role": "assistant",
+                  "status": "completed",
+                  "type": "message",
+                  "provider_data": {
+                    "model": "gemma4:31b-cloud",
+                    "response_id": "chatcmpl-690"
+                  }
+                }
+              ],
+              "raw_responses": [
+                {
+                  "output": [
+                    {
+                      "arguments": "{\"value\":37}",
+                      "call_id": "call_ublzpdbm",
+                      "name": "certify",
+                      "type": "function_call",
+                      "id": "__fake_id__",
+                      "caller": null,
+                      "namespace": null,
+                      "status": null,
+                      "provider_data": {
+                        "model": "gemma4:31b-cloud",
+                        "response_id": "chatcmpl-808"
+                      }
+                    }
+                  ],
+                  "usage": {
+                    "requests": 1,
+                    "input_tokens": 87,
+                    "input_tokens_details": {
+                      "cache_write_tokens": 0,
+                      "cached_tokens": 64
+                    },
+                    "output_tokens": 13,
+                    "output_tokens_details": {
+                      "reasoning_tokens": 0
+                    },
+                    "total_tokens": 100,
+                    "request_usage_entries": []
+                  },
+                  "response_id": null,
+                  "request_id": null
+                },
+                {
+                  "output": [
+                    {
+                      "id": "__fake_id__",
+                      "content": [
+                        {
+                          "annotations": [],
+                          "text": "OK.",
+                          "type": "output_text",
+                          "logprobs": []
+                        }
+                      ],
+                      "role": "assistant",
+                      "status": "completed",
+                      "type": "message",
+                      "phase": null,
+                      "provider_data": {
+                        "model": "gemma4:31b-cloud",
+                        "response_id": "chatcmpl-690"
+                      }
+                    }
+                  ],
+                  "usage": {
+                    "requests": 1,
+                    "input_tokens": 119,
+                    "input_tokens_details": {
+                      "cache_write_tokens": 0,
+                      "cached_tokens": 64
+                    },
+                    "output_tokens": 7,
+                    "output_tokens_details": {
+                      "reasoning_tokens": 0
+                    },
+                    "total_tokens": 126,
+                    "request_usage_entries": []
+                  },
+                  "response_id": null,
+                  "request_id": null
+                }
+              ],
+              "usage": {
+                "requests": 2,
+                "input_tokens": 206,
+                "input_tokens_details": {
+                  "cache_write_tokens": 0,
+                  "cached_tokens": 128
+                },
+                "output_tokens": 20,
+                "output_tokens_details": {
+                  "reasoning_tokens": 0
+                },
+                "total_tokens": 226,
+                "request_usage_entries": [
+                  {
+                    "input_tokens": 87,
+                    "output_tokens": 13,
+                    "total_tokens": 100,
+                    "input_tokens_details": {
+                      "cache_write_tokens": 0,
+                      "cached_tokens": 64
+                    },
+                    "output_tokens_details": {
+                      "reasoning_tokens": 0
+                    }
+                  },
+                  {
+                    "input_tokens": 119,
+                    "output_tokens": 7,
+                    "total_tokens": 126,
+                    "input_tokens_details": {
+                      "cache_write_tokens": 0,
+                      "cached_tokens": 64
+                    },
+                    "output_tokens_details": {
+                      "reasoning_tokens": 0
+                    }
+                  }
+                ],
+                "scheduler": {
+                  "attempts": 1,
+                  "retries": 0,
+                  "timed_out": false,
+                  "latency_ms": 4475.716
+                },
+                "client_duration_ms": 4475.716,
+                "inference_requests": 2,
+                "tool_calls": 1
+              },
+              "engine": "ollama-runtime",
+              "model": "gemma4:31b-cloud",
+              "mode": "eval",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": {
+                "ok": true,
+                "issues": []
+              },
+              "errors": [],
+              "meta": {
+                "source_result_type": "RunResult",
+                "framework_adapter": "openai-agents",
+                "input": "Call certify with value=37. The tool output is the required result.",
+                "rejected_tool_calls": [],
+                "runtime": {
+                  "provider": "ollama-runtime",
+                  "model_id": "gemma4:31b-cloud",
+                  "region_name": null,
+                  "endpoint": "https://ollama.com/v1",
+                  "metadata": {},
+                  "provider_priority": [
+                    "openai-runtime",
+                    "bedrock-runtime",
+                    "ollama-runtime"
+                  ],
+                  "allow_python_fallback": false,
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  }
+                },
+                "scheduler": {
+                  "max_turns": 5,
+                  "max_tool_calls": 3,
+                  "timeout_s": 60,
+                  "max_concurrency": 1,
+                  "max_retries": 0,
+                  "backoff_s": 0.0
+                },
+                "scheduler_execution": {
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "attempts": 1,
+                  "retries": 0,
+                  "timed_out": false,
+                  "latency_ms": 4475.716
+                },
+                "framework": "openai-agents",
+                "framework_requested": "openai-agents",
+                "framework_config": {
+                  "name": "openai-agents",
+                  "agent_kwargs": {},
+                  "run_kwargs": {}
+                },
+                "agent_name": "matrix",
+                "requested_engine": "ollama-runtime",
+                "runtime_engine": "ollama-runtime",
+                "execution_engine": "ollama-runtime"
+              },
+              "execution_id": "run-bdfec561ee80430ba36ce2820424efb8",
+              "parent_execution_id": "run-96eaf51cbb424c79932aec4fd147692a",
+              "children": [],
+              "tool_events": [
+                {
+                  "id": "call_ublzpdbm",
+                  "name": "certify",
+                  "input": {
+                    "value": 37
+                  },
+                  "output": {
+                    "data": {
+                      "value": 37,
+                      "verified": true
+                    }
+                  },
+                  "ok": true,
+                  "error": null,
+                  "duration_ms": null,
+                  "meta": {
+                    "source": "openai-agents"
+                  }
+                }
+              ]
+            }
+          ],
+          "tool_events": []
+        }
+      ],
+      "tool_events": []
+    }
+  },
+  "elapsed_s": 4.484
+}

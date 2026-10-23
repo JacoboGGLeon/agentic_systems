@@ -1,0 +1,153 @@
+{
+  "example": "portable_skills",
+  "passed": true,
+  "source_sha256": "178ed50e9317b1eaa70e28bf4d658e72e3057a17b7e6b080734e0952eeaa9e9f",
+  "report": {
+    "input": {
+      "value": 3
+    },
+    "process": {
+      "name": "arithmetic",
+      "description": "Portable local arithmetic",
+      "version": "1.0.0",
+      "instructions": "Use exact integer arithmetic.",
+      "tools": [
+        {
+          "name": "increment",
+          "description": "Increment an integer using a sibling resource.",
+          "metadata": {},
+          "input_schema": null,
+          "output_schema": null
+        }
+      ],
+      "metadata": {
+        "synthetic": true
+      }
+    },
+    "output": {
+      "text": "",
+      "final": {
+        "value": 4
+      },
+      "data": {
+        "value": 4
+      },
+      "ok": true,
+      "messages": [],
+      "raw_responses": [],
+      "usage": {
+        "requests": 1,
+        "inference_requests": 0,
+        "tool_calls": 1
+      },
+      "engine": "python-runtime",
+      "model": "",
+      "mode": "default",
+      "trace_schema_version": "agentic_systems.trace.v1",
+      "validation": null,
+      "errors": [],
+      "meta": {
+        "name": "portable",
+        "kind": "agent",
+        "backend": "native",
+        "skills": [
+          "arithmetic"
+        ],
+        "actions_observed": 1,
+        "input": {
+          "value": 3
+        }
+      },
+      "execution_id": "run-8afb783ddd7540c98902ce4adec5dc60",
+      "parent_execution_id": null,
+      "children": [
+        {
+          "text": "",
+          "final": {
+            "value": 4
+          },
+          "data": {
+            "value": 4
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {
+            "requests": 1,
+            "inference_requests": 0,
+            "tool_calls": 1
+          },
+          "engine": "python-runtime",
+          "model": "",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "increment",
+            "kind": "action"
+          },
+          "execution_id": "run-f7f1b0da72cf4c679f2dcae40cc97dcd",
+          "parent_execution_id": "run-8afb783ddd7540c98902ce4adec5dc60",
+          "children": [
+            {
+              "text": "",
+              "final": {
+                "value": 4
+              },
+              "data": {
+                "value": 4
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {
+                "requests": 1,
+                "inference_requests": 0,
+                "tool_calls": 1
+              },
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "tool",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "tool_name": "",
+                "input": {
+                  "value": 3
+                },
+                "tool_input": {
+                  "value": 3
+                }
+              },
+              "execution_id": "run-e52ab6d14d564d51b0941d3d6a27b380",
+              "parent_execution_id": "run-f7f1b0da72cf4c679f2dcae40cc97dcd",
+              "children": [],
+              "tool_events": [
+                {
+                  "id": "tool-f5f71d573a7c41718e6e77bb20a662b8",
+                  "name": "increment",
+                  "input": {
+                    "value": 3
+                  },
+                  "output": {
+                    "data": {
+                      "value": 4
+                    }
+                  },
+                  "ok": true,
+                  "error": null,
+                  "duration_ms": null,
+                  "meta": {}
+                }
+              ]
+            }
+          ],
+          "tool_events": []
+        }
+      ],
+      "tool_events": []
+    }
+  }
+}

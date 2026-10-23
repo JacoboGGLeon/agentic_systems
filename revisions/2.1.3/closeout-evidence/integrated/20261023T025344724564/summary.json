@@ -1,0 +1,107 @@
+{
+  "phase": "integrated",
+  "version": "2.1.3",
+  "wheel_sha256": "b09785bc75faa97d15b4cf4c1fc25b18741319ce1b8024641c9597930115b283",
+  "created_at": "2026-10-23T02:54:39.241187+00:00",
+  "planned": 16,
+  "executed": 16,
+  "passed": 14,
+  "all_passed": false,
+  "budget": {
+    "attempts": 92,
+    "reserved_usd": "3.390982",
+    "limits": {
+      "usd": 10,
+      "requests": 300
+    },
+    "remaining_requests": 208,
+    "remaining_usd": "6.609018"
+  },
+  "rows": [
+    {
+      "name": "python-runtime--native",
+      "passed": true,
+      "elapsed_s": 0.648
+    },
+    {
+      "name": "python-runtime--langgraph",
+      "passed": true,
+      "elapsed_s": 2.103
+    },
+    {
+      "name": "python-runtime--openai-agents",
+      "passed": true,
+      "elapsed_s": 6.582
+    },
+    {
+      "name": "python-runtime--strands",
+      "passed": true,
+      "elapsed_s": 1.169
+    },
+    {
+      "name": "ollama-runtime--native",
+      "passed": true,
+      "elapsed_s": 4.467
+    },
+    {
+      "name": "ollama-runtime--langgraph",
+      "passed": true,
+      "elapsed_s": 3.075
+    },
+    {
+      "name": "ollama-runtime--openai-agents",
+      "passed": true,
+      "elapsed_s": 3.441
+    },
+    {
+      "name": "ollama-runtime--strands",
+      "passed": true,
+      "elapsed_s": 4.602
+    },
+    {
+      "name": "bedrock-runtime--native",
+      "passed": false,
+      "error": "AssertionError",
+      "message": "{'text': '', 'final': None, 'data': {'outputs': [{}], 'history': [{'step': 0, 'record': {'units': 2, 'unit_price': 100}, 'memory_before': {'approved': 0}, 'memory_after': {'approved': 0}, 'graph_state': {'run': {'text': '', 'final': None, 'data': {}, 'ok': False, 'messages': [], 'raw_responses': [], 'usage': {'requests': 1, 'inference_requests': 0, 'tool_calls': 1}, 'engine': 'python-runtime', 'model': '', 'mode': 'default', 'trace_schema_version': 'agentic_systems.trace.v1', 'validation': None, 'errors': [{'code': 'ValueError', 'message': 'Observed Tool evidence violates the business contract'}], 'meta': {'name': 'orders', 'kind': 'system', 'backend': 'native', 'skills': []}, 'execution_id': 'run-56028424cf474bc0933334fadbe41b0a', 'parent_execution_id': None, 'children': [{'text': '', 'final': None, 'data': {}, 'ok': False, 'messages': [], 'raw_responses': [], 'usage': {'requests': 1, 'inference_requests': 0, 'tool_calls': 1}, 'engine': 'python-runtime', 'model': '', 'mode': 'default', 'trace_schema_version': 'agentic_systems.trace.v1', 'validation': None, 'errors': [{'code': 'ValueError', 'message': 'Observed Tool evidence violates the business contract'}], 'meta': {'name': 'graph', 'kind': 'graph', 'backend': 'native'}, 'execution_id': 'run-a4ef27bb1cfc416a80642c11f1fcef97', 'parent_execution_id': 'run-56028424cf474bc0933334fadbe41b0a', 'children': [{'text': '', 'final': {'total': 200}, 'data': {'total': 200}, 'ok': True, 'messages': [], 'raw_responses': [], 'usage': {'requests': 1, 'inference_requests': 0, 'tool_calls': 1}, 'engine': 'python-runtime', 'model': '', 'mode': 'default', 'trace_schema_version': 'agentic_systems.trace.v1', 'validation': None, 'errors': [], 'meta': {'name': 'quoter', 'kind': 'agent', 'backend': 'native', 'skills': ['pricing'], 'graph_node': 'quote', 'next': 'approve'}, 'execution_id': 'run-a54f98ed3ee341b893e2f6b0c5b1215b', 'parent_execution_id': 'run-a4ef27bb1cfc416a80642c11f1fcef97', 'children': [{'text': '', 'final': {'total': 200}, 'data': {'total': 200}, 'ok': True, 'messages': [], 'raw_responses': [], 'usage': {'requests': 1, 'inference_requests': 0, 'tool_calls': 1}, 'engine': 'python-runtime', 'model': '', 'mode': 'default', 'trace_schema_version': 'agentic_systems.trace.v1', 'validation': None, 'errors': [], 'meta': {'name': 'quote', 'kind': 'action'}, 'execution_id': 'run-f703f6f824234898a0b3cd7c8b5d1737', 'parent_execution_id': 'run-a54f98ed3ee341b893e2f6b0c5b1215b', 'children': [{'text': '', 'final': {'total': 200}, 'data': {'total': 200}, 'ok': True, 'messages': [], 'raw_responses': [], 'usage': {'requests': 1, 'inference_requests': 0, 'tool_calls': 1}, 'engine': 'python-runtime', 'model': '', 'mode': 'tool', 'trace_schema_version': 'agentic_systems.trace.v1', 'validation': None, 'errors': [], 'meta': {'tool_name': '', 'input': {'units': 2, 'unit_price': 100}, 'tool_input': {'units': 2, 'unit_price': 100}}, 'execution_id': 'run-304c068a3ad142a58d7349cbdcee02d3', 'parent_execution_id': 'run-f703f6f824234898a0b3cd7c8b5d1737', 'children': [], 'tool_events': [{'id': 'tool-7a5607ee994f443f9d32cc4981773809', 'name': 'quote', 'input': {'units': 2, 'unit_price': 100}, 'output': {'data': {'total': 200}}, 'ok': True, 'error': None, 'duration_ms': None, 'meta': {}}]}], 'tool_events': []}], 'tool_events': []}, {'text': '', 'final': None, 'data': {}, 'ok': False, 'messages': [], 'raw_responses': [], 'usage': {}, 'engine': 'python-runtime', 'model': '', 'mode': 'default', 'trace_schema_version': 'agentic_systems.trace.v1', 'validation': None, 'errors': [{'code': 'ValueError', 'message': 'Observed Tool evidence violates the business contract'}], 'meta': {'name': 'approver_boundary', 'kind': 'agent', 'backend': 'native', 'skills': [], 'graph_node': 'approve'}, 'execution_id': 'run-e8c2efeb7b1c44b39586d59a02a31ef7', 'parent_execution_id': 'run-a4ef27bb1cfc416a80642c11f1fcef97', 'children': [{'text': '', 'final': None, 'data': {}, 'ok': False, 'messages': [], 'raw_responses': [], 'usage': {}, 'engine': 'python-runtime', 'model': '', 'mode': 'default', 'trace_schema_version': 'agentic_systems.trace.v1', 'validation': None, 'errors': [{'code': 'ValueError', 'message': 'Observed Tool evidence violates the business contract'}], 'meta': {'name': 'approver', 'kind': 'action'}, 'execution_id': 'run-6fd2b612198d4ce2b7d93b270323b3cc', 'parent_execution_id': 'run-e8c2efeb7b1c44b39586d59a02a31ef7', 'children': [], 'tool_events': []}], 'tool_events': []}], 'tool_events': []}], 'tool_events': []}}}], 'summary': {'memory': {'approved': 0}, 'processed': 1, 'terminated': False, 'truncated': False}}, 'ok': False, 'messages': [], 'raw_responses': [], 'usage': {'requests': 1, 'inference_requests': 0, 'tool_calls': 1}, 'engine': 'python-runtime', 'model': '', 'mode': 'default', 'trace_schema_version': 'agentic_systems.trace.v1', 'validation': None, 'errors': [{'code': 'ValueError', 'message': 'Observed Tool evidence violates the business contract'}], 'meta': {'name': 'day', 'kind': 'environment', 'actions_observed': 3}, 'execution_id': 'run-bcbb5d4262b946c19b579872e9f1db62', 'parent_execution_id': None, 'children': [{'text': '', 'final': None, 'data': {}, 'ok': False, 'messages': [], 'raw_responses': [], 'usage': {'requests': 1, 'inference_requests': 0, 'tool_calls': 1}, 'engine': 'python-runtime', 'model': '', 'mode': 'default', 'trace_schema_version': 'agentic_systems.trace.v1', 'validation': None, 'errors': [{'code': 'ValueError', 'message': 'Observed Tool evidence violates the business contract'}], 'meta': {'name': 'orders', 'kind': 'system', 'backend': 'native', 'skills': []}, 'execution_id': 'run-56028424cf474bc0933334fadbe41b0a', 'parent_execution_id': 'run-bcbb5d4262b946c19b579872e9f1db62', 'children': [{'text': '', 'final': None, 'data': {}, 'ok': False, 'messages': [], 'raw_responses': [], 'usage': {'requests': 1, 'inference_requests': 0, 'tool_calls': 1}, 'engine': 'python-runtime', 'model': '', 'mode': 'default', 'trace_schema_version': 'agentic_systems.trace.v1', 'validation': None, 'errors': [{'code': 'ValueError', 'message': 'Observed Tool evidence violates the business contract'}], 'meta': {'name': 'graph', 'kind': 'graph', 'backend': 'native'}, 'execution_id': 'run-a4ef27bb1cfc416a80642c11f1fcef97', 'parent_execution_id': 'run-56028424cf474bc0933334fadbe41b0a', 'children': [{'text': '', 'final': {'total': 200}, 'data': {'total': 200}, 'ok': True, 'messages': [], 'raw_responses': [], 'usage': {'requests': 1, 'inference_requests': 0, 'tool_calls': 1}, 'engine': 'python-runtime', 'model': '', 'mode': 'default', 'trace_schema_version': 'agentic_systems.trace.v1', 'validation': None, 'errors': [], 'meta': {'name': 'quoter', 'kind': 'agent', 'backend': 'native', 'skills': ['pricing'], 'graph_node': 'quote', 'next': 'approve'}, 'execution_id': 'run-a54f98ed3ee341b893e2f6b0c5b1215b', 'parent_execution_id': 'run-a4ef27bb1cfc416a80642c11f1fcef97', 'children': [{'text': '', 'final': {'total': 200}, 'data': {'total': 200}, 'ok': True, 'messages': [], 'raw_responses': [], 'usage': {'requests': 1, 'inference_requests': 0, 'tool_calls': 1}, 'engine': 'python-runtime', 'model': '', 'mode': 'default', 'trace_schema_version': 'agentic_systems.trace.v1', 'validation': None, 'errors': [], 'meta': {'name': 'quote', 'kind': 'action'}, 'execution_id': 'run-f703f6f824234898a0b3cd7c8b5d1737', 'parent_execution_id': 'run-a54f98ed3ee341b893e2f6b0c5b1215b', 'children': [{'text': '', 'final': {'total': 200}, 'data': {'total': 200}, 'ok': True, 'messages': [], 'raw_responses': [], 'usage': {'requests': 1, 'inference_requests': 0, 'tool_calls': 1}, 'engine': 'python-runtime', 'model': '', 'mode': 'tool', 'trace_schema_version': 'agentic_systems.trace.v1', 'validation': None, 'errors': [], 'meta': {'tool_name': '', 'input': {'units': 2, 'unit_price': 100}, 'tool_input': {'units': 2, 'unit_price': 100}}, 'execution_id': 'run-304c068a3ad142a58d7349cbdcee02d3', 'parent_execution_id': 'run-f703f6f824234898a0b3cd7c8b5d1737', 'children': [], 'tool_events': [{'id': 'tool-7a5607ee994f443f9d32cc4981773809', 'name': 'quote', 'input': {'units': 2, 'unit_price': 100}, 'output': {'data': {'total': 200}}, 'ok': True, 'error': None, 'duration_ms': None, 'meta': {}}]}], 'tool_events': []}], 'tool_events': []}, {'text': '', 'final': None, 'data': {}, 'ok': False, 'messages': [], 'raw_responses': [], 'usage': {}, 'engine': 'python-runtime', 'model': '', 'mode': 'default', 'trace_schema_version': 'agentic_systems.trace.v1', 'validation': None, 'errors': [{'code': 'ValueError', 'message': 'Observed Tool evidence violates the business contract'}], 'meta': {'name': 'approver_boundary', 'kind': 'agent', 'backend': 'native', 'skills': [], 'graph_node': 'approve'}, 'execution_id': 'run-e8c2efeb7b1c44b39586d59a02a31ef7', 'parent_execution_id': 'run-a4ef27bb1cfc416a80642c11f1fcef97', 'children': [{'text': '', 'final': None, 'data': {}, 'ok': False, 'messages': [], 'raw_responses': [], 'usage': {}, 'engine': 'python-runtime', 'model': '', 'mode': 'default', 'trace_schema_version': 'agentic_systems.trace.v1', 'validation': None, 'errors': [{'code': 'ValueError', 'message': 'Observed Tool evidence violates the business contract'}], 'meta': {'name': 'approver', 'kind': 'action'}, 'execution_id': 'run-6fd2b612198d4ce2b7d93b270323b3cc', 'parent_execution_id': 'run-e8c2efeb7b1c44b39586d59a02a31ef7', 'children': [], 'tool_events': []}], 'tool_events': []}], 'tool_events': []}], 'tool_events': []}], 'tool_events': []}",
+      "elapsed_s": 1.507
+    },
+    {
+      "name": "bedrock-runtime--langgraph",
+      "passed": false,
+      "error": "AssertionError",
+      "message": "{'text': '', 'final': None, 'data': {'outputs': [{}], 'history': [{'step': 0, 'record': {'units': 2, 'unit_price': 100}, 'memory_before': {'approved': 0}, 'memory_after': {'approved': 0}, 'graph_state': {'run': {'text': '', 'final': None, 'data': {}, 'ok': False, 'messages': [], 'raw_responses': [], 'usage': {'requests': 1, 'inference_requests': 0, 'tool_calls': 1}, 'engine': 'python-runtime', 'model': '', 'mode': 'default', 'trace_schema_version': 'agentic_systems.trace.v1', 'validation': None, 'errors': [{'code': 'ValueError', 'message': 'Observed Tool evidence violates the business contract'}], 'meta': {'name': 'orders', 'kind': 'system', 'backend': 'native', 'skills': []}, 'execution_id': 'run-efb967ba08da4b1e84dbdbe618bbfd5c', 'parent_execution_id': None, 'children': [{'text': '', 'final': None, 'data': {}, 'ok': False, 'messages': [], 'raw_responses': [], 'usage': {'requests': 1, 'inference_requests': 0, 'tool_calls': 1}, 'engine': 'python-runtime', 'model': '', 'mode': 'default', 'trace_schema_version': 'agentic_systems.trace.v1', 'validation': None, 'errors': [{'code': 'ValueError', 'message': 'Observed Tool evidence violates the business contract'}], 'meta': {'name': 'graph', 'kind': 'graph', 'backend': 'native'}, 'execution_id': 'run-dcaec2fc836a4508af1dcf51d008a9a8', 'parent_execution_id': 'run-efb967ba08da4b1e84dbdbe618bbfd5c', 'children': [{'text': '', 'final': {'total': 200}, 'data': {'total': 200}, 'ok': True, 'messages': [], 'raw_responses': [], 'usage': {'requests': 1, 'inference_requests': 0, 'tool_calls': 1}, 'engine': 'python-runtime', 'model': '', 'mode': 'default', 'trace_schema_version': 'agentic_systems.trace.v1', 'validation': None, 'errors': [], 'meta': {'name': 'quoter', 'kind': 'agent', 'backend': 'native', 'skills': ['pricing'], 'graph_node': 'quote', 'next': 'approve'}, 'execution_id': 'run-ef8489e4298e402ab354cb119ba41bd2', 'parent_execution_id': 'run-dcaec2fc836a4508af1dcf51d008a9a8', 'children': [{'text': '', 'final': {'total': 200}, 'data': {'total': 200}, 'ok': True, 'messages': [], 'raw_responses': [], 'usage': {'requests': 1, 'inference_requests': 0, 'tool_calls': 1}, 'engine': 'python-runtime', 'model': '', 'mode': 'default', 'trace_schema_version': 'agentic_systems.trace.v1', 'validation': None, 'errors': [], 'meta': {'name': 'quote', 'kind': 'action'}, 'execution_id': 'run-5abb57547d1a46c9b39b7c132c498807', 'parent_execution_id': 'run-ef8489e4298e402ab354cb119ba41bd2', 'children': [{'text': '', 'final': {'total': 200}, 'data': {'total': 200}, 'ok': True, 'messages': [], 'raw_responses': [], 'usage': {'requests': 1, 'inference_requests': 0, 'tool_calls': 1}, 'engine': 'python-runtime', 'model': '', 'mode': 'tool', 'trace_schema_version': 'agentic_systems.trace.v1', 'validation': None, 'errors': [], 'meta': {'tool_name': '', 'input': {'units': 2, 'unit_price': 100}, 'tool_input': {'units': 2, 'unit_price': 100}}, 'execution_id': 'run-7cbb5dfa244b42979a6e17c7bac64527', 'parent_execution_id': 'run-5abb57547d1a46c9b39b7c132c498807', 'children': [], 'tool_events': [{'id': 'tool-59b8c217fae8480e96f99558ab8d56b1', 'name': 'quote', 'input': {'units': 2, 'unit_price': 100}, 'output': {'data': {'total': 200}}, 'ok': True, 'error': None, 'duration_ms': None, 'meta': {}}]}], 'tool_events': []}], 'tool_events': []}, {'text': '', 'final': None, 'data': {}, 'ok': False, 'messages': [], 'raw_responses': [], 'usage': {}, 'engine': 'python-runtime', 'model': '', 'mode': 'default', 'trace_schema_version': 'agentic_systems.trace.v1', 'validation': None, 'errors': [{'code': 'ValueError', 'message': 'Observed Tool evidence violates the business contract'}], 'meta': {'name': 'approver_boundary', 'kind': 'agent', 'backend': 'native', 'skills': [], 'graph_node': 'approve'}, 'execution_id': 'run-f7695ec6dbba48ba988797d943f7d2df', 'parent_execution_id': 'run-dcaec2fc836a4508af1dcf51d008a9a8', 'children': [{'text': '', 'final': None, 'data': {}, 'ok': False, 'messages': [], 'raw_responses': [], 'usage': {}, 'engine': 'python-runtime', 'model': '', 'mode': 'default', 'trace_schema_version': 'agentic_systems.trace.v1', 'validation': None, 'errors': [{'code': 'ValueError', 'message': 'Observed Tool evidence violates the business contract'}], 'meta': {'name': 'approver', 'kind': 'action'}, 'execution_id': 'run-d90f74b4bdaa4490a10288faaeb3da77', 'parent_execution_id': 'run-f7695ec6dbba48ba988797d943f7d2df', 'children': [], 'tool_events': []}], 'tool_events': []}], 'tool_events': []}], 'tool_events': []}}}], 'summary': {'memory': {'approved': 0}, 'processed': 1, 'terminated': False, 'truncated': False}}, 'ok': False, 'messages': [], 'raw_responses': [], 'usage': {'requests': 1, 'inference_requests': 0, 'tool_calls': 1}, 'engine': 'python-runtime', 'model': '', 'mode': 'default', 'trace_schema_version': 'agentic_systems.trace.v1', 'validation': None, 'errors': [{'code': 'ValueError', 'message': 'Observed Tool evidence violates the business contract'}], 'meta': {'name': 'day', 'kind': 'environment', 'actions_observed': 3}, 'execution_id': 'run-27531879d7f64ec6b9bb9af6afc3a020', 'parent_execution_id': None, 'children': [{'text': '', 'final': None, 'data': {}, 'ok': False, 'messages': [], 'raw_responses': [], 'usage': {'requests': 1, 'inference_requests': 0, 'tool_calls': 1}, 'engine': 'python-runtime', 'model': '', 'mode': 'default', 'trace_schema_version': 'agentic_systems.trace.v1', 'validation': None, 'errors': [{'code': 'ValueError', 'message': 'Observed Tool evidence violates the business contract'}], 'meta': {'name': 'orders', 'kind': 'system', 'backend': 'native', 'skills': []}, 'execution_id': 'run-efb967ba08da4b1e84dbdbe618bbfd5c', 'parent_execution_id': 'run-27531879d7f64ec6b9bb9af6afc3a020', 'children': [{'text': '', 'final': None, 'data': {}, 'ok': False, 'messages': [], 'raw_responses': [], 'usage': {'requests': 1, 'inference_requests': 0, 'tool_calls': 1}, 'engine': 'python-runtime', 'model': '', 'mode': 'default', 'trace_schema_version': 'agentic_systems.trace.v1', 'validation': None, 'errors': [{'code': 'ValueError', 'message': 'Observed Tool evidence violates the business contract'}], 'meta': {'name': 'graph', 'kind': 'graph', 'backend': 'native'}, 'execution_id': 'run-dcaec2fc836a4508af1dcf51d008a9a8', 'parent_execution_id': 'run-efb967ba08da4b1e84dbdbe618bbfd5c', 'children': [{'text': '', 'final': {'total': 200}, 'data': {'total': 200}, 'ok': True, 'messages': [], 'raw_responses': [], 'usage': {'requests': 1, 'inference_requests': 0, 'tool_calls': 1}, 'engine': 'python-runtime', 'model': '', 'mode': 'default', 'trace_schema_version': 'agentic_systems.trace.v1', 'validation': None, 'errors': [], 'meta': {'name': 'quoter', 'kind': 'agent', 'backend': 'native', 'skills': ['pricing'], 'graph_node': 'quote', 'next': 'approve'}, 'execution_id': 'run-ef8489e4298e402ab354cb119ba41bd2', 'parent_execution_id': 'run-dcaec2fc836a4508af1dcf51d008a9a8', 'children': [{'text': '', 'final': {'total': 200}, 'data': {'total': 200}, 'ok': True, 'messages': [], 'raw_responses': [], 'usage': {'requests': 1, 'inference_requests': 0, 'tool_calls': 1}, 'engine': 'python-runtime', 'model': '', 'mode': 'default', 'trace_schema_version': 'agentic_systems.trace.v1', 'validation': None, 'errors': [], 'meta': {'name': 'quote', 'kind': 'action'}, 'execution_id': 'run-5abb57547d1a46c9b39b7c132c498807', 'parent_execution_id': 'run-ef8489e4298e402ab354cb119ba41bd2', 'children': [{'text': '', 'final': {'total': 200}, 'data': {'total': 200}, 'ok': True, 'messages': [], 'raw_responses': [], 'usage': {'requests': 1, 'inference_requests': 0, 'tool_calls': 1}, 'engine': 'python-runtime', 'model': '', 'mode': 'tool', 'trace_schema_version': 'agentic_systems.trace.v1', 'validation': None, 'errors': [], 'meta': {'tool_name': '', 'input': {'units': 2, 'unit_price': 100}, 'tool_input': {'units': 2, 'unit_price': 100}}, 'execution_id': 'run-7cbb5dfa244b42979a6e17c7bac64527', 'parent_execution_id': 'run-5abb57547d1a46c9b39b7c132c498807', 'children': [], 'tool_events': [{'id': 'tool-59b8c217fae8480e96f99558ab8d56b1', 'name': 'quote', 'input': {'units': 2, 'unit_price': 100}, 'output': {'data': {'total': 200}}, 'ok': True, 'error': None, 'duration_ms': None, 'meta': {}}]}], 'tool_events': []}], 'tool_events': []}, {'text': '', 'final': None, 'data': {}, 'ok': False, 'messages': [], 'raw_responses': [], 'usage': {}, 'engine': 'python-runtime', 'model': '', 'mode': 'default', 'trace_schema_version': 'agentic_systems.trace.v1', 'validation': None, 'errors': [{'code': 'ValueError', 'message': 'Observed Tool evidence violates the business contract'}], 'meta': {'name': 'approver_boundary', 'kind': 'agent', 'backend': 'native', 'skills': [], 'graph_node': 'approve'}, 'execution_id': 'run-f7695ec6dbba48ba988797d943f7d2df', 'parent_execution_id': 'run-dcaec2fc836a4508af1dcf51d008a9a8', 'children': [{'text': '', 'final': None, 'data': {}, 'ok': False, 'messages': [], 'raw_responses': [], 'usage': {}, 'engine': 'python-runtime', 'model': '', 'mode': 'default', 'trace_schema_version': 'agentic_systems.trace.v1', 'validation': None, 'errors': [{'code': 'ValueError', 'message': 'Observed Tool evidence violates the business contract'}], 'meta': {'name': 'approver', 'kind': 'action'}, 'execution_id': 'run-d90f74b4bdaa4490a10288faaeb3da77', 'parent_execution_id': 'run-f7695ec6dbba48ba988797d943f7d2df', 'children': [], 'tool_events': []}], 'tool_events': []}], 'tool_events': []}], 'tool_events': []}], 'tool_events': []}",
+      "elapsed_s": 1.596
+    },
+    {
+      "name": "bedrock-runtime--openai-agents",
+      "passed": true,
+      "elapsed_s": 3.436
+    },
+    {
+      "name": "bedrock-runtime--strands",
+      "passed": true,
+      "elapsed_s": 2.986
+    },
+    {
+      "name": "openai-runtime--native",
+      "passed": true,
+      "elapsed_s": 4.188
+    },
+    {
+      "name": "openai-runtime--langgraph",
+      "passed": true,
+      "elapsed_s": 3.972
+    },
+    {
+      "name": "openai-runtime--openai-agents",
+      "passed": true,
+      "elapsed_s": 5.504
+    },
+    {
+      "name": "openai-runtime--strands",
+      "passed": true,
+      "elapsed_s": 5.095
+    }
+  ],
+  "attempt_directory": "revisions/2.1.3/closeout-evidence/integrated/20261023T025344724564"
+}

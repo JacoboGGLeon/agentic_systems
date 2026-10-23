@@ -1,0 +1,178 @@
+{
+  "example": "bounded_conversation",
+  "example_passed": true,
+  "source_sha256": "b69d41db6d6753c37a96d5918bc5e157c716fcb311b1bdaeeae7926de2e63119",
+  "inference_requests": 0,
+  "scope": "offline contract or configuration; no model-generation/semantic/IAM/GPU certification",
+  "output": {
+    "text": "",
+    "final": {
+      "history": [
+        "first",
+        "second",
+        "current"
+      ]
+    },
+    "data": {
+      "history": [
+        "first",
+        "second",
+        "current"
+      ]
+    },
+    "ok": true,
+    "messages": [],
+    "raw_responses": [],
+    "usage": {
+      "requests": 1,
+      "inference_requests": 0,
+      "tool_calls": 1
+    },
+    "engine": "python-runtime",
+    "model": "",
+    "mode": "default",
+    "trace_schema_version": "agentic_systems.trace.v1",
+    "validation": null,
+    "errors": [],
+    "meta": {
+      "name": "memory",
+      "kind": "agent",
+      "backend": "native",
+      "skills": [],
+      "actions_observed": 1,
+      "input": {
+        "messages": [
+          "old",
+          "first",
+          "second",
+          "current"
+        ]
+      }
+    },
+    "execution_id": "run-2d8b1fc53f21444b8e97b2b49094884e",
+    "parent_execution_id": null,
+    "children": [
+      {
+        "text": "",
+        "final": {
+          "history": [
+            "first",
+            "second",
+            "current"
+          ]
+        },
+        "data": {
+          "history": [
+            "first",
+            "second",
+            "current"
+          ]
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "bound",
+          "kind": "action"
+        },
+        "execution_id": "run-946789822f3e4faa86719c1ce76569a7",
+        "parent_execution_id": "run-2d8b1fc53f21444b8e97b2b49094884e",
+        "children": [
+          {
+            "text": "",
+            "final": {
+              "history": [
+                "first",
+                "second",
+                "current"
+              ]
+            },
+            "data": {
+              "history": [
+                "first",
+                "second",
+                "current"
+              ]
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 1,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "tool",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "tool_name": "",
+              "input": {
+                "messages": [
+                  "old",
+                  "first",
+                  "second",
+                  "current"
+                ]
+              },
+              "tool_input": {
+                "messages": [
+                  "old",
+                  "first",
+                  "second",
+                  "current"
+                ]
+              }
+            },
+            "execution_id": "run-f2845930998947c7b620a97175810f23",
+            "parent_execution_id": "run-946789822f3e4faa86719c1ce76569a7",
+            "children": [],
+            "tool_events": [
+              {
+                "id": "tool-d5f83adc27484c7a98f8b54305a8423d",
+                "name": "bound_history",
+                "input": {
+                  "messages": [
+                    "old",
+                    "first",
+                    "second",
+                    "current"
+                  ]
+                },
+                "output": {
+                  "data": {
+                    "history": [
+                      "first",
+                      "second",
+                      "current"
+                    ]
+                  }
+                },
+                "ok": true,
+                "error": null,
+                "duration_ms": null,
+                "meta": {}
+              }
+            ]
+          }
+        ],
+        "tool_events": []
+      }
+    ],
+    "tool_events": []
+  }
+}

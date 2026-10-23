@@ -1,0 +1,120 @@
+{
+  "source": "tutorials/00_api.ipynb",
+  "captured_boundaries": 1,
+  "root_results": 1,
+  "scope": "Observed SDK RunResult values; descendants retained inside parents. No fabricated results for configuration-only examples.",
+  "results": [
+    {
+      "run_result": {
+        "text": "",
+        "final": null,
+        "data": {
+          "total": 10
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {},
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "total",
+          "kind": "agent",
+          "backend": "native",
+          "skills": [],
+          "actions_observed": 1,
+          "input": {
+            "values": [
+              2,
+              3,
+              5
+            ]
+          }
+        },
+        "execution_id": "run-256e4f02c21347c189473247a0d8284d",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "",
+            "final": null,
+            "data": {
+              "total": 10
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {},
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "sum",
+              "kind": "action"
+            },
+            "execution_id": "run-d4f4164107f54e8d9b0d11f48ba1a7cd",
+            "parent_execution_id": "run-256e4f02c21347c189473247a0d8284d",
+            "children": [],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "tutorials/00_api.ipynb",
+        "question": "{\"values\": [2, 3, 5]}",
+        "goal": "",
+        "answer": "{\"total\": 10}",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-256e4f02c21347c189473247a0d8284d",
+            "kind": "execution",
+            "title": "total",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "total": 10
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-d4f4164107f54e8d9b0d11f48ba1a7cd",
+            "kind": "execution",
+            "title": "sum",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "total": 10
+              },
+              "errors": []
+            }
+          }
+        ],
+        "usage": {},
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,412 @@
+{
+  "example": "typed_claim_review",
+  "example_passed": true,
+  "source_sha256": "d7ee7c9493e5e54c440f7d83de8921600b5749df6d1a72ca65ecded08ae30606",
+  "inference_requests": 0,
+  "scope": "offline contract or configuration; no model-generation/semantic/IAM/GPU certification",
+  "output": {
+    "valid": {
+      "text": "",
+      "final": {
+        "text": "Revenue rose",
+        "source": "report",
+        "has_source": true
+      },
+      "data": {
+        "text": "Revenue rose",
+        "source": "report",
+        "has_source": true
+      },
+      "ok": true,
+      "messages": [],
+      "raw_responses": [],
+      "usage": {
+        "requests": 1,
+        "inference_requests": 0,
+        "tool_calls": 1
+      },
+      "engine": "python-runtime",
+      "model": "",
+      "mode": "default",
+      "trace_schema_version": "agentic_systems.trace.v1",
+      "validation": null,
+      "errors": [],
+      "meta": {
+        "name": "typed_review",
+        "kind": "agent",
+        "backend": "native",
+        "skills": [],
+        "actions_observed": 1,
+        "input": {
+          "text": "Revenue rose",
+          "source": "report"
+        }
+      },
+      "execution_id": "run-da851d01a0e04b3b843b8d865b25fd24",
+      "parent_execution_id": null,
+      "children": [
+        {
+          "text": "",
+          "final": {
+            "text": "Revenue rose",
+            "source": "report",
+            "has_source": true
+          },
+          "data": {
+            "text": "Revenue rose",
+            "source": "report",
+            "has_source": true
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {
+            "requests": 1,
+            "inference_requests": 0,
+            "tool_calls": 1
+          },
+          "engine": "python-runtime",
+          "model": "",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "inspect",
+            "kind": "action"
+          },
+          "execution_id": "run-cb58c146f9374398a0dccb8aeab3b304",
+          "parent_execution_id": "run-da851d01a0e04b3b843b8d865b25fd24",
+          "children": [
+            {
+              "text": "",
+              "final": {
+                "text": "Revenue rose",
+                "source": "report",
+                "has_source": true
+              },
+              "data": {
+                "text": "Revenue rose",
+                "source": "report",
+                "has_source": true
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {
+                "requests": 1,
+                "inference_requests": 0,
+                "tool_calls": 1
+              },
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "tool",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "tool_name": "",
+                "input": {
+                  "text": "Revenue rose",
+                  "source": "report"
+                },
+                "tool_input": {
+                  "text": "Revenue rose",
+                  "source": "report"
+                }
+              },
+              "execution_id": "run-49b9deb05a914596b246b6dc35836cc4",
+              "parent_execution_id": "run-cb58c146f9374398a0dccb8aeab3b304",
+              "children": [],
+              "tool_events": [
+                {
+                  "id": "tool-72aba5a429b745daa1bc767afde96b56",
+                  "name": "inspect_claim",
+                  "input": {
+                    "text": "Revenue rose",
+                    "source": "report"
+                  },
+                  "output": {
+                    "data": {
+                      "text": "Revenue rose",
+                      "source": "report",
+                      "has_source": true
+                    }
+                  },
+                  "ok": true,
+                  "error": null,
+                  "duration_ms": null,
+                  "meta": {}
+                }
+              ]
+            }
+          ],
+          "tool_events": []
+        }
+      ],
+      "tool_events": []
+    },
+    "invalid": {
+      "text": "1 validation error for Claim\ntext\n  Input should be a valid string [type=string_type, input_value=12, input_type=int]\n    For further information visit https://errors.pydantic.dev/2.14/v/string_type",
+      "final": {
+        "category": "provider",
+        "message": "1 validation error for Claim\ntext\n  Input should be a valid string [type=string_type, input_value=12, input_type=int]\n    For further information visit https://errors.pydantic.dev/2.14/v/string_type",
+        "provider": "python-runtime",
+        "framework": "native",
+        "code": "ValidationError",
+        "retryable": false,
+        "cause_type": "ValidationError",
+        "details": {},
+        "error_type": "ValidationError"
+      },
+      "data": {
+        "category": "provider",
+        "message": "1 validation error for Claim\ntext\n  Input should be a valid string [type=string_type, input_value=12, input_type=int]\n    For further information visit https://errors.pydantic.dev/2.14/v/string_type",
+        "provider": "python-runtime",
+        "framework": "native",
+        "code": "ValidationError",
+        "retryable": false,
+        "cause_type": "ValidationError",
+        "details": {},
+        "error_type": "ValidationError"
+      },
+      "ok": false,
+      "messages": [],
+      "raw_responses": [],
+      "usage": {
+        "requests": 1,
+        "inference_requests": 0,
+        "tool_calls": 1
+      },
+      "engine": "python-runtime",
+      "model": "",
+      "mode": "default",
+      "trace_schema_version": "agentic_systems.trace.v1",
+      "validation": null,
+      "errors": [
+        {
+          "code": "run_failed",
+          "message": "1 validation error for Claim\ntext\n  Input should be a valid string [type=string_type, input_value=12, input_type=int]\n    For further information visit https://errors.pydantic.dev/2.14/v/string_type"
+        },
+        {
+          "code": "tool_failed",
+          "tool": "inspect_claim",
+          "tool_event_id": "tool-03e8fd260f234e379fb48d3c4316ff98",
+          "error": {
+            "category": "provider",
+            "message": "1 validation error for Claim\ntext\n  Input should be a valid string [type=string_type, input_value=12, input_type=int]\n    For further information visit https://errors.pydantic.dev/2.14/v/string_type",
+            "provider": "python-runtime",
+            "framework": "native",
+            "code": "ValidationError",
+            "retryable": false,
+            "cause_type": "ValidationError",
+            "details": {},
+            "error_type": "ValidationError"
+          },
+          "resolved": false
+        }
+      ],
+      "meta": {
+        "name": "typed_review",
+        "kind": "agent",
+        "backend": "native",
+        "skills": [],
+        "actions_observed": 1,
+        "input": {
+          "text": 12,
+          "source": "report"
+        }
+      },
+      "execution_id": "run-ea38cd75eee6475d987e507fe4e08df7",
+      "parent_execution_id": null,
+      "children": [
+        {
+          "text": "1 validation error for Claim\ntext\n  Input should be a valid string [type=string_type, input_value=12, input_type=int]\n    For further information visit https://errors.pydantic.dev/2.14/v/string_type",
+          "final": {
+            "category": "provider",
+            "message": "1 validation error for Claim\ntext\n  Input should be a valid string [type=string_type, input_value=12, input_type=int]\n    For further information visit https://errors.pydantic.dev/2.14/v/string_type",
+            "provider": "python-runtime",
+            "framework": "native",
+            "code": "ValidationError",
+            "retryable": false,
+            "cause_type": "ValidationError",
+            "details": {},
+            "error_type": "ValidationError"
+          },
+          "data": {
+            "category": "provider",
+            "message": "1 validation error for Claim\ntext\n  Input should be a valid string [type=string_type, input_value=12, input_type=int]\n    For further information visit https://errors.pydantic.dev/2.14/v/string_type",
+            "provider": "python-runtime",
+            "framework": "native",
+            "code": "ValidationError",
+            "retryable": false,
+            "cause_type": "ValidationError",
+            "details": {},
+            "error_type": "ValidationError"
+          },
+          "ok": false,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {
+            "requests": 1,
+            "inference_requests": 0,
+            "tool_calls": 1
+          },
+          "engine": "python-runtime",
+          "model": "",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [
+            {
+              "code": "run_failed",
+              "message": "1 validation error for Claim\ntext\n  Input should be a valid string [type=string_type, input_value=12, input_type=int]\n    For further information visit https://errors.pydantic.dev/2.14/v/string_type"
+            },
+            {
+              "code": "tool_failed",
+              "tool": "inspect_claim",
+              "tool_event_id": "tool-03e8fd260f234e379fb48d3c4316ff98",
+              "error": {
+                "category": "provider",
+                "message": "1 validation error for Claim\ntext\n  Input should be a valid string [type=string_type, input_value=12, input_type=int]\n    For further information visit https://errors.pydantic.dev/2.14/v/string_type",
+                "provider": "python-runtime",
+                "framework": "native",
+                "code": "ValidationError",
+                "retryable": false,
+                "cause_type": "ValidationError",
+                "details": {},
+                "error_type": "ValidationError"
+              },
+              "resolved": false
+            }
+          ],
+          "meta": {
+            "name": "inspect",
+            "kind": "action"
+          },
+          "execution_id": "run-97d49645ccfd4f4898940fefe4f2bd2f",
+          "parent_execution_id": "run-ea38cd75eee6475d987e507fe4e08df7",
+          "children": [
+            {
+              "text": "1 validation error for Claim\ntext\n  Input should be a valid string [type=string_type, input_value=12, input_type=int]\n    For further information visit https://errors.pydantic.dev/2.14/v/string_type",
+              "final": {
+                "category": "provider",
+                "message": "1 validation error for Claim\ntext\n  Input should be a valid string [type=string_type, input_value=12, input_type=int]\n    For further information visit https://errors.pydantic.dev/2.14/v/string_type",
+                "provider": "python-runtime",
+                "framework": "native",
+                "code": "ValidationError",
+                "retryable": false,
+                "cause_type": "ValidationError",
+                "details": {},
+                "error_type": "ValidationError"
+              },
+              "data": {
+                "category": "provider",
+                "message": "1 validation error for Claim\ntext\n  Input should be a valid string [type=string_type, input_value=12, input_type=int]\n    For further information visit https://errors.pydantic.dev/2.14/v/string_type",
+                "provider": "python-runtime",
+                "framework": "native",
+                "code": "ValidationError",
+                "retryable": false,
+                "cause_type": "ValidationError",
+                "details": {},
+                "error_type": "ValidationError"
+              },
+              "ok": false,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {
+                "requests": 1,
+                "inference_requests": 0,
+                "tool_calls": 1
+              },
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "tool",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [
+                {
+                  "code": "run_failed",
+                  "message": "1 validation error for Claim\ntext\n  Input should be a valid string [type=string_type, input_value=12, input_type=int]\n    For further information visit https://errors.pydantic.dev/2.14/v/string_type"
+                },
+                {
+                  "code": "tool_failed",
+                  "tool": "inspect_claim",
+                  "tool_event_id": "tool-03e8fd260f234e379fb48d3c4316ff98",
+                  "error": {
+                    "category": "provider",
+                    "message": "1 validation error for Claim\ntext\n  Input should be a valid string [type=string_type, input_value=12, input_type=int]\n    For further information visit https://errors.pydantic.dev/2.14/v/string_type",
+                    "provider": "python-runtime",
+                    "framework": "native",
+                    "code": "ValidationError",
+                    "retryable": false,
+                    "cause_type": "ValidationError",
+                    "details": {},
+                    "error_type": "ValidationError"
+                  },
+                  "resolved": false
+                }
+              ],
+              "meta": {
+                "tool_name": "",
+                "input": {
+                  "text": 12,
+                  "source": "report"
+                },
+                "tool_input": {
+                  "text": 12,
+                  "source": "report"
+                }
+              },
+              "execution_id": "run-47616f059dc74ce1874f423a8b6a89d9",
+              "parent_execution_id": "run-97d49645ccfd4f4898940fefe4f2bd2f",
+              "children": [],
+              "tool_events": [
+                {
+                  "id": "tool-03e8fd260f234e379fb48d3c4316ff98",
+                  "name": "inspect_claim",
+                  "input": {
+                    "text": 12,
+                    "source": "report"
+                  },
+                  "output": {
+                    "data": {
+                      "category": "provider",
+                      "message": "1 validation error for Claim\ntext\n  Input should be a valid string [type=string_type, input_value=12, input_type=int]\n    For further information visit https://errors.pydantic.dev/2.14/v/string_type",
+                      "provider": "python-runtime",
+                      "framework": "native",
+                      "code": "ValidationError",
+                      "retryable": false,
+                      "cause_type": "ValidationError",
+                      "details": {},
+                      "error_type": "ValidationError"
+                    }
+                  },
+                  "ok": false,
+                  "error": {
+                    "category": "provider",
+                    "message": "1 validation error for Claim\ntext\n  Input should be a valid string [type=string_type, input_value=12, input_type=int]\n    For further information visit https://errors.pydantic.dev/2.14/v/string_type",
+                    "provider": "python-runtime",
+                    "framework": "native",
+                    "code": "ValidationError",
+                    "retryable": false,
+                    "cause_type": "ValidationError",
+                    "details": {},
+                    "error_type": "ValidationError"
+                  },
+                  "duration_ms": null,
+                  "meta": {
+                    "retryable": false
+                  }
+                }
+              ]
+            }
+          ],
+          "tool_events": []
+        }
+      ],
+      "tool_events": []
+    },
+    "scope": "types and source presence; not natural-language entailment"
+  }
+}

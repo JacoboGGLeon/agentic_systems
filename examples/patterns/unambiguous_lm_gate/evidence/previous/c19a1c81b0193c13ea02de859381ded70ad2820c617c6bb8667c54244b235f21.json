@@ -1,0 +1,579 @@
+{
+  "example": "unambiguous_lm_gate",
+  "example_passed": true,
+  "source_sha256": "3b8ce00c69a17f1df42e1e4f83a0ce0c3eef236a20d46529d216db9d9f687ec8",
+  "inference_requests": 0,
+  "scope": "offline contract or configuration; no model-generation/semantic/IAM/GPU certification",
+  "output": {
+    "decisions": [
+      true,
+      false,
+      false,
+      false
+    ],
+    "scope": "literal saved-answer gate; no claim of natural-language entailment",
+    "evaluation": {
+      "text": "",
+      "final": null,
+      "data": {
+        "ok": false,
+        "total": 4,
+        "passed": 1,
+        "failed": 3,
+        "pass_rate": 0.25,
+        "cases": [
+          {
+            "name": "0",
+            "ok": true,
+            "input": {
+              "answer": "VALID"
+            },
+            "expected": {
+              "data": {
+                "answer": "VALID"
+              }
+            },
+            "result": {
+              "text": "",
+              "final": null,
+              "data": {
+                "answer": "VALID"
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {},
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "saved_answer",
+                "kind": "agent",
+                "backend": "native",
+                "skills": []
+              },
+              "execution_id": "run-61087434320a41619a28ab98519f6813",
+              "parent_execution_id": null,
+              "children": [
+                {
+                  "text": "",
+                  "final": null,
+                  "data": {
+                    "answer": "VALID"
+                  },
+                  "ok": true,
+                  "messages": [],
+                  "raw_responses": [],
+                  "usage": {},
+                  "engine": "python-runtime",
+                  "model": "",
+                  "mode": "default",
+                  "trace_schema_version": "agentic_systems.trace.v1",
+                  "validation": null,
+                  "errors": [],
+                  "meta": {
+                    "name": "read",
+                    "kind": "action"
+                  },
+                  "execution_id": "run-a844d77858994eaeb8d7d64fccc41511",
+                  "parent_execution_id": "run-61087434320a41619a28ab98519f6813",
+                  "children": [],
+                  "tool_events": []
+                }
+              ],
+              "tool_events": []
+            },
+            "checks": [
+              {
+                "ok": true,
+                "issues": []
+              }
+            ],
+            "judge": null,
+            "candidate_usage": {},
+            "judge_usage": {}
+          },
+          {
+            "name": "1",
+            "ok": false,
+            "input": {
+              "answer": "VALID."
+            },
+            "expected": {
+              "data": {
+                "answer": "VALID"
+              }
+            },
+            "result": {
+              "text": "",
+              "final": null,
+              "data": {
+                "answer": "VALID."
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {},
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "saved_answer",
+                "kind": "agent",
+                "backend": "native",
+                "skills": []
+              },
+              "execution_id": "run-2470f1c9cd0647d6be8d3a35872d7501",
+              "parent_execution_id": null,
+              "children": [
+                {
+                  "text": "",
+                  "final": null,
+                  "data": {
+                    "answer": "VALID."
+                  },
+                  "ok": true,
+                  "messages": [],
+                  "raw_responses": [],
+                  "usage": {},
+                  "engine": "python-runtime",
+                  "model": "",
+                  "mode": "default",
+                  "trace_schema_version": "agentic_systems.trace.v1",
+                  "validation": null,
+                  "errors": [],
+                  "meta": {
+                    "name": "read",
+                    "kind": "action"
+                  },
+                  "execution_id": "run-ea43e888be424f2a85187d22c83b1399",
+                  "parent_execution_id": "run-2470f1c9cd0647d6be8d3a35872d7501",
+                  "children": [],
+                  "tool_events": []
+                }
+              ],
+              "tool_events": []
+            },
+            "checks": [
+              {
+                "ok": false,
+                "issues": [
+                  {
+                    "code": "expected_mismatch",
+                    "path": "data"
+                  }
+                ]
+              }
+            ],
+            "judge": null,
+            "candidate_usage": {},
+            "judge_usage": {}
+          },
+          {
+            "name": "2",
+            "ok": false,
+            "input": {
+              "answer": "invalid"
+            },
+            "expected": {
+              "data": {
+                "answer": "VALID"
+              }
+            },
+            "result": {
+              "text": "",
+              "final": null,
+              "data": {
+                "answer": "invalid"
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {},
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "saved_answer",
+                "kind": "agent",
+                "backend": "native",
+                "skills": []
+              },
+              "execution_id": "run-3cdd3d8eaf444a689d427798eb16a059",
+              "parent_execution_id": null,
+              "children": [
+                {
+                  "text": "",
+                  "final": null,
+                  "data": {
+                    "answer": "invalid"
+                  },
+                  "ok": true,
+                  "messages": [],
+                  "raw_responses": [],
+                  "usage": {},
+                  "engine": "python-runtime",
+                  "model": "",
+                  "mode": "default",
+                  "trace_schema_version": "agentic_systems.trace.v1",
+                  "validation": null,
+                  "errors": [],
+                  "meta": {
+                    "name": "read",
+                    "kind": "action"
+                  },
+                  "execution_id": "run-e9ff870fd24a4f5c9596ad89caee143d",
+                  "parent_execution_id": "run-3cdd3d8eaf444a689d427798eb16a059",
+                  "children": [],
+                  "tool_events": []
+                }
+              ],
+              "tool_events": []
+            },
+            "checks": [
+              {
+                "ok": false,
+                "issues": [
+                  {
+                    "code": "expected_mismatch",
+                    "path": "data"
+                  }
+                ]
+              }
+            ],
+            "judge": null,
+            "candidate_usage": {},
+            "judge_usage": {}
+          },
+          {
+            "name": "3",
+            "ok": false,
+            "input": {
+              "answer": ""
+            },
+            "expected": {
+              "data": {
+                "answer": "VALID"
+              }
+            },
+            "result": {
+              "text": "",
+              "final": null,
+              "data": {
+                "answer": ""
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {},
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "saved_answer",
+                "kind": "agent",
+                "backend": "native",
+                "skills": []
+              },
+              "execution_id": "run-df87cf169d324c47a0ce9222f0c4c035",
+              "parent_execution_id": null,
+              "children": [
+                {
+                  "text": "",
+                  "final": null,
+                  "data": {
+                    "answer": ""
+                  },
+                  "ok": true,
+                  "messages": [],
+                  "raw_responses": [],
+                  "usage": {},
+                  "engine": "python-runtime",
+                  "model": "",
+                  "mode": "default",
+                  "trace_schema_version": "agentic_systems.trace.v1",
+                  "validation": null,
+                  "errors": [],
+                  "meta": {
+                    "name": "read",
+                    "kind": "action"
+                  },
+                  "execution_id": "run-4fe804e44392404d87e938a0a6759c5e",
+                  "parent_execution_id": "run-df87cf169d324c47a0ce9222f0c4c035",
+                  "children": [],
+                  "tool_events": []
+                }
+              ],
+              "tool_events": []
+            },
+            "checks": [
+              {
+                "ok": false,
+                "issues": [
+                  {
+                    "code": "expected_mismatch",
+                    "path": "data"
+                  }
+                ]
+              }
+            ],
+            "judge": null,
+            "candidate_usage": {},
+            "judge_usage": {}
+          }
+        ]
+      },
+      "ok": false,
+      "messages": [],
+      "raw_responses": [],
+      "usage": {},
+      "engine": "python-runtime",
+      "model": "",
+      "mode": "default",
+      "trace_schema_version": "agentic_systems.trace.v1",
+      "validation": null,
+      "errors": [
+        {
+          "code": "eval_failed",
+          "message": "One or more required cases failed"
+        }
+      ],
+      "meta": {
+        "name": "literal_gate",
+        "kind": "eval",
+        "expected_failure_ids": [],
+        "actions_observed": 4,
+        "judge_mode": "none"
+      },
+      "execution_id": "run-da16a63c0d7545668905d900b50cd057",
+      "parent_execution_id": null,
+      "children": [
+        {
+          "text": "",
+          "final": null,
+          "data": {
+            "answer": "VALID"
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {},
+          "engine": "python-runtime",
+          "model": "",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "saved_answer",
+            "kind": "agent",
+            "backend": "native",
+            "skills": []
+          },
+          "execution_id": "run-61087434320a41619a28ab98519f6813",
+          "parent_execution_id": "run-da16a63c0d7545668905d900b50cd057",
+          "children": [
+            {
+              "text": "",
+              "final": null,
+              "data": {
+                "answer": "VALID"
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {},
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "read",
+                "kind": "action"
+              },
+              "execution_id": "run-a844d77858994eaeb8d7d64fccc41511",
+              "parent_execution_id": "run-61087434320a41619a28ab98519f6813",
+              "children": [],
+              "tool_events": []
+            }
+          ],
+          "tool_events": []
+        },
+        {
+          "text": "",
+          "final": null,
+          "data": {
+            "answer": "VALID."
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {},
+          "engine": "python-runtime",
+          "model": "",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "saved_answer",
+            "kind": "agent",
+            "backend": "native",
+            "skills": []
+          },
+          "execution_id": "run-2470f1c9cd0647d6be8d3a35872d7501",
+          "parent_execution_id": "run-da16a63c0d7545668905d900b50cd057",
+          "children": [
+            {
+              "text": "",
+              "final": null,
+              "data": {
+                "answer": "VALID."
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {},
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "read",
+                "kind": "action"
+              },
+              "execution_id": "run-ea43e888be424f2a85187d22c83b1399",
+              "parent_execution_id": "run-2470f1c9cd0647d6be8d3a35872d7501",
+              "children": [],
+              "tool_events": []
+            }
+          ],
+          "tool_events": []
+        },
+        {
+          "text": "",
+          "final": null,
+          "data": {
+            "answer": "invalid"
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {},
+          "engine": "python-runtime",
+          "model": "",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "saved_answer",
+            "kind": "agent",
+            "backend": "native",
+            "skills": []
+          },
+          "execution_id": "run-3cdd3d8eaf444a689d427798eb16a059",
+          "parent_execution_id": "run-da16a63c0d7545668905d900b50cd057",
+          "children": [
+            {
+              "text": "",
+              "final": null,
+              "data": {
+                "answer": "invalid"
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {},
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "read",
+                "kind": "action"
+              },
+              "execution_id": "run-e9ff870fd24a4f5c9596ad89caee143d",
+              "parent_execution_id": "run-3cdd3d8eaf444a689d427798eb16a059",
+              "children": [],
+              "tool_events": []
+            }
+          ],
+          "tool_events": []
+        },
+        {
+          "text": "",
+          "final": null,
+          "data": {
+            "answer": ""
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {},
+          "engine": "python-runtime",
+          "model": "",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "saved_answer",
+            "kind": "agent",
+            "backend": "native",
+            "skills": []
+          },
+          "execution_id": "run-df87cf169d324c47a0ce9222f0c4c035",
+          "parent_execution_id": "run-da16a63c0d7545668905d900b50cd057",
+          "children": [
+            {
+              "text": "",
+              "final": null,
+              "data": {
+                "answer": ""
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {},
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "read",
+                "kind": "action"
+              },
+              "execution_id": "run-4fe804e44392404d87e938a0a6759c5e",
+              "parent_execution_id": "run-df87cf169d324c47a0ce9222f0c4c035",
+              "children": [],
+              "tool_events": []
+            }
+          ],
+          "tool_events": []
+        }
+      ],
+      "tool_events": []
+    }
+  }
+}

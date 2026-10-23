@@ -1,0 +1,419 @@
+{
+  "source_evidence": "revisions/2.1.3/closeout-evidence/matrix/20261023T025048258614/bedrock-runtime--openai-agents.json",
+  "results": [
+    {
+      "run_result": {
+        "text": "The value 37 has been successfully verified.",
+        "final": {
+          "text": "The value 37 has been successfully verified."
+        },
+        "data": {
+          "text": "The value 37 has been successfully verified."
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 2,
+          "input_tokens": 445,
+          "output_tokens": 32,
+          "total_tokens": 477,
+          "client_duration_ms": 1374.542,
+          "inference_requests": 2,
+          "tool_calls": 1
+        },
+        "engine": "bedrock-runtime",
+        "model": "qwen.qwen3-32b-v1:0",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "matrix",
+          "kind": "agent",
+          "backend": "native",
+          "skills": [
+            "evidence"
+          ],
+          "actions_observed": 1,
+          "input": "Call certify with value=37. The tool output is the required result."
+        },
+        "execution_id": "run-3109d470cde04413bd2fcbc773cf4d73",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "The value 37 has been successfully verified.",
+            "final": {
+              "text": "The value 37 has been successfully verified."
+            },
+            "data": {
+              "text": "The value 37 has been successfully verified."
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 2,
+              "input_tokens": 445,
+              "output_tokens": 32,
+              "total_tokens": 477,
+              "client_duration_ms": 1374.542,
+              "inference_requests": 2,
+              "tool_calls": 1
+            },
+            "engine": "bedrock-runtime",
+            "model": "qwen.qwen3-32b-v1:0",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "matrix",
+              "kind": "model",
+              "framework": "openai-agents"
+            },
+            "execution_id": "run-8e277530a1524ad586e9fb462da1254e",
+            "parent_execution_id": "run-3109d470cde04413bd2fcbc773cf4d73",
+            "children": [
+              {
+                "text": "The value 37 has been successfully verified.",
+                "final": {
+                  "text": "The value 37 has been successfully verified."
+                },
+                "data": {
+                  "text": "The value 37 has been successfully verified."
+                },
+                "ok": true,
+                "messages": [
+                  {
+                    "content": "Call certify with value=37. The tool output is the required result.",
+                    "role": "user"
+                  },
+                  {
+                    "arguments": "{\"value\": 37}",
+                    "call_id": "tooluse_uWRxdWAMn7QGzNRB02AcHL",
+                    "name": "certify",
+                    "type": "function_call"
+                  },
+                  {
+                    "call_id": "tooluse_uWRxdWAMn7QGzNRB02AcHL",
+                    "output": "{'value': 37, 'verified': True}",
+                    "type": "function_call_output"
+                  },
+                  {
+                    "id": "msg_40e95a9d92874c52ac82ce2f46f8f2f6",
+                    "content": [
+                      {
+                        "annotations": [],
+                        "text": "The value 37 has been successfully verified.",
+                        "type": "output_text"
+                      }
+                    ],
+                    "role": "assistant",
+                    "status": "completed",
+                    "type": "message"
+                  }
+                ],
+                "raw_responses": [
+                  {
+                    "output": [
+                      {
+                        "arguments": "{\"value\": 37}",
+                        "call_id": "tooluse_uWRxdWAMn7QGzNRB02AcHL",
+                        "name": "certify",
+                        "type": "function_call",
+                        "id": null,
+                        "caller": null,
+                        "namespace": null,
+                        "status": null
+                      }
+                    ],
+                    "usage": {
+                      "requests": 1,
+                      "input_tokens": 201,
+                      "input_tokens_details": {
+                        "cache_write_tokens": 0,
+                        "cached_tokens": 0
+                      },
+                      "output_tokens": 21,
+                      "output_tokens_details": {
+                        "reasoning_tokens": 0
+                      },
+                      "total_tokens": 222,
+                      "request_usage_entries": []
+                    },
+                    "response_id": "5e8b7e10-e06a-46ae-bd53-27164e509ecb",
+                    "request_id": null
+                  },
+                  {
+                    "output": [
+                      {
+                        "id": "msg_40e95a9d92874c52ac82ce2f46f8f2f6",
+                        "content": [
+                          {
+                            "annotations": [],
+                            "text": "The value 37 has been successfully verified.",
+                            "type": "output_text",
+                            "logprobs": null
+                          }
+                        ],
+                        "role": "assistant",
+                        "status": "completed",
+                        "type": "message",
+                        "phase": null
+                      }
+                    ],
+                    "usage": {
+                      "requests": 1,
+                      "input_tokens": 244,
+                      "input_tokens_details": {
+                        "cache_write_tokens": 0,
+                        "cached_tokens": 0
+                      },
+                      "output_tokens": 11,
+                      "output_tokens_details": {
+                        "reasoning_tokens": 0
+                      },
+                      "total_tokens": 255,
+                      "request_usage_entries": []
+                    },
+                    "response_id": "de57e53e-4acb-489b-85aa-0118c90f3146",
+                    "request_id": null
+                  }
+                ],
+                "usage": {
+                  "requests": 2,
+                  "input_tokens": 445,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cached_tokens": 0
+                  },
+                  "output_tokens": 32,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 0
+                  },
+                  "total_tokens": 477,
+                  "request_usage_entries": [
+                    {
+                      "input_tokens": 201,
+                      "output_tokens": 21,
+                      "total_tokens": 222,
+                      "input_tokens_details": {
+                        "cache_write_tokens": 0,
+                        "cached_tokens": 0
+                      },
+                      "output_tokens_details": {
+                        "reasoning_tokens": 0
+                      }
+                    },
+                    {
+                      "input_tokens": 244,
+                      "output_tokens": 11,
+                      "total_tokens": 255,
+                      "input_tokens_details": {
+                        "cache_write_tokens": 0,
+                        "cached_tokens": 0
+                      },
+                      "output_tokens_details": {
+                        "reasoning_tokens": 0
+                      }
+                    }
+                  ],
+                  "scheduler": {
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 1374.542
+                  },
+                  "client_duration_ms": 1374.542,
+                  "inference_requests": 2,
+                  "tool_calls": 1
+                },
+                "engine": "bedrock-runtime",
+                "model": "qwen.qwen3-32b-v1:0",
+                "mode": "eval",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": {
+                  "ok": true,
+                  "issues": []
+                },
+                "errors": [],
+                "meta": {
+                  "source_result_type": "RunResult",
+                  "framework_adapter": "openai-agents",
+                  "input": "Call certify with value=37. The tool output is the required result.",
+                  "rejected_tool_calls": [],
+                  "runtime": {
+                    "provider": "bedrock-runtime",
+                    "model_id": "qwen.qwen3-32b-v1:0",
+                    "region_name": "us-east-2",
+                    "endpoint": null,
+                    "metadata": {},
+                    "provider_priority": [
+                      "openai-runtime",
+                      "bedrock-runtime",
+                      "ollama-runtime"
+                    ],
+                    "allow_python_fallback": false,
+                    "scheduler": {
+                      "max_turns": 5,
+                      "max_tool_calls": 3,
+                      "timeout_s": 60,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    }
+                  },
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "scheduler_execution": {
+                    "scheduler": {
+                      "max_turns": 5,
+                      "max_tool_calls": 3,
+                      "timeout_s": 60,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    },
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 1374.542
+                  },
+                  "framework": "openai-agents",
+                  "framework_requested": "openai-agents",
+                  "framework_config": {
+                    "name": "openai-agents",
+                    "agent_kwargs": {},
+                    "run_kwargs": {}
+                  },
+                  "agent_name": "matrix",
+                  "requested_engine": "bedrock-runtime",
+                  "runtime_engine": "bedrock-runtime",
+                  "execution_engine": "bedrock-runtime"
+                },
+                "execution_id": "run-cc9de5405bbb4ec294ed38070eddeff4",
+                "parent_execution_id": "run-8e277530a1524ad586e9fb462da1254e",
+                "children": [],
+                "tool_events": [
+                  {
+                    "id": "tooluse_uWRxdWAMn7QGzNRB02AcHL",
+                    "name": "certify",
+                    "input": {
+                      "value": 37
+                    },
+                    "output": {
+                      "data": {
+                        "value": 37,
+                        "verified": true
+                      }
+                    },
+                    "ok": true,
+                    "error": null,
+                    "duration_ms": null,
+                    "meta": {
+                      "source": "openai-agents"
+                    }
+                  }
+                ]
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "matrix/bedrock-runtime--openai-agents",
+        "question": "\"Call certify with value=37. The tool output is the required result.\"",
+        "goal": "",
+        "answer": "The value 37 has been successfully verified.",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-3109d470cde04413bd2fcbc773cf4d73",
+            "kind": "execution",
+            "title": "matrix",
+            "summary": "The value 37 has been successfully verified.",
+            "source": "bedrock-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "text": "The value 37 has been successfully verified."
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-8e277530a1524ad586e9fb462da1254e",
+            "kind": "execution",
+            "title": "matrix",
+            "summary": "The value 37 has been successfully verified.",
+            "source": "bedrock-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "text": "The value 37 has been successfully verified."
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-cc9de5405bbb4ec294ed38070eddeff4",
+            "kind": "execution",
+            "title": "eval",
+            "summary": "The value 37 has been successfully verified.",
+            "source": "bedrock-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "text": "The value 37 has been successfully verified."
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "tooluse_uWRxdWAMn7QGzNRB02AcHL",
+            "kind": "tool",
+            "title": "certify",
+            "summary": "completed",
+            "source": "certify",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "value": 37,
+                "verified": true
+              }
+            }
+          }
+        ],
+        "usage": {
+          "requests": 2,
+          "input_tokens": 445,
+          "output_tokens": 32,
+          "total_tokens": 477,
+          "client_duration_ms": 1374.542,
+          "inference_requests": 2,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    }
+  ]
+}

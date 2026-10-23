@@ -1,0 +1,101 @@
+{
+  "schema_version": "unified-grammar.prototype-manifest.v1",
+  "id": "unified-grammar-offline",
+  "status": "offline-api-revision-candidate",
+  "application_source": "demo.py",
+  "core_package": "agentic-systems",
+  "core_version": "2.1.2",
+  "wheel_sha256": "2c14a8e6f871fcc455acbf899db851130c49a129ba988821d6656e90ebc3d47b",
+  "artifact_verification": "exact-wheel-bytes-verified",
+  "python_tested": "3.14.2",
+  "langgraph_tested": "1.2.16",
+  "owners": [
+    "Agent",
+    "System"
+  ],
+  "flows": [
+    "sequential",
+    "parallel",
+    "graph"
+  ],
+  "flow_backends": [
+    "native",
+    "langgraph"
+  ],
+  "provider_policy": {
+    "only": "python-runtime",
+    "actor_role": "deterministic-operator",
+    "inference_permitted": false
+  },
+  "skills": [
+    "arithmetic"
+  ],
+  "tools": [
+    "increment",
+    "double",
+    "approve",
+    "reject"
+  ],
+  "optional_boundaries": [
+    "Environment",
+    "Eval"
+  ],
+  "matrix_cells": 12,
+  "matrix_passed": 12,
+  "tests": 79,
+  "tests_failed": 0,
+  "raw_run_sha256": "b3ac6f823b782f3cb491c4b5405961699dcda79076ec37b4e6d037b69c805a78",
+  "tests_sha256": "1871b29997edbd51893f8239ee7e7be3ac929a4879aaca4d81809e9070c5a474",
+  "source_sha256": {
+    "__init__.py": "784bf9b4beefa6b489752ca9a49bc9aa060622a73d6c34a360d3e83a59408912",
+    "core.py": "1573c9026983d30abe7122bcb76ce027b364e9bab2ec87b5a223906dd330cb94",
+    "demo.py": "c16b5fe356de410e8690a7dc4c5a5ed6f09180d3230c120137227713c1ae04af",
+    "execute_notebook.py": "6da9e23e295c6065454e9eb8966e561bf50f974584564bcbb801b497a8c37b81",
+    "offline.py": "21f9a074dc02f92b7701afe86a317011761566c1ad51e70159fb1a7ed62af112",
+    "order_challenge/__init__.py": "faec4107fbdafb90501312f4f32ec96dedac6c2a7c8fba87684f871380512064",
+    "order_challenge/settings.py": "6ffe16ad383aa9bc92c519f893e91199a84b27b75c585a9f0a835304fd1807f5",
+    "order_challenge/skills.py": "ca27baa9f3de8db1ba766911ccb97ba9679c39a95ae79e03e3f569471fc46a12",
+    "order_challenge/system.py": "343230e06cb06fae3034761e2548920b54bbac532477815b8adb68851d45ae5f",
+    "order_challenge/tools.py": "7b297554b5c991310f8ed9db3d4a2dbf9065c018cb8de97864fbffcb663d1202",
+    "order_challenge/verification.py": "e9146020393f2db4a0c0c967fdbb6855e1edf2732e229bc00d281dce2d6c7c25",
+    "run.py": "ea5302b7252a94b400664dc55adc174cec1851b6e84765acaad14ea28b0c7362",
+    "scaffold.py": "36a17885637949613fc7dabeb67b01cc3b391f76287860c895fb0b750ce5b888",
+    "scaffold_template/app.py": "d8a942c8628d3d8b2d0a30e8778afa42f85a409ff49f53084a759f22939c62ef",
+    "scaffold_template/execute_notebook.py": "352d76f93b3e5755c2692e1803a54f7b68e2ba7c042ff6a3e527803138874691",
+    "scaffold_template/test_offline.py": "c4aa4b2bf93b0d8b98b8a4671e44bf59785cfaf58b42a838d2ff4b7716305482",
+    "test_offline.py": "e02e77a0c9cc14720d5ac2ee6cc28ef6187f2ba4149658fb73e0572b9b166c54",
+    "tests/conftest.py": "c72c5b23b019b31ae07c11079e7b8cb57e53b2b822de44a4070dd885fdce70f5",
+    "tests/test_order_challenge.py": "c4ca009a6cece6469bfe0a1599496d5017b53dbda829c2befcf2f72c821186f2",
+    "tests/test_prototype.py": "77e8dc26c6360c351f60b9f4d8dc063d7cb181983e592746e3a02089a7c14c0e",
+    "tests/test_scaffolder.py": "f13bea1df74d7c17159c0600c9bda47063e4de731dc790994cd8c2bf26042eb9"
+  },
+  "decision_alternatives_passed": 4,
+  "notebook": "00_walkthrough.ipynb",
+  "notebook_code_cells": 20,
+  "notebook_sha256": "5500121fbd6c195b906dd430452fac9b7645726787c0de9c27500240ef0773a9",
+  "notebook_evidence_sha256": "75747104dd9c5e20340eb59a77778e70feb8899b63d3675146ebc819c3cb1384",
+  "decisions": {
+    "preferred": "direct synchronous Python function in an edge",
+    "valid_destinations": "current graph node names and END; checked at runtime",
+    "compile_policy": "never execute routers or infer return values",
+    "legacy_route": "preserved with declared-target restrictions"
+  },
+  "notebook_dependencies_tested": {
+    "nbformat": "5.10.4",
+    "nbclient": "0.11.0",
+    "ipykernel": "7.3.0"
+  },
+  "notebook_environment_units_passed": 12,
+  "notebook_environment_steps_passed": 24,
+  "notebook_eval_units_passed": 12,
+  "notebook_eval_cases_passed": 24,
+  "notebook_negative_controls_detected": 2,
+  "target_version": "2.1.3",
+  "challenge_contracts_passed": 14,
+  "challenge_agents": 7,
+  "challenge_skills": 7,
+  "challenge_tools": 8,
+  "challenge_sha256": "670ff41a214df6413e861389ebaff48cb10620040d76834fd09cfd50f62c6695",
+  "scaffold_sha256": "a630ee7a71b88e588416f70805a9cc23e7625d852b9bdb1316d74e1e8d3ab9df",
+  "scaffold_smoke_sha256": "07beab9df4acd3b7803802c2a88c617a2ef6e32942687d16ad939f519519a32e"
+}

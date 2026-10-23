@@ -1,0 +1,109 @@
+{
+  "example": "flow_semantics",
+  "passed": true,
+  "source_sha256": "8adfc6be5a70304d67343604e7ff50d4c4037017e8d74f2ed70366a222a84ea3",
+  "report": {
+    "input": {
+      "value": 3
+    },
+    "process": "Agent/System × sequence/parallel/decision × native/LangGraph",
+    "output": [
+      {
+        "owner": "Agent",
+        "backend": "native",
+        "flow": "sequence",
+        "output": {
+          "value": 8
+        }
+      },
+      {
+        "owner": "Agent",
+        "backend": "native",
+        "flow": "parallel",
+        "output": {
+          "value": 10
+        }
+      },
+      {
+        "owner": "Agent",
+        "backend": "native",
+        "flow": "decision",
+        "output": {
+          "value": 8
+        }
+      },
+      {
+        "owner": "System",
+        "backend": "native",
+        "flow": "sequence",
+        "output": {
+          "value": 8
+        }
+      },
+      {
+        "owner": "System",
+        "backend": "native",
+        "flow": "parallel",
+        "output": {
+          "value": 10
+        }
+      },
+      {
+        "owner": "System",
+        "backend": "native",
+        "flow": "decision",
+        "output": {
+          "value": 8
+        }
+      },
+      {
+        "owner": "Agent",
+        "backend": "langgraph",
+        "flow": "sequence",
+        "output": {
+          "value": 8
+        }
+      },
+      {
+        "owner": "Agent",
+        "backend": "langgraph",
+        "flow": "parallel",
+        "output": {
+          "value": 10
+        }
+      },
+      {
+        "owner": "Agent",
+        "backend": "langgraph",
+        "flow": "decision",
+        "output": {
+          "value": 8
+        }
+      },
+      {
+        "owner": "System",
+        "backend": "langgraph",
+        "flow": "sequence",
+        "output": {
+          "value": 8
+        }
+      },
+      {
+        "owner": "System",
+        "backend": "langgraph",
+        "flow": "parallel",
+        "output": {
+          "value": 10
+        }
+      },
+      {
+        "owner": "System",
+        "backend": "langgraph",
+        "flow": "decision",
+        "output": {
+          "value": 8
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,18 @@
+flowchart LR
+  input["Input"]
+  stage_0_triage["Triage operator<br/>operator<br/>python-runtime / native"]:::operator
+  input --> stage_0_triage
+  stage_1_command["Incident commander<br/>reasoner<br/>selected-provider / selected-framework"]:::reasoner
+  stage_0_triage --> stage_1_command
+  stage_2_diagnose["Diagnosis agent<br/>reasoner<br/>selected-provider / selected-framework"]:::reasoner
+  stage_1_command --> stage_2_diagnose
+  stage_3_remediate["Remediation agent<br/>reasoner<br/>selected-provider / selected-framework"]:::reasoner
+  stage_2_diagnose --> stage_3_remediate
+  stage_4_review["Safety reviewer<br/>reviewer<br/>selected-provider / selected-framework"]:::reviewer
+  stage_3_remediate --> stage_4_review
+  result["RunResult"]:::result
+  stage_4_review --> result
+  classDef operator fill:#0f766e,color:#fff,stroke:#134e4a
+  classDef reasoner fill:#4f46e5,color:#fff,stroke:#312e81
+  classDef reviewer fill:#a21caf,color:#fff,stroke:#701a75
+  classDef result fill:#111827,color:#fff,stroke:#030712

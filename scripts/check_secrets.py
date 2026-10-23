@@ -17,7 +17,10 @@ PLACEHOLDERS = (b"example", b"placeholder", b"redacted", b"your_", b"test-")
 
 
 def _tracked_files() -> list[Path]:
-    output = subprocess.check_output(["git", "ls-files", "-z"], cwd=ROOT)
+    output = subprocess.check_output(
+        ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"],
+        cwd=ROOT,
+    )
     return [ROOT / item.decode() for item in output.split(b"\0") if item]
 
 

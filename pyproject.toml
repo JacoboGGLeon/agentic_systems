@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "agentic-systems"
-version = "2.1.2"
+version = "2.1.3"
 description = "Agentic Systems: a computational grammar for building, executing, observing, and evaluating intelligent systems."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -24,6 +24,7 @@ dependencies = [
     "pandas>=2.0.0",
     "typing-extensions>=4.10.0",
     "rich>=13.0.0",
+    "jsonschema>=4.23,<5",
 ]
 
 
@@ -95,11 +96,14 @@ filterwarnings = [
     "ignore:'asyncio.get_event_loop_policy' is deprecated and slated for removal in Python 3.16:DeprecationWarning:agents\\.run",
 ]
 pythonpath = ["src"]
-testpaths = ["tests"]
+testpaths = ["tests/v213"]
 cache_dir = ".tmp/pytest_cache"
 
 [tool.ruff]
-extend-exclude = ["artifacts"]
+extend-exclude = ["artifacts", "src/agentic_systems/_engine"]
+
+[tool.setuptools.package-data]
+agentic_systems = ["_templates/**/*", "_templates/project/.env.example", "_templates/project/.gitignore"]
 
 [tool.ruff.lint.per-file-ignores]
 "src/agentic_systems/__init__.py" = ["F401"]
@@ -108,8 +112,8 @@ extend-exclude = ["artifacts"]
 [tool.coverage.run]
 source = ["src/agentic_systems"]
 omit = [
-    "src/agentic_systems/providers/bedrock_runtime.py",
-    "src/agentic_systems/providers/bedrock/*",
+    "*/_engine/*",
+    "*/_templates/*",
 ]
 
 [tool.coverage.report]
@@ -123,6 +127,6 @@ exclude_lines = [
 ]
 
 [tool.mutmut]
-source_paths = ["src/agentic_systems/schemas", "src/agentic_systems/registry.py", "src/agentic_systems/normalization.py", "src/agentic_systems/errors.py"]
-pytest_add_cli_args_test_selection = ["tests/contracts"]
+source_paths = ["src/agentic_systems/_contracts.py", "src/agentic_systems/_configuration.py", "src/agentic_systems/_results.py"]
+pytest_add_cli_args_test_selection = ["tests/v213"]
 mutate_only_covered_lines = true

@@ -1,0 +1,422 @@
+{
+  "source": "examples/tool_contracts",
+  "captured_boundaries": 3,
+  "root_results": 3,
+  "scope": "Observed SDK RunResult values; descendants retained inside parents. No fabricated results for configuration-only examples.",
+  "results": [
+    {
+      "run_result": {
+        "text": "",
+        "final": {
+          "value": 4
+        },
+        "data": {
+          "value": 4
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "tool",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "tool_name": "",
+          "input": {
+            "value": 3
+          },
+          "tool_input": {
+            "value": 3
+          }
+        },
+        "execution_id": "run-a7f8596213bc488893ce701faf83ca05",
+        "parent_execution_id": null,
+        "children": [],
+        "tool_events": [
+          {
+            "id": "tool-98640fb2a0d442e597db2803adfbadb5",
+            "name": "increment",
+            "input": {
+              "value": 3
+            },
+            "output": {
+              "data": {
+                "value": 4
+              }
+            },
+            "ok": true,
+            "error": null,
+            "duration_ms": null,
+            "meta": {}
+          }
+        ]
+      },
+      "lineage_memory": {
+        "name": "examples/tool_contracts",
+        "question": "{\"value\": 3}",
+        "goal": "",
+        "answer": "{\"value\": 4}",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-a7f8596213bc488893ce701faf83ca05",
+            "kind": "execution",
+            "title": "tool",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "tool-98640fb2a0d442e597db2803adfbadb5",
+            "kind": "tool",
+            "title": "increment",
+            "summary": "completed",
+            "source": "increment",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "value": 4
+              }
+            }
+          }
+        ],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    },
+    {
+      "run_result": {
+        "text": "",
+        "final": {
+          "value": 4
+        },
+        "data": {
+          "value": 4
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "tool",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "tool_name": "",
+          "input": {
+            "value": 3
+          },
+          "tool_input": {
+            "value": 3
+          }
+        },
+        "execution_id": "run-9abc12df074a441895e8c7b1dfd6f49c",
+        "parent_execution_id": null,
+        "children": [],
+        "tool_events": [
+          {
+            "id": "tool-202beb1d9ba54b608627b3a84da7af99",
+            "name": "increment",
+            "input": {
+              "value": 3
+            },
+            "output": {
+              "data": {
+                "value": 4
+              }
+            },
+            "ok": true,
+            "error": null,
+            "duration_ms": null,
+            "meta": {}
+          }
+        ]
+      },
+      "lineage_memory": {
+        "name": "examples/tool_contracts",
+        "question": "{\"value\": 3}",
+        "goal": "",
+        "answer": "{\"value\": 4}",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-9abc12df074a441895e8c7b1dfd6f49c",
+            "kind": "execution",
+            "title": "tool",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "tool-202beb1d9ba54b608627b3a84da7af99",
+            "kind": "tool",
+            "title": "increment",
+            "summary": "completed",
+            "source": "increment",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "value": 4
+              }
+            }
+          }
+        ],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    },
+    {
+      "run_result": {
+        "text": "1 validation error for Quantity\nvalue\n  Input should be a valid integer [type=int_type, input_value='invalid', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_type",
+        "final": {
+          "category": "provider",
+          "message": "1 validation error for Quantity\nvalue\n  Input should be a valid integer [type=int_type, input_value='invalid', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_type",
+          "provider": "python-runtime",
+          "framework": "native",
+          "code": "ValidationError",
+          "retryable": false,
+          "cause_type": "ValidationError",
+          "details": {},
+          "error_type": "ValidationError"
+        },
+        "data": {
+          "category": "provider",
+          "message": "1 validation error for Quantity\nvalue\n  Input should be a valid integer [type=int_type, input_value='invalid', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_type",
+          "provider": "python-runtime",
+          "framework": "native",
+          "code": "ValidationError",
+          "retryable": false,
+          "cause_type": "ValidationError",
+          "details": {},
+          "error_type": "ValidationError"
+        },
+        "ok": false,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "tool",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [
+          {
+            "code": "run_failed",
+            "message": "1 validation error for Quantity\nvalue\n  Input should be a valid integer [type=int_type, input_value='invalid', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_type"
+          },
+          {
+            "code": "tool_failed",
+            "tool": "increment",
+            "tool_event_id": "tool-0c8cf2276c404df2aed4de1a420366f2",
+            "error": {
+              "category": "provider",
+              "message": "1 validation error for Quantity\nvalue\n  Input should be a valid integer [type=int_type, input_value='invalid', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_type",
+              "provider": "python-runtime",
+              "framework": "native",
+              "code": "ValidationError",
+              "retryable": false,
+              "cause_type": "ValidationError",
+              "details": {},
+              "error_type": "ValidationError"
+            },
+            "resolved": false
+          }
+        ],
+        "meta": {
+          "tool_name": "",
+          "input": {
+            "value": "invalid"
+          },
+          "tool_input": {
+            "value": "invalid"
+          }
+        },
+        "execution_id": "run-50dc78e9cd824626a5f270dff52268bb",
+        "parent_execution_id": null,
+        "children": [],
+        "tool_events": [
+          {
+            "id": "tool-0c8cf2276c404df2aed4de1a420366f2",
+            "name": "increment",
+            "input": {
+              "value": "invalid"
+            },
+            "output": {
+              "data": {
+                "category": "provider",
+                "message": "1 validation error for Quantity\nvalue\n  Input should be a valid integer [type=int_type, input_value='invalid', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_type",
+                "provider": "python-runtime",
+                "framework": "native",
+                "code": "ValidationError",
+                "retryable": false,
+                "cause_type": "ValidationError",
+                "details": {},
+                "error_type": "ValidationError"
+              }
+            },
+            "ok": false,
+            "error": {
+              "category": "provider",
+              "message": "1 validation error for Quantity\nvalue\n  Input should be a valid integer [type=int_type, input_value='invalid', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_type",
+              "provider": "python-runtime",
+              "framework": "native",
+              "code": "ValidationError",
+              "retryable": false,
+              "cause_type": "ValidationError",
+              "details": {},
+              "error_type": "ValidationError"
+            },
+            "duration_ms": null,
+            "meta": {
+              "retryable": false
+            }
+          }
+        ]
+      },
+      "lineage_memory": {
+        "name": "examples/tool_contracts",
+        "question": "{\"value\": \"invalid\"}",
+        "goal": "",
+        "answer": "1 validation error for Quantity\nvalue\n  Input should be a valid integer [type=int_type, input_value='invalid', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_type",
+        "ok": false,
+        "steps": [
+          {
+            "step_id": "run-50dc78e9cd824626a5f270dff52268bb",
+            "kind": "execution",
+            "title": "tool",
+            "summary": "1 validation error for Quantity\nvalue\n  Input should be a valid integer [type=int_type, input_value='invalid', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_type",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": false,
+              "data": {
+                "category": "provider",
+                "message": "1 validation error for Quantity\nvalue\n  Input should be a valid integer [type=int_type, input_value='invalid', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_type",
+                "provider": "python-runtime",
+                "framework": "native",
+                "code": "ValidationError",
+                "retryable": false,
+                "cause_type": "ValidationError",
+                "details": {},
+                "error_type": "ValidationError"
+              },
+              "errors": [
+                {
+                  "code": "run_failed",
+                  "message": "1 validation error for Quantity\nvalue\n  Input should be a valid integer [type=int_type, input_value='invalid', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_type"
+                },
+                {
+                  "code": "tool_failed",
+                  "tool": "increment",
+                  "tool_event_id": "tool-0c8cf2276c404df2aed4de1a420366f2",
+                  "error": {
+                    "category": "provider",
+                    "message": "1 validation error for Quantity\nvalue\n  Input should be a valid integer [type=int_type, input_value='invalid', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_type",
+                    "provider": "python-runtime",
+                    "framework": "native",
+                    "code": "ValidationError",
+                    "retryable": false,
+                    "cause_type": "ValidationError",
+                    "details": {},
+                    "error_type": "ValidationError"
+                  },
+                  "resolved": false
+                }
+              ]
+            }
+          },
+          {
+            "step_id": "tool-0c8cf2276c404df2aed4de1a420366f2",
+            "kind": "tool",
+            "title": "increment",
+            "summary": "failed",
+            "source": "increment",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "category": "provider",
+                "message": "1 validation error for Quantity\nvalue\n  Input should be a valid integer [type=int_type, input_value='invalid', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_type",
+                "provider": "python-runtime",
+                "framework": "native",
+                "code": "ValidationError",
+                "retryable": false,
+                "cause_type": "ValidationError",
+                "details": {},
+                "error_type": "ValidationError"
+              }
+            }
+          }
+        ],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,1351 @@
+{
+  "name": "ollama-runtime--strands",
+  "passed": true,
+  "report": {
+    "provider": "ollama-runtime",
+    "framework": "strands",
+    "ui": "Streamlit AppTest; actual widgets",
+    "result": {
+      "text": "El resultado de 17 * 19 es 323.",
+      "final": {
+        "text": "El resultado de 17 * 19 es 323."
+      },
+      "data": {
+        "answer": "El resultado de 17 * 19 es 323.",
+        "provider": "ollama-runtime",
+        "framework": "strands",
+        "history_turns": 1,
+        "response_validation": {
+          "ok": true,
+          "repairs": 0
+        }
+      },
+      "ok": true,
+      "messages": [],
+      "raw_responses": [],
+      "usage": {
+        "requests": 4,
+        "inference_requests": 3,
+        "tool_calls": 2,
+        "inputTokens": 758,
+        "outputTokens": 59,
+        "totalTokens": 817,
+        "cacheReadInputTokens": 192,
+        "input_tokens": 758,
+        "output_tokens": 59,
+        "total_tokens": 817,
+        "client_duration_ms": 3205.621
+      },
+      "engine": "python-runtime",
+      "model": "",
+      "mode": "default",
+      "trace_schema_version": "agentic_systems.trace.v1",
+      "validation": null,
+      "errors": [],
+      "meta": {
+        "name": "studio_conversation",
+        "kind": "system",
+        "backend": "native",
+        "skills": [],
+        "actions_observed": 3,
+        "input": {
+          "messages": [
+            {
+              "role": "assistant",
+              "content": "Ready. Ask a question or request a verified calculation."
+            }
+          ],
+          "message": "Calcula 17 * 19 usando la calculadora y responde en una frase."
+        },
+        "provider": "ollama-runtime",
+        "framework": "strands",
+        "studio_version": "2.1.3"
+      },
+      "execution_id": "run-3725648906864343a460c1693ca2c4e2",
+      "parent_execution_id": null,
+      "children": [
+        {
+          "text": "El resultado de 17 * 19 es 323.",
+          "final": {
+            "text": "El resultado de 17 * 19 es 323."
+          },
+          "data": {
+            "answer": "El resultado de 17 * 19 es 323.",
+            "provider": "ollama-runtime",
+            "framework": "strands",
+            "history_turns": 1,
+            "response_validation": {
+              "ok": true,
+              "repairs": 0
+            }
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {
+            "requests": 4,
+            "inference_requests": 3,
+            "tool_calls": 2,
+            "inputTokens": 758,
+            "outputTokens": 59,
+            "totalTokens": 817,
+            "cacheReadInputTokens": 192,
+            "input_tokens": 758,
+            "output_tokens": 59,
+            "total_tokens": 817,
+            "client_duration_ms": 3205.621
+          },
+          "engine": "python-runtime",
+          "model": "",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "sequence",
+            "kind": "sequence",
+            "backend": "native"
+          },
+          "execution_id": "run-b45fa082f8634f20bb32e1f085343eed",
+          "parent_execution_id": "run-3725648906864343a460c1693ca2c4e2",
+          "children": [
+            {
+              "text": "",
+              "final": {
+                "history": [
+                  {
+                    "role": "assistant",
+                    "content": "Ready. Ask a question or request a verified calculation."
+                  }
+                ],
+                "history_turns": 1,
+                "memory": {
+                  "kind": "bounded-public-history",
+                  "maximum_messages": 12,
+                  "maximum_user_characters": 2000,
+                  "maximum_assistant_characters": 1200,
+                  "maximum_current_message_characters": 8000,
+                  "truncated_messages": 0
+                },
+                "policy": {
+                  "reasoning_is_private": true,
+                  "no_silent_fallback": true,
+                  "tools_are_evidence": true
+                },
+                "message": "Calcula 17 * 19 usando la calculadora y responde en una frase."
+              },
+              "data": {
+                "history": [
+                  {
+                    "role": "assistant",
+                    "content": "Ready. Ask a question or request a verified calculation."
+                  }
+                ],
+                "history_turns": 1,
+                "memory": {
+                  "kind": "bounded-public-history",
+                  "maximum_messages": 12,
+                  "maximum_user_characters": 2000,
+                  "maximum_assistant_characters": 1200,
+                  "maximum_current_message_characters": 8000,
+                  "truncated_messages": 0
+                },
+                "policy": {
+                  "reasoning_is_private": true,
+                  "no_silent_fallback": true,
+                  "tools_are_evidence": true
+                },
+                "message": "Calcula 17 * 19 usando la calculadora y responde en una frase."
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {
+                "requests": 1,
+                "inference_requests": 0,
+                "tool_calls": 1
+              },
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "context",
+                "kind": "agent",
+                "backend": "native",
+                "skills": [],
+                "step": "context"
+              },
+              "execution_id": "run-5d07064785a54a8390763e07f3b3f55f",
+              "parent_execution_id": "run-b45fa082f8634f20bb32e1f085343eed",
+              "children": [
+                {
+                  "text": "",
+                  "final": {
+                    "history": [
+                      {
+                        "role": "assistant",
+                        "content": "Ready. Ask a question or request a verified calculation."
+                      }
+                    ],
+                    "history_turns": 1,
+                    "memory": {
+                      "kind": "bounded-public-history",
+                      "maximum_messages": 12,
+                      "maximum_user_characters": 2000,
+                      "maximum_assistant_characters": 1200,
+                      "maximum_current_message_characters": 8000,
+                      "truncated_messages": 0
+                    },
+                    "policy": {
+                      "reasoning_is_private": true,
+                      "no_silent_fallback": true,
+                      "tools_are_evidence": true
+                    },
+                    "message": "Calcula 17 * 19 usando la calculadora y responde en una frase."
+                  },
+                  "data": {
+                    "history": [
+                      {
+                        "role": "assistant",
+                        "content": "Ready. Ask a question or request a verified calculation."
+                      }
+                    ],
+                    "history_turns": 1,
+                    "memory": {
+                      "kind": "bounded-public-history",
+                      "maximum_messages": 12,
+                      "maximum_user_characters": 2000,
+                      "maximum_assistant_characters": 1200,
+                      "maximum_current_message_characters": 8000,
+                      "truncated_messages": 0
+                    },
+                    "policy": {
+                      "reasoning_is_private": true,
+                      "no_silent_fallback": true,
+                      "tools_are_evidence": true
+                    },
+                    "message": "Calcula 17 * 19 usando la calculadora y responde en una frase."
+                  },
+                  "ok": true,
+                  "messages": [],
+                  "raw_responses": [],
+                  "usage": {
+                    "requests": 1,
+                    "inference_requests": 0,
+                    "tool_calls": 1
+                  },
+                  "engine": "python-runtime",
+                  "model": "",
+                  "mode": "default",
+                  "trace_schema_version": "agentic_systems.trace.v1",
+                  "validation": null,
+                  "errors": [],
+                  "meta": {
+                    "name": "prepare",
+                    "kind": "action"
+                  },
+                  "execution_id": "run-8ddc3c9d1ba143e7b2ad89c1a9ebbb0a",
+                  "parent_execution_id": "run-5d07064785a54a8390763e07f3b3f55f",
+                  "children": [
+                    {
+                      "text": "",
+                      "final": {
+                        "history": [
+                          {
+                            "role": "assistant",
+                            "content": "Ready. Ask a question or request a verified calculation."
+                          }
+                        ],
+                        "history_turns": 1,
+                        "memory": {
+                          "kind": "bounded-public-history",
+                          "maximum_messages": 12,
+                          "maximum_user_characters": 2000,
+                          "maximum_assistant_characters": 1200,
+                          "maximum_current_message_characters": 8000,
+                          "truncated_messages": 0
+                        },
+                        "policy": {
+                          "reasoning_is_private": true,
+                          "no_silent_fallback": true,
+                          "tools_are_evidence": true
+                        },
+                        "message": "Calcula 17 * 19 usando la calculadora y responde en una frase."
+                      },
+                      "data": {
+                        "history": [
+                          {
+                            "role": "assistant",
+                            "content": "Ready. Ask a question or request a verified calculation."
+                          }
+                        ],
+                        "history_turns": 1,
+                        "memory": {
+                          "kind": "bounded-public-history",
+                          "maximum_messages": 12,
+                          "maximum_user_characters": 2000,
+                          "maximum_assistant_characters": 1200,
+                          "maximum_current_message_characters": 8000,
+                          "truncated_messages": 0
+                        },
+                        "policy": {
+                          "reasoning_is_private": true,
+                          "no_silent_fallback": true,
+                          "tools_are_evidence": true
+                        },
+                        "message": "Calcula 17 * 19 usando la calculadora y responde en una frase."
+                      },
+                      "ok": true,
+                      "messages": [],
+                      "raw_responses": [],
+                      "usage": {
+                        "requests": 1,
+                        "inference_requests": 0,
+                        "tool_calls": 1
+                      },
+                      "engine": "python-runtime",
+                      "model": "",
+                      "mode": "tool",
+                      "trace_schema_version": "agentic_systems.trace.v1",
+                      "validation": null,
+                      "errors": [],
+                      "meta": {
+                        "tool_name": "",
+                        "input": {
+                          "messages": [
+                            {
+                              "role": "assistant",
+                              "content": "Ready. Ask a question or request a verified calculation."
+                            }
+                          ],
+                          "message": "Calcula 17 * 19 usando la calculadora y responde en una frase."
+                        },
+                        "tool_input": {
+                          "messages": [
+                            {
+                              "role": "assistant",
+                              "content": "Ready. Ask a question or request a verified calculation."
+                            }
+                          ],
+                          "message": "Calcula 17 * 19 usando la calculadora y responde en una frase."
+                        }
+                      },
+                      "execution_id": "run-554ea1634cf1477493086a4b8f687568",
+                      "parent_execution_id": "run-8ddc3c9d1ba143e7b2ad89c1a9ebbb0a",
+                      "children": [],
+                      "tool_events": [
+                        {
+                          "id": "tool-db9187b5025b4fb2a410f493bded474f",
+                          "name": "prepare_conversation_context",
+                          "input": {
+                            "messages": [
+                              {
+                                "role": "assistant",
+                                "content": "Ready. Ask a question or request a verified calculation."
+                              }
+                            ],
+                            "message": "Calcula 17 * 19 usando la calculadora y responde en una frase."
+                          },
+                          "output": {
+                            "data": {
+                              "history": [
+                                {
+                                  "role": "assistant",
+                                  "content": "Ready. Ask a question or request a verified calculation."
+                                }
+                              ],
+                              "history_turns": 1,
+                              "memory": {
+                                "kind": "bounded-public-history",
+                                "maximum_messages": 12,
+                                "maximum_user_characters": 2000,
+                                "maximum_assistant_characters": 1200,
+                                "maximum_current_message_characters": 8000,
+                                "truncated_messages": 0
+                              },
+                              "policy": {
+                                "reasoning_is_private": true,
+                                "no_silent_fallback": true,
+                                "tools_are_evidence": true
+                              },
+                              "message": "Calcula 17 * 19 usando la calculadora y responde en una frase."
+                            }
+                          },
+                          "ok": true,
+                          "error": null,
+                          "duration_ms": null,
+                          "meta": {}
+                        }
+                      ]
+                    }
+                  ],
+                  "tool_events": []
+                }
+              ],
+              "tool_events": []
+            },
+            {
+              "text": "El resultado de multiplicar 17 por 19 es 323.",
+              "final": {
+                "text": "El resultado de multiplicar 17 por 19 es 323."
+              },
+              "data": {
+                "history": [
+                  {
+                    "role": "assistant",
+                    "content": "Ready. Ask a question or request a verified calculation."
+                  }
+                ],
+                "history_turns": 1,
+                "memory": {
+                  "kind": "bounded-public-history",
+                  "maximum_messages": 12,
+                  "maximum_user_characters": 2000,
+                  "maximum_assistant_characters": 1200,
+                  "maximum_current_message_characters": 8000,
+                  "truncated_messages": 0
+                },
+                "policy": {
+                  "reasoning_is_private": true,
+                  "no_silent_fallback": true,
+                  "tools_are_evidence": true
+                },
+                "message": "Calcula 17 * 19 usando la calculadora y responde en una frase.",
+                "calculation_evidence": [
+                  {
+                    "expression": "17 * 19",
+                    "normalized_expression": "17 * 19",
+                    "result": 323,
+                    "verified_by": "python-runtime::safe_calculate"
+                  }
+                ]
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {
+                "inputTokens": 332,
+                "outputTokens": 42,
+                "totalTokens": 374,
+                "cacheReadInputTokens": 128,
+                "input_tokens": 332,
+                "output_tokens": 42,
+                "total_tokens": 374,
+                "client_duration_ms": 2192.281,
+                "requests": 2,
+                "inference_requests": 2,
+                "tool_calls": 1
+              },
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "grounding",
+                "kind": "agent",
+                "backend": "native",
+                "skills": [],
+                "step": "grounding"
+              },
+              "execution_id": "run-c09faad754b44927bc0935459a6654b8",
+              "parent_execution_id": "run-b45fa082f8634f20bb32e1f085343eed",
+              "children": [
+                {
+                  "text": "El resultado de multiplicar 17 por 19 es 323.",
+                  "final": {
+                    "text": "El resultado de multiplicar 17 por 19 es 323."
+                  },
+                  "data": {
+                    "history": [
+                      {
+                        "role": "assistant",
+                        "content": "Ready. Ask a question or request a verified calculation."
+                      }
+                    ],
+                    "history_turns": 1,
+                    "memory": {
+                      "kind": "bounded-public-history",
+                      "maximum_messages": 12,
+                      "maximum_user_characters": 2000,
+                      "maximum_assistant_characters": 1200,
+                      "maximum_current_message_characters": 8000,
+                      "truncated_messages": 0
+                    },
+                    "policy": {
+                      "reasoning_is_private": true,
+                      "no_silent_fallback": true,
+                      "tools_are_evidence": true
+                    },
+                    "message": "Calcula 17 * 19 usando la calculadora y responde en una frase.",
+                    "calculation_evidence": [
+                      {
+                        "expression": "17 * 19",
+                        "normalized_expression": "17 * 19",
+                        "result": 323,
+                        "verified_by": "python-runtime::safe_calculate"
+                      }
+                    ]
+                  },
+                  "ok": true,
+                  "messages": [],
+                  "raw_responses": [],
+                  "usage": {
+                    "inputTokens": 332,
+                    "outputTokens": 42,
+                    "totalTokens": 374,
+                    "cacheReadInputTokens": 128,
+                    "input_tokens": 332,
+                    "output_tokens": 42,
+                    "total_tokens": 374,
+                    "client_duration_ms": 2192.281,
+                    "requests": 2,
+                    "inference_requests": 2,
+                    "tool_calls": 1
+                  },
+                  "engine": "python-runtime",
+                  "model": "",
+                  "mode": "default",
+                  "trace_schema_version": "agentic_systems.trace.v1",
+                  "validation": null,
+                  "errors": [],
+                  "meta": {
+                    "name": "ground",
+                    "kind": "action"
+                  },
+                  "execution_id": "run-f4bf211e033e42b0967e3c456cbe26ae",
+                  "parent_execution_id": "run-c09faad754b44927bc0935459a6654b8",
+                  "children": [
+                    {
+                      "text": "El resultado de multiplicar 17 por 19 es 323.",
+                      "final": {
+                        "text": "El resultado de multiplicar 17 por 19 es 323."
+                      },
+                      "data": {
+                        "history": [
+                          {
+                            "role": "assistant",
+                            "content": "Ready. Ask a question or request a verified calculation."
+                          }
+                        ],
+                        "history_turns": 1,
+                        "memory": {
+                          "kind": "bounded-public-history",
+                          "maximum_messages": 12,
+                          "maximum_user_characters": 2000,
+                          "maximum_assistant_characters": 1200,
+                          "maximum_current_message_characters": 8000,
+                          "truncated_messages": 0
+                        },
+                        "policy": {
+                          "reasoning_is_private": true,
+                          "no_silent_fallback": true,
+                          "tools_are_evidence": true
+                        },
+                        "message": "Calcula 17 * 19 usando la calculadora y responde en una frase.",
+                        "calculation_evidence": [
+                          {
+                            "expression": "17 * 19",
+                            "normalized_expression": "17 * 19",
+                            "result": 323,
+                            "verified_by": "python-runtime::safe_calculate"
+                          }
+                        ]
+                      },
+                      "ok": true,
+                      "messages": [],
+                      "raw_responses": [],
+                      "usage": {
+                        "inputTokens": 332,
+                        "outputTokens": 42,
+                        "totalTokens": 374,
+                        "cacheReadInputTokens": 128,
+                        "input_tokens": 332,
+                        "output_tokens": 42,
+                        "total_tokens": 374,
+                        "client_duration_ms": 2192.281,
+                        "requests": 2,
+                        "inference_requests": 2,
+                        "tool_calls": 1
+                      },
+                      "engine": "ollama-runtime",
+                      "model": "gemma4:31b-cloud",
+                      "mode": "default",
+                      "trace_schema_version": "agentic_systems.trace.v1",
+                      "validation": null,
+                      "errors": [],
+                      "meta": {
+                        "name": "calculator",
+                        "kind": "agent",
+                        "backend": "native",
+                        "skills": [
+                          "calculator"
+                        ],
+                        "actions_observed": 1,
+                        "input": "Call safe_calculate for this current request: Calcula 17 * 19 usando la calculadora y responde en una frase."
+                      },
+                      "execution_id": "run-ae492767dd9a4b1baf391c54620d11cc",
+                      "parent_execution_id": "run-f4bf211e033e42b0967e3c456cbe26ae",
+                      "children": [
+                        {
+                          "text": "El resultado de multiplicar 17 por 19 es 323.",
+                          "final": {
+                            "text": "El resultado de multiplicar 17 por 19 es 323."
+                          },
+                          "data": {
+                            "text": "El resultado de multiplicar 17 por 19 es 323.\n"
+                          },
+                          "ok": true,
+                          "messages": [],
+                          "raw_responses": [],
+                          "usage": {
+                            "inputTokens": 332,
+                            "outputTokens": 42,
+                            "totalTokens": 374,
+                            "cacheReadInputTokens": 128,
+                            "input_tokens": 332,
+                            "output_tokens": 42,
+                            "total_tokens": 374,
+                            "client_duration_ms": 2192.281,
+                            "requests": 2,
+                            "inference_requests": 2,
+                            "tool_calls": 1
+                          },
+                          "engine": "ollama-runtime",
+                          "model": "gemma4:31b-cloud",
+                          "mode": "default",
+                          "trace_schema_version": "agentic_systems.trace.v1",
+                          "validation": null,
+                          "errors": [],
+                          "meta": {
+                            "name": "calculator",
+                            "kind": "model",
+                            "framework": "strands"
+                          },
+                          "execution_id": "run-bda1504c884049e68ed2a58394edab62",
+                          "parent_execution_id": "run-ae492767dd9a4b1baf391c54620d11cc",
+                          "children": [
+                            {
+                              "text": "El resultado de multiplicar 17 por 19 es 323.",
+                              "final": {
+                                "text": "El resultado de multiplicar 17 por 19 es 323."
+                              },
+                              "data": {
+                                "text": "El resultado de multiplicar 17 por 19 es 323.\n"
+                              },
+                              "ok": true,
+                              "messages": [
+                                {
+                                  "role": "user",
+                                  "content": [
+                                    {
+                                      "text": "Call safe_calculate for this current request: Calcula 17 * 19 usando la calculadora y responde en una frase."
+                                    }
+                                  ],
+                                  "tracking_id": "cb5aefab-46b8-4a4a-8515-0893af916d78"
+                                },
+                                {
+                                  "role": "assistant",
+                                  "content": [
+                                    {
+                                      "toolUse": {
+                                        "toolUseId": "call_3h4s5jhm",
+                                        "name": "safe_calculate",
+                                        "input": {
+                                          "expression": "17 * 19"
+                                        }
+                                      }
+                                    }
+                                  ],
+                                  "metadata": {
+                                    "usage": {
+                                      "inputTokens": 129,
+                                      "outputTokens": 20,
+                                      "totalTokens": 149,
+                                      "cacheReadInputTokens": 32
+                                    },
+                                    "metrics": {
+                                      "latencyMs": 0,
+                                      "timeToFirstByteMs": 1126
+                                    }
+                                  },
+                                  "tracking_id": "e276f4d0-0514-4196-8524-5d8573ffe5a3"
+                                },
+                                {
+                                  "role": "user",
+                                  "content": [
+                                    {
+                                      "toolResult": {
+                                        "toolUseId": "call_3h4s5jhm",
+                                        "status": "success",
+                                        "content": [
+                                          {
+                                            "text": "{\"expression\": \"17 * 19\", \"normalized_expression\": \"17 * 19\", \"result\": 323, \"verified_by\": \"python-runtime::safe_calculate\"}"
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  ],
+                                  "tracking_id": "3771c2b0-ca58-4a19-8f11-ef4784c1a191"
+                                },
+                                {
+                                  "role": "assistant",
+                                  "content": [
+                                    {
+                                      "text": "El resultado de multiplicar 17 por 19 es 323."
+                                    }
+                                  ],
+                                  "metadata": {
+                                    "usage": {
+                                      "inputTokens": 203,
+                                      "outputTokens": 22,
+                                      "totalTokens": 225,
+                                      "cacheReadInputTokens": 96
+                                    },
+                                    "metrics": {
+                                      "latencyMs": 0,
+                                      "timeToFirstByteMs": 1062
+                                    }
+                                  },
+                                  "tracking_id": "fabb2c85-4c03-4fc1-8beb-aac1607a0999"
+                                }
+                              ],
+                              "raw_responses": [
+                                {
+                                  "role": "assistant",
+                                  "content": [
+                                    {
+                                      "text": "El resultado de multiplicar 17 por 19 es 323."
+                                    }
+                                  ],
+                                  "metadata": {
+                                    "usage": {
+                                      "inputTokens": 203,
+                                      "outputTokens": 22,
+                                      "totalTokens": 225,
+                                      "cacheReadInputTokens": 96
+                                    },
+                                    "metrics": {
+                                      "latencyMs": 0,
+                                      "timeToFirstByteMs": 1062
+                                    }
+                                  },
+                                  "tracking_id": "fabb2c85-4c03-4fc1-8beb-aac1607a0999"
+                                }
+                              ],
+                              "usage": {
+                                "inputTokens": 332,
+                                "outputTokens": 42,
+                                "totalTokens": 374,
+                                "cacheReadInputTokens": 128,
+                                "input_tokens": 332,
+                                "output_tokens": 42,
+                                "total_tokens": 374,
+                                "client_duration_ms": 2192.281,
+                                "requests": 2,
+                                "scheduler": {
+                                  "attempts": 1,
+                                  "retries": 0,
+                                  "timed_out": false,
+                                  "latency_ms": 2862.749
+                                },
+                                "inference_requests": 2,
+                                "tool_calls": 1
+                              },
+                              "engine": "ollama-runtime",
+                              "model": "gemma4:31b-cloud",
+                              "mode": "eval",
+                              "trace_schema_version": "agentic_systems.trace.v1",
+                              "validation": {
+                                "ok": true,
+                                "issues": []
+                              },
+                              "errors": [],
+                              "meta": {
+                                "source_result_type": "AgentResult",
+                                "framework_adapter": "strands",
+                                "input": "Call safe_calculate for this current request: Calcula 17 * 19 usando la calculadora y responde en una frase.",
+                                "stop_reason": "end_turn",
+                                "rejected_tool_calls": [],
+                                "output_materialization": [],
+                                "runtime": {
+                                  "provider": "ollama-runtime",
+                                  "model_id": "gemma4:31b-cloud",
+                                  "region_name": null,
+                                  "endpoint": "https://ollama.com/v1",
+                                  "metadata": {},
+                                  "provider_priority": [
+                                    "openai-runtime",
+                                    "bedrock-runtime",
+                                    "ollama-runtime"
+                                  ],
+                                  "allow_python_fallback": false,
+                                  "scheduler": {
+                                    "max_turns": 5,
+                                    "max_tool_calls": 3,
+                                    "timeout_s": 60,
+                                    "max_concurrency": 1,
+                                    "max_retries": 0,
+                                    "backoff_s": 0.0
+                                  }
+                                },
+                                "scheduler": {
+                                  "max_turns": 5,
+                                  "max_tool_calls": 3,
+                                  "timeout_s": 60,
+                                  "max_concurrency": 1,
+                                  "max_retries": 0,
+                                  "backoff_s": 0.0
+                                },
+                                "scheduler_execution": {
+                                  "scheduler": {
+                                    "max_turns": 5,
+                                    "max_tool_calls": 3,
+                                    "timeout_s": 60,
+                                    "max_concurrency": 1,
+                                    "max_retries": 0,
+                                    "backoff_s": 0.0
+                                  },
+                                  "attempts": 1,
+                                  "retries": 0,
+                                  "timed_out": false,
+                                  "latency_ms": 2862.749
+                                },
+                                "framework": "strands",
+                                "framework_requested": "strands",
+                                "framework_config": {
+                                  "name": "strands",
+                                  "agent_kwargs": {},
+                                  "run_kwargs": {}
+                                },
+                                "agent_name": "calculator",
+                                "requested_engine": "ollama-runtime",
+                                "runtime_engine": "ollama-runtime",
+                                "execution_engine": "ollama-runtime"
+                              },
+                              "execution_id": "run-323861ac2d354e1e889688a022754d96",
+                              "parent_execution_id": "run-bda1504c884049e68ed2a58394edab62",
+                              "children": [],
+                              "tool_events": [
+                                {
+                                  "id": "call_3h4s5jhm",
+                                  "name": "safe_calculate",
+                                  "input": {
+                                    "expression": "17 * 19"
+                                  },
+                                  "output": {
+                                    "expression": "17 * 19",
+                                    "normalized_expression": "17 * 19",
+                                    "result": 323,
+                                    "verified_by": "python-runtime::safe_calculate"
+                                  },
+                                  "ok": true,
+                                  "error": null,
+                                  "duration_ms": null,
+                                  "meta": {
+                                    "source": "strands"
+                                  }
+                                }
+                              ]
+                            }
+                          ],
+                          "tool_events": []
+                        }
+                      ],
+                      "tool_events": []
+                    }
+                  ],
+                  "tool_events": []
+                }
+              ],
+              "tool_events": []
+            },
+            {
+              "text": "El resultado de 17 * 19 es 323.",
+              "final": {
+                "text": "El resultado de 17 * 19 es 323."
+              },
+              "data": {
+                "answer": "El resultado de 17 * 19 es 323.",
+                "provider": "ollama-runtime",
+                "framework": "strands",
+                "history_turns": 1,
+                "response_validation": {
+                  "ok": true,
+                  "repairs": 0
+                }
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {
+                "inputTokens": 426,
+                "outputTokens": 17,
+                "totalTokens": 443,
+                "cacheReadInputTokens": 64,
+                "input_tokens": 426,
+                "output_tokens": 17,
+                "total_tokens": 443,
+                "client_duration_ms": 1013.34,
+                "requests": 1,
+                "inference_requests": 1,
+                "tool_calls": 0
+              },
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "responding",
+                "kind": "agent",
+                "backend": "native",
+                "skills": [],
+                "step": "responding"
+              },
+              "execution_id": "run-c06fae6bc98b424aadc45e44e9af3bde",
+              "parent_execution_id": "run-b45fa082f8634f20bb32e1f085343eed",
+              "children": [
+                {
+                  "text": "El resultado de 17 * 19 es 323.",
+                  "final": {
+                    "text": "El resultado de 17 * 19 es 323."
+                  },
+                  "data": {
+                    "answer": "El resultado de 17 * 19 es 323.",
+                    "provider": "ollama-runtime",
+                    "framework": "strands",
+                    "history_turns": 1,
+                    "response_validation": {
+                      "ok": true,
+                      "repairs": 0
+                    }
+                  },
+                  "ok": true,
+                  "messages": [],
+                  "raw_responses": [],
+                  "usage": {
+                    "inputTokens": 426,
+                    "outputTokens": 17,
+                    "totalTokens": 443,
+                    "cacheReadInputTokens": 64,
+                    "input_tokens": 426,
+                    "output_tokens": 17,
+                    "total_tokens": 443,
+                    "client_duration_ms": 1013.34,
+                    "requests": 1,
+                    "inference_requests": 1,
+                    "tool_calls": 0
+                  },
+                  "engine": "python-runtime",
+                  "model": "",
+                  "mode": "default",
+                  "trace_schema_version": "agentic_systems.trace.v1",
+                  "validation": null,
+                  "errors": [],
+                  "meta": {
+                    "name": "respond",
+                    "kind": "action"
+                  },
+                  "execution_id": "run-3fd8b1942734477382a9b842ad573c94",
+                  "parent_execution_id": "run-c06fae6bc98b424aadc45e44e9af3bde",
+                  "children": [
+                    {
+                      "text": "El resultado de 17 * 19 es 323.",
+                      "final": {
+                        "text": "El resultado de 17 * 19 es 323."
+                      },
+                      "data": {
+                        "answer": "El resultado de 17 * 19 es 323.",
+                        "provider": "ollama-runtime",
+                        "framework": "strands",
+                        "history_turns": 1,
+                        "response_validation": {
+                          "ok": true,
+                          "repairs": 0
+                        }
+                      },
+                      "ok": true,
+                      "messages": [],
+                      "raw_responses": [],
+                      "usage": {
+                        "inputTokens": 426,
+                        "outputTokens": 17,
+                        "totalTokens": 443,
+                        "cacheReadInputTokens": 64,
+                        "input_tokens": 426,
+                        "output_tokens": 17,
+                        "total_tokens": 443,
+                        "client_duration_ms": 1013.34,
+                        "requests": 1,
+                        "inference_requests": 1,
+                        "tool_calls": 0
+                      },
+                      "engine": "python-runtime",
+                      "model": "",
+                      "mode": "default",
+                      "trace_schema_version": "agentic_systems.trace.v1",
+                      "validation": null,
+                      "errors": [],
+                      "meta": {
+                        "name": "answer_attempts",
+                        "kind": "system",
+                        "backend": "native",
+                        "skills": [],
+                        "actions_observed": 1,
+                        "input": {}
+                      },
+                      "execution_id": "run-fbadcfe0124a4ae0a7b9e2db8dcbe0d8",
+                      "parent_execution_id": "run-3fd8b1942734477382a9b842ad573c94",
+                      "children": [
+                        {
+                          "text": "El resultado de 17 * 19 es 323.",
+                          "final": {
+                            "text": "El resultado de 17 * 19 es 323."
+                          },
+                          "data": {
+                            "text": "El resultado de 17 * 19 es 323.\n"
+                          },
+                          "ok": true,
+                          "messages": [],
+                          "raw_responses": [],
+                          "usage": {
+                            "inputTokens": 426,
+                            "outputTokens": 17,
+                            "totalTokens": 443,
+                            "cacheReadInputTokens": 64,
+                            "input_tokens": 426,
+                            "output_tokens": 17,
+                            "total_tokens": 443,
+                            "client_duration_ms": 1013.34,
+                            "requests": 1,
+                            "inference_requests": 1,
+                            "tool_calls": 0
+                          },
+                          "engine": "python-runtime",
+                          "model": "",
+                          "mode": "default",
+                          "trace_schema_version": "agentic_systems.trace.v1",
+                          "validation": null,
+                          "errors": [],
+                          "meta": {
+                            "name": "sequence",
+                            "kind": "sequence",
+                            "backend": "native"
+                          },
+                          "execution_id": "run-b686433163074dba804dae387f460927",
+                          "parent_execution_id": "run-fbadcfe0124a4ae0a7b9e2db8dcbe0d8",
+                          "children": [
+                            {
+                              "text": "El resultado de 17 * 19 es 323.",
+                              "final": {
+                                "text": "El resultado de 17 * 19 es 323."
+                              },
+                              "data": {
+                                "text": "El resultado de 17 * 19 es 323.\n"
+                              },
+                              "ok": true,
+                              "messages": [],
+                              "raw_responses": [],
+                              "usage": {
+                                "inputTokens": 426,
+                                "outputTokens": 17,
+                                "totalTokens": 443,
+                                "cacheReadInputTokens": 64,
+                                "input_tokens": 426,
+                                "output_tokens": 17,
+                                "total_tokens": 443,
+                                "client_duration_ms": 1013.34,
+                                "requests": 1,
+                                "inference_requests": 1,
+                                "tool_calls": 0
+                              },
+                              "engine": "python-runtime",
+                              "model": "",
+                              "mode": "default",
+                              "trace_schema_version": "agentic_systems.trace.v1",
+                              "validation": null,
+                              "errors": [],
+                              "meta": {
+                                "name": "attempt_0",
+                                "kind": "action",
+                                "step": "attempt_0"
+                              },
+                              "execution_id": "run-faa4baf712e4423da073641b44958a49",
+                              "parent_execution_id": "run-b686433163074dba804dae387f460927",
+                              "children": [
+                                {
+                                  "text": "El resultado de 17 * 19 es 323.",
+                                  "final": {
+                                    "text": "El resultado de 17 * 19 es 323."
+                                  },
+                                  "data": {
+                                    "text": "El resultado de 17 * 19 es 323.\n"
+                                  },
+                                  "ok": true,
+                                  "messages": [],
+                                  "raw_responses": [],
+                                  "usage": {
+                                    "inputTokens": 426,
+                                    "outputTokens": 17,
+                                    "totalTokens": 443,
+                                    "cacheReadInputTokens": 64,
+                                    "input_tokens": 426,
+                                    "output_tokens": 17,
+                                    "total_tokens": 443,
+                                    "client_duration_ms": 1013.34,
+                                    "requests": 1,
+                                    "inference_requests": 1,
+                                    "tool_calls": 0
+                                  },
+                                  "engine": "ollama-runtime",
+                                  "model": "gemma4:31b-cloud",
+                                  "mode": "default",
+                                  "trace_schema_version": "agentic_systems.trace.v1",
+                                  "validation": null,
+                                  "errors": [],
+                                  "meta": {
+                                    "name": "assistant",
+                                    "kind": "agent",
+                                    "backend": "native",
+                                    "skills": [
+                                      "studio"
+                                    ],
+                                    "actions_observed": 1,
+                                    "input": "Answer only the current message using this bounded public history and verified evidence. Use the user's language; never reveal private reasoning or invent tool calls. If code is requested, use the supplied SDK signatures exactly.\n{\"history\": [{\"role\": \"assistant\", \"content\": \"Ready. Ask a question or request a verified calculation.\"}], \"history_turns\": 1, \"memory\": {\"kind\": \"bounded-public-history\", \"maximum_messages\": 12, \"maximum_user_characters\": 2000, \"maximum_assistant_characters\": 1200, \"maximum_current_message_characters\": 8000, \"truncated_messages\": 0}, \"policy\": {\"reasoning_is_private\": true, \"no_silent_fallback\": true, \"tools_are_evidence\": true}, \"message\": \"Calcula 17 * 19 usando la calculadora y responde en una frase.\", \"calculation_evidence\": [{\"expression\": \"17 * 19\", \"normalized_expression\": \"17 * 19\", \"result\": 323, \"verified_by\": \"python-runtime::safe_calculate\"}]}"
+                                  },
+                                  "execution_id": "run-fb8437d7ae3248eeb6daf704f579a7b9",
+                                  "parent_execution_id": "run-faa4baf712e4423da073641b44958a49",
+                                  "children": [
+                                    {
+                                      "text": "El resultado de 17 * 19 es 323.",
+                                      "final": {
+                                        "text": "El resultado de 17 * 19 es 323."
+                                      },
+                                      "data": {
+                                        "text": "El resultado de 17 * 19 es 323.\n"
+                                      },
+                                      "ok": true,
+                                      "messages": [],
+                                      "raw_responses": [],
+                                      "usage": {
+                                        "inputTokens": 426,
+                                        "outputTokens": 17,
+                                        "totalTokens": 443,
+                                        "cacheReadInputTokens": 64,
+                                        "input_tokens": 426,
+                                        "output_tokens": 17,
+                                        "total_tokens": 443,
+                                        "client_duration_ms": 1013.34,
+                                        "requests": 1,
+                                        "inference_requests": 1,
+                                        "tool_calls": 0
+                                      },
+                                      "engine": "ollama-runtime",
+                                      "model": "gemma4:31b-cloud",
+                                      "mode": "default",
+                                      "trace_schema_version": "agentic_systems.trace.v1",
+                                      "validation": null,
+                                      "errors": [],
+                                      "meta": {
+                                        "name": "assistant",
+                                        "kind": "model",
+                                        "framework": "strands"
+                                      },
+                                      "execution_id": "run-abeca9632bd24ab4b5a117b26c16ace4",
+                                      "parent_execution_id": "run-fb8437d7ae3248eeb6daf704f579a7b9",
+                                      "children": [
+                                        {
+                                          "text": "El resultado de 17 * 19 es 323.",
+                                          "final": {
+                                            "text": "El resultado de 17 * 19 es 323."
+                                          },
+                                          "data": {
+                                            "text": "El resultado de 17 * 19 es 323.\n"
+                                          },
+                                          "ok": true,
+                                          "messages": [
+                                            {
+                                              "role": "user",
+                                              "content": [
+                                                {
+                                                  "text": "Answer only the current message using this bounded public history and verified evidence. Use the user's language; never reveal private reasoning or invent tool calls. If code is requested, use the supplied SDK signatures exactly.\n{\"history\": [{\"role\": \"assistant\", \"content\": \"Ready. Ask a question or request a verified calculation.\"}], \"history_turns\": 1, \"memory\": {\"kind\": \"bounded-public-history\", \"maximum_messages\": 12, \"maximum_user_characters\": 2000, \"maximum_assistant_characters\": 1200, \"maximum_current_message_characters\": 8000, \"truncated_messages\": 0}, \"policy\": {\"reasoning_is_private\": true, \"no_silent_fallback\": true, \"tools_are_evidence\": true}, \"message\": \"Calcula 17 * 19 usando la calculadora y responde en una frase.\", \"calculation_evidence\": [{\"expression\": \"17 * 19\", \"normalized_expression\": \"17 * 19\", \"result\": 323, \"verified_by\": \"python-runtime::safe_calculate\"}]}"
+                                                }
+                                              ],
+                                              "tracking_id": "2445c398-7ef0-4936-8038-6b7a727ea24d"
+                                            },
+                                            {
+                                              "role": "assistant",
+                                              "content": [
+                                                {
+                                                  "text": "El resultado de 17 * 19 es 323."
+                                                }
+                                              ],
+                                              "metadata": {
+                                                "usage": {
+                                                  "inputTokens": 426,
+                                                  "outputTokens": 17,
+                                                  "totalTokens": 443,
+                                                  "cacheReadInputTokens": 64
+                                                },
+                                                "metrics": {
+                                                  "latencyMs": 0,
+                                                  "timeToFirstByteMs": 1012
+                                                }
+                                              },
+                                              "tracking_id": "525b0e01-c94f-46ff-b25a-581bc1bd0c68"
+                                            }
+                                          ],
+                                          "raw_responses": [
+                                            {
+                                              "role": "assistant",
+                                              "content": [
+                                                {
+                                                  "text": "El resultado de 17 * 19 es 323."
+                                                }
+                                              ],
+                                              "metadata": {
+                                                "usage": {
+                                                  "inputTokens": 426,
+                                                  "outputTokens": 17,
+                                                  "totalTokens": 443,
+                                                  "cacheReadInputTokens": 64
+                                                },
+                                                "metrics": {
+                                                  "latencyMs": 0,
+                                                  "timeToFirstByteMs": 1012
+                                                }
+                                              },
+                                              "tracking_id": "525b0e01-c94f-46ff-b25a-581bc1bd0c68"
+                                            }
+                                          ],
+                                          "usage": {
+                                            "inputTokens": 426,
+                                            "outputTokens": 17,
+                                            "totalTokens": 443,
+                                            "cacheReadInputTokens": 64,
+                                            "input_tokens": 426,
+                                            "output_tokens": 17,
+                                            "total_tokens": 443,
+                                            "client_duration_ms": 1013.34,
+                                            "requests": 1,
+                                            "scheduler": {
+                                              "attempts": 1,
+                                              "retries": 0,
+                                              "timed_out": false,
+                                              "latency_ms": 1027.139
+                                            },
+                                            "inference_requests": 1,
+                                            "tool_calls": 0
+                                          },
+                                          "engine": "ollama-runtime",
+                                          "model": "gemma4:31b-cloud",
+                                          "mode": "eval",
+                                          "trace_schema_version": "agentic_systems.trace.v1",
+                                          "validation": {
+                                            "ok": true,
+                                            "issues": []
+                                          },
+                                          "errors": [],
+                                          "meta": {
+                                            "source_result_type": "AgentResult",
+                                            "framework_adapter": "strands",
+                                            "input": "Answer only the current message using this bounded public history and verified evidence. Use the user's language; never reveal private reasoning or invent tool calls. If code is requested, use the supplied SDK signatures exactly.\n{\"history\": [{\"role\": \"assistant\", \"content\": \"Ready. Ask a question or request a verified calculation.\"}], \"history_turns\": 1, \"memory\": {\"kind\": \"bounded-public-history\", \"maximum_messages\": 12, \"maximum_user_characters\": 2000, \"maximum_assistant_characters\": 1200, \"maximum_current_message_characters\": 8000, \"truncated_messages\": 0}, \"policy\": {\"reasoning_is_private\": true, \"no_silent_fallback\": true, \"tools_are_evidence\": true}, \"message\": \"Calcula 17 * 19 usando la calculadora y responde en una frase.\", \"calculation_evidence\": [{\"expression\": \"17 * 19\", \"normalized_expression\": \"17 * 19\", \"result\": 323, \"verified_by\": \"python-runtime::safe_calculate\"}]}",
+                                            "stop_reason": "end_turn",
+                                            "rejected_tool_calls": [],
+                                            "output_materialization": [],
+                                            "runtime": {
+                                              "provider": "ollama-runtime",
+                                              "model_id": "gemma4:31b-cloud",
+                                              "region_name": null,
+                                              "endpoint": "https://ollama.com/v1",
+                                              "metadata": {},
+                                              "provider_priority": [
+                                                "openai-runtime",
+                                                "bedrock-runtime",
+                                                "ollama-runtime"
+                                              ],
+                                              "allow_python_fallback": false,
+                                              "scheduler": {
+                                                "max_turns": 5,
+                                                "max_tool_calls": 3,
+                                                "timeout_s": 60,
+                                                "max_concurrency": 1,
+                                                "max_retries": 0,
+                                                "backoff_s": 0.0
+                                              }
+                                            },
+                                            "scheduler": {
+                                              "max_turns": 5,
+                                              "max_tool_calls": 3,
+                                              "timeout_s": 60,
+                                              "max_concurrency": 1,
+                                              "max_retries": 0,
+                                              "backoff_s": 0.0
+                                            },
+                                            "scheduler_execution": {
+                                              "scheduler": {
+                                                "max_turns": 5,
+                                                "max_tool_calls": 3,
+                                                "timeout_s": 60,
+                                                "max_concurrency": 1,
+                                                "max_retries": 0,
+                                                "backoff_s": 0.0
+                                              },
+                                              "attempts": 1,
+                                              "retries": 0,
+                                              "timed_out": false,
+                                              "latency_ms": 1027.139
+                                            },
+                                            "framework": "strands",
+                                            "framework_requested": "strands",
+                                            "framework_config": {
+                                              "name": "strands",
+                                              "agent_kwargs": {},
+                                              "run_kwargs": {}
+                                            },
+                                            "agent_name": "assistant",
+                                            "requested_engine": "ollama-runtime",
+                                            "runtime_engine": "ollama-runtime",
+                                            "execution_engine": "ollama-runtime"
+                                          },
+                                          "execution_id": "run-d3523cdf62664195b5b844ae3d8fb429",
+                                          "parent_execution_id": "run-abeca9632bd24ab4b5a117b26c16ace4",
+                                          "children": [],
+                                          "tool_events": []
+                                        }
+                                      ],
+                                      "tool_events": []
+                                    }
+                                  ],
+                                  "tool_events": []
+                                }
+                              ],
+                              "tool_events": []
+                            }
+                          ],
+                          "tool_events": []
+                        }
+                      ],
+                      "tool_events": []
+                    }
+                  ],
+                  "tool_events": []
+                }
+              ],
+              "tool_events": []
+            }
+          ],
+          "tool_events": []
+        }
+      ],
+      "tool_events": []
+    }
+  },
+  "elapsed_s": 5.679
+}

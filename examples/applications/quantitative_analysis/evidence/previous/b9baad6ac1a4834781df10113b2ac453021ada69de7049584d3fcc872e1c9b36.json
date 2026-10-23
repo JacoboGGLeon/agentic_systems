@@ -1,0 +1,266 @@
+{
+  "example": "quantitative_analysis",
+  "example_passed": true,
+  "source_sha256": "d5b11562f98b9e9cf626b7c51257d82698fdfdad87c955d7706ffd9d1fb31736",
+  "inference_requests": 0,
+  "scope": "offline contract or configuration; no model-generation/semantic/IAM/GPU certification",
+  "output": {
+    "text": "",
+    "final": {
+      "revenue": "120.30",
+      "cost": "70.05",
+      "profit": "50.25"
+    },
+    "data": {
+      "revenue": "120.30",
+      "cost": "70.05",
+      "profit": "50.25"
+    },
+    "ok": true,
+    "messages": [],
+    "raw_responses": [],
+    "usage": {
+      "requests": 1,
+      "inference_requests": 0,
+      "tool_calls": 1
+    },
+    "engine": "python-runtime",
+    "model": "",
+    "mode": "default",
+    "trace_schema_version": "agentic_systems.trace.v1",
+    "validation": null,
+    "errors": [],
+    "meta": {
+      "name": "application",
+      "kind": "system",
+      "backend": "native",
+      "skills": [],
+      "actions_observed": 1,
+      "input": {
+        "input": {
+          "rows": [
+            {
+              "revenue": "100.10",
+              "cost": "60.05"
+            },
+            {
+              "revenue": "20.20",
+              "cost": "10.00"
+            }
+          ]
+        }
+      }
+    },
+    "execution_id": "run-07f990a0c5eb40c98769fd28f550bd27",
+    "parent_execution_id": null,
+    "children": [
+      {
+        "text": "",
+        "final": {
+          "revenue": "120.30",
+          "cost": "70.05",
+          "profit": "50.25"
+        },
+        "data": {
+          "revenue": "120.30",
+          "cost": "70.05",
+          "profit": "50.25"
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "sequence",
+          "kind": "sequence",
+          "backend": "native"
+        },
+        "execution_id": "run-cc1012c1f454493c8ad22634aac3766d",
+        "parent_execution_id": "run-07f990a0c5eb40c98769fd28f550bd27",
+        "children": [
+          {
+            "text": "",
+            "final": {
+              "revenue": "120.30",
+              "cost": "70.05",
+              "profit": "50.25"
+            },
+            "data": {
+              "revenue": "120.30",
+              "cost": "70.05",
+              "profit": "50.25"
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 1,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "worker",
+              "kind": "agent",
+              "backend": "native",
+              "skills": [
+                "profit"
+              ],
+              "step": "worker"
+            },
+            "execution_id": "run-0cd97b2b9fa04aa2abbc9e5fa151eb76",
+            "parent_execution_id": "run-cc1012c1f454493c8ad22634aac3766d",
+            "children": [
+              {
+                "text": "",
+                "final": {
+                  "revenue": "120.30",
+                  "cost": "70.05",
+                  "profit": "50.25"
+                },
+                "data": {
+                  "revenue": "120.30",
+                  "cost": "70.05",
+                  "profit": "50.25"
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "requests": 1,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "profit",
+                  "kind": "action"
+                },
+                "execution_id": "run-6681d7ef75c84165846c160d472e739f",
+                "parent_execution_id": "run-0cd97b2b9fa04aa2abbc9e5fa151eb76",
+                "children": [
+                  {
+                    "text": "",
+                    "final": {
+                      "revenue": "120.30",
+                      "cost": "70.05",
+                      "profit": "50.25"
+                    },
+                    "data": {
+                      "revenue": "120.30",
+                      "cost": "70.05",
+                      "profit": "50.25"
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "requests": 1,
+                      "inference_requests": 0,
+                      "tool_calls": 1
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "tool",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "tool_name": "",
+                      "input": {
+                        "input": {
+                          "rows": [
+                            {
+                              "revenue": "100.10",
+                              "cost": "60.05"
+                            },
+                            {
+                              "revenue": "20.20",
+                              "cost": "10.00"
+                            }
+                          ]
+                        }
+                      },
+                      "tool_input": {
+                        "input": {
+                          "rows": [
+                            {
+                              "revenue": "100.10",
+                              "cost": "60.05"
+                            },
+                            {
+                              "revenue": "20.20",
+                              "cost": "10.00"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "execution_id": "run-731f682a37fb46d0ad18dd99ec4d3816",
+                    "parent_execution_id": "run-6681d7ef75c84165846c160d472e739f",
+                    "children": [],
+                    "tool_events": [
+                      {
+                        "id": "tool-ab02e9c9cb2d4b6892804a974f6d9cea",
+                        "name": "profit",
+                        "input": {
+                          "input": {
+                            "rows": [
+                              {
+                                "revenue": "100.10",
+                                "cost": "60.05"
+                              },
+                              {
+                                "revenue": "20.20",
+                                "cost": "10.00"
+                              }
+                            ]
+                          }
+                        },
+                        "output": {
+                          "data": {
+                            "revenue": "120.30",
+                            "cost": "70.05",
+                            "profit": "50.25"
+                          }
+                        },
+                        "ok": true,
+                        "error": null,
+                        "duration_ms": null,
+                        "meta": {}
+                      }
+                    ]
+                  }
+                ],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      }
+    ],
+    "tool_events": []
+  }
+}

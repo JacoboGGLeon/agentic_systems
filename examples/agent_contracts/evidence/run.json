@@ -1,0 +1,2353 @@
+{
+  "example": "agent_contracts",
+  "passed": true,
+  "source_sha256": "7691b8ed3eda45b4e3aab4afdfbb5408866d305101fa45a11f3e3039c0221780",
+  "report": {
+    "input": {
+      "value": 7
+    },
+    "process": "Required Tool + actor budget + portable JSON Schema validation",
+    "output": [
+      {
+        "framework": "native",
+        "positive": {
+          "text": "echo -> {\"value\": 7}",
+          "final": {
+            "value": 7,
+            "ok": true,
+            "tool": "echo"
+          },
+          "data": {
+            "value": 7,
+            "ok": true,
+            "tool": "echo"
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {
+            "client_duration_ms": 1.046,
+            "inference_requests": 0,
+            "tool_calls": 1
+          },
+          "engine": "python-runtime",
+          "model": "python-runtime",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "structured_operator",
+            "kind": "agent",
+            "backend": "native",
+            "skills": [
+              "echo"
+            ],
+            "actions_observed": 1,
+            "input": {
+              "tool": "echo",
+              "input": {
+                "value": 7
+              }
+            }
+          },
+          "execution_id": "run-4b316526f0894b8081326ef389bcf34d",
+          "parent_execution_id": null,
+          "children": [
+            {
+              "text": "echo -> {\"value\": 7}",
+              "final": {
+                "value": 7,
+                "ok": true,
+                "tool": "echo"
+              },
+              "data": {
+                "value": 7,
+                "ok": true,
+                "tool": "echo"
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {
+                "client_duration_ms": 1.046,
+                "inference_requests": 0,
+                "tool_calls": 1
+              },
+              "engine": "python-runtime",
+              "model": "python-runtime",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "structured_operator",
+                "kind": "model",
+                "framework": "native"
+              },
+              "execution_id": "run-4aec93f69f0c422dab2fd5d97c675e10",
+              "parent_execution_id": "run-4b316526f0894b8081326ef389bcf34d",
+              "children": [
+                {
+                  "text": "echo -> {\"value\": 7}",
+                  "final": {
+                    "value": 7,
+                    "ok": true,
+                    "tool": "echo"
+                  },
+                  "data": {
+                    "value": 7,
+                    "ok": true,
+                    "tool": "echo"
+                  },
+                  "ok": true,
+                  "messages": [],
+                  "raw_responses": [],
+                  "usage": {
+                    "scheduler": {
+                      "attempts": 1,
+                      "retries": 0,
+                      "timed_out": false,
+                      "latency_ms": 1.046
+                    },
+                    "client_duration_ms": 1.046,
+                    "inference_requests": 0,
+                    "tool_calls": 1
+                  },
+                  "engine": "python-runtime",
+                  "model": "python-runtime",
+                  "mode": "eval",
+                  "trace_schema_version": "agentic_systems.trace.v1",
+                  "validation": {
+                    "ok": true,
+                    "issues": []
+                  },
+                  "errors": [],
+                  "meta": {
+                    "source_result_type": "PythonRuntimeProvider",
+                    "agent_name": "structured_operator",
+                    "tool_count": 1,
+                    "planned_tool_calls": 1,
+                    "runtime": {
+                      "provider": "python-runtime",
+                      "model_id": "python-runtime",
+                      "region_name": null,
+                      "endpoint": null,
+                      "metadata": {},
+                      "provider_priority": [
+                        "openai-runtime",
+                        "bedrock-runtime",
+                        "ollama-runtime"
+                      ],
+                      "allow_python_fallback": false,
+                      "scheduler": {
+                        "max_turns": 8,
+                        "max_tool_calls": 2,
+                        "timeout_s": 60.0,
+                        "max_concurrency": 1,
+                        "max_retries": 0,
+                        "backoff_s": 0.0
+                      }
+                    },
+                    "scheduler": {
+                      "max_turns": 8,
+                      "max_tool_calls": 2,
+                      "timeout_s": 60.0,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    },
+                    "scheduler_execution": {
+                      "scheduler": {
+                        "max_turns": 8,
+                        "max_tool_calls": 2,
+                        "timeout_s": 60.0,
+                        "max_concurrency": 1,
+                        "max_retries": 0,
+                        "backoff_s": 0.0
+                      },
+                      "attempts": 1,
+                      "retries": 0,
+                      "timed_out": false,
+                      "latency_ms": 1.046
+                    },
+                    "framework": "native",
+                    "framework_requested": "native",
+                    "framework_adapter": "native",
+                    "framework_config": {
+                      "name": "native",
+                      "agent_kwargs": {},
+                      "run_kwargs": {}
+                    },
+                    "input": {
+                      "tool": "echo",
+                      "input": {
+                        "value": 7
+                      }
+                    },
+                    "requested_engine": "python-runtime",
+                    "runtime_engine": "python-runtime",
+                    "execution_engine": "python-runtime"
+                  },
+                  "execution_id": "run-2a3770554f9e467c835338dcfdda6164",
+                  "parent_execution_id": "run-4aec93f69f0c422dab2fd5d97c675e10",
+                  "children": [],
+                  "tool_events": [
+                    {
+                      "id": "tool-e55c208b806c493c808e47c1d721874b",
+                      "name": "echo",
+                      "input": {
+                        "value": 7
+                      },
+                      "output": {
+                        "data": {
+                          "value": 7
+                        }
+                      },
+                      "ok": true,
+                      "error": null,
+                      "duration_ms": null,
+                      "meta": {}
+                    }
+                  ]
+                }
+              ],
+              "tool_events": []
+            }
+          ],
+          "tool_events": []
+        },
+        "negative": {
+          "text": "echo -> {\"value\": \"not-an-integer\"}",
+          "final": {
+            "value": "not-an-integer",
+            "ok": true,
+            "tool": "echo"
+          },
+          "data": {
+            "value": "not-an-integer",
+            "ok": true,
+            "tool": "echo"
+          },
+          "ok": false,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {
+            "client_duration_ms": 0.818,
+            "inference_requests": 0,
+            "tool_calls": 1
+          },
+          "engine": "python-runtime",
+          "model": "python-runtime",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [
+            {
+              "code": "output_schema_mismatch",
+              "message": "'not-an-integer' is not of type 'integer'",
+              "path": [
+                "value"
+              ]
+            }
+          ],
+          "meta": {
+            "name": "structured_operator",
+            "kind": "agent",
+            "backend": "native",
+            "skills": [
+              "echo"
+            ],
+            "actions_observed": 1,
+            "input": {
+              "tool": "echo",
+              "input": {
+                "value": "not-an-integer"
+              }
+            }
+          },
+          "execution_id": "run-4cb0f371da84417d835f18da5bc386e4",
+          "parent_execution_id": null,
+          "children": [
+            {
+              "text": "echo -> {\"value\": \"not-an-integer\"}",
+              "final": {
+                "value": "not-an-integer",
+                "ok": true,
+                "tool": "echo"
+              },
+              "data": {
+                "value": "not-an-integer",
+                "ok": true,
+                "tool": "echo"
+              },
+              "ok": false,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {
+                "client_duration_ms": 0.818,
+                "inference_requests": 0,
+                "tool_calls": 1
+              },
+              "engine": "python-runtime",
+              "model": "python-runtime",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [
+                {
+                  "code": "output_schema_mismatch",
+                  "message": "'not-an-integer' is not of type 'integer'",
+                  "path": [
+                    "value"
+                  ]
+                }
+              ],
+              "meta": {
+                "name": "structured_operator",
+                "kind": "model",
+                "framework": "native"
+              },
+              "execution_id": "run-ae48bbe918e24effba98800e9f8b9e1c",
+              "parent_execution_id": "run-4cb0f371da84417d835f18da5bc386e4",
+              "children": [
+                {
+                  "text": "echo -> {\"value\": \"not-an-integer\"}",
+                  "final": {
+                    "value": "not-an-integer",
+                    "ok": true,
+                    "tool": "echo"
+                  },
+                  "data": {
+                    "value": "not-an-integer",
+                    "ok": true,
+                    "tool": "echo"
+                  },
+                  "ok": false,
+                  "messages": [],
+                  "raw_responses": [],
+                  "usage": {
+                    "scheduler": {
+                      "attempts": 1,
+                      "retries": 0,
+                      "timed_out": false,
+                      "latency_ms": 0.818
+                    },
+                    "client_duration_ms": 0.818,
+                    "inference_requests": 0,
+                    "tool_calls": 1
+                  },
+                  "engine": "python-runtime",
+                  "model": "python-runtime",
+                  "mode": "eval",
+                  "trace_schema_version": "agentic_systems.trace.v1",
+                  "validation": {
+                    "ok": false,
+                    "issues": [
+                      {
+                        "code": "output_schema_mismatch",
+                        "message": "'not-an-integer' is not of type 'integer'",
+                        "path": [
+                          "value"
+                        ]
+                      }
+                    ]
+                  },
+                  "errors": [
+                    {
+                      "code": "output_schema_mismatch",
+                      "message": "'not-an-integer' is not of type 'integer'",
+                      "path": [
+                        "value"
+                      ]
+                    }
+                  ],
+                  "meta": {
+                    "source_result_type": "PythonRuntimeProvider",
+                    "agent_name": "structured_operator",
+                    "tool_count": 1,
+                    "planned_tool_calls": 1,
+                    "runtime": {
+                      "provider": "python-runtime",
+                      "model_id": "python-runtime",
+                      "region_name": null,
+                      "endpoint": null,
+                      "metadata": {},
+                      "provider_priority": [
+                        "openai-runtime",
+                        "bedrock-runtime",
+                        "ollama-runtime"
+                      ],
+                      "allow_python_fallback": false,
+                      "scheduler": {
+                        "max_turns": 8,
+                        "max_tool_calls": 2,
+                        "timeout_s": 60.0,
+                        "max_concurrency": 1,
+                        "max_retries": 0,
+                        "backoff_s": 0.0
+                      }
+                    },
+                    "scheduler": {
+                      "max_turns": 8,
+                      "max_tool_calls": 2,
+                      "timeout_s": 60.0,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    },
+                    "scheduler_execution": {
+                      "scheduler": {
+                        "max_turns": 8,
+                        "max_tool_calls": 2,
+                        "timeout_s": 60.0,
+                        "max_concurrency": 1,
+                        "max_retries": 0,
+                        "backoff_s": 0.0
+                      },
+                      "attempts": 1,
+                      "retries": 0,
+                      "timed_out": false,
+                      "latency_ms": 0.818
+                    },
+                    "framework": "native",
+                    "framework_requested": "native",
+                    "framework_adapter": "native",
+                    "framework_config": {
+                      "name": "native",
+                      "agent_kwargs": {},
+                      "run_kwargs": {}
+                    },
+                    "input": {
+                      "tool": "echo",
+                      "input": {
+                        "value": "not-an-integer"
+                      }
+                    },
+                    "requested_engine": "python-runtime",
+                    "runtime_engine": "python-runtime",
+                    "execution_engine": "python-runtime"
+                  },
+                  "execution_id": "run-2d0893ae4fe74d2890f53f8328b3e776",
+                  "parent_execution_id": "run-ae48bbe918e24effba98800e9f8b9e1c",
+                  "children": [],
+                  "tool_events": [
+                    {
+                      "id": "tool-200a4773aab14e598123eb44ba113329",
+                      "name": "echo",
+                      "input": {
+                        "value": "not-an-integer"
+                      },
+                      "output": {
+                        "data": {
+                          "value": "not-an-integer"
+                        }
+                      },
+                      "ok": true,
+                      "error": null,
+                      "duration_ms": null,
+                      "meta": {}
+                    }
+                  ]
+                }
+              ],
+              "tool_events": []
+            }
+          ],
+          "tool_events": []
+        }
+      },
+      {
+        "framework": "langgraph",
+        "positive": {
+          "text": "echo -> {\"value\": 7}",
+          "final": {
+            "value": 7,
+            "ok": true,
+            "tool": "echo"
+          },
+          "data": {
+            "value": 7,
+            "ok": true,
+            "tool": "echo"
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {
+            "client_duration_ms": 3.495,
+            "inference_requests": 0,
+            "tool_calls": 1
+          },
+          "engine": "python-runtime",
+          "model": "python-runtime",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "structured_operator",
+            "kind": "agent",
+            "backend": "native",
+            "skills": [
+              "echo"
+            ],
+            "actions_observed": 1,
+            "input": {
+              "tool": "echo",
+              "input": {
+                "value": 7
+              }
+            }
+          },
+          "execution_id": "run-7c304a6d106f4f918afe65177aa62003",
+          "parent_execution_id": null,
+          "children": [
+            {
+              "text": "echo -> {\"value\": 7}",
+              "final": {
+                "value": 7,
+                "ok": true,
+                "tool": "echo"
+              },
+              "data": {
+                "value": 7,
+                "ok": true,
+                "tool": "echo"
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {
+                "client_duration_ms": 3.495,
+                "inference_requests": 0,
+                "tool_calls": 1
+              },
+              "engine": "python-runtime",
+              "model": "python-runtime",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "structured_operator",
+                "kind": "model",
+                "framework": "langgraph"
+              },
+              "execution_id": "run-5007341164154e8a8ed4ddaa284159eb",
+              "parent_execution_id": "run-7c304a6d106f4f918afe65177aa62003",
+              "children": [
+                {
+                  "text": "echo -> {\"value\": 7}",
+                  "final": {
+                    "value": 7,
+                    "ok": true,
+                    "tool": "echo"
+                  },
+                  "data": {
+                    "value": 7,
+                    "ok": true,
+                    "tool": "echo"
+                  },
+                  "ok": true,
+                  "messages": [],
+                  "raw_responses": [],
+                  "usage": {
+                    "scheduler": {
+                      "attempts": 1,
+                      "retries": 0,
+                      "timed_out": false,
+                      "latency_ms": 3.495
+                    },
+                    "client_duration_ms": 3.495,
+                    "inference_requests": 0,
+                    "tool_calls": 1
+                  },
+                  "engine": "python-runtime",
+                  "model": "python-runtime",
+                  "mode": "eval",
+                  "trace_schema_version": "agentic_systems.trace.v1",
+                  "validation": {
+                    "ok": true,
+                    "issues": []
+                  },
+                  "errors": [],
+                  "meta": {
+                    "source_result_type": "PythonRuntimeProvider",
+                    "agent_name": "structured_operator",
+                    "tool_count": 1,
+                    "planned_tool_calls": 1,
+                    "framework_adapter": "langgraph",
+                    "runtime": {
+                      "provider": "python-runtime",
+                      "model_id": "python-runtime",
+                      "region_name": null,
+                      "endpoint": null,
+                      "metadata": {},
+                      "provider_priority": [
+                        "openai-runtime",
+                        "bedrock-runtime",
+                        "ollama-runtime"
+                      ],
+                      "allow_python_fallback": false,
+                      "scheduler": {
+                        "max_turns": 8,
+                        "max_tool_calls": 2,
+                        "timeout_s": 60.0,
+                        "max_concurrency": 1,
+                        "max_retries": 0,
+                        "backoff_s": 0.0
+                      }
+                    },
+                    "scheduler": {
+                      "max_turns": 8,
+                      "max_tool_calls": 2,
+                      "timeout_s": 60.0,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    },
+                    "scheduler_execution": {
+                      "scheduler": {
+                        "max_turns": 8,
+                        "max_tool_calls": 2,
+                        "timeout_s": 60.0,
+                        "max_concurrency": 1,
+                        "max_retries": 0,
+                        "backoff_s": 0.0
+                      },
+                      "attempts": 1,
+                      "retries": 0,
+                      "timed_out": false,
+                      "latency_ms": 3.495
+                    },
+                    "framework": "langgraph",
+                    "framework_requested": "langgraph",
+                    "framework_config": {
+                      "name": "langgraph",
+                      "agent_kwargs": {},
+                      "run_kwargs": {}
+                    },
+                    "input": {
+                      "tool": "echo",
+                      "input": {
+                        "value": 7
+                      }
+                    },
+                    "requested_engine": "python-runtime",
+                    "runtime_engine": "python-runtime",
+                    "execution_engine": "python-runtime"
+                  },
+                  "execution_id": "run-a3696fe29e3d4ad7a58571212d333f63",
+                  "parent_execution_id": "run-5007341164154e8a8ed4ddaa284159eb",
+                  "children": [],
+                  "tool_events": [
+                    {
+                      "id": "tool-3600d3d76c3c4b299e827730bd6e9789",
+                      "name": "echo",
+                      "input": {
+                        "value": 7
+                      },
+                      "output": {
+                        "data": {
+                          "value": 7
+                        }
+                      },
+                      "ok": true,
+                      "error": null,
+                      "duration_ms": null,
+                      "meta": {}
+                    }
+                  ]
+                }
+              ],
+              "tool_events": []
+            }
+          ],
+          "tool_events": []
+        },
+        "negative": {
+          "text": "echo -> {\"value\": \"not-an-integer\"}",
+          "final": {
+            "value": "not-an-integer",
+            "ok": true,
+            "tool": "echo"
+          },
+          "data": {
+            "value": "not-an-integer",
+            "ok": true,
+            "tool": "echo"
+          },
+          "ok": false,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {
+            "client_duration_ms": 3.455,
+            "inference_requests": 0,
+            "tool_calls": 1
+          },
+          "engine": "python-runtime",
+          "model": "python-runtime",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [
+            {
+              "code": "output_schema_mismatch",
+              "message": "'not-an-integer' is not of type 'integer'",
+              "path": [
+                "value"
+              ]
+            }
+          ],
+          "meta": {
+            "name": "structured_operator",
+            "kind": "agent",
+            "backend": "native",
+            "skills": [
+              "echo"
+            ],
+            "actions_observed": 1,
+            "input": {
+              "tool": "echo",
+              "input": {
+                "value": "not-an-integer"
+              }
+            }
+          },
+          "execution_id": "run-703ada5ac65343b5a3901ca7853c0216",
+          "parent_execution_id": null,
+          "children": [
+            {
+              "text": "echo -> {\"value\": \"not-an-integer\"}",
+              "final": {
+                "value": "not-an-integer",
+                "ok": true,
+                "tool": "echo"
+              },
+              "data": {
+                "value": "not-an-integer",
+                "ok": true,
+                "tool": "echo"
+              },
+              "ok": false,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {
+                "client_duration_ms": 3.455,
+                "inference_requests": 0,
+                "tool_calls": 1
+              },
+              "engine": "python-runtime",
+              "model": "python-runtime",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [
+                {
+                  "code": "output_schema_mismatch",
+                  "message": "'not-an-integer' is not of type 'integer'",
+                  "path": [
+                    "value"
+                  ]
+                }
+              ],
+              "meta": {
+                "name": "structured_operator",
+                "kind": "model",
+                "framework": "langgraph"
+              },
+              "execution_id": "run-d8771240a8294966ba46daa3683d848e",
+              "parent_execution_id": "run-703ada5ac65343b5a3901ca7853c0216",
+              "children": [
+                {
+                  "text": "echo -> {\"value\": \"not-an-integer\"}",
+                  "final": {
+                    "value": "not-an-integer",
+                    "ok": true,
+                    "tool": "echo"
+                  },
+                  "data": {
+                    "value": "not-an-integer",
+                    "ok": true,
+                    "tool": "echo"
+                  },
+                  "ok": false,
+                  "messages": [],
+                  "raw_responses": [],
+                  "usage": {
+                    "scheduler": {
+                      "attempts": 1,
+                      "retries": 0,
+                      "timed_out": false,
+                      "latency_ms": 3.455
+                    },
+                    "client_duration_ms": 3.455,
+                    "inference_requests": 0,
+                    "tool_calls": 1
+                  },
+                  "engine": "python-runtime",
+                  "model": "python-runtime",
+                  "mode": "eval",
+                  "trace_schema_version": "agentic_systems.trace.v1",
+                  "validation": {
+                    "ok": false,
+                    "issues": [
+                      {
+                        "code": "output_schema_mismatch",
+                        "message": "'not-an-integer' is not of type 'integer'",
+                        "path": [
+                          "value"
+                        ]
+                      }
+                    ]
+                  },
+                  "errors": [
+                    {
+                      "code": "output_schema_mismatch",
+                      "message": "'not-an-integer' is not of type 'integer'",
+                      "path": [
+                        "value"
+                      ]
+                    }
+                  ],
+                  "meta": {
+                    "source_result_type": "PythonRuntimeProvider",
+                    "agent_name": "structured_operator",
+                    "tool_count": 1,
+                    "planned_tool_calls": 1,
+                    "framework_adapter": "langgraph",
+                    "runtime": {
+                      "provider": "python-runtime",
+                      "model_id": "python-runtime",
+                      "region_name": null,
+                      "endpoint": null,
+                      "metadata": {},
+                      "provider_priority": [
+                        "openai-runtime",
+                        "bedrock-runtime",
+                        "ollama-runtime"
+                      ],
+                      "allow_python_fallback": false,
+                      "scheduler": {
+                        "max_turns": 8,
+                        "max_tool_calls": 2,
+                        "timeout_s": 60.0,
+                        "max_concurrency": 1,
+                        "max_retries": 0,
+                        "backoff_s": 0.0
+                      }
+                    },
+                    "scheduler": {
+                      "max_turns": 8,
+                      "max_tool_calls": 2,
+                      "timeout_s": 60.0,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    },
+                    "scheduler_execution": {
+                      "scheduler": {
+                        "max_turns": 8,
+                        "max_tool_calls": 2,
+                        "timeout_s": 60.0,
+                        "max_concurrency": 1,
+                        "max_retries": 0,
+                        "backoff_s": 0.0
+                      },
+                      "attempts": 1,
+                      "retries": 0,
+                      "timed_out": false,
+                      "latency_ms": 3.455
+                    },
+                    "framework": "langgraph",
+                    "framework_requested": "langgraph",
+                    "framework_config": {
+                      "name": "langgraph",
+                      "agent_kwargs": {},
+                      "run_kwargs": {}
+                    },
+                    "input": {
+                      "tool": "echo",
+                      "input": {
+                        "value": "not-an-integer"
+                      }
+                    },
+                    "requested_engine": "python-runtime",
+                    "runtime_engine": "python-runtime",
+                    "execution_engine": "python-runtime"
+                  },
+                  "execution_id": "run-36e23039640f46ac861e062b822e0fca",
+                  "parent_execution_id": "run-d8771240a8294966ba46daa3683d848e",
+                  "children": [],
+                  "tool_events": [
+                    {
+                      "id": "tool-c27ef675b528407b9990110421f4a81c",
+                      "name": "echo",
+                      "input": {
+                        "value": "not-an-integer"
+                      },
+                      "output": {
+                        "data": {
+                          "value": "not-an-integer"
+                        }
+                      },
+                      "ok": true,
+                      "error": null,
+                      "duration_ms": null,
+                      "meta": {}
+                    }
+                  ]
+                }
+              ],
+              "tool_events": []
+            }
+          ],
+          "tool_events": []
+        }
+      },
+      {
+        "framework": "openai-agents",
+        "positive": {
+          "text": "{\"value\": 7}",
+          "final": {
+            "value": 7
+          },
+          "data": {
+            "value": 7
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {
+            "requests": 2,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "total_tokens": 0,
+            "client_duration_ms": 9.667,
+            "inference_requests": 0,
+            "tool_calls": 1
+          },
+          "engine": "python-runtime",
+          "model": "python-runtime",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "structured_operator",
+            "kind": "agent",
+            "backend": "native",
+            "skills": [
+              "echo"
+            ],
+            "actions_observed": 1,
+            "input": {
+              "tool": "echo",
+              "input": {
+                "value": 7
+              }
+            }
+          },
+          "execution_id": "run-be1a3dc5765c47e0858c1e000c966990",
+          "parent_execution_id": null,
+          "children": [
+            {
+              "text": "{\"value\": 7}",
+              "final": {
+                "value": 7
+              },
+              "data": {
+                "value": 7
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {
+                "requests": 2,
+                "input_tokens": 0,
+                "output_tokens": 0,
+                "total_tokens": 0,
+                "client_duration_ms": 9.667,
+                "inference_requests": 0,
+                "tool_calls": 1
+              },
+              "engine": "python-runtime",
+              "model": "python-runtime",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "structured_operator",
+                "kind": "model",
+                "framework": "openai-agents"
+              },
+              "execution_id": "run-8671735eeae9420a83e2bbe1ebffebc5",
+              "parent_execution_id": "run-be1a3dc5765c47e0858c1e000c966990",
+              "children": [
+                {
+                  "text": "{\"value\": 7}",
+                  "final": {
+                    "value": 7
+                  },
+                  "data": {
+                    "value": 7
+                  },
+                  "ok": true,
+                  "messages": [
+                    {
+                      "content": "{\"tool\": \"echo\", \"input\": {\"value\": 7}}",
+                      "role": "user"
+                    },
+                    {
+                      "arguments": "{\"value\": 7}",
+                      "call_id": "call_2152b6b55e2c4ffb97c82fe82fbb1e09",
+                      "name": "echo",
+                      "type": "function_call"
+                    },
+                    {
+                      "call_id": "call_2152b6b55e2c4ffb97c82fe82fbb1e09",
+                      "output": "{'value': 7}",
+                      "type": "function_call_output"
+                    },
+                    {
+                      "id": "msg_ab6365cb46cc471ea747e1a3fa9b8e71",
+                      "content": [
+                        {
+                          "annotations": [],
+                          "text": "{\"value\": 7}",
+                          "type": "output_text"
+                        }
+                      ],
+                      "role": "assistant",
+                      "status": "completed",
+                      "type": "message"
+                    }
+                  ],
+                  "raw_responses": [
+                    {
+                      "output": [
+                        {
+                          "arguments": "{\"value\": 7}",
+                          "call_id": "call_2152b6b55e2c4ffb97c82fe82fbb1e09",
+                          "name": "echo",
+                          "type": "function_call",
+                          "id": null,
+                          "caller": null,
+                          "namespace": null,
+                          "status": null
+                        }
+                      ],
+                      "usage": {
+                        "requests": 1,
+                        "input_tokens": 0,
+                        "input_tokens_details": {
+                          "cache_write_tokens": 0,
+                          "cached_tokens": 0
+                        },
+                        "output_tokens": 0,
+                        "output_tokens_details": {
+                          "reasoning_tokens": 0
+                        },
+                        "total_tokens": 0,
+                        "request_usage_entries": []
+                      },
+                      "response_id": "python_b5733585ca0b4bbdaee5238ea937cd46",
+                      "request_id": null
+                    },
+                    {
+                      "output": [
+                        {
+                          "id": "msg_ab6365cb46cc471ea747e1a3fa9b8e71",
+                          "content": [
+                            {
+                              "annotations": [],
+                              "text": "{\"value\": 7}",
+                              "type": "output_text",
+                              "logprobs": null
+                            }
+                          ],
+                          "role": "assistant",
+                          "status": "completed",
+                          "type": "message",
+                          "phase": null
+                        }
+                      ],
+                      "usage": {
+                        "requests": 1,
+                        "input_tokens": 0,
+                        "input_tokens_details": {
+                          "cache_write_tokens": 0,
+                          "cached_tokens": 0
+                        },
+                        "output_tokens": 0,
+                        "output_tokens_details": {
+                          "reasoning_tokens": 0
+                        },
+                        "total_tokens": 0,
+                        "request_usage_entries": []
+                      },
+                      "response_id": "response_f22aaeb242794f2e8a86af605066526d",
+                      "request_id": null
+                    }
+                  ],
+                  "usage": {
+                    "requests": 2,
+                    "input_tokens": 0,
+                    "input_tokens_details": {
+                      "cache_write_tokens": 0,
+                      "cached_tokens": 0
+                    },
+                    "output_tokens": 0,
+                    "output_tokens_details": {
+                      "reasoning_tokens": 0
+                    },
+                    "total_tokens": 0,
+                    "request_usage_entries": [],
+                    "scheduler": {
+                      "attempts": 1,
+                      "retries": 0,
+                      "timed_out": false,
+                      "latency_ms": 9.667
+                    },
+                    "client_duration_ms": 9.667,
+                    "inference_requests": 0,
+                    "tool_calls": 1
+                  },
+                  "engine": "python-runtime",
+                  "model": "python-runtime",
+                  "mode": "eval",
+                  "trace_schema_version": "agentic_systems.trace.v1",
+                  "validation": {
+                    "ok": true,
+                    "issues": []
+                  },
+                  "errors": [],
+                  "meta": {
+                    "source_result_type": "RunResult",
+                    "framework_adapter": "openai-agents",
+                    "input": {
+                      "tool": "echo",
+                      "input": {
+                        "value": 7
+                      }
+                    },
+                    "rejected_tool_calls": [],
+                    "runtime": {
+                      "provider": "python-runtime",
+                      "model_id": "python-runtime",
+                      "region_name": null,
+                      "endpoint": null,
+                      "metadata": {},
+                      "provider_priority": [
+                        "openai-runtime",
+                        "bedrock-runtime",
+                        "ollama-runtime"
+                      ],
+                      "allow_python_fallback": false,
+                      "scheduler": {
+                        "max_turns": 8,
+                        "max_tool_calls": 2,
+                        "timeout_s": 60.0,
+                        "max_concurrency": 1,
+                        "max_retries": 0,
+                        "backoff_s": 0.0
+                      }
+                    },
+                    "scheduler": {
+                      "max_turns": 8,
+                      "max_tool_calls": 2,
+                      "timeout_s": 60.0,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    },
+                    "scheduler_execution": {
+                      "scheduler": {
+                        "max_turns": 8,
+                        "max_tool_calls": 2,
+                        "timeout_s": 60.0,
+                        "max_concurrency": 1,
+                        "max_retries": 0,
+                        "backoff_s": 0.0
+                      },
+                      "attempts": 1,
+                      "retries": 0,
+                      "timed_out": false,
+                      "latency_ms": 9.667
+                    },
+                    "framework": "openai-agents",
+                    "framework_requested": "openai-agents",
+                    "framework_config": {
+                      "name": "openai-agents",
+                      "agent_kwargs": {},
+                      "run_kwargs": {}
+                    },
+                    "agent_name": "structured_operator",
+                    "requested_engine": "python-runtime",
+                    "runtime_engine": "python-runtime",
+                    "execution_engine": "python-runtime"
+                  },
+                  "execution_id": "run-f8ebd8807ee9471a94afd282e83a4662",
+                  "parent_execution_id": "run-8671735eeae9420a83e2bbe1ebffebc5",
+                  "children": [],
+                  "tool_events": [
+                    {
+                      "id": "call_2152b6b55e2c4ffb97c82fe82fbb1e09",
+                      "name": "echo",
+                      "input": {
+                        "value": 7
+                      },
+                      "output": {
+                        "data": {
+                          "value": 7
+                        }
+                      },
+                      "ok": true,
+                      "error": null,
+                      "duration_ms": null,
+                      "meta": {
+                        "source": "openai-agents"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "tool_events": []
+            }
+          ],
+          "tool_events": []
+        },
+        "negative": {
+          "text": "Invalid JSON input for tool echo: 1 validation error for echo_args\nvalue\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing",
+          "final": {
+            "ok": false,
+            "error": {
+              "code": "ModelBehaviorError",
+              "message": "Invalid JSON input for tool echo: 1 validation error for echo_args\nvalue\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing"
+            }
+          },
+          "data": {
+            "ok": false,
+            "error": {
+              "code": "ModelBehaviorError",
+              "message": "Invalid JSON input for tool echo: 1 validation error for echo_args\nvalue\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing"
+            }
+          },
+          "ok": false,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {
+            "requests": 2,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "total_tokens": 0,
+            "client_duration_ms": 8.34,
+            "inference_requests": 0,
+            "tool_calls": 1
+          },
+          "engine": "python-runtime",
+          "model": "python-runtime",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [
+            {
+              "code": "ModelBehaviorError",
+              "message": "Invalid JSON input for tool echo: 1 validation error for echo_args\nvalue\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing"
+            },
+            {
+              "code": "validation_failed",
+              "message": "Tool 'echo' failed and was not recovered.",
+              "path": "tool_events",
+              "validation_code": "unresolved_tool_failure",
+              "meta": {
+                "tool_event_id": "call_b8bb554e13a14de0890c69088de5c5b8",
+                "error": {
+                  "code": "ModelBehaviorError",
+                  "message": "Invalid JSON input for tool echo: 1 validation error for echo_args\nvalue\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing"
+                }
+              }
+            },
+            {
+              "code": "output_schema_mismatch",
+              "message": "'value' is a required property",
+              "path": []
+            }
+          ],
+          "meta": {
+            "name": "structured_operator",
+            "kind": "agent",
+            "backend": "native",
+            "skills": [
+              "echo"
+            ],
+            "actions_observed": 1,
+            "input": {
+              "tool": "echo",
+              "input": {
+                "value": "not-an-integer"
+              }
+            }
+          },
+          "execution_id": "run-316ba5fb296547c4bc08af0016886970",
+          "parent_execution_id": null,
+          "children": [
+            {
+              "text": "Invalid JSON input for tool echo: 1 validation error for echo_args\nvalue\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing",
+              "final": {
+                "ok": false,
+                "error": {
+                  "code": "ModelBehaviorError",
+                  "message": "Invalid JSON input for tool echo: 1 validation error for echo_args\nvalue\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing"
+                }
+              },
+              "data": {
+                "ok": false,
+                "error": {
+                  "code": "ModelBehaviorError",
+                  "message": "Invalid JSON input for tool echo: 1 validation error for echo_args\nvalue\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing"
+                }
+              },
+              "ok": false,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {
+                "requests": 2,
+                "input_tokens": 0,
+                "output_tokens": 0,
+                "total_tokens": 0,
+                "client_duration_ms": 8.34,
+                "inference_requests": 0,
+                "tool_calls": 1
+              },
+              "engine": "python-runtime",
+              "model": "python-runtime",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [
+                {
+                  "code": "ModelBehaviorError",
+                  "message": "Invalid JSON input for tool echo: 1 validation error for echo_args\nvalue\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing"
+                },
+                {
+                  "code": "validation_failed",
+                  "message": "Tool 'echo' failed and was not recovered.",
+                  "path": "tool_events",
+                  "validation_code": "unresolved_tool_failure",
+                  "meta": {
+                    "tool_event_id": "call_b8bb554e13a14de0890c69088de5c5b8",
+                    "error": {
+                      "code": "ModelBehaviorError",
+                      "message": "Invalid JSON input for tool echo: 1 validation error for echo_args\nvalue\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing"
+                    }
+                  }
+                },
+                {
+                  "code": "output_schema_mismatch",
+                  "message": "'value' is a required property",
+                  "path": []
+                }
+              ],
+              "meta": {
+                "name": "structured_operator",
+                "kind": "model",
+                "framework": "openai-agents"
+              },
+              "execution_id": "run-0a2d9a0efded48b08d2d801042513402",
+              "parent_execution_id": "run-316ba5fb296547c4bc08af0016886970",
+              "children": [
+                {
+                  "text": "Invalid JSON input for tool echo: 1 validation error for echo_args\nvalue\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing",
+                  "final": {
+                    "ok": false,
+                    "error": {
+                      "code": "ModelBehaviorError",
+                      "message": "Invalid JSON input for tool echo: 1 validation error for echo_args\nvalue\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing"
+                    }
+                  },
+                  "data": {
+                    "ok": false,
+                    "error": {
+                      "code": "ModelBehaviorError",
+                      "message": "Invalid JSON input for tool echo: 1 validation error for echo_args\nvalue\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing"
+                    }
+                  },
+                  "ok": false,
+                  "messages": [
+                    {
+                      "content": "{\"tool\": \"echo\", \"input\": {\"value\": \"not-an-integer\"}}",
+                      "role": "user"
+                    },
+                    {
+                      "arguments": "{\"value\": \"not-an-integer\"}",
+                      "call_id": "call_b8bb554e13a14de0890c69088de5c5b8",
+                      "name": "echo",
+                      "type": "function_call"
+                    },
+                    {
+                      "call_id": "call_b8bb554e13a14de0890c69088de5c5b8",
+                      "output": "{\"__agentic_systems_tool_result__\": {\"ok\": false, \"data\": null, \"error\": {\"code\": \"ModelBehaviorError\", \"message\": \"Invalid JSON input for tool echo: 1 validation error for echo_args\\nvalue\\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing\"}}}",
+                      "type": "function_call_output"
+                    },
+                    {
+                      "id": "msg_398ea1a86d9c4d5991c475579953ea56",
+                      "content": [
+                        {
+                          "annotations": [],
+                          "text": "{\"__agentic_systems_tool_result__\": {\"ok\": false, \"data\": null, \"error\": {\"code\": \"ModelBehaviorError\", \"message\": \"Invalid JSON input for tool echo: 1 validation error for echo_args\\nvalue\\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing\"}}}",
+                          "type": "output_text"
+                        }
+                      ],
+                      "role": "assistant",
+                      "status": "completed",
+                      "type": "message"
+                    }
+                  ],
+                  "raw_responses": [
+                    {
+                      "output": [
+                        {
+                          "arguments": "{\"value\": \"not-an-integer\"}",
+                          "call_id": "call_b8bb554e13a14de0890c69088de5c5b8",
+                          "name": "echo",
+                          "type": "function_call",
+                          "id": null,
+                          "caller": null,
+                          "namespace": null,
+                          "status": null
+                        }
+                      ],
+                      "usage": {
+                        "requests": 1,
+                        "input_tokens": 0,
+                        "input_tokens_details": {
+                          "cache_write_tokens": 0,
+                          "cached_tokens": 0
+                        },
+                        "output_tokens": 0,
+                        "output_tokens_details": {
+                          "reasoning_tokens": 0
+                        },
+                        "total_tokens": 0,
+                        "request_usage_entries": []
+                      },
+                      "response_id": "python_82a757c904544780b95e5b1d020c901a",
+                      "request_id": null
+                    },
+                    {
+                      "output": [
+                        {
+                          "id": "msg_398ea1a86d9c4d5991c475579953ea56",
+                          "content": [
+                            {
+                              "annotations": [],
+                              "text": "{\"__agentic_systems_tool_result__\": {\"ok\": false, \"data\": null, \"error\": {\"code\": \"ModelBehaviorError\", \"message\": \"Invalid JSON input for tool echo: 1 validation error for echo_args\\nvalue\\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing\"}}}",
+                              "type": "output_text",
+                              "logprobs": null
+                            }
+                          ],
+                          "role": "assistant",
+                          "status": "completed",
+                          "type": "message",
+                          "phase": null
+                        }
+                      ],
+                      "usage": {
+                        "requests": 1,
+                        "input_tokens": 0,
+                        "input_tokens_details": {
+                          "cache_write_tokens": 0,
+                          "cached_tokens": 0
+                        },
+                        "output_tokens": 0,
+                        "output_tokens_details": {
+                          "reasoning_tokens": 0
+                        },
+                        "total_tokens": 0,
+                        "request_usage_entries": []
+                      },
+                      "response_id": "response_46400fbbf7c6423e82a87aaa670bdbea",
+                      "request_id": null
+                    }
+                  ],
+                  "usage": {
+                    "requests": 2,
+                    "input_tokens": 0,
+                    "input_tokens_details": {
+                      "cache_write_tokens": 0,
+                      "cached_tokens": 0
+                    },
+                    "output_tokens": 0,
+                    "output_tokens_details": {
+                      "reasoning_tokens": 0
+                    },
+                    "total_tokens": 0,
+                    "request_usage_entries": [],
+                    "scheduler": {
+                      "attempts": 1,
+                      "retries": 0,
+                      "timed_out": false,
+                      "latency_ms": 8.34
+                    },
+                    "client_duration_ms": 8.34,
+                    "inference_requests": 0,
+                    "tool_calls": 1
+                  },
+                  "engine": "python-runtime",
+                  "model": "python-runtime",
+                  "mode": "eval",
+                  "trace_schema_version": "agentic_systems.trace.v1",
+                  "validation": {
+                    "ok": false,
+                    "issues": [
+                      {
+                        "code": "output_schema_mismatch",
+                        "message": "'value' is a required property",
+                        "path": []
+                      }
+                    ]
+                  },
+                  "errors": [
+                    {
+                      "code": "ModelBehaviorError",
+                      "message": "Invalid JSON input for tool echo: 1 validation error for echo_args\nvalue\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing"
+                    },
+                    {
+                      "code": "validation_failed",
+                      "message": "Tool 'echo' failed and was not recovered.",
+                      "path": "tool_events",
+                      "validation_code": "unresolved_tool_failure",
+                      "meta": {
+                        "tool_event_id": "call_b8bb554e13a14de0890c69088de5c5b8",
+                        "error": {
+                          "code": "ModelBehaviorError",
+                          "message": "Invalid JSON input for tool echo: 1 validation error for echo_args\nvalue\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing"
+                        }
+                      }
+                    },
+                    {
+                      "code": "output_schema_mismatch",
+                      "message": "'value' is a required property",
+                      "path": []
+                    }
+                  ],
+                  "meta": {
+                    "source_result_type": "RunResult",
+                    "framework_adapter": "openai-agents",
+                    "input": {
+                      "tool": "echo",
+                      "input": {
+                        "value": "not-an-integer"
+                      }
+                    },
+                    "rejected_tool_calls": [],
+                    "runtime": {
+                      "provider": "python-runtime",
+                      "model_id": "python-runtime",
+                      "region_name": null,
+                      "endpoint": null,
+                      "metadata": {},
+                      "provider_priority": [
+                        "openai-runtime",
+                        "bedrock-runtime",
+                        "ollama-runtime"
+                      ],
+                      "allow_python_fallback": false,
+                      "scheduler": {
+                        "max_turns": 8,
+                        "max_tool_calls": 2,
+                        "timeout_s": 60.0,
+                        "max_concurrency": 1,
+                        "max_retries": 0,
+                        "backoff_s": 0.0
+                      }
+                    },
+                    "scheduler": {
+                      "max_turns": 8,
+                      "max_tool_calls": 2,
+                      "timeout_s": 60.0,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    },
+                    "scheduler_execution": {
+                      "scheduler": {
+                        "max_turns": 8,
+                        "max_tool_calls": 2,
+                        "timeout_s": 60.0,
+                        "max_concurrency": 1,
+                        "max_retries": 0,
+                        "backoff_s": 0.0
+                      },
+                      "attempts": 1,
+                      "retries": 0,
+                      "timed_out": false,
+                      "latency_ms": 8.34
+                    },
+                    "framework": "openai-agents",
+                    "framework_requested": "openai-agents",
+                    "framework_config": {
+                      "name": "openai-agents",
+                      "agent_kwargs": {},
+                      "run_kwargs": {}
+                    },
+                    "agent_name": "structured_operator",
+                    "requested_engine": "python-runtime",
+                    "runtime_engine": "python-runtime",
+                    "execution_engine": "python-runtime"
+                  },
+                  "execution_id": "run-1c1e565976fd42dbbaa37dc52f0c1ba6",
+                  "parent_execution_id": "run-0a2d9a0efded48b08d2d801042513402",
+                  "children": [],
+                  "tool_events": [
+                    {
+                      "id": "call_b8bb554e13a14de0890c69088de5c5b8",
+                      "name": "echo",
+                      "input": {
+                        "value": "not-an-integer"
+                      },
+                      "output": {
+                        "data": null
+                      },
+                      "ok": false,
+                      "error": {
+                        "code": "ModelBehaviorError",
+                        "message": "Invalid JSON input for tool echo: 1 validation error for echo_args\nvalue\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing"
+                      },
+                      "duration_ms": null,
+                      "meta": {
+                        "source": "openai-agents"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "tool_events": []
+            }
+          ],
+          "tool_events": []
+        }
+      },
+      {
+        "framework": "strands",
+        "positive": {
+          "text": "{\"value\": 7}",
+          "final": {
+            "text": "{\"value\": 7}"
+          },
+          "data": {
+            "value": 7
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {
+            "inputTokens": 0,
+            "outputTokens": 0,
+            "totalTokens": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "total_tokens": 0,
+            "client_duration_ms": 61.629,
+            "requests": 2,
+            "inference_requests": 0,
+            "tool_calls": 1
+          },
+          "engine": "python-runtime",
+          "model": "python-runtime",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "structured_operator",
+            "kind": "agent",
+            "backend": "native",
+            "skills": [
+              "echo"
+            ],
+            "actions_observed": 1,
+            "input": {
+              "tool": "echo",
+              "input": {
+                "value": 7
+              }
+            }
+          },
+          "execution_id": "run-a7cdf6c7362a45a995911cd4534e15d3",
+          "parent_execution_id": null,
+          "children": [
+            {
+              "text": "{\"value\": 7}",
+              "final": {
+                "text": "{\"value\": 7}"
+              },
+              "data": {
+                "value": 7
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {
+                "inputTokens": 0,
+                "outputTokens": 0,
+                "totalTokens": 0,
+                "input_tokens": 0,
+                "output_tokens": 0,
+                "total_tokens": 0,
+                "client_duration_ms": 61.629,
+                "requests": 2,
+                "inference_requests": 0,
+                "tool_calls": 1
+              },
+              "engine": "python-runtime",
+              "model": "python-runtime",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "structured_operator",
+                "kind": "model",
+                "framework": "strands"
+              },
+              "execution_id": "run-0e7d0bfbce1c468784014e97f81959b6",
+              "parent_execution_id": "run-a7cdf6c7362a45a995911cd4534e15d3",
+              "children": [
+                {
+                  "text": "{\"value\": 7}",
+                  "final": {
+                    "text": "{\"value\": 7}"
+                  },
+                  "data": {
+                    "value": 7
+                  },
+                  "ok": true,
+                  "messages": [
+                    {
+                      "role": "user",
+                      "content": [
+                        {
+                          "text": "{\"tool\": \"echo\", \"input\": {\"value\": 7}}"
+                        }
+                      ],
+                      "tracking_id": "49cc0cfe-ad7f-4daa-bfe2-1f7771379176"
+                    },
+                    {
+                      "role": "assistant",
+                      "content": [
+                        {
+                          "toolUse": {
+                            "toolUseId": "python_a08861771ea34976b233b7e681abcac1",
+                            "name": "echo",
+                            "input": {
+                              "value": 7
+                            }
+                          }
+                        }
+                      ],
+                      "metadata": {
+                        "usage": {
+                          "inputTokens": 0,
+                          "outputTokens": 0,
+                          "totalTokens": 0
+                        },
+                        "metrics": {
+                          "latencyMs": 0
+                        }
+                      },
+                      "tracking_id": "03500fab-f046-4a31-bb5b-991d542a653a"
+                    },
+                    {
+                      "role": "user",
+                      "content": [
+                        {
+                          "toolResult": {
+                            "toolUseId": "python_a08861771ea34976b233b7e681abcac1",
+                            "status": "success",
+                            "content": [
+                              {
+                                "text": "{\"value\": 7}"
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "tracking_id": "bbf7bd64-fac9-4e9d-9b24-64c6d46226be"
+                    },
+                    {
+                      "role": "assistant",
+                      "content": [
+                        {
+                          "text": "{\"value\": 7}"
+                        }
+                      ],
+                      "metadata": {
+                        "usage": {
+                          "inputTokens": 0,
+                          "outputTokens": 0,
+                          "totalTokens": 0
+                        },
+                        "metrics": {
+                          "latencyMs": 0
+                        }
+                      },
+                      "tracking_id": "43de2f1b-e394-47ff-8863-530c1dac0697"
+                    }
+                  ],
+                  "raw_responses": [
+                    {
+                      "role": "assistant",
+                      "content": [
+                        {
+                          "text": "{\"value\": 7}"
+                        }
+                      ],
+                      "metadata": {
+                        "usage": {
+                          "inputTokens": 0,
+                          "outputTokens": 0,
+                          "totalTokens": 0
+                        },
+                        "metrics": {
+                          "latencyMs": 0
+                        }
+                      },
+                      "tracking_id": "43de2f1b-e394-47ff-8863-530c1dac0697"
+                    }
+                  ],
+                  "usage": {
+                    "inputTokens": 0,
+                    "outputTokens": 0,
+                    "totalTokens": 0,
+                    "input_tokens": 0,
+                    "output_tokens": 0,
+                    "total_tokens": 0,
+                    "client_duration_ms": 61.629,
+                    "requests": 2,
+                    "scheduler": {
+                      "attempts": 1,
+                      "retries": 0,
+                      "timed_out": false,
+                      "latency_ms": 68.679
+                    },
+                    "inference_requests": 0,
+                    "tool_calls": 1
+                  },
+                  "engine": "python-runtime",
+                  "model": "python-runtime",
+                  "mode": "eval",
+                  "trace_schema_version": "agentic_systems.trace.v1",
+                  "validation": {
+                    "ok": true,
+                    "issues": []
+                  },
+                  "errors": [],
+                  "meta": {
+                    "source_result_type": "AgentResult",
+                    "framework_adapter": "strands",
+                    "input": {
+                      "tool": "echo",
+                      "input": {
+                        "value": 7
+                      }
+                    },
+                    "stop_reason": "end_turn",
+                    "rejected_tool_calls": [],
+                    "output_materialization": [],
+                    "runtime": {
+                      "provider": "python-runtime",
+                      "model_id": "python-runtime",
+                      "region_name": null,
+                      "endpoint": null,
+                      "metadata": {},
+                      "provider_priority": [
+                        "openai-runtime",
+                        "bedrock-runtime",
+                        "ollama-runtime"
+                      ],
+                      "allow_python_fallback": false,
+                      "scheduler": {
+                        "max_turns": 8,
+                        "max_tool_calls": 2,
+                        "timeout_s": 60.0,
+                        "max_concurrency": 1,
+                        "max_retries": 0,
+                        "backoff_s": 0.0
+                      }
+                    },
+                    "scheduler": {
+                      "max_turns": 8,
+                      "max_tool_calls": 2,
+                      "timeout_s": 60.0,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    },
+                    "scheduler_execution": {
+                      "scheduler": {
+                        "max_turns": 8,
+                        "max_tool_calls": 2,
+                        "timeout_s": 60.0,
+                        "max_concurrency": 1,
+                        "max_retries": 0,
+                        "backoff_s": 0.0
+                      },
+                      "attempts": 1,
+                      "retries": 0,
+                      "timed_out": false,
+                      "latency_ms": 68.679
+                    },
+                    "framework": "strands",
+                    "framework_requested": "strands",
+                    "framework_config": {
+                      "name": "strands",
+                      "agent_kwargs": {},
+                      "run_kwargs": {}
+                    },
+                    "agent_name": "structured_operator",
+                    "requested_engine": "python-runtime",
+                    "runtime_engine": "python-runtime",
+                    "execution_engine": "python-runtime"
+                  },
+                  "execution_id": "run-b00a8399667c4e3b9ab8ce85ee9c92d7",
+                  "parent_execution_id": "run-0e7d0bfbce1c468784014e97f81959b6",
+                  "children": [],
+                  "tool_events": [
+                    {
+                      "id": "python_a08861771ea34976b233b7e681abcac1",
+                      "name": "echo",
+                      "input": {
+                        "value": 7
+                      },
+                      "output": {
+                        "value": 7
+                      },
+                      "ok": true,
+                      "error": null,
+                      "duration_ms": null,
+                      "meta": {
+                        "source": "strands"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "tool_events": []
+            }
+          ],
+          "tool_events": []
+        },
+        "negative": {
+          "text": "Error: Validation failed for input parameters: 1 validation error for EchoTool\nvalue\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing",
+          "final": {
+            "text": "Error: Validation failed for input parameters: 1 validation error for EchoTool\nvalue\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing"
+          },
+          "data": {
+            "value": "Error: Validation failed for input parameters: 1 validation error for EchoTool\nvalue\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing"
+          },
+          "ok": false,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {
+            "inputTokens": 0,
+            "outputTokens": 0,
+            "totalTokens": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "total_tokens": 0,
+            "client_duration_ms": 2.586,
+            "requests": 2,
+            "inference_requests": 0,
+            "tool_calls": 1
+          },
+          "engine": "python-runtime",
+          "model": "python-runtime",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [
+            {
+              "code": "tool_failed",
+              "tool": "echo",
+              "tool_event_id": "python_031e3119d77748548f972655854a79c7",
+              "error": {
+                "status": "error"
+              },
+              "resolved": false
+            },
+            {
+              "code": "validation_failed",
+              "message": "Tool 'echo' failed and was not recovered.",
+              "path": "tool_events",
+              "validation_code": "unresolved_tool_failure",
+              "meta": {
+                "tool_event_id": "python_031e3119d77748548f972655854a79c7",
+                "error": {
+                  "status": "error"
+                }
+              }
+            },
+            {
+              "code": "output_schema_mismatch",
+              "message": "\"Error: Validation failed for input parameters: 1 validation error for EchoTool\\nvalue\\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing\" is not of type 'integer'",
+              "path": [
+                "value"
+              ]
+            }
+          ],
+          "meta": {
+            "name": "structured_operator",
+            "kind": "agent",
+            "backend": "native",
+            "skills": [
+              "echo"
+            ],
+            "actions_observed": 1,
+            "input": {
+              "tool": "echo",
+              "input": {
+                "value": "not-an-integer"
+              }
+            }
+          },
+          "execution_id": "run-364b758dce044eac9313d7f1fa605687",
+          "parent_execution_id": null,
+          "children": [
+            {
+              "text": "Error: Validation failed for input parameters: 1 validation error for EchoTool\nvalue\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing",
+              "final": {
+                "text": "Error: Validation failed for input parameters: 1 validation error for EchoTool\nvalue\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing"
+              },
+              "data": {
+                "value": "Error: Validation failed for input parameters: 1 validation error for EchoTool\nvalue\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing"
+              },
+              "ok": false,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {
+                "inputTokens": 0,
+                "outputTokens": 0,
+                "totalTokens": 0,
+                "input_tokens": 0,
+                "output_tokens": 0,
+                "total_tokens": 0,
+                "client_duration_ms": 2.586,
+                "requests": 2,
+                "inference_requests": 0,
+                "tool_calls": 1
+              },
+              "engine": "python-runtime",
+              "model": "python-runtime",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [
+                {
+                  "code": "tool_failed",
+                  "tool": "echo",
+                  "tool_event_id": "python_031e3119d77748548f972655854a79c7",
+                  "error": {
+                    "status": "error"
+                  },
+                  "resolved": false
+                },
+                {
+                  "code": "validation_failed",
+                  "message": "Tool 'echo' failed and was not recovered.",
+                  "path": "tool_events",
+                  "validation_code": "unresolved_tool_failure",
+                  "meta": {
+                    "tool_event_id": "python_031e3119d77748548f972655854a79c7",
+                    "error": {
+                      "status": "error"
+                    }
+                  }
+                },
+                {
+                  "code": "output_schema_mismatch",
+                  "message": "\"Error: Validation failed for input parameters: 1 validation error for EchoTool\\nvalue\\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing\" is not of type 'integer'",
+                  "path": [
+                    "value"
+                  ]
+                }
+              ],
+              "meta": {
+                "name": "structured_operator",
+                "kind": "model",
+                "framework": "strands"
+              },
+              "execution_id": "run-dd1ee1326be540f9a0eb7540eb1c27f7",
+              "parent_execution_id": "run-364b758dce044eac9313d7f1fa605687",
+              "children": [
+                {
+                  "text": "Error: Validation failed for input parameters: 1 validation error for EchoTool\nvalue\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing",
+                  "final": {
+                    "text": "Error: Validation failed for input parameters: 1 validation error for EchoTool\nvalue\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing"
+                  },
+                  "data": {
+                    "value": "Error: Validation failed for input parameters: 1 validation error for EchoTool\nvalue\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing"
+                  },
+                  "ok": false,
+                  "messages": [
+                    {
+                      "role": "user",
+                      "content": [
+                        {
+                          "text": "{\"tool\": \"echo\", \"input\": {\"value\": \"not-an-integer\"}}"
+                        }
+                      ],
+                      "tracking_id": "3f831dbe-b9d2-4cc6-bfd4-1a5f62b6ac56"
+                    },
+                    {
+                      "role": "assistant",
+                      "content": [
+                        {
+                          "toolUse": {
+                            "toolUseId": "python_031e3119d77748548f972655854a79c7",
+                            "name": "echo",
+                            "input": {
+                              "value": "not-an-integer"
+                            }
+                          }
+                        }
+                      ],
+                      "metadata": {
+                        "usage": {
+                          "inputTokens": 0,
+                          "outputTokens": 0,
+                          "totalTokens": 0
+                        },
+                        "metrics": {
+                          "latencyMs": 0
+                        }
+                      },
+                      "tracking_id": "75606334-a2b7-4a18-b80e-3d977d0772c9"
+                    },
+                    {
+                      "role": "user",
+                      "content": [
+                        {
+                          "toolResult": {
+                            "toolUseId": "python_031e3119d77748548f972655854a79c7",
+                            "status": "error",
+                            "content": [
+                              {
+                                "text": "Error: Validation failed for input parameters: 1 validation error for EchoTool\nvalue\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing"
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "tracking_id": "88fefc3a-b0d7-4e4d-8bb3-13ed24d2a889"
+                    },
+                    {
+                      "role": "assistant",
+                      "content": [
+                        {
+                          "text": "\"Error: Validation failed for input parameters: 1 validation error for EchoTool\\nvalue\\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing\""
+                        }
+                      ],
+                      "metadata": {
+                        "usage": {
+                          "inputTokens": 0,
+                          "outputTokens": 0,
+                          "totalTokens": 0
+                        },
+                        "metrics": {
+                          "latencyMs": 0
+                        }
+                      },
+                      "tracking_id": "ce788b6e-b960-4130-9a1b-f96d503584ed"
+                    }
+                  ],
+                  "raw_responses": [
+                    {
+                      "role": "assistant",
+                      "content": [
+                        {
+                          "text": "\"Error: Validation failed for input parameters: 1 validation error for EchoTool\\nvalue\\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing\""
+                        }
+                      ],
+                      "metadata": {
+                        "usage": {
+                          "inputTokens": 0,
+                          "outputTokens": 0,
+                          "totalTokens": 0
+                        },
+                        "metrics": {
+                          "latencyMs": 0
+                        }
+                      },
+                      "tracking_id": "ce788b6e-b960-4130-9a1b-f96d503584ed"
+                    }
+                  ],
+                  "usage": {
+                    "inputTokens": 0,
+                    "outputTokens": 0,
+                    "totalTokens": 0,
+                    "input_tokens": 0,
+                    "output_tokens": 0,
+                    "total_tokens": 0,
+                    "client_duration_ms": 2.586,
+                    "requests": 2,
+                    "scheduler": {
+                      "attempts": 1,
+                      "retries": 0,
+                      "timed_out": false,
+                      "latency_ms": 8.445
+                    },
+                    "inference_requests": 0,
+                    "tool_calls": 1
+                  },
+                  "engine": "python-runtime",
+                  "model": "python-runtime",
+                  "mode": "eval",
+                  "trace_schema_version": "agentic_systems.trace.v1",
+                  "validation": {
+                    "ok": false,
+                    "issues": [
+                      {
+                        "code": "output_schema_mismatch",
+                        "message": "\"Error: Validation failed for input parameters: 1 validation error for EchoTool\\nvalue\\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing\" is not of type 'integer'",
+                        "path": [
+                          "value"
+                        ]
+                      }
+                    ]
+                  },
+                  "errors": [
+                    {
+                      "code": "tool_failed",
+                      "tool": "echo",
+                      "tool_event_id": "python_031e3119d77748548f972655854a79c7",
+                      "error": {
+                        "status": "error"
+                      },
+                      "resolved": false
+                    },
+                    {
+                      "code": "validation_failed",
+                      "message": "Tool 'echo' failed and was not recovered.",
+                      "path": "tool_events",
+                      "validation_code": "unresolved_tool_failure",
+                      "meta": {
+                        "tool_event_id": "python_031e3119d77748548f972655854a79c7",
+                        "error": {
+                          "status": "error"
+                        }
+                      }
+                    },
+                    {
+                      "code": "output_schema_mismatch",
+                      "message": "\"Error: Validation failed for input parameters: 1 validation error for EchoTool\\nvalue\\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing\" is not of type 'integer'",
+                      "path": [
+                        "value"
+                      ]
+                    }
+                  ],
+                  "meta": {
+                    "source_result_type": "AgentResult",
+                    "framework_adapter": "strands",
+                    "input": {
+                      "tool": "echo",
+                      "input": {
+                        "value": "not-an-integer"
+                      }
+                    },
+                    "stop_reason": "end_turn",
+                    "rejected_tool_calls": [],
+                    "output_materialization": [],
+                    "runtime": {
+                      "provider": "python-runtime",
+                      "model_id": "python-runtime",
+                      "region_name": null,
+                      "endpoint": null,
+                      "metadata": {},
+                      "provider_priority": [
+                        "openai-runtime",
+                        "bedrock-runtime",
+                        "ollama-runtime"
+                      ],
+                      "allow_python_fallback": false,
+                      "scheduler": {
+                        "max_turns": 8,
+                        "max_tool_calls": 2,
+                        "timeout_s": 60.0,
+                        "max_concurrency": 1,
+                        "max_retries": 0,
+                        "backoff_s": 0.0
+                      }
+                    },
+                    "scheduler": {
+                      "max_turns": 8,
+                      "max_tool_calls": 2,
+                      "timeout_s": 60.0,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    },
+                    "scheduler_execution": {
+                      "scheduler": {
+                        "max_turns": 8,
+                        "max_tool_calls": 2,
+                        "timeout_s": 60.0,
+                        "max_concurrency": 1,
+                        "max_retries": 0,
+                        "backoff_s": 0.0
+                      },
+                      "attempts": 1,
+                      "retries": 0,
+                      "timed_out": false,
+                      "latency_ms": 8.445
+                    },
+                    "framework": "strands",
+                    "framework_requested": "strands",
+                    "framework_config": {
+                      "name": "strands",
+                      "agent_kwargs": {},
+                      "run_kwargs": {}
+                    },
+                    "agent_name": "structured_operator",
+                    "requested_engine": "python-runtime",
+                    "runtime_engine": "python-runtime",
+                    "execution_engine": "python-runtime"
+                  },
+                  "execution_id": "run-bcc1aa7f4a2d4ddca940fb4d64095e96",
+                  "parent_execution_id": "run-dd1ee1326be540f9a0eb7540eb1c27f7",
+                  "children": [],
+                  "tool_events": [
+                    {
+                      "id": "python_031e3119d77748548f972655854a79c7",
+                      "name": "echo",
+                      "input": {
+                        "value": "not-an-integer"
+                      },
+                      "output": {
+                        "value": "Error: Validation failed for input parameters: 1 validation error for EchoTool\nvalue\n  Input should be a valid integer, unable to parse string as an integer [type=int_parsing, input_value='not-an-integer', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_parsing"
+                      },
+                      "ok": false,
+                      "error": {
+                        "status": "error"
+                      },
+                      "duration_ms": null,
+                      "meta": {
+                        "source": "strands"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "tool_events": []
+            }
+          ],
+          "tool_events": []
+        }
+      }
+    ],
+    "validation": "Python Runtime; no language-model structured-output claim"
+  }
+}

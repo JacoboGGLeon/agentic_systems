@@ -1,0 +1,16 @@
+# Preserve reviewed source and evidence bytes across Windows and Linux checkouts.
+# The 2.1.3 wheel and live evidence were sealed before this PR.
+* whitespace=trailing-space,space-before-tab,cr-at-eol
+README.md -text
+CHANGELOG.md -text
+ROADMAP.md -text
+pyproject.toml -text
+src/** -text
+tutorials/** -text
+examples/** -text
+revisions/** -text
+docs/** -text
+scripts/** -text
+*.whl binary
+*.tar.gz binary
+*.zip binary
