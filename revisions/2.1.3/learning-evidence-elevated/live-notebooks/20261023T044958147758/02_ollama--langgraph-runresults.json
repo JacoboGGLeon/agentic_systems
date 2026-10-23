@@ -1,0 +1,306 @@
+{
+  "source": "tutorials/providers/02_ollama.ipynb",
+  "captured_boundaries": 1,
+  "root_results": 1,
+  "scope": "Observed SDK RunResult values; descendants retained inside parents. No fabricated results for configuration-only examples.",
+  "results": [
+    {
+      "run_result": {
+        "text": "OK. I have called certify with value=37.",
+        "final": {
+          "final_output": "OK. I have called certify with value=37."
+        },
+        "data": {
+          "final_output": "OK. I have called certify with value=37."
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "total_tokens": 278,
+          "completion_tokens": 30,
+          "prompt_tokens": 248,
+          "input_tokens": 248,
+          "output_tokens": 30,
+          "requests": 2,
+          "client_duration_ms": 2214.3779999999997,
+          "inference_requests": 2,
+          "tool_calls": 1
+        },
+        "engine": "ollama-runtime",
+        "model": "gemma4:31b-cloud",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "verification",
+          "kind": "agent",
+          "backend": "native",
+          "skills": [
+            "evidence"
+          ],
+          "actions_observed": 1,
+          "input": "Call certify with value=37."
+        },
+        "execution_id": "run-93a2a5576ec14965b443371ae470ca43",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "OK. I have called certify with value=37.",
+            "final": {
+              "final_output": "OK. I have called certify with value=37."
+            },
+            "data": {
+              "final_output": "OK. I have called certify with value=37."
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "total_tokens": 278,
+              "completion_tokens": 30,
+              "prompt_tokens": 248,
+              "input_tokens": 248,
+              "output_tokens": 30,
+              "requests": 2,
+              "client_duration_ms": 2214.3779999999997,
+              "inference_requests": 2,
+              "tool_calls": 1
+            },
+            "engine": "ollama-runtime",
+            "model": "gemma4:31b-cloud",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "verification",
+              "kind": "model",
+              "framework": "langgraph"
+            },
+            "execution_id": "run-1cb67f9baf7d4d7a8db4387c58b3f577",
+            "parent_execution_id": "run-93a2a5576ec14965b443371ae470ca43",
+            "children": [
+              {
+                "text": "OK. I have called certify with value=37.",
+                "final": {
+                  "final_output": "OK. I have called certify with value=37."
+                },
+                "data": {
+                  "final_output": "OK. I have called certify with value=37."
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "total_tokens": 278,
+                  "completion_tokens": 30,
+                  "prompt_tokens": 248,
+                  "input_tokens": 248,
+                  "output_tokens": 30,
+                  "requests": 2,
+                  "client_duration_ms": 2214.3779999999997,
+                  "scheduler": {
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 6537.261
+                  },
+                  "inference_requests": 2,
+                  "tool_calls": 1
+                },
+                "engine": "ollama-runtime",
+                "model": "gemma4:31b-cloud",
+                "mode": "eval",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": {
+                  "ok": true,
+                  "issues": []
+                },
+                "errors": [],
+                "meta": {
+                  "source_result_type": "ollama.openai_compatible.chat.completions",
+                  "runtime_engine": "ollama-runtime",
+                  "execution_engine": "ollama-runtime",
+                  "contract_repairs": 0,
+                  "rejected_tool_calls": [],
+                  "framework": "langgraph",
+                  "framework_requested": "langgraph",
+                  "framework_adapter": "langgraph",
+                  "runtime": {
+                    "provider": "ollama-runtime",
+                    "model_id": "gemma4:31b-cloud",
+                    "region_name": null,
+                    "endpoint": "https://ollama.com/v1",
+                    "metadata": {},
+                    "provider_priority": [
+                      "openai-runtime",
+                      "bedrock-runtime",
+                      "ollama-runtime"
+                    ],
+                    "allow_python_fallback": false,
+                    "scheduler": {
+                      "max_turns": 5,
+                      "max_tool_calls": 3,
+                      "timeout_s": 60,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    }
+                  },
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "scheduler_execution": {
+                    "scheduler": {
+                      "max_turns": 5,
+                      "max_tool_calls": 3,
+                      "timeout_s": 60,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    },
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 6537.261
+                  },
+                  "framework_config": {
+                    "name": "langgraph",
+                    "agent_kwargs": {},
+                    "run_kwargs": {}
+                  },
+                  "agent_name": "verification",
+                  "input": "Call certify with value=37.",
+                  "requested_engine": "ollama-runtime"
+                },
+                "execution_id": "run-bb10c63830864e8c917868f810f30fb1",
+                "parent_execution_id": "run-1cb67f9baf7d4d7a8db4387c58b3f577",
+                "children": [],
+                "tool_events": [
+                  {
+                    "id": "tool-3f2632fb7ca042f38cd4ef83650a5356",
+                    "name": "certify",
+                    "input": {
+                      "value": 37
+                    },
+                    "output": {
+                      "value": 37,
+                      "verified": true
+                    },
+                    "ok": true,
+                    "error": null,
+                    "duration_ms": null,
+                    "meta": {
+                      "tool_name": "certify",
+                      "serializer": "AgenticSystems.ToolEnvelope.v1",
+                      "timestamp_utc": "2026-10-23T04:51:10.602244+00:00",
+                      "validated_input": {
+                        "value": 37
+                      },
+                      "provider_tool_call_id": "call_uh5b288l"
+                    }
+                  }
+                ]
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "tutorials/providers/02_ollama.ipynb",
+        "question": "\"Call certify with value=37.\"",
+        "goal": "",
+        "answer": "OK. I have called certify with value=37.",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-93a2a5576ec14965b443371ae470ca43",
+            "kind": "execution",
+            "title": "verification",
+            "summary": "OK. I have called certify with value=37.",
+            "source": "ollama-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "final_output": "OK. I have called certify with value=37."
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-1cb67f9baf7d4d7a8db4387c58b3f577",
+            "kind": "execution",
+            "title": "verification",
+            "summary": "OK. I have called certify with value=37.",
+            "source": "ollama-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "final_output": "OK. I have called certify with value=37."
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-bb10c63830864e8c917868f810f30fb1",
+            "kind": "execution",
+            "title": "eval",
+            "summary": "OK. I have called certify with value=37.",
+            "source": "ollama-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "final_output": "OK. I have called certify with value=37."
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "tool-3f2632fb7ca042f38cd4ef83650a5356",
+            "kind": "tool",
+            "title": "certify",
+            "summary": "completed",
+            "source": "certify",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "value": 37,
+              "verified": true
+            }
+          }
+        ],
+        "usage": {
+          "total_tokens": 278,
+          "completion_tokens": 30,
+          "prompt_tokens": 248,
+          "input_tokens": 248,
+          "output_tokens": 30,
+          "requests": 2,
+          "client_duration_ms": 2214.3779999999997,
+          "inference_requests": 2,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,571 @@
+{
+  "name": "ollama-runtime--handoffs",
+  "passed": true,
+  "report": {
+    "provider": "ollama-runtime",
+    "framework": "openai-agents",
+    "handoff_callback": [
+      {
+        "from": "triage",
+        "to": "billing_specialist"
+      }
+    ],
+    "result": {
+      "text": "SPECIALIST_OK",
+      "final": {
+        "text": "SPECIALIST_OK"
+      },
+      "data": {
+        "text": "SPECIALIST_OK"
+      },
+      "ok": true,
+      "messages": [],
+      "raw_responses": [],
+      "usage": {
+        "requests": 2,
+        "input_tokens": 166,
+        "output_tokens": 23,
+        "total_tokens": 189,
+        "client_duration_ms": 2564.05,
+        "inference_requests": 2,
+        "tool_calls": 1
+      },
+      "engine": "ollama-runtime",
+      "model": "gemma4:31b-cloud",
+      "mode": "default",
+      "trace_schema_version": "agentic_systems.trace.v1",
+      "validation": null,
+      "errors": [],
+      "meta": {
+        "name": "triage",
+        "kind": "agent",
+        "backend": "native",
+        "skills": [],
+        "actions_observed": 1,
+        "input": "Transfer this billing question to billing_specialist now."
+      },
+      "execution_id": "run-dc2559e482914313a3716dfef73664b7",
+      "parent_execution_id": null,
+      "children": [
+        {
+          "text": "SPECIALIST_OK",
+          "final": {
+            "text": "SPECIALIST_OK"
+          },
+          "data": {
+            "text": "SPECIALIST_OK"
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {
+            "requests": 2,
+            "input_tokens": 166,
+            "output_tokens": 23,
+            "total_tokens": 189,
+            "client_duration_ms": 2564.05,
+            "inference_requests": 2,
+            "tool_calls": 1
+          },
+          "engine": "ollama-runtime",
+          "model": "gemma4:31b-cloud",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "triage",
+            "kind": "model",
+            "framework": "openai-agents"
+          },
+          "execution_id": "run-21ed3cc0159a4daea57ef59b450f477a",
+          "parent_execution_id": "run-dc2559e482914313a3716dfef73664b7",
+          "children": [
+            {
+              "text": "SPECIALIST_OK",
+              "final": {
+                "text": "SPECIALIST_OK"
+              },
+              "data": {
+                "text": "SPECIALIST_OK"
+              },
+              "ok": true,
+              "messages": [
+                {
+                  "content": "Transfer this billing question to billing_specialist now.",
+                  "role": "user"
+                },
+                {
+                  "arguments": "{}",
+                  "call_id": "call_vuowbc4r",
+                  "name": "transfer_to_billing_specialist",
+                  "type": "function_call",
+                  "id": "__fake_id__",
+                  "provider_data": {
+                    "model": "gemma4:31b-cloud",
+                    "response_id": "chatcmpl-532"
+                  }
+                },
+                {
+                  "call_id": "call_vuowbc4r",
+                  "output": "{\"assistant\": \"billing_specialist\"}",
+                  "type": "function_call_output"
+                },
+                {
+                  "id": "__fake_id__",
+                  "content": [
+                    {
+                      "annotations": [],
+                      "text": "SPECIALIST_OK",
+                      "type": "output_text",
+                      "logprobs": []
+                    }
+                  ],
+                  "role": "assistant",
+                  "status": "completed",
+                  "type": "message",
+                  "provider_data": {
+                    "model": "gemma4:31b-cloud",
+                    "response_id": "chatcmpl-992"
+                  }
+                }
+              ],
+              "raw_responses": [
+                {
+                  "output": [
+                    {
+                      "arguments": "{}",
+                      "call_id": "call_vuowbc4r",
+                      "name": "transfer_to_billing_specialist",
+                      "type": "function_call",
+                      "id": "__fake_id__",
+                      "caller": null,
+                      "namespace": null,
+                      "status": null,
+                      "provider_data": {
+                        "model": "gemma4:31b-cloud",
+                        "response_id": "chatcmpl-532"
+                      }
+                    }
+                  ],
+                  "usage": {
+                    "requests": 1,
+                    "input_tokens": 86,
+                    "input_tokens_details": {
+                      "cache_write_tokens": 0,
+                      "cached_tokens": 0
+                    },
+                    "output_tokens": 14,
+                    "output_tokens_details": {
+                      "reasoning_tokens": 0
+                    },
+                    "total_tokens": 100,
+                    "request_usage_entries": []
+                  },
+                  "response_id": null,
+                  "request_id": null
+                },
+                {
+                  "output": [
+                    {
+                      "id": "__fake_id__",
+                      "content": [
+                        {
+                          "annotations": [],
+                          "text": "SPECIALIST_OK",
+                          "type": "output_text",
+                          "logprobs": []
+                        }
+                      ],
+                      "role": "assistant",
+                      "status": "completed",
+                      "type": "message",
+                      "phase": null,
+                      "provider_data": {
+                        "model": "gemma4:31b-cloud",
+                        "response_id": "chatcmpl-992"
+                      }
+                    }
+                  ],
+                  "usage": {
+                    "requests": 1,
+                    "input_tokens": 80,
+                    "input_tokens_details": {
+                      "cache_write_tokens": 0,
+                      "cached_tokens": 0
+                    },
+                    "output_tokens": 9,
+                    "output_tokens_details": {
+                      "reasoning_tokens": 0
+                    },
+                    "total_tokens": 89,
+                    "request_usage_entries": []
+                  },
+                  "response_id": null,
+                  "request_id": null
+                }
+              ],
+              "usage": {
+                "requests": 2,
+                "input_tokens": 166,
+                "input_tokens_details": {
+                  "cache_write_tokens": 0,
+                  "cached_tokens": 0
+                },
+                "output_tokens": 23,
+                "output_tokens_details": {
+                  "reasoning_tokens": 0
+                },
+                "total_tokens": 189,
+                "request_usage_entries": [
+                  {
+                    "input_tokens": 86,
+                    "output_tokens": 14,
+                    "total_tokens": 100,
+                    "input_tokens_details": {
+                      "cache_write_tokens": 0,
+                      "cached_tokens": 0
+                    },
+                    "output_tokens_details": {
+                      "reasoning_tokens": 0
+                    }
+                  },
+                  {
+                    "input_tokens": 80,
+                    "output_tokens": 9,
+                    "total_tokens": 89,
+                    "input_tokens_details": {
+                      "cache_write_tokens": 0,
+                      "cached_tokens": 0
+                    },
+                    "output_tokens_details": {
+                      "reasoning_tokens": 0
+                    }
+                  }
+                ],
+                "scheduler": {
+                  "attempts": 1,
+                  "retries": 0,
+                  "timed_out": false,
+                  "latency_ms": 2564.05
+                },
+                "client_duration_ms": 2564.05,
+                "inference_requests": 2,
+                "tool_calls": 1
+              },
+              "engine": "ollama-runtime",
+              "model": "gemma4:31b-cloud",
+              "mode": "eval",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": {
+                "ok": true,
+                "issues": []
+              },
+              "errors": [],
+              "meta": {
+                "source_result_type": "RunResult",
+                "framework_adapter": "openai-agents",
+                "input": "Transfer this billing question to billing_specialist now.",
+                "rejected_tool_calls": [],
+                "runtime": {
+                  "provider": "ollama-runtime",
+                  "model_id": "gemma4:31b-cloud",
+                  "region_name": null,
+                  "endpoint": "https://ollama.com/v1",
+                  "metadata": {},
+                  "provider_priority": [
+                    "openai-runtime",
+                    "bedrock-runtime",
+                    "ollama-runtime"
+                  ],
+                  "allow_python_fallback": false,
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  }
+                },
+                "scheduler": {
+                  "max_turns": 5,
+                  "max_tool_calls": 3,
+                  "timeout_s": 60,
+                  "max_concurrency": 1,
+                  "max_retries": 0,
+                  "backoff_s": 0.0
+                },
+                "scheduler_execution": {
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "attempts": 1,
+                  "retries": 0,
+                  "timed_out": false,
+                  "latency_ms": 2564.05
+                },
+                "framework": "openai-agents",
+                "framework_requested": "openai-agents",
+                "framework_config": {
+                  "name": "openai-agents",
+                  "agent_kwargs": {
+                    "handoffs": "list",
+                    "input_guardrails": "list"
+                  },
+                  "run_kwargs": {
+                    "session": "SQLiteSession"
+                  }
+                },
+                "agent_name": "triage",
+                "requested_engine": "ollama-runtime",
+                "runtime_engine": "ollama-runtime",
+                "execution_engine": "ollama-runtime"
+              },
+              "execution_id": "run-4dc90d17dec34a3396fde8471e280e2c",
+              "parent_execution_id": "run-21ed3cc0159a4daea57ef59b450f477a",
+              "children": [],
+              "tool_events": [
+                {
+                  "id": "call_vuowbc4r",
+                  "name": "transfer_to_billing_specialist",
+                  "input": {},
+                  "output": {
+                    "data": {
+                      "assistant": "billing_specialist"
+                    }
+                  },
+                  "ok": true,
+                  "error": null,
+                  "duration_ms": null,
+                  "meta": {
+                    "source": "openai-agents",
+                    "kind": "handoff",
+                    "from_agent": "triage",
+                    "to_agent": "billing_specialist"
+                  }
+                }
+              ]
+            }
+          ],
+          "tool_events": []
+        }
+      ],
+      "tool_events": []
+    },
+    "guardrail_negative": {
+      "text": "Guardrail InputGuardrail triggered tripwire",
+      "final": {
+        "ok": false,
+        "error": {
+          "code": "InputGuardrailTripwireTriggered",
+          "message": "Guardrail InputGuardrail triggered tripwire"
+        }
+      },
+      "data": {
+        "ok": false,
+        "error": {
+          "code": "InputGuardrailTripwireTriggered",
+          "message": "Guardrail InputGuardrail triggered tripwire"
+        }
+      },
+      "ok": false,
+      "messages": [],
+      "raw_responses": [],
+      "usage": {
+        "client_duration_ms": 600.855,
+        "inference_requests": 0,
+        "tool_calls": 0
+      },
+      "engine": "ollama-runtime",
+      "model": "gemma4:31b-cloud",
+      "mode": "default",
+      "trace_schema_version": "agentic_systems.trace.v1",
+      "validation": null,
+      "errors": [
+        {
+          "code": "run_failed",
+          "message": "Guardrail InputGuardrail triggered tripwire"
+        }
+      ],
+      "meta": {
+        "name": "triage",
+        "kind": "agent",
+        "backend": "native",
+        "skills": [],
+        "actions_observed": 1,
+        "input": "BLOCKED_REQUEST"
+      },
+      "execution_id": "run-4e9f033e997443149e5825ce31c015cf",
+      "parent_execution_id": null,
+      "children": [
+        {
+          "text": "Guardrail InputGuardrail triggered tripwire",
+          "final": {
+            "ok": false,
+            "error": {
+              "code": "InputGuardrailTripwireTriggered",
+              "message": "Guardrail InputGuardrail triggered tripwire"
+            }
+          },
+          "data": {
+            "ok": false,
+            "error": {
+              "code": "InputGuardrailTripwireTriggered",
+              "message": "Guardrail InputGuardrail triggered tripwire"
+            }
+          },
+          "ok": false,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {
+            "client_duration_ms": 600.855,
+            "inference_requests": 0,
+            "tool_calls": 0
+          },
+          "engine": "ollama-runtime",
+          "model": "gemma4:31b-cloud",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [
+            {
+              "code": "run_failed",
+              "message": "Guardrail InputGuardrail triggered tripwire"
+            }
+          ],
+          "meta": {
+            "name": "triage",
+            "kind": "model",
+            "framework": "openai-agents"
+          },
+          "execution_id": "run-523d2399b9bb45d093b55fb640b7b010",
+          "parent_execution_id": "run-4e9f033e997443149e5825ce31c015cf",
+          "children": [
+            {
+              "text": "Guardrail InputGuardrail triggered tripwire",
+              "final": {
+                "ok": false,
+                "error": {
+                  "code": "InputGuardrailTripwireTriggered",
+                  "message": "Guardrail InputGuardrail triggered tripwire"
+                }
+              },
+              "data": {
+                "ok": false,
+                "error": {
+                  "code": "InputGuardrailTripwireTriggered",
+                  "message": "Guardrail InputGuardrail triggered tripwire"
+                }
+              },
+              "ok": false,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {
+                "scheduler": {
+                  "attempts": 1,
+                  "retries": 0,
+                  "timed_out": false,
+                  "latency_ms": 600.855
+                },
+                "client_duration_ms": 600.855,
+                "inference_requests": 0,
+                "tool_calls": 0
+              },
+              "engine": "ollama-runtime",
+              "model": "gemma4:31b-cloud",
+              "mode": "eval",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": {
+                "ok": true,
+                "issues": []
+              },
+              "errors": [
+                {
+                  "code": "run_failed",
+                  "message": "Guardrail InputGuardrail triggered tripwire"
+                }
+              ],
+              "meta": {
+                "source_result_type": "InputGuardrailTripwireTriggered",
+                "framework_adapter": "openai-agents",
+                "input": "BLOCKED_REQUEST",
+                "runtime": {
+                  "provider": "ollama-runtime",
+                  "model_id": "gemma4:31b-cloud",
+                  "region_name": null,
+                  "endpoint": "https://ollama.com/v1",
+                  "metadata": {},
+                  "provider_priority": [
+                    "openai-runtime",
+                    "bedrock-runtime",
+                    "ollama-runtime"
+                  ],
+                  "allow_python_fallback": false,
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  }
+                },
+                "scheduler": {
+                  "max_turns": 5,
+                  "max_tool_calls": 3,
+                  "timeout_s": 60,
+                  "max_concurrency": 1,
+                  "max_retries": 0,
+                  "backoff_s": 0.0
+                },
+                "scheduler_execution": {
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "attempts": 1,
+                  "retries": 0,
+                  "timed_out": false,
+                  "latency_ms": 600.855
+                },
+                "framework": "openai-agents",
+                "framework_requested": "openai-agents",
+                "framework_config": {
+                  "name": "openai-agents",
+                  "agent_kwargs": {
+                    "handoffs": "list",
+                    "input_guardrails": "list"
+                  },
+                  "run_kwargs": {
+                    "session": "SQLiteSession"
+                  }
+                },
+                "agent_name": "triage",
+                "requested_engine": "ollama-runtime",
+                "runtime_engine": "ollama-runtime",
+                "execution_engine": "ollama-runtime"
+              },
+              "execution_id": "run-4c62087806194cd791e1ea3aad430548",
+              "parent_execution_id": "run-523d2399b9bb45d093b55fb640b7b010",
+              "children": [],
+              "tool_events": []
+            }
+          ],
+          "tool_events": []
+        }
+      ],
+      "tool_events": []
+    }
+  },
+  "elapsed_s": 3.766
+}

@@ -1,0 +1,432 @@
+{
+  "source": "examples/applications/meeting_action_center",
+  "captured_boundaries": 2,
+  "root_results": 1,
+  "scope": "Observed SDK RunResult values; descendants retained inside parents. No fabricated results for configuration-only examples.",
+  "results": [
+    {
+      "run_result": {
+        "text": "",
+        "final": {
+          "actions": [
+            {
+              "owner": "Ana",
+              "task": "Review budget",
+              "due": "Friday"
+            }
+          ]
+        },
+        "data": {
+          "actions": [
+            {
+              "owner": "Ana",
+              "task": "Review budget",
+              "due": "Friday"
+            }
+          ]
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "application",
+          "kind": "system",
+          "backend": "native",
+          "skills": [],
+          "actions_observed": 1,
+          "input": {
+            "input": {
+              "notes": [
+                "Ana | Review budget | Friday"
+              ]
+            }
+          }
+        },
+        "execution_id": "run-4401594332d0419ebaf92dacf6dbddd9",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "",
+            "final": {
+              "actions": [
+                {
+                  "owner": "Ana",
+                  "task": "Review budget",
+                  "due": "Friday"
+                }
+              ]
+            },
+            "data": {
+              "actions": [
+                {
+                  "owner": "Ana",
+                  "task": "Review budget",
+                  "due": "Friday"
+                }
+              ]
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 1,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "sequence",
+              "kind": "sequence",
+              "backend": "native"
+            },
+            "execution_id": "run-87f65ca56b094468acd3fb1b687b2d3c",
+            "parent_execution_id": "run-4401594332d0419ebaf92dacf6dbddd9",
+            "children": [
+              {
+                "text": "",
+                "final": {
+                  "actions": [
+                    {
+                      "owner": "Ana",
+                      "task": "Review budget",
+                      "due": "Friday"
+                    }
+                  ]
+                },
+                "data": {
+                  "actions": [
+                    {
+                      "owner": "Ana",
+                      "task": "Review budget",
+                      "due": "Friday"
+                    }
+                  ]
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "requests": 1,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "worker",
+                  "kind": "agent",
+                  "backend": "native",
+                  "skills": [
+                    "extract_actions"
+                  ],
+                  "step": "worker"
+                },
+                "execution_id": "run-2b10e6ef93f344029a4ea0f86c8b5a4b",
+                "parent_execution_id": "run-87f65ca56b094468acd3fb1b687b2d3c",
+                "children": [
+                  {
+                    "text": "",
+                    "final": {
+                      "actions": [
+                        {
+                          "owner": "Ana",
+                          "task": "Review budget",
+                          "due": "Friday"
+                        }
+                      ]
+                    },
+                    "data": {
+                      "actions": [
+                        {
+                          "owner": "Ana",
+                          "task": "Review budget",
+                          "due": "Friday"
+                        }
+                      ]
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "requests": 1,
+                      "inference_requests": 0,
+                      "tool_calls": 1
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "default",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "name": "extract_actions",
+                      "kind": "action"
+                    },
+                    "execution_id": "run-637c0161097b4dbcb933a5fe00a7410a",
+                    "parent_execution_id": "run-2b10e6ef93f344029a4ea0f86c8b5a4b",
+                    "children": [
+                      {
+                        "text": "",
+                        "final": {
+                          "actions": [
+                            {
+                              "owner": "Ana",
+                              "task": "Review budget",
+                              "due": "Friday"
+                            }
+                          ]
+                        },
+                        "data": {
+                          "actions": [
+                            {
+                              "owner": "Ana",
+                              "task": "Review budget",
+                              "due": "Friday"
+                            }
+                          ]
+                        },
+                        "ok": true,
+                        "messages": [],
+                        "raw_responses": [],
+                        "usage": {
+                          "requests": 1,
+                          "inference_requests": 0,
+                          "tool_calls": 1
+                        },
+                        "engine": "python-runtime",
+                        "model": "",
+                        "mode": "tool",
+                        "trace_schema_version": "agentic_systems.trace.v1",
+                        "validation": null,
+                        "errors": [],
+                        "meta": {
+                          "tool_name": "",
+                          "input": {
+                            "input": {
+                              "notes": [
+                                "Ana | Review budget | Friday"
+                              ]
+                            }
+                          },
+                          "tool_input": {
+                            "input": {
+                              "notes": [
+                                "Ana | Review budget | Friday"
+                              ]
+                            }
+                          }
+                        },
+                        "execution_id": "run-a7b1cb6c0f874f609982c397aeb5eedb",
+                        "parent_execution_id": "run-637c0161097b4dbcb933a5fe00a7410a",
+                        "children": [],
+                        "tool_events": [
+                          {
+                            "id": "tool-ef2efde3c53b4509976dcb2cf432b8a2",
+                            "name": "extract_actions",
+                            "input": {
+                              "input": {
+                                "notes": [
+                                  "Ana | Review budget | Friday"
+                                ]
+                              }
+                            },
+                            "output": {
+                              "data": {
+                                "actions": [
+                                  {
+                                    "owner": "Ana",
+                                    "task": "Review budget",
+                                    "due": "Friday"
+                                  }
+                                ]
+                              }
+                            },
+                            "ok": true,
+                            "error": null,
+                            "duration_ms": null,
+                            "meta": {}
+                          }
+                        ]
+                      }
+                    ],
+                    "tool_events": []
+                  }
+                ],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "examples/applications/meeting_action_center",
+        "question": "{\"input\": {\"notes\": [\"Ana | Review budget | Friday\"]}}",
+        "goal": "",
+        "answer": "{\"actions\": [{\"owner\": \"Ana\", \"task\": \"Review budget\", \"due\": \"Friday\"}]}",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-4401594332d0419ebaf92dacf6dbddd9",
+            "kind": "execution",
+            "title": "application",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "actions": [
+                  {
+                    "owner": "Ana",
+                    "task": "Review budget",
+                    "due": "Friday"
+                  }
+                ]
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-87f65ca56b094468acd3fb1b687b2d3c",
+            "kind": "execution",
+            "title": "sequence",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "actions": [
+                  {
+                    "owner": "Ana",
+                    "task": "Review budget",
+                    "due": "Friday"
+                  }
+                ]
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-2b10e6ef93f344029a4ea0f86c8b5a4b",
+            "kind": "execution",
+            "title": "worker",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "actions": [
+                  {
+                    "owner": "Ana",
+                    "task": "Review budget",
+                    "due": "Friday"
+                  }
+                ]
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-637c0161097b4dbcb933a5fe00a7410a",
+            "kind": "execution",
+            "title": "extract_actions",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "actions": [
+                  {
+                    "owner": "Ana",
+                    "task": "Review budget",
+                    "due": "Friday"
+                  }
+                ]
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-a7b1cb6c0f874f609982c397aeb5eedb",
+            "kind": "execution",
+            "title": "tool",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "actions": [
+                  {
+                    "owner": "Ana",
+                    "task": "Review budget",
+                    "due": "Friday"
+                  }
+                ]
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "tool-ef2efde3c53b4509976dcb2cf432b8a2",
+            "kind": "tool",
+            "title": "extract_actions",
+            "summary": "completed",
+            "source": "extract_actions",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "actions": [
+                  {
+                    "owner": "Ana",
+                    "task": "Review budget",
+                    "due": "Friday"
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    }
+  ]
+}

@@ -233,4 +233,6 @@ write("10_contracts_judges.ipynb", "Contratos, salida estructurada y juez explí
     ("md", "Eval combina las expectativas, los checks y el juez requerido mediante AND. El juez es un Agent normal; recibe input, expected, resultado y evidencia. La rúbrica fija criterios y threshold. Los criterios fallidos requieren hallazgos con evidencia; un ok inconsistente no se acepta. Este juez es una fixture de protocolo: no valida semántica de ningún modelo."),
     ("code", "from lesson_examples import evaluation_example\nreport = evaluation_example()\nassert report['output']['ok'] and not report['negative']['ok'] and report['episode']['ok']\nprint({'positive':report['output']['ok'],'negative':report['negative']['ok'],'judge':report['judge_validation']})"),
 ])
-print("Generated 11 canonical tutorials from the implemented 2.1.3 API")
+from organize_learning_213 import organize  # noqa: E402
+organize()
+print("Generated 19 organized tutorials from the installed 2.1.3 API")

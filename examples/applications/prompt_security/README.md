@@ -16,7 +16,8 @@ Código:
 
 Validación: **Offline ejecutado**. Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.
 
-- [Ejecución actual](../../../examples/applications/prompt_security/evidence/current.json)
+- [Nueva ejecución contra el wheel publicado](../../../revisions/2.1.3/learning-evidence-elevated/example-results/applications/prompt_security/current.json)
+- [RunResult y lineage](../../../revisions/2.1.3/learning-evidence-elevated/example-results/applications/prompt_security/runresults.json)
 
 <details>
 <summary>Evidencia del experimento anterior</summary>

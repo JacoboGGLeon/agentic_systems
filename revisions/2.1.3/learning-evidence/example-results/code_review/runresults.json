@@ -1,0 +1,390 @@
+{
+  "source": "examples/applications/code_review",
+  "captured_boundaries": 2,
+  "root_results": 1,
+  "scope": "Observed SDK RunResult values; descendants retained inside parents. No fabricated results for configuration-only examples.",
+  "results": [
+    {
+      "run_result": {
+        "text": "",
+        "final": {
+          "syntax_ok": true,
+          "functions": 1,
+          "missing_return_annotations": [
+            "total"
+          ]
+        },
+        "data": {
+          "syntax_ok": true,
+          "functions": 1,
+          "missing_return_annotations": [
+            "total"
+          ]
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "application",
+          "kind": "system",
+          "backend": "native",
+          "skills": [],
+          "actions_observed": 1,
+          "input": {
+            "input": {
+              "source": "def total(values):\n    return sum(values)\n"
+            }
+          }
+        },
+        "execution_id": "run-9578f5929a994c9fb0ee92447072ca19",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "",
+            "final": {
+              "syntax_ok": true,
+              "functions": 1,
+              "missing_return_annotations": [
+                "total"
+              ]
+            },
+            "data": {
+              "syntax_ok": true,
+              "functions": 1,
+              "missing_return_annotations": [
+                "total"
+              ]
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 1,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "sequence",
+              "kind": "sequence",
+              "backend": "native"
+            },
+            "execution_id": "run-2b6a7226d5c34747b45431bac9c711f0",
+            "parent_execution_id": "run-9578f5929a994c9fb0ee92447072ca19",
+            "children": [
+              {
+                "text": "",
+                "final": {
+                  "syntax_ok": true,
+                  "functions": 1,
+                  "missing_return_annotations": [
+                    "total"
+                  ]
+                },
+                "data": {
+                  "syntax_ok": true,
+                  "functions": 1,
+                  "missing_return_annotations": [
+                    "total"
+                  ]
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "requests": 1,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "worker",
+                  "kind": "agent",
+                  "backend": "native",
+                  "skills": [
+                    "inspect_source"
+                  ],
+                  "step": "worker"
+                },
+                "execution_id": "run-73eb793858d841fe9283fc9c884e9b0c",
+                "parent_execution_id": "run-2b6a7226d5c34747b45431bac9c711f0",
+                "children": [
+                  {
+                    "text": "",
+                    "final": {
+                      "syntax_ok": true,
+                      "functions": 1,
+                      "missing_return_annotations": [
+                        "total"
+                      ]
+                    },
+                    "data": {
+                      "syntax_ok": true,
+                      "functions": 1,
+                      "missing_return_annotations": [
+                        "total"
+                      ]
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "requests": 1,
+                      "inference_requests": 0,
+                      "tool_calls": 1
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "default",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "name": "inspect_source",
+                      "kind": "action"
+                    },
+                    "execution_id": "run-ec8d4fa32e9a4980851e0e06c24bc113",
+                    "parent_execution_id": "run-73eb793858d841fe9283fc9c884e9b0c",
+                    "children": [
+                      {
+                        "text": "",
+                        "final": {
+                          "syntax_ok": true,
+                          "functions": 1,
+                          "missing_return_annotations": [
+                            "total"
+                          ]
+                        },
+                        "data": {
+                          "syntax_ok": true,
+                          "functions": 1,
+                          "missing_return_annotations": [
+                            "total"
+                          ]
+                        },
+                        "ok": true,
+                        "messages": [],
+                        "raw_responses": [],
+                        "usage": {
+                          "requests": 1,
+                          "inference_requests": 0,
+                          "tool_calls": 1
+                        },
+                        "engine": "python-runtime",
+                        "model": "",
+                        "mode": "tool",
+                        "trace_schema_version": "agentic_systems.trace.v1",
+                        "validation": null,
+                        "errors": [],
+                        "meta": {
+                          "tool_name": "",
+                          "input": {
+                            "input": {
+                              "source": "def total(values):\n    return sum(values)\n"
+                            }
+                          },
+                          "tool_input": {
+                            "input": {
+                              "source": "def total(values):\n    return sum(values)\n"
+                            }
+                          }
+                        },
+                        "execution_id": "run-a1fd485cf2834326801050a97ff113f8",
+                        "parent_execution_id": "run-ec8d4fa32e9a4980851e0e06c24bc113",
+                        "children": [],
+                        "tool_events": [
+                          {
+                            "id": "tool-79af725cbdf8402191cf4eaabcb46962",
+                            "name": "inspect_source",
+                            "input": {
+                              "input": {
+                                "source": "def total(values):\n    return sum(values)\n"
+                              }
+                            },
+                            "output": {
+                              "data": {
+                                "syntax_ok": true,
+                                "functions": 1,
+                                "missing_return_annotations": [
+                                  "total"
+                                ]
+                              }
+                            },
+                            "ok": true,
+                            "error": null,
+                            "duration_ms": null,
+                            "meta": {}
+                          }
+                        ]
+                      }
+                    ],
+                    "tool_events": []
+                  }
+                ],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "examples/applications/code_review",
+        "question": "{\"input\": {\"source\": \"def total(values):\\n    return sum(values)\\n\"}}",
+        "goal": "",
+        "answer": "{\"syntax_ok\": true, \"functions\": 1, \"missing_return_annotations\": [\"total\"]}",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-9578f5929a994c9fb0ee92447072ca19",
+            "kind": "execution",
+            "title": "application",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "syntax_ok": true,
+                "functions": 1,
+                "missing_return_annotations": [
+                  "total"
+                ]
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-2b6a7226d5c34747b45431bac9c711f0",
+            "kind": "execution",
+            "title": "sequence",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "syntax_ok": true,
+                "functions": 1,
+                "missing_return_annotations": [
+                  "total"
+                ]
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-73eb793858d841fe9283fc9c884e9b0c",
+            "kind": "execution",
+            "title": "worker",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "syntax_ok": true,
+                "functions": 1,
+                "missing_return_annotations": [
+                  "total"
+                ]
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-ec8d4fa32e9a4980851e0e06c24bc113",
+            "kind": "execution",
+            "title": "inspect_source",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "syntax_ok": true,
+                "functions": 1,
+                "missing_return_annotations": [
+                  "total"
+                ]
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-a1fd485cf2834326801050a97ff113f8",
+            "kind": "execution",
+            "title": "tool",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "syntax_ok": true,
+                "functions": 1,
+                "missing_return_annotations": [
+                  "total"
+                ]
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "tool-79af725cbdf8402191cf4eaabcb46962",
+            "kind": "tool",
+            "title": "inspect_source",
+            "summary": "completed",
+            "source": "inspect_source",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "syntax_ok": true,
+                "functions": 1,
+                "missing_return_annotations": [
+                  "total"
+                ]
+              }
+            }
+          }
+        ],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    }
+  ]
+}

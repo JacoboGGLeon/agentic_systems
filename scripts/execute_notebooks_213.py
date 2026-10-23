@@ -1,5 +1,6 @@
 """Execute every current teaching notebook in fresh offline kernels."""
 import hashlib
+from datetime import datetime, timezone
 import json
 import os
 from pathlib import Path
@@ -22,16 +23,22 @@ def main():
     if selected:
         paths = [p for p in paths if p.relative_to(ROOT).as_posix() == selected]
         assert len(paths) == 1
-    destination = OUTPUT / 'executed-notebooks'
+    attempt = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%f')
+    destination = OUTPUT / 'executed-notebooks' / attempt
     destination.mkdir(parents=True, exist_ok=True)
     rows = []
     for index, path in enumerate(paths):
         source_hash = hashlib.sha256(path.read_bytes()).hexdigest()
         notebook = nbformat.read(path, as_version=4)
         code_cells = sum(cell.cell_type == 'code' for cell in notebook.cells)
+        skipped = []
         for cell in notebook.cells:
             if cell.cell_type == 'code':
                 cell.execution_count, cell.outputs = None, []
+                tags = set(cell.metadata.get('tags', []))
+                if tags.intersection({'live', 'local-network', 'ui'}):
+                    skipped.append({'cell_id': cell.id, 'tags': sorted(tags), 'reason': 'Requires explicit live/local-service/UI execution profile'})
+                    cell.source = '# Validation copy: this section is not executed in the offline profile.'
         bootstrap = nbformat.v4.new_code_cell(
             'import sys as __harness_sys\nfrom pathlib import Path as __harness_Path\n'
             + '__harness_sys.path.insert(0, ' + repr(str(ROOT / 'tutorials')) + ')\n'
@@ -42,7 +49,7 @@ def main():
             + 'assert "site-packages" in __harness_Path(__harness_toolkit.__file__).parts')
         bootstrap.metadata = {'tags': ['validation-only', 'hide-input']}
         notebook.cells.insert(0, bootstrap)
-        runresults = OUTPUT / 'notebook-runresults' / f'{index:02d}-{path.stem}.json'
+        runresults = OUTPUT / 'notebook-runresults' / attempt / f'{index:02d}-{path.stem}.json'
         notebook.cells.append(nbformat.v4.new_code_cell('__capture.save(' + repr(str(runresults)) + ', ' + repr(path.relative_to(ROOT).as_posix()) + ')\nassert __blocked() == 0', metadata={'tags': ['validation-only', 'hide-input']}))
         manager = KernelManager(kernel_name='python3')
         manager.kernel_spec.argv = [sys.executable, '-m', 'ipykernel_launcher', '-f', '{connection_file}']
@@ -64,12 +71,19 @@ def main():
                'source_sha256': source_hash, 'code_cells': code_cells, 'validation_only_cells': 2,
                'executed_notebook': target.relative_to(ROOT).as_posix(), 'executed_sha256': hashlib.sha256(target.read_bytes()).hexdigest(),
                'inference_requests': 0}
+        row['skipped_sections'] = skipped
+        row['scope'] = 'complete-offline-notebook' if not skipped else 'offline-sections-only'
         row['runresults_evidence'] = runresults.relative_to(ROOT).as_posix() if runresults.exists() else None
         rows.append(row)
         print(json.dumps({k: v for k, v in row.items() if k not in {'error'}}, ensure_ascii=False), flush=True)
         if failure:
             print(json.dumps(failure, ensure_ascii=False), flush=True)
     report_path = OUTPUT / 'notebooks.json'
+    if report_path.exists():
+        archive = OUTPUT / 'previous' / ('notebooks-' + hashlib.sha256(report_path.read_bytes()).hexdigest() + '.json')
+        archive.parent.mkdir(parents=True, exist_ok=True)
+        if not archive.exists():
+            archive.write_bytes(report_path.read_bytes())
     if selected and report_path.exists():
         previous = json.loads(report_path.read_text(encoding='utf-8'))['notebooks']
         replaced = {row['notebook'] for row in rows}

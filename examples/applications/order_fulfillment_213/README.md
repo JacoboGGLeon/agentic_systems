@@ -15,7 +15,7 @@ Código:
 - [Application](../../../examples/order_fulfillment/README.md)
 - [Single declaration](../../../examples/order_fulfillment/system.py)
 
-Validación: **Offline ejecutado**. Canonical root implementation. Final wheel hash and measured offline scope are in implementation evidence; no real inference or publication.
+Validación: **Offline ejecutado**. Canonical root implementation. Final wheel hash and measured offline scope are in implementation evidence; offline; el alcance live se informa por separado.
 
 - [Measured offline report](../../../revisions/2.1.3/closeout-evidence/REPORT.md)
 - [Exact artifact and evidence hashes](../../../revisions/2.1.3/implementation-evidence/manifest.json)

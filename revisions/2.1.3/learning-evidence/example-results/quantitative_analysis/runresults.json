@@ -1,0 +1,392 @@
+{
+  "source": "examples/applications/quantitative_analysis",
+  "captured_boundaries": 2,
+  "root_results": 1,
+  "scope": "Observed SDK RunResult values; descendants retained inside parents. No fabricated results for configuration-only examples.",
+  "results": [
+    {
+      "run_result": {
+        "text": "",
+        "final": {
+          "revenue": "120.30",
+          "cost": "70.05",
+          "profit": "50.25"
+        },
+        "data": {
+          "revenue": "120.30",
+          "cost": "70.05",
+          "profit": "50.25"
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "application",
+          "kind": "system",
+          "backend": "native",
+          "skills": [],
+          "actions_observed": 1,
+          "input": {
+            "input": {
+              "rows": [
+                {
+                  "revenue": "100.10",
+                  "cost": "60.05"
+                },
+                {
+                  "revenue": "20.20",
+                  "cost": "10.00"
+                }
+              ]
+            }
+          }
+        },
+        "execution_id": "run-25c642e4495148c7ab1dbc1fe048661e",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "",
+            "final": {
+              "revenue": "120.30",
+              "cost": "70.05",
+              "profit": "50.25"
+            },
+            "data": {
+              "revenue": "120.30",
+              "cost": "70.05",
+              "profit": "50.25"
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 1,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "sequence",
+              "kind": "sequence",
+              "backend": "native"
+            },
+            "execution_id": "run-b4206fd0050344f581132bd859184b3b",
+            "parent_execution_id": "run-25c642e4495148c7ab1dbc1fe048661e",
+            "children": [
+              {
+                "text": "",
+                "final": {
+                  "revenue": "120.30",
+                  "cost": "70.05",
+                  "profit": "50.25"
+                },
+                "data": {
+                  "revenue": "120.30",
+                  "cost": "70.05",
+                  "profit": "50.25"
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "requests": 1,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "worker",
+                  "kind": "agent",
+                  "backend": "native",
+                  "skills": [
+                    "profit"
+                  ],
+                  "step": "worker"
+                },
+                "execution_id": "run-6ae4588bf800476cb67befed5211087c",
+                "parent_execution_id": "run-b4206fd0050344f581132bd859184b3b",
+                "children": [
+                  {
+                    "text": "",
+                    "final": {
+                      "revenue": "120.30",
+                      "cost": "70.05",
+                      "profit": "50.25"
+                    },
+                    "data": {
+                      "revenue": "120.30",
+                      "cost": "70.05",
+                      "profit": "50.25"
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "requests": 1,
+                      "inference_requests": 0,
+                      "tool_calls": 1
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "default",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "name": "profit",
+                      "kind": "action"
+                    },
+                    "execution_id": "run-d2f956ec844b454f97e18907a23de5fb",
+                    "parent_execution_id": "run-6ae4588bf800476cb67befed5211087c",
+                    "children": [
+                      {
+                        "text": "",
+                        "final": {
+                          "revenue": "120.30",
+                          "cost": "70.05",
+                          "profit": "50.25"
+                        },
+                        "data": {
+                          "revenue": "120.30",
+                          "cost": "70.05",
+                          "profit": "50.25"
+                        },
+                        "ok": true,
+                        "messages": [],
+                        "raw_responses": [],
+                        "usage": {
+                          "requests": 1,
+                          "inference_requests": 0,
+                          "tool_calls": 1
+                        },
+                        "engine": "python-runtime",
+                        "model": "",
+                        "mode": "tool",
+                        "trace_schema_version": "agentic_systems.trace.v1",
+                        "validation": null,
+                        "errors": [],
+                        "meta": {
+                          "tool_name": "",
+                          "input": {
+                            "input": {
+                              "rows": [
+                                {
+                                  "revenue": "100.10",
+                                  "cost": "60.05"
+                                },
+                                {
+                                  "revenue": "20.20",
+                                  "cost": "10.00"
+                                }
+                              ]
+                            }
+                          },
+                          "tool_input": {
+                            "input": {
+                              "rows": [
+                                {
+                                  "revenue": "100.10",
+                                  "cost": "60.05"
+                                },
+                                {
+                                  "revenue": "20.20",
+                                  "cost": "10.00"
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        "execution_id": "run-40143544fcfa42c090c4f8b17e21eb9a",
+                        "parent_execution_id": "run-d2f956ec844b454f97e18907a23de5fb",
+                        "children": [],
+                        "tool_events": [
+                          {
+                            "id": "tool-9949938aa41e4e4ab4355a0d58f4ef1d",
+                            "name": "profit",
+                            "input": {
+                              "input": {
+                                "rows": [
+                                  {
+                                    "revenue": "100.10",
+                                    "cost": "60.05"
+                                  },
+                                  {
+                                    "revenue": "20.20",
+                                    "cost": "10.00"
+                                  }
+                                ]
+                              }
+                            },
+                            "output": {
+                              "data": {
+                                "revenue": "120.30",
+                                "cost": "70.05",
+                                "profit": "50.25"
+                              }
+                            },
+                            "ok": true,
+                            "error": null,
+                            "duration_ms": null,
+                            "meta": {}
+                          }
+                        ]
+                      }
+                    ],
+                    "tool_events": []
+                  }
+                ],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "examples/applications/quantitative_analysis",
+        "question": "{\"input\": {\"rows\": [{\"revenue\": \"100.10\", \"cost\": \"60.05\"}, {\"revenue\": \"20.20\", \"cost\": \"10.00\"}]}}",
+        "goal": "",
+        "answer": "{\"revenue\": \"120.30\", \"cost\": \"70.05\", \"profit\": \"50.25\"}",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-25c642e4495148c7ab1dbc1fe048661e",
+            "kind": "execution",
+            "title": "application",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "revenue": "120.30",
+                "cost": "70.05",
+                "profit": "50.25"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-b4206fd0050344f581132bd859184b3b",
+            "kind": "execution",
+            "title": "sequence",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "revenue": "120.30",
+                "cost": "70.05",
+                "profit": "50.25"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-6ae4588bf800476cb67befed5211087c",
+            "kind": "execution",
+            "title": "worker",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "revenue": "120.30",
+                "cost": "70.05",
+                "profit": "50.25"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-d2f956ec844b454f97e18907a23de5fb",
+            "kind": "execution",
+            "title": "profit",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "revenue": "120.30",
+                "cost": "70.05",
+                "profit": "50.25"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-40143544fcfa42c090c4f8b17e21eb9a",
+            "kind": "execution",
+            "title": "tool",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "revenue": "120.30",
+                "cost": "70.05",
+                "profit": "50.25"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "tool-9949938aa41e4e4ab4355a0d58f4ef1d",
+            "kind": "tool",
+            "title": "profit",
+            "summary": "completed",
+            "source": "profit",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "revenue": "120.30",
+                "cost": "70.05",
+                "profit": "50.25"
+              }
+            }
+          }
+        ],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    }
+  ]
+}

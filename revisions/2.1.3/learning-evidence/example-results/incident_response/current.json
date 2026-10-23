@@ -1,0 +1,270 @@
+{
+  "example": "incident_response",
+  "example_passed": true,
+  "source_sha256": "093f3be8871007d993e106b36cf1632df20817c2eefbae4a1d7edb899db106d8",
+  "inference_requests": 0,
+  "scope": "offline contract or configuration; no model-generation/semantic/IAM/GPU certification",
+  "output": {
+    "text": "",
+    "final": {
+      "failures": 2,
+      "severity": "high",
+      "action": "isolate and investigate"
+    },
+    "data": {
+      "failures": 2,
+      "severity": "high",
+      "action": "isolate and investigate"
+    },
+    "ok": true,
+    "messages": [],
+    "raw_responses": [],
+    "usage": {
+      "requests": 1,
+      "inference_requests": 0,
+      "tool_calls": 1
+    },
+    "engine": "python-runtime",
+    "model": "",
+    "mode": "default",
+    "trace_schema_version": "agentic_systems.trace.v1",
+    "validation": null,
+    "errors": [],
+    "meta": {
+      "name": "application",
+      "kind": "system",
+      "backend": "native",
+      "skills": [],
+      "actions_observed": 1,
+      "input": {
+        "input": {
+          "events": [
+            {
+              "status": "error"
+            },
+            {
+              "status": "ok"
+            },
+            {
+              "status": "error"
+            }
+          ]
+        }
+      }
+    },
+    "execution_id": "run-3f8c82f1399b4bcdbcab423b425f7227",
+    "parent_execution_id": null,
+    "children": [
+      {
+        "text": "",
+        "final": {
+          "failures": 2,
+          "severity": "high",
+          "action": "isolate and investigate"
+        },
+        "data": {
+          "failures": 2,
+          "severity": "high",
+          "action": "isolate and investigate"
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "sequence",
+          "kind": "sequence",
+          "backend": "native"
+        },
+        "execution_id": "run-81ea3c558fa54605b8d0f5e0fdbf9509",
+        "parent_execution_id": "run-3f8c82f1399b4bcdbcab423b425f7227",
+        "children": [
+          {
+            "text": "",
+            "final": {
+              "failures": 2,
+              "severity": "high",
+              "action": "isolate and investigate"
+            },
+            "data": {
+              "failures": 2,
+              "severity": "high",
+              "action": "isolate and investigate"
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 1,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "worker",
+              "kind": "agent",
+              "backend": "native",
+              "skills": [
+                "triage"
+              ],
+              "step": "worker"
+            },
+            "execution_id": "run-a5452f61d6fd46f782802dc674ba6c24",
+            "parent_execution_id": "run-81ea3c558fa54605b8d0f5e0fdbf9509",
+            "children": [
+              {
+                "text": "",
+                "final": {
+                  "failures": 2,
+                  "severity": "high",
+                  "action": "isolate and investigate"
+                },
+                "data": {
+                  "failures": 2,
+                  "severity": "high",
+                  "action": "isolate and investigate"
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "requests": 1,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "triage",
+                  "kind": "action"
+                },
+                "execution_id": "run-d6b7cabb996046f48f72b3213d863485",
+                "parent_execution_id": "run-a5452f61d6fd46f782802dc674ba6c24",
+                "children": [
+                  {
+                    "text": "",
+                    "final": {
+                      "failures": 2,
+                      "severity": "high",
+                      "action": "isolate and investigate"
+                    },
+                    "data": {
+                      "failures": 2,
+                      "severity": "high",
+                      "action": "isolate and investigate"
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "requests": 1,
+                      "inference_requests": 0,
+                      "tool_calls": 1
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "tool",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "tool_name": "",
+                      "input": {
+                        "input": {
+                          "events": [
+                            {
+                              "status": "error"
+                            },
+                            {
+                              "status": "ok"
+                            },
+                            {
+                              "status": "error"
+                            }
+                          ]
+                        }
+                      },
+                      "tool_input": {
+                        "input": {
+                          "events": [
+                            {
+                              "status": "error"
+                            },
+                            {
+                              "status": "ok"
+                            },
+                            {
+                              "status": "error"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "execution_id": "run-84283d0b7e6745b6a7a09f0a8f4b31f5",
+                    "parent_execution_id": "run-d6b7cabb996046f48f72b3213d863485",
+                    "children": [],
+                    "tool_events": [
+                      {
+                        "id": "tool-3b7c62c78e1e45b885aa6d2c0d72a27b",
+                        "name": "triage",
+                        "input": {
+                          "input": {
+                            "events": [
+                              {
+                                "status": "error"
+                              },
+                              {
+                                "status": "ok"
+                              },
+                              {
+                                "status": "error"
+                              }
+                            ]
+                          }
+                        },
+                        "output": {
+                          "data": {
+                            "failures": 2,
+                            "severity": "high",
+                            "action": "isolate and investigate"
+                          }
+                        },
+                        "ok": true,
+                        "error": null,
+                        "duration_ms": null,
+                        "meta": {}
+                      }
+                    ]
+                  }
+                ],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      }
+    ],
+    "tool_events": []
+  }
+}

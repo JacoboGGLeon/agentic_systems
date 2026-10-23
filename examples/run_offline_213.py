@@ -25,8 +25,9 @@ reports = []
 for name in names:
     capture.clear()
     source = ROOT / "examples" / name / "example.py"
-    evidence = source.parent / "evidence"
-    evidence.mkdir(exist_ok=True)
+    base = os.environ.get('AGENTIC_213_EVIDENCE_DIR')
+    evidence = ROOT / base / 'example-results' / name if base else source.parent / 'evidence'
+    evidence.mkdir(parents=True, exist_ok=True)
     try:
         report = importlib.import_module(name + ".example").run()
     finally:

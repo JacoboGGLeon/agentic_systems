@@ -1,0 +1,42 @@
+{
+  "example": "aws_iam",
+  "example_passed": true,
+  "source_sha256": "da3af6d3335d3184e9bfbdf1f60a3f66c53e8b970806012a6703e0f246d7241a",
+  "inference_requests": 0,
+  "scope": "offline contract or configuration; no model-generation/semantic/IAM/GPU certification",
+  "output": {
+    "mode": "AWS IAM",
+    "runtime": {
+      "provider": "bedrock-runtime",
+      "model": "configure-in-target-environment",
+      "region": "us-east-2",
+      "endpoint": null,
+      "api_key_configured": false,
+      "timeout_s": 60.0,
+      "max_retries": 0,
+      "max_tool_calls": 5,
+      "max_turns": 6,
+      "max_tokens": null,
+      "backoff_s": 0.0,
+      "max_concurrency": 1
+    },
+    "application": {
+      "name": "target",
+      "kind": "agent",
+      "backend": "native",
+      "native_type": null,
+      "children": [
+        {
+          "name": "target",
+          "kind": "model",
+          "backend": "native",
+          "native_type": null,
+          "children": []
+        }
+      ]
+    },
+    "status": "configuration-only; target environment not executed",
+    "inference_requests": 0,
+    "authentication": "Remove bearer token from the target IAM process; use its workload role. Never embed access keys."
+  }
+}

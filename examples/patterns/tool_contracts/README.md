@@ -17,5 +17,5 @@ Código:
 
 Validación: **Offline ejecutado**. Pydantic input/output schemas, direct/async deterministic Tool and a controlled invalid input. Final artifact binding is recorded in implementation evidence. No real inference.
 
-- [Measured offline report](../../../revisions/2.1.3/closeout-evidence/REPORT.md)
-- [Exact artifact and evidence hashes](../../../revisions/2.1.3/implementation-evidence/manifest.json)
+- [Nueva ejecución contra el wheel publicado](../../../revisions/2.1.3/learning-evidence-elevated/example-results/tool_contracts/run.json)
+- [RunResult y lineage](../../../revisions/2.1.3/learning-evidence-elevated/example-results/tool_contracts/runresults.json)

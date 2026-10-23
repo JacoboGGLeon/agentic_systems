@@ -10,4 +10,5 @@ Código:
 
 Validación: **Live: escenario probado**. Backend: 16 combinaciones, tres turnos cada una. Las pruebas de widgets y sus límites se detallan en el informe; no implica cualquier consulta o entorno.
 
-- [Resultados](../../../revisions/2.1.3/closeout-evidence/REPORT.md)
+- [Validación actual y UI](../../../docs/LEARNING_VALIDATION_213.md)
+- [Publicación original](../../../revisions/2.1.3/closeout-evidence/REPORT.md)

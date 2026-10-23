@@ -16,7 +16,8 @@ Código:
 
 Validación: **Offline ejecutado**. Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.
 
-- [Ejecución actual](../../../examples/validation/api_contract_lab/evidence/current.json)
+- [Nueva ejecución contra el wheel publicado](../../../revisions/2.1.3/learning-evidence-elevated/example-results/validation/api_contract_lab/current.json)
+- [RunResult y lineage](../../../revisions/2.1.3/learning-evidence-elevated/example-results/validation/api_contract_lab/runresults.json)
 
 <details>
 <summary>Evidencia del experimento anterior</summary>

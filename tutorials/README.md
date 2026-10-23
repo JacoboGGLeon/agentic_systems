@@ -1,34 +1,65 @@
-# Tutorials
+# Tutorials · Agentic Systems 2.1.3
 
-Abre un notebook, importa la librería y ejecuta sus celdas. Cada capítulo
-introduce una necesidad y muestra **input → proceso → output**.
+Abre un notebook y ejecuta sus celdas en orden. Cada lección explica
+**input → proceso → output** y usa `import agentic_systems as toolkit`.
+Instala [el SDK y los extras necesarios](../INSTALL.md) en el kernel de Jupyter.
+Los ejemplos de core son autónomos: no necesitan imports ocultos desde el repositorio.
 
-Empieza por 00–03. Añade Environment y Eval en 04–05. Los capítulos siguientes
-son para integrar proveedores, consultar trazas o preparar una aplicación mayor.
+## Core
 
-| Capítulo | Pregunta que resuelve |
+Sigue 00–03 para empezar. Añade episodios, evaluación y observabilidad según tu tarea.
+
+| Notebook | Lo que construyes |
 |---|---|
-| [00](00_api.ipynb) | ¿Cómo construyo algo y obtengo su resultado? |
-| [01](01_tools_skills.ipynb) | ¿Cómo reutilizo operaciones con Tools y Skills? |
-| [02](02_agent_flows.ipynb) | ¿Cómo ordena su trabajo un Agent? |
-| [03](03_system_flows.ipynb) | ¿Cómo coordina varios Agents un System? |
-| [04](04_environment.ipynb) | ¿Cómo proceso registros y mantengo memoria? |
-| [05](05_eval.ipynb) | ¿Cómo compruebo que el resultado es correcto? |
-| [06](06_runtime_framework.ipynb) | ¿Cómo elijo proveedor y framework? |
-| [07](07_results_limits.ipynb) | ¿Cómo reutilizo, observo y limito una ejecución? |
-| [08](08_model_serving.ipynb) | ¿Cómo declaro un modelo y su servidor? |
-| [09](09_order_challenge.ipynb) | ¿Cómo se conectan todas las piezas en pedidos? |
-| [10](10_contracts_judges.ipynb) | ¿Cómo añado contratos, salida estructurada y un juez? |
+| [00 · Inicio](core/00_start.ipynb) | Un Agent y su primer RunResult |
+| [01 · Tools y Skills](core/01_tools_skills.ipynb) | Operaciones, contratos y carga de una Skill portable |
+| [02 · Flujos de Agent](core/02_agent_flows.ipynb) | Secuencia, paralelo y decisiones; native y LangGraph |
+| [03 · Flujos de System](core/03_system_flows.ipynb) | Coordinación de agentes con los mismos tres flujos |
+| [04 · Environment](core/04_environment.ipynb) | Episodio, observe, update, stop y memoria |
+| [05 · Eval](core/05_eval.ipynb) | Expectativas exactas, checks y errores detectados |
+| [06 · Resultados y límites](core/06_results_limits.ipynb) | run/arun, compile, límites, JSON, eventos y lineage |
+| [07 · Pedidos](core/07_order_challenge.ipynb) | Tools, Skills, varios Agents, System, decisiones, Environment y Eval |
 
-Todos usan la API 2.1.3 instalada. Python Runtime ejecuta operaciones exactas;
-las celdas no llaman proveedores externos. La lección de serving prepara
-configuración y no inicia GPU. El juez fixture comprueba un protocolo, no la
-capacidad semántica de un modelo.
+## Providers
 
-`lesson_examples.py` localiza las aplicaciones compartidas con independencia
-del directorio de trabajo. Las celdas de aprendizaje no contienen rutas,
-guardas ni banderas de validación. El validador las añade a una copia ejecutada;
-su funcionamiento está en la [guía de desarrollo](../docs/VALIDATION_213.md).
+| Notebook | Ejecución y preparación |
+|---|---|
+| [00 · Python](providers/00_python.ipynb) | Tool real sin modelo de lenguaje ni credenciales |
+| [01 · OpenAI API key](providers/01_openai.ipynb) | Modelo configurado → invocación real de Tool → evidencia |
+| [02 · Ollama](providers/02_ollama.ipynb) | Endpoint y modelo explícitos → Tool → evidencia |
+| [03 · Bedrock API key](providers/03_bedrock.ipynb) | Región, modelo y bearer token → Tool → evidencia |
+| [04 · vLLM y serving](providers/04_vllm_serving.ipynb) | Artefacto, configuración de servidor y endpoint; sin iniciar GPU |
 
-[Examples](../examples/README.md) · [Referencia completa](../docs/API_213_SURFACE.md) ·
-[Evidencia actual](../revisions/2.1.3/framework-evidence/REPORT.md)
+Los tres notebooks externos ejecutan inferencia al correr sus celdas **live**.
+Necesitan las variables del proveedor; no hay fallback. La validación offline
+omite esas celdas y reporta que la ruta live sigue sin ejecutarse en ese perfil.
+No se presenta inspeccionar configuración como validación de un modelo.
+
+## Frameworks
+
+| Notebook | Capacidad que enseña |
+|---|---|
+| [01 · LangGraph](frameworks/01_langgraph.ipynb) | Checkpoint, pausa y reanudación con aprobación explícita |
+| [02 · OpenAI Agents](frameworks/02_openai_agents.ipynb) | Agent común, handoff a especialista, sesión y guardrail |
+| [03 · Strands](frameworks/03_strands.ipynb) | Agent común y Tools MCP / agente A2A sobre servicios locales |
+| [04 · Interoperabilidad](frameworks/04_interoperability.ipynb) | Los cuatro frameworks coordinados por un System |
+
+El primer Agent usa Python Runtime sin inferencia. Los laboratorios de handoff,
+MCP/A2A e interoperabilidad reutilizan la implementación **instalada de Studio**,
+identificada y enlazada en cada lección. Instala [Studio](../examples/agentic_systems_studio/README.md)
+para esas secciones. MCP/A2A inicia servicios locales reales: no es una conexión
+externa ni una certificación semántica de un modelo. La campaña live prueba
+aparte las rutas configuradas de proveedores y frameworks.
+
+## API
+
+| Notebook | Consulta avanzada |
+|---|---|
+| [01 · Runtime y framework](api/01_runtime_framework.ipynb) | Los cuatro frameworks, opciones, límites del actor y configuración explícita |
+| [02 · Contratos y jueces](api/02_contracts_judges.ipynb) | Tool expectations, salida estructurada, juez fixture y checks |
+
+El juez fixture comprueba el protocolo de evaluación; no acredita juicio semántico.
+La [referencia de firmas](../docs/API_213_SURFACE.md) complementa las lecciones.
+
+[Examples](../examples/README.md) · [Studio notebook](../examples/agentic_systems_studio/notebooks/01_studio.ipynb) ·
+[Inventario de gramática](../docs/NOTEBOOK_INVENTORY_213.md) · [Resultados actuales](../docs/LEARNING_VALIDATION_213.md)

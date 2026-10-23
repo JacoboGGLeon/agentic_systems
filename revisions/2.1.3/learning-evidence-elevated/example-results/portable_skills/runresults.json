@@ -1,0 +1,216 @@
+{
+  "source": "examples/portable_skills",
+  "captured_boundaries": 2,
+  "root_results": 1,
+  "scope": "Observed SDK RunResult values; descendants retained inside parents. No fabricated results for configuration-only examples.",
+  "results": [
+    {
+      "run_result": {
+        "text": "",
+        "final": {
+          "value": 4
+        },
+        "data": {
+          "value": 4
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "portable",
+          "kind": "agent",
+          "backend": "native",
+          "skills": [
+            "arithmetic"
+          ],
+          "actions_observed": 1,
+          "input": {
+            "value": 3
+          }
+        },
+        "execution_id": "run-64894029e5734a2db8349a8f0b9a5312",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "",
+            "final": {
+              "value": 4
+            },
+            "data": {
+              "value": 4
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 1,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "increment",
+              "kind": "action"
+            },
+            "execution_id": "run-acc475ba652d43708c3a6860d11349be",
+            "parent_execution_id": "run-64894029e5734a2db8349a8f0b9a5312",
+            "children": [
+              {
+                "text": "",
+                "final": {
+                  "value": 4
+                },
+                "data": {
+                  "value": 4
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "requests": 1,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "tool",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "tool_name": "",
+                  "input": {
+                    "value": 3
+                  },
+                  "tool_input": {
+                    "value": 3
+                  }
+                },
+                "execution_id": "run-6c6a63f4e8cd4fc0b639eef4547bac00",
+                "parent_execution_id": "run-acc475ba652d43708c3a6860d11349be",
+                "children": [],
+                "tool_events": [
+                  {
+                    "id": "tool-78a0e8c85054416caa6693f285d86b77",
+                    "name": "increment",
+                    "input": {
+                      "value": 3
+                    },
+                    "output": {
+                      "data": {
+                        "value": 4
+                      }
+                    },
+                    "ok": true,
+                    "error": null,
+                    "duration_ms": null,
+                    "meta": {}
+                  }
+                ]
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "examples/portable_skills",
+        "question": "{\"value\": 3}",
+        "goal": "",
+        "answer": "{\"value\": 4}",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-64894029e5734a2db8349a8f0b9a5312",
+            "kind": "execution",
+            "title": "portable",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-acc475ba652d43708c3a6860d11349be",
+            "kind": "execution",
+            "title": "increment",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-6c6a63f4e8cd4fc0b639eef4547bac00",
+            "kind": "execution",
+            "title": "tool",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "tool-78a0e8c85054416caa6693f285d86b77",
+            "kind": "tool",
+            "title": "increment",
+            "summary": "completed",
+            "source": "increment",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "value": 4
+              }
+            }
+          }
+        ],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    }
+  ]
+}

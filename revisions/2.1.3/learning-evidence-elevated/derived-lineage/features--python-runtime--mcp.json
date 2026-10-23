@@ -1,0 +1,412 @@
+{
+  "source": "revisions/2.1.3/learning-evidence-elevated/features/20261023T045243165383/python-runtime--mcp.json",
+  "root_results": 1,
+  "results": [
+    {
+      "run_result": {
+        "text": "{\"value\": \"FRAMEWORKS_TOGETHER\", \"transport\": \"mcp-streamable-http\"}",
+        "final": {
+          "text": "{\"value\": \"FRAMEWORKS_TOGETHER\", \"transport\": \"mcp-streamable-http\"}"
+        },
+        "data": {
+          "value": "FRAMEWORKS_TOGETHER",
+          "transport": "mcp-streamable-http"
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "inputTokens": 0,
+          "outputTokens": 0,
+          "totalTokens": 0,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "total_tokens": 0,
+          "client_duration_ms": 26.277,
+          "requests": 2,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "python-runtime",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "strands_protocol",
+          "kind": "agent",
+          "backend": "native",
+          "skills": [],
+          "actions_observed": 1,
+          "input": {
+            "tool": "echo",
+            "input": {
+              "value": "FRAMEWORKS_TOGETHER"
+            }
+          }
+        },
+        "execution_id": "run-0c79b4e4de744e6bbc817a7f6b94e9f5",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "{\"value\": \"FRAMEWORKS_TOGETHER\", \"transport\": \"mcp-streamable-http\"}",
+            "final": {
+              "text": "{\"value\": \"FRAMEWORKS_TOGETHER\", \"transport\": \"mcp-streamable-http\"}"
+            },
+            "data": {
+              "value": "FRAMEWORKS_TOGETHER",
+              "transport": "mcp-streamable-http"
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "inputTokens": 0,
+              "outputTokens": 0,
+              "totalTokens": 0,
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "total_tokens": 0,
+              "client_duration_ms": 26.277,
+              "requests": 2,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "python-runtime",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "strands_protocol",
+              "kind": "model",
+              "framework": "strands"
+            },
+            "execution_id": "run-87df492e1d424d7db859eea7d57722e4",
+            "parent_execution_id": "run-0c79b4e4de744e6bbc817a7f6b94e9f5",
+            "children": [
+              {
+                "text": "{\"value\": \"FRAMEWORKS_TOGETHER\", \"transport\": \"mcp-streamable-http\"}",
+                "final": {
+                  "text": "{\"value\": \"FRAMEWORKS_TOGETHER\", \"transport\": \"mcp-streamable-http\"}"
+                },
+                "data": {
+                  "value": "FRAMEWORKS_TOGETHER",
+                  "transport": "mcp-streamable-http"
+                },
+                "ok": true,
+                "messages": [
+                  {
+                    "role": "user",
+                    "content": [
+                      {
+                        "text": "{\"tool\": \"echo\", \"input\": {\"value\": \"FRAMEWORKS_TOGETHER\"}}"
+                      }
+                    ],
+                    "tracking_id": "d185dc02-9c02-49f3-bbd9-b8dfc15dcc96"
+                  },
+                  {
+                    "role": "assistant",
+                    "content": [
+                      {
+                        "toolUse": {
+                          "toolUseId": "python_f6853763500c4ee2a1cd066fb6d35285",
+                          "name": "echo",
+                          "input": {
+                            "value": "FRAMEWORKS_TOGETHER"
+                          }
+                        }
+                      }
+                    ],
+                    "metadata": {
+                      "usage": {
+                        "inputTokens": 0,
+                        "outputTokens": 0,
+                        "totalTokens": 0
+                      },
+                      "metrics": {
+                        "latencyMs": 0
+                      }
+                    },
+                    "tracking_id": "d88f9b54-a630-4a3b-a055-e68202af5620"
+                  },
+                  {
+                    "role": "user",
+                    "content": [
+                      {
+                        "toolResult": {
+                          "status": "success",
+                          "toolUseId": "python_f6853763500c4ee2a1cd066fb6d35285",
+                          "content": [
+                            {
+                              "text": "{\n  \"value\": \"FRAMEWORKS_TOGETHER\",\n  \"transport\": \"mcp-streamable-http\"\n}"
+                            }
+                          ],
+                          "isError": false
+                        }
+                      }
+                    ],
+                    "tracking_id": "6b08ccbc-7971-4c00-affc-0982284ccd6a"
+                  },
+                  {
+                    "role": "assistant",
+                    "content": [
+                      {
+                        "text": "{\"value\": \"FRAMEWORKS_TOGETHER\", \"transport\": \"mcp-streamable-http\"}"
+                      }
+                    ],
+                    "metadata": {
+                      "usage": {
+                        "inputTokens": 0,
+                        "outputTokens": 0,
+                        "totalTokens": 0
+                      },
+                      "metrics": {
+                        "latencyMs": 0
+                      }
+                    },
+                    "tracking_id": "f69fa880-d122-4d27-bea1-d97c497a83ee"
+                  }
+                ],
+                "raw_responses": [
+                  {
+                    "role": "assistant",
+                    "content": [
+                      {
+                        "text": "{\"value\": \"FRAMEWORKS_TOGETHER\", \"transport\": \"mcp-streamable-http\"}"
+                      }
+                    ],
+                    "metadata": {
+                      "usage": {
+                        "inputTokens": 0,
+                        "outputTokens": 0,
+                        "totalTokens": 0
+                      },
+                      "metrics": {
+                        "latencyMs": 0
+                      }
+                    },
+                    "tracking_id": "f69fa880-d122-4d27-bea1-d97c497a83ee"
+                  }
+                ],
+                "usage": {
+                  "inputTokens": 0,
+                  "outputTokens": 0,
+                  "totalTokens": 0,
+                  "input_tokens": 0,
+                  "output_tokens": 0,
+                  "total_tokens": 0,
+                  "client_duration_ms": 26.277,
+                  "requests": 2,
+                  "scheduler": {
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 899.369
+                  },
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "python-runtime",
+                "mode": "eval",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": {
+                  "ok": true,
+                  "issues": []
+                },
+                "errors": [],
+                "meta": {
+                  "source_result_type": "AgentResult",
+                  "framework_adapter": "strands",
+                  "input": {
+                    "tool": "echo",
+                    "input": {
+                      "value": "FRAMEWORKS_TOGETHER"
+                    }
+                  },
+                  "stop_reason": "end_turn",
+                  "rejected_tool_calls": [],
+                  "output_materialization": [],
+                  "runtime": {
+                    "provider": "python-runtime",
+                    "model_id": "python-runtime",
+                    "region_name": null,
+                    "endpoint": null,
+                    "metadata": {},
+                    "provider_priority": [
+                      "openai-runtime",
+                      "bedrock-runtime",
+                      "ollama-runtime"
+                    ],
+                    "allow_python_fallback": false,
+                    "scheduler": {
+                      "max_turns": 5,
+                      "max_tool_calls": 3,
+                      "timeout_s": 60,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    }
+                  },
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "scheduler_execution": {
+                    "scheduler": {
+                      "max_turns": 5,
+                      "max_tool_calls": 3,
+                      "timeout_s": 60,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    },
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 899.369
+                  },
+                  "framework": "strands",
+                  "framework_requested": "strands",
+                  "framework_config": {
+                    "name": "strands",
+                    "agent_kwargs": {
+                      "tools": "list"
+                    },
+                    "run_kwargs": {}
+                  },
+                  "agent_name": "strands_protocol",
+                  "requested_engine": "python-runtime",
+                  "runtime_engine": "python-runtime",
+                  "execution_engine": "python-runtime"
+                },
+                "execution_id": "run-b19578cf239e481db2c6e4e42d099e29",
+                "parent_execution_id": "run-87df492e1d424d7db859eea7d57722e4",
+                "children": [],
+                "tool_events": [
+                  {
+                    "id": "python_f6853763500c4ee2a1cd066fb6d35285",
+                    "name": "echo",
+                    "input": {
+                      "value": "FRAMEWORKS_TOGETHER"
+                    },
+                    "output": {
+                      "value": "FRAMEWORKS_TOGETHER",
+                      "transport": "mcp-streamable-http"
+                    },
+                    "ok": true,
+                    "error": null,
+                    "duration_ms": null,
+                    "meta": {
+                      "source": "strands"
+                    }
+                  }
+                ]
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "features/python-runtime--mcp",
+        "question": "{\"tool\": \"echo\", \"input\": {\"value\": \"FRAMEWORKS_TOGETHER\"}}",
+        "goal": "",
+        "answer": "{\"value\": \"FRAMEWORKS_TOGETHER\", \"transport\": \"mcp-streamable-http\"}",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-0c79b4e4de744e6bbc817a7f6b94e9f5",
+            "kind": "execution",
+            "title": "strands_protocol",
+            "summary": "{\"value\": \"FRAMEWORKS_TOGETHER\", \"transport\": \"mcp-streamable-http\"}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": "FRAMEWORKS_TOGETHER",
+                "transport": "mcp-streamable-http"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-87df492e1d424d7db859eea7d57722e4",
+            "kind": "execution",
+            "title": "strands_protocol",
+            "summary": "{\"value\": \"FRAMEWORKS_TOGETHER\", \"transport\": \"mcp-streamable-http\"}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": "FRAMEWORKS_TOGETHER",
+                "transport": "mcp-streamable-http"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-b19578cf239e481db2c6e4e42d099e29",
+            "kind": "execution",
+            "title": "eval",
+            "summary": "{\"value\": \"FRAMEWORKS_TOGETHER\", \"transport\": \"mcp-streamable-http\"}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": "FRAMEWORKS_TOGETHER",
+                "transport": "mcp-streamable-http"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "python_f6853763500c4ee2a1cd066fb6d35285",
+            "kind": "tool",
+            "title": "echo",
+            "summary": "completed",
+            "source": "echo",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "value": "FRAMEWORKS_TOGETHER",
+              "transport": "mcp-streamable-http"
+            }
+          }
+        ],
+        "usage": {
+          "inputTokens": 0,
+          "outputTokens": 0,
+          "totalTokens": 0,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "total_tokens": 0,
+          "client_duration_ms": 26.277,
+          "requests": 2,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    }
+  ],
+  "scope": "Lineage derived offline from the unchanged observed live RunResult; no candidate or judge re-execution"
+}

@@ -4,11 +4,12 @@ from collections import defaultdict
 import csv
 import hashlib
 import json
+import os
 from pathlib import Path
 import nbformat
 
 ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = ROOT / 'revisions/2.1.3/closeout-evidence'
+OUTPUT = ROOT / os.environ.get('AGENTIC_213_EVIDENCE_DIR', 'revisions/2.1.3/closeout-evidence')
 PUBLIC = ('tool', 'skill', 'load_skill', 'Action', 'Agent', 'System', 'Sequence', 'Parallel', 'Graph',
           'Environment', 'Eval', 'Limits', 'RunResult', 'runtime', 'framework', 'model_artifact', 'model_server', '__version__')
 PROVIDERS = {'python-runtime', 'openai-runtime', 'ollama-runtime', 'bedrock-runtime', 'vllm-runtime'}
@@ -159,6 +160,9 @@ def main():
     evidence_path = OUTPUT / 'notebooks.json'
     evidence = json.loads(evidence_path.read_text(encoding='utf-8')) if evidence_path.exists() else {'notebooks': []}
     executions = {row['notebook']: row for row in evidence['notebooks']}
+    live_path, local_path = OUTPUT / 'live-notebooks.json', OUTPUT / 'local-lessons.json'
+    live_rows = json.loads(live_path.read_text(encoding='utf-8'))['rows'] if live_path.exists() else []
+    local_rows = json.loads(local_path.read_text(encoding='utf-8'))['rows'] if local_path.exists() else []
     paths = sorted(path for folder in ('tutorials', 'examples') for path in (ROOT / folder).rglob('*.ipynb')
                    if not {'.ipynb_checkpoints', '__pycache__'}.intersection(path.parts))
     rows, member_rows = [], []
@@ -183,19 +187,27 @@ def main():
         current = not {'history', 'dist', 'build'}.intersection(path.relative_to(ROOT).parts)
         record = executions.get(path.relative_to(ROOT).as_posix())
         matched = bool(record and record['passed'] and record['source_sha256'] == digest(path))
+        live_matches = [r for r in live_rows if r['notebook'] == path.relative_to(ROOT).as_posix()
+                        and r['source_sha256'] == digest(path) and r['passed']]
+        local_matches = [r for r in local_rows if r['notebook'] == path.relative_to(ROOT).as_posix()
+                         and r['source_sha256'] == digest(path) and r['passed']]
         title = next((line.lstrip('# ').strip() for cell in notebook.cells if cell.cell_type == 'markdown'
                       for line in cell.source.splitlines() if line.startswith('# ')), path.stem)
         row = {'notebook': path.relative_to(ROOT).as_posix(), 'title': title, 'current': current, 'source_sha256': digest(path),
             'code_cells': sum(c.cell_type == 'code' for c in notebook.cells),
             'stored_outputs': sum(bool(c.get('outputs')) for c in notebook.cells if c.cell_type == 'code'),
             'analysis': serializable(data), 'referenced_elements': shared, 'referenced_sources': files,
-            'offline': 'passed-current-source' if matched else 'pending-current-source' if current else 'historical-not-rerun',
+            'offline': ('passed-offline-sections' if record.get('skipped_sections') else 'passed-current-source') if matched else 'pending-current-source' if current else 'historical-not-rerun',
             'execution_evidence': record['executed_notebook'] if matched else None,
-            'online': 'external related campaign; notebook itself is offline' if current else 'historical scope only'}
+            'online': ('live notebook executed: ' + ', '.join(r['framework'] for r in live_matches)) if live_matches
+                      else 'notebook uses no external model' if current else 'historical scope only',
+            'live_evidence': live_matches, 'local_service_ui_evidence': local_matches}
         observed = set()
         capture_path = ROOT / record['runresults_evidence'] if matched and record.get('runresults_evidence') else None
-        if capture_path and capture_path.exists():
-            captured = json.loads(capture_path.read_text(encoding='utf-8'))
+        capture_paths = [capture_path] if capture_path and capture_path.exists() else []
+        capture_paths += [ROOT / r['runresults'] for r in live_matches if r.get('runresults')]
+        capture_paths += [ROOT / r['runresults_evidence'] for r in local_matches if r.get('runresults_evidence')]
+        if capture_paths:
             def observe(value):
                 if not isinstance(value, dict):
                     return
@@ -213,8 +225,9 @@ def main():
                     observed.add('tool')
                 for child in value.get('children', []):
                     observe(child)
-            for item in captured['results']:
-                observe(item['run_result'])
+            for source in capture_paths:
+                for item in json.loads(source.read_text(encoding='utf-8'))['results']:
+                    observe(item['run_result'])
         row['observed_execution_elements'] = sorted(observed)
         rows.append(row)
         for call in data['calls']:
@@ -254,7 +267,11 @@ def main():
                 direct += '; anteriores: ' + ', '.join(row['analysis']['legacy'])
             shared = ', '.join(row['referenced_elements']) or '—'
             choices = ', '.join(row['analysis']['providers'] + row['analysis']['frameworks']) or 'Dinámico/no declarado'
-            state = 'Offline: pasa' if row['offline'] == 'passed-current-source' else 'Pendiente' if row['current'] else 'Historia; no reejecutado'
+            state = 'Offline: pasa' if row['offline'] == 'passed-current-source' else 'Offline: secciones seguras; live/servicios aparte' if row['offline'] == 'passed-offline-sections' else 'Pendiente' if row['current'] else 'Historia; no reejecutado'
+            if row['live_evidence']:
+                state += f"; live notebook {len(row['live_evidence'])}/4 frameworks"
+            if row['local_service_ui_evidence']:
+                state += '; notebook completo con servicios/UI: pasa'
             observed = ', '.join(row['observed_execution_elements']) or 'Sin ejecución de unidades observada'
             lines.append(f"| [{row['notebook']}](../{row['notebook']}) | {direct} | {observed} | {shared} | {choices} | {state} |")
         lines.append('')
@@ -262,7 +279,7 @@ def main():
     lines += [f"| `{name}` | {len(data['direct'])} | {len(data['referenced'])} |" for name, data in coverage.items()]
     lines += ['', 'El JSON conserva la lista inversa por elemento, miembros, keywords por llamada, aliases, errores de parseo, hashes y módulos compartidos. El CSV permite filtrar cada método y parámetro usado. Esta cobertura no implica enseñar cada valor posible de los parámetros.', '', '## Límites y pendientes', '']
     lines += ['- ' + item for item in payload['limitations']]
-    lines += ['', 'vLLM/Colab, AWS IAM y ADA IAM mantienen la validación en su entorno como pendiente. OpenAI, Ollama y Bedrock API key se contrastan con los cuatro frameworks en la campaña externa. El notebook de usuario permanece seguro de ejecutar offline.', '']
+    lines += ['', 'vLLM/Colab, AWS IAM y ADA IAM mantienen la validación en su entorno como pendiente. Los notebooks de OpenAI, Ollama y Bedrock API key se ejecutaron con los cuatro frameworks; sus celdas live consumen inferencia. El notebook integrado de usuario y core se ejecutan sin inferencia. [Alcance y presupuesto](LEARNING_VALIDATION_213.md).', '']
     (ROOT / 'docs/NOTEBOOK_INVENTORY_213.md').write_text('\n'.join(lines), encoding='utf-8')
     print(json.dumps({'total': payload['total'], 'current': payload['current'], 'historical': payload['historical'],
                       'offline_passed': sum(r['offline'] == 'passed-current-source' for r in rows),

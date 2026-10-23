@@ -16,4 +16,5 @@ Código:
 
 Validación: **Live: escenario probado**. Interop Python y mixta ejecutadas. La tarea exige argumentos intactos y resultados observados de Tools; no es una certificación de cualquier workflow.
 
-- [Campaña y límites](../../../revisions/2.1.3/closeout-evidence/REPORT.md)
+- [Nueva ejecución contra el wheel publicado](../../../revisions/2.1.3/learning-evidence-elevated/example-results/framework_interop/run.json)
+- [RunResult y lineage](../../../revisions/2.1.3/learning-evidence-elevated/example-results/framework_interop/runresults.json)

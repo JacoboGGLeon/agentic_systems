@@ -1,0 +1,565 @@
+{
+  "source": "examples/patterns/evidence_grounded_poem",
+  "captured_boundaries": 1,
+  "root_results": 1,
+  "scope": "Observed SDK RunResult values; descendants retained inside parents. No fabricated results for configuration-only examples.",
+  "results": [
+    {
+      "run_result": {
+        "text": "",
+        "final": null,
+        "data": {
+          "ok": false,
+          "total": 2,
+          "passed": 1,
+          "failed": 1,
+          "pass_rate": 0.5,
+          "cases": [
+            {
+              "name": "0",
+              "ok": true,
+              "input": {
+                "poem": "Three items cost 300\nTax adds 48\nVerified total 348"
+              },
+              "expected": {
+                "ok": true
+              },
+              "result": {
+                "text": "",
+                "final": null,
+                "data": {
+                  "poem": "Three items cost 300\nTax adds 48\nVerified total 348"
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {},
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "saved_candidate",
+                  "kind": "agent",
+                  "backend": "native",
+                  "skills": []
+                },
+                "execution_id": "run-94293e78a60549389388fb47a2d5edc9",
+                "parent_execution_id": null,
+                "children": [
+                  {
+                    "text": "",
+                    "final": null,
+                    "data": {
+                      "poem": "Three items cost 300\nTax adds 48\nVerified total 348"
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {},
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "default",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "name": "read",
+                      "kind": "action"
+                    },
+                    "execution_id": "run-3dbf1d42584549f08426bea8c778ccff",
+                    "parent_execution_id": "run-94293e78a60549389388fb47a2d5edc9",
+                    "children": [],
+                    "tool_events": []
+                  }
+                ],
+                "tool_events": []
+              },
+              "checks": [
+                {
+                  "ok": true,
+                  "issues": []
+                },
+                {
+                  "ok": true,
+                  "issues": []
+                }
+              ],
+              "judge": null,
+              "candidate_usage": {},
+              "judge_usage": {}
+            },
+            {
+              "name": "1",
+              "ok": false,
+              "input": {
+                "poem": "The moon computes forever"
+              },
+              "expected": {
+                "ok": true
+              },
+              "result": {
+                "text": "",
+                "final": null,
+                "data": {
+                  "poem": "The moon computes forever"
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {},
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "saved_candidate",
+                  "kind": "agent",
+                  "backend": "native",
+                  "skills": []
+                },
+                "execution_id": "run-928e6b3019834f31813c49d3cf4fe389",
+                "parent_execution_id": null,
+                "children": [
+                  {
+                    "text": "",
+                    "final": null,
+                    "data": {
+                      "poem": "The moon computes forever"
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {},
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "default",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "name": "read",
+                      "kind": "action"
+                    },
+                    "execution_id": "run-10165658cdec407390bd7c6fce60738c",
+                    "parent_execution_id": "run-928e6b3019834f31813c49d3cf4fe389",
+                    "children": [],
+                    "tool_events": []
+                  }
+                ],
+                "tool_events": []
+              },
+              "checks": [
+                {
+                  "ok": true,
+                  "issues": []
+                },
+                {
+                  "ok": false,
+                  "issues": []
+                }
+              ],
+              "judge": null,
+              "candidate_usage": {},
+              "judge_usage": {}
+            }
+          ]
+        },
+        "ok": false,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {},
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [
+          {
+            "code": "eval_failed",
+            "message": "One or more required cases failed"
+          }
+        ],
+        "meta": {
+          "name": "poem_contract",
+          "kind": "eval",
+          "expected_failure_ids": [],
+          "actions_observed": 4,
+          "judge_mode": "none"
+        },
+        "execution_id": "run-c81e4098d8194f62b5550f2ab0b8d664",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "",
+            "final": null,
+            "data": {
+              "poem": "Three items cost 300\nTax adds 48\nVerified total 348"
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {},
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "saved_candidate",
+              "kind": "agent",
+              "backend": "native",
+              "skills": []
+            },
+            "execution_id": "run-94293e78a60549389388fb47a2d5edc9",
+            "parent_execution_id": "run-c81e4098d8194f62b5550f2ab0b8d664",
+            "children": [
+              {
+                "text": "",
+                "final": null,
+                "data": {
+                  "poem": "Three items cost 300\nTax adds 48\nVerified total 348"
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {},
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "read",
+                  "kind": "action"
+                },
+                "execution_id": "run-3dbf1d42584549f08426bea8c778ccff",
+                "parent_execution_id": "run-94293e78a60549389388fb47a2d5edc9",
+                "children": [],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          },
+          {
+            "text": "",
+            "final": null,
+            "data": {
+              "poem": "The moon computes forever"
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {},
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "saved_candidate",
+              "kind": "agent",
+              "backend": "native",
+              "skills": []
+            },
+            "execution_id": "run-928e6b3019834f31813c49d3cf4fe389",
+            "parent_execution_id": "run-c81e4098d8194f62b5550f2ab0b8d664",
+            "children": [
+              {
+                "text": "",
+                "final": null,
+                "data": {
+                  "poem": "The moon computes forever"
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {},
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "read",
+                  "kind": "action"
+                },
+                "execution_id": "run-10165658cdec407390bd7c6fce60738c",
+                "parent_execution_id": "run-928e6b3019834f31813c49d3cf4fe389",
+                "children": [],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "examples/patterns/evidence_grounded_poem",
+        "question": "null",
+        "goal": "",
+        "answer": "{\"ok\": false, \"total\": 2, \"passed\": 1, \"failed\": 1, \"pass_rate\": 0.5, \"cases\": [{\"name\": \"0\", \"ok\": true, \"input\": {\"poem\": \"Three items cost 300\\nTax adds 48\\nVerified total 348\"}, \"expected\": {\"ok\": true}, \"result\": {\"text\": \"\", \"final\": null, \"data\": {\"poem\": \"Three items cost 300\\nTax adds 48\\nVerified total 348\"}, \"ok\": true, \"messages\": [], \"raw_responses\": [], \"usage\": {}, \"engine\": \"python-runtime\", \"model\": \"\", \"mode\": \"default\", \"trace_schema_version\": \"agentic_systems.trace.v1\", \"validation\": null, \"errors\": [], \"meta\": {\"name\": \"saved_candidate\", \"kind\": \"agent\", \"backend\": \"native\", \"skills\": []}, \"execution_id\": \"run-94293e78a60549389388fb47a2d5edc9\", \"parent_execution_id\": null, \"children\": [{\"text\": \"\", \"final\": null, \"data\": {\"poem\": \"Three items cost 300\\nTax adds 48\\nVerified total 348\"}, \"ok\": true, \"messages\": [], \"raw_responses\": [], \"usage\": {}, \"engine\": \"python-runtime\", \"model\": \"\", \"mode\": \"default\", \"trace_schema_version\": \"agentic_systems.trace.v1\", \"validation\": null, \"errors\": [], \"meta\": {\"name\": \"read\", \"kind\": \"action\"}, \"execution_id\": \"run-3dbf1d42584549f08426bea8c778ccff\", \"parent_execution_id\": \"run-94293e78a60549389388fb47a2d5edc9\", \"children\": [], \"tool_events\": []}], \"tool_events\": []}, \"checks\": [{\"ok\": true, \"issues\": []}, {\"ok\": true, \"issues\": []}], \"judge\": null, \"candidate_usage\": {}, \"judge_usage\": {}}, {\"name\": \"1\", \"ok\": false, \"input\": {\"poem\": \"The moon computes forever\"}, \"expected\": {\"ok\": true}, \"result\": {\"text\": \"\", \"final\": null, \"data\": {\"poem\": \"The moon computes forever\"}, \"ok\": true, \"messages\": [], \"raw_responses\": [], \"usage\": {}, \"engine\": \"python-runtime\", \"model\": \"\", \"mode\": \"default\", \"trace_schema_version\": \"agentic_systems.trace.v1\", \"validation\": null, \"errors\": [], \"meta\": {\"name\": \"saved_candidate\", \"kind\": \"agent\", \"backend\": \"native\", \"skills\": []}, \"execution_id\": \"run-928e6b3019834f31813c49d3cf4fe389\", \"parent_execution_id\": null, \"children\": [{\"text\": \"\", \"final\": null, \"data\": {\"poem\": \"The moon computes forever\"}, \"ok\": true, \"messages\": [], \"raw_responses\": [], \"usage\": {}, \"engine\": \"python-runtime\", \"model\": \"\", \"mode\": \"default\", \"trace_schema_version\": \"agentic_systems.trace.v1\", \"validation\": null, \"errors\": [], \"meta\": {\"name\": \"read\", \"kind\": \"action\"}, \"execution_id\": \"run-10165658cdec407390bd7c6fce60738c\", \"parent_execution_id\": \"run-928e6b3019834f31813c49d3cf4fe389\", \"children\": [], \"tool_events\": []}], \"tool_events\": []}, \"checks\": [{\"ok\": true, \"issues\": []}, {\"ok\": false, \"issues\": []}], \"judge\": null, \"candidate_usage\": {}, \"judge_usage\": {}}]}",
+        "ok": false,
+        "steps": [
+          {
+            "step_id": "run-c81e4098d8194f62b5550f2ab0b8d664",
+            "kind": "execution",
+            "title": "poem_contract",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": false,
+              "data": {
+                "ok": false,
+                "total": 2,
+                "passed": 1,
+                "failed": 1,
+                "pass_rate": 0.5,
+                "cases": [
+                  {
+                    "name": "0",
+                    "ok": true,
+                    "input": {
+                      "poem": "Three items cost 300\nTax adds 48\nVerified total 348"
+                    },
+                    "expected": {
+                      "ok": true
+                    },
+                    "result": {
+                      "text": "",
+                      "final": null,
+                      "data": {
+                        "poem": "Three items cost 300\nTax adds 48\nVerified total 348"
+                      },
+                      "ok": true,
+                      "messages": [],
+                      "raw_responses": [],
+                      "usage": {},
+                      "engine": "python-runtime",
+                      "model": "",
+                      "mode": "default",
+                      "trace_schema_version": "agentic_systems.trace.v1",
+                      "validation": null,
+                      "errors": [],
+                      "meta": {
+                        "name": "saved_candidate",
+                        "kind": "agent",
+                        "backend": "native",
+                        "skills": []
+                      },
+                      "execution_id": "run-94293e78a60549389388fb47a2d5edc9",
+                      "parent_execution_id": null,
+                      "children": [
+                        {
+                          "text": "",
+                          "final": null,
+                          "data": {
+                            "poem": "Three items cost 300\nTax adds 48\nVerified total 348"
+                          },
+                          "ok": true,
+                          "messages": [],
+                          "raw_responses": [],
+                          "usage": {},
+                          "engine": "python-runtime",
+                          "model": "",
+                          "mode": "default",
+                          "trace_schema_version": "agentic_systems.trace.v1",
+                          "validation": null,
+                          "errors": [],
+                          "meta": {
+                            "name": "read",
+                            "kind": "action"
+                          },
+                          "execution_id": "run-3dbf1d42584549f08426bea8c778ccff",
+                          "parent_execution_id": "run-94293e78a60549389388fb47a2d5edc9",
+                          "children": [],
+                          "tool_events": []
+                        }
+                      ],
+                      "tool_events": []
+                    },
+                    "checks": [
+                      {
+                        "ok": true,
+                        "issues": []
+                      },
+                      {
+                        "ok": true,
+                        "issues": []
+                      }
+                    ],
+                    "judge": null,
+                    "candidate_usage": {},
+                    "judge_usage": {}
+                  },
+                  {
+                    "name": "1",
+                    "ok": false,
+                    "input": {
+                      "poem": "The moon computes forever"
+                    },
+                    "expected": {
+                      "ok": true
+                    },
+                    "result": {
+                      "text": "",
+                      "final": null,
+                      "data": {
+                        "poem": "The moon computes forever"
+                      },
+                      "ok": true,
+                      "messages": [],
+                      "raw_responses": [],
+                      "usage": {},
+                      "engine": "python-runtime",
+                      "model": "",
+                      "mode": "default",
+                      "trace_schema_version": "agentic_systems.trace.v1",
+                      "validation": null,
+                      "errors": [],
+                      "meta": {
+                        "name": "saved_candidate",
+                        "kind": "agent",
+                        "backend": "native",
+                        "skills": []
+                      },
+                      "execution_id": "run-928e6b3019834f31813c49d3cf4fe389",
+                      "parent_execution_id": null,
+                      "children": [
+                        {
+                          "text": "",
+                          "final": null,
+                          "data": {
+                            "poem": "The moon computes forever"
+                          },
+                          "ok": true,
+                          "messages": [],
+                          "raw_responses": [],
+                          "usage": {},
+                          "engine": "python-runtime",
+                          "model": "",
+                          "mode": "default",
+                          "trace_schema_version": "agentic_systems.trace.v1",
+                          "validation": null,
+                          "errors": [],
+                          "meta": {
+                            "name": "read",
+                            "kind": "action"
+                          },
+                          "execution_id": "run-10165658cdec407390bd7c6fce60738c",
+                          "parent_execution_id": "run-928e6b3019834f31813c49d3cf4fe389",
+                          "children": [],
+                          "tool_events": []
+                        }
+                      ],
+                      "tool_events": []
+                    },
+                    "checks": [
+                      {
+                        "ok": true,
+                        "issues": []
+                      },
+                      {
+                        "ok": false,
+                        "issues": []
+                      }
+                    ],
+                    "judge": null,
+                    "candidate_usage": {},
+                    "judge_usage": {}
+                  }
+                ]
+              },
+              "errors": [
+                {
+                  "code": "eval_failed",
+                  "message": "One or more required cases failed"
+                }
+              ]
+            }
+          },
+          {
+            "step_id": "run-94293e78a60549389388fb47a2d5edc9",
+            "kind": "execution",
+            "title": "saved_candidate",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "poem": "Three items cost 300\nTax adds 48\nVerified total 348"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-3dbf1d42584549f08426bea8c778ccff",
+            "kind": "execution",
+            "title": "read",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "poem": "Three items cost 300\nTax adds 48\nVerified total 348"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-928e6b3019834f31813c49d3cf4fe389",
+            "kind": "execution",
+            "title": "saved_candidate",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "poem": "The moon computes forever"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-10165658cdec407390bd7c6fce60738c",
+            "kind": "execution",
+            "title": "read",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "poem": "The moon computes forever"
+              },
+              "errors": []
+            }
+          }
+        ],
+        "usage": {},
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    }
+  ]
+}

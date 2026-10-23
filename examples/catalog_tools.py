@@ -80,7 +80,7 @@ def render(catalog: dict) -> dict[Path, str]:
                 card += ["", "</details>"]
             files[parent / 'README.md'] = "\n".join(card) + "\n"
         lines.append("")
-    lines += ["[Resultados y límites de esta campaña](../revisions/2.1.3/closeout-evidence/REPORT.md).",
+    lines += ["[Resultados y límites de la nueva validación](../docs/LEARNING_VALIDATION_213.md).",
               "[RunResult y Lineage Memory de cada ejemplo y notebook](../docs/RUNRESULTS_LINEAGE_213.md): resultados observados y evidencia de cómo se obtuvieron.",
               "[Inventario exhaustivo de notebooks y gramática](../docs/NOTEBOOK_INVENTORY_213.md).",
               "[Catálogo completo y evidencia anterior](catalog.json).", "",

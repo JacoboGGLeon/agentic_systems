@@ -1,0 +1,248 @@
+{
+  "source": "tutorials/frameworks/01_langgraph.ipynb",
+  "captured_boundaries": 2,
+  "root_results": 2,
+  "scope": "Observed SDK RunResult values; descendants retained inside parents. No fabricated results for configuration-only examples.",
+  "results": [
+    {
+      "run_result": {
+        "text": "",
+        "final": null,
+        "data": {
+          "paused": true,
+          "request": {
+            "question": "Approve this expense?",
+            "amount": 280
+          }
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {},
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "human_approval",
+          "kind": "agent",
+          "backend": "native",
+          "skills": [],
+          "actions_observed": 1,
+          "input": {
+            "amount": 280
+          }
+        },
+        "execution_id": "run-9b3c389e0e4f4b76b9a19ad9b17002ba",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "",
+            "final": null,
+            "data": {
+              "paused": true,
+              "request": {
+                "question": "Approve this expense?",
+                "amount": 280
+              }
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {},
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "checkpoint",
+              "kind": "action"
+            },
+            "execution_id": "run-17cc4ec85c774e9b91d6c697111854da",
+            "parent_execution_id": "run-9b3c389e0e4f4b76b9a19ad9b17002ba",
+            "children": [],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "tutorials/frameworks/01_langgraph.ipynb",
+        "question": "{\"amount\": 280}",
+        "goal": "",
+        "answer": "{\"paused\": true, \"request\": {\"question\": \"Approve this expense?\", \"amount\": 280}}",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-9b3c389e0e4f4b76b9a19ad9b17002ba",
+            "kind": "execution",
+            "title": "human_approval",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "paused": true,
+                "request": {
+                  "question": "Approve this expense?",
+                  "amount": 280
+                }
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-17cc4ec85c774e9b91d6c697111854da",
+            "kind": "execution",
+            "title": "checkpoint",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "paused": true,
+                "request": {
+                  "question": "Approve this expense?",
+                  "amount": 280
+                }
+              },
+              "errors": []
+            }
+          }
+        ],
+        "usage": {},
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    },
+    {
+      "run_result": {
+        "text": "",
+        "final": null,
+        "data": {
+          "paused": false,
+          "amount": 280,
+          "approved": true
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {},
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "human_approval",
+          "kind": "agent",
+          "backend": "native",
+          "skills": [],
+          "actions_observed": 1,
+          "input": {
+            "resume": true
+          }
+        },
+        "execution_id": "run-995baf9cba4841be83e88381b851be55",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "",
+            "final": null,
+            "data": {
+              "paused": false,
+              "amount": 280,
+              "approved": true
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {},
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "checkpoint",
+              "kind": "action"
+            },
+            "execution_id": "run-328cf92b83a14018afbded934c0b3f87",
+            "parent_execution_id": "run-995baf9cba4841be83e88381b851be55",
+            "children": [],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "tutorials/frameworks/01_langgraph.ipynb",
+        "question": "{\"resume\": true}",
+        "goal": "",
+        "answer": "{\"paused\": false, \"amount\": 280, \"approved\": true}",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-995baf9cba4841be83e88381b851be55",
+            "kind": "execution",
+            "title": "human_approval",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "paused": false,
+                "amount": 280,
+                "approved": true
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-328cf92b83a14018afbded934c0b3f87",
+            "kind": "execution",
+            "title": "checkpoint",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "paused": false,
+                "amount": 280,
+                "approved": true
+              },
+              "errors": []
+            }
+          }
+        ],
+        "usage": {},
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    }
+  ]
+}
