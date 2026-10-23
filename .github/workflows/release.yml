@@ -86,6 +86,7 @@ jobs:
       matrix:
         python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
     steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: ${{ matrix.python-version }}
@@ -98,7 +99,7 @@ jobs:
           EXPECTED_VERSION: ${{ needs.candidate.outputs.version }}
         run: |
           cd /tmp
-          python -c "import os, importlib.metadata as m, agentic_systems as toolkit; assert toolkit.__version__ == m.version('agentic-systems') == os.environ['EXPECTED_VERSION']; assert len(toolkit.__all__) == 18; result=toolkit.Agent('smoke',toolkit.Action('sum',lambda d:sum(d['values']))).run({'values':[2,3,5]}); assert result.ok and result.data == 10 and result.check_invariants().ok"
+          python "$GITHUB_WORKSPACE/scripts/smoke_release_213.py"
           agentic-systems version
           agentic-systems api
 
@@ -171,7 +172,7 @@ jobs:
           python -c "import sys; from pathlib import Path; sys.path.insert(0,'scripts'); from release_publication import load_manifest,sha256; import os; m=load_manifest(Path('candidate/release-manifest.json'),os.environ['MANIFEST_SHA256']); a=next(a for a in m.artifacts if a.kind=='bdist_wheel'); assert sha256(Path('published')/a.filename)==a.sha256"
           python -m pip install published/*.whl
           cd /tmp
-          python -c "import os, importlib.metadata as m, agentic_systems as toolkit; assert toolkit.__version__ == m.version('agentic-systems') == os.environ['VERSION']; assert len(toolkit.__all__) == 18; result=toolkit.Agent('smoke',toolkit.Action('sum',lambda d:sum(d['values']))).run({'values':[2,3,5]}); assert result.ok and result.data == 10 and result.check_invariants().ok"
+          python "$GITHUB_WORKSPACE/scripts/smoke_release_213.py"
           agentic-systems version
           agentic-systems api
 
