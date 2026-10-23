@@ -1,5 +1,7 @@
 # Validate the published wheel in additional environments
 
+> **Referencia anterior a la API 2.1.3.** Se conserva como diseño, operación o evidencia histórica. Para implementar con la API vigente, consulta [la guía actual](API_213.md) y [tutorials](../tutorials/README.md). Sus ejemplos antiguos no son otra API soportada.
+
 The 2.1.2 core release profile does not certify vLLM/Colab GPU, Bedrock IAM on
 AWS, or Bedrock IAM in ADA. These are separate target-environment tests using
 the same published wheel, not a new build under the same version.

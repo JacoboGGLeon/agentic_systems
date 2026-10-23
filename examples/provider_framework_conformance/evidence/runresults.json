@@ -1,0 +1,1394 @@
+{
+  "source": "examples/provider_framework_conformance",
+  "captured_boundaries": 4,
+  "root_results": 4,
+  "scope": "Observed SDK RunResult values; descendants retained inside parents. No fabricated results for configuration-only examples.",
+  "results": [
+    {
+      "run_result": {
+        "text": "echo -> {\"value\": 3}",
+        "final": {
+          "value": 3,
+          "ok": true,
+          "tool": "echo"
+        },
+        "data": {
+          "value": 3,
+          "ok": true,
+          "tool": "echo"
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "client_duration_ms": 2.129,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "python-runtime",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "operator",
+          "kind": "agent",
+          "backend": "native",
+          "skills": [
+            "echo"
+          ],
+          "actions_observed": 1,
+          "input": {
+            "tool": "echo",
+            "input": {
+              "value": 3
+            }
+          }
+        },
+        "execution_id": "run-4317814227404bf2a81ea575348e3aa0",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "echo -> {\"value\": 3}",
+            "final": {
+              "value": 3,
+              "ok": true,
+              "tool": "echo"
+            },
+            "data": {
+              "value": 3,
+              "ok": true,
+              "tool": "echo"
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "client_duration_ms": 2.129,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "python-runtime",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "operator",
+              "kind": "model",
+              "framework": "native"
+            },
+            "execution_id": "run-acf0326ae1804c6eb3d2906a3f55b9fa",
+            "parent_execution_id": "run-4317814227404bf2a81ea575348e3aa0",
+            "children": [
+              {
+                "text": "echo -> {\"value\": 3}",
+                "final": {
+                  "value": 3,
+                  "ok": true,
+                  "tool": "echo"
+                },
+                "data": {
+                  "value": 3,
+                  "ok": true,
+                  "tool": "echo"
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "scheduler": {
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 2.129
+                  },
+                  "client_duration_ms": 2.129,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "python-runtime",
+                "mode": "eval",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": {
+                  "ok": true,
+                  "issues": []
+                },
+                "errors": [],
+                "meta": {
+                  "source_result_type": "PythonRuntimeProvider",
+                  "agent_name": "operator",
+                  "tool_count": 1,
+                  "planned_tool_calls": 1,
+                  "runtime": {
+                    "provider": "python-runtime",
+                    "model_id": "python-runtime",
+                    "region_name": null,
+                    "endpoint": null,
+                    "metadata": {},
+                    "provider_priority": [
+                      "openai-runtime",
+                      "bedrock-runtime",
+                      "ollama-runtime"
+                    ],
+                    "allow_python_fallback": false,
+                    "scheduler": {
+                      "max_turns": 8,
+                      "max_tool_calls": 2,
+                      "timeout_s": 60,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    }
+                  },
+                  "scheduler": {
+                    "max_turns": 8,
+                    "max_tool_calls": 2,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "scheduler_execution": {
+                    "scheduler": {
+                      "max_turns": 8,
+                      "max_tool_calls": 2,
+                      "timeout_s": 60,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    },
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 2.129
+                  },
+                  "framework": "native",
+                  "framework_requested": "native",
+                  "framework_adapter": "native",
+                  "framework_config": {
+                    "name": "native",
+                    "agent_kwargs": {},
+                    "run_kwargs": {}
+                  },
+                  "input": {
+                    "tool": "echo",
+                    "input": {
+                      "value": 3
+                    }
+                  },
+                  "requested_engine": "python-runtime",
+                  "runtime_engine": "python-runtime",
+                  "execution_engine": "python-runtime"
+                },
+                "execution_id": "run-24768827029644d28f9ac2ce1f91dfef",
+                "parent_execution_id": "run-acf0326ae1804c6eb3d2906a3f55b9fa",
+                "children": [],
+                "tool_events": [
+                  {
+                    "id": "tool-f6ef5ed17f4048c8a3e4b9af3b1e8b10",
+                    "name": "echo",
+                    "input": {
+                      "value": 3
+                    },
+                    "output": {
+                      "data": {
+                        "value": 3
+                      }
+                    },
+                    "ok": true,
+                    "error": null,
+                    "duration_ms": null,
+                    "meta": {}
+                  }
+                ]
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "examples/provider_framework_conformance",
+        "question": "{\"tool\": \"echo\", \"input\": {\"value\": 3}}",
+        "goal": "",
+        "answer": "echo -> {\"value\": 3}",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-4317814227404bf2a81ea575348e3aa0",
+            "kind": "execution",
+            "title": "operator",
+            "summary": "echo -> {\"value\": 3}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 3,
+                "ok": true,
+                "tool": "echo"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-acf0326ae1804c6eb3d2906a3f55b9fa",
+            "kind": "execution",
+            "title": "operator",
+            "summary": "echo -> {\"value\": 3}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 3,
+                "ok": true,
+                "tool": "echo"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-24768827029644d28f9ac2ce1f91dfef",
+            "kind": "execution",
+            "title": "eval",
+            "summary": "echo -> {\"value\": 3}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 3,
+                "ok": true,
+                "tool": "echo"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "tool-f6ef5ed17f4048c8a3e4b9af3b1e8b10",
+            "kind": "tool",
+            "title": "echo",
+            "summary": "completed",
+            "source": "echo",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "value": 3
+              }
+            }
+          }
+        ],
+        "usage": {
+          "client_duration_ms": 2.129,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    },
+    {
+      "run_result": {
+        "text": "echo -> {\"value\": 3}",
+        "final": {
+          "value": 3,
+          "ok": true,
+          "tool": "echo"
+        },
+        "data": {
+          "value": 3,
+          "ok": true,
+          "tool": "echo"
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "client_duration_ms": 5.252,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "python-runtime",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "operator",
+          "kind": "agent",
+          "backend": "native",
+          "skills": [
+            "echo"
+          ],
+          "actions_observed": 1,
+          "input": {
+            "tool": "echo",
+            "input": {
+              "value": 3
+            }
+          }
+        },
+        "execution_id": "run-731c48490e2f4034b637067dcead0d1e",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "echo -> {\"value\": 3}",
+            "final": {
+              "value": 3,
+              "ok": true,
+              "tool": "echo"
+            },
+            "data": {
+              "value": 3,
+              "ok": true,
+              "tool": "echo"
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "client_duration_ms": 5.252,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "python-runtime",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "operator",
+              "kind": "model",
+              "framework": "langgraph"
+            },
+            "execution_id": "run-74463ce6c341492a87f62e014f12f6a5",
+            "parent_execution_id": "run-731c48490e2f4034b637067dcead0d1e",
+            "children": [
+              {
+                "text": "echo -> {\"value\": 3}",
+                "final": {
+                  "value": 3,
+                  "ok": true,
+                  "tool": "echo"
+                },
+                "data": {
+                  "value": 3,
+                  "ok": true,
+                  "tool": "echo"
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "scheduler": {
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 5.252
+                  },
+                  "client_duration_ms": 5.252,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "python-runtime",
+                "mode": "eval",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": {
+                  "ok": true,
+                  "issues": []
+                },
+                "errors": [],
+                "meta": {
+                  "source_result_type": "PythonRuntimeProvider",
+                  "agent_name": "operator",
+                  "tool_count": 1,
+                  "planned_tool_calls": 1,
+                  "framework_adapter": "langgraph",
+                  "runtime": {
+                    "provider": "python-runtime",
+                    "model_id": "python-runtime",
+                    "region_name": null,
+                    "endpoint": null,
+                    "metadata": {},
+                    "provider_priority": [
+                      "openai-runtime",
+                      "bedrock-runtime",
+                      "ollama-runtime"
+                    ],
+                    "allow_python_fallback": false,
+                    "scheduler": {
+                      "max_turns": 8,
+                      "max_tool_calls": 2,
+                      "timeout_s": 60,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    }
+                  },
+                  "scheduler": {
+                    "max_turns": 8,
+                    "max_tool_calls": 2,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "scheduler_execution": {
+                    "scheduler": {
+                      "max_turns": 8,
+                      "max_tool_calls": 2,
+                      "timeout_s": 60,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    },
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 5.252
+                  },
+                  "framework": "langgraph",
+                  "framework_requested": "langgraph",
+                  "framework_config": {
+                    "name": "langgraph",
+                    "agent_kwargs": {},
+                    "run_kwargs": {}
+                  },
+                  "input": {
+                    "tool": "echo",
+                    "input": {
+                      "value": 3
+                    }
+                  },
+                  "requested_engine": "python-runtime",
+                  "runtime_engine": "python-runtime",
+                  "execution_engine": "python-runtime"
+                },
+                "execution_id": "run-40dff9558c354fa29679bad136cf0e3c",
+                "parent_execution_id": "run-74463ce6c341492a87f62e014f12f6a5",
+                "children": [],
+                "tool_events": [
+                  {
+                    "id": "tool-e9a4b27c989849b392ed8d660c1887c6",
+                    "name": "echo",
+                    "input": {
+                      "value": 3
+                    },
+                    "output": {
+                      "data": {
+                        "value": 3
+                      }
+                    },
+                    "ok": true,
+                    "error": null,
+                    "duration_ms": null,
+                    "meta": {}
+                  }
+                ]
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "examples/provider_framework_conformance",
+        "question": "{\"tool\": \"echo\", \"input\": {\"value\": 3}}",
+        "goal": "",
+        "answer": "echo -> {\"value\": 3}",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-731c48490e2f4034b637067dcead0d1e",
+            "kind": "execution",
+            "title": "operator",
+            "summary": "echo -> {\"value\": 3}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 3,
+                "ok": true,
+                "tool": "echo"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-74463ce6c341492a87f62e014f12f6a5",
+            "kind": "execution",
+            "title": "operator",
+            "summary": "echo -> {\"value\": 3}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 3,
+                "ok": true,
+                "tool": "echo"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-40dff9558c354fa29679bad136cf0e3c",
+            "kind": "execution",
+            "title": "eval",
+            "summary": "echo -> {\"value\": 3}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 3,
+                "ok": true,
+                "tool": "echo"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "tool-e9a4b27c989849b392ed8d660c1887c6",
+            "kind": "tool",
+            "title": "echo",
+            "summary": "completed",
+            "source": "echo",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "value": 3
+              }
+            }
+          }
+        ],
+        "usage": {
+          "client_duration_ms": 5.252,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    },
+    {
+      "run_result": {
+        "text": "{\"value\": 3}",
+        "final": {
+          "value": 3
+        },
+        "data": {
+          "value": 3
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 2,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "total_tokens": 0,
+          "client_duration_ms": 5300.208,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "python-runtime",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "operator",
+          "kind": "agent",
+          "backend": "native",
+          "skills": [
+            "echo"
+          ],
+          "actions_observed": 1,
+          "input": {
+            "tool": "echo",
+            "input": {
+              "value": 3
+            }
+          }
+        },
+        "execution_id": "run-1c1348c0e52041c9bcec241d93e5fd1c",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "{\"value\": 3}",
+            "final": {
+              "value": 3
+            },
+            "data": {
+              "value": 3
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 2,
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "total_tokens": 0,
+              "client_duration_ms": 5300.208,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "python-runtime",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "operator",
+              "kind": "model",
+              "framework": "openai-agents"
+            },
+            "execution_id": "run-8e41ddcad89b417089fb709a643fd96a",
+            "parent_execution_id": "run-1c1348c0e52041c9bcec241d93e5fd1c",
+            "children": [
+              {
+                "text": "{\"value\": 3}",
+                "final": {
+                  "value": 3
+                },
+                "data": {
+                  "value": 3
+                },
+                "ok": true,
+                "messages": [
+                  {
+                    "content": "{\"tool\": \"echo\", \"input\": {\"value\": 3}}",
+                    "role": "user"
+                  },
+                  {
+                    "arguments": "{\"value\": 3}",
+                    "call_id": "call_badd1c07098b4212aac501c80122fd09",
+                    "name": "echo",
+                    "type": "function_call"
+                  },
+                  {
+                    "call_id": "call_badd1c07098b4212aac501c80122fd09",
+                    "output": "{'value': 3}",
+                    "type": "function_call_output"
+                  },
+                  {
+                    "id": "msg_5e8dbabd031648869d6fa1c9c2ef0594",
+                    "content": [
+                      {
+                        "annotations": [],
+                        "text": "{\"value\": 3}",
+                        "type": "output_text"
+                      }
+                    ],
+                    "role": "assistant",
+                    "status": "completed",
+                    "type": "message"
+                  }
+                ],
+                "raw_responses": [
+                  {
+                    "output": [
+                      {
+                        "arguments": "{\"value\": 3}",
+                        "call_id": "call_badd1c07098b4212aac501c80122fd09",
+                        "name": "echo",
+                        "type": "function_call",
+                        "id": null,
+                        "caller": null,
+                        "namespace": null,
+                        "status": null
+                      }
+                    ],
+                    "usage": {
+                      "requests": 1,
+                      "input_tokens": 0,
+                      "input_tokens_details": {
+                        "cache_write_tokens": 0,
+                        "cached_tokens": 0
+                      },
+                      "output_tokens": 0,
+                      "output_tokens_details": {
+                        "reasoning_tokens": 0
+                      },
+                      "total_tokens": 0,
+                      "request_usage_entries": []
+                    },
+                    "response_id": "python_0893a05cea63431b80ade7d2302f34fe",
+                    "request_id": null
+                  },
+                  {
+                    "output": [
+                      {
+                        "id": "msg_5e8dbabd031648869d6fa1c9c2ef0594",
+                        "content": [
+                          {
+                            "annotations": [],
+                            "text": "{\"value\": 3}",
+                            "type": "output_text",
+                            "logprobs": null
+                          }
+                        ],
+                        "role": "assistant",
+                        "status": "completed",
+                        "type": "message",
+                        "phase": null
+                      }
+                    ],
+                    "usage": {
+                      "requests": 1,
+                      "input_tokens": 0,
+                      "input_tokens_details": {
+                        "cache_write_tokens": 0,
+                        "cached_tokens": 0
+                      },
+                      "output_tokens": 0,
+                      "output_tokens_details": {
+                        "reasoning_tokens": 0
+                      },
+                      "total_tokens": 0,
+                      "request_usage_entries": []
+                    },
+                    "response_id": "response_774fa5eaa56546429d3da5b7af97ce15",
+                    "request_id": null
+                  }
+                ],
+                "usage": {
+                  "requests": 2,
+                  "input_tokens": 0,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cached_tokens": 0
+                  },
+                  "output_tokens": 0,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 0
+                  },
+                  "total_tokens": 0,
+                  "request_usage_entries": [],
+                  "scheduler": {
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 5300.208
+                  },
+                  "client_duration_ms": 5300.208,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "python-runtime",
+                "mode": "eval",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": {
+                  "ok": true,
+                  "issues": []
+                },
+                "errors": [],
+                "meta": {
+                  "source_result_type": "RunResult",
+                  "framework_adapter": "openai-agents",
+                  "input": {
+                    "tool": "echo",
+                    "input": {
+                      "value": 3
+                    }
+                  },
+                  "rejected_tool_calls": [],
+                  "runtime": {
+                    "provider": "python-runtime",
+                    "model_id": "python-runtime",
+                    "region_name": null,
+                    "endpoint": null,
+                    "metadata": {},
+                    "provider_priority": [
+                      "openai-runtime",
+                      "bedrock-runtime",
+                      "ollama-runtime"
+                    ],
+                    "allow_python_fallback": false,
+                    "scheduler": {
+                      "max_turns": 8,
+                      "max_tool_calls": 2,
+                      "timeout_s": 60,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    }
+                  },
+                  "scheduler": {
+                    "max_turns": 8,
+                    "max_tool_calls": 2,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "scheduler_execution": {
+                    "scheduler": {
+                      "max_turns": 8,
+                      "max_tool_calls": 2,
+                      "timeout_s": 60,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    },
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 5300.208
+                  },
+                  "framework": "openai-agents",
+                  "framework_requested": "openai-agents",
+                  "framework_config": {
+                    "name": "openai-agents",
+                    "agent_kwargs": {},
+                    "run_kwargs": {}
+                  },
+                  "agent_name": "operator",
+                  "requested_engine": "python-runtime",
+                  "runtime_engine": "python-runtime",
+                  "execution_engine": "python-runtime"
+                },
+                "execution_id": "run-f938fa193a194ef9ab68a06d9e4a4a53",
+                "parent_execution_id": "run-8e41ddcad89b417089fb709a643fd96a",
+                "children": [],
+                "tool_events": [
+                  {
+                    "id": "call_badd1c07098b4212aac501c80122fd09",
+                    "name": "echo",
+                    "input": {
+                      "value": 3
+                    },
+                    "output": {
+                      "data": {
+                        "value": 3
+                      }
+                    },
+                    "ok": true,
+                    "error": null,
+                    "duration_ms": null,
+                    "meta": {
+                      "source": "openai-agents"
+                    }
+                  }
+                ]
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "examples/provider_framework_conformance",
+        "question": "{\"tool\": \"echo\", \"input\": {\"value\": 3}}",
+        "goal": "",
+        "answer": "{\"value\": 3}",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-1c1348c0e52041c9bcec241d93e5fd1c",
+            "kind": "execution",
+            "title": "operator",
+            "summary": "{\"value\": 3}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 3
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-8e41ddcad89b417089fb709a643fd96a",
+            "kind": "execution",
+            "title": "operator",
+            "summary": "{\"value\": 3}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 3
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-f938fa193a194ef9ab68a06d9e4a4a53",
+            "kind": "execution",
+            "title": "eval",
+            "summary": "{\"value\": 3}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 3
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "call_badd1c07098b4212aac501c80122fd09",
+            "kind": "tool",
+            "title": "echo",
+            "summary": "completed",
+            "source": "echo",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "value": 3
+              }
+            }
+          }
+        ],
+        "usage": {
+          "requests": 2,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "total_tokens": 0,
+          "client_duration_ms": 5300.208,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    },
+    {
+      "run_result": {
+        "text": "{\"value\": 3}",
+        "final": {
+          "text": "{\"value\": 3}"
+        },
+        "data": {
+          "value": 3
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "inputTokens": 0,
+          "outputTokens": 0,
+          "totalTokens": 0,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "total_tokens": 0,
+          "client_duration_ms": 3.38,
+          "requests": 2,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "python-runtime",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "operator",
+          "kind": "agent",
+          "backend": "native",
+          "skills": [
+            "echo"
+          ],
+          "actions_observed": 1,
+          "input": {
+            "tool": "echo",
+            "input": {
+              "value": 3
+            }
+          }
+        },
+        "execution_id": "run-7815dbedd7b240ef809062641194679d",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "{\"value\": 3}",
+            "final": {
+              "text": "{\"value\": 3}"
+            },
+            "data": {
+              "value": 3
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "inputTokens": 0,
+              "outputTokens": 0,
+              "totalTokens": 0,
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "total_tokens": 0,
+              "client_duration_ms": 3.38,
+              "requests": 2,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "python-runtime",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "operator",
+              "kind": "model",
+              "framework": "strands"
+            },
+            "execution_id": "run-0a0483ab78364132aa39b99a543ef91c",
+            "parent_execution_id": "run-7815dbedd7b240ef809062641194679d",
+            "children": [
+              {
+                "text": "{\"value\": 3}",
+                "final": {
+                  "text": "{\"value\": 3}"
+                },
+                "data": {
+                  "value": 3
+                },
+                "ok": true,
+                "messages": [
+                  {
+                    "role": "user",
+                    "content": [
+                      {
+                        "text": "{\"tool\": \"echo\", \"input\": {\"value\": 3}}"
+                      }
+                    ],
+                    "tracking_id": "4c47c30f-b7aa-4226-b822-3dcea3d3ae1b"
+                  },
+                  {
+                    "role": "assistant",
+                    "content": [
+                      {
+                        "toolUse": {
+                          "toolUseId": "python_741b529b6243480c9e0a44f13a6cbde3",
+                          "name": "echo",
+                          "input": {
+                            "value": 3
+                          }
+                        }
+                      }
+                    ],
+                    "metadata": {
+                      "usage": {
+                        "inputTokens": 0,
+                        "outputTokens": 0,
+                        "totalTokens": 0
+                      },
+                      "metrics": {
+                        "latencyMs": 0
+                      }
+                    },
+                    "tracking_id": "74d396cc-83ca-4efe-b286-9a3290b86a92"
+                  },
+                  {
+                    "role": "user",
+                    "content": [
+                      {
+                        "toolResult": {
+                          "toolUseId": "python_741b529b6243480c9e0a44f13a6cbde3",
+                          "status": "success",
+                          "content": [
+                            {
+                              "text": "{\"value\": 3}"
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "tracking_id": "342da2ef-d01e-47e1-aeb3-a97956cc6a78"
+                  },
+                  {
+                    "role": "assistant",
+                    "content": [
+                      {
+                        "text": "{\"value\": 3}"
+                      }
+                    ],
+                    "metadata": {
+                      "usage": {
+                        "inputTokens": 0,
+                        "outputTokens": 0,
+                        "totalTokens": 0
+                      },
+                      "metrics": {
+                        "latencyMs": 0
+                      }
+                    },
+                    "tracking_id": "5d76d1ad-9c97-4acb-ae21-63c22f53fded"
+                  }
+                ],
+                "raw_responses": [
+                  {
+                    "role": "assistant",
+                    "content": [
+                      {
+                        "text": "{\"value\": 3}"
+                      }
+                    ],
+                    "metadata": {
+                      "usage": {
+                        "inputTokens": 0,
+                        "outputTokens": 0,
+                        "totalTokens": 0
+                      },
+                      "metrics": {
+                        "latencyMs": 0
+                      }
+                    },
+                    "tracking_id": "5d76d1ad-9c97-4acb-ae21-63c22f53fded"
+                  }
+                ],
+                "usage": {
+                  "inputTokens": 0,
+                  "outputTokens": 0,
+                  "totalTokens": 0,
+                  "input_tokens": 0,
+                  "output_tokens": 0,
+                  "total_tokens": 0,
+                  "client_duration_ms": 3.38,
+                  "requests": 2,
+                  "scheduler": {
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 604.46
+                  },
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "python-runtime",
+                "mode": "eval",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": {
+                  "ok": true,
+                  "issues": []
+                },
+                "errors": [],
+                "meta": {
+                  "source_result_type": "AgentResult",
+                  "framework_adapter": "strands",
+                  "input": {
+                    "tool": "echo",
+                    "input": {
+                      "value": 3
+                    }
+                  },
+                  "stop_reason": "end_turn",
+                  "rejected_tool_calls": [],
+                  "output_materialization": [],
+                  "runtime": {
+                    "provider": "python-runtime",
+                    "model_id": "python-runtime",
+                    "region_name": null,
+                    "endpoint": null,
+                    "metadata": {},
+                    "provider_priority": [
+                      "openai-runtime",
+                      "bedrock-runtime",
+                      "ollama-runtime"
+                    ],
+                    "allow_python_fallback": false,
+                    "scheduler": {
+                      "max_turns": 8,
+                      "max_tool_calls": 2,
+                      "timeout_s": 60,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    }
+                  },
+                  "scheduler": {
+                    "max_turns": 8,
+                    "max_tool_calls": 2,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "scheduler_execution": {
+                    "scheduler": {
+                      "max_turns": 8,
+                      "max_tool_calls": 2,
+                      "timeout_s": 60,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    },
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 604.46
+                  },
+                  "framework": "strands",
+                  "framework_requested": "strands",
+                  "framework_config": {
+                    "name": "strands",
+                    "agent_kwargs": {},
+                    "run_kwargs": {}
+                  },
+                  "agent_name": "operator",
+                  "requested_engine": "python-runtime",
+                  "runtime_engine": "python-runtime",
+                  "execution_engine": "python-runtime"
+                },
+                "execution_id": "run-6d240a5f37b04dd69f9fe46bed1d4aa6",
+                "parent_execution_id": "run-0a0483ab78364132aa39b99a543ef91c",
+                "children": [],
+                "tool_events": [
+                  {
+                    "id": "python_741b529b6243480c9e0a44f13a6cbde3",
+                    "name": "echo",
+                    "input": {
+                      "value": 3
+                    },
+                    "output": {
+                      "value": 3
+                    },
+                    "ok": true,
+                    "error": null,
+                    "duration_ms": null,
+                    "meta": {
+                      "source": "strands"
+                    }
+                  }
+                ]
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "examples/provider_framework_conformance",
+        "question": "{\"tool\": \"echo\", \"input\": {\"value\": 3}}",
+        "goal": "",
+        "answer": "{\"value\": 3}",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-7815dbedd7b240ef809062641194679d",
+            "kind": "execution",
+            "title": "operator",
+            "summary": "{\"value\": 3}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 3
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-0a0483ab78364132aa39b99a543ef91c",
+            "kind": "execution",
+            "title": "operator",
+            "summary": "{\"value\": 3}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 3
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-6d240a5f37b04dd69f9fe46bed1d4aa6",
+            "kind": "execution",
+            "title": "eval",
+            "summary": "{\"value\": 3}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 3
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "python_741b529b6243480c9e0a44f13a6cbde3",
+            "kind": "tool",
+            "title": "echo",
+            "summary": "completed",
+            "source": "echo",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "value": 3
+            }
+          }
+        ],
+        "usage": {
+          "inputTokens": 0,
+          "outputTokens": 0,
+          "totalTokens": 0,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "total_tokens": 0,
+          "client_duration_ms": 3.38,
+          "requests": 2,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    }
+  ]
+}

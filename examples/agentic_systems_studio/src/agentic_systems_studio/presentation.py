@@ -17,12 +17,34 @@ _DYNAMIC_EXECUTION_PRIMITIVES = frozenset({"__import__", "compile", "eval", "exe
 def _generated_python_blocks(text: str) -> list[str]:
     blocks = re.findall(r"```(?:python)?\s*(.*?)```", text, flags=re.DOTALL)
     if blocks:
-        return blocks
+        return [_normalize_aliases(block) for block in blocks]
     clean = text.strip()
     if clean.startswith(("import agentic_systems", "from agentic_systems")):
         ast.parse(clean)
-        return [clean]
+        return [_normalize_aliases(clean)]
     return []
+
+
+def _normalize_aliases(source):
+    tree = ast.parse(source)
+    aliases, symbols = set(), {}
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            aliases.update(item.asname or item.name for item in node.names if item.name == "agentic_systems")
+        elif isinstance(node, ast.ImportFrom) and node.module == "agentic_systems":
+            for item in node.names:
+                if item.name not in toolkit.__all__:
+                    raise ValueError("Not a public 2.1.3 symbol: " + item.name)
+                symbols[item.asname or item.name] = item.name
+
+    class Normalize(ast.NodeTransformer):
+        def visit_Name(self, node):
+            if node.id in aliases:
+                return ast.copy_location(ast.Name(id="toolkit", ctx=node.ctx), node)
+            if node.id in symbols:
+                return ast.copy_location(ast.Attribute(value=ast.Name(id="toolkit", ctx=ast.Load()), attr=symbols[node.id], ctx=node.ctx), node)
+            return node
+    return ast.unparse(ast.fix_missing_locations(Normalize().visit(tree)))
 
 
 def _usage_fields(value: Any, *, prefix: str = "") -> list[tuple[str, Any]]:
@@ -38,64 +60,17 @@ def _usage_fields(value: Any, *, prefix: str = "") -> list[tuple[str, Any]]:
     return fields
 
 
-def processing_mark(result: Any) -> str:
-    """Summarize observed execution without exposing private reasoning."""
-
-    payload = result.normalized() if hasattr(result, "normalized") else {}
-    runtime = dict(payload.get("runtime") or {})
-    provider = (
-        runtime.get("provider")
-        or runtime.get("runtime_engine")
-        or runtime.get("engine")
-        or getattr(result, "engine", None)
-        or "unknown"
-    )
-    framework = runtime.get("framework") or "native"
-    observed_tools = []
-    for tool in payload.get("tools") or []:
-        name = tool.get("name") if isinstance(tool, dict) else None
-        if name and name not in observed_tools:
-            observed_tools.append(str(name))
-
-    status = "✓ Procesado" if bool(getattr(result, "ok", False)) else "✗ Falló"
-    fields = [status, f"provider={provider}", f"framework={framework}"]
-    if observed_tools:
-        fields.append("tools=" + ", ".join(observed_tools))
-    else:
-        fields.append("tools=ninguna")
-    return " · ".join(fields)
+def processing_mark(result):
+    tools = sorted({event.name for node in result.walk() for event in node.tool_events})
+    return ("Procesado" if result.ok else "Falló") + " · " + str(result.meta.get("provider", result.engine)) + " · " + str(result.meta.get("framework", "native")) + " · tools=" + ", ".join(tools)
 
 
-def usage_mark(result: Any) -> str:
-    """Render every available usage fact without synthesizing missing values."""
-
-    payload = result.normalized() if hasattr(result, "normalized") else {}
-    usage = _usage_fields(payload.get("usage") or {})
-    if not usage:
-        return "Usage: no reportado por el runtime"
-    return "Usage: " + " | ".join(f"{key}={value}" for key, value in usage)
+def usage_mark(result):
+    return "Usage: " + " | ".join(f"{key}={value}" for key, value in result.usage.items())
 
 
-def public_result_payload(result: Any) -> Any:
-    """Project a RunResult without exposing provider-native/private objects."""
-
-    if not hasattr(result, "normalized"):
-        return result
-    payload = result.normalized()
-    runtime = dict(payload.get("runtime") or {})
-    public_runtime = {
-        "provider": runtime.get("provider")
-        or runtime.get("runtime_engine")
-        or runtime.get("engine"),
-        "framework": runtime.get("framework"),
-        "model": runtime.get("model"),
-        "mode": runtime.get("mode"),
-    }
-    payload["runtime"] = public_runtime
-    blocks = dict(payload.get("blocks") or {})
-    blocks["runtime"] = public_runtime
-    payload["blocks"] = blocks
-    return payload
+def public_result_payload(result):
+    return result.to_dict()
 
 
 def validate_generated_tool_contracts(text: str) -> None:
@@ -209,6 +184,8 @@ def validate_generated_agentic_systems_code(
                     symbol = function.rsplit(".", 1)[-1]
                     observed_calls.add(symbol)
                     public_factory = getattr(toolkit, symbol, None)
+                    if symbol not in toolkit.__all__ or not callable(public_factory):
+                        raise ValueError(f"toolkit.{symbol} is not a public 2.1.3 constructor")
                     if callable(public_factory):
                         signature = inspect.signature(public_factory)
                         if not any(

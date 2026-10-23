@@ -1,0 +1,319 @@
+{
+  "name": "bedrock-runtime--a2a",
+  "passed": true,
+  "report": {
+    "provider": "bedrock-runtime",
+    "framework": "strands",
+    "protocol": {
+      "transport": "a2a",
+      "agent_card": "agentic_systems_a2a_echo"
+    },
+    "result": {
+      "text": "The value \"FRAMEWORKS_TOGETHER\" was successfully echoed back through the A2A transport.",
+      "final": {
+        "text": "The value \"FRAMEWORKS_TOGETHER\" was successfully echoed back through the A2A transport."
+      },
+      "data": {
+        "text": "The value \"FRAMEWORKS_TOGETHER\" was successfully echoed back through the A2A transport.\n"
+      },
+      "ok": true,
+      "messages": [],
+      "raw_responses": [],
+      "usage": {
+        "inputTokens": 557,
+        "outputTokens": 48,
+        "totalTokens": 605,
+        "input_tokens": 557,
+        "output_tokens": 48,
+        "total_tokens": 605,
+        "service_latency_ms": 621,
+        "client_duration_ms": 1624.533,
+        "requests": 2,
+        "inference_requests": 2,
+        "tool_calls": 1
+      },
+      "engine": "bedrock-runtime",
+      "model": "qwen.qwen3-32b-v1:0",
+      "mode": "default",
+      "trace_schema_version": "agentic_systems.trace.v1",
+      "validation": null,
+      "errors": [],
+      "meta": {
+        "name": "strands_protocol",
+        "kind": "agent",
+        "backend": "native",
+        "skills": [],
+        "actions_observed": 1,
+        "input": "Call call_remote_echo with value=FRAMEWORKS_TOGETHER."
+      },
+      "execution_id": "run-c78e274a95bf4c8bb79612f0777c79fc",
+      "parent_execution_id": null,
+      "children": [
+        {
+          "text": "The value \"FRAMEWORKS_TOGETHER\" was successfully echoed back through the A2A transport.",
+          "final": {
+            "text": "The value \"FRAMEWORKS_TOGETHER\" was successfully echoed back through the A2A transport."
+          },
+          "data": {
+            "text": "The value \"FRAMEWORKS_TOGETHER\" was successfully echoed back through the A2A transport.\n"
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {
+            "inputTokens": 557,
+            "outputTokens": 48,
+            "totalTokens": 605,
+            "input_tokens": 557,
+            "output_tokens": 48,
+            "total_tokens": 605,
+            "service_latency_ms": 621,
+            "client_duration_ms": 1624.533,
+            "requests": 2,
+            "inference_requests": 2,
+            "tool_calls": 1
+          },
+          "engine": "bedrock-runtime",
+          "model": "qwen.qwen3-32b-v1:0",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "strands_protocol",
+            "kind": "model",
+            "framework": "strands"
+          },
+          "execution_id": "run-5ac8d46f8126425ca0c725216963c9e9",
+          "parent_execution_id": "run-c78e274a95bf4c8bb79612f0777c79fc",
+          "children": [
+            {
+              "text": "The value \"FRAMEWORKS_TOGETHER\" was successfully echoed back through the A2A transport.",
+              "final": {
+                "text": "The value \"FRAMEWORKS_TOGETHER\" was successfully echoed back through the A2A transport."
+              },
+              "data": {
+                "text": "The value \"FRAMEWORKS_TOGETHER\" was successfully echoed back through the A2A transport.\n"
+              },
+              "ok": true,
+              "messages": [
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "text": "Call call_remote_echo with value=FRAMEWORKS_TOGETHER."
+                    }
+                  ],
+                  "tracking_id": "a5d64e81-89b4-4211-b326-08bc7581e4bd"
+                },
+                {
+                  "role": "assistant",
+                  "content": [
+                    {
+                      "toolUse": {
+                        "toolUseId": "tooluse_Ec6EKkhtfmrMTH2pRPG7e7",
+                        "name": "call_remote_echo",
+                        "input": {
+                          "value": "FRAMEWORKS_TOGETHER"
+                        }
+                      }
+                    }
+                  ],
+                  "metadata": {
+                    "usage": {
+                      "inputTokens": 205,
+                      "outputTokens": 26,
+                      "totalTokens": 231
+                    },
+                    "metrics": {
+                      "latencyMs": 260,
+                      "timeToFirstByteMs": 832
+                    }
+                  },
+                  "tracking_id": "cd3b85b2-9119-4605-ab18-7bf5e656ddb0"
+                },
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "toolResult": {
+                        "toolUseId": "tooluse_Ec6EKkhtfmrMTH2pRPG7e7",
+                        "status": "success",
+                        "content": [
+                          {
+                            "text": "{\"value\": \"FRAMEWORKS_TOGETHER\", \"transport\": \"a2a\", \"remote_text\": \"[{\\\"toolUseId\\\": \\\"call_bb274bd4149947598593d99f1433213a\\\", \\\"status\\\": \\\"success\\\", \\\"content\\\": [{\\\"text\\\": \\\"{\\\\\\\"value\\\\\\\": \\\\\\\"FRAMEWORKS_TOGETHER\\\\\\\", \\\\\\\"transport\\\\\\\": \\\\\\\"a2a\\\\\\\"}\\\"}]}]\\n\"}"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "tracking_id": "904b70df-5e04-46ac-921c-9307a884a78f"
+                },
+                {
+                  "role": "assistant",
+                  "content": [
+                    {
+                      "text": "The value \"FRAMEWORKS_TOGETHER\" was successfully echoed back through the A2A transport."
+                    }
+                  ],
+                  "metadata": {
+                    "usage": {
+                      "inputTokens": 352,
+                      "outputTokens": 22,
+                      "totalTokens": 374
+                    },
+                    "metrics": {
+                      "latencyMs": 361,
+                      "timeToFirstByteMs": 432
+                    }
+                  },
+                  "tracking_id": "934eb3e3-146e-4fcb-b82f-5f14a16791d6"
+                }
+              ],
+              "raw_responses": [
+                {
+                  "role": "assistant",
+                  "content": [
+                    {
+                      "text": "The value \"FRAMEWORKS_TOGETHER\" was successfully echoed back through the A2A transport."
+                    }
+                  ],
+                  "metadata": {
+                    "usage": {
+                      "inputTokens": 352,
+                      "outputTokens": 22,
+                      "totalTokens": 374
+                    },
+                    "metrics": {
+                      "latencyMs": 361,
+                      "timeToFirstByteMs": 432
+                    }
+                  },
+                  "tracking_id": "934eb3e3-146e-4fcb-b82f-5f14a16791d6"
+                }
+              ],
+              "usage": {
+                "inputTokens": 557,
+                "outputTokens": 48,
+                "totalTokens": 605,
+                "input_tokens": 557,
+                "output_tokens": 48,
+                "total_tokens": 605,
+                "service_latency_ms": 621,
+                "client_duration_ms": 1624.533,
+                "requests": 2,
+                "scheduler": {
+                  "attempts": 1,
+                  "retries": 0,
+                  "timed_out": false,
+                  "latency_ms": 1632.673
+                },
+                "inference_requests": 2,
+                "tool_calls": 1
+              },
+              "engine": "bedrock-runtime",
+              "model": "qwen.qwen3-32b-v1:0",
+              "mode": "eval",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": {
+                "ok": true,
+                "issues": []
+              },
+              "errors": [],
+              "meta": {
+                "source_result_type": "AgentResult",
+                "framework_adapter": "strands",
+                "input": "Call call_remote_echo with value=FRAMEWORKS_TOGETHER.",
+                "stop_reason": "end_turn",
+                "rejected_tool_calls": [],
+                "output_materialization": [],
+                "runtime": {
+                  "provider": "bedrock-runtime",
+                  "model_id": "qwen.qwen3-32b-v1:0",
+                  "region_name": "us-east-2",
+                  "endpoint": null,
+                  "metadata": {},
+                  "provider_priority": [
+                    "openai-runtime",
+                    "bedrock-runtime",
+                    "ollama-runtime"
+                  ],
+                  "allow_python_fallback": false,
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  }
+                },
+                "scheduler": {
+                  "max_turns": 5,
+                  "max_tool_calls": 3,
+                  "timeout_s": 60,
+                  "max_concurrency": 1,
+                  "max_retries": 0,
+                  "backoff_s": 0.0
+                },
+                "scheduler_execution": {
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "attempts": 1,
+                  "retries": 0,
+                  "timed_out": false,
+                  "latency_ms": 1632.673
+                },
+                "framework": "strands",
+                "framework_requested": "strands",
+                "framework_config": {
+                  "name": "strands",
+                  "agent_kwargs": {
+                    "tools": "list"
+                  },
+                  "run_kwargs": {}
+                },
+                "agent_name": "strands_protocol",
+                "requested_engine": "bedrock-runtime",
+                "runtime_engine": "bedrock-runtime",
+                "execution_engine": "bedrock-runtime"
+              },
+              "execution_id": "run-1d44a6cd4d954c4da0b118b6a4f3fc97",
+              "parent_execution_id": "run-5ac8d46f8126425ca0c725216963c9e9",
+              "children": [],
+              "tool_events": [
+                {
+                  "id": "tooluse_Ec6EKkhtfmrMTH2pRPG7e7",
+                  "name": "call_remote_echo",
+                  "input": {
+                    "value": "FRAMEWORKS_TOGETHER"
+                  },
+                  "output": {
+                    "value": "FRAMEWORKS_TOGETHER",
+                    "transport": "a2a",
+                    "remote_text": "[{\"toolUseId\": \"call_bb274bd4149947598593d99f1433213a\", \"status\": \"success\", \"content\": [{\"text\": \"{\\\"value\\\": \\\"FRAMEWORKS_TOGETHER\\\", \\\"transport\\\": \\\"a2a\\\"}\"}]}]\n"
+                  },
+                  "ok": true,
+                  "error": null,
+                  "duration_ms": null,
+                  "meta": {
+                    "source": "strands"
+                  }
+                }
+              ]
+            }
+          ],
+          "tool_events": []
+        }
+      ],
+      "tool_events": []
+    }
+  },
+  "elapsed_s": 7.337
+}

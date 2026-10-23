@@ -1,0 +1,318 @@
+{
+  "name": "bedrock-runtime--mcp",
+  "passed": true,
+  "report": {
+    "provider": "bedrock-runtime",
+    "framework": "strands",
+    "protocol": {
+      "transport": "mcp-streamable-http"
+    },
+    "result": {
+      "text": "The value `FRAMEWORKS_TOGETHER` was successfully echoed with evidence of an MCP transport: `mcp-streamable-http`.",
+      "final": {
+        "text": "The value `FRAMEWORKS_TOGETHER` was successfully echoed with evidence of an MCP transport: `mcp-streamable-http`."
+      },
+      "data": {
+        "text": "The value `FRAMEWORKS_TOGETHER` was successfully echoed with evidence of an MCP transport: `mcp-streamable-http`.\n"
+      },
+      "ok": true,
+      "messages": [],
+      "raw_responses": [],
+      "usage": {
+        "inputTokens": 479,
+        "outputTokens": 52,
+        "totalTokens": 531,
+        "input_tokens": 479,
+        "output_tokens": 52,
+        "total_tokens": 531,
+        "service_latency_ms": 597,
+        "client_duration_ms": 1391.966,
+        "requests": 2,
+        "inference_requests": 2,
+        "tool_calls": 1
+      },
+      "engine": "bedrock-runtime",
+      "model": "qwen.qwen3-32b-v1:0",
+      "mode": "default",
+      "trace_schema_version": "agentic_systems.trace.v1",
+      "validation": null,
+      "errors": [],
+      "meta": {
+        "name": "strands_protocol",
+        "kind": "agent",
+        "backend": "native",
+        "skills": [],
+        "actions_observed": 1,
+        "input": "Call echo with value=FRAMEWORKS_TOGETHER."
+      },
+      "execution_id": "run-5508cd4cd40f44319851061820727a17",
+      "parent_execution_id": null,
+      "children": [
+        {
+          "text": "The value `FRAMEWORKS_TOGETHER` was successfully echoed with evidence of an MCP transport: `mcp-streamable-http`.",
+          "final": {
+            "text": "The value `FRAMEWORKS_TOGETHER` was successfully echoed with evidence of an MCP transport: `mcp-streamable-http`."
+          },
+          "data": {
+            "text": "The value `FRAMEWORKS_TOGETHER` was successfully echoed with evidence of an MCP transport: `mcp-streamable-http`.\n"
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {
+            "inputTokens": 479,
+            "outputTokens": 52,
+            "totalTokens": 531,
+            "input_tokens": 479,
+            "output_tokens": 52,
+            "total_tokens": 531,
+            "service_latency_ms": 597,
+            "client_duration_ms": 1391.966,
+            "requests": 2,
+            "inference_requests": 2,
+            "tool_calls": 1
+          },
+          "engine": "bedrock-runtime",
+          "model": "qwen.qwen3-32b-v1:0",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "strands_protocol",
+            "kind": "model",
+            "framework": "strands"
+          },
+          "execution_id": "run-af641ef23911423e81a5f9f0d0efb41b",
+          "parent_execution_id": "run-5508cd4cd40f44319851061820727a17",
+          "children": [
+            {
+              "text": "The value `FRAMEWORKS_TOGETHER` was successfully echoed with evidence of an MCP transport: `mcp-streamable-http`.",
+              "final": {
+                "text": "The value `FRAMEWORKS_TOGETHER` was successfully echoed with evidence of an MCP transport: `mcp-streamable-http`."
+              },
+              "data": {
+                "text": "The value `FRAMEWORKS_TOGETHER` was successfully echoed with evidence of an MCP transport: `mcp-streamable-http`.\n"
+              },
+              "ok": true,
+              "messages": [
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "text": "Call echo with value=FRAMEWORKS_TOGETHER."
+                    }
+                  ],
+                  "tracking_id": "47a959cf-c26e-48bc-8563-5697e50ef2a8"
+                },
+                {
+                  "role": "assistant",
+                  "content": [
+                    {
+                      "toolUse": {
+                        "toolUseId": "tooluse_CbQEmVkuazey77p6ma7UJq",
+                        "name": "echo",
+                        "input": {
+                          "value": "FRAMEWORKS_TOGETHER"
+                        }
+                      }
+                    }
+                  ],
+                  "metadata": {
+                    "usage": {
+                      "inputTokens": 209,
+                      "outputTokens": 24,
+                      "totalTokens": 233
+                    },
+                    "metrics": {
+                      "latencyMs": 318,
+                      "timeToFirstByteMs": 1022
+                    }
+                  },
+                  "tracking_id": "be6d01e0-86af-4c53-bfe7-ab4c3f31b9af"
+                },
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "toolResult": {
+                        "status": "success",
+                        "toolUseId": "tooluse_CbQEmVkuazey77p6ma7UJq",
+                        "content": [
+                          {
+                            "text": "{\n  \"value\": \"FRAMEWORKS_TOGETHER\",\n  \"transport\": \"mcp-streamable-http\"\n}"
+                          }
+                        ],
+                        "isError": false
+                      }
+                    }
+                  ],
+                  "tracking_id": "aa8eae15-8d2d-4d95-a6b5-316fc94653dd"
+                },
+                {
+                  "role": "assistant",
+                  "content": [
+                    {
+                      "text": "The value `FRAMEWORKS_TOGETHER` was successfully echoed with evidence of an MCP transport: `mcp-streamable-http`."
+                    }
+                  ],
+                  "metadata": {
+                    "usage": {
+                      "inputTokens": 270,
+                      "outputTokens": 28,
+                      "totalTokens": 298
+                    },
+                    "metrics": {
+                      "latencyMs": 279,
+                      "timeToFirstByteMs": 348
+                    }
+                  },
+                  "tracking_id": "259fc0dd-17de-4714-93a3-2e21dd9c6f96"
+                }
+              ],
+              "raw_responses": [
+                {
+                  "role": "assistant",
+                  "content": [
+                    {
+                      "text": "The value `FRAMEWORKS_TOGETHER` was successfully echoed with evidence of an MCP transport: `mcp-streamable-http`."
+                    }
+                  ],
+                  "metadata": {
+                    "usage": {
+                      "inputTokens": 270,
+                      "outputTokens": 28,
+                      "totalTokens": 298
+                    },
+                    "metrics": {
+                      "latencyMs": 279,
+                      "timeToFirstByteMs": 348
+                    }
+                  },
+                  "tracking_id": "259fc0dd-17de-4714-93a3-2e21dd9c6f96"
+                }
+              ],
+              "usage": {
+                "inputTokens": 479,
+                "outputTokens": 52,
+                "totalTokens": 531,
+                "input_tokens": 479,
+                "output_tokens": 52,
+                "total_tokens": 531,
+                "service_latency_ms": 597,
+                "client_duration_ms": 1391.966,
+                "requests": 2,
+                "scheduler": {
+                  "attempts": 1,
+                  "retries": 0,
+                  "timed_out": false,
+                  "latency_ms": 1897.653
+                },
+                "inference_requests": 2,
+                "tool_calls": 1
+              },
+              "engine": "bedrock-runtime",
+              "model": "qwen.qwen3-32b-v1:0",
+              "mode": "eval",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": {
+                "ok": true,
+                "issues": []
+              },
+              "errors": [],
+              "meta": {
+                "source_result_type": "AgentResult",
+                "framework_adapter": "strands",
+                "input": "Call echo with value=FRAMEWORKS_TOGETHER.",
+                "stop_reason": "end_turn",
+                "rejected_tool_calls": [],
+                "output_materialization": [],
+                "runtime": {
+                  "provider": "bedrock-runtime",
+                  "model_id": "qwen.qwen3-32b-v1:0",
+                  "region_name": "us-east-2",
+                  "endpoint": null,
+                  "metadata": {},
+                  "provider_priority": [
+                    "openai-runtime",
+                    "bedrock-runtime",
+                    "ollama-runtime"
+                  ],
+                  "allow_python_fallback": false,
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  }
+                },
+                "scheduler": {
+                  "max_turns": 5,
+                  "max_tool_calls": 3,
+                  "timeout_s": 60,
+                  "max_concurrency": 1,
+                  "max_retries": 0,
+                  "backoff_s": 0.0
+                },
+                "scheduler_execution": {
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "attempts": 1,
+                  "retries": 0,
+                  "timed_out": false,
+                  "latency_ms": 1897.653
+                },
+                "framework": "strands",
+                "framework_requested": "strands",
+                "framework_config": {
+                  "name": "strands",
+                  "agent_kwargs": {
+                    "tools": "list"
+                  },
+                  "run_kwargs": {}
+                },
+                "agent_name": "strands_protocol",
+                "requested_engine": "bedrock-runtime",
+                "runtime_engine": "bedrock-runtime",
+                "execution_engine": "bedrock-runtime"
+              },
+              "execution_id": "run-f94b088a48024a3bbe83264f50fe1b75",
+              "parent_execution_id": "run-af641ef23911423e81a5f9f0d0efb41b",
+              "children": [],
+              "tool_events": [
+                {
+                  "id": "tooluse_CbQEmVkuazey77p6ma7UJq",
+                  "name": "echo",
+                  "input": {
+                    "value": "FRAMEWORKS_TOGETHER"
+                  },
+                  "output": {
+                    "value": "FRAMEWORKS_TOGETHER",
+                    "transport": "mcp-streamable-http"
+                  },
+                  "ok": true,
+                  "error": null,
+                  "duration_ms": null,
+                  "meta": {
+                    "source": "strands"
+                  }
+                }
+              ]
+            }
+          ],
+          "tool_events": []
+        }
+      ],
+      "tool_events": []
+    }
+  },
+  "elapsed_s": 6.455
+}

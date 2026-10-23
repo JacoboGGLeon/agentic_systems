@@ -1,0 +1,1730 @@
+{
+  "name": "interop-python",
+  "passed": true,
+  "report": {
+    "assignments": {
+      "native": "python-runtime",
+      "langgraph": "python-runtime",
+      "openai-agents": "python-runtime",
+      "strands": "python-runtime"
+    },
+    "result": {
+      "text": "",
+      "final": null,
+      "data": {
+        "value": 46,
+        "trail": [
+          "native",
+          "langgraph",
+          "openai-agents",
+          "strands"
+        ],
+        "validated": true
+      },
+      "ok": true,
+      "messages": [],
+      "raw_responses": [],
+      "usage": {
+        "client_duration_ms": 30.384999999999998,
+        "inference_requests": 0,
+        "tool_calls": 4,
+        "requests": 4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "totalTokens": 0
+      },
+      "engine": "python-runtime",
+      "model": "",
+      "mode": "default",
+      "trace_schema_version": "agentic_systems.trace.v1",
+      "validation": null,
+      "errors": [],
+      "meta": {
+        "name": "framework_interop",
+        "kind": "system",
+        "backend": "langgraph",
+        "skills": [],
+        "actions_observed": 6,
+        "input": {
+          "value": 42,
+          "trail": []
+        }
+      },
+      "execution_id": "run-0e49109582f44e3badafdf146377a561",
+      "parent_execution_id": null,
+      "children": [
+        {
+          "text": "",
+          "final": null,
+          "data": {
+            "value": 46,
+            "trail": [
+              "native",
+              "langgraph",
+              "openai-agents",
+              "strands"
+            ],
+            "validated": true
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {
+            "client_duration_ms": 30.384999999999998,
+            "inference_requests": 0,
+            "tool_calls": 4,
+            "requests": 4,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "total_tokens": 0,
+            "inputTokens": 0,
+            "outputTokens": 0,
+            "totalTokens": 0
+          },
+          "engine": "python-runtime",
+          "model": "",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "graph",
+            "kind": "graph",
+            "backend": "langgraph"
+          },
+          "execution_id": "run-21c1f5cd686d4130a8fc2cda89fa0142",
+          "parent_execution_id": "run-0e49109582f44e3badafdf146377a561",
+          "children": [
+            {
+              "text": "{\"value\": 46, \"trail\": [\"native\", \"langgraph\", \"openai-agents\", \"strands\"]}",
+              "final": {
+                "text": "{\"value\": 46, \"trail\": [\"native\", \"langgraph\", \"openai-agents\", \"strands\"]}"
+              },
+              "data": {
+                "value": 46,
+                "trail": [
+                  "native",
+                  "langgraph",
+                  "openai-agents",
+                  "strands"
+                ]
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {
+                "client_duration_ms": 30.384999999999998,
+                "inference_requests": 0,
+                "tool_calls": 4,
+                "requests": 4,
+                "input_tokens": 0,
+                "output_tokens": 0,
+                "total_tokens": 0,
+                "inputTokens": 0,
+                "outputTokens": 0,
+                "totalTokens": 0
+              },
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "sequence",
+                "kind": "sequence",
+                "backend": "langgraph",
+                "graph_node": "work",
+                "next": "check"
+              },
+              "execution_id": "run-45abd5e1423f4a9f846eabeafd61f87c",
+              "parent_execution_id": "run-21c1f5cd686d4130a8fc2cda89fa0142",
+              "children": [
+                {
+                  "text": "mark_native -> {\"value\": 43, \"trail\": [\"native\"]}",
+                  "final": {
+                    "value": 43,
+                    "trail": [
+                      "native"
+                    ],
+                    "ok": true,
+                    "tool": "mark_native"
+                  },
+                  "data": {
+                    "value": 43,
+                    "trail": [
+                      "native"
+                    ]
+                  },
+                  "ok": true,
+                  "messages": [],
+                  "raw_responses": [],
+                  "usage": {
+                    "client_duration_ms": 1.933,
+                    "inference_requests": 0,
+                    "tool_calls": 1
+                  },
+                  "engine": "python-runtime",
+                  "model": "",
+                  "mode": "default",
+                  "trace_schema_version": "agentic_systems.trace.v1",
+                  "validation": null,
+                  "errors": [],
+                  "meta": {
+                    "name": "native_stage",
+                    "kind": "agent",
+                    "backend": "native",
+                    "skills": [],
+                    "step": "native_stage"
+                  },
+                  "execution_id": "run-137e88123d254da49386c621e20246b1",
+                  "parent_execution_id": "run-45abd5e1423f4a9f846eabeafd61f87c",
+                  "children": [
+                    {
+                      "text": "mark_native -> {\"value\": 43, \"trail\": [\"native\"]}",
+                      "final": {
+                        "value": 43,
+                        "trail": [
+                          "native"
+                        ],
+                        "ok": true,
+                        "tool": "mark_native"
+                      },
+                      "data": {
+                        "value": 43,
+                        "trail": [
+                          "native"
+                        ]
+                      },
+                      "ok": true,
+                      "messages": [],
+                      "raw_responses": [],
+                      "usage": {
+                        "client_duration_ms": 1.933,
+                        "inference_requests": 0,
+                        "tool_calls": 1
+                      },
+                      "engine": "python-runtime",
+                      "model": "",
+                      "mode": "default",
+                      "trace_schema_version": "agentic_systems.trace.v1",
+                      "validation": null,
+                      "errors": [],
+                      "meta": {
+                        "name": "native_request",
+                        "kind": "action"
+                      },
+                      "execution_id": "run-67690750e393481fa7b5447a35ed3187",
+                      "parent_execution_id": "run-137e88123d254da49386c621e20246b1",
+                      "children": [
+                        {
+                          "text": "mark_native -> {\"value\": 43, \"trail\": [\"native\"]}",
+                          "final": {
+                            "value": 43,
+                            "trail": [
+                              "native"
+                            ],
+                            "ok": true,
+                            "tool": "mark_native"
+                          },
+                          "data": {
+                            "value": 43,
+                            "trail": [
+                              "native"
+                            ]
+                          },
+                          "ok": true,
+                          "messages": [],
+                          "raw_responses": [],
+                          "usage": {
+                            "client_duration_ms": 1.933,
+                            "inference_requests": 0,
+                            "tool_calls": 1
+                          },
+                          "engine": "python-runtime",
+                          "model": "python-runtime",
+                          "mode": "default",
+                          "trace_schema_version": "agentic_systems.trace.v1",
+                          "validation": null,
+                          "errors": [],
+                          "meta": {
+                            "name": "native",
+                            "kind": "agent",
+                            "backend": "native",
+                            "skills": [
+                              "native_evidence"
+                            ],
+                            "actions_observed": 1,
+                            "input": {
+                              "tool": "mark_native",
+                              "input": {
+                                "value": 42,
+                                "trail": []
+                              }
+                            }
+                          },
+                          "execution_id": "run-a5ed3d46b39c4ff2af83ea02d9a6f2d9",
+                          "parent_execution_id": "run-67690750e393481fa7b5447a35ed3187",
+                          "children": [
+                            {
+                              "text": "mark_native -> {\"value\": 43, \"trail\": [\"native\"]}",
+                              "final": {
+                                "value": 43,
+                                "trail": [
+                                  "native"
+                                ],
+                                "ok": true,
+                                "tool": "mark_native"
+                              },
+                              "data": {
+                                "value": 43,
+                                "trail": [
+                                  "native"
+                                ],
+                                "ok": true,
+                                "tool": "mark_native"
+                              },
+                              "ok": true,
+                              "messages": [],
+                              "raw_responses": [],
+                              "usage": {
+                                "client_duration_ms": 1.933,
+                                "inference_requests": 0,
+                                "tool_calls": 1
+                              },
+                              "engine": "python-runtime",
+                              "model": "python-runtime",
+                              "mode": "default",
+                              "trace_schema_version": "agentic_systems.trace.v1",
+                              "validation": null,
+                              "errors": [],
+                              "meta": {
+                                "name": "native",
+                                "kind": "model",
+                                "framework": "native"
+                              },
+                              "execution_id": "run-150a7483950041f69f640031eaf20ca1",
+                              "parent_execution_id": "run-a5ed3d46b39c4ff2af83ea02d9a6f2d9",
+                              "children": [
+                                {
+                                  "text": "mark_native -> {\"value\": 43, \"trail\": [\"native\"]}",
+                                  "final": {
+                                    "value": 43,
+                                    "trail": [
+                                      "native"
+                                    ],
+                                    "ok": true,
+                                    "tool": "mark_native"
+                                  },
+                                  "data": {
+                                    "value": 43,
+                                    "trail": [
+                                      "native"
+                                    ],
+                                    "ok": true,
+                                    "tool": "mark_native"
+                                  },
+                                  "ok": true,
+                                  "messages": [],
+                                  "raw_responses": [],
+                                  "usage": {
+                                    "scheduler": {
+                                      "attempts": 1,
+                                      "retries": 0,
+                                      "timed_out": false,
+                                      "latency_ms": 1.933
+                                    },
+                                    "client_duration_ms": 1.933,
+                                    "inference_requests": 0,
+                                    "tool_calls": 1
+                                  },
+                                  "engine": "python-runtime",
+                                  "model": "python-runtime",
+                                  "mode": "eval",
+                                  "trace_schema_version": "agentic_systems.trace.v1",
+                                  "validation": {
+                                    "ok": true,
+                                    "issues": []
+                                  },
+                                  "errors": [],
+                                  "meta": {
+                                    "source_result_type": "PythonRuntimeProvider",
+                                    "agent_name": "native",
+                                    "tool_count": 1,
+                                    "planned_tool_calls": 1,
+                                    "runtime": {
+                                      "provider": "python-runtime",
+                                      "model_id": "python-runtime",
+                                      "region_name": null,
+                                      "endpoint": null,
+                                      "metadata": {},
+                                      "provider_priority": [
+                                        "openai-runtime",
+                                        "bedrock-runtime",
+                                        "ollama-runtime"
+                                      ],
+                                      "allow_python_fallback": false,
+                                      "scheduler": {
+                                        "max_turns": 5,
+                                        "max_tool_calls": 3,
+                                        "timeout_s": 60,
+                                        "max_concurrency": 1,
+                                        "max_retries": 0,
+                                        "backoff_s": 0.0
+                                      }
+                                    },
+                                    "scheduler": {
+                                      "max_turns": 5,
+                                      "max_tool_calls": 3,
+                                      "timeout_s": 60,
+                                      "max_concurrency": 1,
+                                      "max_retries": 0,
+                                      "backoff_s": 0.0
+                                    },
+                                    "scheduler_execution": {
+                                      "scheduler": {
+                                        "max_turns": 5,
+                                        "max_tool_calls": 3,
+                                        "timeout_s": 60,
+                                        "max_concurrency": 1,
+                                        "max_retries": 0,
+                                        "backoff_s": 0.0
+                                      },
+                                      "attempts": 1,
+                                      "retries": 0,
+                                      "timed_out": false,
+                                      "latency_ms": 1.933
+                                    },
+                                    "framework": "native",
+                                    "framework_requested": "native",
+                                    "framework_adapter": "native",
+                                    "framework_config": {
+                                      "name": "native",
+                                      "agent_kwargs": {},
+                                      "run_kwargs": {}
+                                    },
+                                    "input": {
+                                      "tool": "mark_native",
+                                      "input": {
+                                        "value": 42,
+                                        "trail": []
+                                      }
+                                    },
+                                    "requested_engine": "python-runtime",
+                                    "runtime_engine": "python-runtime",
+                                    "execution_engine": "python-runtime"
+                                  },
+                                  "execution_id": "run-6d6abef652854b09b392d7f568ea560e",
+                                  "parent_execution_id": "run-150a7483950041f69f640031eaf20ca1",
+                                  "children": [],
+                                  "tool_events": [
+                                    {
+                                      "id": "tool-bbffd9cf4bf84b2e839ddddbe8d48dc8",
+                                      "name": "mark_native",
+                                      "input": {
+                                        "value": 42,
+                                        "trail": []
+                                      },
+                                      "output": {
+                                        "data": {
+                                          "value": 43,
+                                          "trail": [
+                                            "native"
+                                          ]
+                                        }
+                                      },
+                                      "ok": true,
+                                      "error": null,
+                                      "duration_ms": null,
+                                      "meta": {}
+                                    }
+                                  ]
+                                }
+                              ],
+                              "tool_events": []
+                            }
+                          ],
+                          "tool_events": []
+                        }
+                      ],
+                      "tool_events": []
+                    }
+                  ],
+                  "tool_events": []
+                },
+                {
+                  "text": "mark_langgraph -> {\"value\": 44, \"trail\": [\"native\", \"langgraph\"]}",
+                  "final": {
+                    "value": 44,
+                    "trail": [
+                      "native",
+                      "langgraph"
+                    ],
+                    "ok": true,
+                    "tool": "mark_langgraph"
+                  },
+                  "data": {
+                    "value": 44,
+                    "trail": [
+                      "native",
+                      "langgraph"
+                    ]
+                  },
+                  "ok": true,
+                  "messages": [],
+                  "raw_responses": [],
+                  "usage": {
+                    "client_duration_ms": 6.918,
+                    "inference_requests": 0,
+                    "tool_calls": 1
+                  },
+                  "engine": "python-runtime",
+                  "model": "",
+                  "mode": "default",
+                  "trace_schema_version": "agentic_systems.trace.v1",
+                  "validation": null,
+                  "errors": [],
+                  "meta": {
+                    "name": "langgraph_stage",
+                    "kind": "agent",
+                    "backend": "native",
+                    "skills": [],
+                    "step": "langgraph_stage"
+                  },
+                  "execution_id": "run-2096f3d545494a06921bd17c330ce6ee",
+                  "parent_execution_id": "run-45abd5e1423f4a9f846eabeafd61f87c",
+                  "children": [
+                    {
+                      "text": "mark_langgraph -> {\"value\": 44, \"trail\": [\"native\", \"langgraph\"]}",
+                      "final": {
+                        "value": 44,
+                        "trail": [
+                          "native",
+                          "langgraph"
+                        ],
+                        "ok": true,
+                        "tool": "mark_langgraph"
+                      },
+                      "data": {
+                        "value": 44,
+                        "trail": [
+                          "native",
+                          "langgraph"
+                        ]
+                      },
+                      "ok": true,
+                      "messages": [],
+                      "raw_responses": [],
+                      "usage": {
+                        "client_duration_ms": 6.918,
+                        "inference_requests": 0,
+                        "tool_calls": 1
+                      },
+                      "engine": "python-runtime",
+                      "model": "",
+                      "mode": "default",
+                      "trace_schema_version": "agentic_systems.trace.v1",
+                      "validation": null,
+                      "errors": [],
+                      "meta": {
+                        "name": "langgraph_request",
+                        "kind": "action"
+                      },
+                      "execution_id": "run-49dca0448f73432aa01c60b92ea55036",
+                      "parent_execution_id": "run-2096f3d545494a06921bd17c330ce6ee",
+                      "children": [
+                        {
+                          "text": "mark_langgraph -> {\"value\": 44, \"trail\": [\"native\", \"langgraph\"]}",
+                          "final": {
+                            "value": 44,
+                            "trail": [
+                              "native",
+                              "langgraph"
+                            ],
+                            "ok": true,
+                            "tool": "mark_langgraph"
+                          },
+                          "data": {
+                            "value": 44,
+                            "trail": [
+                              "native",
+                              "langgraph"
+                            ]
+                          },
+                          "ok": true,
+                          "messages": [],
+                          "raw_responses": [],
+                          "usage": {
+                            "client_duration_ms": 6.918,
+                            "inference_requests": 0,
+                            "tool_calls": 1
+                          },
+                          "engine": "python-runtime",
+                          "model": "python-runtime",
+                          "mode": "default",
+                          "trace_schema_version": "agentic_systems.trace.v1",
+                          "validation": null,
+                          "errors": [],
+                          "meta": {
+                            "name": "langgraph",
+                            "kind": "agent",
+                            "backend": "native",
+                            "skills": [
+                              "langgraph_evidence"
+                            ],
+                            "actions_observed": 1,
+                            "input": {
+                              "tool": "mark_langgraph",
+                              "input": {
+                                "value": 43,
+                                "trail": [
+                                  "native"
+                                ]
+                              }
+                            }
+                          },
+                          "execution_id": "run-23e9d154774b463683828bbbb4824be9",
+                          "parent_execution_id": "run-49dca0448f73432aa01c60b92ea55036",
+                          "children": [
+                            {
+                              "text": "mark_langgraph -> {\"value\": 44, \"trail\": [\"native\", \"langgraph\"]}",
+                              "final": {
+                                "value": 44,
+                                "trail": [
+                                  "native",
+                                  "langgraph"
+                                ],
+                                "ok": true,
+                                "tool": "mark_langgraph"
+                              },
+                              "data": {
+                                "value": 44,
+                                "trail": [
+                                  "native",
+                                  "langgraph"
+                                ],
+                                "ok": true,
+                                "tool": "mark_langgraph"
+                              },
+                              "ok": true,
+                              "messages": [],
+                              "raw_responses": [],
+                              "usage": {
+                                "client_duration_ms": 6.918,
+                                "inference_requests": 0,
+                                "tool_calls": 1
+                              },
+                              "engine": "python-runtime",
+                              "model": "python-runtime",
+                              "mode": "default",
+                              "trace_schema_version": "agentic_systems.trace.v1",
+                              "validation": null,
+                              "errors": [],
+                              "meta": {
+                                "name": "langgraph",
+                                "kind": "model",
+                                "framework": "langgraph"
+                              },
+                              "execution_id": "run-2ec94921077c4acab0308402540205d2",
+                              "parent_execution_id": "run-23e9d154774b463683828bbbb4824be9",
+                              "children": [
+                                {
+                                  "text": "mark_langgraph -> {\"value\": 44, \"trail\": [\"native\", \"langgraph\"]}",
+                                  "final": {
+                                    "value": 44,
+                                    "trail": [
+                                      "native",
+                                      "langgraph"
+                                    ],
+                                    "ok": true,
+                                    "tool": "mark_langgraph"
+                                  },
+                                  "data": {
+                                    "value": 44,
+                                    "trail": [
+                                      "native",
+                                      "langgraph"
+                                    ],
+                                    "ok": true,
+                                    "tool": "mark_langgraph"
+                                  },
+                                  "ok": true,
+                                  "messages": [],
+                                  "raw_responses": [],
+                                  "usage": {
+                                    "scheduler": {
+                                      "attempts": 1,
+                                      "retries": 0,
+                                      "timed_out": false,
+                                      "latency_ms": 6.918
+                                    },
+                                    "client_duration_ms": 6.918,
+                                    "inference_requests": 0,
+                                    "tool_calls": 1
+                                  },
+                                  "engine": "python-runtime",
+                                  "model": "python-runtime",
+                                  "mode": "eval",
+                                  "trace_schema_version": "agentic_systems.trace.v1",
+                                  "validation": {
+                                    "ok": true,
+                                    "issues": []
+                                  },
+                                  "errors": [],
+                                  "meta": {
+                                    "source_result_type": "PythonRuntimeProvider",
+                                    "agent_name": "langgraph",
+                                    "tool_count": 1,
+                                    "planned_tool_calls": 1,
+                                    "framework_adapter": "langgraph",
+                                    "runtime": {
+                                      "provider": "python-runtime",
+                                      "model_id": "python-runtime",
+                                      "region_name": null,
+                                      "endpoint": null,
+                                      "metadata": {},
+                                      "provider_priority": [
+                                        "openai-runtime",
+                                        "bedrock-runtime",
+                                        "ollama-runtime"
+                                      ],
+                                      "allow_python_fallback": false,
+                                      "scheduler": {
+                                        "max_turns": 5,
+                                        "max_tool_calls": 3,
+                                        "timeout_s": 60,
+                                        "max_concurrency": 1,
+                                        "max_retries": 0,
+                                        "backoff_s": 0.0
+                                      }
+                                    },
+                                    "scheduler": {
+                                      "max_turns": 5,
+                                      "max_tool_calls": 3,
+                                      "timeout_s": 60,
+                                      "max_concurrency": 1,
+                                      "max_retries": 0,
+                                      "backoff_s": 0.0
+                                    },
+                                    "scheduler_execution": {
+                                      "scheduler": {
+                                        "max_turns": 5,
+                                        "max_tool_calls": 3,
+                                        "timeout_s": 60,
+                                        "max_concurrency": 1,
+                                        "max_retries": 0,
+                                        "backoff_s": 0.0
+                                      },
+                                      "attempts": 1,
+                                      "retries": 0,
+                                      "timed_out": false,
+                                      "latency_ms": 6.918
+                                    },
+                                    "framework": "langgraph",
+                                    "framework_requested": "langgraph",
+                                    "framework_config": {
+                                      "name": "langgraph",
+                                      "agent_kwargs": {},
+                                      "run_kwargs": {}
+                                    },
+                                    "input": {
+                                      "tool": "mark_langgraph",
+                                      "input": {
+                                        "value": 43,
+                                        "trail": [
+                                          "native"
+                                        ]
+                                      }
+                                    },
+                                    "requested_engine": "python-runtime",
+                                    "runtime_engine": "python-runtime",
+                                    "execution_engine": "python-runtime"
+                                  },
+                                  "execution_id": "run-5654710693a14f48a313ee1d83dc5cb9",
+                                  "parent_execution_id": "run-2ec94921077c4acab0308402540205d2",
+                                  "children": [],
+                                  "tool_events": [
+                                    {
+                                      "id": "tool-cd53b00825c344c0b48202bfb058e414",
+                                      "name": "mark_langgraph",
+                                      "input": {
+                                        "value": 43,
+                                        "trail": [
+                                          "native"
+                                        ]
+                                      },
+                                      "output": {
+                                        "data": {
+                                          "value": 44,
+                                          "trail": [
+                                            "native",
+                                            "langgraph"
+                                          ]
+                                        }
+                                      },
+                                      "ok": true,
+                                      "error": null,
+                                      "duration_ms": null,
+                                      "meta": {}
+                                    }
+                                  ]
+                                }
+                              ],
+                              "tool_events": []
+                            }
+                          ],
+                          "tool_events": []
+                        }
+                      ],
+                      "tool_events": []
+                    }
+                  ],
+                  "tool_events": []
+                },
+                {
+                  "text": "{\"value\": 45, \"trail\": [\"native\", \"langgraph\", \"openai-agents\"]}",
+                  "final": {
+                    "value": 45,
+                    "trail": [
+                      "native",
+                      "langgraph",
+                      "openai-agents"
+                    ]
+                  },
+                  "data": {
+                    "value": 45,
+                    "trail": [
+                      "native",
+                      "langgraph",
+                      "openai-agents"
+                    ]
+                  },
+                  "ok": true,
+                  "messages": [],
+                  "raw_responses": [],
+                  "usage": {
+                    "requests": 2,
+                    "input_tokens": 0,
+                    "output_tokens": 0,
+                    "total_tokens": 0,
+                    "client_duration_ms": 16.647,
+                    "inference_requests": 0,
+                    "tool_calls": 1
+                  },
+                  "engine": "python-runtime",
+                  "model": "",
+                  "mode": "default",
+                  "trace_schema_version": "agentic_systems.trace.v1",
+                  "validation": null,
+                  "errors": [],
+                  "meta": {
+                    "name": "openai-agents_stage",
+                    "kind": "agent",
+                    "backend": "native",
+                    "skills": [],
+                    "step": "openai-agents_stage"
+                  },
+                  "execution_id": "run-66f30fe161db4f248376cb5b71a086d1",
+                  "parent_execution_id": "run-45abd5e1423f4a9f846eabeafd61f87c",
+                  "children": [
+                    {
+                      "text": "{\"value\": 45, \"trail\": [\"native\", \"langgraph\", \"openai-agents\"]}",
+                      "final": {
+                        "value": 45,
+                        "trail": [
+                          "native",
+                          "langgraph",
+                          "openai-agents"
+                        ]
+                      },
+                      "data": {
+                        "value": 45,
+                        "trail": [
+                          "native",
+                          "langgraph",
+                          "openai-agents"
+                        ]
+                      },
+                      "ok": true,
+                      "messages": [],
+                      "raw_responses": [],
+                      "usage": {
+                        "requests": 2,
+                        "input_tokens": 0,
+                        "output_tokens": 0,
+                        "total_tokens": 0,
+                        "client_duration_ms": 16.647,
+                        "inference_requests": 0,
+                        "tool_calls": 1
+                      },
+                      "engine": "python-runtime",
+                      "model": "",
+                      "mode": "default",
+                      "trace_schema_version": "agentic_systems.trace.v1",
+                      "validation": null,
+                      "errors": [],
+                      "meta": {
+                        "name": "openai-agents_request",
+                        "kind": "action"
+                      },
+                      "execution_id": "run-81cbe73ebf3d4f29856fc650a8dbf5f9",
+                      "parent_execution_id": "run-66f30fe161db4f248376cb5b71a086d1",
+                      "children": [
+                        {
+                          "text": "{\"value\": 45, \"trail\": [\"native\", \"langgraph\", \"openai-agents\"]}",
+                          "final": {
+                            "value": 45,
+                            "trail": [
+                              "native",
+                              "langgraph",
+                              "openai-agents"
+                            ]
+                          },
+                          "data": {
+                            "value": 45,
+                            "trail": [
+                              "native",
+                              "langgraph",
+                              "openai-agents"
+                            ]
+                          },
+                          "ok": true,
+                          "messages": [],
+                          "raw_responses": [],
+                          "usage": {
+                            "requests": 2,
+                            "input_tokens": 0,
+                            "output_tokens": 0,
+                            "total_tokens": 0,
+                            "client_duration_ms": 16.647,
+                            "inference_requests": 0,
+                            "tool_calls": 1
+                          },
+                          "engine": "python-runtime",
+                          "model": "python-runtime",
+                          "mode": "default",
+                          "trace_schema_version": "agentic_systems.trace.v1",
+                          "validation": null,
+                          "errors": [],
+                          "meta": {
+                            "name": "openai-agents",
+                            "kind": "agent",
+                            "backend": "native",
+                            "skills": [
+                              "openai-agents_evidence"
+                            ],
+                            "actions_observed": 1,
+                            "input": {
+                              "tool": "mark_openai_agents",
+                              "input": {
+                                "value": 44,
+                                "trail": [
+                                  "native",
+                                  "langgraph"
+                                ]
+                              }
+                            }
+                          },
+                          "execution_id": "run-3c8ee4b0f881445ab1afb0f2a5c68ff2",
+                          "parent_execution_id": "run-81cbe73ebf3d4f29856fc650a8dbf5f9",
+                          "children": [
+                            {
+                              "text": "{\"value\": 45, \"trail\": [\"native\", \"langgraph\", \"openai-agents\"]}",
+                              "final": {
+                                "value": 45,
+                                "trail": [
+                                  "native",
+                                  "langgraph",
+                                  "openai-agents"
+                                ]
+                              },
+                              "data": {
+                                "value": 45,
+                                "trail": [
+                                  "native",
+                                  "langgraph",
+                                  "openai-agents"
+                                ]
+                              },
+                              "ok": true,
+                              "messages": [],
+                              "raw_responses": [],
+                              "usage": {
+                                "requests": 2,
+                                "input_tokens": 0,
+                                "output_tokens": 0,
+                                "total_tokens": 0,
+                                "client_duration_ms": 16.647,
+                                "inference_requests": 0,
+                                "tool_calls": 1
+                              },
+                              "engine": "python-runtime",
+                              "model": "python-runtime",
+                              "mode": "default",
+                              "trace_schema_version": "agentic_systems.trace.v1",
+                              "validation": null,
+                              "errors": [],
+                              "meta": {
+                                "name": "openai-agents",
+                                "kind": "model",
+                                "framework": "openai-agents"
+                              },
+                              "execution_id": "run-88e675db92274c9497a123d06b2af9f4",
+                              "parent_execution_id": "run-3c8ee4b0f881445ab1afb0f2a5c68ff2",
+                              "children": [
+                                {
+                                  "text": "{\"value\": 45, \"trail\": [\"native\", \"langgraph\", \"openai-agents\"]}",
+                                  "final": {
+                                    "value": 45,
+                                    "trail": [
+                                      "native",
+                                      "langgraph",
+                                      "openai-agents"
+                                    ]
+                                  },
+                                  "data": {
+                                    "value": 45,
+                                    "trail": [
+                                      "native",
+                                      "langgraph",
+                                      "openai-agents"
+                                    ]
+                                  },
+                                  "ok": true,
+                                  "messages": [
+                                    {
+                                      "content": "{\"tool\": \"mark_openai_agents\", \"input\": {\"value\": 44, \"trail\": [\"native\", \"langgraph\"]}}",
+                                      "role": "user"
+                                    },
+                                    {
+                                      "arguments": "{\"value\": 44, \"trail\": [\"native\", \"langgraph\"]}",
+                                      "call_id": "call_725a5a0bdbdd494d82858ca6e0ddf4aa",
+                                      "name": "mark_openai_agents",
+                                      "type": "function_call"
+                                    },
+                                    {
+                                      "call_id": "call_725a5a0bdbdd494d82858ca6e0ddf4aa",
+                                      "output": "{'value': 45, 'trail': ['native', 'langgraph', 'openai-agents']}",
+                                      "type": "function_call_output"
+                                    },
+                                    {
+                                      "id": "msg_3c7e503bc01f4eb2a46709e21c5dc801",
+                                      "content": [
+                                        {
+                                          "annotations": [],
+                                          "text": "{\"value\": 45, \"trail\": [\"native\", \"langgraph\", \"openai-agents\"]}",
+                                          "type": "output_text"
+                                        }
+                                      ],
+                                      "role": "assistant",
+                                      "status": "completed",
+                                      "type": "message"
+                                    }
+                                  ],
+                                  "raw_responses": [
+                                    {
+                                      "output": [
+                                        {
+                                          "arguments": "{\"value\": 44, \"trail\": [\"native\", \"langgraph\"]}",
+                                          "call_id": "call_725a5a0bdbdd494d82858ca6e0ddf4aa",
+                                          "name": "mark_openai_agents",
+                                          "type": "function_call",
+                                          "id": null,
+                                          "caller": null,
+                                          "namespace": null,
+                                          "status": null
+                                        }
+                                      ],
+                                      "usage": {
+                                        "requests": 1,
+                                        "input_tokens": 0,
+                                        "input_tokens_details": {
+                                          "cache_write_tokens": 0,
+                                          "cached_tokens": 0
+                                        },
+                                        "output_tokens": 0,
+                                        "output_tokens_details": {
+                                          "reasoning_tokens": 0
+                                        },
+                                        "total_tokens": 0,
+                                        "request_usage_entries": []
+                                      },
+                                      "response_id": "python_529f1f69e13a4dbfa592bbdf7e02c374",
+                                      "request_id": null
+                                    },
+                                    {
+                                      "output": [
+                                        {
+                                          "id": "msg_3c7e503bc01f4eb2a46709e21c5dc801",
+                                          "content": [
+                                            {
+                                              "annotations": [],
+                                              "text": "{\"value\": 45, \"trail\": [\"native\", \"langgraph\", \"openai-agents\"]}",
+                                              "type": "output_text",
+                                              "logprobs": null
+                                            }
+                                          ],
+                                          "role": "assistant",
+                                          "status": "completed",
+                                          "type": "message",
+                                          "phase": null
+                                        }
+                                      ],
+                                      "usage": {
+                                        "requests": 1,
+                                        "input_tokens": 0,
+                                        "input_tokens_details": {
+                                          "cache_write_tokens": 0,
+                                          "cached_tokens": 0
+                                        },
+                                        "output_tokens": 0,
+                                        "output_tokens_details": {
+                                          "reasoning_tokens": 0
+                                        },
+                                        "total_tokens": 0,
+                                        "request_usage_entries": []
+                                      },
+                                      "response_id": "response_ed4303b776494f93a54af9218de23267",
+                                      "request_id": null
+                                    }
+                                  ],
+                                  "usage": {
+                                    "requests": 2,
+                                    "input_tokens": 0,
+                                    "input_tokens_details": {
+                                      "cache_write_tokens": 0,
+                                      "cached_tokens": 0
+                                    },
+                                    "output_tokens": 0,
+                                    "output_tokens_details": {
+                                      "reasoning_tokens": 0
+                                    },
+                                    "total_tokens": 0,
+                                    "request_usage_entries": [],
+                                    "scheduler": {
+                                      "attempts": 1,
+                                      "retries": 0,
+                                      "timed_out": false,
+                                      "latency_ms": 16.647
+                                    },
+                                    "client_duration_ms": 16.647,
+                                    "inference_requests": 0,
+                                    "tool_calls": 1
+                                  },
+                                  "engine": "python-runtime",
+                                  "model": "python-runtime",
+                                  "mode": "eval",
+                                  "trace_schema_version": "agentic_systems.trace.v1",
+                                  "validation": {
+                                    "ok": true,
+                                    "issues": []
+                                  },
+                                  "errors": [],
+                                  "meta": {
+                                    "source_result_type": "RunResult",
+                                    "framework_adapter": "openai-agents",
+                                    "input": {
+                                      "tool": "mark_openai_agents",
+                                      "input": {
+                                        "value": 44,
+                                        "trail": [
+                                          "native",
+                                          "langgraph"
+                                        ]
+                                      }
+                                    },
+                                    "rejected_tool_calls": [],
+                                    "runtime": {
+                                      "provider": "python-runtime",
+                                      "model_id": "python-runtime",
+                                      "region_name": null,
+                                      "endpoint": null,
+                                      "metadata": {},
+                                      "provider_priority": [
+                                        "openai-runtime",
+                                        "bedrock-runtime",
+                                        "ollama-runtime"
+                                      ],
+                                      "allow_python_fallback": false,
+                                      "scheduler": {
+                                        "max_turns": 5,
+                                        "max_tool_calls": 3,
+                                        "timeout_s": 60,
+                                        "max_concurrency": 1,
+                                        "max_retries": 0,
+                                        "backoff_s": 0.0
+                                      }
+                                    },
+                                    "scheduler": {
+                                      "max_turns": 5,
+                                      "max_tool_calls": 3,
+                                      "timeout_s": 60,
+                                      "max_concurrency": 1,
+                                      "max_retries": 0,
+                                      "backoff_s": 0.0
+                                    },
+                                    "scheduler_execution": {
+                                      "scheduler": {
+                                        "max_turns": 5,
+                                        "max_tool_calls": 3,
+                                        "timeout_s": 60,
+                                        "max_concurrency": 1,
+                                        "max_retries": 0,
+                                        "backoff_s": 0.0
+                                      },
+                                      "attempts": 1,
+                                      "retries": 0,
+                                      "timed_out": false,
+                                      "latency_ms": 16.647
+                                    },
+                                    "framework": "openai-agents",
+                                    "framework_requested": "openai-agents",
+                                    "framework_config": {
+                                      "name": "openai-agents",
+                                      "agent_kwargs": {},
+                                      "run_kwargs": {}
+                                    },
+                                    "agent_name": "openai-agents",
+                                    "requested_engine": "python-runtime",
+                                    "runtime_engine": "python-runtime",
+                                    "execution_engine": "python-runtime"
+                                  },
+                                  "execution_id": "run-77a3076b44ef4981a3cc9bd53138ea1f",
+                                  "parent_execution_id": "run-88e675db92274c9497a123d06b2af9f4",
+                                  "children": [],
+                                  "tool_events": [
+                                    {
+                                      "id": "call_725a5a0bdbdd494d82858ca6e0ddf4aa",
+                                      "name": "mark_openai_agents",
+                                      "input": {
+                                        "value": 44,
+                                        "trail": [
+                                          "native",
+                                          "langgraph"
+                                        ]
+                                      },
+                                      "output": {
+                                        "data": {
+                                          "value": 45,
+                                          "trail": [
+                                            "native",
+                                            "langgraph",
+                                            "openai-agents"
+                                          ]
+                                        }
+                                      },
+                                      "ok": true,
+                                      "error": null,
+                                      "duration_ms": null,
+                                      "meta": {
+                                        "source": "openai-agents"
+                                      }
+                                    }
+                                  ]
+                                }
+                              ],
+                              "tool_events": []
+                            }
+                          ],
+                          "tool_events": []
+                        }
+                      ],
+                      "tool_events": []
+                    }
+                  ],
+                  "tool_events": []
+                },
+                {
+                  "text": "{\"value\": 46, \"trail\": [\"native\", \"langgraph\", \"openai-agents\", \"strands\"]}",
+                  "final": {
+                    "text": "{\"value\": 46, \"trail\": [\"native\", \"langgraph\", \"openai-agents\", \"strands\"]}"
+                  },
+                  "data": {
+                    "value": 46,
+                    "trail": [
+                      "native",
+                      "langgraph",
+                      "openai-agents",
+                      "strands"
+                    ]
+                  },
+                  "ok": true,
+                  "messages": [],
+                  "raw_responses": [],
+                  "usage": {
+                    "inputTokens": 0,
+                    "outputTokens": 0,
+                    "totalTokens": 0,
+                    "input_tokens": 0,
+                    "output_tokens": 0,
+                    "total_tokens": 0,
+                    "client_duration_ms": 4.887,
+                    "requests": 2,
+                    "inference_requests": 0,
+                    "tool_calls": 1
+                  },
+                  "engine": "python-runtime",
+                  "model": "",
+                  "mode": "default",
+                  "trace_schema_version": "agentic_systems.trace.v1",
+                  "validation": null,
+                  "errors": [],
+                  "meta": {
+                    "name": "strands_stage",
+                    "kind": "agent",
+                    "backend": "native",
+                    "skills": [],
+                    "step": "strands_stage"
+                  },
+                  "execution_id": "run-60a115199cca47c287ad7eaf3ab95300",
+                  "parent_execution_id": "run-45abd5e1423f4a9f846eabeafd61f87c",
+                  "children": [
+                    {
+                      "text": "{\"value\": 46, \"trail\": [\"native\", \"langgraph\", \"openai-agents\", \"strands\"]}",
+                      "final": {
+                        "text": "{\"value\": 46, \"trail\": [\"native\", \"langgraph\", \"openai-agents\", \"strands\"]}"
+                      },
+                      "data": {
+                        "value": 46,
+                        "trail": [
+                          "native",
+                          "langgraph",
+                          "openai-agents",
+                          "strands"
+                        ]
+                      },
+                      "ok": true,
+                      "messages": [],
+                      "raw_responses": [],
+                      "usage": {
+                        "inputTokens": 0,
+                        "outputTokens": 0,
+                        "totalTokens": 0,
+                        "input_tokens": 0,
+                        "output_tokens": 0,
+                        "total_tokens": 0,
+                        "client_duration_ms": 4.887,
+                        "requests": 2,
+                        "inference_requests": 0,
+                        "tool_calls": 1
+                      },
+                      "engine": "python-runtime",
+                      "model": "",
+                      "mode": "default",
+                      "trace_schema_version": "agentic_systems.trace.v1",
+                      "validation": null,
+                      "errors": [],
+                      "meta": {
+                        "name": "strands_request",
+                        "kind": "action"
+                      },
+                      "execution_id": "run-409b7906a5c54ae5a981b8f70c6972e4",
+                      "parent_execution_id": "run-60a115199cca47c287ad7eaf3ab95300",
+                      "children": [
+                        {
+                          "text": "{\"value\": 46, \"trail\": [\"native\", \"langgraph\", \"openai-agents\", \"strands\"]}",
+                          "final": {
+                            "text": "{\"value\": 46, \"trail\": [\"native\", \"langgraph\", \"openai-agents\", \"strands\"]}"
+                          },
+                          "data": {
+                            "value": 46,
+                            "trail": [
+                              "native",
+                              "langgraph",
+                              "openai-agents",
+                              "strands"
+                            ]
+                          },
+                          "ok": true,
+                          "messages": [],
+                          "raw_responses": [],
+                          "usage": {
+                            "inputTokens": 0,
+                            "outputTokens": 0,
+                            "totalTokens": 0,
+                            "input_tokens": 0,
+                            "output_tokens": 0,
+                            "total_tokens": 0,
+                            "client_duration_ms": 4.887,
+                            "requests": 2,
+                            "inference_requests": 0,
+                            "tool_calls": 1
+                          },
+                          "engine": "python-runtime",
+                          "model": "python-runtime",
+                          "mode": "default",
+                          "trace_schema_version": "agentic_systems.trace.v1",
+                          "validation": null,
+                          "errors": [],
+                          "meta": {
+                            "name": "strands",
+                            "kind": "agent",
+                            "backend": "native",
+                            "skills": [
+                              "strands_evidence"
+                            ],
+                            "actions_observed": 1,
+                            "input": {
+                              "tool": "mark_strands",
+                              "input": {
+                                "value": 45,
+                                "trail": [
+                                  "native",
+                                  "langgraph",
+                                  "openai-agents"
+                                ]
+                              }
+                            }
+                          },
+                          "execution_id": "run-23311a4bdaba4946b410afd5926cc990",
+                          "parent_execution_id": "run-409b7906a5c54ae5a981b8f70c6972e4",
+                          "children": [
+                            {
+                              "text": "{\"value\": 46, \"trail\": [\"native\", \"langgraph\", \"openai-agents\", \"strands\"]}",
+                              "final": {
+                                "text": "{\"value\": 46, \"trail\": [\"native\", \"langgraph\", \"openai-agents\", \"strands\"]}"
+                              },
+                              "data": {
+                                "value": 46,
+                                "trail": [
+                                  "native",
+                                  "langgraph",
+                                  "openai-agents",
+                                  "strands"
+                                ]
+                              },
+                              "ok": true,
+                              "messages": [],
+                              "raw_responses": [],
+                              "usage": {
+                                "inputTokens": 0,
+                                "outputTokens": 0,
+                                "totalTokens": 0,
+                                "input_tokens": 0,
+                                "output_tokens": 0,
+                                "total_tokens": 0,
+                                "client_duration_ms": 4.887,
+                                "requests": 2,
+                                "inference_requests": 0,
+                                "tool_calls": 1
+                              },
+                              "engine": "python-runtime",
+                              "model": "python-runtime",
+                              "mode": "default",
+                              "trace_schema_version": "agentic_systems.trace.v1",
+                              "validation": null,
+                              "errors": [],
+                              "meta": {
+                                "name": "strands",
+                                "kind": "model",
+                                "framework": "strands"
+                              },
+                              "execution_id": "run-1a1a93abb8de4f10bc6d5b40f0d2a1cd",
+                              "parent_execution_id": "run-23311a4bdaba4946b410afd5926cc990",
+                              "children": [
+                                {
+                                  "text": "{\"value\": 46, \"trail\": [\"native\", \"langgraph\", \"openai-agents\", \"strands\"]}",
+                                  "final": {
+                                    "text": "{\"value\": 46, \"trail\": [\"native\", \"langgraph\", \"openai-agents\", \"strands\"]}"
+                                  },
+                                  "data": {
+                                    "value": 46,
+                                    "trail": [
+                                      "native",
+                                      "langgraph",
+                                      "openai-agents",
+                                      "strands"
+                                    ]
+                                  },
+                                  "ok": true,
+                                  "messages": [
+                                    {
+                                      "role": "user",
+                                      "content": [
+                                        {
+                                          "text": "{\"tool\": \"mark_strands\", \"input\": {\"value\": 45, \"trail\": [\"native\", \"langgraph\", \"openai-agents\"]}}"
+                                        }
+                                      ],
+                                      "tracking_id": "37134cf3-3e17-4735-83d2-bcfc5b8a9184"
+                                    },
+                                    {
+                                      "role": "assistant",
+                                      "content": [
+                                        {
+                                          "toolUse": {
+                                            "toolUseId": "python_57527124aca844a4ac8e0c5f70eb8406",
+                                            "name": "mark_strands",
+                                            "input": {
+                                              "value": 45,
+                                              "trail": [
+                                                "native",
+                                                "langgraph",
+                                                "openai-agents"
+                                              ]
+                                            }
+                                          }
+                                        }
+                                      ],
+                                      "metadata": {
+                                        "usage": {
+                                          "inputTokens": 0,
+                                          "outputTokens": 0,
+                                          "totalTokens": 0
+                                        },
+                                        "metrics": {
+                                          "latencyMs": 0
+                                        }
+                                      },
+                                      "tracking_id": "c9427b20-2add-4996-b154-8ffa246d3fc1"
+                                    },
+                                    {
+                                      "role": "user",
+                                      "content": [
+                                        {
+                                          "toolResult": {
+                                            "toolUseId": "python_57527124aca844a4ac8e0c5f70eb8406",
+                                            "status": "success",
+                                            "content": [
+                                              {
+                                                "text": "{\"value\": 46, \"trail\": [\"native\", \"langgraph\", \"openai-agents\", \"strands\"]}"
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ],
+                                      "tracking_id": "48b2c876-db04-4d04-b90c-d23069d2b811"
+                                    },
+                                    {
+                                      "role": "assistant",
+                                      "content": [
+                                        {
+                                          "text": "{\"value\": 46, \"trail\": [\"native\", \"langgraph\", \"openai-agents\", \"strands\"]}"
+                                        }
+                                      ],
+                                      "metadata": {
+                                        "usage": {
+                                          "inputTokens": 0,
+                                          "outputTokens": 0,
+                                          "totalTokens": 0
+                                        },
+                                        "metrics": {
+                                          "latencyMs": 0
+                                        }
+                                      },
+                                      "tracking_id": "b862c26d-b25f-44cc-8bae-d9798dfcc28b"
+                                    }
+                                  ],
+                                  "raw_responses": [
+                                    {
+                                      "role": "assistant",
+                                      "content": [
+                                        {
+                                          "text": "{\"value\": 46, \"trail\": [\"native\", \"langgraph\", \"openai-agents\", \"strands\"]}"
+                                        }
+                                      ],
+                                      "metadata": {
+                                        "usage": {
+                                          "inputTokens": 0,
+                                          "outputTokens": 0,
+                                          "totalTokens": 0
+                                        },
+                                        "metrics": {
+                                          "latencyMs": 0
+                                        }
+                                      },
+                                      "tracking_id": "b862c26d-b25f-44cc-8bae-d9798dfcc28b"
+                                    }
+                                  ],
+                                  "usage": {
+                                    "inputTokens": 0,
+                                    "outputTokens": 0,
+                                    "totalTokens": 0,
+                                    "input_tokens": 0,
+                                    "output_tokens": 0,
+                                    "total_tokens": 0,
+                                    "client_duration_ms": 4.887,
+                                    "requests": 2,
+                                    "scheduler": {
+                                      "attempts": 1,
+                                      "retries": 0,
+                                      "timed_out": false,
+                                      "latency_ms": 16.679
+                                    },
+                                    "inference_requests": 0,
+                                    "tool_calls": 1
+                                  },
+                                  "engine": "python-runtime",
+                                  "model": "python-runtime",
+                                  "mode": "eval",
+                                  "trace_schema_version": "agentic_systems.trace.v1",
+                                  "validation": {
+                                    "ok": true,
+                                    "issues": []
+                                  },
+                                  "errors": [],
+                                  "meta": {
+                                    "source_result_type": "AgentResult",
+                                    "framework_adapter": "strands",
+                                    "input": {
+                                      "tool": "mark_strands",
+                                      "input": {
+                                        "value": 45,
+                                        "trail": [
+                                          "native",
+                                          "langgraph",
+                                          "openai-agents"
+                                        ]
+                                      }
+                                    },
+                                    "stop_reason": "end_turn",
+                                    "rejected_tool_calls": [],
+                                    "output_materialization": [],
+                                    "runtime": {
+                                      "provider": "python-runtime",
+                                      "model_id": "python-runtime",
+                                      "region_name": null,
+                                      "endpoint": null,
+                                      "metadata": {},
+                                      "provider_priority": [
+                                        "openai-runtime",
+                                        "bedrock-runtime",
+                                        "ollama-runtime"
+                                      ],
+                                      "allow_python_fallback": false,
+                                      "scheduler": {
+                                        "max_turns": 5,
+                                        "max_tool_calls": 3,
+                                        "timeout_s": 60,
+                                        "max_concurrency": 1,
+                                        "max_retries": 0,
+                                        "backoff_s": 0.0
+                                      }
+                                    },
+                                    "scheduler": {
+                                      "max_turns": 5,
+                                      "max_tool_calls": 3,
+                                      "timeout_s": 60,
+                                      "max_concurrency": 1,
+                                      "max_retries": 0,
+                                      "backoff_s": 0.0
+                                    },
+                                    "scheduler_execution": {
+                                      "scheduler": {
+                                        "max_turns": 5,
+                                        "max_tool_calls": 3,
+                                        "timeout_s": 60,
+                                        "max_concurrency": 1,
+                                        "max_retries": 0,
+                                        "backoff_s": 0.0
+                                      },
+                                      "attempts": 1,
+                                      "retries": 0,
+                                      "timed_out": false,
+                                      "latency_ms": 16.679
+                                    },
+                                    "framework": "strands",
+                                    "framework_requested": "strands",
+                                    "framework_config": {
+                                      "name": "strands",
+                                      "agent_kwargs": {},
+                                      "run_kwargs": {}
+                                    },
+                                    "agent_name": "strands",
+                                    "requested_engine": "python-runtime",
+                                    "runtime_engine": "python-runtime",
+                                    "execution_engine": "python-runtime"
+                                  },
+                                  "execution_id": "run-00cb9dc611dc4896bcd3e7892f035880",
+                                  "parent_execution_id": "run-1a1a93abb8de4f10bc6d5b40f0d2a1cd",
+                                  "children": [],
+                                  "tool_events": [
+                                    {
+                                      "id": "python_57527124aca844a4ac8e0c5f70eb8406",
+                                      "name": "mark_strands",
+                                      "input": {
+                                        "value": 45,
+                                        "trail": [
+                                          "native",
+                                          "langgraph",
+                                          "openai-agents"
+                                        ]
+                                      },
+                                      "output": {
+                                        "value": 46,
+                                        "trail": [
+                                          "native",
+                                          "langgraph",
+                                          "openai-agents",
+                                          "strands"
+                                        ]
+                                      },
+                                      "ok": true,
+                                      "error": null,
+                                      "duration_ms": null,
+                                      "meta": {
+                                        "source": "strands"
+                                      }
+                                    }
+                                  ]
+                                }
+                              ],
+                              "tool_events": []
+                            }
+                          ],
+                          "tool_events": []
+                        }
+                      ],
+                      "tool_events": []
+                    }
+                  ],
+                  "tool_events": []
+                }
+              ],
+              "tool_events": []
+            },
+            {
+              "text": "",
+              "final": null,
+              "data": {
+                "value": 46,
+                "trail": [
+                  "native",
+                  "langgraph",
+                  "openai-agents",
+                  "strands"
+                ],
+                "validated": true
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {},
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "check",
+                "kind": "action",
+                "graph_node": "check",
+                "next": "END"
+              },
+              "execution_id": "run-6636dd0021584b6499dc50268f032821",
+              "parent_execution_id": "run-21c1f5cd686d4130a8fc2cda89fa0142",
+              "children": [],
+              "tool_events": []
+            }
+          ],
+          "tool_events": []
+        }
+      ],
+      "tool_events": []
+    }
+  },
+  "elapsed_s": 1.648
+}

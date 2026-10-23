@@ -1,0 +1,140 @@
+{
+  "example": "results_lineage",
+  "passed": true,
+  "source_sha256": "1485e264e118890595bb89d79a3b76ccd404161a92a4f03be0cbad2db532e5d5",
+  "report": {
+    "input": {
+      "value": 3
+    },
+    "process": {
+      "ok": true,
+      "execution_id": "run-9c0a2b78065c4a81a6c194b35f370098",
+      "engine": "python-runtime",
+      "model": "",
+      "data": {
+        "value": 4
+      },
+      "errors": [],
+      "steps": [
+        {
+          "execution_id": "run-9c0a2b78065c4a81a6c194b35f370098",
+          "parent_execution_id": null,
+          "name": "incrementer",
+          "ok": true
+        },
+        {
+          "execution_id": "run-22a4caf9f96b43ce86b2e2bc3a046a55",
+          "parent_execution_id": "run-9c0a2b78065c4a81a6c194b35f370098",
+          "name": "increment",
+          "ok": true
+        }
+      ]
+    },
+    "output": {
+      "text": "",
+      "final": null,
+      "data": {
+        "value": 4
+      },
+      "ok": true,
+      "messages": [],
+      "raw_responses": [],
+      "usage": {},
+      "engine": "python-runtime",
+      "model": "",
+      "mode": "default",
+      "trace_schema_version": "agentic_systems.trace.v1",
+      "validation": null,
+      "errors": [],
+      "meta": {
+        "name": "incrementer",
+        "kind": "agent",
+        "backend": "native",
+        "skills": [],
+        "actions_observed": 1,
+        "input": {
+          "value": 3
+        }
+      },
+      "execution_id": "run-9c0a2b78065c4a81a6c194b35f370098",
+      "parent_execution_id": null,
+      "children": [
+        {
+          "text": "",
+          "final": null,
+          "data": {
+            "value": 4
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {},
+          "engine": "python-runtime",
+          "model": "",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "increment",
+            "kind": "action"
+          },
+          "execution_id": "run-22a4caf9f96b43ce86b2e2bc3a046a55",
+          "parent_execution_id": "run-9c0a2b78065c4a81a6c194b35f370098",
+          "children": [],
+          "tool_events": []
+        }
+      ],
+      "tool_events": []
+    },
+    "lineage": {
+      "name": "increment",
+      "question": "What happened?",
+      "goal": "Explain execution",
+      "answer": "{\"value\": 4}",
+      "ok": true,
+      "steps": [
+        {
+          "step_id": "run-9c0a2b78065c4a81a6c194b35f370098",
+          "kind": "execution",
+          "title": "incrementer",
+          "summary": "",
+          "source": "python-runtime",
+          "why": "Recorded execution evidence",
+          "evidence": {
+            "ok": true,
+            "data": {
+              "value": 4
+            },
+            "errors": []
+          }
+        },
+        {
+          "step_id": "run-22a4caf9f96b43ce86b2e2bc3a046a55",
+          "kind": "execution",
+          "title": "increment",
+          "summary": "",
+          "source": "python-runtime",
+          "why": "Recorded execution evidence",
+          "evidence": {
+            "ok": true,
+            "data": {
+              "value": 4
+            },
+            "errors": []
+          }
+        }
+      ],
+      "usage": {},
+      "validation": null,
+      "tags": [
+        "offline"
+      ],
+      "metadata": {
+        "fixture": true
+      },
+      "schema_version": "agentic_systems.lineage.v1"
+    },
+    "prompt_context": "{\"answer\":\"{\\\"value\\\": 4}\",\"ok\":true,\"steps\":[{\"step_id\":\"run-9c0a2b78065c4a81a6c194b35f370098\",\"kind\":\"execution\",\"title\":\"incrementer\",\"summary\":\"\",\"source\":\"python-runtime\",\"why\":\"Recorded execution evidence\",\"evidence\":{\"ok\":true,\"data\":{\"value\":4},\"errors\":[]}},{\"step_id\":\"run-22a4caf9f96b43ce86b2e2bc3a046a55\",\"kind\":\"execution\",\"title\":\"increment\",\"summary\":\"\",\"source\":\"python-runtime\",\"why\":\"Recorded execution evidence\",\"evidence\":{\"ok\":true,\"data\":{\"value\":4},\"errors\":[]}}]}"
+  }
+}

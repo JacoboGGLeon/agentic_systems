@@ -1,5 +1,7 @@
 # 2.1.2 candidate: release remains blocked
 
+> **Referencia anterior a la API 2.1.3.** Se conserva como diseño, operación o evidencia histórica. Para implementar con la API vigente, consulta [la guía actual](API_213.md) y [tutorials](../tutorials/README.md). Sus ejemplos antiguos no son otra API soportada.
+
 This is a review checkpoint, not a release attestation. Agentic Systems 2.1.1
 remains the published version; its artifacts are not replaced by this candidate.
 

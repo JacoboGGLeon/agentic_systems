@@ -1,0 +1,327 @@
+{
+  "name": "python-runtime--openai-agents",
+  "passed": true,
+  "report": {
+    "provider": "python-runtime",
+    "framework": "openai-agents",
+    "result": {
+      "text": "{\"value\": 37, \"verified\": true}",
+      "final": {
+        "value": 37,
+        "verified": true
+      },
+      "data": {
+        "value": 37,
+        "verified": true
+      },
+      "ok": true,
+      "messages": [],
+      "raw_responses": [],
+      "usage": {
+        "requests": 2,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0,
+        "client_duration_ms": 3388.5,
+        "inference_requests": 0,
+        "tool_calls": 1
+      },
+      "engine": "python-runtime",
+      "model": "python-runtime",
+      "mode": "default",
+      "trace_schema_version": "agentic_systems.trace.v1",
+      "validation": null,
+      "errors": [],
+      "meta": {
+        "name": "matrix",
+        "kind": "agent",
+        "backend": "native",
+        "skills": [
+          "evidence"
+        ],
+        "actions_observed": 1,
+        "input": {
+          "tool": "certify",
+          "input": {
+            "value": 37
+          }
+        }
+      },
+      "execution_id": "run-55aa420882844a5092ac68892d80e6e6",
+      "parent_execution_id": null,
+      "children": [
+        {
+          "text": "{\"value\": 37, \"verified\": true}",
+          "final": {
+            "value": 37,
+            "verified": true
+          },
+          "data": {
+            "value": 37,
+            "verified": true
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {
+            "requests": 2,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "total_tokens": 0,
+            "client_duration_ms": 3388.5,
+            "inference_requests": 0,
+            "tool_calls": 1
+          },
+          "engine": "python-runtime",
+          "model": "python-runtime",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "matrix",
+            "kind": "model",
+            "framework": "openai-agents"
+          },
+          "execution_id": "run-ba2dde0ae3b84262aea8eeb68d1c0e51",
+          "parent_execution_id": "run-55aa420882844a5092ac68892d80e6e6",
+          "children": [
+            {
+              "text": "{\"value\": 37, \"verified\": true}",
+              "final": {
+                "value": 37,
+                "verified": true
+              },
+              "data": {
+                "value": 37,
+                "verified": true
+              },
+              "ok": true,
+              "messages": [
+                {
+                  "content": "{\"tool\": \"certify\", \"input\": {\"value\": 37}}",
+                  "role": "user"
+                },
+                {
+                  "arguments": "{\"value\": 37}",
+                  "call_id": "call_0021473c60cb46f18573f785af925a6f",
+                  "name": "certify",
+                  "type": "function_call"
+                },
+                {
+                  "call_id": "call_0021473c60cb46f18573f785af925a6f",
+                  "output": "{'value': 37, 'verified': True}",
+                  "type": "function_call_output"
+                },
+                {
+                  "id": "msg_60c9a1d63e21402e95b30737a62182bf",
+                  "content": [
+                    {
+                      "annotations": [],
+                      "text": "{\"value\": 37, \"verified\": true}",
+                      "type": "output_text"
+                    }
+                  ],
+                  "role": "assistant",
+                  "status": "completed",
+                  "type": "message"
+                }
+              ],
+              "raw_responses": [
+                {
+                  "output": [
+                    {
+                      "arguments": "{\"value\": 37}",
+                      "call_id": "call_0021473c60cb46f18573f785af925a6f",
+                      "name": "certify",
+                      "type": "function_call",
+                      "id": null,
+                      "caller": null,
+                      "namespace": null,
+                      "status": null
+                    }
+                  ],
+                  "usage": {
+                    "requests": 1,
+                    "input_tokens": 0,
+                    "input_tokens_details": {
+                      "cache_write_tokens": 0,
+                      "cached_tokens": 0
+                    },
+                    "output_tokens": 0,
+                    "output_tokens_details": {
+                      "reasoning_tokens": 0
+                    },
+                    "total_tokens": 0,
+                    "request_usage_entries": []
+                  },
+                  "response_id": "python_cb2ca2ca63594befa9772c835d2a3fb9",
+                  "request_id": null
+                },
+                {
+                  "output": [
+                    {
+                      "id": "msg_60c9a1d63e21402e95b30737a62182bf",
+                      "content": [
+                        {
+                          "annotations": [],
+                          "text": "{\"value\": 37, \"verified\": true}",
+                          "type": "output_text",
+                          "logprobs": null
+                        }
+                      ],
+                      "role": "assistant",
+                      "status": "completed",
+                      "type": "message",
+                      "phase": null
+                    }
+                  ],
+                  "usage": {
+                    "requests": 1,
+                    "input_tokens": 0,
+                    "input_tokens_details": {
+                      "cache_write_tokens": 0,
+                      "cached_tokens": 0
+                    },
+                    "output_tokens": 0,
+                    "output_tokens_details": {
+                      "reasoning_tokens": 0
+                    },
+                    "total_tokens": 0,
+                    "request_usage_entries": []
+                  },
+                  "response_id": "response_5d4f86908d3e45f9b437a09d654dee50",
+                  "request_id": null
+                }
+              ],
+              "usage": {
+                "requests": 2,
+                "input_tokens": 0,
+                "input_tokens_details": {
+                  "cache_write_tokens": 0,
+                  "cached_tokens": 0
+                },
+                "output_tokens": 0,
+                "output_tokens_details": {
+                  "reasoning_tokens": 0
+                },
+                "total_tokens": 0,
+                "request_usage_entries": [],
+                "scheduler": {
+                  "attempts": 1,
+                  "retries": 0,
+                  "timed_out": false,
+                  "latency_ms": 3388.5
+                },
+                "client_duration_ms": 3388.5,
+                "inference_requests": 0,
+                "tool_calls": 1
+              },
+              "engine": "python-runtime",
+              "model": "python-runtime",
+              "mode": "eval",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": {
+                "ok": true,
+                "issues": []
+              },
+              "errors": [],
+              "meta": {
+                "source_result_type": "RunResult",
+                "framework_adapter": "openai-agents",
+                "input": {
+                  "tool": "certify",
+                  "input": {
+                    "value": 37
+                  }
+                },
+                "rejected_tool_calls": [],
+                "runtime": {
+                  "provider": "python-runtime",
+                  "model_id": "python-runtime",
+                  "region_name": null,
+                  "endpoint": null,
+                  "metadata": {},
+                  "provider_priority": [
+                    "openai-runtime",
+                    "bedrock-runtime",
+                    "ollama-runtime"
+                  ],
+                  "allow_python_fallback": false,
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  }
+                },
+                "scheduler": {
+                  "max_turns": 5,
+                  "max_tool_calls": 3,
+                  "timeout_s": 60,
+                  "max_concurrency": 1,
+                  "max_retries": 0,
+                  "backoff_s": 0.0
+                },
+                "scheduler_execution": {
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "attempts": 1,
+                  "retries": 0,
+                  "timed_out": false,
+                  "latency_ms": 3388.5
+                },
+                "framework": "openai-agents",
+                "framework_requested": "openai-agents",
+                "framework_config": {
+                  "name": "openai-agents",
+                  "agent_kwargs": {},
+                  "run_kwargs": {}
+                },
+                "agent_name": "matrix",
+                "requested_engine": "python-runtime",
+                "runtime_engine": "python-runtime",
+                "execution_engine": "python-runtime"
+              },
+              "execution_id": "run-91e02fac5cc643c8ae5c12ebed682909",
+              "parent_execution_id": "run-ba2dde0ae3b84262aea8eeb68d1c0e51",
+              "children": [],
+              "tool_events": [
+                {
+                  "id": "call_0021473c60cb46f18573f785af925a6f",
+                  "name": "certify",
+                  "input": {
+                    "value": 37
+                  },
+                  "output": {
+                    "data": {
+                      "value": 37,
+                      "verified": true
+                    }
+                  },
+                  "ok": true,
+                  "error": null,
+                  "duration_ms": null,
+                  "meta": {
+                    "source": "openai-agents"
+                  }
+                }
+              ]
+            }
+          ],
+          "tool_events": []
+        }
+      ],
+      "tool_events": []
+    }
+  },
+  "elapsed_s": 3.405
+}

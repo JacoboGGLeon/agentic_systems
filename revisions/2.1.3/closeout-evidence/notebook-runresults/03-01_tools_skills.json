@@ -1,0 +1,1046 @@
+{
+  "source": "tutorials/01_tools_skills.ipynb",
+  "captured_boundaries": 9,
+  "root_results": 6,
+  "scope": "Observed SDK RunResult values; descendants retained inside parents. No fabricated results for configuration-only examples.",
+  "results": [
+    {
+      "run_result": {
+        "text": "",
+        "final": {
+          "value": 4
+        },
+        "data": {
+          "value": 4
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "incrementer",
+          "kind": "agent",
+          "backend": "native",
+          "skills": [
+            "arithmetic"
+          ],
+          "actions_observed": 1,
+          "input": {
+            "value": 3
+          }
+        },
+        "execution_id": "run-ea1778b6281c4511ad1957e41eed2edb",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "",
+            "final": {
+              "value": 4
+            },
+            "data": {
+              "value": 4
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 1,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "increase",
+              "kind": "action"
+            },
+            "execution_id": "run-7f9b6c5cfe454bd386ed4d9adc1f515e",
+            "parent_execution_id": "run-ea1778b6281c4511ad1957e41eed2edb",
+            "children": [
+              {
+                "text": "",
+                "final": {
+                  "value": 4
+                },
+                "data": {
+                  "value": 4
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "requests": 1,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "tool",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "tool_name": "",
+                  "input": {
+                    "value": 3
+                  },
+                  "tool_input": {
+                    "value": 3
+                  }
+                },
+                "execution_id": "run-e8756f8eb1b74878871f8b45aa5222b6",
+                "parent_execution_id": "run-7f9b6c5cfe454bd386ed4d9adc1f515e",
+                "children": [],
+                "tool_events": [
+                  {
+                    "id": "tool-f75db8aab4314d09b73a6ba9e6a7daea",
+                    "name": "increment",
+                    "input": {
+                      "value": 3
+                    },
+                    "output": {
+                      "data": {
+                        "value": 4
+                      }
+                    },
+                    "ok": true,
+                    "error": null,
+                    "duration_ms": null,
+                    "meta": {}
+                  }
+                ]
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "tutorials/01_tools_skills.ipynb",
+        "question": "{\"value\": 3}",
+        "goal": "",
+        "answer": "{\"value\": 4}",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-ea1778b6281c4511ad1957e41eed2edb",
+            "kind": "execution",
+            "title": "incrementer",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-7f9b6c5cfe454bd386ed4d9adc1f515e",
+            "kind": "execution",
+            "title": "increase",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-e8756f8eb1b74878871f8b45aa5222b6",
+            "kind": "execution",
+            "title": "tool",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "tool-f75db8aab4314d09b73a6ba9e6a7daea",
+            "kind": "tool",
+            "title": "increment",
+            "summary": "completed",
+            "source": "increment",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "value": 4
+              }
+            }
+          }
+        ],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    },
+    {
+      "run_result": {
+        "text": "",
+        "final": {
+          "value": 4
+        },
+        "data": {
+          "value": 4
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "tool",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "tool_name": "",
+          "input": {
+            "value": 3
+          },
+          "tool_input": {
+            "value": 3
+          }
+        },
+        "execution_id": "run-0a0e93280f2147238e9bcbd4f45fdfac",
+        "parent_execution_id": null,
+        "children": [],
+        "tool_events": [
+          {
+            "id": "tool-8eb69be034b140e08198de274e17dc9d",
+            "name": "increment",
+            "input": {
+              "value": 3
+            },
+            "output": {
+              "data": {
+                "value": 4
+              }
+            },
+            "ok": true,
+            "error": null,
+            "duration_ms": null,
+            "meta": {}
+          }
+        ]
+      },
+      "lineage_memory": {
+        "name": "tutorials/01_tools_skills.ipynb",
+        "question": "{\"value\": 3}",
+        "goal": "",
+        "answer": "{\"value\": 4}",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-0a0e93280f2147238e9bcbd4f45fdfac",
+            "kind": "execution",
+            "title": "tool",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "tool-8eb69be034b140e08198de274e17dc9d",
+            "kind": "tool",
+            "title": "increment",
+            "summary": "completed",
+            "source": "increment",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "value": 4
+              }
+            }
+          }
+        ],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    },
+    {
+      "run_result": {
+        "text": "",
+        "final": {
+          "value": 4
+        },
+        "data": {
+          "value": 4
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "tool",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "tool_name": "",
+          "input": {
+            "value": 3
+          },
+          "tool_input": {
+            "value": 3
+          }
+        },
+        "execution_id": "run-1f5202047e0746fbb5ee3311b1ad4d26",
+        "parent_execution_id": null,
+        "children": [],
+        "tool_events": [
+          {
+            "id": "tool-93825366451a45b6b43583620e05e05b",
+            "name": "increment",
+            "input": {
+              "value": 3
+            },
+            "output": {
+              "data": {
+                "value": 4
+              }
+            },
+            "ok": true,
+            "error": null,
+            "duration_ms": null,
+            "meta": {}
+          }
+        ]
+      },
+      "lineage_memory": {
+        "name": "tutorials/01_tools_skills.ipynb",
+        "question": "{\"value\": 3}",
+        "goal": "",
+        "answer": "{\"value\": 4}",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-1f5202047e0746fbb5ee3311b1ad4d26",
+            "kind": "execution",
+            "title": "tool",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "tool-93825366451a45b6b43583620e05e05b",
+            "kind": "tool",
+            "title": "increment",
+            "summary": "completed",
+            "source": "increment",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "value": 4
+              }
+            }
+          }
+        ],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    },
+    {
+      "run_result": {
+        "text": "1 validation error for Quantity\nvalue\n  Input should be a valid integer [type=int_type, input_value='invalid', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_type",
+        "final": {
+          "category": "provider",
+          "message": "1 validation error for Quantity\nvalue\n  Input should be a valid integer [type=int_type, input_value='invalid', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_type",
+          "provider": "python-runtime",
+          "framework": "native",
+          "code": "ValidationError",
+          "retryable": false,
+          "cause_type": "ValidationError",
+          "details": {},
+          "error_type": "ValidationError"
+        },
+        "data": {
+          "category": "provider",
+          "message": "1 validation error for Quantity\nvalue\n  Input should be a valid integer [type=int_type, input_value='invalid', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_type",
+          "provider": "python-runtime",
+          "framework": "native",
+          "code": "ValidationError",
+          "retryable": false,
+          "cause_type": "ValidationError",
+          "details": {},
+          "error_type": "ValidationError"
+        },
+        "ok": false,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "tool",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [
+          {
+            "code": "run_failed",
+            "message": "1 validation error for Quantity\nvalue\n  Input should be a valid integer [type=int_type, input_value='invalid', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_type"
+          },
+          {
+            "code": "tool_failed",
+            "tool": "increment",
+            "tool_event_id": "tool-a742e927bd864818a6427f9738b11c31",
+            "error": {
+              "category": "provider",
+              "message": "1 validation error for Quantity\nvalue\n  Input should be a valid integer [type=int_type, input_value='invalid', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_type",
+              "provider": "python-runtime",
+              "framework": "native",
+              "code": "ValidationError",
+              "retryable": false,
+              "cause_type": "ValidationError",
+              "details": {},
+              "error_type": "ValidationError"
+            },
+            "resolved": false
+          }
+        ],
+        "meta": {
+          "tool_name": "",
+          "input": {
+            "value": "invalid"
+          },
+          "tool_input": {
+            "value": "invalid"
+          }
+        },
+        "execution_id": "run-c70d4752a41c442b9efba976d71958d8",
+        "parent_execution_id": null,
+        "children": [],
+        "tool_events": [
+          {
+            "id": "tool-a742e927bd864818a6427f9738b11c31",
+            "name": "increment",
+            "input": {
+              "value": "invalid"
+            },
+            "output": {
+              "data": {
+                "category": "provider",
+                "message": "1 validation error for Quantity\nvalue\n  Input should be a valid integer [type=int_type, input_value='invalid', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_type",
+                "provider": "python-runtime",
+                "framework": "native",
+                "code": "ValidationError",
+                "retryable": false,
+                "cause_type": "ValidationError",
+                "details": {},
+                "error_type": "ValidationError"
+              }
+            },
+            "ok": false,
+            "error": {
+              "category": "provider",
+              "message": "1 validation error for Quantity\nvalue\n  Input should be a valid integer [type=int_type, input_value='invalid', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_type",
+              "provider": "python-runtime",
+              "framework": "native",
+              "code": "ValidationError",
+              "retryable": false,
+              "cause_type": "ValidationError",
+              "details": {},
+              "error_type": "ValidationError"
+            },
+            "duration_ms": null,
+            "meta": {
+              "retryable": false
+            }
+          }
+        ]
+      },
+      "lineage_memory": {
+        "name": "tutorials/01_tools_skills.ipynb",
+        "question": "{\"value\": \"invalid\"}",
+        "goal": "",
+        "answer": "1 validation error for Quantity\nvalue\n  Input should be a valid integer [type=int_type, input_value='invalid', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_type",
+        "ok": false,
+        "steps": [
+          {
+            "step_id": "run-c70d4752a41c442b9efba976d71958d8",
+            "kind": "execution",
+            "title": "tool",
+            "summary": "1 validation error for Quantity\nvalue\n  Input should be a valid integer [type=int_type, input_value='invalid', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_type",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": false,
+              "data": {
+                "category": "provider",
+                "message": "1 validation error for Quantity\nvalue\n  Input should be a valid integer [type=int_type, input_value='invalid', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_type",
+                "provider": "python-runtime",
+                "framework": "native",
+                "code": "ValidationError",
+                "retryable": false,
+                "cause_type": "ValidationError",
+                "details": {},
+                "error_type": "ValidationError"
+              },
+              "errors": [
+                {
+                  "code": "run_failed",
+                  "message": "1 validation error for Quantity\nvalue\n  Input should be a valid integer [type=int_type, input_value='invalid', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_type"
+                },
+                {
+                  "code": "tool_failed",
+                  "tool": "increment",
+                  "tool_event_id": "tool-a742e927bd864818a6427f9738b11c31",
+                  "error": {
+                    "category": "provider",
+                    "message": "1 validation error for Quantity\nvalue\n  Input should be a valid integer [type=int_type, input_value='invalid', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_type",
+                    "provider": "python-runtime",
+                    "framework": "native",
+                    "code": "ValidationError",
+                    "retryable": false,
+                    "cause_type": "ValidationError",
+                    "details": {},
+                    "error_type": "ValidationError"
+                  },
+                  "resolved": false
+                }
+              ]
+            }
+          },
+          {
+            "step_id": "tool-a742e927bd864818a6427f9738b11c31",
+            "kind": "tool",
+            "title": "increment",
+            "summary": "failed",
+            "source": "increment",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "category": "provider",
+                "message": "1 validation error for Quantity\nvalue\n  Input should be a valid integer [type=int_type, input_value='invalid', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/int_type",
+                "provider": "python-runtime",
+                "framework": "native",
+                "code": "ValidationError",
+                "retryable": false,
+                "cause_type": "ValidationError",
+                "details": {},
+                "error_type": "ValidationError"
+              }
+            }
+          }
+        ],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    },
+    {
+      "run_result": {
+        "text": "",
+        "final": {
+          "value": 4
+        },
+        "data": {
+          "value": 4
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "portable",
+          "kind": "agent",
+          "backend": "native",
+          "skills": [
+            "arithmetic"
+          ],
+          "actions_observed": 1,
+          "input": {
+            "value": 3
+          }
+        },
+        "execution_id": "run-a8cec4107b904c99b3f6d9a1568dc412",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "",
+            "final": {
+              "value": 4
+            },
+            "data": {
+              "value": 4
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 1,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "increment",
+              "kind": "action"
+            },
+            "execution_id": "run-967713d96ca1470e8e08277c54e1c525",
+            "parent_execution_id": "run-a8cec4107b904c99b3f6d9a1568dc412",
+            "children": [
+              {
+                "text": "",
+                "final": {
+                  "value": 4
+                },
+                "data": {
+                  "value": 4
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "requests": 1,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "tool",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "tool_name": "",
+                  "input": {
+                    "value": 3
+                  },
+                  "tool_input": {
+                    "value": 3
+                  }
+                },
+                "execution_id": "run-a8b859915c1143b28dbb91592e2b732e",
+                "parent_execution_id": "run-967713d96ca1470e8e08277c54e1c525",
+                "children": [],
+                "tool_events": [
+                  {
+                    "id": "tool-bd3dca5b51924b5e9a19ac867a7eb464",
+                    "name": "increment",
+                    "input": {
+                      "value": 3
+                    },
+                    "output": {
+                      "data": {
+                        "value": 4
+                      }
+                    },
+                    "ok": true,
+                    "error": null,
+                    "duration_ms": null,
+                    "meta": {}
+                  }
+                ]
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "tutorials/01_tools_skills.ipynb",
+        "question": "{\"value\": 3}",
+        "goal": "",
+        "answer": "{\"value\": 4}",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-a8cec4107b904c99b3f6d9a1568dc412",
+            "kind": "execution",
+            "title": "portable",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-967713d96ca1470e8e08277c54e1c525",
+            "kind": "execution",
+            "title": "increment",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-a8b859915c1143b28dbb91592e2b732e",
+            "kind": "execution",
+            "title": "tool",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "tool-bd3dca5b51924b5e9a19ac867a7eb464",
+            "kind": "tool",
+            "title": "increment",
+            "summary": "completed",
+            "source": "increment",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "value": 4
+              }
+            }
+          }
+        ],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    },
+    {
+      "run_result": {
+        "text": "",
+        "final": {
+          "value": 4
+        },
+        "data": {
+          "value": 4
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "loaded",
+          "kind": "agent",
+          "backend": "native",
+          "skills": [
+            "loaded"
+          ],
+          "actions_observed": 1,
+          "input": {
+            "value": 3
+          }
+        },
+        "execution_id": "run-2004cb0532b04eaf9d45b0a23ae72c78",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "",
+            "final": {
+              "value": 4
+            },
+            "data": {
+              "value": 4
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 1,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "inc",
+              "kind": "action"
+            },
+            "execution_id": "run-889cbe799a784e0d8b6daf6ce970c5f9",
+            "parent_execution_id": "run-2004cb0532b04eaf9d45b0a23ae72c78",
+            "children": [
+              {
+                "text": "",
+                "final": {
+                  "value": 4
+                },
+                "data": {
+                  "value": 4
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "requests": 1,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "tool",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "tool_name": "",
+                  "input": {
+                    "value": 3
+                  },
+                  "tool_input": {
+                    "value": 3
+                  }
+                },
+                "execution_id": "run-7d6f30512178443cbb07cdb20f61f29d",
+                "parent_execution_id": "run-889cbe799a784e0d8b6daf6ce970c5f9",
+                "children": [],
+                "tool_events": [
+                  {
+                    "id": "tool-c17947e7bdc44c7bad5d409e90364e9d",
+                    "name": "inc",
+                    "input": {
+                      "value": 3
+                    },
+                    "output": {
+                      "data": {
+                        "value": 4
+                      }
+                    },
+                    "ok": true,
+                    "error": null,
+                    "duration_ms": null,
+                    "meta": {}
+                  }
+                ]
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "tutorials/01_tools_skills.ipynb",
+        "question": "{\"value\": 3}",
+        "goal": "",
+        "answer": "{\"value\": 4}",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-2004cb0532b04eaf9d45b0a23ae72c78",
+            "kind": "execution",
+            "title": "loaded",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-889cbe799a784e0d8b6daf6ce970c5f9",
+            "kind": "execution",
+            "title": "inc",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-7d6f30512178443cbb07cdb20f61f29d",
+            "kind": "execution",
+            "title": "tool",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "tool-c17947e7bdc44c7bad5d409e90364e9d",
+            "kind": "tool",
+            "title": "inc",
+            "summary": "completed",
+            "source": "inc",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "value": 4
+              }
+            }
+          }
+        ],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    }
+  ]
+}

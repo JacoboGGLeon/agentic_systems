@@ -1,0 +1,42 @@
+{
+  "example": "vllm_colab",
+  "example_passed": true,
+  "source_sha256": "b928ade429ac8f79f30cf5ec6ae560d84ad8ea2760b0bbe8e823edf1becb3516",
+  "inference_requests": 0,
+  "scope": "offline contract or configuration; no model-generation/semantic/IAM/GPU certification",
+  "output": {
+    "mode": "GPU endpoint",
+    "runtime": {
+      "provider": "vllm-runtime",
+      "model": "configure-in-target-environment",
+      "region": null,
+      "endpoint": "http://127.0.0.1:8000/v1",
+      "api_key_configured": false,
+      "timeout_s": 60.0,
+      "max_retries": 0,
+      "max_tool_calls": 5,
+      "max_turns": 6,
+      "max_tokens": null,
+      "backoff_s": 0.0,
+      "max_concurrency": 1
+    },
+    "application": {
+      "name": "target",
+      "kind": "agent",
+      "backend": "native",
+      "native_type": null,
+      "children": [
+        {
+          "name": "target",
+          "kind": "model",
+          "backend": "native",
+          "native_type": null,
+          "children": []
+        }
+      ]
+    },
+    "status": "configuration-only; target environment not executed",
+    "inference_requests": 0,
+    "authentication": "Remove bearer token from the target IAM process; use its workload role. Never embed access keys."
+  }
+}

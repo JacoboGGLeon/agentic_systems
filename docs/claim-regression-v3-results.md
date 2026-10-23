@@ -1,5 +1,7 @@
 # Claim review v3: live regression, not certification
 
+> **Referencia anterior a la API 2.1.3.** Se conserva como diseño, operación o evidencia histórica. Para implementar con la API vigente, consulta [la guía actual](API_213.md) y [tutorials](../tutorials/README.md). Sus ejemplos antiguos no son otra API soportada.
+
 The existing v1 fixture was reused deliberately as an exposed regression set.
 There were no retries seeking a favorable answer and no provider substitutions.
 Artifacts are in `work/claim-regression-v3`, outside this checkout. Each route

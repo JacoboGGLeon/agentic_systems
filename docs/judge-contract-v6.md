@@ -1,5 +1,7 @@
 # Evaluation contract v6 — frozen before the pilot
 
+> **Referencia anterior a la API 2.1.3.** Se conserva como diseño, operación o evidencia histórica. Para implementar con la API vigente, consulta [la guía actual](API_213.md) y [tutorials](../tutorials/README.md). Sus ejemplos antiguos no son otra API soportada.
+
 This is an application contract, not a new library API. Historical v1–v5 evidence
 is immutable and is not reclassified against this contract. Full live matrices
 remain frozen until the pilot meets every condition below.

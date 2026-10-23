@@ -1,0 +1,3205 @@
+{
+  "version": "2.1.3",
+  "public_api": [
+    "tool",
+    "skill",
+    "load_skill",
+    "Action",
+    "Agent",
+    "System",
+    "Sequence",
+    "Parallel",
+    "Graph",
+    "Environment",
+    "Eval",
+    "Limits",
+    "RunResult",
+    "runtime",
+    "framework",
+    "model_artifact",
+    "model_server",
+    "__version__"
+  ],
+  "records": [
+    {
+      "id": "tool",
+      "kind": "function",
+      "owner": "tool",
+      "parameters": [
+        {
+          "name": "function",
+          "mode": "POSITIONAL_ONLY",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        },
+        {
+          "name": "name",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        },
+        {
+          "name": "description",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        },
+        {
+          "name": "input_schema",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        },
+        {
+          "name": "output_schema",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        },
+        {
+          "name": "metadata",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        }
+      ],
+      "tutorial_chapters": "01",
+      "example_ref": "examples/tool_contracts/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "skill",
+      "kind": "function",
+      "owner": "skill",
+      "parameters": [
+        {
+          "name": "name",
+          "mode": "KEYWORD_ONLY",
+          "required": true,
+          "default": null,
+          "annotation": null
+        },
+        {
+          "name": "description",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "''",
+          "annotation": null
+        },
+        {
+          "name": "tools",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "()",
+          "annotation": null
+        },
+        {
+          "name": "instructions",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "''",
+          "annotation": null
+        },
+        {
+          "name": "version",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "'0.1.0'",
+          "annotation": null
+        },
+        {
+          "name": "metadata",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        }
+      ],
+      "tutorial_chapters": "01",
+      "example_ref": "examples/portable_skills/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "load_skill",
+      "kind": "function",
+      "owner": "load_skill",
+      "parameters": [
+        {
+          "name": "path",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": true,
+          "default": null,
+          "annotation": null
+        }
+      ],
+      "tutorial_chapters": "01",
+      "example_ref": "examples/portable_skills/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Action",
+      "kind": "constructor",
+      "owner": "Action",
+      "parameters": [
+        {
+          "name": "name",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": true,
+          "default": null,
+          "annotation": "str"
+        },
+        {
+          "name": "target",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": true,
+          "default": null,
+          "annotation": "Any"
+        },
+        {
+          "name": "input",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "identity",
+          "annotation": "Callable"
+        }
+      ],
+      "tutorial_chapters": "02",
+      "example_ref": "examples/flow_semantics/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Agent",
+      "kind": "constructor",
+      "owner": "Agent",
+      "parameters": [
+        {
+          "name": "name",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": true,
+          "default": null,
+          "annotation": "str"
+        },
+        {
+          "name": "flow",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "None",
+          "annotation": "Any"
+        },
+        {
+          "name": "backend",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "'native'",
+          "annotation": "str"
+        },
+        {
+          "name": "skills",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "()",
+          "annotation": "tuple"
+        },
+        {
+          "name": "runtime",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "None",
+          "annotation": "Any"
+        },
+        {
+          "name": "framework",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "None",
+          "annotation": "Any"
+        },
+        {
+          "name": "instructions",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "''",
+          "annotation": "str"
+        },
+        {
+          "name": "contract",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "None",
+          "annotation": "dict | None"
+        },
+        {
+          "name": "policy",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "None",
+          "annotation": "dict | None"
+        }
+      ],
+      "tutorial_chapters": "02,06,10",
+      "example_ref": "examples/agent_contracts/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "System",
+      "kind": "constructor",
+      "owner": "System",
+      "parameters": [
+        {
+          "name": "name",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": true,
+          "default": null,
+          "annotation": "str"
+        },
+        {
+          "name": "flow",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "None",
+          "annotation": "Any"
+        },
+        {
+          "name": "backend",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "'native'",
+          "annotation": "str"
+        }
+      ],
+      "tutorial_chapters": "03",
+      "example_ref": "examples/flow_semantics/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Sequence",
+      "kind": "constructor",
+      "owner": "Sequence",
+      "parameters": [
+        {
+          "name": "steps",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": true,
+          "default": null,
+          "annotation": "tuple"
+        },
+        {
+          "name": "name",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "'sequence'",
+          "annotation": "str"
+        }
+      ],
+      "tutorial_chapters": "02,03",
+      "example_ref": "examples/flow_semantics/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Parallel",
+      "kind": "constructor",
+      "owner": "Parallel",
+      "parameters": [
+        {
+          "name": "steps",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": true,
+          "default": null,
+          "annotation": "tuple"
+        },
+        {
+          "name": "join",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": true,
+          "default": null,
+          "annotation": "Callable"
+        },
+        {
+          "name": "name",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "'parallel'",
+          "annotation": "str"
+        }
+      ],
+      "tutorial_chapters": "02,03",
+      "example_ref": "examples/flow_semantics/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Graph",
+      "kind": "constructor",
+      "owner": "Graph",
+      "parameters": [
+        {
+          "name": "nodes",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": true,
+          "default": null,
+          "annotation": "tuple"
+        },
+        {
+          "name": "edges",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": true,
+          "default": null,
+          "annotation": "tuple"
+        },
+        {
+          "name": "start",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": true,
+          "default": null,
+          "annotation": "str"
+        },
+        {
+          "name": "max_visits",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "20",
+          "annotation": "int"
+        },
+        {
+          "name": "name",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "'graph'",
+          "annotation": "str"
+        }
+      ],
+      "tutorial_chapters": "02,03",
+      "example_ref": "examples/flow_semantics/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Environment",
+      "kind": "constructor",
+      "owner": "Environment",
+      "parameters": [
+        {
+          "name": "name",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": true,
+          "default": null,
+          "annotation": "str"
+        },
+        {
+          "name": "unit",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": true,
+          "default": null,
+          "annotation": "_Unit"
+        },
+        {
+          "name": "records",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": true,
+          "default": null,
+          "annotation": "tuple"
+        },
+        {
+          "name": "max_steps",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "None",
+          "annotation": "int | None"
+        },
+        {
+          "name": "memory",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "None",
+          "annotation": "Any"
+        },
+        {
+          "name": "observe",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "None",
+          "annotation": "Callable | None"
+        },
+        {
+          "name": "update",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "None",
+          "annotation": "Callable | None"
+        },
+        {
+          "name": "stop",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "None",
+          "annotation": "Callable | None"
+        }
+      ],
+      "tutorial_chapters": "04",
+      "example_ref": "examples/episode_memory/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Eval",
+      "kind": "constructor",
+      "owner": "Eval",
+      "parameters": [
+        {
+          "name": "name",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": true,
+          "default": null,
+          "annotation": "str"
+        },
+        {
+          "name": "unit",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": true,
+          "default": null,
+          "annotation": "Any"
+        },
+        {
+          "name": "cases",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": true,
+          "default": null,
+          "annotation": "tuple"
+        },
+        {
+          "name": "checks",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "()",
+          "annotation": "tuple"
+        },
+        {
+          "name": "judge",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "None",
+          "annotation": "Agent | None"
+        },
+        {
+          "name": "rubric",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "None",
+          "annotation": "dict | None"
+        }
+      ],
+      "tutorial_chapters": "05,10",
+      "example_ref": "examples/evaluation_checks/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Limits",
+      "kind": "constructor",
+      "owner": "Limits",
+      "parameters": [
+        {
+          "name": "max_actions",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "100",
+          "annotation": "int"
+        },
+        {
+          "name": "timeout_s",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "10",
+          "annotation": "float"
+        }
+      ],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/execution_lifecycle/example.py",
+      "test_ref": "tests/v213/test_parameters.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "RunResult",
+      "kind": "constructor",
+      "owner": "RunResult",
+      "parameters": [
+        {
+          "name": "text",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "''",
+          "annotation": "str"
+        },
+        {
+          "name": "final",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "<factory>",
+          "annotation": "dict"
+        },
+        {
+          "name": "data",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "<factory>",
+          "annotation": "dict"
+        },
+        {
+          "name": "ok",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "True",
+          "annotation": "bool"
+        },
+        {
+          "name": "messages",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "()",
+          "annotation": "tuple"
+        },
+        {
+          "name": "tool_events",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "()",
+          "annotation": "tuple"
+        },
+        {
+          "name": "raw_responses",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "()",
+          "annotation": "tuple"
+        },
+        {
+          "name": "usage",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "<factory>",
+          "annotation": "dict"
+        },
+        {
+          "name": "engine",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "'python-runtime'",
+          "annotation": "str"
+        },
+        {
+          "name": "model",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "''",
+          "annotation": "str"
+        },
+        {
+          "name": "mode",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "'default'",
+          "annotation": "str"
+        },
+        {
+          "name": "trace_schema_version",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "'agentic_systems.trace.v1'",
+          "annotation": "str"
+        },
+        {
+          "name": "validation",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "None",
+          "annotation": "dict | None"
+        },
+        {
+          "name": "errors",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "()",
+          "annotation": "tuple"
+        },
+        {
+          "name": "meta",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "<factory>",
+          "annotation": "dict"
+        },
+        {
+          "name": "execution_id",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "<factory>",
+          "annotation": "str"
+        },
+        {
+          "name": "parent_execution_id",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "None",
+          "annotation": "str | None"
+        },
+        {
+          "name": "children",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "()",
+          "annotation": "tuple"
+        }
+      ],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "runtime",
+      "kind": "function",
+      "owner": "runtime",
+      "parameters": [
+        {
+          "name": "provider",
+          "mode": "KEYWORD_ONLY",
+          "required": true,
+          "default": null,
+          "annotation": null
+        },
+        {
+          "name": "model",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        },
+        {
+          "name": "region",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        },
+        {
+          "name": "endpoint",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        },
+        {
+          "name": "api_key",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        },
+        {
+          "name": "timeout_s",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "60.0",
+          "annotation": null
+        },
+        {
+          "name": "max_retries",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "0",
+          "annotation": null
+        },
+        {
+          "name": "max_tool_calls",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "5",
+          "annotation": null
+        },
+        {
+          "name": "max_turns",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "6",
+          "annotation": null
+        },
+        {
+          "name": "max_tokens",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        },
+        {
+          "name": "backoff_s",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "0.0",
+          "annotation": null
+        },
+        {
+          "name": "max_concurrency",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "1",
+          "annotation": null
+        }
+      ],
+      "tutorial_chapters": "06",
+      "example_ref": "examples/provider_framework_conformance/example.py",
+      "test_ref": "tests/v213/test_parameters.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "framework",
+      "kind": "function",
+      "owner": "framework",
+      "parameters": [
+        {
+          "name": "name",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": true,
+          "default": null,
+          "annotation": null
+        },
+        {
+          "name": "agent_kwargs",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        },
+        {
+          "name": "run_kwargs",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        }
+      ],
+      "tutorial_chapters": "06",
+      "example_ref": "examples/provider_framework_conformance/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "model_artifact",
+      "kind": "function",
+      "owner": "model_artifact",
+      "parameters": [
+        {
+          "name": "model",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": true,
+          "default": null,
+          "annotation": null
+        },
+        {
+          "name": "base_model",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        },
+        {
+          "name": "adapter_path",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        },
+        {
+          "name": "tokenizer",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        },
+        {
+          "name": "revision",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        },
+        {
+          "name": "quantization",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        },
+        {
+          "name": "metadata",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        }
+      ],
+      "tutorial_chapters": "08",
+      "example_ref": "examples/model_serving/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "model_server",
+      "kind": "function",
+      "owner": "model_server",
+      "parameters": [
+        {
+          "name": "artifact",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": true,
+          "default": null,
+          "annotation": null
+        },
+        {
+          "name": "profile",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "'fast'",
+          "annotation": null
+        },
+        {
+          "name": "served_model_name",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        },
+        {
+          "name": "host",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "'127.0.0.1'",
+          "annotation": null
+        },
+        {
+          "name": "port",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "8000",
+          "annotation": null
+        },
+        {
+          "name": "tool_call_parser",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "'hermes'",
+          "annotation": null
+        },
+        {
+          "name": "reasoning_parser",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        },
+        {
+          "name": "enable_auto_tool_choice",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "True",
+          "annotation": null
+        },
+        {
+          "name": "api_key",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "'vllm'",
+          "annotation": null
+        },
+        {
+          "name": "startup_timeout_s",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "600.0",
+          "annotation": null
+        },
+        {
+          "name": "log_path",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "'vllm-server.log'",
+          "annotation": null
+        },
+        {
+          "name": "binary",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "'vllm'",
+          "annotation": null
+        },
+        {
+          "name": "extra_args",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "()",
+          "annotation": null
+        },
+        {
+          "name": "gpu_memory_utilization",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        },
+        {
+          "name": "max_model_len",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        },
+        {
+          "name": "max_num_seqs",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        }
+      ],
+      "tutorial_chapters": "08",
+      "example_ref": "examples/model_serving/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Tool.arun",
+      "owner": "Tool",
+      "kind": "method",
+      "parameters": [
+        {
+          "name": "input",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        }
+      ],
+      "tutorial_chapters": "01",
+      "example_ref": "examples/tool_contracts/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Tool.inspect",
+      "owner": "Tool",
+      "kind": "method",
+      "parameters": [],
+      "tutorial_chapters": "01",
+      "example_ref": "examples/tool_contracts/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Tool.run",
+      "owner": "Tool",
+      "kind": "method",
+      "parameters": [
+        {
+          "name": "input",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        }
+      ],
+      "tutorial_chapters": "01",
+      "example_ref": "examples/tool_contracts/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Tool.name",
+      "owner": "Tool",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "01",
+      "example_ref": "examples/tool_contracts/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Tool.description",
+      "owner": "Tool",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "01",
+      "example_ref": "examples/tool_contracts/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Tool.metadata",
+      "owner": "Tool",
+      "kind": "field",
+      "annotation": "object",
+      "parameters": [],
+      "tutorial_chapters": "01",
+      "example_ref": "examples/tool_contracts/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Skill.inspect",
+      "owner": "Skill",
+      "kind": "method",
+      "parameters": [],
+      "tutorial_chapters": "01",
+      "example_ref": "examples/portable_skills/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Skill.name",
+      "owner": "Skill",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "01",
+      "example_ref": "examples/portable_skills/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Skill.tools",
+      "owner": "Skill",
+      "kind": "field",
+      "annotation": "tuple",
+      "parameters": [],
+      "tutorial_chapters": "01",
+      "example_ref": "examples/portable_skills/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Skill.instructions",
+      "owner": "Skill",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "01",
+      "example_ref": "examples/portable_skills/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Skill.description",
+      "owner": "Skill",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "01",
+      "example_ref": "examples/portable_skills/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Skill.version",
+      "owner": "Skill",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "01",
+      "example_ref": "examples/portable_skills/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Skill.metadata",
+      "owner": "Skill",
+      "kind": "field",
+      "annotation": "object",
+      "parameters": [],
+      "tutorial_chapters": "01",
+      "example_ref": "examples/portable_skills/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Runtime.inspect",
+      "owner": "Runtime",
+      "kind": "method",
+      "parameters": [],
+      "tutorial_chapters": "06",
+      "example_ref": "examples/provider_framework_conformance/example.py",
+      "test_ref": "tests/v213/test_parameters.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Runtime.provider",
+      "owner": "Runtime",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "06",
+      "example_ref": "examples/provider_framework_conformance/example.py",
+      "test_ref": "tests/v213/test_parameters.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Runtime.model",
+      "owner": "Runtime",
+      "kind": "field",
+      "annotation": "str | None",
+      "parameters": [],
+      "tutorial_chapters": "06",
+      "example_ref": "examples/provider_framework_conformance/example.py",
+      "test_ref": "tests/v213/test_parameters.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Runtime.region",
+      "owner": "Runtime",
+      "kind": "field",
+      "annotation": "str | None",
+      "parameters": [],
+      "tutorial_chapters": "06",
+      "example_ref": "examples/provider_framework_conformance/example.py",
+      "test_ref": "tests/v213/test_parameters.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Runtime.endpoint",
+      "owner": "Runtime",
+      "kind": "field",
+      "annotation": "str | None",
+      "parameters": [],
+      "tutorial_chapters": "06",
+      "example_ref": "examples/provider_framework_conformance/example.py",
+      "test_ref": "tests/v213/test_parameters.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Runtime.timeout_s",
+      "owner": "Runtime",
+      "kind": "field",
+      "annotation": "float",
+      "parameters": [],
+      "tutorial_chapters": "06",
+      "example_ref": "examples/provider_framework_conformance/example.py",
+      "test_ref": "tests/v213/test_parameters.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Runtime.max_retries",
+      "owner": "Runtime",
+      "kind": "field",
+      "annotation": "int",
+      "parameters": [],
+      "tutorial_chapters": "06",
+      "example_ref": "examples/provider_framework_conformance/example.py",
+      "test_ref": "tests/v213/test_parameters.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Runtime.max_tool_calls",
+      "owner": "Runtime",
+      "kind": "field",
+      "annotation": "int",
+      "parameters": [],
+      "tutorial_chapters": "06",
+      "example_ref": "examples/provider_framework_conformance/example.py",
+      "test_ref": "tests/v213/test_parameters.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Runtime.max_turns",
+      "owner": "Runtime",
+      "kind": "field",
+      "annotation": "int",
+      "parameters": [],
+      "tutorial_chapters": "06",
+      "example_ref": "examples/provider_framework_conformance/example.py",
+      "test_ref": "tests/v213/test_parameters.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Runtime.max_tokens",
+      "owner": "Runtime",
+      "kind": "field",
+      "annotation": "int | None",
+      "parameters": [],
+      "tutorial_chapters": "06",
+      "example_ref": "examples/provider_framework_conformance/example.py",
+      "test_ref": "tests/v213/test_parameters.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Runtime.backoff_s",
+      "owner": "Runtime",
+      "kind": "field",
+      "annotation": "float",
+      "parameters": [],
+      "tutorial_chapters": "06",
+      "example_ref": "examples/provider_framework_conformance/example.py",
+      "test_ref": "tests/v213/test_parameters.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Runtime.max_concurrency",
+      "owner": "Runtime",
+      "kind": "field",
+      "annotation": "int",
+      "parameters": [],
+      "tutorial_chapters": "06",
+      "example_ref": "examples/provider_framework_conformance/example.py",
+      "test_ref": "tests/v213/test_parameters.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Framework.inspect",
+      "owner": "Framework",
+      "kind": "method",
+      "parameters": [],
+      "tutorial_chapters": "06",
+      "example_ref": "examples/provider_framework_conformance/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Framework.name",
+      "owner": "Framework",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "06",
+      "example_ref": "examples/provider_framework_conformance/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Framework.agent_kwargs",
+      "owner": "Framework",
+      "kind": "field",
+      "annotation": "object",
+      "parameters": [],
+      "tutorial_chapters": "06",
+      "example_ref": "examples/provider_framework_conformance/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Framework.run_kwargs",
+      "owner": "Framework",
+      "kind": "field",
+      "annotation": "object",
+      "parameters": [],
+      "tutorial_chapters": "06",
+      "example_ref": "examples/provider_framework_conformance/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Artifact.inspect",
+      "owner": "Artifact",
+      "kind": "method",
+      "parameters": [],
+      "tutorial_chapters": "08",
+      "example_ref": "examples/model_serving/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Artifact.model",
+      "owner": "Artifact",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "08",
+      "example_ref": "examples/model_serving/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Artifact.base_model",
+      "owner": "Artifact",
+      "kind": "field",
+      "annotation": "str | None",
+      "parameters": [],
+      "tutorial_chapters": "08",
+      "example_ref": "examples/model_serving/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Artifact.adapter_path",
+      "owner": "Artifact",
+      "kind": "field",
+      "annotation": "str | None",
+      "parameters": [],
+      "tutorial_chapters": "08",
+      "example_ref": "examples/model_serving/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Artifact.tokenizer",
+      "owner": "Artifact",
+      "kind": "field",
+      "annotation": "str | None",
+      "parameters": [],
+      "tutorial_chapters": "08",
+      "example_ref": "examples/model_serving/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Artifact.revision",
+      "owner": "Artifact",
+      "kind": "field",
+      "annotation": "str | None",
+      "parameters": [],
+      "tutorial_chapters": "08",
+      "example_ref": "examples/model_serving/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Artifact.quantization",
+      "owner": "Artifact",
+      "kind": "field",
+      "annotation": "str | None",
+      "parameters": [],
+      "tutorial_chapters": "08",
+      "example_ref": "examples/model_serving/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Artifact.metadata",
+      "owner": "Artifact",
+      "kind": "field",
+      "annotation": "object",
+      "parameters": [],
+      "tutorial_chapters": "08",
+      "example_ref": "examples/model_serving/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Server.command",
+      "owner": "Server",
+      "kind": "property",
+      "parameters": [],
+      "tutorial_chapters": "08",
+      "example_ref": "examples/model_serving/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Server.endpoint",
+      "owner": "Server",
+      "kind": "property",
+      "parameters": [],
+      "tutorial_chapters": "08",
+      "example_ref": "examples/model_serving/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Server.health",
+      "owner": "Server",
+      "kind": "method",
+      "parameters": [],
+      "tutorial_chapters": "08",
+      "example_ref": "examples/model_serving/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Server.inspect",
+      "owner": "Server",
+      "kind": "method",
+      "parameters": [],
+      "tutorial_chapters": "08",
+      "example_ref": "examples/model_serving/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Server.start",
+      "owner": "Server",
+      "kind": "method",
+      "parameters": [],
+      "tutorial_chapters": "08",
+      "example_ref": "examples/model_serving/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Server.stop",
+      "owner": "Server",
+      "kind": "method",
+      "parameters": [],
+      "tutorial_chapters": "08",
+      "example_ref": "examples/model_serving/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Compiled.arun",
+      "owner": "Compiled",
+      "kind": "method",
+      "parameters": [
+        {
+          "name": "input",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        },
+        {
+          "name": "limits",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "Limits(max_actions=100, timeout_s=10)",
+          "annotation": null
+        }
+      ],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/execution_lifecycle/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Compiled.inspect",
+      "owner": "Compiled",
+      "kind": "method",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/execution_lifecycle/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Compiled.run",
+      "owner": "Compiled",
+      "kind": "method",
+      "parameters": [
+        {
+          "name": "input",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        },
+        {
+          "name": "limits",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "Limits(max_actions=100, timeout_s=10)",
+          "annotation": null
+        }
+      ],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/execution_lifecycle/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Captured.arun",
+      "owner": "Captured",
+      "kind": "method",
+      "parameters": [
+        {
+          "name": "limits",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "Limits(max_actions=100, timeout_s=10)",
+          "annotation": null
+        }
+      ],
+      "tutorial_chapters": "04,05",
+      "example_ref": "examples/episode_memory/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Captured.inspect",
+      "owner": "Captured",
+      "kind": "method",
+      "parameters": [],
+      "tutorial_chapters": "04,05",
+      "example_ref": "examples/episode_memory/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Captured.run",
+      "owner": "Captured",
+      "kind": "method",
+      "parameters": [
+        {
+          "name": "limits",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "Limits(max_actions=100, timeout_s=10)",
+          "annotation": null
+        }
+      ],
+      "tutorial_chapters": "04,05",
+      "example_ref": "examples/episode_memory/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Lineage.explain",
+      "owner": "Lineage",
+      "kind": "method",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Lineage.to_dict",
+      "owner": "Lineage",
+      "kind": "method",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Lineage.to_prompt_context",
+      "owner": "Lineage",
+      "kind": "method",
+      "parameters": [
+        {
+          "name": "max_chars",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "1600",
+          "annotation": null
+        }
+      ],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Lineage.name",
+      "owner": "Lineage",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Lineage.question",
+      "owner": "Lineage",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Lineage.goal",
+      "owner": "Lineage",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Lineage.answer",
+      "owner": "Lineage",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Lineage.ok",
+      "owner": "Lineage",
+      "kind": "field",
+      "annotation": "bool",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Lineage.steps",
+      "owner": "Lineage",
+      "kind": "field",
+      "annotation": "tuple",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Lineage.usage",
+      "owner": "Lineage",
+      "kind": "field",
+      "annotation": "dict",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Lineage.validation",
+      "owner": "Lineage",
+      "kind": "field",
+      "annotation": "dict | None",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Lineage.tags",
+      "owner": "Lineage",
+      "kind": "field",
+      "annotation": "tuple",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Lineage.metadata",
+      "owner": "Lineage",
+      "kind": "field",
+      "annotation": "dict",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Lineage.schema_version",
+      "owner": "Lineage",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Validation.to_dict",
+      "owner": "Validation",
+      "kind": "method",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Validation.ok",
+      "owner": "Validation",
+      "kind": "field",
+      "annotation": "bool",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Validation.issues",
+      "owner": "Validation",
+      "kind": "field",
+      "annotation": "tuple",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Event.id",
+      "owner": "Event",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_parameters.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Event.name",
+      "owner": "Event",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_parameters.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Event.input",
+      "owner": "Event",
+      "kind": "field",
+      "annotation": "dict",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_parameters.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Event.output",
+      "owner": "Event",
+      "kind": "field",
+      "annotation": "dict",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_parameters.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Event.ok",
+      "owner": "Event",
+      "kind": "field",
+      "annotation": "bool",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_parameters.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Event.error",
+      "owner": "Event",
+      "kind": "field",
+      "annotation": "dict | None",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_parameters.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Event.duration_ms",
+      "owner": "Event",
+      "kind": "field",
+      "annotation": "float | None",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_parameters.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Event.meta",
+      "owner": "Event",
+      "kind": "field",
+      "annotation": "dict",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_parameters.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Endpoint.url",
+      "owner": "Endpoint",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "08",
+      "example_ref": "examples/model_serving/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Endpoint.model",
+      "owner": "Endpoint",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "08",
+      "example_ref": "examples/model_serving/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Endpoint.backend",
+      "owner": "Endpoint",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "08",
+      "example_ref": "examples/model_serving/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Endpoint.api_key_configured",
+      "owner": "Endpoint",
+      "kind": "field",
+      "annotation": "bool",
+      "parameters": [],
+      "tutorial_chapters": "08",
+      "example_ref": "examples/model_serving/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Endpoint.pid",
+      "owner": "Endpoint",
+      "kind": "field",
+      "annotation": "int | None",
+      "parameters": [],
+      "tutorial_chapters": "08",
+      "example_ref": "examples/model_serving/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Endpoint.owned",
+      "owner": "Endpoint",
+      "kind": "field",
+      "annotation": "bool",
+      "parameters": [],
+      "tutorial_chapters": "08",
+      "example_ref": "examples/model_serving/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Health.status",
+      "owner": "Health",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "08",
+      "example_ref": "examples/model_serving/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Health.endpoint",
+      "owner": "Health",
+      "kind": "field",
+      "annotation": "_Endpoint",
+      "parameters": [],
+      "tutorial_chapters": "08",
+      "example_ref": "examples/model_serving/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Health.detail",
+      "owner": "Health",
+      "kind": "field",
+      "annotation": "str | None",
+      "parameters": [],
+      "tutorial_chapters": "08",
+      "example_ref": "examples/model_serving/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Action.name",
+      "owner": "Action",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "02",
+      "example_ref": "examples/flow_semantics/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Action.target",
+      "owner": "Action",
+      "kind": "field",
+      "annotation": "Any",
+      "parameters": [],
+      "tutorial_chapters": "02",
+      "example_ref": "examples/flow_semantics/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Action.input",
+      "owner": "Action",
+      "kind": "field",
+      "annotation": "Callable",
+      "parameters": [],
+      "tutorial_chapters": "02",
+      "example_ref": "examples/flow_semantics/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Agent.arun",
+      "owner": "Agent",
+      "kind": "method",
+      "parameters": [
+        {
+          "name": "input",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        },
+        {
+          "name": "limits",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "Limits(max_actions=100, timeout_s=10)",
+          "annotation": null
+        }
+      ],
+      "tutorial_chapters": "02,06,10",
+      "example_ref": "examples/agent_contracts/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Agent.compile",
+      "owner": "Agent",
+      "kind": "method",
+      "parameters": [],
+      "tutorial_chapters": "02,06,10",
+      "example_ref": "examples/agent_contracts/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Agent.inspect",
+      "owner": "Agent",
+      "kind": "method",
+      "parameters": [],
+      "tutorial_chapters": "02,06,10",
+      "example_ref": "examples/agent_contracts/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Agent.run",
+      "owner": "Agent",
+      "kind": "method",
+      "parameters": [
+        {
+          "name": "input",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        },
+        {
+          "name": "limits",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "Limits(max_actions=100, timeout_s=10)",
+          "annotation": null
+        }
+      ],
+      "tutorial_chapters": "02,06,10",
+      "example_ref": "examples/agent_contracts/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Agent.name",
+      "owner": "Agent",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "02,06,10",
+      "example_ref": "examples/agent_contracts/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Agent.flow",
+      "owner": "Agent",
+      "kind": "field",
+      "annotation": "Any",
+      "parameters": [],
+      "tutorial_chapters": "02,06,10",
+      "example_ref": "examples/agent_contracts/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Agent.backend",
+      "owner": "Agent",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "02,06,10",
+      "example_ref": "examples/agent_contracts/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Agent.kind",
+      "owner": "Agent",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "02,06,10",
+      "example_ref": "examples/agent_contracts/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Agent.skills",
+      "owner": "Agent",
+      "kind": "field",
+      "annotation": "tuple",
+      "parameters": [],
+      "tutorial_chapters": "02,06,10",
+      "example_ref": "examples/agent_contracts/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Agent.runtime",
+      "owner": "Agent",
+      "kind": "field",
+      "annotation": "Any",
+      "parameters": [],
+      "tutorial_chapters": "02,06,10",
+      "example_ref": "examples/agent_contracts/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Agent.framework",
+      "owner": "Agent",
+      "kind": "field",
+      "annotation": "Any",
+      "parameters": [],
+      "tutorial_chapters": "02,06,10",
+      "example_ref": "examples/agent_contracts/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Agent.instructions",
+      "owner": "Agent",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "02,06,10",
+      "example_ref": "examples/agent_contracts/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Agent.contract",
+      "owner": "Agent",
+      "kind": "field",
+      "annotation": "dict | None",
+      "parameters": [],
+      "tutorial_chapters": "02,06,10",
+      "example_ref": "examples/agent_contracts/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Agent.policy",
+      "owner": "Agent",
+      "kind": "field",
+      "annotation": "dict | None",
+      "parameters": [],
+      "tutorial_chapters": "02,06,10",
+      "example_ref": "examples/agent_contracts/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "System.arun",
+      "owner": "System",
+      "kind": "method",
+      "parameters": [
+        {
+          "name": "input",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        },
+        {
+          "name": "limits",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "Limits(max_actions=100, timeout_s=10)",
+          "annotation": null
+        }
+      ],
+      "tutorial_chapters": "03",
+      "example_ref": "examples/flow_semantics/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "System.compile",
+      "owner": "System",
+      "kind": "method",
+      "parameters": [],
+      "tutorial_chapters": "03",
+      "example_ref": "examples/flow_semantics/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "System.inspect",
+      "owner": "System",
+      "kind": "method",
+      "parameters": [],
+      "tutorial_chapters": "03",
+      "example_ref": "examples/flow_semantics/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "System.run",
+      "owner": "System",
+      "kind": "method",
+      "parameters": [
+        {
+          "name": "input",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        },
+        {
+          "name": "limits",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "Limits(max_actions=100, timeout_s=10)",
+          "annotation": null
+        }
+      ],
+      "tutorial_chapters": "03",
+      "example_ref": "examples/flow_semantics/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "System.name",
+      "owner": "System",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "03",
+      "example_ref": "examples/flow_semantics/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "System.flow",
+      "owner": "System",
+      "kind": "field",
+      "annotation": "Any",
+      "parameters": [],
+      "tutorial_chapters": "03",
+      "example_ref": "examples/flow_semantics/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "System.backend",
+      "owner": "System",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "03",
+      "example_ref": "examples/flow_semantics/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "System.kind",
+      "owner": "System",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "03",
+      "example_ref": "examples/flow_semantics/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Sequence.steps",
+      "owner": "Sequence",
+      "kind": "field",
+      "annotation": "tuple",
+      "parameters": [],
+      "tutorial_chapters": "02,03",
+      "example_ref": "examples/flow_semantics/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Sequence.name",
+      "owner": "Sequence",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "02,03",
+      "example_ref": "examples/flow_semantics/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Parallel.steps",
+      "owner": "Parallel",
+      "kind": "field",
+      "annotation": "tuple",
+      "parameters": [],
+      "tutorial_chapters": "02,03",
+      "example_ref": "examples/flow_semantics/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Parallel.join",
+      "owner": "Parallel",
+      "kind": "field",
+      "annotation": "Callable",
+      "parameters": [],
+      "tutorial_chapters": "02,03",
+      "example_ref": "examples/flow_semantics/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Parallel.name",
+      "owner": "Parallel",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "02,03",
+      "example_ref": "examples/flow_semantics/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Graph.nodes",
+      "owner": "Graph",
+      "kind": "field",
+      "annotation": "tuple",
+      "parameters": [],
+      "tutorial_chapters": "02,03",
+      "example_ref": "examples/flow_semantics/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Graph.edges",
+      "owner": "Graph",
+      "kind": "field",
+      "annotation": "tuple",
+      "parameters": [],
+      "tutorial_chapters": "02,03",
+      "example_ref": "examples/flow_semantics/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Graph.start",
+      "owner": "Graph",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "02,03",
+      "example_ref": "examples/flow_semantics/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Graph.max_visits",
+      "owner": "Graph",
+      "kind": "field",
+      "annotation": "int",
+      "parameters": [],
+      "tutorial_chapters": "02,03",
+      "example_ref": "examples/flow_semantics/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Graph.name",
+      "owner": "Graph",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "02,03",
+      "example_ref": "examples/flow_semantics/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Environment.arun",
+      "owner": "Environment",
+      "kind": "method",
+      "parameters": [
+        {
+          "name": "limits",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "Limits(max_actions=100, timeout_s=10)",
+          "annotation": null
+        }
+      ],
+      "tutorial_chapters": "04",
+      "example_ref": "examples/episode_memory/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Environment.compile",
+      "owner": "Environment",
+      "kind": "method",
+      "parameters": [],
+      "tutorial_chapters": "04",
+      "example_ref": "examples/episode_memory/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Environment.inspect",
+      "owner": "Environment",
+      "kind": "method",
+      "parameters": [],
+      "tutorial_chapters": "04",
+      "example_ref": "examples/episode_memory/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Environment.run",
+      "owner": "Environment",
+      "kind": "method",
+      "parameters": [
+        {
+          "name": "limits",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "Limits(max_actions=100, timeout_s=10)",
+          "annotation": null
+        }
+      ],
+      "tutorial_chapters": "04",
+      "example_ref": "examples/episode_memory/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Environment.name",
+      "owner": "Environment",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "04",
+      "example_ref": "examples/episode_memory/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Environment.unit",
+      "owner": "Environment",
+      "kind": "field",
+      "annotation": "_Unit",
+      "parameters": [],
+      "tutorial_chapters": "04",
+      "example_ref": "examples/episode_memory/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Environment.records",
+      "owner": "Environment",
+      "kind": "field",
+      "annotation": "tuple",
+      "parameters": [],
+      "tutorial_chapters": "04",
+      "example_ref": "examples/episode_memory/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Environment.max_steps",
+      "owner": "Environment",
+      "kind": "field",
+      "annotation": "int | None",
+      "parameters": [],
+      "tutorial_chapters": "04",
+      "example_ref": "examples/episode_memory/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Environment.memory",
+      "owner": "Environment",
+      "kind": "field",
+      "annotation": "Any",
+      "parameters": [],
+      "tutorial_chapters": "04",
+      "example_ref": "examples/episode_memory/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Environment.observe",
+      "owner": "Environment",
+      "kind": "field",
+      "annotation": "Callable | None",
+      "parameters": [],
+      "tutorial_chapters": "04",
+      "example_ref": "examples/episode_memory/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Environment.update",
+      "owner": "Environment",
+      "kind": "field",
+      "annotation": "Callable | None",
+      "parameters": [],
+      "tutorial_chapters": "04",
+      "example_ref": "examples/episode_memory/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Environment.stop",
+      "owner": "Environment",
+      "kind": "field",
+      "annotation": "Callable | None",
+      "parameters": [],
+      "tutorial_chapters": "04",
+      "example_ref": "examples/episode_memory/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Eval.arun",
+      "owner": "Eval",
+      "kind": "method",
+      "parameters": [
+        {
+          "name": "limits",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "Limits(max_actions=100, timeout_s=10)",
+          "annotation": null
+        }
+      ],
+      "tutorial_chapters": "05,10",
+      "example_ref": "examples/evaluation_checks/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Eval.compile",
+      "owner": "Eval",
+      "kind": "method",
+      "parameters": [],
+      "tutorial_chapters": "05,10",
+      "example_ref": "examples/evaluation_checks/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Eval.inspect",
+      "owner": "Eval",
+      "kind": "method",
+      "parameters": [],
+      "tutorial_chapters": "05,10",
+      "example_ref": "examples/evaluation_checks/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Eval.run",
+      "owner": "Eval",
+      "kind": "method",
+      "parameters": [
+        {
+          "name": "limits",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "Limits(max_actions=100, timeout_s=10)",
+          "annotation": null
+        }
+      ],
+      "tutorial_chapters": "05,10",
+      "example_ref": "examples/evaluation_checks/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Eval.name",
+      "owner": "Eval",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "05,10",
+      "example_ref": "examples/evaluation_checks/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Eval.unit",
+      "owner": "Eval",
+      "kind": "field",
+      "annotation": "Any",
+      "parameters": [],
+      "tutorial_chapters": "05,10",
+      "example_ref": "examples/evaluation_checks/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Eval.cases",
+      "owner": "Eval",
+      "kind": "field",
+      "annotation": "tuple",
+      "parameters": [],
+      "tutorial_chapters": "05,10",
+      "example_ref": "examples/evaluation_checks/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Eval.checks",
+      "owner": "Eval",
+      "kind": "field",
+      "annotation": "tuple",
+      "parameters": [],
+      "tutorial_chapters": "05,10",
+      "example_ref": "examples/evaluation_checks/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Eval.judge",
+      "owner": "Eval",
+      "kind": "field",
+      "annotation": "Agent | None",
+      "parameters": [],
+      "tutorial_chapters": "05,10",
+      "example_ref": "examples/evaluation_checks/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Eval.rubric",
+      "owner": "Eval",
+      "kind": "field",
+      "annotation": "dict | None",
+      "parameters": [],
+      "tutorial_chapters": "05,10",
+      "example_ref": "examples/evaluation_checks/example.py",
+      "test_ref": "tests/v213/test_grammar.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Limits.max_actions",
+      "owner": "Limits",
+      "kind": "field",
+      "annotation": "int",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/execution_lifecycle/example.py",
+      "test_ref": "tests/v213/test_parameters.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "Limits.timeout_s",
+      "owner": "Limits",
+      "kind": "field",
+      "annotation": "float",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/execution_lifecycle/example.py",
+      "test_ref": "tests/v213/test_parameters.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "RunResult.check_invariants",
+      "owner": "RunResult",
+      "kind": "method",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "RunResult.lineage",
+      "owner": "RunResult",
+      "kind": "method",
+      "parameters": [
+        {
+          "name": "name",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "'run'",
+          "annotation": null
+        },
+        {
+          "name": "question",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        },
+        {
+          "name": "goal",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "''",
+          "annotation": null
+        },
+        {
+          "name": "tags",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        },
+        {
+          "name": "metadata",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "None",
+          "annotation": null
+        },
+        {
+          "name": "max_tool_rows",
+          "mode": "KEYWORD_ONLY",
+          "required": false,
+          "default": "3",
+          "annotation": null
+        }
+      ],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "RunResult.to_dict",
+      "owner": "RunResult",
+      "kind": "method",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "RunResult.trace",
+      "owner": "RunResult",
+      "kind": "method",
+      "parameters": [
+        {
+          "name": "mode",
+          "mode": "POSITIONAL_OR_KEYWORD",
+          "required": false,
+          "default": "'compact'",
+          "annotation": null
+        }
+      ],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "RunResult.walk",
+      "owner": "RunResult",
+      "kind": "method",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "RunResult.text",
+      "owner": "RunResult",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "RunResult.final",
+      "owner": "RunResult",
+      "kind": "field",
+      "annotation": "dict",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "RunResult.data",
+      "owner": "RunResult",
+      "kind": "field",
+      "annotation": "dict",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "RunResult.ok",
+      "owner": "RunResult",
+      "kind": "field",
+      "annotation": "bool",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "RunResult.messages",
+      "owner": "RunResult",
+      "kind": "field",
+      "annotation": "tuple",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "RunResult.tool_events",
+      "owner": "RunResult",
+      "kind": "field",
+      "annotation": "tuple",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "RunResult.raw_responses",
+      "owner": "RunResult",
+      "kind": "field",
+      "annotation": "tuple",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "RunResult.usage",
+      "owner": "RunResult",
+      "kind": "field",
+      "annotation": "dict",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "RunResult.engine",
+      "owner": "RunResult",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "RunResult.model",
+      "owner": "RunResult",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "RunResult.mode",
+      "owner": "RunResult",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "RunResult.trace_schema_version",
+      "owner": "RunResult",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "RunResult.validation",
+      "owner": "RunResult",
+      "kind": "field",
+      "annotation": "dict | None",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "RunResult.errors",
+      "owner": "RunResult",
+      "kind": "field",
+      "annotation": "tuple",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "RunResult.meta",
+      "owner": "RunResult",
+      "kind": "field",
+      "annotation": "dict",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "RunResult.execution_id",
+      "owner": "RunResult",
+      "kind": "field",
+      "annotation": "str",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "RunResult.parent_execution_id",
+      "owner": "RunResult",
+      "kind": "field",
+      "annotation": "str | None",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "RunResult.children",
+      "owner": "RunResult",
+      "kind": "field",
+      "annotation": "tuple",
+      "parameters": [],
+      "tutorial_chapters": "07",
+      "example_ref": "examples/results_lineage/example.py",
+      "test_ref": "tests/v213/test_capabilities.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "CLI.version",
+      "owner": "CLI",
+      "kind": "command",
+      "parameters": [],
+      "tutorial_chapters": "00",
+      "example_ref": "examples/package_install/example.py",
+      "test_ref": "tests/v213/test_distribution.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "CLI.api",
+      "owner": "CLI",
+      "kind": "command",
+      "parameters": [],
+      "tutorial_chapters": "00",
+      "example_ref": "examples/package_install/example.py",
+      "test_ref": "tests/v213/test_distribution.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "CLI.doctor",
+      "owner": "CLI",
+      "kind": "command",
+      "parameters": [],
+      "tutorial_chapters": "00",
+      "example_ref": "examples/package_install/example.py",
+      "test_ref": "tests/v213/test_distribution.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    },
+    {
+      "id": "CLI.new",
+      "owner": "CLI",
+      "kind": "command",
+      "parameters": [
+        {
+          "name": "destination",
+          "mode": "CLI_POSITIONAL",
+          "required": true,
+          "default": null,
+          "annotation": "str"
+        }
+      ],
+      "tutorial_chapters": "00",
+      "example_ref": "examples/package_install/example.py",
+      "test_ref": "tests/v213/test_distribution.py",
+      "evidence_ref": "revisions/2.1.3/closeout-evidence/manifest.json",
+      "scope": "offline contract; external providers configured/stubbed; serving lifecycle simulated"
+    }
+  ],
+  "record_count": 186,
+  "parameter_count": 139,
+  "inference_requests": 0,
+  "historical_inventory": "api_inventory_213/inventory.json",
+  "coverage_note": "References identify contract families, not exhaustive proof of every parameter value or an upstream SDK capability."
+}

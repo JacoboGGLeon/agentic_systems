@@ -1,0 +1,706 @@
+{
+  "source_evidence": "revisions/2.1.3/closeout-evidence/features/20261023T025137916270/python-runtime--handoffs.json",
+  "results": [
+    {
+      "run_result": {
+        "text": "SPECIALIST_OK",
+        "final": {
+          "text": "SPECIALIST_OK"
+        },
+        "data": {
+          "text": "SPECIALIST_OK"
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 1,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "total_tokens": 0,
+          "client_duration_ms": 1199.91,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "python-runtime",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "triage",
+          "kind": "agent",
+          "backend": "native",
+          "skills": [],
+          "actions_observed": 1,
+          "input": {
+            "tool": "transfer_to_billing_specialist",
+            "input": {}
+          }
+        },
+        "execution_id": "run-1acbda8fc4d14adeb90a91d154373175",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "SPECIALIST_OK",
+            "final": {
+              "text": "SPECIALIST_OK"
+            },
+            "data": {
+              "text": "SPECIALIST_OK"
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 1,
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "total_tokens": 0,
+              "client_duration_ms": 1199.91,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "python-runtime",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "triage",
+              "kind": "model",
+              "framework": "openai-agents"
+            },
+            "execution_id": "run-a75d8b3fde6145a4ad492b0386ca9b09",
+            "parent_execution_id": "run-1acbda8fc4d14adeb90a91d154373175",
+            "children": [
+              {
+                "text": "SPECIALIST_OK",
+                "final": {
+                  "text": "SPECIALIST_OK"
+                },
+                "data": {
+                  "text": "SPECIALIST_OK"
+                },
+                "ok": true,
+                "messages": [
+                  {
+                    "content": "{\"tool\": \"transfer_to_billing_specialist\", \"input\": {}}",
+                    "role": "user"
+                  },
+                  {
+                    "arguments": "{}",
+                    "call_id": "call_019c632671b24f9482ea2593a6bf2a49",
+                    "name": "transfer_to_billing_specialist",
+                    "type": "function_call"
+                  },
+                  {
+                    "call_id": "call_019c632671b24f9482ea2593a6bf2a49",
+                    "output": "{\"assistant\": \"billing_specialist\"}",
+                    "type": "function_call_output"
+                  },
+                  {
+                    "id": "msg_635caed2697b4378902b0c85610eab47",
+                    "content": [
+                      {
+                        "annotations": [],
+                        "text": "SPECIALIST_OK",
+                        "type": "output_text"
+                      }
+                    ],
+                    "role": "assistant",
+                    "status": "completed",
+                    "type": "message"
+                  }
+                ],
+                "raw_responses": [
+                  {
+                    "output": [
+                      {
+                        "arguments": "{}",
+                        "call_id": "call_019c632671b24f9482ea2593a6bf2a49",
+                        "name": "transfer_to_billing_specialist",
+                        "type": "function_call",
+                        "id": null,
+                        "caller": null,
+                        "namespace": null,
+                        "status": null
+                      }
+                    ],
+                    "usage": {
+                      "requests": 1,
+                      "input_tokens": 0,
+                      "input_tokens_details": {
+                        "cache_write_tokens": 0,
+                        "cached_tokens": 0
+                      },
+                      "output_tokens": 0,
+                      "output_tokens_details": {
+                        "reasoning_tokens": 0
+                      },
+                      "total_tokens": 0,
+                      "request_usage_entries": []
+                    },
+                    "response_id": "python_de39024451b74b2e84a2d29eb633568c",
+                    "request_id": null
+                  },
+                  {
+                    "output": [
+                      {
+                        "id": "msg_635caed2697b4378902b0c85610eab47",
+                        "content": [
+                          {
+                            "annotations": [],
+                            "text": "SPECIALIST_OK",
+                            "type": "output_text",
+                            "logprobs": null
+                          }
+                        ],
+                        "role": "assistant",
+                        "status": "completed",
+                        "type": "message",
+                        "phase": null
+                      }
+                    ],
+                    "usage": {
+                      "requests": 0,
+                      "input_tokens": 0,
+                      "input_tokens_details": {
+                        "cache_write_tokens": 0,
+                        "cached_tokens": 0
+                      },
+                      "output_tokens": 0,
+                      "output_tokens_details": {
+                        "reasoning_tokens": 0
+                      },
+                      "total_tokens": 0,
+                      "request_usage_entries": []
+                    },
+                    "response_id": null,
+                    "request_id": null
+                  }
+                ],
+                "usage": {
+                  "requests": 1,
+                  "input_tokens": 0,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cached_tokens": 0
+                  },
+                  "output_tokens": 0,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 0
+                  },
+                  "total_tokens": 0,
+                  "request_usage_entries": [],
+                  "scheduler": {
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 1199.91
+                  },
+                  "client_duration_ms": 1199.91,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "python-runtime",
+                "mode": "eval",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": {
+                  "ok": true,
+                  "issues": []
+                },
+                "errors": [],
+                "meta": {
+                  "source_result_type": "RunResult",
+                  "framework_adapter": "openai-agents",
+                  "input": {
+                    "tool": "transfer_to_billing_specialist",
+                    "input": {}
+                  },
+                  "rejected_tool_calls": [],
+                  "runtime": {
+                    "provider": "python-runtime",
+                    "model_id": "python-runtime",
+                    "region_name": null,
+                    "endpoint": null,
+                    "metadata": {},
+                    "provider_priority": [
+                      "openai-runtime",
+                      "bedrock-runtime",
+                      "ollama-runtime"
+                    ],
+                    "allow_python_fallback": false,
+                    "scheduler": {
+                      "max_turns": 5,
+                      "max_tool_calls": 3,
+                      "timeout_s": 60,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    }
+                  },
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "scheduler_execution": {
+                    "scheduler": {
+                      "max_turns": 5,
+                      "max_tool_calls": 3,
+                      "timeout_s": 60,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    },
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 1199.91
+                  },
+                  "framework": "openai-agents",
+                  "framework_requested": "openai-agents",
+                  "framework_config": {
+                    "name": "openai-agents",
+                    "agent_kwargs": {
+                      "handoffs": "list",
+                      "input_guardrails": "list"
+                    },
+                    "run_kwargs": {
+                      "session": "SQLiteSession"
+                    }
+                  },
+                  "agent_name": "triage",
+                  "requested_engine": "python-runtime",
+                  "runtime_engine": "python-runtime",
+                  "execution_engine": "python-runtime"
+                },
+                "execution_id": "run-38098b0a0f9a4ad481f36e7d2102d991",
+                "parent_execution_id": "run-a75d8b3fde6145a4ad492b0386ca9b09",
+                "children": [],
+                "tool_events": [
+                  {
+                    "id": "call_019c632671b24f9482ea2593a6bf2a49",
+                    "name": "transfer_to_billing_specialist",
+                    "input": {},
+                    "output": {
+                      "data": {
+                        "assistant": "billing_specialist"
+                      }
+                    },
+                    "ok": true,
+                    "error": null,
+                    "duration_ms": null,
+                    "meta": {
+                      "source": "openai-agents",
+                      "kind": "handoff",
+                      "from_agent": "triage",
+                      "to_agent": "billing_specialist"
+                    }
+                  }
+                ]
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "features/python-runtime--handoffs",
+        "question": "{\"tool\": \"transfer_to_billing_specialist\", \"input\": {}}",
+        "goal": "",
+        "answer": "SPECIALIST_OK",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-1acbda8fc4d14adeb90a91d154373175",
+            "kind": "execution",
+            "title": "triage",
+            "summary": "SPECIALIST_OK",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "text": "SPECIALIST_OK"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-a75d8b3fde6145a4ad492b0386ca9b09",
+            "kind": "execution",
+            "title": "triage",
+            "summary": "SPECIALIST_OK",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "text": "SPECIALIST_OK"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-38098b0a0f9a4ad481f36e7d2102d991",
+            "kind": "execution",
+            "title": "eval",
+            "summary": "SPECIALIST_OK",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "text": "SPECIALIST_OK"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "call_019c632671b24f9482ea2593a6bf2a49",
+            "kind": "tool",
+            "title": "transfer_to_billing_specialist",
+            "summary": "completed",
+            "source": "transfer_to_billing_specialist",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "assistant": "billing_specialist"
+              }
+            }
+          }
+        ],
+        "usage": {
+          "requests": 1,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "total_tokens": 0,
+          "client_duration_ms": 1199.91,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    },
+    {
+      "run_result": {
+        "text": "Guardrail InputGuardrail triggered tripwire",
+        "final": {
+          "ok": false,
+          "error": {
+            "code": "InputGuardrailTripwireTriggered",
+            "message": "Guardrail InputGuardrail triggered tripwire"
+          }
+        },
+        "data": {
+          "ok": false,
+          "error": {
+            "code": "InputGuardrailTripwireTriggered",
+            "message": "Guardrail InputGuardrail triggered tripwire"
+          }
+        },
+        "ok": false,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "client_duration_ms": 13.916,
+          "inference_requests": 0,
+          "tool_calls": 0
+        },
+        "engine": "python-runtime",
+        "model": "python-runtime",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [
+          {
+            "code": "run_failed",
+            "message": "Guardrail InputGuardrail triggered tripwire"
+          }
+        ],
+        "meta": {
+          "name": "triage",
+          "kind": "agent",
+          "backend": "native",
+          "skills": [],
+          "actions_observed": 1,
+          "input": "BLOCKED_REQUEST"
+        },
+        "execution_id": "run-91a31ebb94cc49cc91c1200af5a77c4c",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "Guardrail InputGuardrail triggered tripwire",
+            "final": {
+              "ok": false,
+              "error": {
+                "code": "InputGuardrailTripwireTriggered",
+                "message": "Guardrail InputGuardrail triggered tripwire"
+              }
+            },
+            "data": {
+              "ok": false,
+              "error": {
+                "code": "InputGuardrailTripwireTriggered",
+                "message": "Guardrail InputGuardrail triggered tripwire"
+              }
+            },
+            "ok": false,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "client_duration_ms": 13.916,
+              "inference_requests": 0,
+              "tool_calls": 0
+            },
+            "engine": "python-runtime",
+            "model": "python-runtime",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [
+              {
+                "code": "run_failed",
+                "message": "Guardrail InputGuardrail triggered tripwire"
+              }
+            ],
+            "meta": {
+              "name": "triage",
+              "kind": "model",
+              "framework": "openai-agents"
+            },
+            "execution_id": "run-941f922c83bf437fa228dddc43e04076",
+            "parent_execution_id": "run-91a31ebb94cc49cc91c1200af5a77c4c",
+            "children": [
+              {
+                "text": "Guardrail InputGuardrail triggered tripwire",
+                "final": {
+                  "ok": false,
+                  "error": {
+                    "code": "InputGuardrailTripwireTriggered",
+                    "message": "Guardrail InputGuardrail triggered tripwire"
+                  }
+                },
+                "data": {
+                  "ok": false,
+                  "error": {
+                    "code": "InputGuardrailTripwireTriggered",
+                    "message": "Guardrail InputGuardrail triggered tripwire"
+                  }
+                },
+                "ok": false,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "scheduler": {
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 13.916
+                  },
+                  "client_duration_ms": 13.916,
+                  "inference_requests": 0,
+                  "tool_calls": 0
+                },
+                "engine": "python-runtime",
+                "model": "python-runtime",
+                "mode": "eval",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": {
+                  "ok": true,
+                  "issues": []
+                },
+                "errors": [
+                  {
+                    "code": "run_failed",
+                    "message": "Guardrail InputGuardrail triggered tripwire"
+                  }
+                ],
+                "meta": {
+                  "source_result_type": "InputGuardrailTripwireTriggered",
+                  "framework_adapter": "openai-agents",
+                  "input": "BLOCKED_REQUEST",
+                  "runtime": {
+                    "provider": "python-runtime",
+                    "model_id": "python-runtime",
+                    "region_name": null,
+                    "endpoint": null,
+                    "metadata": {},
+                    "provider_priority": [
+                      "openai-runtime",
+                      "bedrock-runtime",
+                      "ollama-runtime"
+                    ],
+                    "allow_python_fallback": false,
+                    "scheduler": {
+                      "max_turns": 5,
+                      "max_tool_calls": 3,
+                      "timeout_s": 60,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    }
+                  },
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "scheduler_execution": {
+                    "scheduler": {
+                      "max_turns": 5,
+                      "max_tool_calls": 3,
+                      "timeout_s": 60,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    },
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 13.916
+                  },
+                  "framework": "openai-agents",
+                  "framework_requested": "openai-agents",
+                  "framework_config": {
+                    "name": "openai-agents",
+                    "agent_kwargs": {
+                      "handoffs": "list",
+                      "input_guardrails": "list"
+                    },
+                    "run_kwargs": {
+                      "session": "SQLiteSession"
+                    }
+                  },
+                  "agent_name": "triage",
+                  "requested_engine": "python-runtime",
+                  "runtime_engine": "python-runtime",
+                  "execution_engine": "python-runtime"
+                },
+                "execution_id": "run-90e92d807f844c4e9c360ebc0c408f5f",
+                "parent_execution_id": "run-941f922c83bf437fa228dddc43e04076",
+                "children": [],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "features/python-runtime--handoffs",
+        "question": "\"BLOCKED_REQUEST\"",
+        "goal": "",
+        "answer": "Guardrail InputGuardrail triggered tripwire",
+        "ok": false,
+        "steps": [
+          {
+            "step_id": "run-91a31ebb94cc49cc91c1200af5a77c4c",
+            "kind": "execution",
+            "title": "triage",
+            "summary": "Guardrail InputGuardrail triggered tripwire",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": false,
+              "data": {
+                "ok": false,
+                "error": {
+                  "code": "InputGuardrailTripwireTriggered",
+                  "message": "Guardrail InputGuardrail triggered tripwire"
+                }
+              },
+              "errors": [
+                {
+                  "code": "run_failed",
+                  "message": "Guardrail InputGuardrail triggered tripwire"
+                }
+              ]
+            }
+          },
+          {
+            "step_id": "run-941f922c83bf437fa228dddc43e04076",
+            "kind": "execution",
+            "title": "triage",
+            "summary": "Guardrail InputGuardrail triggered tripwire",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": false,
+              "data": {
+                "ok": false,
+                "error": {
+                  "code": "InputGuardrailTripwireTriggered",
+                  "message": "Guardrail InputGuardrail triggered tripwire"
+                }
+              },
+              "errors": [
+                {
+                  "code": "run_failed",
+                  "message": "Guardrail InputGuardrail triggered tripwire"
+                }
+              ]
+            }
+          },
+          {
+            "step_id": "run-90e92d807f844c4e9c360ebc0c408f5f",
+            "kind": "execution",
+            "title": "eval",
+            "summary": "Guardrail InputGuardrail triggered tripwire",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": false,
+              "data": {
+                "ok": false,
+                "error": {
+                  "code": "InputGuardrailTripwireTriggered",
+                  "message": "Guardrail InputGuardrail triggered tripwire"
+                }
+              },
+              "errors": [
+                {
+                  "code": "run_failed",
+                  "message": "Guardrail InputGuardrail triggered tripwire"
+                }
+              ]
+            }
+          }
+        ],
+        "usage": {
+          "client_duration_ms": 13.916,
+          "inference_requests": 0,
+          "tool_calls": 0
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    }
+  ]
+}

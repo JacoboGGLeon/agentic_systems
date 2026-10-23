@@ -1,161 +1,45 @@
-# Install
+# Installation of the 2.1.3 candidate
 
-The Python distribution is named `agentic-systems`. The commands below target
-2.1.2. A development checkout may precede publication: check PyPI first, or
-install the supplied candidate wheel. Final PyPI and GitHub distributions must
-match the artifact hashes in the release manifest and certification summary.
-
-## Core Package
+This checkout implements **2.1.3**, which has not been published by this task.
+Install a supplied local wheel, without editable mode:
 
 ```bash
-python -m pip install -U pip
-python -m pip install "agentic-systems==2.1.2"
-```
-
-The core install includes the public API, CLI, deterministic Python runtime,
-tools, skills, agents, systems, graphs, environments, evals, contracts, lineage
-memory and human-readable results. It does not import or install optional
-provider/framework SDKs.
-
-## Optional Extras
-
-Install only the boundaries you use:
-
-```bash
-python -m pip install "agentic-systems[openai]==2.1.2"
-python -m pip install "agentic-systems[openai-agents]==2.1.2"
-python -m pip install "agentic-systems[bedrock]==2.1.2"
-python -m pip install "agentic-systems[langgraph]==2.1.2"
-python -m pip install "agentic-systems[strands]==2.1.2"
-python -m pip install "agentic-systems[vllm-client]==2.1.2"
-python -m pip install "agentic-systems[vllm-server]==2.1.2"  # GPU/Linux host only
-python -m pip install "agentic-systems[dev]==2.1.2"
-```
-
-| Extra | Purpose |
-|---|---|
-| `openai` | OpenAI plus OpenAI-compatible client routes, including Ollama and remote vLLM. |
-| `openai-agents` | OpenAI Agents SDK; installed package is `openai-agents`, import name is `agents`. |
-| `bedrock` | boto3/botocore support for Bedrock SigV4 or native API key authentication. |
-| `langgraph` | Native LangGraph orchestration adapter. |
-| `strands` | AWS Strands Agents and MCP support. |
-| `vllm` / `vllm-client` | Lightweight OpenAI-compatible client for an existing vLLM endpoint. |
-| `vllm-server` | vLLM GPU/server stack; supported GPU/Linux hosts only. |
-| `dev` | Test, coverage, lint and notebook tooling for this repository. |
-
-The `all` extra installs the portable Provider/Framework SDKs and development
-gates, but deliberately excludes the platform-specific vLLM GPU server. Install
-`vllm-server` only on the machine that serves the model. Agentic Systems never
-starts it implicitly; process ownership begins only at `server.start()`.
-
-To connect to an already running vLLM endpoint, the lighter OpenAI extra is
-sufficient:
-
-```bash
-python -m pip install "agentic-systems[openai]==2.1.2"
-export VLLM_BASE_URL="http://127.0.0.1:8000/v1"
-export VLLM_MODEL="your-model"
-export VLLM_API_KEY="EMPTY"
-```
-
-Ollama uses that same lightweight client dependency, but retains its own
-Provider identity and environment contract:
-
-```bash
-python -m pip install "agentic-systems[openai]==2.1.2"
-export OLLAMA_BASE_URL="http://127.0.0.1:11434/v1"
-export OLLAMA_MODEL="qwen3:4b-instruct-2507-q4_K_M"
-export RUN_OLLAMA_LIVE=1
-```
-
-The model name is illustrative. It must already exist in the configured Ollama
-server; Agentic Systems does not install Ollama, pull a model or start its
-process.
-
-## Stable Version
-
-Install the exact downloaded artifact when reproducibility matters:
-
-```bash
-python -m pip install ./agentic_systems-2.1.2-py3-none-any.whl
-```
-
-Verify its SHA256 against `SHA256SUMS-2.1.2.txt` from the same GitHub release
-before installing it in a controlled environment.
-
-## From GitHub
-
-Use this only when you intentionally want the current `main` branch rather than
-the versioned release artifact:
-
-```bash
-python -m pip install git+https://github.com/JacoboGGLeon/agentic_systems.git
-```
-
-## Local Development
-
-From a cloned repository, install the same non-vLLM boundaries used by release
-CI:
-
-```bash
-python -m pip install -U pip
-python -m pip install -e ".[dev,bedrock,langgraph,openai,openai-agents,strands]"
-```
-
-Install `.[vllm-server]` separately only on a host that will actually run vLLM.
-
-## Smoke Test
-
-```bash
-python - <<'PY'
-import agentic_systems as toolkit
-
-print("agentic_systems", toolkit.__version__)
-print(callable(toolkit.tool), callable(toolkit.agent), callable(toolkit.runtime))
-PY
-
+python -m venv .venv
+# Activate the environment, then install the candidate and required dependencies.
+python -m pip install /path/to/agentic_systems-2.1.3-py3-none-any.whl
+agentic-systems version
 agentic-systems doctor
+agentic-systems new my_project
 ```
 
-## Deterministic Runtime Check
+For an offline installation, prepare a wheelhouse containing the candidate and
+all required dependencies, then add `--no-index --find-links /path/to/wheelhouse`.
+The candidate manifest identifies the exact accepted bytes; using a source
+checkout is a development operation, not installed-wheel evidence.
+
+Optional extras remain `openai`, `bedrock`, `langgraph`, `openai-agents`,
+`strands`, `vllm`, `vllm-client`, `vllm-server`, `dev` and `all`. Select extras
+on the local wheel path, for example `"/path/to/candidate.whl[langgraph]"`.
+`all` excludes the platform-specific vLLM GPU server. No `[ada]` extra is
+included. Installing an extra does not start a server or validate inference.
+
+The base import keeps optional provider and framework SDKs lazy. Python 3.10
+is the declared minimum; the report distinguishes locally executed Python
+versions from the CI matrix still to run. See [API](docs/API_213.md),
+[tutorials](tutorials/README.md), [scaffolder](docs/SCAFFOLDER_213.md) and
+[evidence](revisions/2.1.3/framework-evidence/REPORT.md).
+
+Studio is a separate application wheel. Install the supplied SDK wheel first,
+then the Studio wheel with its `ui` extra. From Python:
 
 ```python
-import agentic_systems as toolkit
-
-@toolkit.tool
-def add(a: int, b: int) -> dict:
-    return {"result": a + b}
-
-runtime = toolkit.runtime(
-    provider="python-runtime",
-    scheduler=toolkit.scheduler(timeout_s=5, max_retries=0),
-)
-agent = toolkit.agent(name="calc", tools=[add], runtime=runtime)
-result = agent.run({"tool": "add", "input": {"a": 1, "b": 2}}, mode="eval")
-assert result.ok and result.data["result"] == 3
+from agentic_systems_studio import launch_studio
+launch_studio()
 ```
 
-## Tutorials
+Python mode needs no credentials. Configure an external provider once in the
+process environment or `.env`; live validation also requires its authorized
+budget ledger. See [Studio](examples/agentic_systems_studio/README.md).
 
-Tutorials are repository content and are not included in the wheel. Clone the
-repository, install the development/provider extras you need and start Jupyter:
-
-```bash
-python -m pip install -e ".[dev,openai,bedrock,langgraph]"
-python -m jupyter lab tutorials
-```
-
-Continue with [First Run Onboarding](docs/ONBOARDING_FIRST_RUN.md).
-
-## Build From Source
-
-Build only from the final reviewed source tree:
-
-```bash
-python -m pip install build twine
-python -m build --no-isolation
-python -m twine check dist/*
-```
-
-`dist/` should contain only the wheel and source distribution for the same
-version.
+For historical published 2.1.2 instructions, consult
+[the archived installation guide](examples/history/2.1.2/INSTALL.md).

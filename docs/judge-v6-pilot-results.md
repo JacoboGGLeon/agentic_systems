@@ -1,5 +1,7 @@
 # Fixed v6 pilot: expansion blocked
 
+> **Referencia anterior a la API 2.1.3.** Se conserva como diseño, operación o evidencia histórica. Para implementar con la API vigente, consulta [la guía actual](API_213.md) y [tutorials](../tutorials/README.md). Sus ejemplos antiguos no son otra API soportada.
+
 The six-point stabilization workflow is implemented at application level. No
 public library API or provider/model-specific exception was added. Historical
 artifacts remain unchanged. Contract/schema, reference logic and acceptance text

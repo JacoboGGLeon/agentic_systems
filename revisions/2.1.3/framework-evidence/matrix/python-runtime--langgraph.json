@@ -1,0 +1,223 @@
+{
+  "name": "python-runtime--langgraph",
+  "passed": true,
+  "report": {
+    "provider": "python-runtime",
+    "framework": "langgraph",
+    "result": {
+      "text": "certify -> {\"value\": 37, \"verified\": true}",
+      "final": {
+        "value": 37,
+        "verified": true,
+        "ok": true,
+        "tool": "certify"
+      },
+      "data": {
+        "value": 37,
+        "verified": true,
+        "ok": true,
+        "tool": "certify"
+      },
+      "ok": true,
+      "messages": [],
+      "raw_responses": [],
+      "usage": {
+        "client_duration_ms": 1451.488,
+        "inference_requests": 0,
+        "tool_calls": 1
+      },
+      "engine": "python-runtime",
+      "model": "python-runtime",
+      "mode": "default",
+      "trace_schema_version": "agentic_systems.trace.v1",
+      "validation": null,
+      "errors": [],
+      "meta": {
+        "name": "matrix",
+        "kind": "agent",
+        "backend": "native",
+        "skills": [
+          "evidence"
+        ],
+        "actions_observed": 1,
+        "input": {
+          "tool": "certify",
+          "input": {
+            "value": 37
+          }
+        }
+      },
+      "execution_id": "run-f0bbd27882a4427b91eaaba96c0092de",
+      "parent_execution_id": null,
+      "children": [
+        {
+          "text": "certify -> {\"value\": 37, \"verified\": true}",
+          "final": {
+            "value": 37,
+            "verified": true,
+            "ok": true,
+            "tool": "certify"
+          },
+          "data": {
+            "value": 37,
+            "verified": true,
+            "ok": true,
+            "tool": "certify"
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {
+            "client_duration_ms": 1451.488,
+            "inference_requests": 0,
+            "tool_calls": 1
+          },
+          "engine": "python-runtime",
+          "model": "python-runtime",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "matrix",
+            "kind": "model",
+            "framework": "langgraph"
+          },
+          "execution_id": "run-d7f5aa58dc70475682f45fc018b5818b",
+          "parent_execution_id": "run-f0bbd27882a4427b91eaaba96c0092de",
+          "children": [
+            {
+              "text": "certify -> {\"value\": 37, \"verified\": true}",
+              "final": {
+                "value": 37,
+                "verified": true,
+                "ok": true,
+                "tool": "certify"
+              },
+              "data": {
+                "value": 37,
+                "verified": true,
+                "ok": true,
+                "tool": "certify"
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {
+                "scheduler": {
+                  "attempts": 1,
+                  "retries": 0,
+                  "timed_out": false,
+                  "latency_ms": 1451.488
+                },
+                "client_duration_ms": 1451.488,
+                "inference_requests": 0,
+                "tool_calls": 1
+              },
+              "engine": "python-runtime",
+              "model": "python-runtime",
+              "mode": "eval",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": {
+                "ok": true,
+                "issues": []
+              },
+              "errors": [],
+              "meta": {
+                "source_result_type": "PythonRuntimeProvider",
+                "agent_name": "matrix",
+                "tool_count": 1,
+                "planned_tool_calls": 1,
+                "framework_adapter": "langgraph",
+                "runtime": {
+                  "provider": "python-runtime",
+                  "model_id": "python-runtime",
+                  "region_name": null,
+                  "endpoint": null,
+                  "metadata": {},
+                  "provider_priority": [
+                    "openai-runtime",
+                    "bedrock-runtime",
+                    "ollama-runtime"
+                  ],
+                  "allow_python_fallback": false,
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  }
+                },
+                "scheduler": {
+                  "max_turns": 5,
+                  "max_tool_calls": 3,
+                  "timeout_s": 60,
+                  "max_concurrency": 1,
+                  "max_retries": 0,
+                  "backoff_s": 0.0
+                },
+                "scheduler_execution": {
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "attempts": 1,
+                  "retries": 0,
+                  "timed_out": false,
+                  "latency_ms": 1451.488
+                },
+                "framework": "langgraph",
+                "framework_requested": "langgraph",
+                "framework_config": {
+                  "name": "langgraph",
+                  "agent_kwargs": {},
+                  "run_kwargs": {}
+                },
+                "input": {
+                  "tool": "certify",
+                  "input": {
+                    "value": 37
+                  }
+                },
+                "requested_engine": "python-runtime",
+                "runtime_engine": "python-runtime",
+                "execution_engine": "python-runtime"
+              },
+              "execution_id": "run-76632636184e46d1bd864bda64578096",
+              "parent_execution_id": "run-d7f5aa58dc70475682f45fc018b5818b",
+              "children": [],
+              "tool_events": [
+                {
+                  "id": "tool-04658b311dfd4cd9a0dd16a4c5d32ae8",
+                  "name": "certify",
+                  "input": {
+                    "value": 37
+                  },
+                  "output": {
+                    "data": {
+                      "value": 37,
+                      "verified": true
+                    }
+                  },
+                  "ok": true,
+                  "error": null,
+                  "duration_ms": null,
+                  "meta": {}
+                }
+              ]
+            }
+          ],
+          "tool_events": []
+        }
+      ],
+      "tool_events": []
+    }
+  },
+  "elapsed_s": 1.463
+}

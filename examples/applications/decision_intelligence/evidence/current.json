@@ -1,0 +1,280 @@
+{
+  "example": "decision_intelligence",
+  "example_passed": true,
+  "source_sha256": "77102859d91b05450ed9c90b172b0c203c53874be987ff0a1e7516f4e4165d8e",
+  "inference_requests": 0,
+  "scope": "offline contract or configuration; no model-generation/semantic/IAM/GPU certification",
+  "output": {
+    "text": "",
+    "final": {
+      "scores": {
+        "A": 2,
+        "B": 5
+      },
+      "selected": "B"
+    },
+    "data": {
+      "scores": {
+        "A": 2,
+        "B": 5
+      },
+      "selected": "B"
+    },
+    "ok": true,
+    "messages": [],
+    "raw_responses": [],
+    "usage": {
+      "requests": 1,
+      "inference_requests": 0,
+      "tool_calls": 1
+    },
+    "engine": "python-runtime",
+    "model": "",
+    "mode": "default",
+    "trace_schema_version": "agentic_systems.trace.v1",
+    "validation": null,
+    "errors": [],
+    "meta": {
+      "name": "application",
+      "kind": "system",
+      "backend": "native",
+      "skills": [],
+      "actions_observed": 1,
+      "input": {
+        "input": {
+          "A": {
+            "quality": 9,
+            "cost": 7
+          },
+          "B": {
+            "quality": 8,
+            "cost": 3
+          }
+        }
+      }
+    },
+    "execution_id": "run-487579167f724c95a88c0d5179d34e2e",
+    "parent_execution_id": null,
+    "children": [
+      {
+        "text": "",
+        "final": {
+          "scores": {
+            "A": 2,
+            "B": 5
+          },
+          "selected": "B"
+        },
+        "data": {
+          "scores": {
+            "A": 2,
+            "B": 5
+          },
+          "selected": "B"
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "sequence",
+          "kind": "sequence",
+          "backend": "native"
+        },
+        "execution_id": "run-5c673521aad74f5dbd9f4e7efc9ae8a8",
+        "parent_execution_id": "run-487579167f724c95a88c0d5179d34e2e",
+        "children": [
+          {
+            "text": "",
+            "final": {
+              "scores": {
+                "A": 2,
+                "B": 5
+              },
+              "selected": "B"
+            },
+            "data": {
+              "scores": {
+                "A": 2,
+                "B": 5
+              },
+              "selected": "B"
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 1,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "worker",
+              "kind": "agent",
+              "backend": "native",
+              "skills": [
+                "rank_options"
+              ],
+              "step": "worker"
+            },
+            "execution_id": "run-7bc6bf6812884ca5b7f9cf2387b9aca0",
+            "parent_execution_id": "run-5c673521aad74f5dbd9f4e7efc9ae8a8",
+            "children": [
+              {
+                "text": "",
+                "final": {
+                  "scores": {
+                    "A": 2,
+                    "B": 5
+                  },
+                  "selected": "B"
+                },
+                "data": {
+                  "scores": {
+                    "A": 2,
+                    "B": 5
+                  },
+                  "selected": "B"
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "requests": 1,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "rank_options",
+                  "kind": "action"
+                },
+                "execution_id": "run-cf0a06a366e64df5beb3753b20a8b94b",
+                "parent_execution_id": "run-7bc6bf6812884ca5b7f9cf2387b9aca0",
+                "children": [
+                  {
+                    "text": "",
+                    "final": {
+                      "scores": {
+                        "A": 2,
+                        "B": 5
+                      },
+                      "selected": "B"
+                    },
+                    "data": {
+                      "scores": {
+                        "A": 2,
+                        "B": 5
+                      },
+                      "selected": "B"
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "requests": 1,
+                      "inference_requests": 0,
+                      "tool_calls": 1
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "tool",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "tool_name": "",
+                      "input": {
+                        "input": {
+                          "A": {
+                            "quality": 9,
+                            "cost": 7
+                          },
+                          "B": {
+                            "quality": 8,
+                            "cost": 3
+                          }
+                        }
+                      },
+                      "tool_input": {
+                        "input": {
+                          "A": {
+                            "quality": 9,
+                            "cost": 7
+                          },
+                          "B": {
+                            "quality": 8,
+                            "cost": 3
+                          }
+                        }
+                      }
+                    },
+                    "execution_id": "run-63fe69bbc02546798c600bf6e424667d",
+                    "parent_execution_id": "run-cf0a06a366e64df5beb3753b20a8b94b",
+                    "children": [],
+                    "tool_events": [
+                      {
+                        "id": "tool-ac317605f0004d58940b9a05a37b9b1f",
+                        "name": "rank_options",
+                        "input": {
+                          "input": {
+                            "A": {
+                              "quality": 9,
+                              "cost": 7
+                            },
+                            "B": {
+                              "quality": 8,
+                              "cost": 3
+                            }
+                          }
+                        },
+                        "output": {
+                          "data": {
+                            "scores": {
+                              "A": 2,
+                              "B": 5
+                            },
+                            "selected": "B"
+                          }
+                        },
+                        "ok": true,
+                        "error": null,
+                        "duration_ms": null,
+                        "meta": {}
+                      }
+                    ]
+                  }
+                ],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      }
+    ],
+    "tool_events": []
+  }
+}

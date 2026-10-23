@@ -1,0 +1,354 @@
+{
+  "example": "claim_review",
+  "example_passed": true,
+  "source_sha256": "6e4f6a57f7309080ed067229fa2768137646fbd57b0d55ce097c110cba70d1c5",
+  "inference_requests": 0,
+  "scope": "offline contract or configuration; no model-generation/semantic/IAM/GPU certification",
+  "output": {
+    "text": "",
+    "final": {
+      "accepted": false,
+      "findings": [
+        {
+          "claim": "C1",
+          "issue": "missing source"
+        },
+        {
+          "claim": "C1",
+          "issue": "unsupported causality"
+        }
+      ]
+    },
+    "data": {
+      "accepted": false,
+      "findings": [
+        {
+          "claim": "C1",
+          "issue": "missing source"
+        },
+        {
+          "claim": "C1",
+          "issue": "unsupported causality"
+        }
+      ]
+    },
+    "ok": true,
+    "messages": [],
+    "raw_responses": [],
+    "usage": {
+      "requests": 1,
+      "inference_requests": 0,
+      "tool_calls": 1
+    },
+    "engine": "python-runtime",
+    "model": "",
+    "mode": "default",
+    "trace_schema_version": "agentic_systems.trace.v1",
+    "validation": null,
+    "errors": [],
+    "meta": {
+      "name": "application",
+      "kind": "system",
+      "backend": "native",
+      "skills": [],
+      "actions_observed": 1,
+      "input": {
+        "input": {
+          "claims": [
+            {
+              "id": "C1",
+              "source": "missing",
+              "causal": true
+            }
+          ],
+          "sources": [
+            "report"
+          ]
+        }
+      }
+    },
+    "execution_id": "run-8962b7f66da7464b923d5ee69d3a8618",
+    "parent_execution_id": null,
+    "children": [
+      {
+        "text": "",
+        "final": {
+          "accepted": false,
+          "findings": [
+            {
+              "claim": "C1",
+              "issue": "missing source"
+            },
+            {
+              "claim": "C1",
+              "issue": "unsupported causality"
+            }
+          ]
+        },
+        "data": {
+          "accepted": false,
+          "findings": [
+            {
+              "claim": "C1",
+              "issue": "missing source"
+            },
+            {
+              "claim": "C1",
+              "issue": "unsupported causality"
+            }
+          ]
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "sequence",
+          "kind": "sequence",
+          "backend": "native"
+        },
+        "execution_id": "run-bd36664c067d454f85045f812cb31bea",
+        "parent_execution_id": "run-8962b7f66da7464b923d5ee69d3a8618",
+        "children": [
+          {
+            "text": "",
+            "final": {
+              "accepted": false,
+              "findings": [
+                {
+                  "claim": "C1",
+                  "issue": "missing source"
+                },
+                {
+                  "claim": "C1",
+                  "issue": "unsupported causality"
+                }
+              ]
+            },
+            "data": {
+              "accepted": false,
+              "findings": [
+                {
+                  "claim": "C1",
+                  "issue": "missing source"
+                },
+                {
+                  "claim": "C1",
+                  "issue": "unsupported causality"
+                }
+              ]
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 1,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "worker",
+              "kind": "agent",
+              "backend": "native",
+              "skills": [
+                "review_claims"
+              ],
+              "step": "worker"
+            },
+            "execution_id": "run-dda7f12f7dcc41cbbe798ec910697280",
+            "parent_execution_id": "run-bd36664c067d454f85045f812cb31bea",
+            "children": [
+              {
+                "text": "",
+                "final": {
+                  "accepted": false,
+                  "findings": [
+                    {
+                      "claim": "C1",
+                      "issue": "missing source"
+                    },
+                    {
+                      "claim": "C1",
+                      "issue": "unsupported causality"
+                    }
+                  ]
+                },
+                "data": {
+                  "accepted": false,
+                  "findings": [
+                    {
+                      "claim": "C1",
+                      "issue": "missing source"
+                    },
+                    {
+                      "claim": "C1",
+                      "issue": "unsupported causality"
+                    }
+                  ]
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "requests": 1,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "review_claims",
+                  "kind": "action"
+                },
+                "execution_id": "run-3d5564239d694016aecb1bb9d34eb7bb",
+                "parent_execution_id": "run-dda7f12f7dcc41cbbe798ec910697280",
+                "children": [
+                  {
+                    "text": "",
+                    "final": {
+                      "accepted": false,
+                      "findings": [
+                        {
+                          "claim": "C1",
+                          "issue": "missing source"
+                        },
+                        {
+                          "claim": "C1",
+                          "issue": "unsupported causality"
+                        }
+                      ]
+                    },
+                    "data": {
+                      "accepted": false,
+                      "findings": [
+                        {
+                          "claim": "C1",
+                          "issue": "missing source"
+                        },
+                        {
+                          "claim": "C1",
+                          "issue": "unsupported causality"
+                        }
+                      ]
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "requests": 1,
+                      "inference_requests": 0,
+                      "tool_calls": 1
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "tool",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "tool_name": "",
+                      "input": {
+                        "input": {
+                          "claims": [
+                            {
+                              "id": "C1",
+                              "source": "missing",
+                              "causal": true
+                            }
+                          ],
+                          "sources": [
+                            "report"
+                          ]
+                        }
+                      },
+                      "tool_input": {
+                        "input": {
+                          "claims": [
+                            {
+                              "id": "C1",
+                              "source": "missing",
+                              "causal": true
+                            }
+                          ],
+                          "sources": [
+                            "report"
+                          ]
+                        }
+                      }
+                    },
+                    "execution_id": "run-967b920a78c04a0ea4f6e4993f989e84",
+                    "parent_execution_id": "run-3d5564239d694016aecb1bb9d34eb7bb",
+                    "children": [],
+                    "tool_events": [
+                      {
+                        "id": "tool-a328e35b022043519217778eba8862f5",
+                        "name": "review_claims",
+                        "input": {
+                          "input": {
+                            "claims": [
+                              {
+                                "id": "C1",
+                                "source": "missing",
+                                "causal": true
+                              }
+                            ],
+                            "sources": [
+                              "report"
+                            ]
+                          }
+                        },
+                        "output": {
+                          "data": {
+                            "accepted": false,
+                            "findings": [
+                              {
+                                "claim": "C1",
+                                "issue": "missing source"
+                              },
+                              {
+                                "claim": "C1",
+                                "issue": "unsupported causality"
+                              }
+                            ]
+                          }
+                        },
+                        "ok": true,
+                        "error": null,
+                        "duration_ms": null,
+                        "meta": {}
+                      }
+                    ]
+                  }
+                ],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      }
+    ],
+    "tool_events": []
+  }
+}

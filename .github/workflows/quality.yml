@@ -4,166 +4,103 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
-  test:
+  offline:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.10", "3.14"]
+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
+    env:
+      PYTEST_DISABLE_PLUGIN_AUTOLOAD: '1'
+      LANGCHAIN_TRACING_V2: 'false'
+      LANGSMITH_TRACING: 'false'
+      OTEL_SDK_DISABLED: 'true'
+      OPENAI_AGENTS_DISABLE_TRACING: '1'
+      AWS_EC2_METADATA_DISABLED: 'true'
+      AGENTIC_213_EVIDENCE_DIR: .tmp/ci-213-evidence
     steps:
       - uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
       - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
-      - run: python -m pip install --upgrade pip
-      - run: >-
-          python -m pip install -e ".[dev,bedrock,langgraph,openai,openai-agents,strands]"
-      - run: python -m pip install -r tutorials/frameworks/requirements-strands-a2a.txt
-          build twine "setuptools>=69" wheel pyright==1.1.411
-      - run: >-
-          python -m pip install -e
-          "examples/agentic_systems_studio[ui,notebook,test]"
-      - run: >-
-          python -m ruff check src tests semantic_challenges
-          tutorials/frameworks/mcp_echo_server.py tutorials/frameworks/a2a_echo_server.py
-      - name: Formatting gate
-        if: matrix.python-version == '3.14'
-        run: python scripts/check_format.py
-      - name: GitHub Actions workflow contracts
-        if: matrix.python-version == '3.14'
-        run: go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.12 -shellcheck=
-      - name: Pyright strict contracts
-        if: matrix.python-version == '3.14'
-        run: python -m pyright --project pyrightconfig.json
-      - name: Pyright legacy ratchet
-        if: matrix.python-version == '3.14'
-        run: python scripts/check_pyright_baseline.py
-      - name: Architecture dependency gate
-        if: matrix.python-version == '3.14'
-        run: lint-imports
-      - name: Architecture branch gate
-        if: matrix.python-version == '3.14'
-        run: python scripts/check_architecture.py
-      - name: Performance ratchet
-        if: matrix.python-version == '3.14'
-        run: python scripts/check_benchmarks.py
-      - name: Contract and offline 20-pair matrix
-        if: matrix.python-version == '3.14'
+      - name: Install development dependencies
         run: >-
-          python -m pytest -q tests/contracts
-          tests/frameworks/test_provider_framework_matrix.py
-      - name: Focused semantic challenge contracts
-        if: matrix.python-version == '3.14'
-        run: python -m pytest -q tests/semantic_challenges
-      - name: Complexity gate
-        if: matrix.python-version == '3.14'
-        run: python scripts/check_complexity.py
-      - name: Direct dependency license gate
-        if: matrix.python-version == '3.14'
-        run: python scripts/check_licenses.py
-      - name: Secret material gate
-        if: matrix.python-version == '3.14'
+          python -m pip install '.[dev,bedrock,langgraph,openai,openai-agents,strands]'
+          'setuptools>=69' wheel 'streamlit>=1.37'
+      - name: Lint current API and examples
+        run: >-
+          python -m ruff check src/agentic_systems tests/v213
+          scripts/build_candidate_213.py scripts/test_offline_213.py
+          scripts/execute_tutorials_213.py scripts/inventory_current_213.py
+          scripts/validate_candidate_213.py scripts/write_tutorials_213.py
+          scripts/migrate_examples_213.py scripts/finalize_examples_213.py
+          scripts/validate_examples_213.py examples/catalog_tools.py
+          scripts/write_api_walkthrough_213.py scripts/execute_notebooks_213.py
+          scripts/inventory_notebooks_213.py scripts/unify_teaching_imports_213.py
+          scripts/start_final_campaign_213.py examples/api_walkthrough
+          scripts/capture_runresults_213.py scripts/report_runresults_213.py
+          examples/agentic_systems_studio/src examples/agentic_systems_studio/tests
+          examples/framework_interop examples/grammar_tour tutorials/lesson_examples.py
+          examples/run_offline_213.py examples/tool_contracts examples/flow_semantics
+          examples/execution_lifecycle examples/results_lineage examples/episode_memory
+          examples/evaluation_checks examples/provider_framework_conformance
+          examples/model_serving examples/package_install examples/agent_contracts
+          examples/portable_skills examples/order_fulfillment
+      - name: Scan repository for credential material
         run: python scripts/check_secrets.py
-      - name: Generate dependency SBOM
-        if: matrix.python-version == '3.14'
+      - name: Build a clean candidate without an index
+        run: python scripts/build_candidate_213.py .tmp/ci-213
+      - name: Install the reviewed artifact used by the final live campaign
         run: >-
-          cyclonedx-py environment --output-format JSON
-          --output-file .tmp/agentic-systems-sbom.json
-      - run: >-
-          python -m pytest --cov=agentic_systems
-          --cov-config=pyproject.toml --cov-report=term-missing -q
-      - run: >-
-          python -m pytest --ignore=tests/release/test_tutorial_execution.py
-          --cov=agentic_systems
-          --cov-config=.coveragerc-core-branches
-          --cov-report=term-missing -q
-      - run: >-
-          python -m pytest -o addopts="" tests/providers
-          --cov=agentic_systems.providers.bedrock_runtime
-          --cov=agentic_systems.providers.bedrock
-          --cov-config=.coveragerc-bedrock
-          --cov-report=term-missing -q
-      - run: >-
-          python -m pytest tests/providers
-          tests/integration_conformance/test_provider_conformance.py
-          tests/integration_conformance/test_system_runtime.py
-          tests/frameworks/test_provider_framework_matrix.py
-          --cov=agentic_systems.providers
-          --cov-config=.coveragerc-providers-branches
-          --cov-report=term-missing -q
-      - run: >-
-          python -m pytest --ignore=tests/release/test_tutorial_execution.py
-          --cov=agentic_systems.integrations
-          --cov-config=.coveragerc-frameworks-branches
-          --cov-report=term-missing -q
-      - run: python -m build --no-isolation
-      - run: python -m twine check dist/*
-      - name: Clean runtime dependency vulnerability audit
-        if: matrix.python-version == '3.14'
+          python -m pip install --no-index --no-deps --force-reinstall
+          revisions/2.1.3/closeout-artifacts/agentic_systems-2.1.3-py3-none-any.whl
+      - name: Install Studio without editable mode
+        run: python -m pip install --no-deps --no-build-isolation ./examples/agentic_systems_studio
+      - name: Architecture boundaries
+        run: lint-imports
+      - name: Offline installed-wheel contracts
+        run: >-
+          python scripts/test_offline_213.py -p pytest_cov --cov=agentic_systems
+          --cov-config=.coveragerc-213 --cov-report=term-missing
+          --cov-report=json:.tmp/ci-213-evidence/coverage.json
+          --junitxml=.tmp/ci-213-evidence/tests.xml
+      - name: Execute every current tutorial and example notebook in fresh kernels
+        run: python scripts/execute_notebooks_213.py
+      - name: Execute canonical examples
+        run: python examples/run_offline_213.py
+      - name: Execute the 34 historical adaptations without inference
+        run: python scripts/validate_examples_213.py
+      - name: Test Studio and its actual widgets offline
+        run: >-
+          python examples/agentic_systems_studio/test_offline.py
+          --junitxml=.tmp/ci-213-evidence/studio-tests.xml
+      - name: Test business evidence projection and failure preservation
+        run: >-
+          python -m pytest examples/api_walkthrough/tests -q -o pythonpath=.
+          --junitxml=.tmp/ci-213-evidence/business-boundary-tests.xml
+      - name: Execute order application
         run: |
-          python -m venv .tmp/runtime-audit
-          .tmp/runtime-audit/bin/python -m pip install --upgrade pip pip-audit
-          .tmp/runtime-audit/bin/python -m pip install dist/*.whl
-          .tmp/runtime-audit/bin/python -m pip_audit --local --skip-editable
-      - name: Build focused semantic challenge bundle
-        if: matrix.python-version == '3.14'
+          python examples/order_fulfillment/run.py
+          cp examples/order_fulfillment/evidence/run.json .tmp/ci-213-evidence/order.json
+      - name: Verify artifact contents and the generated project
         run: >-
-          python scripts/build_semantic_challenge_bundle.py
-          --evidence .tmp/no-live-evidence-in-pr
-      - name: Lint Studio and release builder
-        if: matrix.python-version == '3.14'
-        run: >-
-          python -m ruff check examples/agentic_systems_studio/src
-          examples/agentic_systems_studio/tests
-          examples/agentic_systems_studio/scripts
-          scripts/build_release_assets.py
-          scripts/build_semantic_challenge_bundle.py
-          scripts/release_publication.py
-          scripts/build_release_manifest.py
-          scripts/finalize_release.py
-      - name: Test Studio and generated projects
-        if: matrix.python-version == '3.14'
-        run: python -m pytest -q examples/agentic_systems_studio/tests
-      - name: Build Studio bundle
-        if: matrix.python-version == '3.14'
-        run: >-
-          python examples/agentic_systems_studio/scripts/build_bundle.py
-      - name: Audit downloadable release assets
-        if: matrix.python-version == '3.14'
-        run: python scripts/build_release_assets.py
-      - run: |
-          python -m venv .tmp/wheel-smoke
-          .tmp/wheel-smoke/bin/python -m pip install dist/*.whl
-          .tmp/wheel-smoke/bin/python -c "import importlib.metadata as m; import agentic_systems as a; assert a.__version__ == m.version('agentic-systems'); c = a.api_contract(); assert len(a.__all__) == c['export_count']; assert len(c['ids']) == c['entry_count']"
-          .tmp/wheel-smoke/bin/agentic-systems version
-      - name: Generated-file cleanliness
-        if: matrix.python-version == '3.14'
-        run: git diff --exit-code
-      - name: Record candidate identity
-        if: matrix.python-version == '3.14'
-        env:
-          CANDIDATE_COMMIT: ${{ github.sha }}
-        run: >-
-          python -c "import hashlib,json,os; from pathlib import Path;
-          wheel=next(Path('dist').glob('*.whl'));
-          digest=hashlib.sha256(wheel.read_bytes()).hexdigest();
-          payload={'commit_sha':os.environ['CANDIDATE_COMMIT'],'wheel_filename':wheel.name,'wheel_sha256':digest};
-          Path('dist/candidate-identity.json').write_text(json.dumps(payload,indent=2)+'\n',encoding='utf-8')"
-      - name: Upload offline-tested build (not live certification)
-        if: matrix.python-version == '3.14'
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+          python scripts/validate_candidate_213.py --wheel
+          revisions/2.1.3/closeout-artifacts/agentic_systems-2.1.3-py3-none-any.whl
+      - name: Catalog consistency
+        run: python examples/catalog_tools.py --check
+      - uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: offline-release-candidate
+          name: offline-213-python-${{ matrix.python-version }}
           path: |
-            dist/*.whl
-            dist/*.tar.gz
-            dist/*.zip
-            dist/SHA256SUMS-*.txt
-            dist/candidate-identity.json
+            .tmp/ci-213/manifest.json
+            .tmp/ci-213/dist/*
+            .tmp/ci-213-evidence/
           if-no-files-found: error
-          retention-days: 7

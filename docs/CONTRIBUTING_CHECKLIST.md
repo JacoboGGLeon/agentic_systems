@@ -1,5 +1,7 @@
 # Contributing Checklist
 
+> **Referencia anterior a la API 2.1.3.** Se conserva como diseño, operación o evidencia histórica. Para implementar con la API vigente, consulta [la guía actual](API_213.md) y [tutorials](../tutorials/README.md). Sus ejemplos antiguos no son otra API soportada.
+
 The authoritative commands, live evidence rules and release ownership are in
 [Triple Quality Gate](QUALITY_GATES.md).
 

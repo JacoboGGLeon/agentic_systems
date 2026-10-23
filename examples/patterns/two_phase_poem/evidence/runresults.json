@@ -1,0 +1,404 @@
+{
+  "source": "examples/patterns/two_phase_poem",
+  "captured_boundaries": 2,
+  "root_results": 1,
+  "scope": "Observed SDK RunResult values; descendants retained inside parents. No fabricated results for configuration-only examples.",
+  "results": [
+    {
+      "run_result": {
+        "text": "",
+        "final": null,
+        "data": {
+          "total": 348,
+          "poem": "Evidence counts 348\nThe amount stays exact\nThis verse is a supplied fixture"
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "two_phases",
+          "kind": "system",
+          "backend": "native",
+          "skills": [],
+          "actions_observed": 2,
+          "input": {
+            "quantity": 3,
+            "unit_price": 116
+          }
+        },
+        "execution_id": "run-c1ecf66e554143c28a8ce4551bf7a047",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "",
+            "final": null,
+            "data": {
+              "total": 348,
+              "poem": "Evidence counts 348\nThe amount stays exact\nThis verse is a supplied fixture"
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 1,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "sequence",
+              "kind": "sequence",
+              "backend": "native"
+            },
+            "execution_id": "run-f49ac376282447c281ff84963f4d5969",
+            "parent_execution_id": "run-c1ecf66e554143c28a8ce4551bf7a047",
+            "children": [
+              {
+                "text": "",
+                "final": {
+                  "total": 348
+                },
+                "data": {
+                  "total": 348
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "requests": 1,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "evidence",
+                  "kind": "agent",
+                  "backend": "native",
+                  "skills": [],
+                  "step": "evidence"
+                },
+                "execution_id": "run-af57909082ce48db9aea56d22f08e9d0",
+                "parent_execution_id": "run-f49ac376282447c281ff84963f4d5969",
+                "children": [
+                  {
+                    "text": "",
+                    "final": {
+                      "total": 348
+                    },
+                    "data": {
+                      "total": 348
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "requests": 1,
+                      "inference_requests": 0,
+                      "tool_calls": 1
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "default",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "name": "total",
+                      "kind": "action"
+                    },
+                    "execution_id": "run-371c43da8bce458daf2bc98114b7bae7",
+                    "parent_execution_id": "run-af57909082ce48db9aea56d22f08e9d0",
+                    "children": [
+                      {
+                        "text": "",
+                        "final": {
+                          "total": 348
+                        },
+                        "data": {
+                          "total": 348
+                        },
+                        "ok": true,
+                        "messages": [],
+                        "raw_responses": [],
+                        "usage": {
+                          "requests": 1,
+                          "inference_requests": 0,
+                          "tool_calls": 1
+                        },
+                        "engine": "python-runtime",
+                        "model": "",
+                        "mode": "tool",
+                        "trace_schema_version": "agentic_systems.trace.v1",
+                        "validation": null,
+                        "errors": [],
+                        "meta": {
+                          "tool_name": "",
+                          "input": {
+                            "quantity": 3,
+                            "unit_price": 116
+                          },
+                          "tool_input": {
+                            "quantity": 3,
+                            "unit_price": 116
+                          }
+                        },
+                        "execution_id": "run-31b37bd08fbe43b0aba41cfdd8c19872",
+                        "parent_execution_id": "run-371c43da8bce458daf2bc98114b7bae7",
+                        "children": [],
+                        "tool_events": [
+                          {
+                            "id": "tool-bcb8c19db0f1459e9eb4e7bd88e000a4",
+                            "name": "exact_total",
+                            "input": {
+                              "quantity": 3,
+                              "unit_price": 116
+                            },
+                            "output": {
+                              "data": {
+                                "total": 348
+                              }
+                            },
+                            "ok": true,
+                            "error": null,
+                            "duration_ms": null,
+                            "meta": {}
+                          }
+                        ]
+                      }
+                    ],
+                    "tool_events": []
+                  }
+                ],
+                "tool_events": []
+              },
+              {
+                "text": "",
+                "final": null,
+                "data": {
+                  "total": 348,
+                  "poem": "Evidence counts 348\nThe amount stays exact\nThis verse is a supplied fixture"
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {},
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "saved_verse",
+                  "kind": "agent",
+                  "backend": "native",
+                  "skills": [],
+                  "step": "saved_verse"
+                },
+                "execution_id": "run-9f0892f32e0e4e04bc6e2dcadb0707b1",
+                "parent_execution_id": "run-f49ac376282447c281ff84963f4d5969",
+                "children": [
+                  {
+                    "text": "",
+                    "final": null,
+                    "data": {
+                      "total": 348,
+                      "poem": "Evidence counts 348\nThe amount stays exact\nThis verse is a supplied fixture"
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {},
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "default",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "name": "format",
+                      "kind": "action"
+                    },
+                    "execution_id": "run-c03ca9223fef4619a3b709e8cb8b6293",
+                    "parent_execution_id": "run-9f0892f32e0e4e04bc6e2dcadb0707b1",
+                    "children": [],
+                    "tool_events": []
+                  }
+                ],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "examples/patterns/two_phase_poem",
+        "question": "{\"quantity\": 3, \"unit_price\": 116}",
+        "goal": "",
+        "answer": "{\"total\": 348, \"poem\": \"Evidence counts 348\\nThe amount stays exact\\nThis verse is a supplied fixture\"}",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-c1ecf66e554143c28a8ce4551bf7a047",
+            "kind": "execution",
+            "title": "two_phases",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "total": 348,
+                "poem": "Evidence counts 348\nThe amount stays exact\nThis verse is a supplied fixture"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-f49ac376282447c281ff84963f4d5969",
+            "kind": "execution",
+            "title": "sequence",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "total": 348,
+                "poem": "Evidence counts 348\nThe amount stays exact\nThis verse is a supplied fixture"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-af57909082ce48db9aea56d22f08e9d0",
+            "kind": "execution",
+            "title": "evidence",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "total": 348
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-371c43da8bce458daf2bc98114b7bae7",
+            "kind": "execution",
+            "title": "total",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "total": 348
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-31b37bd08fbe43b0aba41cfdd8c19872",
+            "kind": "execution",
+            "title": "tool",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "total": 348
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "tool-bcb8c19db0f1459e9eb4e7bd88e000a4",
+            "kind": "tool",
+            "title": "exact_total",
+            "summary": "completed",
+            "source": "exact_total",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "total": 348
+              }
+            }
+          },
+          {
+            "step_id": "run-9f0892f32e0e4e04bc6e2dcadb0707b1",
+            "kind": "execution",
+            "title": "saved_verse",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "total": 348,
+                "poem": "Evidence counts 348\nThe amount stays exact\nThis verse is a supplied fixture"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-c03ca9223fef4619a3b709e8cb8b6293",
+            "kind": "execution",
+            "title": "format",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "total": 348,
+                "poem": "Evidence counts 348\nThe amount stays exact\nThis verse is a supplied fixture"
+              },
+              "errors": []
+            }
+          }
+        ],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    }
+  ]
+}

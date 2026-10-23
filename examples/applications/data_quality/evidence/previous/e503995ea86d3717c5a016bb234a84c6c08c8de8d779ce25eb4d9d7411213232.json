@@ -1,0 +1,266 @@
+{
+  "example": "data_quality",
+  "example_passed": true,
+  "source_sha256": "ec4fc6a6ef420c9797b0f40c2f6b39727a09c6e9bc4df311db045c201636ba3a",
+  "inference_requests": 0,
+  "scope": "offline contract or configuration; no model-generation/semantic/IAM/GPU certification",
+  "output": {
+    "text": "",
+    "final": {
+      "rows": 2,
+      "duplicate_ids": 1,
+      "missing_amounts": 1
+    },
+    "data": {
+      "rows": 2,
+      "duplicate_ids": 1,
+      "missing_amounts": 1
+    },
+    "ok": true,
+    "messages": [],
+    "raw_responses": [],
+    "usage": {
+      "requests": 1,
+      "inference_requests": 0,
+      "tool_calls": 1
+    },
+    "engine": "python-runtime",
+    "model": "",
+    "mode": "default",
+    "trace_schema_version": "agentic_systems.trace.v1",
+    "validation": null,
+    "errors": [],
+    "meta": {
+      "name": "application",
+      "kind": "system",
+      "backend": "native",
+      "skills": [],
+      "actions_observed": 1,
+      "input": {
+        "input": {
+          "rows": [
+            {
+              "id": 1,
+              "amount": 10
+            },
+            {
+              "id": 1,
+              "amount": null
+            }
+          ]
+        }
+      }
+    },
+    "execution_id": "run-14a5e542fa424e3480437a422f4a4329",
+    "parent_execution_id": null,
+    "children": [
+      {
+        "text": "",
+        "final": {
+          "rows": 2,
+          "duplicate_ids": 1,
+          "missing_amounts": 1
+        },
+        "data": {
+          "rows": 2,
+          "duplicate_ids": 1,
+          "missing_amounts": 1
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "sequence",
+          "kind": "sequence",
+          "backend": "native"
+        },
+        "execution_id": "run-162ca24cdf9c42e2a0bd3e5260a8a455",
+        "parent_execution_id": "run-14a5e542fa424e3480437a422f4a4329",
+        "children": [
+          {
+            "text": "",
+            "final": {
+              "rows": 2,
+              "duplicate_ids": 1,
+              "missing_amounts": 1
+            },
+            "data": {
+              "rows": 2,
+              "duplicate_ids": 1,
+              "missing_amounts": 1
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 1,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "worker",
+              "kind": "agent",
+              "backend": "native",
+              "skills": [
+                "profile_rows"
+              ],
+              "step": "worker"
+            },
+            "execution_id": "run-476b0418e70a4a40ab27f191dc24ce20",
+            "parent_execution_id": "run-162ca24cdf9c42e2a0bd3e5260a8a455",
+            "children": [
+              {
+                "text": "",
+                "final": {
+                  "rows": 2,
+                  "duplicate_ids": 1,
+                  "missing_amounts": 1
+                },
+                "data": {
+                  "rows": 2,
+                  "duplicate_ids": 1,
+                  "missing_amounts": 1
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "requests": 1,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "profile_rows",
+                  "kind": "action"
+                },
+                "execution_id": "run-a577c38b67a34a17afeff760517e6109",
+                "parent_execution_id": "run-476b0418e70a4a40ab27f191dc24ce20",
+                "children": [
+                  {
+                    "text": "",
+                    "final": {
+                      "rows": 2,
+                      "duplicate_ids": 1,
+                      "missing_amounts": 1
+                    },
+                    "data": {
+                      "rows": 2,
+                      "duplicate_ids": 1,
+                      "missing_amounts": 1
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "requests": 1,
+                      "inference_requests": 0,
+                      "tool_calls": 1
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "tool",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "tool_name": "",
+                      "input": {
+                        "input": {
+                          "rows": [
+                            {
+                              "id": 1,
+                              "amount": 10
+                            },
+                            {
+                              "id": 1,
+                              "amount": null
+                            }
+                          ]
+                        }
+                      },
+                      "tool_input": {
+                        "input": {
+                          "rows": [
+                            {
+                              "id": 1,
+                              "amount": 10
+                            },
+                            {
+                              "id": 1,
+                              "amount": null
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "execution_id": "run-8cae19ce329f4426a195e4bdb03a93ae",
+                    "parent_execution_id": "run-a577c38b67a34a17afeff760517e6109",
+                    "children": [],
+                    "tool_events": [
+                      {
+                        "id": "tool-f79a3bc82f374d46a1bcf94a76b83a6b",
+                        "name": "profile_rows",
+                        "input": {
+                          "input": {
+                            "rows": [
+                              {
+                                "id": 1,
+                                "amount": 10
+                              },
+                              {
+                                "id": 1,
+                                "amount": null
+                              }
+                            ]
+                          }
+                        },
+                        "output": {
+                          "data": {
+                            "rows": 2,
+                            "duplicate_ids": 1,
+                            "missing_amounts": 1
+                          }
+                        },
+                        "ok": true,
+                        "error": null,
+                        "duration_ms": null,
+                        "meta": {}
+                      }
+                    ]
+                  }
+                ],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      }
+    ],
+    "tool_events": []
+  }
+}

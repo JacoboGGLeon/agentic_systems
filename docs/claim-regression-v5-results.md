@@ -1,5 +1,7 @@
 # Claim review v5: explicit relation schemas
 
+> **Referencia anterior a la API 2.1.3.** Se conserva como diseño, operación o evidencia histórica. Para implementar con la API vigente, consulta [la guía actual](API_213.md) y [tutorials](../tutorials/README.md). Sus ejemplos antiguos no son otra API soportada.
+
 Application-only change: the same six agents and deterministic aggregation now
 use `record_support(all_assertions_supported, evidence_ids)` and
 `record_contradiction(any_assertion_contradicted, evidence_ids)` instead of an

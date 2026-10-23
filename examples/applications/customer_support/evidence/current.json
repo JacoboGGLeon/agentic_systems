@@ -1,0 +1,219 @@
+{
+  "example": "customer_support",
+  "example_passed": true,
+  "source_sha256": "d78dfc42d902c7d4afc89b3e5f3b3518d453f32a7f45aae428b08779e5a5143d",
+  "inference_requests": 0,
+  "scope": "offline contract or configuration; no model-generation/semantic/IAM/GPU certification",
+  "output": {
+    "text": "",
+    "final": {
+      "category": "refund",
+      "owner": "billing"
+    },
+    "data": {
+      "category": "refund",
+      "owner": "billing"
+    },
+    "ok": true,
+    "messages": [],
+    "raw_responses": [],
+    "usage": {
+      "requests": 1,
+      "inference_requests": 0,
+      "tool_calls": 1
+    },
+    "engine": "python-runtime",
+    "model": "",
+    "mode": "default",
+    "trace_schema_version": "agentic_systems.trace.v1",
+    "validation": null,
+    "errors": [],
+    "meta": {
+      "name": "application",
+      "kind": "system",
+      "backend": "native",
+      "skills": [],
+      "actions_observed": 1,
+      "input": {
+        "input": {
+          "message": "Please refund order A17"
+        }
+      }
+    },
+    "execution_id": "run-a910f5438a8f4d11ab9fabd7b77678fc",
+    "parent_execution_id": null,
+    "children": [
+      {
+        "text": "",
+        "final": {
+          "category": "refund",
+          "owner": "billing"
+        },
+        "data": {
+          "category": "refund",
+          "owner": "billing"
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "sequence",
+          "kind": "sequence",
+          "backend": "native"
+        },
+        "execution_id": "run-fa143957f4d14403b9f7bce768457b04",
+        "parent_execution_id": "run-a910f5438a8f4d11ab9fabd7b77678fc",
+        "children": [
+          {
+            "text": "",
+            "final": {
+              "category": "refund",
+              "owner": "billing"
+            },
+            "data": {
+              "category": "refund",
+              "owner": "billing"
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 1,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "worker",
+              "kind": "agent",
+              "backend": "native",
+              "skills": [
+                "classify_ticket"
+              ],
+              "step": "worker"
+            },
+            "execution_id": "run-f2074b466548493bbcca30806a359c9d",
+            "parent_execution_id": "run-fa143957f4d14403b9f7bce768457b04",
+            "children": [
+              {
+                "text": "",
+                "final": {
+                  "category": "refund",
+                  "owner": "billing"
+                },
+                "data": {
+                  "category": "refund",
+                  "owner": "billing"
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "requests": 1,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "classify_ticket",
+                  "kind": "action"
+                },
+                "execution_id": "run-9c3f7a433a8144e1bfd01ffbfe9eef84",
+                "parent_execution_id": "run-f2074b466548493bbcca30806a359c9d",
+                "children": [
+                  {
+                    "text": "",
+                    "final": {
+                      "category": "refund",
+                      "owner": "billing"
+                    },
+                    "data": {
+                      "category": "refund",
+                      "owner": "billing"
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "requests": 1,
+                      "inference_requests": 0,
+                      "tool_calls": 1
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "tool",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "tool_name": "",
+                      "input": {
+                        "input": {
+                          "message": "Please refund order A17"
+                        }
+                      },
+                      "tool_input": {
+                        "input": {
+                          "message": "Please refund order A17"
+                        }
+                      }
+                    },
+                    "execution_id": "run-988deba79fe84d13bc6ae0deb4da65b4",
+                    "parent_execution_id": "run-9c3f7a433a8144e1bfd01ffbfe9eef84",
+                    "children": [],
+                    "tool_events": [
+                      {
+                        "id": "tool-4000a13e6505405695af80070b6da9dc",
+                        "name": "classify_ticket",
+                        "input": {
+                          "input": {
+                            "message": "Please refund order A17"
+                          }
+                        },
+                        "output": {
+                          "data": {
+                            "category": "refund",
+                            "owner": "billing"
+                          }
+                        },
+                        "ok": true,
+                        "error": null,
+                        "duration_ms": null,
+                        "meta": {}
+                      }
+                    ]
+                  }
+                ],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      }
+    ],
+    "tool_events": []
+  }
+}

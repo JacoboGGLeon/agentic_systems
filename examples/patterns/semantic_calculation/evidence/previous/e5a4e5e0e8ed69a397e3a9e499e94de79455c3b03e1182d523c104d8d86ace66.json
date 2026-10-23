@@ -1,0 +1,250 @@
+{
+  "example": "semantic_calculation",
+  "example_passed": true,
+  "source_sha256": "63156bea4d1db5c7debfb5a85bf3b80908eddedf895e78c2d0bc298f2fc856d3",
+  "inference_requests": 0,
+  "scope": "offline contract or configuration; no model-generation/semantic/IAM/GPU certification",
+  "output": {
+    "text": "",
+    "final": {
+      "subtotal": 300,
+      "tax": 48,
+      "total": 348
+    },
+    "data": {
+      "subtotal": 300,
+      "tax": 48,
+      "total": 348
+    },
+    "ok": true,
+    "messages": [],
+    "raw_responses": [],
+    "usage": {
+      "requests": 1,
+      "inference_requests": 0,
+      "tool_calls": 1
+    },
+    "engine": "python-runtime",
+    "model": "",
+    "mode": "default",
+    "trace_schema_version": "agentic_systems.trace.v1",
+    "validation": null,
+    "errors": [],
+    "meta": {
+      "name": "application",
+      "kind": "system",
+      "backend": "native",
+      "skills": [],
+      "actions_observed": 1,
+      "input": {
+        "input": {
+          "items": [
+            {
+              "quantity": 3,
+              "unit_price": 100
+            }
+          ]
+        }
+      }
+    },
+    "execution_id": "run-872008edc58e4bf1b19c06cfcad3a7f7",
+    "parent_execution_id": null,
+    "children": [
+      {
+        "text": "",
+        "final": {
+          "subtotal": 300,
+          "tax": 48,
+          "total": 348
+        },
+        "data": {
+          "subtotal": 300,
+          "tax": 48,
+          "total": 348
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "sequence",
+          "kind": "sequence",
+          "backend": "native"
+        },
+        "execution_id": "run-e24a923e83be4acab6a74855fabdd2df",
+        "parent_execution_id": "run-872008edc58e4bf1b19c06cfcad3a7f7",
+        "children": [
+          {
+            "text": "",
+            "final": {
+              "subtotal": 300,
+              "tax": 48,
+              "total": 348
+            },
+            "data": {
+              "subtotal": 300,
+              "tax": 48,
+              "total": 348
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 1,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "worker",
+              "kind": "agent",
+              "backend": "native",
+              "skills": [
+                "calculate_invoice"
+              ],
+              "step": "worker"
+            },
+            "execution_id": "run-002492da34c745c4a9dabe16a834d242",
+            "parent_execution_id": "run-e24a923e83be4acab6a74855fabdd2df",
+            "children": [
+              {
+                "text": "",
+                "final": {
+                  "subtotal": 300,
+                  "tax": 48,
+                  "total": 348
+                },
+                "data": {
+                  "subtotal": 300,
+                  "tax": 48,
+                  "total": 348
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "requests": 1,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "calculate_invoice",
+                  "kind": "action"
+                },
+                "execution_id": "run-630492e14c9b4d1f8155a2efec368687",
+                "parent_execution_id": "run-002492da34c745c4a9dabe16a834d242",
+                "children": [
+                  {
+                    "text": "",
+                    "final": {
+                      "subtotal": 300,
+                      "tax": 48,
+                      "total": 348
+                    },
+                    "data": {
+                      "subtotal": 300,
+                      "tax": 48,
+                      "total": 348
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "requests": 1,
+                      "inference_requests": 0,
+                      "tool_calls": 1
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "tool",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "tool_name": "",
+                      "input": {
+                        "input": {
+                          "items": [
+                            {
+                              "quantity": 3,
+                              "unit_price": 100
+                            }
+                          ]
+                        }
+                      },
+                      "tool_input": {
+                        "input": {
+                          "items": [
+                            {
+                              "quantity": 3,
+                              "unit_price": 100
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "execution_id": "run-232ef02bd5f34e2f87315b685b9df5f1",
+                    "parent_execution_id": "run-630492e14c9b4d1f8155a2efec368687",
+                    "children": [],
+                    "tool_events": [
+                      {
+                        "id": "tool-c166f421af9242afb94600d3031a8566",
+                        "name": "calculate_invoice",
+                        "input": {
+                          "input": {
+                            "items": [
+                              {
+                                "quantity": 3,
+                                "unit_price": 100
+                              }
+                            ]
+                          }
+                        },
+                        "output": {
+                          "data": {
+                            "subtotal": 300,
+                            "tax": 48,
+                            "total": 348
+                          }
+                        },
+                        "ok": true,
+                        "error": null,
+                        "duration_ms": null,
+                        "meta": {}
+                      }
+                    ]
+                  }
+                ],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      }
+    ],
+    "tool_events": []
+  }
+}

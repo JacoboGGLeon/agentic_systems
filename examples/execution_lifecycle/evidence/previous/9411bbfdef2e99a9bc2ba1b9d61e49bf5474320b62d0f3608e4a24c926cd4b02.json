@@ -1,0 +1,271 @@
+{
+  "example": "execution_lifecycle",
+  "passed": true,
+  "source_sha256": "cecd46a34b4984a51678eb72693dec7f9b21de794e805f25fb46f4c77c6dabab",
+  "report": {
+    "input": {
+      "value": 3
+    },
+    "process": {
+      "name": "calculator",
+      "kind": "agent",
+      "backend": "native",
+      "native_type": null,
+      "children": [
+        {
+          "name": "sequence",
+          "kind": "sequence",
+          "backend": "native",
+          "native_type": null,
+          "children": [
+            {
+              "name": "increment",
+              "kind": "action",
+              "backend": "python",
+              "native_type": null,
+              "children": []
+            },
+            {
+              "name": "double",
+              "kind": "action",
+              "backend": "python",
+              "native_type": null,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    "output": {
+      "text": "",
+      "final": null,
+      "data": {
+        "value": 8
+      },
+      "ok": true,
+      "messages": [],
+      "raw_responses": [],
+      "usage": {},
+      "engine": "python-runtime",
+      "model": "",
+      "mode": "default",
+      "trace_schema_version": "agentic_systems.trace.v1",
+      "validation": null,
+      "errors": [],
+      "meta": {
+        "name": "calculator",
+        "kind": "agent",
+        "backend": "native",
+        "skills": [],
+        "actions_observed": 2,
+        "input": {
+          "value": 3
+        }
+      },
+      "execution_id": "run-f69128e4dc814a56a6413ec3d09019ce",
+      "parent_execution_id": null,
+      "children": [
+        {
+          "text": "",
+          "final": null,
+          "data": {
+            "value": 8
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {},
+          "engine": "python-runtime",
+          "model": "",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "sequence",
+            "kind": "sequence",
+            "backend": "native"
+          },
+          "execution_id": "run-68cf9a205bac4c36b8f61d65a8f86623",
+          "parent_execution_id": "run-f69128e4dc814a56a6413ec3d09019ce",
+          "children": [
+            {
+              "text": "",
+              "final": null,
+              "data": {
+                "value": 4
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {},
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "increment",
+                "kind": "action",
+                "step": "increment"
+              },
+              "execution_id": "run-86e3c5f04a2b4b1f9e16aed9aac04a6a",
+              "parent_execution_id": "run-68cf9a205bac4c36b8f61d65a8f86623",
+              "children": [],
+              "tool_events": []
+            },
+            {
+              "text": "",
+              "final": null,
+              "data": {
+                "value": 8
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {},
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "double",
+                "kind": "action",
+                "step": "double"
+              },
+              "execution_id": "run-fcc994d8434842848e4483d1c9cbd7fb",
+              "parent_execution_id": "run-68cf9a205bac4c36b8f61d65a8f86623",
+              "children": [],
+              "tool_events": []
+            }
+          ],
+          "tool_events": []
+        }
+      ],
+      "tool_events": []
+    },
+    "limit_failure": {
+      "text": "",
+      "final": null,
+      "data": {},
+      "ok": false,
+      "messages": [],
+      "raw_responses": [],
+      "usage": {},
+      "engine": "python-runtime",
+      "model": "",
+      "mode": "default",
+      "trace_schema_version": "agentic_systems.trace.v1",
+      "validation": null,
+      "errors": [
+        {
+          "code": "RuntimeError",
+          "message": "Shared action limit exceeded"
+        }
+      ],
+      "meta": {
+        "name": "calculator",
+        "kind": "agent",
+        "backend": "native",
+        "skills": [],
+        "actions_observed": 1,
+        "input": {
+          "value": 3
+        }
+      },
+      "execution_id": "run-2fd54cd3c7ca4cd6ab09cd1f2cd130ec",
+      "parent_execution_id": null,
+      "children": [
+        {
+          "text": "",
+          "final": null,
+          "data": {},
+          "ok": false,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {},
+          "engine": "python-runtime",
+          "model": "",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [
+            {
+              "code": "RuntimeError",
+              "message": "Shared action limit exceeded"
+            }
+          ],
+          "meta": {
+            "name": "sequence",
+            "kind": "sequence",
+            "backend": "native"
+          },
+          "execution_id": "run-ec51a35f50ff49e4b978223a1de37d57",
+          "parent_execution_id": "run-2fd54cd3c7ca4cd6ab09cd1f2cd130ec",
+          "children": [
+            {
+              "text": "",
+              "final": null,
+              "data": {
+                "value": 4
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {},
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "increment",
+                "kind": "action",
+                "step": "increment"
+              },
+              "execution_id": "run-db94f83790784be795ccfa533a83fa96",
+              "parent_execution_id": "run-ec51a35f50ff49e4b978223a1de37d57",
+              "children": [],
+              "tool_events": []
+            },
+            {
+              "text": "",
+              "final": null,
+              "data": {},
+              "ok": false,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {},
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [
+                {
+                  "code": "RuntimeError",
+                  "message": "Shared action limit exceeded"
+                }
+              ],
+              "meta": {
+                "name": "double",
+                "kind": "action",
+                "step": "double"
+              },
+              "execution_id": "run-f36f7b6321ab40848bd476e7122d382f",
+              "parent_execution_id": "run-ec51a35f50ff49e4b978223a1de37d57",
+              "children": [],
+              "tool_events": []
+            }
+          ],
+          "tool_events": []
+        }
+      ],
+      "tool_events": []
+    }
+  }
+}

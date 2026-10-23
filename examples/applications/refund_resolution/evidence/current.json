@@ -1,0 +1,242 @@
+{
+  "example": "refund_resolution",
+  "example_passed": true,
+  "source_sha256": "99ce34e1b27b91b46ec92388d4dbbfe50a226bd43b6a755a19f1b8ec17fbf450",
+  "inference_requests": 0,
+  "scope": "offline contract or configuration; no model-generation/semantic/IAM/GPU certification",
+  "output": {
+    "text": "",
+    "final": {
+      "order_id": "A17",
+      "decision": "approved",
+      "amount": 280
+    },
+    "data": {
+      "order_id": "A17",
+      "decision": "approved",
+      "amount": 280
+    },
+    "ok": true,
+    "messages": [],
+    "raw_responses": [],
+    "usage": {
+      "requests": 1,
+      "inference_requests": 0,
+      "tool_calls": 1
+    },
+    "engine": "python-runtime",
+    "model": "",
+    "mode": "default",
+    "trace_schema_version": "agentic_systems.trace.v1",
+    "validation": null,
+    "errors": [],
+    "meta": {
+      "name": "application",
+      "kind": "system",
+      "backend": "native",
+      "skills": [],
+      "actions_observed": 1,
+      "input": {
+        "input": {
+          "order_id": "A17",
+          "amount": 280,
+          "currency": "MXN",
+          "account_days": 90
+        }
+      }
+    },
+    "execution_id": "run-af478bf1d69f424eab6558eccfffc670",
+    "parent_execution_id": null,
+    "children": [
+      {
+        "text": "",
+        "final": {
+          "order_id": "A17",
+          "decision": "approved",
+          "amount": 280
+        },
+        "data": {
+          "order_id": "A17",
+          "decision": "approved",
+          "amount": 280
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "sequence",
+          "kind": "sequence",
+          "backend": "native"
+        },
+        "execution_id": "run-7e11feb172e14bfda59808107ff3323f",
+        "parent_execution_id": "run-af478bf1d69f424eab6558eccfffc670",
+        "children": [
+          {
+            "text": "",
+            "final": {
+              "order_id": "A17",
+              "decision": "approved",
+              "amount": 280
+            },
+            "data": {
+              "order_id": "A17",
+              "decision": "approved",
+              "amount": 280
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 1,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "worker",
+              "kind": "agent",
+              "backend": "native",
+              "skills": [
+                "refund_policy"
+              ],
+              "step": "worker"
+            },
+            "execution_id": "run-d94c56c5592c4d1586c2ab8436d5c89e",
+            "parent_execution_id": "run-7e11feb172e14bfda59808107ff3323f",
+            "children": [
+              {
+                "text": "",
+                "final": {
+                  "order_id": "A17",
+                  "decision": "approved",
+                  "amount": 280
+                },
+                "data": {
+                  "order_id": "A17",
+                  "decision": "approved",
+                  "amount": 280
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "requests": 1,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "refund_policy",
+                  "kind": "action"
+                },
+                "execution_id": "run-528546ea03584255aaa5499b9384a8f8",
+                "parent_execution_id": "run-d94c56c5592c4d1586c2ab8436d5c89e",
+                "children": [
+                  {
+                    "text": "",
+                    "final": {
+                      "order_id": "A17",
+                      "decision": "approved",
+                      "amount": 280
+                    },
+                    "data": {
+                      "order_id": "A17",
+                      "decision": "approved",
+                      "amount": 280
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "requests": 1,
+                      "inference_requests": 0,
+                      "tool_calls": 1
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "tool",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "tool_name": "",
+                      "input": {
+                        "input": {
+                          "order_id": "A17",
+                          "amount": 280,
+                          "currency": "MXN",
+                          "account_days": 90
+                        }
+                      },
+                      "tool_input": {
+                        "input": {
+                          "order_id": "A17",
+                          "amount": 280,
+                          "currency": "MXN",
+                          "account_days": 90
+                        }
+                      }
+                    },
+                    "execution_id": "run-2d17dd99902246eeb581c7040e44d897",
+                    "parent_execution_id": "run-528546ea03584255aaa5499b9384a8f8",
+                    "children": [],
+                    "tool_events": [
+                      {
+                        "id": "tool-56c6a3d056e54181aeb2e5ae6f839584",
+                        "name": "refund_policy",
+                        "input": {
+                          "input": {
+                            "order_id": "A17",
+                            "amount": 280,
+                            "currency": "MXN",
+                            "account_days": 90
+                          }
+                        },
+                        "output": {
+                          "data": {
+                            "order_id": "A17",
+                            "decision": "approved",
+                            "amount": 280
+                          }
+                        },
+                        "ok": true,
+                        "error": null,
+                        "duration_ms": null,
+                        "meta": {}
+                      }
+                    ]
+                  }
+                ],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      }
+    ],
+    "tool_events": []
+  }
+}

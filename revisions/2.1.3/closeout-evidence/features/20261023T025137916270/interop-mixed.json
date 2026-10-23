@@ -1,0 +1,1686 @@
+{
+  "name": "interop-mixed",
+  "passed": true,
+  "report": {
+    "assignments": {
+      "native": "python-runtime",
+      "langgraph": "openai-runtime",
+      "openai-agents": "ollama-runtime",
+      "strands": "bedrock-runtime"
+    },
+    "result": {
+      "text": "",
+      "final": null,
+      "data": {
+        "value": 46,
+        "trail": [
+          "native",
+          "langgraph",
+          "openai-agents",
+          "strands"
+        ],
+        "validated": true
+      },
+      "ok": true,
+      "messages": [],
+      "raw_responses": [],
+      "usage": {
+        "client_duration_ms": 4530.704,
+        "inference_requests": 6,
+        "tool_calls": 4,
+        "total_tokens": 1529,
+        "completion_tokens": 33,
+        "prompt_tokens": 340,
+        "input_tokens": 1391,
+        "output_tokens": 138,
+        "requests": 6,
+        "inputTokens": 672,
+        "outputTokens": 71,
+        "totalTokens": 743,
+        "service_latency_ms": 577
+      },
+      "engine": "python-runtime",
+      "model": "",
+      "mode": "default",
+      "trace_schema_version": "agentic_systems.trace.v1",
+      "validation": null,
+      "errors": [],
+      "meta": {
+        "name": "framework_interop",
+        "kind": "system",
+        "backend": "langgraph",
+        "skills": [],
+        "actions_observed": 6,
+        "input": {
+          "value": 42,
+          "trail": []
+        }
+      },
+      "execution_id": "run-fb95c68858064e148d1e55790410d479",
+      "parent_execution_id": null,
+      "children": [
+        {
+          "text": "",
+          "final": null,
+          "data": {
+            "value": 46,
+            "trail": [
+              "native",
+              "langgraph",
+              "openai-agents",
+              "strands"
+            ],
+            "validated": true
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {
+            "client_duration_ms": 4530.704,
+            "inference_requests": 6,
+            "tool_calls": 4,
+            "total_tokens": 1529,
+            "completion_tokens": 33,
+            "prompt_tokens": 340,
+            "input_tokens": 1391,
+            "output_tokens": 138,
+            "requests": 6,
+            "inputTokens": 672,
+            "outputTokens": 71,
+            "totalTokens": 743,
+            "service_latency_ms": 577
+          },
+          "engine": "python-runtime",
+          "model": "",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "graph",
+            "kind": "graph",
+            "backend": "langgraph"
+          },
+          "execution_id": "run-808474d2669c4801a830e8f7480a904f",
+          "parent_execution_id": "run-fb95c68858064e148d1e55790410d479",
+          "children": [
+            {
+              "text": "The value has been incremented to 46, and \"strands\" has been appended to the trail. Let me know if you need further assistance!",
+              "final": {
+                "text": "The value has been incremented to 46, and \"strands\" has been appended to the trail. Let me know if you need further assistance!"
+              },
+              "data": {
+                "value": 46,
+                "trail": [
+                  "native",
+                  "langgraph",
+                  "openai-agents",
+                  "strands"
+                ]
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {
+                "client_duration_ms": 4530.704,
+                "inference_requests": 6,
+                "tool_calls": 4,
+                "total_tokens": 1529,
+                "completion_tokens": 33,
+                "prompt_tokens": 340,
+                "input_tokens": 1391,
+                "output_tokens": 138,
+                "requests": 6,
+                "inputTokens": 672,
+                "outputTokens": 71,
+                "totalTokens": 743,
+                "service_latency_ms": 577
+              },
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "sequence",
+                "kind": "sequence",
+                "backend": "langgraph",
+                "graph_node": "work",
+                "next": "check"
+              },
+              "execution_id": "run-898bc55258d649b6a2982427698e432f",
+              "parent_execution_id": "run-808474d2669c4801a830e8f7480a904f",
+              "children": [
+                {
+                  "text": "mark_native -> {\"value\": 43, \"trail\": [\"native\"]}",
+                  "final": {
+                    "value": 43,
+                    "trail": [
+                      "native"
+                    ],
+                    "ok": true,
+                    "tool": "mark_native"
+                  },
+                  "data": {
+                    "value": 43,
+                    "trail": [
+                      "native"
+                    ]
+                  },
+                  "ok": true,
+                  "messages": [],
+                  "raw_responses": [],
+                  "usage": {
+                    "client_duration_ms": 1.127,
+                    "inference_requests": 0,
+                    "tool_calls": 1
+                  },
+                  "engine": "python-runtime",
+                  "model": "",
+                  "mode": "default",
+                  "trace_schema_version": "agentic_systems.trace.v1",
+                  "validation": null,
+                  "errors": [],
+                  "meta": {
+                    "name": "native_stage",
+                    "kind": "agent",
+                    "backend": "native",
+                    "skills": [],
+                    "step": "native_stage"
+                  },
+                  "execution_id": "run-8c1b3cbe9cc340e5aed5aae980c7b9d1",
+                  "parent_execution_id": "run-898bc55258d649b6a2982427698e432f",
+                  "children": [
+                    {
+                      "text": "mark_native -> {\"value\": 43, \"trail\": [\"native\"]}",
+                      "final": {
+                        "value": 43,
+                        "trail": [
+                          "native"
+                        ],
+                        "ok": true,
+                        "tool": "mark_native"
+                      },
+                      "data": {
+                        "value": 43,
+                        "trail": [
+                          "native"
+                        ]
+                      },
+                      "ok": true,
+                      "messages": [],
+                      "raw_responses": [],
+                      "usage": {
+                        "client_duration_ms": 1.127,
+                        "inference_requests": 0,
+                        "tool_calls": 1
+                      },
+                      "engine": "python-runtime",
+                      "model": "",
+                      "mode": "default",
+                      "trace_schema_version": "agentic_systems.trace.v1",
+                      "validation": null,
+                      "errors": [],
+                      "meta": {
+                        "name": "native_request",
+                        "kind": "action"
+                      },
+                      "execution_id": "run-9927820f852c4a30bf44bb1681a1e474",
+                      "parent_execution_id": "run-8c1b3cbe9cc340e5aed5aae980c7b9d1",
+                      "children": [
+                        {
+                          "text": "mark_native -> {\"value\": 43, \"trail\": [\"native\"]}",
+                          "final": {
+                            "value": 43,
+                            "trail": [
+                              "native"
+                            ],
+                            "ok": true,
+                            "tool": "mark_native"
+                          },
+                          "data": {
+                            "value": 43,
+                            "trail": [
+                              "native"
+                            ]
+                          },
+                          "ok": true,
+                          "messages": [],
+                          "raw_responses": [],
+                          "usage": {
+                            "client_duration_ms": 1.127,
+                            "inference_requests": 0,
+                            "tool_calls": 1
+                          },
+                          "engine": "python-runtime",
+                          "model": "python-runtime",
+                          "mode": "default",
+                          "trace_schema_version": "agentic_systems.trace.v1",
+                          "validation": null,
+                          "errors": [],
+                          "meta": {
+                            "name": "native",
+                            "kind": "agent",
+                            "backend": "native",
+                            "skills": [
+                              "native_evidence"
+                            ],
+                            "actions_observed": 1,
+                            "input": {
+                              "tool": "mark_native",
+                              "input": {
+                                "value": 42,
+                                "trail": []
+                              }
+                            }
+                          },
+                          "execution_id": "run-ca18b22a7102400e92d6784b986dd8c0",
+                          "parent_execution_id": "run-9927820f852c4a30bf44bb1681a1e474",
+                          "children": [
+                            {
+                              "text": "mark_native -> {\"value\": 43, \"trail\": [\"native\"]}",
+                              "final": {
+                                "value": 43,
+                                "trail": [
+                                  "native"
+                                ],
+                                "ok": true,
+                                "tool": "mark_native"
+                              },
+                              "data": {
+                                "value": 43,
+                                "trail": [
+                                  "native"
+                                ],
+                                "ok": true,
+                                "tool": "mark_native"
+                              },
+                              "ok": true,
+                              "messages": [],
+                              "raw_responses": [],
+                              "usage": {
+                                "client_duration_ms": 1.127,
+                                "inference_requests": 0,
+                                "tool_calls": 1
+                              },
+                              "engine": "python-runtime",
+                              "model": "python-runtime",
+                              "mode": "default",
+                              "trace_schema_version": "agentic_systems.trace.v1",
+                              "validation": null,
+                              "errors": [],
+                              "meta": {
+                                "name": "native",
+                                "kind": "model",
+                                "framework": "native"
+                              },
+                              "execution_id": "run-ab535fb1c655486fbcb0ee0df31114b6",
+                              "parent_execution_id": "run-ca18b22a7102400e92d6784b986dd8c0",
+                              "children": [
+                                {
+                                  "text": "mark_native -> {\"value\": 43, \"trail\": [\"native\"]}",
+                                  "final": {
+                                    "value": 43,
+                                    "trail": [
+                                      "native"
+                                    ],
+                                    "ok": true,
+                                    "tool": "mark_native"
+                                  },
+                                  "data": {
+                                    "value": 43,
+                                    "trail": [
+                                      "native"
+                                    ],
+                                    "ok": true,
+                                    "tool": "mark_native"
+                                  },
+                                  "ok": true,
+                                  "messages": [],
+                                  "raw_responses": [],
+                                  "usage": {
+                                    "scheduler": {
+                                      "attempts": 1,
+                                      "retries": 0,
+                                      "timed_out": false,
+                                      "latency_ms": 1.127
+                                    },
+                                    "client_duration_ms": 1.127,
+                                    "inference_requests": 0,
+                                    "tool_calls": 1
+                                  },
+                                  "engine": "python-runtime",
+                                  "model": "python-runtime",
+                                  "mode": "eval",
+                                  "trace_schema_version": "agentic_systems.trace.v1",
+                                  "validation": {
+                                    "ok": true,
+                                    "issues": []
+                                  },
+                                  "errors": [],
+                                  "meta": {
+                                    "source_result_type": "PythonRuntimeProvider",
+                                    "agent_name": "native",
+                                    "tool_count": 1,
+                                    "planned_tool_calls": 1,
+                                    "runtime": {
+                                      "provider": "python-runtime",
+                                      "model_id": "python-runtime",
+                                      "region_name": null,
+                                      "endpoint": null,
+                                      "metadata": {},
+                                      "provider_priority": [
+                                        "openai-runtime",
+                                        "bedrock-runtime",
+                                        "ollama-runtime"
+                                      ],
+                                      "allow_python_fallback": false,
+                                      "scheduler": {
+                                        "max_turns": 5,
+                                        "max_tool_calls": 3,
+                                        "timeout_s": 60,
+                                        "max_concurrency": 1,
+                                        "max_retries": 0,
+                                        "backoff_s": 0.0
+                                      }
+                                    },
+                                    "scheduler": {
+                                      "max_turns": 5,
+                                      "max_tool_calls": 3,
+                                      "timeout_s": 60,
+                                      "max_concurrency": 1,
+                                      "max_retries": 0,
+                                      "backoff_s": 0.0
+                                    },
+                                    "scheduler_execution": {
+                                      "scheduler": {
+                                        "max_turns": 5,
+                                        "max_tool_calls": 3,
+                                        "timeout_s": 60,
+                                        "max_concurrency": 1,
+                                        "max_retries": 0,
+                                        "backoff_s": 0.0
+                                      },
+                                      "attempts": 1,
+                                      "retries": 0,
+                                      "timed_out": false,
+                                      "latency_ms": 1.127
+                                    },
+                                    "framework": "native",
+                                    "framework_requested": "native",
+                                    "framework_adapter": "native",
+                                    "framework_config": {
+                                      "name": "native",
+                                      "agent_kwargs": {},
+                                      "run_kwargs": {}
+                                    },
+                                    "input": {
+                                      "tool": "mark_native",
+                                      "input": {
+                                        "value": 42,
+                                        "trail": []
+                                      }
+                                    },
+                                    "requested_engine": "python-runtime",
+                                    "runtime_engine": "python-runtime",
+                                    "execution_engine": "python-runtime"
+                                  },
+                                  "execution_id": "run-fadb448bbf7142548414e36407b98c12",
+                                  "parent_execution_id": "run-ab535fb1c655486fbcb0ee0df31114b6",
+                                  "children": [],
+                                  "tool_events": [
+                                    {
+                                      "id": "tool-4c2d337805db430fb724f9806d1b399e",
+                                      "name": "mark_native",
+                                      "input": {
+                                        "value": 42,
+                                        "trail": []
+                                      },
+                                      "output": {
+                                        "data": {
+                                          "value": 43,
+                                          "trail": [
+                                            "native"
+                                          ]
+                                        }
+                                      },
+                                      "ok": true,
+                                      "error": null,
+                                      "duration_ms": null,
+                                      "meta": {}
+                                    }
+                                  ]
+                                }
+                              ],
+                              "tool_events": []
+                            }
+                          ],
+                          "tool_events": []
+                        }
+                      ],
+                      "tool_events": []
+                    }
+                  ],
+                  "tool_events": []
+                },
+                {
+                  "text": "{\"value\":44,\"trail\":[\"native\",\"langgraph\"]}",
+                  "final": {
+                    "final_output": "{\"value\":44,\"trail\":[\"native\",\"langgraph\"]}"
+                  },
+                  "data": {
+                    "value": 44,
+                    "trail": [
+                      "native",
+                      "langgraph"
+                    ]
+                  },
+                  "ok": true,
+                  "messages": [],
+                  "raw_responses": [],
+                  "usage": {
+                    "total_tokens": 373,
+                    "completion_tokens": 33,
+                    "prompt_tokens": 340,
+                    "input_tokens": 340,
+                    "output_tokens": 33,
+                    "requests": 2,
+                    "client_duration_ms": 1564.6840000000002,
+                    "inference_requests": 2,
+                    "tool_calls": 1
+                  },
+                  "engine": "python-runtime",
+                  "model": "",
+                  "mode": "default",
+                  "trace_schema_version": "agentic_systems.trace.v1",
+                  "validation": null,
+                  "errors": [],
+                  "meta": {
+                    "name": "langgraph_stage",
+                    "kind": "agent",
+                    "backend": "native",
+                    "skills": [],
+                    "step": "langgraph_stage"
+                  },
+                  "execution_id": "run-0af8d43195f041a88bdda64a827816f5",
+                  "parent_execution_id": "run-898bc55258d649b6a2982427698e432f",
+                  "children": [
+                    {
+                      "text": "{\"value\":44,\"trail\":[\"native\",\"langgraph\"]}",
+                      "final": {
+                        "final_output": "{\"value\":44,\"trail\":[\"native\",\"langgraph\"]}"
+                      },
+                      "data": {
+                        "value": 44,
+                        "trail": [
+                          "native",
+                          "langgraph"
+                        ]
+                      },
+                      "ok": true,
+                      "messages": [],
+                      "raw_responses": [],
+                      "usage": {
+                        "total_tokens": 373,
+                        "completion_tokens": 33,
+                        "prompt_tokens": 340,
+                        "input_tokens": 340,
+                        "output_tokens": 33,
+                        "requests": 2,
+                        "client_duration_ms": 1564.6840000000002,
+                        "inference_requests": 2,
+                        "tool_calls": 1
+                      },
+                      "engine": "python-runtime",
+                      "model": "",
+                      "mode": "default",
+                      "trace_schema_version": "agentic_systems.trace.v1",
+                      "validation": null,
+                      "errors": [],
+                      "meta": {
+                        "name": "langgraph_request",
+                        "kind": "action"
+                      },
+                      "execution_id": "run-07af953e034c40bfbb75e266b81d3f47",
+                      "parent_execution_id": "run-0af8d43195f041a88bdda64a827816f5",
+                      "children": [
+                        {
+                          "text": "{\"value\":44,\"trail\":[\"native\",\"langgraph\"]}",
+                          "final": {
+                            "final_output": "{\"value\":44,\"trail\":[\"native\",\"langgraph\"]}"
+                          },
+                          "data": {
+                            "value": 44,
+                            "trail": [
+                              "native",
+                              "langgraph"
+                            ]
+                          },
+                          "ok": true,
+                          "messages": [],
+                          "raw_responses": [],
+                          "usage": {
+                            "total_tokens": 373,
+                            "completion_tokens": 33,
+                            "prompt_tokens": 340,
+                            "input_tokens": 340,
+                            "output_tokens": 33,
+                            "requests": 2,
+                            "client_duration_ms": 1564.6840000000002,
+                            "inference_requests": 2,
+                            "tool_calls": 1
+                          },
+                          "engine": "openai-runtime",
+                          "model": "gpt-4.1-mini",
+                          "mode": "default",
+                          "trace_schema_version": "agentic_systems.trace.v1",
+                          "validation": null,
+                          "errors": [],
+                          "meta": {
+                            "name": "langgraph",
+                            "kind": "agent",
+                            "backend": "native",
+                            "skills": [
+                              "langgraph_evidence"
+                            ],
+                            "actions_observed": 1,
+                            "input": "Call exactly mark_langgraph once with exactly these arguments, without calculating or editing any field:\n{\"value\": 43, \"trail\": [\"native\"]}"
+                          },
+                          "execution_id": "run-1c10704038044082802b0af1f6d45195",
+                          "parent_execution_id": "run-07af953e034c40bfbb75e266b81d3f47",
+                          "children": [
+                            {
+                              "text": "{\"value\":44,\"trail\":[\"native\",\"langgraph\"]}",
+                              "final": {
+                                "final_output": "{\"value\":44,\"trail\":[\"native\",\"langgraph\"]}"
+                              },
+                              "data": {
+                                "final_output": "{\"value\":44,\"trail\":[\"native\",\"langgraph\"]}"
+                              },
+                              "ok": true,
+                              "messages": [],
+                              "raw_responses": [],
+                              "usage": {
+                                "total_tokens": 373,
+                                "completion_tokens": 33,
+                                "prompt_tokens": 340,
+                                "input_tokens": 340,
+                                "output_tokens": 33,
+                                "requests": 2,
+                                "client_duration_ms": 1564.6840000000002,
+                                "inference_requests": 2,
+                                "tool_calls": 1
+                              },
+                              "engine": "openai-runtime",
+                              "model": "gpt-4.1-mini",
+                              "mode": "default",
+                              "trace_schema_version": "agentic_systems.trace.v1",
+                              "validation": null,
+                              "errors": [],
+                              "meta": {
+                                "name": "langgraph",
+                                "kind": "model",
+                                "framework": "langgraph"
+                              },
+                              "execution_id": "run-89c283af452b4be79e4f404a0306603c",
+                              "parent_execution_id": "run-1c10704038044082802b0af1f6d45195",
+                              "children": [
+                                {
+                                  "text": "{\"value\":44,\"trail\":[\"native\",\"langgraph\"]}",
+                                  "final": {
+                                    "final_output": "{\"value\":44,\"trail\":[\"native\",\"langgraph\"]}"
+                                  },
+                                  "data": {
+                                    "final_output": "{\"value\":44,\"trail\":[\"native\",\"langgraph\"]}"
+                                  },
+                                  "ok": true,
+                                  "messages": [],
+                                  "raw_responses": [],
+                                  "usage": {
+                                    "total_tokens": 373,
+                                    "completion_tokens": 33,
+                                    "prompt_tokens": 340,
+                                    "input_tokens": 340,
+                                    "output_tokens": 33,
+                                    "requests": 2,
+                                    "client_duration_ms": 1564.6840000000002,
+                                    "scheduler": {
+                                      "attempts": 1,
+                                      "retries": 0,
+                                      "timed_out": false,
+                                      "latency_ms": 2055.919
+                                    },
+                                    "inference_requests": 2,
+                                    "tool_calls": 1
+                                  },
+                                  "engine": "openai-runtime",
+                                  "model": "gpt-4.1-mini",
+                                  "mode": "eval",
+                                  "trace_schema_version": "agentic_systems.trace.v1",
+                                  "validation": {
+                                    "ok": true,
+                                    "issues": []
+                                  },
+                                  "errors": [],
+                                  "meta": {
+                                    "source_result_type": "openai.chat.completions",
+                                    "runtime_engine": "openai-runtime",
+                                    "execution_engine": "openai-runtime",
+                                    "contract_repairs": 0,
+                                    "rejected_tool_calls": [],
+                                    "framework": "langgraph",
+                                    "framework_requested": "langgraph",
+                                    "framework_adapter": "langgraph",
+                                    "runtime": {
+                                      "provider": "openai-runtime",
+                                      "model_id": "gpt-4.1-mini",
+                                      "region_name": null,
+                                      "endpoint": null,
+                                      "metadata": {},
+                                      "provider_priority": [
+                                        "openai-runtime",
+                                        "bedrock-runtime",
+                                        "ollama-runtime"
+                                      ],
+                                      "allow_python_fallback": false,
+                                      "scheduler": {
+                                        "max_turns": 5,
+                                        "max_tool_calls": 3,
+                                        "timeout_s": 60,
+                                        "max_concurrency": 1,
+                                        "max_retries": 0,
+                                        "backoff_s": 0.0
+                                      }
+                                    },
+                                    "scheduler": {
+                                      "max_turns": 5,
+                                      "max_tool_calls": 3,
+                                      "timeout_s": 60,
+                                      "max_concurrency": 1,
+                                      "max_retries": 0,
+                                      "backoff_s": 0.0
+                                    },
+                                    "scheduler_execution": {
+                                      "scheduler": {
+                                        "max_turns": 5,
+                                        "max_tool_calls": 3,
+                                        "timeout_s": 60,
+                                        "max_concurrency": 1,
+                                        "max_retries": 0,
+                                        "backoff_s": 0.0
+                                      },
+                                      "attempts": 1,
+                                      "retries": 0,
+                                      "timed_out": false,
+                                      "latency_ms": 2055.919
+                                    },
+                                    "framework_config": {
+                                      "name": "langgraph",
+                                      "agent_kwargs": {},
+                                      "run_kwargs": {}
+                                    },
+                                    "agent_name": "langgraph",
+                                    "input": "Call exactly mark_langgraph once with exactly these arguments, without calculating or editing any field:\n{\"value\": 43, \"trail\": [\"native\"]}",
+                                    "requested_engine": "openai-runtime"
+                                  },
+                                  "execution_id": "run-42615eed3cca402fa88b757bb8cd7576",
+                                  "parent_execution_id": "run-89c283af452b4be79e4f404a0306603c",
+                                  "children": [],
+                                  "tool_events": [
+                                    {
+                                      "id": "tool-72accc65c56e4506ad2b1abb6760c426",
+                                      "name": "mark_langgraph",
+                                      "input": {
+                                        "value": 43,
+                                        "trail": [
+                                          "native"
+                                        ]
+                                      },
+                                      "output": {
+                                        "value": 44,
+                                        "trail": [
+                                          "native",
+                                          "langgraph"
+                                        ]
+                                      },
+                                      "ok": true,
+                                      "error": null,
+                                      "duration_ms": null,
+                                      "meta": {
+                                        "tool_name": "mark_langgraph",
+                                        "serializer": "AgenticSystems.ToolEnvelope.v1",
+                                        "timestamp_utc": "2026-10-23T02:53:13.224309+00:00",
+                                        "validated_input": {
+                                          "value": 43,
+                                          "trail": [
+                                            "native"
+                                          ]
+                                        },
+                                        "provider_tool_call_id": "call_V4s5zF5P0npsRbJYyVYRdDY1"
+                                      }
+                                    }
+                                  ]
+                                }
+                              ],
+                              "tool_events": []
+                            }
+                          ],
+                          "tool_events": []
+                        }
+                      ],
+                      "tool_events": []
+                    }
+                  ],
+                  "tool_events": []
+                },
+                {
+                  "text": "OK.",
+                  "final": {
+                    "text": "OK."
+                  },
+                  "data": {
+                    "value": 45,
+                    "trail": [
+                      "native",
+                      "langgraph",
+                      "openai-agents"
+                    ]
+                  },
+                  "ok": true,
+                  "messages": [],
+                  "raw_responses": [],
+                  "usage": {
+                    "requests": 2,
+                    "input_tokens": 379,
+                    "output_tokens": 34,
+                    "total_tokens": 413,
+                    "client_duration_ms": 1582.714,
+                    "inference_requests": 2,
+                    "tool_calls": 1
+                  },
+                  "engine": "python-runtime",
+                  "model": "",
+                  "mode": "default",
+                  "trace_schema_version": "agentic_systems.trace.v1",
+                  "validation": null,
+                  "errors": [],
+                  "meta": {
+                    "name": "openai-agents_stage",
+                    "kind": "agent",
+                    "backend": "native",
+                    "skills": [],
+                    "step": "openai-agents_stage"
+                  },
+                  "execution_id": "run-0890eba19287405cb20a33a401c2f2d3",
+                  "parent_execution_id": "run-898bc55258d649b6a2982427698e432f",
+                  "children": [
+                    {
+                      "text": "OK.",
+                      "final": {
+                        "text": "OK."
+                      },
+                      "data": {
+                        "value": 45,
+                        "trail": [
+                          "native",
+                          "langgraph",
+                          "openai-agents"
+                        ]
+                      },
+                      "ok": true,
+                      "messages": [],
+                      "raw_responses": [],
+                      "usage": {
+                        "requests": 2,
+                        "input_tokens": 379,
+                        "output_tokens": 34,
+                        "total_tokens": 413,
+                        "client_duration_ms": 1582.714,
+                        "inference_requests": 2,
+                        "tool_calls": 1
+                      },
+                      "engine": "python-runtime",
+                      "model": "",
+                      "mode": "default",
+                      "trace_schema_version": "agentic_systems.trace.v1",
+                      "validation": null,
+                      "errors": [],
+                      "meta": {
+                        "name": "openai-agents_request",
+                        "kind": "action"
+                      },
+                      "execution_id": "run-e55e4f80a00b4661bd9c209b72e4b77a",
+                      "parent_execution_id": "run-0890eba19287405cb20a33a401c2f2d3",
+                      "children": [
+                        {
+                          "text": "OK.",
+                          "final": {
+                            "text": "OK."
+                          },
+                          "data": {
+                            "value": 45,
+                            "trail": [
+                              "native",
+                              "langgraph",
+                              "openai-agents"
+                            ]
+                          },
+                          "ok": true,
+                          "messages": [],
+                          "raw_responses": [],
+                          "usage": {
+                            "requests": 2,
+                            "input_tokens": 379,
+                            "output_tokens": 34,
+                            "total_tokens": 413,
+                            "client_duration_ms": 1582.714,
+                            "inference_requests": 2,
+                            "tool_calls": 1
+                          },
+                          "engine": "ollama-runtime",
+                          "model": "gemma4:31b-cloud",
+                          "mode": "default",
+                          "trace_schema_version": "agentic_systems.trace.v1",
+                          "validation": null,
+                          "errors": [],
+                          "meta": {
+                            "name": "openai-agents",
+                            "kind": "agent",
+                            "backend": "native",
+                            "skills": [
+                              "openai-agents_evidence"
+                            ],
+                            "actions_observed": 1,
+                            "input": "Call exactly mark_openai_agents once with exactly these arguments, without calculating or editing any field:\n{\"value\": 44, \"trail\": [\"native\", \"langgraph\"]}"
+                          },
+                          "execution_id": "run-8a5522b514b94adba596cda939b7dabb",
+                          "parent_execution_id": "run-e55e4f80a00b4661bd9c209b72e4b77a",
+                          "children": [
+                            {
+                              "text": "OK.",
+                              "final": {
+                                "text": "OK."
+                              },
+                              "data": {
+                                "text": "OK."
+                              },
+                              "ok": true,
+                              "messages": [],
+                              "raw_responses": [],
+                              "usage": {
+                                "requests": 2,
+                                "input_tokens": 379,
+                                "output_tokens": 34,
+                                "total_tokens": 413,
+                                "client_duration_ms": 1582.714,
+                                "inference_requests": 2,
+                                "tool_calls": 1
+                              },
+                              "engine": "ollama-runtime",
+                              "model": "gemma4:31b-cloud",
+                              "mode": "default",
+                              "trace_schema_version": "agentic_systems.trace.v1",
+                              "validation": null,
+                              "errors": [],
+                              "meta": {
+                                "name": "openai-agents",
+                                "kind": "model",
+                                "framework": "openai-agents"
+                              },
+                              "execution_id": "run-e0be1dcb8a53402296b376515ed019b7",
+                              "parent_execution_id": "run-8a5522b514b94adba596cda939b7dabb",
+                              "children": [
+                                {
+                                  "text": "OK.",
+                                  "final": {
+                                    "text": "OK."
+                                  },
+                                  "data": {
+                                    "text": "OK."
+                                  },
+                                  "ok": true,
+                                  "messages": [
+                                    {
+                                      "content": "Call exactly mark_openai_agents once with exactly these arguments, without calculating or editing any field:\n{\"value\": 44, \"trail\": [\"native\", \"langgraph\"]}",
+                                      "role": "user"
+                                    },
+                                    {
+                                      "arguments": "{\"trail\":[\"native\",\"langgraph\"],\"value\":44}",
+                                      "call_id": "call_l5binogk",
+                                      "name": "mark_openai_agents",
+                                      "type": "function_call",
+                                      "id": "__fake_id__",
+                                      "provider_data": {
+                                        "model": "gemma4:31b-cloud",
+                                        "response_id": "chatcmpl-489"
+                                      }
+                                    },
+                                    {
+                                      "call_id": "call_l5binogk",
+                                      "output": "{'value': 45, 'trail': ['native', 'langgraph', 'openai-agents']}",
+                                      "type": "function_call_output"
+                                    },
+                                    {
+                                      "id": "__fake_id__",
+                                      "content": [
+                                        {
+                                          "annotations": [],
+                                          "text": "OK.",
+                                          "type": "output_text",
+                                          "logprobs": []
+                                        }
+                                      ],
+                                      "role": "assistant",
+                                      "status": "completed",
+                                      "type": "message",
+                                      "provider_data": {
+                                        "model": "gemma4:31b-cloud",
+                                        "response_id": "chatcmpl-353"
+                                      }
+                                    }
+                                  ],
+                                  "raw_responses": [
+                                    {
+                                      "output": [
+                                        {
+                                          "arguments": "{\"trail\":[\"native\",\"langgraph\"],\"value\":44}",
+                                          "call_id": "call_l5binogk",
+                                          "name": "mark_openai_agents",
+                                          "type": "function_call",
+                                          "id": "__fake_id__",
+                                          "caller": null,
+                                          "namespace": null,
+                                          "status": null,
+                                          "provider_data": {
+                                            "model": "gemma4:31b-cloud",
+                                            "response_id": "chatcmpl-489"
+                                          }
+                                        }
+                                      ],
+                                      "usage": {
+                                        "requests": 1,
+                                        "input_tokens": 160,
+                                        "input_tokens_details": {
+                                          "cache_write_tokens": 0,
+                                          "cached_tokens": 0
+                                        },
+                                        "output_tokens": 27,
+                                        "output_tokens_details": {
+                                          "reasoning_tokens": 0
+                                        },
+                                        "total_tokens": 187,
+                                        "request_usage_entries": []
+                                      },
+                                      "response_id": null,
+                                      "request_id": null
+                                    },
+                                    {
+                                      "output": [
+                                        {
+                                          "id": "__fake_id__",
+                                          "content": [
+                                            {
+                                              "annotations": [],
+                                              "text": "OK.",
+                                              "type": "output_text",
+                                              "logprobs": []
+                                            }
+                                          ],
+                                          "role": "assistant",
+                                          "status": "completed",
+                                          "type": "message",
+                                          "phase": null,
+                                          "provider_data": {
+                                            "model": "gemma4:31b-cloud",
+                                            "response_id": "chatcmpl-353"
+                                          }
+                                        }
+                                      ],
+                                      "usage": {
+                                        "requests": 1,
+                                        "input_tokens": 219,
+                                        "input_tokens_details": {
+                                          "cache_write_tokens": 0,
+                                          "cached_tokens": 128
+                                        },
+                                        "output_tokens": 7,
+                                        "output_tokens_details": {
+                                          "reasoning_tokens": 0
+                                        },
+                                        "total_tokens": 226,
+                                        "request_usage_entries": []
+                                      },
+                                      "response_id": null,
+                                      "request_id": null
+                                    }
+                                  ],
+                                  "usage": {
+                                    "requests": 2,
+                                    "input_tokens": 379,
+                                    "input_tokens_details": {
+                                      "cache_write_tokens": 0,
+                                      "cached_tokens": 128
+                                    },
+                                    "output_tokens": 34,
+                                    "output_tokens_details": {
+                                      "reasoning_tokens": 0
+                                    },
+                                    "total_tokens": 413,
+                                    "request_usage_entries": [
+                                      {
+                                        "input_tokens": 160,
+                                        "output_tokens": 27,
+                                        "total_tokens": 187,
+                                        "input_tokens_details": {
+                                          "cache_write_tokens": 0,
+                                          "cached_tokens": 0
+                                        },
+                                        "output_tokens_details": {
+                                          "reasoning_tokens": 0
+                                        }
+                                      },
+                                      {
+                                        "input_tokens": 219,
+                                        "output_tokens": 7,
+                                        "total_tokens": 226,
+                                        "input_tokens_details": {
+                                          "cache_write_tokens": 0,
+                                          "cached_tokens": 128
+                                        },
+                                        "output_tokens_details": {
+                                          "reasoning_tokens": 0
+                                        }
+                                      }
+                                    ],
+                                    "scheduler": {
+                                      "attempts": 1,
+                                      "retries": 0,
+                                      "timed_out": false,
+                                      "latency_ms": 1582.714
+                                    },
+                                    "client_duration_ms": 1582.714,
+                                    "inference_requests": 2,
+                                    "tool_calls": 1
+                                  },
+                                  "engine": "ollama-runtime",
+                                  "model": "gemma4:31b-cloud",
+                                  "mode": "eval",
+                                  "trace_schema_version": "agentic_systems.trace.v1",
+                                  "validation": {
+                                    "ok": true,
+                                    "issues": []
+                                  },
+                                  "errors": [],
+                                  "meta": {
+                                    "source_result_type": "RunResult",
+                                    "framework_adapter": "openai-agents",
+                                    "input": "Call exactly mark_openai_agents once with exactly these arguments, without calculating or editing any field:\n{\"value\": 44, \"trail\": [\"native\", \"langgraph\"]}",
+                                    "rejected_tool_calls": [],
+                                    "runtime": {
+                                      "provider": "ollama-runtime",
+                                      "model_id": "gemma4:31b-cloud",
+                                      "region_name": null,
+                                      "endpoint": "https://ollama.com/v1",
+                                      "metadata": {},
+                                      "provider_priority": [
+                                        "openai-runtime",
+                                        "bedrock-runtime",
+                                        "ollama-runtime"
+                                      ],
+                                      "allow_python_fallback": false,
+                                      "scheduler": {
+                                        "max_turns": 5,
+                                        "max_tool_calls": 3,
+                                        "timeout_s": 60,
+                                        "max_concurrency": 1,
+                                        "max_retries": 0,
+                                        "backoff_s": 0.0
+                                      }
+                                    },
+                                    "scheduler": {
+                                      "max_turns": 5,
+                                      "max_tool_calls": 3,
+                                      "timeout_s": 60,
+                                      "max_concurrency": 1,
+                                      "max_retries": 0,
+                                      "backoff_s": 0.0
+                                    },
+                                    "scheduler_execution": {
+                                      "scheduler": {
+                                        "max_turns": 5,
+                                        "max_tool_calls": 3,
+                                        "timeout_s": 60,
+                                        "max_concurrency": 1,
+                                        "max_retries": 0,
+                                        "backoff_s": 0.0
+                                      },
+                                      "attempts": 1,
+                                      "retries": 0,
+                                      "timed_out": false,
+                                      "latency_ms": 1582.714
+                                    },
+                                    "framework": "openai-agents",
+                                    "framework_requested": "openai-agents",
+                                    "framework_config": {
+                                      "name": "openai-agents",
+                                      "agent_kwargs": {},
+                                      "run_kwargs": {}
+                                    },
+                                    "agent_name": "openai-agents",
+                                    "requested_engine": "ollama-runtime",
+                                    "runtime_engine": "ollama-runtime",
+                                    "execution_engine": "ollama-runtime"
+                                  },
+                                  "execution_id": "run-c73c52d696a546b2a5783e258a212d31",
+                                  "parent_execution_id": "run-e0be1dcb8a53402296b376515ed019b7",
+                                  "children": [],
+                                  "tool_events": [
+                                    {
+                                      "id": "call_l5binogk",
+                                      "name": "mark_openai_agents",
+                                      "input": {
+                                        "trail": [
+                                          "native",
+                                          "langgraph"
+                                        ],
+                                        "value": 44
+                                      },
+                                      "output": {
+                                        "data": {
+                                          "value": 45,
+                                          "trail": [
+                                            "native",
+                                            "langgraph",
+                                            "openai-agents"
+                                          ]
+                                        }
+                                      },
+                                      "ok": true,
+                                      "error": null,
+                                      "duration_ms": null,
+                                      "meta": {
+                                        "source": "openai-agents"
+                                      }
+                                    }
+                                  ]
+                                }
+                              ],
+                              "tool_events": []
+                            }
+                          ],
+                          "tool_events": []
+                        }
+                      ],
+                      "tool_events": []
+                    }
+                  ],
+                  "tool_events": []
+                },
+                {
+                  "text": "The value has been incremented to 46, and \"strands\" has been appended to the trail. Let me know if you need further assistance!",
+                  "final": {
+                    "text": "The value has been incremented to 46, and \"strands\" has been appended to the trail. Let me know if you need further assistance!"
+                  },
+                  "data": {
+                    "value": 46,
+                    "trail": [
+                      "native",
+                      "langgraph",
+                      "openai-agents",
+                      "strands"
+                    ]
+                  },
+                  "ok": true,
+                  "messages": [],
+                  "raw_responses": [],
+                  "usage": {
+                    "inputTokens": 672,
+                    "outputTokens": 71,
+                    "totalTokens": 743,
+                    "input_tokens": 672,
+                    "output_tokens": 71,
+                    "total_tokens": 743,
+                    "service_latency_ms": 577,
+                    "client_duration_ms": 1382.179,
+                    "requests": 2,
+                    "inference_requests": 2,
+                    "tool_calls": 1
+                  },
+                  "engine": "python-runtime",
+                  "model": "",
+                  "mode": "default",
+                  "trace_schema_version": "agentic_systems.trace.v1",
+                  "validation": null,
+                  "errors": [],
+                  "meta": {
+                    "name": "strands_stage",
+                    "kind": "agent",
+                    "backend": "native",
+                    "skills": [],
+                    "step": "strands_stage"
+                  },
+                  "execution_id": "run-36eee78b3abb4a89a1b7e02ddb45577c",
+                  "parent_execution_id": "run-898bc55258d649b6a2982427698e432f",
+                  "children": [
+                    {
+                      "text": "The value has been incremented to 46, and \"strands\" has been appended to the trail. Let me know if you need further assistance!",
+                      "final": {
+                        "text": "The value has been incremented to 46, and \"strands\" has been appended to the trail. Let me know if you need further assistance!"
+                      },
+                      "data": {
+                        "value": 46,
+                        "trail": [
+                          "native",
+                          "langgraph",
+                          "openai-agents",
+                          "strands"
+                        ]
+                      },
+                      "ok": true,
+                      "messages": [],
+                      "raw_responses": [],
+                      "usage": {
+                        "inputTokens": 672,
+                        "outputTokens": 71,
+                        "totalTokens": 743,
+                        "input_tokens": 672,
+                        "output_tokens": 71,
+                        "total_tokens": 743,
+                        "service_latency_ms": 577,
+                        "client_duration_ms": 1382.179,
+                        "requests": 2,
+                        "inference_requests": 2,
+                        "tool_calls": 1
+                      },
+                      "engine": "python-runtime",
+                      "model": "",
+                      "mode": "default",
+                      "trace_schema_version": "agentic_systems.trace.v1",
+                      "validation": null,
+                      "errors": [],
+                      "meta": {
+                        "name": "strands_request",
+                        "kind": "action"
+                      },
+                      "execution_id": "run-14ce3ed834bd4bb9b0eef032264f6c5e",
+                      "parent_execution_id": "run-36eee78b3abb4a89a1b7e02ddb45577c",
+                      "children": [
+                        {
+                          "text": "The value has been incremented to 46, and \"strands\" has been appended to the trail. Let me know if you need further assistance!",
+                          "final": {
+                            "text": "The value has been incremented to 46, and \"strands\" has been appended to the trail. Let me know if you need further assistance!"
+                          },
+                          "data": {
+                            "value": 46,
+                            "trail": [
+                              "native",
+                              "langgraph",
+                              "openai-agents",
+                              "strands"
+                            ]
+                          },
+                          "ok": true,
+                          "messages": [],
+                          "raw_responses": [],
+                          "usage": {
+                            "inputTokens": 672,
+                            "outputTokens": 71,
+                            "totalTokens": 743,
+                            "input_tokens": 672,
+                            "output_tokens": 71,
+                            "total_tokens": 743,
+                            "service_latency_ms": 577,
+                            "client_duration_ms": 1382.179,
+                            "requests": 2,
+                            "inference_requests": 2,
+                            "tool_calls": 1
+                          },
+                          "engine": "bedrock-runtime",
+                          "model": "qwen.qwen3-32b-v1:0",
+                          "mode": "default",
+                          "trace_schema_version": "agentic_systems.trace.v1",
+                          "validation": null,
+                          "errors": [],
+                          "meta": {
+                            "name": "strands",
+                            "kind": "agent",
+                            "backend": "native",
+                            "skills": [
+                              "strands_evidence"
+                            ],
+                            "actions_observed": 1,
+                            "input": "Call exactly mark_strands once with exactly these arguments, without calculating or editing any field:\n{\"value\": 45, \"trail\": [\"native\", \"langgraph\", \"openai-agents\"]}"
+                          },
+                          "execution_id": "run-1d45a64e6e814861b2a56a41ea7523e2",
+                          "parent_execution_id": "run-14ce3ed834bd4bb9b0eef032264f6c5e",
+                          "children": [
+                            {
+                              "text": "The value has been incremented to 46, and \"strands\" has been appended to the trail. Let me know if you need further assistance!",
+                              "final": {
+                                "text": "The value has been incremented to 46, and \"strands\" has been appended to the trail. Let me know if you need further assistance!"
+                              },
+                              "data": {
+                                "text": "The value has been incremented to 46, and \"strands\" has been appended to the trail. Let me know if you need further assistance!\n"
+                              },
+                              "ok": true,
+                              "messages": [],
+                              "raw_responses": [],
+                              "usage": {
+                                "inputTokens": 672,
+                                "outputTokens": 71,
+                                "totalTokens": 743,
+                                "input_tokens": 672,
+                                "output_tokens": 71,
+                                "total_tokens": 743,
+                                "service_latency_ms": 577,
+                                "client_duration_ms": 1382.179,
+                                "requests": 2,
+                                "inference_requests": 2,
+                                "tool_calls": 1
+                              },
+                              "engine": "bedrock-runtime",
+                              "model": "qwen.qwen3-32b-v1:0",
+                              "mode": "default",
+                              "trace_schema_version": "agentic_systems.trace.v1",
+                              "validation": null,
+                              "errors": [],
+                              "meta": {
+                                "name": "strands",
+                                "kind": "model",
+                                "framework": "strands"
+                              },
+                              "execution_id": "run-c75e55daa3c44807ab3a705bc76f54ea",
+                              "parent_execution_id": "run-1d45a64e6e814861b2a56a41ea7523e2",
+                              "children": [
+                                {
+                                  "text": "The value has been incremented to 46, and \"strands\" has been appended to the trail. Let me know if you need further assistance!",
+                                  "final": {
+                                    "text": "The value has been incremented to 46, and \"strands\" has been appended to the trail. Let me know if you need further assistance!"
+                                  },
+                                  "data": {
+                                    "text": "The value has been incremented to 46, and \"strands\" has been appended to the trail. Let me know if you need further assistance!\n"
+                                  },
+                                  "ok": true,
+                                  "messages": [
+                                    {
+                                      "role": "user",
+                                      "content": [
+                                        {
+                                          "text": "Call exactly mark_strands once with exactly these arguments, without calculating or editing any field:\n{\"value\": 45, \"trail\": [\"native\", \"langgraph\", \"openai-agents\"]}"
+                                        }
+                                      ],
+                                      "tracking_id": "62ec63bd-5ceb-4286-8d5b-c4930e4bfb2e"
+                                    },
+                                    {
+                                      "role": "assistant",
+                                      "content": [
+                                        {
+                                          "toolUse": {
+                                            "toolUseId": "tooluse_FSlSVXnke3TcZpRorn0hI8",
+                                            "name": "mark_strands",
+                                            "input": {
+                                              "value": 45,
+                                              "trail": [
+                                                "native",
+                                                "langgraph",
+                                                "openai-agents"
+                                              ]
+                                            }
+                                          }
+                                        }
+                                      ],
+                                      "metadata": {
+                                        "usage": {
+                                          "inputTokens": 297,
+                                          "outputTokens": 39,
+                                          "totalTokens": 336
+                                        },
+                                        "metrics": {
+                                          "latencyMs": 263,
+                                          "timeToFirstByteMs": 1000
+                                        }
+                                      },
+                                      "tracking_id": "7e5006cb-c1c9-4f4d-98d5-d1a04f88a987"
+                                    },
+                                    {
+                                      "role": "user",
+                                      "content": [
+                                        {
+                                          "toolResult": {
+                                            "toolUseId": "tooluse_FSlSVXnke3TcZpRorn0hI8",
+                                            "status": "success",
+                                            "content": [
+                                              {
+                                                "text": "{\"value\": 46, \"trail\": [\"native\", \"langgraph\", \"openai-agents\", \"strands\"]}"
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ],
+                                      "tracking_id": "22dc6d89-f112-49d6-9f7f-79d564ac0658"
+                                    },
+                                    {
+                                      "role": "assistant",
+                                      "content": [
+                                        {
+                                          "text": "The value has been incremented to 46, and \"strands\" has been appended to the trail. Let me know if you need further assistance!"
+                                        }
+                                      ],
+                                      "metadata": {
+                                        "usage": {
+                                          "inputTokens": 375,
+                                          "outputTokens": 32,
+                                          "totalTokens": 407
+                                        },
+                                        "metrics": {
+                                          "latencyMs": 314,
+                                          "timeToFirstByteMs": 378
+                                        }
+                                      },
+                                      "tracking_id": "478d7430-a184-4e46-87f3-099e6bb8a2f9"
+                                    }
+                                  ],
+                                  "raw_responses": [
+                                    {
+                                      "role": "assistant",
+                                      "content": [
+                                        {
+                                          "text": "The value has been incremented to 46, and \"strands\" has been appended to the trail. Let me know if you need further assistance!"
+                                        }
+                                      ],
+                                      "metadata": {
+                                        "usage": {
+                                          "inputTokens": 375,
+                                          "outputTokens": 32,
+                                          "totalTokens": 407
+                                        },
+                                        "metrics": {
+                                          "latencyMs": 314,
+                                          "timeToFirstByteMs": 378
+                                        }
+                                      },
+                                      "tracking_id": "478d7430-a184-4e46-87f3-099e6bb8a2f9"
+                                    }
+                                  ],
+                                  "usage": {
+                                    "inputTokens": 672,
+                                    "outputTokens": 71,
+                                    "totalTokens": 743,
+                                    "input_tokens": 672,
+                                    "output_tokens": 71,
+                                    "total_tokens": 743,
+                                    "service_latency_ms": 577,
+                                    "client_duration_ms": 1382.179,
+                                    "requests": 2,
+                                    "scheduler": {
+                                      "attempts": 1,
+                                      "retries": 0,
+                                      "timed_out": false,
+                                      "latency_ms": 1396.91
+                                    },
+                                    "inference_requests": 2,
+                                    "tool_calls": 1
+                                  },
+                                  "engine": "bedrock-runtime",
+                                  "model": "qwen.qwen3-32b-v1:0",
+                                  "mode": "eval",
+                                  "trace_schema_version": "agentic_systems.trace.v1",
+                                  "validation": {
+                                    "ok": true,
+                                    "issues": []
+                                  },
+                                  "errors": [],
+                                  "meta": {
+                                    "source_result_type": "AgentResult",
+                                    "framework_adapter": "strands",
+                                    "input": "Call exactly mark_strands once with exactly these arguments, without calculating or editing any field:\n{\"value\": 45, \"trail\": [\"native\", \"langgraph\", \"openai-agents\"]}",
+                                    "stop_reason": "end_turn",
+                                    "rejected_tool_calls": [],
+                                    "output_materialization": [],
+                                    "runtime": {
+                                      "provider": "bedrock-runtime",
+                                      "model_id": "qwen.qwen3-32b-v1:0",
+                                      "region_name": "us-east-2",
+                                      "endpoint": null,
+                                      "metadata": {},
+                                      "provider_priority": [
+                                        "openai-runtime",
+                                        "bedrock-runtime",
+                                        "ollama-runtime"
+                                      ],
+                                      "allow_python_fallback": false,
+                                      "scheduler": {
+                                        "max_turns": 5,
+                                        "max_tool_calls": 3,
+                                        "timeout_s": 60,
+                                        "max_concurrency": 1,
+                                        "max_retries": 0,
+                                        "backoff_s": 0.0
+                                      }
+                                    },
+                                    "scheduler": {
+                                      "max_turns": 5,
+                                      "max_tool_calls": 3,
+                                      "timeout_s": 60,
+                                      "max_concurrency": 1,
+                                      "max_retries": 0,
+                                      "backoff_s": 0.0
+                                    },
+                                    "scheduler_execution": {
+                                      "scheduler": {
+                                        "max_turns": 5,
+                                        "max_tool_calls": 3,
+                                        "timeout_s": 60,
+                                        "max_concurrency": 1,
+                                        "max_retries": 0,
+                                        "backoff_s": 0.0
+                                      },
+                                      "attempts": 1,
+                                      "retries": 0,
+                                      "timed_out": false,
+                                      "latency_ms": 1396.91
+                                    },
+                                    "framework": "strands",
+                                    "framework_requested": "strands",
+                                    "framework_config": {
+                                      "name": "strands",
+                                      "agent_kwargs": {},
+                                      "run_kwargs": {}
+                                    },
+                                    "agent_name": "strands",
+                                    "requested_engine": "bedrock-runtime",
+                                    "runtime_engine": "bedrock-runtime",
+                                    "execution_engine": "bedrock-runtime"
+                                  },
+                                  "execution_id": "run-48e20c4159bd4847ba41fd8cc9c9467c",
+                                  "parent_execution_id": "run-c75e55daa3c44807ab3a705bc76f54ea",
+                                  "children": [],
+                                  "tool_events": [
+                                    {
+                                      "id": "tooluse_FSlSVXnke3TcZpRorn0hI8",
+                                      "name": "mark_strands",
+                                      "input": {
+                                        "value": 45,
+                                        "trail": [
+                                          "native",
+                                          "langgraph",
+                                          "openai-agents"
+                                        ]
+                                      },
+                                      "output": {
+                                        "value": 46,
+                                        "trail": [
+                                          "native",
+                                          "langgraph",
+                                          "openai-agents",
+                                          "strands"
+                                        ]
+                                      },
+                                      "ok": true,
+                                      "error": null,
+                                      "duration_ms": null,
+                                      "meta": {
+                                        "source": "strands"
+                                      }
+                                    }
+                                  ]
+                                }
+                              ],
+                              "tool_events": []
+                            }
+                          ],
+                          "tool_events": []
+                        }
+                      ],
+                      "tool_events": []
+                    }
+                  ],
+                  "tool_events": []
+                }
+              ],
+              "tool_events": []
+            },
+            {
+              "text": "",
+              "final": null,
+              "data": {
+                "value": 46,
+                "trail": [
+                  "native",
+                  "langgraph",
+                  "openai-agents",
+                  "strands"
+                ],
+                "validated": true
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {},
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "check",
+                "kind": "action",
+                "graph_node": "check",
+                "next": "END"
+              },
+              "execution_id": "run-63650af9ffbd449eb63131a17dbfe5c0",
+              "parent_execution_id": "run-808474d2669c4801a830e8f7480a904f",
+              "children": [],
+              "tool_events": []
+            }
+          ],
+          "tool_events": []
+        }
+      ],
+      "tool_events": []
+    }
+  },
+  "elapsed_s": 5.538
+}

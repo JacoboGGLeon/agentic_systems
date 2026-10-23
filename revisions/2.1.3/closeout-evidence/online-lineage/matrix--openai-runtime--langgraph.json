@@ -1,0 +1,302 @@
+{
+  "source_evidence": "revisions/2.1.3/closeout-evidence/matrix/20261023T025048258614/openai-runtime--langgraph.json",
+  "results": [
+    {
+      "run_result": {
+        "text": "The value 37 has been certified successfully.",
+        "final": {
+          "final_output": "The value 37 has been certified successfully."
+        },
+        "data": {
+          "final_output": "The value 37 has been certified successfully."
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "total_tokens": 248,
+          "completion_tokens": 23,
+          "prompt_tokens": 225,
+          "input_tokens": 225,
+          "output_tokens": 23,
+          "requests": 2,
+          "client_duration_ms": 1805.496,
+          "inference_requests": 2,
+          "tool_calls": 1
+        },
+        "engine": "openai-runtime",
+        "model": "gpt-4.1-mini",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "matrix",
+          "kind": "agent",
+          "backend": "native",
+          "skills": [
+            "evidence"
+          ],
+          "actions_observed": 1,
+          "input": "Call certify with value=37. The tool output is the required result."
+        },
+        "execution_id": "run-46f6d163665544c7955fb884b010d94b",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "The value 37 has been certified successfully.",
+            "final": {
+              "final_output": "The value 37 has been certified successfully."
+            },
+            "data": {
+              "final_output": "The value 37 has been certified successfully."
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "total_tokens": 248,
+              "completion_tokens": 23,
+              "prompt_tokens": 225,
+              "input_tokens": 225,
+              "output_tokens": 23,
+              "requests": 2,
+              "client_duration_ms": 1805.496,
+              "inference_requests": 2,
+              "tool_calls": 1
+            },
+            "engine": "openai-runtime",
+            "model": "gpt-4.1-mini",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "matrix",
+              "kind": "model",
+              "framework": "langgraph"
+            },
+            "execution_id": "run-20e55b0ad2754b07b49526232304f8f8",
+            "parent_execution_id": "run-46f6d163665544c7955fb884b010d94b",
+            "children": [
+              {
+                "text": "The value 37 has been certified successfully.",
+                "final": {
+                  "final_output": "The value 37 has been certified successfully."
+                },
+                "data": {
+                  "final_output": "The value 37 has been certified successfully."
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "total_tokens": 248,
+                  "completion_tokens": 23,
+                  "prompt_tokens": 225,
+                  "input_tokens": 225,
+                  "output_tokens": 23,
+                  "requests": 2,
+                  "client_duration_ms": 1805.496,
+                  "scheduler": {
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 2359.635
+                  },
+                  "inference_requests": 2,
+                  "tool_calls": 1
+                },
+                "engine": "openai-runtime",
+                "model": "gpt-4.1-mini",
+                "mode": "eval",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": {
+                  "ok": true,
+                  "issues": []
+                },
+                "errors": [],
+                "meta": {
+                  "source_result_type": "openai.chat.completions",
+                  "runtime_engine": "openai-runtime",
+                  "execution_engine": "openai-runtime",
+                  "contract_repairs": 0,
+                  "rejected_tool_calls": [],
+                  "framework": "langgraph",
+                  "framework_requested": "langgraph",
+                  "framework_adapter": "langgraph",
+                  "runtime": {
+                    "provider": "openai-runtime",
+                    "model_id": "gpt-4.1-mini",
+                    "region_name": null,
+                    "endpoint": null,
+                    "metadata": {},
+                    "provider_priority": [
+                      "openai-runtime",
+                      "bedrock-runtime",
+                      "ollama-runtime"
+                    ],
+                    "allow_python_fallback": false,
+                    "scheduler": {
+                      "max_turns": 5,
+                      "max_tool_calls": 3,
+                      "timeout_s": 60,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    }
+                  },
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "scheduler_execution": {
+                    "scheduler": {
+                      "max_turns": 5,
+                      "max_tool_calls": 3,
+                      "timeout_s": 60,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    },
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 2359.635
+                  },
+                  "framework_config": {
+                    "name": "langgraph",
+                    "agent_kwargs": {},
+                    "run_kwargs": {}
+                  },
+                  "agent_name": "matrix",
+                  "input": "Call certify with value=37. The tool output is the required result.",
+                  "requested_engine": "openai-runtime"
+                },
+                "execution_id": "run-d003c595d9d741a3857bcf9ecf2766a2",
+                "parent_execution_id": "run-20e55b0ad2754b07b49526232304f8f8",
+                "children": [],
+                "tool_events": [
+                  {
+                    "id": "tool-966181fbc5b64820a47052eb25e70523",
+                    "name": "certify",
+                    "input": {
+                      "value": 37
+                    },
+                    "output": {
+                      "value": 37,
+                      "verified": true
+                    },
+                    "ok": true,
+                    "error": null,
+                    "duration_ms": null,
+                    "meta": {
+                      "tool_name": "certify",
+                      "serializer": "AgenticSystems.ToolEnvelope.v1",
+                      "timestamp_utc": "2026-10-23T02:51:17.299894+00:00",
+                      "validated_input": {
+                        "value": 37
+                      },
+                      "provider_tool_call_id": "call_oE3wUDo4uT6sx6lzAU4OSP89"
+                    }
+                  }
+                ]
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "matrix/openai-runtime--langgraph",
+        "question": "\"Call certify with value=37. The tool output is the required result.\"",
+        "goal": "",
+        "answer": "The value 37 has been certified successfully.",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-46f6d163665544c7955fb884b010d94b",
+            "kind": "execution",
+            "title": "matrix",
+            "summary": "The value 37 has been certified successfully.",
+            "source": "openai-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "final_output": "The value 37 has been certified successfully."
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-20e55b0ad2754b07b49526232304f8f8",
+            "kind": "execution",
+            "title": "matrix",
+            "summary": "The value 37 has been certified successfully.",
+            "source": "openai-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "final_output": "The value 37 has been certified successfully."
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-d003c595d9d741a3857bcf9ecf2766a2",
+            "kind": "execution",
+            "title": "eval",
+            "summary": "The value 37 has been certified successfully.",
+            "source": "openai-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "final_output": "The value 37 has been certified successfully."
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "tool-966181fbc5b64820a47052eb25e70523",
+            "kind": "tool",
+            "title": "certify",
+            "summary": "completed",
+            "source": "certify",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "value": 37,
+              "verified": true
+            }
+          }
+        ],
+        "usage": {
+          "total_tokens": 248,
+          "completion_tokens": 23,
+          "prompt_tokens": 225,
+          "input_tokens": 225,
+          "output_tokens": 23,
+          "requests": 2,
+          "client_duration_ms": 1805.496,
+          "inference_requests": 2,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    }
+  ]
+}

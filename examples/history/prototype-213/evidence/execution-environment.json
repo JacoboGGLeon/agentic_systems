@@ -1,0 +1,20 @@
+{
+  "schema_version": "unified-grammar.execution-environment.v1",
+  "initial_restricted_attempt": {
+    "status": "stopped-local-transport-blocked",
+    "error": "Windows sandbox WinError 10013 on loopback connection",
+    "affected": [
+      "asyncio socketpair",
+      "Jupyter kernel transport"
+    ],
+    "bounded_diagnostic": "40-second thread dump confirmed stdlib socketpair accept waiting"
+  },
+  "completed_attempt": {
+    "status": "passed",
+    "local_control_transport": "OS permission granted for Jupyter/asyncio",
+    "application_guard": "unchanged; ordinary loopback, DNS and subprocesses blocked",
+    "tests": 79,
+    "notebook_code_cells": 20,
+    "inference_requests": 0
+  }
+}

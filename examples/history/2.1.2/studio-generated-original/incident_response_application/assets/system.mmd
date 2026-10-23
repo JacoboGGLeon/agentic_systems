@@ -1,0 +1,16 @@
+flowchart LR
+  input["Input"]
+  stage_0_extract["Evidence operator<br/>operator<br/>python-runtime / native"]:::operator
+  input --> stage_0_extract
+  stage_1_synthesize["Research synthesizer<br/>reasoner<br/>selected-provider / selected-framework"]:::reasoner
+  stage_0_extract --> stage_1_synthesize
+  stage_2_critic["Adversarial critic<br/>reasoner<br/>selected-provider / selected-framework"]:::reasoner
+  stage_1_synthesize --> stage_2_critic
+  stage_3_review["Research editor<br/>reviewer<br/>selected-provider / selected-framework"]:::reviewer
+  stage_2_critic --> stage_3_review
+  result["RunResult"]:::result
+  stage_3_review --> result
+  classDef operator fill:#0f766e,color:#fff,stroke:#134e4a
+  classDef reasoner fill:#4f46e5,color:#fff,stroke:#312e81
+  classDef reviewer fill:#a21caf,color:#fff,stroke:#701a75
+  classDef result fill:#111827,color:#fff,stroke:#030712

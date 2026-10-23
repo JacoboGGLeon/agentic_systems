@@ -1,0 +1,219 @@
+{
+  "name": "ollama-runtime--native",
+  "passed": true,
+  "report": {
+    "provider": "ollama-runtime",
+    "framework": "native",
+    "result": {
+      "text": "{\"kind\": \"object\", \"tool_name\": \"certify\", \"ok\": true, \"data\": {\"value\": 37, \"verified\": true}, \"meta\": {\"tool_name\": \"certify\", \"serializer\": \"AgenticSystems.ToolEnvelope.v1\", \"timestamp_utc\": \"2026-10-23T02:50:58.862073+00:00\", \"validated_input\": {\"value\": 37}}}",
+      "final": {
+        "final_output": "{\"kind\": \"object\", \"tool_name\": \"certify\", \"ok\": true, \"data\": {\"value\": 37, \"verified\": true}, \"meta\": {\"tool_name\": \"certify\", \"serializer\": \"AgenticSystems.ToolEnvelope.v1\", \"timestamp_utc\": \"2026-10-23T02:50:58.862073+00:00\", \"validated_input\": {\"value\": 37}}}"
+      },
+      "data": {
+        "final_output": "{\"kind\": \"object\", \"tool_name\": \"certify\", \"ok\": true, \"data\": {\"value\": 37, \"verified\": true}, \"meta\": {\"tool_name\": \"certify\", \"serializer\": \"AgenticSystems.ToolEnvelope.v1\", \"timestamp_utc\": \"2026-10-23T02:50:58.862073+00:00\", \"validated_input\": {\"value\": 37}}}"
+      },
+      "ok": true,
+      "messages": [],
+      "raw_responses": [],
+      "usage": {
+        "total_tokens": 391,
+        "completion_tokens": 130,
+        "prompt_tokens": 261,
+        "input_tokens": 261,
+        "output_tokens": 130,
+        "requests": 2,
+        "client_duration_ms": 2594.426,
+        "inference_requests": 2,
+        "tool_calls": 1
+      },
+      "engine": "ollama-runtime",
+      "model": "gemma4:31b-cloud",
+      "mode": "default",
+      "trace_schema_version": "agentic_systems.trace.v1",
+      "validation": null,
+      "errors": [],
+      "meta": {
+        "name": "matrix",
+        "kind": "agent",
+        "backend": "native",
+        "skills": [
+          "evidence"
+        ],
+        "actions_observed": 1,
+        "input": "Call certify with value=37. The tool output is the required result."
+      },
+      "execution_id": "run-da17529941184a5cafdcd478d6d95d1d",
+      "parent_execution_id": null,
+      "children": [
+        {
+          "text": "{\"kind\": \"object\", \"tool_name\": \"certify\", \"ok\": true, \"data\": {\"value\": 37, \"verified\": true}, \"meta\": {\"tool_name\": \"certify\", \"serializer\": \"AgenticSystems.ToolEnvelope.v1\", \"timestamp_utc\": \"2026-10-23T02:50:58.862073+00:00\", \"validated_input\": {\"value\": 37}}}",
+          "final": {
+            "final_output": "{\"kind\": \"object\", \"tool_name\": \"certify\", \"ok\": true, \"data\": {\"value\": 37, \"verified\": true}, \"meta\": {\"tool_name\": \"certify\", \"serializer\": \"AgenticSystems.ToolEnvelope.v1\", \"timestamp_utc\": \"2026-10-23T02:50:58.862073+00:00\", \"validated_input\": {\"value\": 37}}}"
+          },
+          "data": {
+            "final_output": "{\"kind\": \"object\", \"tool_name\": \"certify\", \"ok\": true, \"data\": {\"value\": 37, \"verified\": true}, \"meta\": {\"tool_name\": \"certify\", \"serializer\": \"AgenticSystems.ToolEnvelope.v1\", \"timestamp_utc\": \"2026-10-23T02:50:58.862073+00:00\", \"validated_input\": {\"value\": 37}}}"
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {
+            "total_tokens": 391,
+            "completion_tokens": 130,
+            "prompt_tokens": 261,
+            "input_tokens": 261,
+            "output_tokens": 130,
+            "requests": 2,
+            "client_duration_ms": 2594.426,
+            "inference_requests": 2,
+            "tool_calls": 1
+          },
+          "engine": "ollama-runtime",
+          "model": "gemma4:31b-cloud",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "matrix",
+            "kind": "model",
+            "framework": "native"
+          },
+          "execution_id": "run-0bf752c46bc2429097487f48c2083a3f",
+          "parent_execution_id": "run-da17529941184a5cafdcd478d6d95d1d",
+          "children": [
+            {
+              "text": "{\"kind\": \"object\", \"tool_name\": \"certify\", \"ok\": true, \"data\": {\"value\": 37, \"verified\": true}, \"meta\": {\"tool_name\": \"certify\", \"serializer\": \"AgenticSystems.ToolEnvelope.v1\", \"timestamp_utc\": \"2026-10-23T02:50:58.862073+00:00\", \"validated_input\": {\"value\": 37}}}",
+              "final": {
+                "final_output": "{\"kind\": \"object\", \"tool_name\": \"certify\", \"ok\": true, \"data\": {\"value\": 37, \"verified\": true}, \"meta\": {\"tool_name\": \"certify\", \"serializer\": \"AgenticSystems.ToolEnvelope.v1\", \"timestamp_utc\": \"2026-10-23T02:50:58.862073+00:00\", \"validated_input\": {\"value\": 37}}}"
+              },
+              "data": {
+                "final_output": "{\"kind\": \"object\", \"tool_name\": \"certify\", \"ok\": true, \"data\": {\"value\": 37, \"verified\": true}, \"meta\": {\"tool_name\": \"certify\", \"serializer\": \"AgenticSystems.ToolEnvelope.v1\", \"timestamp_utc\": \"2026-10-23T02:50:58.862073+00:00\", \"validated_input\": {\"value\": 37}}}"
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {
+                "total_tokens": 391,
+                "completion_tokens": 130,
+                "prompt_tokens": 261,
+                "input_tokens": 261,
+                "output_tokens": 130,
+                "requests": 2,
+                "client_duration_ms": 2594.426,
+                "scheduler": {
+                  "attempts": 1,
+                  "retries": 0,
+                  "timed_out": false,
+                  "latency_ms": 2997.566
+                },
+                "inference_requests": 2,
+                "tool_calls": 1
+              },
+              "engine": "ollama-runtime",
+              "model": "gemma4:31b-cloud",
+              "mode": "eval",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": {
+                "ok": true,
+                "issues": []
+              },
+              "errors": [],
+              "meta": {
+                "source_result_type": "ollama.openai_compatible.chat.completions",
+                "runtime_engine": "ollama-runtime",
+                "execution_engine": "ollama-runtime",
+                "contract_repairs": 0,
+                "rejected_tool_calls": [],
+                "framework": "native",
+                "framework_requested": "native",
+                "framework_adapter": "native",
+                "runtime": {
+                  "provider": "ollama-runtime",
+                  "model_id": "gemma4:31b-cloud",
+                  "region_name": null,
+                  "endpoint": "https://ollama.com/v1",
+                  "metadata": {},
+                  "provider_priority": [
+                    "openai-runtime",
+                    "bedrock-runtime",
+                    "ollama-runtime"
+                  ],
+                  "allow_python_fallback": false,
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  }
+                },
+                "scheduler": {
+                  "max_turns": 5,
+                  "max_tool_calls": 3,
+                  "timeout_s": 60,
+                  "max_concurrency": 1,
+                  "max_retries": 0,
+                  "backoff_s": 0.0
+                },
+                "scheduler_execution": {
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "attempts": 1,
+                  "retries": 0,
+                  "timed_out": false,
+                  "latency_ms": 2997.566
+                },
+                "framework_config": {
+                  "name": "native",
+                  "agent_kwargs": {},
+                  "run_kwargs": {}
+                },
+                "agent_name": "matrix",
+                "input": "Call certify with value=37. The tool output is the required result.",
+                "requested_engine": "ollama-runtime"
+              },
+              "execution_id": "run-ed704de2dbf84a0d9d227fd051b864ff",
+              "parent_execution_id": "run-0bf752c46bc2429097487f48c2083a3f",
+              "children": [],
+              "tool_events": [
+                {
+                  "id": "tool-ea1d296fe2014727a9f945ad0cec813c",
+                  "name": "certify",
+                  "input": {
+                    "value": 37
+                  },
+                  "output": {
+                    "value": 37,
+                    "verified": true
+                  },
+                  "ok": true,
+                  "error": null,
+                  "duration_ms": null,
+                  "meta": {
+                    "tool_name": "certify",
+                    "serializer": "AgenticSystems.ToolEnvelope.v1",
+                    "timestamp_utc": "2026-10-23T02:50:58.862073+00:00",
+                    "validated_input": {
+                      "value": 37
+                    },
+                    "provider_tool_call_id": "call_3ljbet2i"
+                  }
+                }
+              ]
+            }
+          ],
+          "tool_events": []
+        }
+      ],
+      "tool_events": []
+    }
+  },
+  "elapsed_s": 3.005
+}

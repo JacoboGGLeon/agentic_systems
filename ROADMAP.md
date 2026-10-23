@@ -1,42 +1,27 @@
 # Agentic Systems Roadmap
 
-Current stable release: `2.1.1`.
+Published baseline: **2.1.2**. The root source now implements the single API
+revision **2.1.3**, without compatibility aliases. It is an unpublished local
+candidate. [Current evidence](revisions/2.1.3/framework-evidence/REPORT.md)
+separates offline contracts, bounded live scenarios and release acceptance.
 
-Next candidate: `2.1.2`, with immutable release manifests, fail-closed index
-reconciliation and Trusted Publishing. Its new-wheel live evidence and actual
-OIDC publication runs are acceptance gates, not inherited results from 2.1.1.
-Current release line: `2.1`. Next development line: `2.2`.
+Agent and System share sequential, parallel and graph flows, direct Python
+decisions, run/arun and optional compile. Tools, Skills, Environment and Eval
+are taught through [tutorials](tutorials/README.md) and implemented in
+[examples](examples/README.md). The CLI scaffolder ships with the SDK.
 
-Agentic Systems 2.1 establishes the five-Provider by four-Framework execution
-architecture, the common RunResult contract, dual Bedrock authentication,
-ToolSet, explicit System execution plans, semantic certification and the
-Python/CLI/tutorial/Studio mirrors.
-Completed work and measured release evidence belong in the changelog and
-release reports, not in this forward-looking roadmap.
+The user authorized a new USD 10 / 300-request live campaign. Its current
+results cover the frozen models and scenarios recorded in the report; earlier
+2.1.2 evidence does not certify these bytes. Before release, run the configured
+Python 3.10–3.14 CI matrix and bind final acceptance to the exact release
+artifacts. vLLM/Colab, AWS IAM and ADA IAM remain pending in their environments.
+Publication is not authorized in this implementation task.
 
-## Direction After 2.1
+The proposed enterprise workstream includes an `[ada]` extra and ADA Studio.
+The associated wallet needs a separate design. These are planned capabilities,
+not installed extras, approved budgets or completed validation.
 
-Future work must earn its place through a concrete user contract and evidence.
-The preferred order is:
-
-1. Automate scheduled live evidence for Bedrock IAM/bearer, vLLM and Ollama
-   without making ordinary pull requests network-dependent.
-2. Introduce compositional algebra at the System execution-plan boundary
-   without redefining Agent pipelines or the Agent/System distinction.
-3. Design portable Open Agent Skill adapters, resources and script isolation
-   as one versioned contract rather than provisional parameters.
-4. Keep Provider and Framework SDKs optional and lazy while expanding native
-   option forwarding and conformance evidence.
-
-## Guardrails
-
-- Preserve the single `import agentic_systems as toolkit` teaching path.
-- Keep Runtime, Provider and Framework responsibilities explicit.
-- Keep optional SDKs lazy at base import time.
-- Add no public API without a documented contract, tutorial need and tests.
-- Treat historical checkpoints as evidence, not as the current product plan.
-- Keep releases reproducible from a clean tag and independently installable
-  wheel.
-
-No item in this roadmap is a compatibility promise or release commitment until
-it is accepted into a versioned release plan.
+Keep one teaching import, explicit Provider/Framework configuration, lazy
+optional SDKs, documented contracts and reproducible artifacts. Add API only
+when a concrete application requires it. Historical catalogs remain evidence,
+not additional supported construction paths.

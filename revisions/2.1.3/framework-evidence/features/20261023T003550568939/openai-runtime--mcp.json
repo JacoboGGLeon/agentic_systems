@@ -1,0 +1,321 @@
+{
+  "name": "openai-runtime--mcp",
+  "passed": true,
+  "report": {
+    "provider": "openai-runtime",
+    "framework": "strands",
+    "protocol": {
+      "transport": "mcp-streamable-http"
+    },
+    "result": {
+      "text": "The exact tool evidence for the value \"FRAMEWORKS_TOGETHER\" is that it uses the transport \"mcp-streamable-http\".",
+      "final": {
+        "text": "The exact tool evidence for the value \"FRAMEWORKS_TOGETHER\" is that it uses the transport \"mcp-streamable-http\"."
+      },
+      "data": {
+        "text": "The exact tool evidence for the value \"FRAMEWORKS_TOGETHER\" is that it uses the transport \"mcp-streamable-http\".\n"
+      },
+      "ok": true,
+      "messages": [],
+      "raw_responses": [],
+      "usage": {
+        "inputTokens": 228,
+        "outputTokens": 47,
+        "totalTokens": 275,
+        "cacheReadInputTokens": 0,
+        "input_tokens": 228,
+        "output_tokens": 47,
+        "total_tokens": 275,
+        "client_duration_ms": 2629.515,
+        "requests": 2,
+        "inference_requests": 2,
+        "tool_calls": 1
+      },
+      "engine": "openai-runtime",
+      "model": "gpt-4.1-mini",
+      "mode": "default",
+      "trace_schema_version": "agentic_systems.trace.v1",
+      "validation": null,
+      "errors": [],
+      "meta": {
+        "name": "strands_protocol",
+        "kind": "agent",
+        "backend": "native",
+        "skills": [],
+        "actions_observed": 1,
+        "input": "Call echo with value=FRAMEWORKS_TOGETHER."
+      },
+      "execution_id": "run-642e24c9094d4d3faa97ff0ae87b55c9",
+      "parent_execution_id": null,
+      "children": [
+        {
+          "text": "The exact tool evidence for the value \"FRAMEWORKS_TOGETHER\" is that it uses the transport \"mcp-streamable-http\".",
+          "final": {
+            "text": "The exact tool evidence for the value \"FRAMEWORKS_TOGETHER\" is that it uses the transport \"mcp-streamable-http\"."
+          },
+          "data": {
+            "text": "The exact tool evidence for the value \"FRAMEWORKS_TOGETHER\" is that it uses the transport \"mcp-streamable-http\".\n"
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {
+            "inputTokens": 228,
+            "outputTokens": 47,
+            "totalTokens": 275,
+            "cacheReadInputTokens": 0,
+            "input_tokens": 228,
+            "output_tokens": 47,
+            "total_tokens": 275,
+            "client_duration_ms": 2629.515,
+            "requests": 2,
+            "inference_requests": 2,
+            "tool_calls": 1
+          },
+          "engine": "openai-runtime",
+          "model": "gpt-4.1-mini",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "strands_protocol",
+            "kind": "model",
+            "framework": "strands"
+          },
+          "execution_id": "run-e0f2c1fdc56045028c35d257f11211c6",
+          "parent_execution_id": "run-642e24c9094d4d3faa97ff0ae87b55c9",
+          "children": [
+            {
+              "text": "The exact tool evidence for the value \"FRAMEWORKS_TOGETHER\" is that it uses the transport \"mcp-streamable-http\".",
+              "final": {
+                "text": "The exact tool evidence for the value \"FRAMEWORKS_TOGETHER\" is that it uses the transport \"mcp-streamable-http\"."
+              },
+              "data": {
+                "text": "The exact tool evidence for the value \"FRAMEWORKS_TOGETHER\" is that it uses the transport \"mcp-streamable-http\".\n"
+              },
+              "ok": true,
+              "messages": [
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "text": "Call echo with value=FRAMEWORKS_TOGETHER."
+                    }
+                  ],
+                  "tracking_id": "8df89367-5967-48cf-b6ce-40f7fcdcc378"
+                },
+                {
+                  "role": "assistant",
+                  "content": [
+                    {
+                      "toolUse": {
+                        "toolUseId": "call_yr83pPYOV0SHTh5IX6IOL4xM",
+                        "name": "echo",
+                        "input": {
+                          "value": "FRAMEWORKS_TOGETHER"
+                        }
+                      }
+                    }
+                  ],
+                  "metadata": {
+                    "usage": {
+                      "inputTokens": 89,
+                      "outputTokens": 18,
+                      "totalTokens": 107,
+                      "cacheReadInputTokens": 0
+                    },
+                    "metrics": {
+                      "latencyMs": 0,
+                      "timeToFirstByteMs": 1464
+                    }
+                  },
+                  "tracking_id": "53ea8035-0692-47eb-b972-00ebfb8723b4"
+                },
+                {
+                  "role": "user",
+                  "content": [
+                    {
+                      "toolResult": {
+                        "status": "success",
+                        "toolUseId": "call_yr83pPYOV0SHTh5IX6IOL4xM",
+                        "content": [
+                          {
+                            "text": "{\n  \"value\": \"FRAMEWORKS_TOGETHER\",\n  \"transport\": \"mcp-streamable-http\"\n}"
+                          }
+                        ],
+                        "isError": false
+                      }
+                    }
+                  ],
+                  "tracking_id": "85405b6a-1cfa-4f56-8c2f-3e09ac04065d"
+                },
+                {
+                  "role": "assistant",
+                  "content": [
+                    {
+                      "text": "The exact tool evidence for the value \"FRAMEWORKS_TOGETHER\" is that it uses the transport \"mcp-streamable-http\"."
+                    }
+                  ],
+                  "metadata": {
+                    "usage": {
+                      "inputTokens": 139,
+                      "outputTokens": 29,
+                      "totalTokens": 168,
+                      "cacheReadInputTokens": 0
+                    },
+                    "metrics": {
+                      "latencyMs": 0,
+                      "timeToFirstByteMs": 1151
+                    }
+                  },
+                  "tracking_id": "417b1fee-5f2e-4a31-8bba-450cb97d927c"
+                }
+              ],
+              "raw_responses": [
+                {
+                  "role": "assistant",
+                  "content": [
+                    {
+                      "text": "The exact tool evidence for the value \"FRAMEWORKS_TOGETHER\" is that it uses the transport \"mcp-streamable-http\"."
+                    }
+                  ],
+                  "metadata": {
+                    "usage": {
+                      "inputTokens": 139,
+                      "outputTokens": 29,
+                      "totalTokens": 168,
+                      "cacheReadInputTokens": 0
+                    },
+                    "metrics": {
+                      "latencyMs": 0,
+                      "timeToFirstByteMs": 1151
+                    }
+                  },
+                  "tracking_id": "417b1fee-5f2e-4a31-8bba-450cb97d927c"
+                }
+              ],
+              "usage": {
+                "inputTokens": 228,
+                "outputTokens": 47,
+                "totalTokens": 275,
+                "cacheReadInputTokens": 0,
+                "input_tokens": 228,
+                "output_tokens": 47,
+                "total_tokens": 275,
+                "client_duration_ms": 2629.515,
+                "requests": 2,
+                "scheduler": {
+                  "attempts": 1,
+                  "retries": 0,
+                  "timed_out": false,
+                  "latency_ms": 3008.573
+                },
+                "inference_requests": 2,
+                "tool_calls": 1
+              },
+              "engine": "openai-runtime",
+              "model": "gpt-4.1-mini",
+              "mode": "eval",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": {
+                "ok": true,
+                "issues": []
+              },
+              "errors": [],
+              "meta": {
+                "source_result_type": "AgentResult",
+                "framework_adapter": "strands",
+                "input": "Call echo with value=FRAMEWORKS_TOGETHER.",
+                "stop_reason": "end_turn",
+                "rejected_tool_calls": [],
+                "output_materialization": [],
+                "runtime": {
+                  "provider": "openai-runtime",
+                  "model_id": "gpt-4.1-mini",
+                  "region_name": null,
+                  "endpoint": null,
+                  "metadata": {},
+                  "provider_priority": [
+                    "openai-runtime",
+                    "bedrock-runtime",
+                    "ollama-runtime"
+                  ],
+                  "allow_python_fallback": false,
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  }
+                },
+                "scheduler": {
+                  "max_turns": 5,
+                  "max_tool_calls": 3,
+                  "timeout_s": 60,
+                  "max_concurrency": 1,
+                  "max_retries": 0,
+                  "backoff_s": 0.0
+                },
+                "scheduler_execution": {
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "attempts": 1,
+                  "retries": 0,
+                  "timed_out": false,
+                  "latency_ms": 3008.573
+                },
+                "framework": "strands",
+                "framework_requested": "strands",
+                "framework_config": {
+                  "name": "strands",
+                  "agent_kwargs": {
+                    "tools": "list"
+                  },
+                  "run_kwargs": {}
+                },
+                "agent_name": "strands_protocol",
+                "requested_engine": "openai-runtime",
+                "runtime_engine": "openai-runtime",
+                "execution_engine": "openai-runtime"
+              },
+              "execution_id": "run-3fdfee6fc6b9486d8790562a016f4ae0",
+              "parent_execution_id": "run-e0f2c1fdc56045028c35d257f11211c6",
+              "children": [],
+              "tool_events": [
+                {
+                  "id": "call_yr83pPYOV0SHTh5IX6IOL4xM",
+                  "name": "echo",
+                  "input": {
+                    "value": "FRAMEWORKS_TOGETHER"
+                  },
+                  "output": {
+                    "value": "FRAMEWORKS_TOGETHER",
+                    "transport": "mcp-streamable-http"
+                  },
+                  "ok": true,
+                  "error": null,
+                  "duration_ms": null,
+                  "meta": {
+                    "source": "strands"
+                  }
+                }
+              ]
+            }
+          ],
+          "tool_events": []
+        }
+      ],
+      "tool_events": []
+    }
+  },
+  "elapsed_s": 6.156
+}

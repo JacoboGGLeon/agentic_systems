@@ -1,0 +1,3100 @@
+{
+  "name": "ollama-runtime--langgraph",
+  "passed": true,
+  "report": {
+    "provider": "ollama-runtime",
+    "framework": "langgraph",
+    "turns": [
+      {
+        "text": "Tu proyecto se llama LINTERNA.",
+        "final": {
+          "final_output": "Tu proyecto se llama LINTERNA."
+        },
+        "data": {
+          "answer": "Tu proyecto se llama LINTERNA.",
+          "provider": "ollama-runtime",
+          "framework": "langgraph",
+          "history_turns": 0,
+          "response_validation": {
+            "ok": true,
+            "repairs": 0
+          }
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 2,
+          "inference_requests": 1,
+          "tool_calls": 1,
+          "total_tokens": 346,
+          "completion_tokens": 9,
+          "prompt_tokens": 337,
+          "input_tokens": 337,
+          "output_tokens": 9,
+          "client_duration_ms": 476.252
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "studio_conversation",
+          "kind": "system",
+          "backend": "native",
+          "skills": [],
+          "actions_observed": 3,
+          "input": {
+            "messages": [],
+            "message": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+          },
+          "provider": "ollama-runtime",
+          "framework": "langgraph",
+          "studio_version": "2.1.3"
+        },
+        "execution_id": "run-a42f5bb430d945cba9f3dafb4325b746",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "Tu proyecto se llama LINTERNA.",
+            "final": {
+              "final_output": "Tu proyecto se llama LINTERNA."
+            },
+            "data": {
+              "answer": "Tu proyecto se llama LINTERNA.",
+              "provider": "ollama-runtime",
+              "framework": "langgraph",
+              "history_turns": 0,
+              "response_validation": {
+                "ok": true,
+                "repairs": 0
+              }
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 2,
+              "inference_requests": 1,
+              "tool_calls": 1,
+              "total_tokens": 346,
+              "completion_tokens": 9,
+              "prompt_tokens": 337,
+              "input_tokens": 337,
+              "output_tokens": 9,
+              "client_duration_ms": 476.252
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "sequence",
+              "kind": "sequence",
+              "backend": "native"
+            },
+            "execution_id": "run-ce5c7293e03b460cbd66ebfd15ad232d",
+            "parent_execution_id": "run-a42f5bb430d945cba9f3dafb4325b746",
+            "children": [
+              {
+                "text": "",
+                "final": {
+                  "history": [],
+                  "history_turns": 0,
+                  "memory": {
+                    "kind": "bounded-public-history",
+                    "maximum_messages": 12,
+                    "maximum_user_characters": 2000,
+                    "maximum_assistant_characters": 1200,
+                    "maximum_current_message_characters": 8000,
+                    "truncated_messages": 0
+                  },
+                  "policy": {
+                    "reasoning_is_private": true,
+                    "no_silent_fallback": true,
+                    "tools_are_evidence": true
+                  },
+                  "message": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                },
+                "data": {
+                  "history": [],
+                  "history_turns": 0,
+                  "memory": {
+                    "kind": "bounded-public-history",
+                    "maximum_messages": 12,
+                    "maximum_user_characters": 2000,
+                    "maximum_assistant_characters": 1200,
+                    "maximum_current_message_characters": 8000,
+                    "truncated_messages": 0
+                  },
+                  "policy": {
+                    "reasoning_is_private": true,
+                    "no_silent_fallback": true,
+                    "tools_are_evidence": true
+                  },
+                  "message": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "requests": 1,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "context",
+                  "kind": "agent",
+                  "backend": "native",
+                  "skills": [],
+                  "step": "context"
+                },
+                "execution_id": "run-14bc34a9afde4b6cac83919b7b9e99fa",
+                "parent_execution_id": "run-ce5c7293e03b460cbd66ebfd15ad232d",
+                "children": [
+                  {
+                    "text": "",
+                    "final": {
+                      "history": [],
+                      "history_turns": 0,
+                      "memory": {
+                        "kind": "bounded-public-history",
+                        "maximum_messages": 12,
+                        "maximum_user_characters": 2000,
+                        "maximum_assistant_characters": 1200,
+                        "maximum_current_message_characters": 8000,
+                        "truncated_messages": 0
+                      },
+                      "policy": {
+                        "reasoning_is_private": true,
+                        "no_silent_fallback": true,
+                        "tools_are_evidence": true
+                      },
+                      "message": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                    },
+                    "data": {
+                      "history": [],
+                      "history_turns": 0,
+                      "memory": {
+                        "kind": "bounded-public-history",
+                        "maximum_messages": 12,
+                        "maximum_user_characters": 2000,
+                        "maximum_assistant_characters": 1200,
+                        "maximum_current_message_characters": 8000,
+                        "truncated_messages": 0
+                      },
+                      "policy": {
+                        "reasoning_is_private": true,
+                        "no_silent_fallback": true,
+                        "tools_are_evidence": true
+                      },
+                      "message": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "requests": 1,
+                      "inference_requests": 0,
+                      "tool_calls": 1
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "default",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "name": "prepare",
+                      "kind": "action"
+                    },
+                    "execution_id": "run-24a17642c3e14193bfc804cf25e0fb53",
+                    "parent_execution_id": "run-14bc34a9afde4b6cac83919b7b9e99fa",
+                    "children": [
+                      {
+                        "text": "",
+                        "final": {
+                          "history": [],
+                          "history_turns": 0,
+                          "memory": {
+                            "kind": "bounded-public-history",
+                            "maximum_messages": 12,
+                            "maximum_user_characters": 2000,
+                            "maximum_assistant_characters": 1200,
+                            "maximum_current_message_characters": 8000,
+                            "truncated_messages": 0
+                          },
+                          "policy": {
+                            "reasoning_is_private": true,
+                            "no_silent_fallback": true,
+                            "tools_are_evidence": true
+                          },
+                          "message": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                        },
+                        "data": {
+                          "history": [],
+                          "history_turns": 0,
+                          "memory": {
+                            "kind": "bounded-public-history",
+                            "maximum_messages": 12,
+                            "maximum_user_characters": 2000,
+                            "maximum_assistant_characters": 1200,
+                            "maximum_current_message_characters": 8000,
+                            "truncated_messages": 0
+                          },
+                          "policy": {
+                            "reasoning_is_private": true,
+                            "no_silent_fallback": true,
+                            "tools_are_evidence": true
+                          },
+                          "message": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                        },
+                        "ok": true,
+                        "messages": [],
+                        "raw_responses": [],
+                        "usage": {
+                          "requests": 1,
+                          "inference_requests": 0,
+                          "tool_calls": 1
+                        },
+                        "engine": "python-runtime",
+                        "model": "",
+                        "mode": "tool",
+                        "trace_schema_version": "agentic_systems.trace.v1",
+                        "validation": null,
+                        "errors": [],
+                        "meta": {
+                          "tool_name": "",
+                          "input": {
+                            "messages": [],
+                            "message": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                          },
+                          "tool_input": {
+                            "messages": [],
+                            "message": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                          }
+                        },
+                        "execution_id": "run-b103944ec1cf4354aaa3387240c91118",
+                        "parent_execution_id": "run-24a17642c3e14193bfc804cf25e0fb53",
+                        "children": [],
+                        "tool_events": [
+                          {
+                            "id": "tool-0e449db7542b4c4d85055045006537ff",
+                            "name": "prepare_conversation_context",
+                            "input": {
+                              "messages": [],
+                              "message": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                            },
+                            "output": {
+                              "data": {
+                                "history": [],
+                                "history_turns": 0,
+                                "memory": {
+                                  "kind": "bounded-public-history",
+                                  "maximum_messages": 12,
+                                  "maximum_user_characters": 2000,
+                                  "maximum_assistant_characters": 1200,
+                                  "maximum_current_message_characters": 8000,
+                                  "truncated_messages": 0
+                                },
+                                "policy": {
+                                  "reasoning_is_private": true,
+                                  "no_silent_fallback": true,
+                                  "tools_are_evidence": true
+                                },
+                                "message": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                              }
+                            },
+                            "ok": true,
+                            "error": null,
+                            "duration_ms": null,
+                            "meta": {}
+                          }
+                        ]
+                      }
+                    ],
+                    "tool_events": []
+                  }
+                ],
+                "tool_events": []
+              },
+              {
+                "text": "",
+                "final": null,
+                "data": {
+                  "history": [],
+                  "history_turns": 0,
+                  "memory": {
+                    "kind": "bounded-public-history",
+                    "maximum_messages": 12,
+                    "maximum_user_characters": 2000,
+                    "maximum_assistant_characters": 1200,
+                    "maximum_current_message_characters": 8000,
+                    "truncated_messages": 0
+                  },
+                  "policy": {
+                    "reasoning_is_private": true,
+                    "no_silent_fallback": true,
+                    "tools_are_evidence": true
+                  },
+                  "message": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {},
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "grounding",
+                  "kind": "agent",
+                  "backend": "native",
+                  "skills": [],
+                  "step": "grounding"
+                },
+                "execution_id": "run-667b79190bc84eb68686ff6e5983946d",
+                "parent_execution_id": "run-ce5c7293e03b460cbd66ebfd15ad232d",
+                "children": [
+                  {
+                    "text": "",
+                    "final": null,
+                    "data": {
+                      "history": [],
+                      "history_turns": 0,
+                      "memory": {
+                        "kind": "bounded-public-history",
+                        "maximum_messages": 12,
+                        "maximum_user_characters": 2000,
+                        "maximum_assistant_characters": 1200,
+                        "maximum_current_message_characters": 8000,
+                        "truncated_messages": 0
+                      },
+                      "policy": {
+                        "reasoning_is_private": true,
+                        "no_silent_fallback": true,
+                        "tools_are_evidence": true
+                      },
+                      "message": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {},
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "default",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "name": "ground",
+                      "kind": "action"
+                    },
+                    "execution_id": "run-191587d27fb24ac8a54bd30cb861cdc1",
+                    "parent_execution_id": "run-667b79190bc84eb68686ff6e5983946d",
+                    "children": [],
+                    "tool_events": []
+                  }
+                ],
+                "tool_events": []
+              },
+              {
+                "text": "Tu proyecto se llama LINTERNA.",
+                "final": {
+                  "final_output": "Tu proyecto se llama LINTERNA."
+                },
+                "data": {
+                  "answer": "Tu proyecto se llama LINTERNA.",
+                  "provider": "ollama-runtime",
+                  "framework": "langgraph",
+                  "history_turns": 0,
+                  "response_validation": {
+                    "ok": true,
+                    "repairs": 0
+                  }
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "total_tokens": 346,
+                  "completion_tokens": 9,
+                  "prompt_tokens": 337,
+                  "input_tokens": 337,
+                  "output_tokens": 9,
+                  "requests": 1,
+                  "client_duration_ms": 476.252,
+                  "inference_requests": 1,
+                  "tool_calls": 0
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "responding",
+                  "kind": "agent",
+                  "backend": "native",
+                  "skills": [],
+                  "step": "responding"
+                },
+                "execution_id": "run-9729bf27972f4e85a57479fb7d786bbd",
+                "parent_execution_id": "run-ce5c7293e03b460cbd66ebfd15ad232d",
+                "children": [
+                  {
+                    "text": "Tu proyecto se llama LINTERNA.",
+                    "final": {
+                      "final_output": "Tu proyecto se llama LINTERNA."
+                    },
+                    "data": {
+                      "answer": "Tu proyecto se llama LINTERNA.",
+                      "provider": "ollama-runtime",
+                      "framework": "langgraph",
+                      "history_turns": 0,
+                      "response_validation": {
+                        "ok": true,
+                        "repairs": 0
+                      }
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "total_tokens": 346,
+                      "completion_tokens": 9,
+                      "prompt_tokens": 337,
+                      "input_tokens": 337,
+                      "output_tokens": 9,
+                      "requests": 1,
+                      "client_duration_ms": 476.252,
+                      "inference_requests": 1,
+                      "tool_calls": 0
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "default",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "name": "respond",
+                      "kind": "action"
+                    },
+                    "execution_id": "run-74f526c1ad5f4a538d3def00e06d2efe",
+                    "parent_execution_id": "run-9729bf27972f4e85a57479fb7d786bbd",
+                    "children": [
+                      {
+                        "text": "Tu proyecto se llama LINTERNA.",
+                        "final": {
+                          "final_output": "Tu proyecto se llama LINTERNA."
+                        },
+                        "data": {
+                          "answer": "Tu proyecto se llama LINTERNA.",
+                          "provider": "ollama-runtime",
+                          "framework": "langgraph",
+                          "history_turns": 0,
+                          "response_validation": {
+                            "ok": true,
+                            "repairs": 0
+                          }
+                        },
+                        "ok": true,
+                        "messages": [],
+                        "raw_responses": [],
+                        "usage": {
+                          "total_tokens": 346,
+                          "completion_tokens": 9,
+                          "prompt_tokens": 337,
+                          "input_tokens": 337,
+                          "output_tokens": 9,
+                          "requests": 1,
+                          "client_duration_ms": 476.252,
+                          "inference_requests": 1,
+                          "tool_calls": 0
+                        },
+                        "engine": "python-runtime",
+                        "model": "",
+                        "mode": "default",
+                        "trace_schema_version": "agentic_systems.trace.v1",
+                        "validation": null,
+                        "errors": [],
+                        "meta": {
+                          "name": "answer_attempts",
+                          "kind": "system",
+                          "backend": "native",
+                          "skills": [],
+                          "actions_observed": 1,
+                          "input": {}
+                        },
+                        "execution_id": "run-d65ade0c3aef4325a2bbbe9f4e058c02",
+                        "parent_execution_id": "run-74f526c1ad5f4a538d3def00e06d2efe",
+                        "children": [
+                          {
+                            "text": "Tu proyecto se llama LINTERNA.",
+                            "final": {
+                              "final_output": "Tu proyecto se llama LINTERNA."
+                            },
+                            "data": {
+                              "final_output": "Tu proyecto se llama LINTERNA."
+                            },
+                            "ok": true,
+                            "messages": [],
+                            "raw_responses": [],
+                            "usage": {
+                              "total_tokens": 346,
+                              "completion_tokens": 9,
+                              "prompt_tokens": 337,
+                              "input_tokens": 337,
+                              "output_tokens": 9,
+                              "requests": 1,
+                              "client_duration_ms": 476.252,
+                              "inference_requests": 1,
+                              "tool_calls": 0
+                            },
+                            "engine": "python-runtime",
+                            "model": "",
+                            "mode": "default",
+                            "trace_schema_version": "agentic_systems.trace.v1",
+                            "validation": null,
+                            "errors": [],
+                            "meta": {
+                              "name": "sequence",
+                              "kind": "sequence",
+                              "backend": "native"
+                            },
+                            "execution_id": "run-7aa725ab88e24b0291d26a00be8aa182",
+                            "parent_execution_id": "run-d65ade0c3aef4325a2bbbe9f4e058c02",
+                            "children": [
+                              {
+                                "text": "Tu proyecto se llama LINTERNA.",
+                                "final": {
+                                  "final_output": "Tu proyecto se llama LINTERNA."
+                                },
+                                "data": {
+                                  "final_output": "Tu proyecto se llama LINTERNA."
+                                },
+                                "ok": true,
+                                "messages": [],
+                                "raw_responses": [],
+                                "usage": {
+                                  "total_tokens": 346,
+                                  "completion_tokens": 9,
+                                  "prompt_tokens": 337,
+                                  "input_tokens": 337,
+                                  "output_tokens": 9,
+                                  "requests": 1,
+                                  "client_duration_ms": 476.252,
+                                  "inference_requests": 1,
+                                  "tool_calls": 0
+                                },
+                                "engine": "python-runtime",
+                                "model": "",
+                                "mode": "default",
+                                "trace_schema_version": "agentic_systems.trace.v1",
+                                "validation": null,
+                                "errors": [],
+                                "meta": {
+                                  "name": "attempt_0",
+                                  "kind": "action",
+                                  "step": "attempt_0"
+                                },
+                                "execution_id": "run-4d013e577c96478890b1bc92ba06c38c",
+                                "parent_execution_id": "run-7aa725ab88e24b0291d26a00be8aa182",
+                                "children": [
+                                  {
+                                    "text": "Tu proyecto se llama LINTERNA.",
+                                    "final": {
+                                      "final_output": "Tu proyecto se llama LINTERNA."
+                                    },
+                                    "data": {
+                                      "final_output": "Tu proyecto se llama LINTERNA."
+                                    },
+                                    "ok": true,
+                                    "messages": [],
+                                    "raw_responses": [],
+                                    "usage": {
+                                      "total_tokens": 346,
+                                      "completion_tokens": 9,
+                                      "prompt_tokens": 337,
+                                      "input_tokens": 337,
+                                      "output_tokens": 9,
+                                      "requests": 1,
+                                      "client_duration_ms": 476.252,
+                                      "inference_requests": 1,
+                                      "tool_calls": 0
+                                    },
+                                    "engine": "ollama-runtime",
+                                    "model": "gemma4:31b-cloud",
+                                    "mode": "default",
+                                    "trace_schema_version": "agentic_systems.trace.v1",
+                                    "validation": null,
+                                    "errors": [],
+                                    "meta": {
+                                      "name": "assistant",
+                                      "kind": "agent",
+                                      "backend": "native",
+                                      "skills": [
+                                        "studio"
+                                      ],
+                                      "actions_observed": 1,
+                                      "input": "Answer only the current message using this bounded public history and verified evidence. Use the user's language; never reveal private reasoning or invent tool calls. If code is requested, use the supplied SDK signatures exactly.\n{\"history\": [], \"history_turns\": 0, \"memory\": {\"kind\": \"bounded-public-history\", \"maximum_messages\": 12, \"maximum_user_characters\": 2000, \"maximum_assistant_characters\": 1200, \"maximum_current_message_characters\": 8000, \"truncated_messages\": 0}, \"policy\": {\"reasoning_is_private\": true, \"no_silent_fallback\": true, \"tools_are_evidence\": true}, \"message\": \"Mi proyecto se llama LINTERNA. Confirma en una frase breve.\"}"
+                                    },
+                                    "execution_id": "run-5777d2ba1ce6493b8c0b3176ef52c76e",
+                                    "parent_execution_id": "run-4d013e577c96478890b1bc92ba06c38c",
+                                    "children": [
+                                      {
+                                        "text": "Tu proyecto se llama LINTERNA.",
+                                        "final": {
+                                          "final_output": "Tu proyecto se llama LINTERNA."
+                                        },
+                                        "data": {
+                                          "final_output": "Tu proyecto se llama LINTERNA."
+                                        },
+                                        "ok": true,
+                                        "messages": [],
+                                        "raw_responses": [],
+                                        "usage": {
+                                          "total_tokens": 346,
+                                          "completion_tokens": 9,
+                                          "prompt_tokens": 337,
+                                          "input_tokens": 337,
+                                          "output_tokens": 9,
+                                          "requests": 1,
+                                          "client_duration_ms": 476.252,
+                                          "inference_requests": 1,
+                                          "tool_calls": 0
+                                        },
+                                        "engine": "ollama-runtime",
+                                        "model": "gemma4:31b-cloud",
+                                        "mode": "default",
+                                        "trace_schema_version": "agentic_systems.trace.v1",
+                                        "validation": null,
+                                        "errors": [],
+                                        "meta": {
+                                          "name": "assistant",
+                                          "kind": "model",
+                                          "framework": "langgraph"
+                                        },
+                                        "execution_id": "run-8bceaf6ad8c84948b23f69616db41790",
+                                        "parent_execution_id": "run-5777d2ba1ce6493b8c0b3176ef52c76e",
+                                        "children": [
+                                          {
+                                            "text": "Tu proyecto se llama LINTERNA.",
+                                            "final": {
+                                              "final_output": "Tu proyecto se llama LINTERNA."
+                                            },
+                                            "data": {
+                                              "final_output": "Tu proyecto se llama LINTERNA."
+                                            },
+                                            "ok": true,
+                                            "messages": [],
+                                            "raw_responses": [],
+                                            "usage": {
+                                              "total_tokens": 346,
+                                              "completion_tokens": 9,
+                                              "prompt_tokens": 337,
+                                              "input_tokens": 337,
+                                              "output_tokens": 9,
+                                              "requests": 1,
+                                              "client_duration_ms": 476.252,
+                                              "scheduler": {
+                                                "attempts": 1,
+                                                "retries": 0,
+                                                "timed_out": false,
+                                                "latency_ms": 936.807
+                                              },
+                                              "inference_requests": 1,
+                                              "tool_calls": 0
+                                            },
+                                            "engine": "ollama-runtime",
+                                            "model": "gemma4:31b-cloud",
+                                            "mode": "eval",
+                                            "trace_schema_version": "agentic_systems.trace.v1",
+                                            "validation": {
+                                              "ok": true,
+                                              "issues": []
+                                            },
+                                            "errors": [],
+                                            "meta": {
+                                              "source_result_type": "ollama.openai_compatible.chat.completions",
+                                              "runtime_engine": "ollama-runtime",
+                                              "execution_engine": "ollama-runtime",
+                                              "contract_repairs": 0,
+                                              "rejected_tool_calls": [],
+                                              "framework": "langgraph",
+                                              "framework_requested": "langgraph",
+                                              "framework_adapter": "langgraph",
+                                              "runtime": {
+                                                "provider": "ollama-runtime",
+                                                "model_id": "gemma4:31b-cloud",
+                                                "region_name": null,
+                                                "endpoint": "https://ollama.com/v1",
+                                                "metadata": {},
+                                                "provider_priority": [
+                                                  "openai-runtime",
+                                                  "bedrock-runtime",
+                                                  "ollama-runtime"
+                                                ],
+                                                "allow_python_fallback": false,
+                                                "scheduler": {
+                                                  "max_turns": 5,
+                                                  "max_tool_calls": 3,
+                                                  "timeout_s": 60,
+                                                  "max_concurrency": 1,
+                                                  "max_retries": 0,
+                                                  "backoff_s": 0.0
+                                                }
+                                              },
+                                              "scheduler": {
+                                                "max_turns": 5,
+                                                "max_tool_calls": 3,
+                                                "timeout_s": 60,
+                                                "max_concurrency": 1,
+                                                "max_retries": 0,
+                                                "backoff_s": 0.0
+                                              },
+                                              "scheduler_execution": {
+                                                "scheduler": {
+                                                  "max_turns": 5,
+                                                  "max_tool_calls": 3,
+                                                  "timeout_s": 60,
+                                                  "max_concurrency": 1,
+                                                  "max_retries": 0,
+                                                  "backoff_s": 0.0
+                                                },
+                                                "attempts": 1,
+                                                "retries": 0,
+                                                "timed_out": false,
+                                                "latency_ms": 936.807
+                                              },
+                                              "framework_config": {
+                                                "name": "langgraph",
+                                                "agent_kwargs": {},
+                                                "run_kwargs": {}
+                                              },
+                                              "agent_name": "assistant",
+                                              "input": "Answer only the current message using this bounded public history and verified evidence. Use the user's language; never reveal private reasoning or invent tool calls. If code is requested, use the supplied SDK signatures exactly.\n{\"history\": [], \"history_turns\": 0, \"memory\": {\"kind\": \"bounded-public-history\", \"maximum_messages\": 12, \"maximum_user_characters\": 2000, \"maximum_assistant_characters\": 1200, \"maximum_current_message_characters\": 8000, \"truncated_messages\": 0}, \"policy\": {\"reasoning_is_private\": true, \"no_silent_fallback\": true, \"tools_are_evidence\": true}, \"message\": \"Mi proyecto se llama LINTERNA. Confirma en una frase breve.\"}",
+                                              "requested_engine": "ollama-runtime"
+                                            },
+                                            "execution_id": "run-5a78a2e9ddbb43329433ee7acf3e4bcc",
+                                            "parent_execution_id": "run-8bceaf6ad8c84948b23f69616db41790",
+                                            "children": [],
+                                            "tool_events": []
+                                          }
+                                        ],
+                                        "tool_events": []
+                                      }
+                                    ],
+                                    "tool_events": []
+                                  }
+                                ],
+                                "tool_events": []
+                              }
+                            ],
+                            "tool_events": []
+                          }
+                        ],
+                        "tool_events": []
+                      }
+                    ],
+                    "tool_events": []
+                  }
+                ],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      {
+        "text": "Tu proyecto se llama LINTERNA.",
+        "final": {
+          "final_output": "Tu proyecto se llama LINTERNA."
+        },
+        "data": {
+          "answer": "Tu proyecto se llama LINTERNA.",
+          "provider": "ollama-runtime",
+          "framework": "langgraph",
+          "history_turns": 2,
+          "response_validation": {
+            "ok": true,
+            "repairs": 0
+          }
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 2,
+          "inference_requests": 1,
+          "tool_calls": 1,
+          "total_tokens": 387,
+          "completion_tokens": 9,
+          "prompt_tokens": 378,
+          "input_tokens": 378,
+          "output_tokens": 9,
+          "client_duration_ms": 538.561
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "studio_conversation",
+          "kind": "system",
+          "backend": "native",
+          "skills": [],
+          "actions_observed": 3,
+          "input": {
+            "messages": [
+              {
+                "role": "user",
+                "content": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+              },
+              {
+                "role": "assistant",
+                "content": "Tu proyecto se llama LINTERNA."
+              }
+            ],
+            "message": "¿Cómo se llama mi proyecto? Responde en una frase breve."
+          },
+          "provider": "ollama-runtime",
+          "framework": "langgraph",
+          "studio_version": "2.1.3"
+        },
+        "execution_id": "run-54456e173a824d9d8db32b36a00a4c62",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "Tu proyecto se llama LINTERNA.",
+            "final": {
+              "final_output": "Tu proyecto se llama LINTERNA."
+            },
+            "data": {
+              "answer": "Tu proyecto se llama LINTERNA.",
+              "provider": "ollama-runtime",
+              "framework": "langgraph",
+              "history_turns": 2,
+              "response_validation": {
+                "ok": true,
+                "repairs": 0
+              }
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 2,
+              "inference_requests": 1,
+              "tool_calls": 1,
+              "total_tokens": 387,
+              "completion_tokens": 9,
+              "prompt_tokens": 378,
+              "input_tokens": 378,
+              "output_tokens": 9,
+              "client_duration_ms": 538.561
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "sequence",
+              "kind": "sequence",
+              "backend": "native"
+            },
+            "execution_id": "run-a434ab2350e34eed8f0815d7630cc6e8",
+            "parent_execution_id": "run-54456e173a824d9d8db32b36a00a4c62",
+            "children": [
+              {
+                "text": "",
+                "final": {
+                  "history": [
+                    {
+                      "role": "user",
+                      "content": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                    },
+                    {
+                      "role": "assistant",
+                      "content": "Tu proyecto se llama LINTERNA."
+                    }
+                  ],
+                  "history_turns": 2,
+                  "memory": {
+                    "kind": "bounded-public-history",
+                    "maximum_messages": 12,
+                    "maximum_user_characters": 2000,
+                    "maximum_assistant_characters": 1200,
+                    "maximum_current_message_characters": 8000,
+                    "truncated_messages": 0
+                  },
+                  "policy": {
+                    "reasoning_is_private": true,
+                    "no_silent_fallback": true,
+                    "tools_are_evidence": true
+                  },
+                  "message": "¿Cómo se llama mi proyecto? Responde en una frase breve."
+                },
+                "data": {
+                  "history": [
+                    {
+                      "role": "user",
+                      "content": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                    },
+                    {
+                      "role": "assistant",
+                      "content": "Tu proyecto se llama LINTERNA."
+                    }
+                  ],
+                  "history_turns": 2,
+                  "memory": {
+                    "kind": "bounded-public-history",
+                    "maximum_messages": 12,
+                    "maximum_user_characters": 2000,
+                    "maximum_assistant_characters": 1200,
+                    "maximum_current_message_characters": 8000,
+                    "truncated_messages": 0
+                  },
+                  "policy": {
+                    "reasoning_is_private": true,
+                    "no_silent_fallback": true,
+                    "tools_are_evidence": true
+                  },
+                  "message": "¿Cómo se llama mi proyecto? Responde en una frase breve."
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "requests": 1,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "context",
+                  "kind": "agent",
+                  "backend": "native",
+                  "skills": [],
+                  "step": "context"
+                },
+                "execution_id": "run-b7ffeec1eb1b42ee9e183e77ea9159d7",
+                "parent_execution_id": "run-a434ab2350e34eed8f0815d7630cc6e8",
+                "children": [
+                  {
+                    "text": "",
+                    "final": {
+                      "history": [
+                        {
+                          "role": "user",
+                          "content": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                        },
+                        {
+                          "role": "assistant",
+                          "content": "Tu proyecto se llama LINTERNA."
+                        }
+                      ],
+                      "history_turns": 2,
+                      "memory": {
+                        "kind": "bounded-public-history",
+                        "maximum_messages": 12,
+                        "maximum_user_characters": 2000,
+                        "maximum_assistant_characters": 1200,
+                        "maximum_current_message_characters": 8000,
+                        "truncated_messages": 0
+                      },
+                      "policy": {
+                        "reasoning_is_private": true,
+                        "no_silent_fallback": true,
+                        "tools_are_evidence": true
+                      },
+                      "message": "¿Cómo se llama mi proyecto? Responde en una frase breve."
+                    },
+                    "data": {
+                      "history": [
+                        {
+                          "role": "user",
+                          "content": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                        },
+                        {
+                          "role": "assistant",
+                          "content": "Tu proyecto se llama LINTERNA."
+                        }
+                      ],
+                      "history_turns": 2,
+                      "memory": {
+                        "kind": "bounded-public-history",
+                        "maximum_messages": 12,
+                        "maximum_user_characters": 2000,
+                        "maximum_assistant_characters": 1200,
+                        "maximum_current_message_characters": 8000,
+                        "truncated_messages": 0
+                      },
+                      "policy": {
+                        "reasoning_is_private": true,
+                        "no_silent_fallback": true,
+                        "tools_are_evidence": true
+                      },
+                      "message": "¿Cómo se llama mi proyecto? Responde en una frase breve."
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "requests": 1,
+                      "inference_requests": 0,
+                      "tool_calls": 1
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "default",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "name": "prepare",
+                      "kind": "action"
+                    },
+                    "execution_id": "run-15e0d44c73674ae98258ce63bbbf621d",
+                    "parent_execution_id": "run-b7ffeec1eb1b42ee9e183e77ea9159d7",
+                    "children": [
+                      {
+                        "text": "",
+                        "final": {
+                          "history": [
+                            {
+                              "role": "user",
+                              "content": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                            },
+                            {
+                              "role": "assistant",
+                              "content": "Tu proyecto se llama LINTERNA."
+                            }
+                          ],
+                          "history_turns": 2,
+                          "memory": {
+                            "kind": "bounded-public-history",
+                            "maximum_messages": 12,
+                            "maximum_user_characters": 2000,
+                            "maximum_assistant_characters": 1200,
+                            "maximum_current_message_characters": 8000,
+                            "truncated_messages": 0
+                          },
+                          "policy": {
+                            "reasoning_is_private": true,
+                            "no_silent_fallback": true,
+                            "tools_are_evidence": true
+                          },
+                          "message": "¿Cómo se llama mi proyecto? Responde en una frase breve."
+                        },
+                        "data": {
+                          "history": [
+                            {
+                              "role": "user",
+                              "content": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                            },
+                            {
+                              "role": "assistant",
+                              "content": "Tu proyecto se llama LINTERNA."
+                            }
+                          ],
+                          "history_turns": 2,
+                          "memory": {
+                            "kind": "bounded-public-history",
+                            "maximum_messages": 12,
+                            "maximum_user_characters": 2000,
+                            "maximum_assistant_characters": 1200,
+                            "maximum_current_message_characters": 8000,
+                            "truncated_messages": 0
+                          },
+                          "policy": {
+                            "reasoning_is_private": true,
+                            "no_silent_fallback": true,
+                            "tools_are_evidence": true
+                          },
+                          "message": "¿Cómo se llama mi proyecto? Responde en una frase breve."
+                        },
+                        "ok": true,
+                        "messages": [],
+                        "raw_responses": [],
+                        "usage": {
+                          "requests": 1,
+                          "inference_requests": 0,
+                          "tool_calls": 1
+                        },
+                        "engine": "python-runtime",
+                        "model": "",
+                        "mode": "tool",
+                        "trace_schema_version": "agentic_systems.trace.v1",
+                        "validation": null,
+                        "errors": [],
+                        "meta": {
+                          "tool_name": "",
+                          "input": {
+                            "messages": [
+                              {
+                                "role": "user",
+                                "content": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                              },
+                              {
+                                "role": "assistant",
+                                "content": "Tu proyecto se llama LINTERNA."
+                              }
+                            ],
+                            "message": "¿Cómo se llama mi proyecto? Responde en una frase breve."
+                          },
+                          "tool_input": {
+                            "messages": [
+                              {
+                                "role": "user",
+                                "content": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                              },
+                              {
+                                "role": "assistant",
+                                "content": "Tu proyecto se llama LINTERNA."
+                              }
+                            ],
+                            "message": "¿Cómo se llama mi proyecto? Responde en una frase breve."
+                          }
+                        },
+                        "execution_id": "run-d4b905d059bc449087ad6e5a2e2693dd",
+                        "parent_execution_id": "run-15e0d44c73674ae98258ce63bbbf621d",
+                        "children": [],
+                        "tool_events": [
+                          {
+                            "id": "tool-8fb72c4006704698a9c933ca24b48138",
+                            "name": "prepare_conversation_context",
+                            "input": {
+                              "messages": [
+                                {
+                                  "role": "user",
+                                  "content": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                                },
+                                {
+                                  "role": "assistant",
+                                  "content": "Tu proyecto se llama LINTERNA."
+                                }
+                              ],
+                              "message": "¿Cómo se llama mi proyecto? Responde en una frase breve."
+                            },
+                            "output": {
+                              "data": {
+                                "history": [
+                                  {
+                                    "role": "user",
+                                    "content": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                                  },
+                                  {
+                                    "role": "assistant",
+                                    "content": "Tu proyecto se llama LINTERNA."
+                                  }
+                                ],
+                                "history_turns": 2,
+                                "memory": {
+                                  "kind": "bounded-public-history",
+                                  "maximum_messages": 12,
+                                  "maximum_user_characters": 2000,
+                                  "maximum_assistant_characters": 1200,
+                                  "maximum_current_message_characters": 8000,
+                                  "truncated_messages": 0
+                                },
+                                "policy": {
+                                  "reasoning_is_private": true,
+                                  "no_silent_fallback": true,
+                                  "tools_are_evidence": true
+                                },
+                                "message": "¿Cómo se llama mi proyecto? Responde en una frase breve."
+                              }
+                            },
+                            "ok": true,
+                            "error": null,
+                            "duration_ms": null,
+                            "meta": {}
+                          }
+                        ]
+                      }
+                    ],
+                    "tool_events": []
+                  }
+                ],
+                "tool_events": []
+              },
+              {
+                "text": "",
+                "final": null,
+                "data": {
+                  "history": [
+                    {
+                      "role": "user",
+                      "content": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                    },
+                    {
+                      "role": "assistant",
+                      "content": "Tu proyecto se llama LINTERNA."
+                    }
+                  ],
+                  "history_turns": 2,
+                  "memory": {
+                    "kind": "bounded-public-history",
+                    "maximum_messages": 12,
+                    "maximum_user_characters": 2000,
+                    "maximum_assistant_characters": 1200,
+                    "maximum_current_message_characters": 8000,
+                    "truncated_messages": 0
+                  },
+                  "policy": {
+                    "reasoning_is_private": true,
+                    "no_silent_fallback": true,
+                    "tools_are_evidence": true
+                  },
+                  "message": "¿Cómo se llama mi proyecto? Responde en una frase breve."
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {},
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "grounding",
+                  "kind": "agent",
+                  "backend": "native",
+                  "skills": [],
+                  "step": "grounding"
+                },
+                "execution_id": "run-852698caa5c04c5aae008d138dd67dae",
+                "parent_execution_id": "run-a434ab2350e34eed8f0815d7630cc6e8",
+                "children": [
+                  {
+                    "text": "",
+                    "final": null,
+                    "data": {
+                      "history": [
+                        {
+                          "role": "user",
+                          "content": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                        },
+                        {
+                          "role": "assistant",
+                          "content": "Tu proyecto se llama LINTERNA."
+                        }
+                      ],
+                      "history_turns": 2,
+                      "memory": {
+                        "kind": "bounded-public-history",
+                        "maximum_messages": 12,
+                        "maximum_user_characters": 2000,
+                        "maximum_assistant_characters": 1200,
+                        "maximum_current_message_characters": 8000,
+                        "truncated_messages": 0
+                      },
+                      "policy": {
+                        "reasoning_is_private": true,
+                        "no_silent_fallback": true,
+                        "tools_are_evidence": true
+                      },
+                      "message": "¿Cómo se llama mi proyecto? Responde en una frase breve."
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {},
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "default",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "name": "ground",
+                      "kind": "action"
+                    },
+                    "execution_id": "run-1bb0d7f54b2847f0acc72485f4cd46f2",
+                    "parent_execution_id": "run-852698caa5c04c5aae008d138dd67dae",
+                    "children": [],
+                    "tool_events": []
+                  }
+                ],
+                "tool_events": []
+              },
+              {
+                "text": "Tu proyecto se llama LINTERNA.",
+                "final": {
+                  "final_output": "Tu proyecto se llama LINTERNA."
+                },
+                "data": {
+                  "answer": "Tu proyecto se llama LINTERNA.",
+                  "provider": "ollama-runtime",
+                  "framework": "langgraph",
+                  "history_turns": 2,
+                  "response_validation": {
+                    "ok": true,
+                    "repairs": 0
+                  }
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "total_tokens": 387,
+                  "completion_tokens": 9,
+                  "prompt_tokens": 378,
+                  "input_tokens": 378,
+                  "output_tokens": 9,
+                  "requests": 1,
+                  "client_duration_ms": 538.561,
+                  "inference_requests": 1,
+                  "tool_calls": 0
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "responding",
+                  "kind": "agent",
+                  "backend": "native",
+                  "skills": [],
+                  "step": "responding"
+                },
+                "execution_id": "run-376148b7bbee415f9fd41fdd94c39243",
+                "parent_execution_id": "run-a434ab2350e34eed8f0815d7630cc6e8",
+                "children": [
+                  {
+                    "text": "Tu proyecto se llama LINTERNA.",
+                    "final": {
+                      "final_output": "Tu proyecto se llama LINTERNA."
+                    },
+                    "data": {
+                      "answer": "Tu proyecto se llama LINTERNA.",
+                      "provider": "ollama-runtime",
+                      "framework": "langgraph",
+                      "history_turns": 2,
+                      "response_validation": {
+                        "ok": true,
+                        "repairs": 0
+                      }
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "total_tokens": 387,
+                      "completion_tokens": 9,
+                      "prompt_tokens": 378,
+                      "input_tokens": 378,
+                      "output_tokens": 9,
+                      "requests": 1,
+                      "client_duration_ms": 538.561,
+                      "inference_requests": 1,
+                      "tool_calls": 0
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "default",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "name": "respond",
+                      "kind": "action"
+                    },
+                    "execution_id": "run-39265d22ce7b4e92aa7b515408a555b3",
+                    "parent_execution_id": "run-376148b7bbee415f9fd41fdd94c39243",
+                    "children": [
+                      {
+                        "text": "Tu proyecto se llama LINTERNA.",
+                        "final": {
+                          "final_output": "Tu proyecto se llama LINTERNA."
+                        },
+                        "data": {
+                          "answer": "Tu proyecto se llama LINTERNA.",
+                          "provider": "ollama-runtime",
+                          "framework": "langgraph",
+                          "history_turns": 2,
+                          "response_validation": {
+                            "ok": true,
+                            "repairs": 0
+                          }
+                        },
+                        "ok": true,
+                        "messages": [],
+                        "raw_responses": [],
+                        "usage": {
+                          "total_tokens": 387,
+                          "completion_tokens": 9,
+                          "prompt_tokens": 378,
+                          "input_tokens": 378,
+                          "output_tokens": 9,
+                          "requests": 1,
+                          "client_duration_ms": 538.561,
+                          "inference_requests": 1,
+                          "tool_calls": 0
+                        },
+                        "engine": "python-runtime",
+                        "model": "",
+                        "mode": "default",
+                        "trace_schema_version": "agentic_systems.trace.v1",
+                        "validation": null,
+                        "errors": [],
+                        "meta": {
+                          "name": "answer_attempts",
+                          "kind": "system",
+                          "backend": "native",
+                          "skills": [],
+                          "actions_observed": 1,
+                          "input": {}
+                        },
+                        "execution_id": "run-dbc4fa62b87a491fbfc0e8c9deaff194",
+                        "parent_execution_id": "run-39265d22ce7b4e92aa7b515408a555b3",
+                        "children": [
+                          {
+                            "text": "Tu proyecto se llama LINTERNA.",
+                            "final": {
+                              "final_output": "Tu proyecto se llama LINTERNA."
+                            },
+                            "data": {
+                              "final_output": "Tu proyecto se llama LINTERNA."
+                            },
+                            "ok": true,
+                            "messages": [],
+                            "raw_responses": [],
+                            "usage": {
+                              "total_tokens": 387,
+                              "completion_tokens": 9,
+                              "prompt_tokens": 378,
+                              "input_tokens": 378,
+                              "output_tokens": 9,
+                              "requests": 1,
+                              "client_duration_ms": 538.561,
+                              "inference_requests": 1,
+                              "tool_calls": 0
+                            },
+                            "engine": "python-runtime",
+                            "model": "",
+                            "mode": "default",
+                            "trace_schema_version": "agentic_systems.trace.v1",
+                            "validation": null,
+                            "errors": [],
+                            "meta": {
+                              "name": "sequence",
+                              "kind": "sequence",
+                              "backend": "native"
+                            },
+                            "execution_id": "run-4061fe59860e4cb998fbd0055c633678",
+                            "parent_execution_id": "run-dbc4fa62b87a491fbfc0e8c9deaff194",
+                            "children": [
+                              {
+                                "text": "Tu proyecto se llama LINTERNA.",
+                                "final": {
+                                  "final_output": "Tu proyecto se llama LINTERNA."
+                                },
+                                "data": {
+                                  "final_output": "Tu proyecto se llama LINTERNA."
+                                },
+                                "ok": true,
+                                "messages": [],
+                                "raw_responses": [],
+                                "usage": {
+                                  "total_tokens": 387,
+                                  "completion_tokens": 9,
+                                  "prompt_tokens": 378,
+                                  "input_tokens": 378,
+                                  "output_tokens": 9,
+                                  "requests": 1,
+                                  "client_duration_ms": 538.561,
+                                  "inference_requests": 1,
+                                  "tool_calls": 0
+                                },
+                                "engine": "python-runtime",
+                                "model": "",
+                                "mode": "default",
+                                "trace_schema_version": "agentic_systems.trace.v1",
+                                "validation": null,
+                                "errors": [],
+                                "meta": {
+                                  "name": "attempt_0",
+                                  "kind": "action",
+                                  "step": "attempt_0"
+                                },
+                                "execution_id": "run-456eb306e2b94e13bd4f19b243018e80",
+                                "parent_execution_id": "run-4061fe59860e4cb998fbd0055c633678",
+                                "children": [
+                                  {
+                                    "text": "Tu proyecto se llama LINTERNA.",
+                                    "final": {
+                                      "final_output": "Tu proyecto se llama LINTERNA."
+                                    },
+                                    "data": {
+                                      "final_output": "Tu proyecto se llama LINTERNA."
+                                    },
+                                    "ok": true,
+                                    "messages": [],
+                                    "raw_responses": [],
+                                    "usage": {
+                                      "total_tokens": 387,
+                                      "completion_tokens": 9,
+                                      "prompt_tokens": 378,
+                                      "input_tokens": 378,
+                                      "output_tokens": 9,
+                                      "requests": 1,
+                                      "client_duration_ms": 538.561,
+                                      "inference_requests": 1,
+                                      "tool_calls": 0
+                                    },
+                                    "engine": "ollama-runtime",
+                                    "model": "gemma4:31b-cloud",
+                                    "mode": "default",
+                                    "trace_schema_version": "agentic_systems.trace.v1",
+                                    "validation": null,
+                                    "errors": [],
+                                    "meta": {
+                                      "name": "assistant",
+                                      "kind": "agent",
+                                      "backend": "native",
+                                      "skills": [
+                                        "studio"
+                                      ],
+                                      "actions_observed": 1,
+                                      "input": "Answer only the current message using this bounded public history and verified evidence. Use the user's language; never reveal private reasoning or invent tool calls. If code is requested, use the supplied SDK signatures exactly.\n{\"history\": [{\"role\": \"user\", \"content\": \"Mi proyecto se llama LINTERNA. Confirma en una frase breve.\"}, {\"role\": \"assistant\", \"content\": \"Tu proyecto se llama LINTERNA.\"}], \"history_turns\": 2, \"memory\": {\"kind\": \"bounded-public-history\", \"maximum_messages\": 12, \"maximum_user_characters\": 2000, \"maximum_assistant_characters\": 1200, \"maximum_current_message_characters\": 8000, \"truncated_messages\": 0}, \"policy\": {\"reasoning_is_private\": true, \"no_silent_fallback\": true, \"tools_are_evidence\": true}, \"message\": \"¿Cómo se llama mi proyecto? Responde en una frase breve.\"}"
+                                    },
+                                    "execution_id": "run-4845c96a8f2f4fcc8034268abe0551d8",
+                                    "parent_execution_id": "run-456eb306e2b94e13bd4f19b243018e80",
+                                    "children": [
+                                      {
+                                        "text": "Tu proyecto se llama LINTERNA.",
+                                        "final": {
+                                          "final_output": "Tu proyecto se llama LINTERNA."
+                                        },
+                                        "data": {
+                                          "final_output": "Tu proyecto se llama LINTERNA."
+                                        },
+                                        "ok": true,
+                                        "messages": [],
+                                        "raw_responses": [],
+                                        "usage": {
+                                          "total_tokens": 387,
+                                          "completion_tokens": 9,
+                                          "prompt_tokens": 378,
+                                          "input_tokens": 378,
+                                          "output_tokens": 9,
+                                          "requests": 1,
+                                          "client_duration_ms": 538.561,
+                                          "inference_requests": 1,
+                                          "tool_calls": 0
+                                        },
+                                        "engine": "ollama-runtime",
+                                        "model": "gemma4:31b-cloud",
+                                        "mode": "default",
+                                        "trace_schema_version": "agentic_systems.trace.v1",
+                                        "validation": null,
+                                        "errors": [],
+                                        "meta": {
+                                          "name": "assistant",
+                                          "kind": "model",
+                                          "framework": "langgraph"
+                                        },
+                                        "execution_id": "run-73cb21f5e27d45329d98b69136fa2823",
+                                        "parent_execution_id": "run-4845c96a8f2f4fcc8034268abe0551d8",
+                                        "children": [
+                                          {
+                                            "text": "Tu proyecto se llama LINTERNA.",
+                                            "final": {
+                                              "final_output": "Tu proyecto se llama LINTERNA."
+                                            },
+                                            "data": {
+                                              "final_output": "Tu proyecto se llama LINTERNA."
+                                            },
+                                            "ok": true,
+                                            "messages": [],
+                                            "raw_responses": [],
+                                            "usage": {
+                                              "total_tokens": 387,
+                                              "completion_tokens": 9,
+                                              "prompt_tokens": 378,
+                                              "input_tokens": 378,
+                                              "output_tokens": 9,
+                                              "requests": 1,
+                                              "client_duration_ms": 538.561,
+                                              "scheduler": {
+                                                "attempts": 1,
+                                                "retries": 0,
+                                                "timed_out": false,
+                                                "latency_ms": 1090.172
+                                              },
+                                              "inference_requests": 1,
+                                              "tool_calls": 0
+                                            },
+                                            "engine": "ollama-runtime",
+                                            "model": "gemma4:31b-cloud",
+                                            "mode": "eval",
+                                            "trace_schema_version": "agentic_systems.trace.v1",
+                                            "validation": {
+                                              "ok": true,
+                                              "issues": []
+                                            },
+                                            "errors": [],
+                                            "meta": {
+                                              "source_result_type": "ollama.openai_compatible.chat.completions",
+                                              "runtime_engine": "ollama-runtime",
+                                              "execution_engine": "ollama-runtime",
+                                              "contract_repairs": 0,
+                                              "rejected_tool_calls": [],
+                                              "framework": "langgraph",
+                                              "framework_requested": "langgraph",
+                                              "framework_adapter": "langgraph",
+                                              "runtime": {
+                                                "provider": "ollama-runtime",
+                                                "model_id": "gemma4:31b-cloud",
+                                                "region_name": null,
+                                                "endpoint": "https://ollama.com/v1",
+                                                "metadata": {},
+                                                "provider_priority": [
+                                                  "openai-runtime",
+                                                  "bedrock-runtime",
+                                                  "ollama-runtime"
+                                                ],
+                                                "allow_python_fallback": false,
+                                                "scheduler": {
+                                                  "max_turns": 5,
+                                                  "max_tool_calls": 3,
+                                                  "timeout_s": 60,
+                                                  "max_concurrency": 1,
+                                                  "max_retries": 0,
+                                                  "backoff_s": 0.0
+                                                }
+                                              },
+                                              "scheduler": {
+                                                "max_turns": 5,
+                                                "max_tool_calls": 3,
+                                                "timeout_s": 60,
+                                                "max_concurrency": 1,
+                                                "max_retries": 0,
+                                                "backoff_s": 0.0
+                                              },
+                                              "scheduler_execution": {
+                                                "scheduler": {
+                                                  "max_turns": 5,
+                                                  "max_tool_calls": 3,
+                                                  "timeout_s": 60,
+                                                  "max_concurrency": 1,
+                                                  "max_retries": 0,
+                                                  "backoff_s": 0.0
+                                                },
+                                                "attempts": 1,
+                                                "retries": 0,
+                                                "timed_out": false,
+                                                "latency_ms": 1090.172
+                                              },
+                                              "framework_config": {
+                                                "name": "langgraph",
+                                                "agent_kwargs": {},
+                                                "run_kwargs": {}
+                                              },
+                                              "agent_name": "assistant",
+                                              "input": "Answer only the current message using this bounded public history and verified evidence. Use the user's language; never reveal private reasoning or invent tool calls. If code is requested, use the supplied SDK signatures exactly.\n{\"history\": [{\"role\": \"user\", \"content\": \"Mi proyecto se llama LINTERNA. Confirma en una frase breve.\"}, {\"role\": \"assistant\", \"content\": \"Tu proyecto se llama LINTERNA.\"}], \"history_turns\": 2, \"memory\": {\"kind\": \"bounded-public-history\", \"maximum_messages\": 12, \"maximum_user_characters\": 2000, \"maximum_assistant_characters\": 1200, \"maximum_current_message_characters\": 8000, \"truncated_messages\": 0}, \"policy\": {\"reasoning_is_private\": true, \"no_silent_fallback\": true, \"tools_are_evidence\": true}, \"message\": \"¿Cómo se llama mi proyecto? Responde en una frase breve.\"}",
+                                              "requested_engine": "ollama-runtime"
+                                            },
+                                            "execution_id": "run-3e2c630ca4e9407c82d3d7cf87233c97",
+                                            "parent_execution_id": "run-73cb21f5e27d45329d98b69136fa2823",
+                                            "children": [],
+                                            "tool_events": []
+                                          }
+                                        ],
+                                        "tool_events": []
+                                      }
+                                    ],
+                                    "tool_events": []
+                                  }
+                                ],
+                                "tool_events": []
+                              }
+                            ],
+                            "tool_events": []
+                          }
+                        ],
+                        "tool_events": []
+                      }
+                    ],
+                    "tool_events": []
+                  }
+                ],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      {
+        "text": "El resultado de 17 * 19 es 323.",
+        "final": {
+          "final_output": "El resultado de 17 * 19 es 323."
+        },
+        "data": {
+          "answer": "El resultado de 17 * 19 es 323.",
+          "provider": "ollama-runtime",
+          "framework": "langgraph",
+          "history_turns": 4,
+          "response_validation": {
+            "ok": true,
+            "repairs": 0
+          }
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 4,
+          "inference_requests": 3,
+          "tool_calls": 2,
+          "total_tokens": 892,
+          "completion_tokens": 59,
+          "prompt_tokens": 833,
+          "input_tokens": 833,
+          "output_tokens": 59,
+          "client_duration_ms": 1383.846
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "studio_conversation",
+          "kind": "system",
+          "backend": "native",
+          "skills": [],
+          "actions_observed": 3,
+          "input": {
+            "messages": [
+              {
+                "role": "user",
+                "content": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+              },
+              {
+                "role": "assistant",
+                "content": "Tu proyecto se llama LINTERNA."
+              },
+              {
+                "role": "user",
+                "content": "¿Cómo se llama mi proyecto? Responde en una frase breve."
+              },
+              {
+                "role": "assistant",
+                "content": "Tu proyecto se llama LINTERNA."
+              }
+            ],
+            "message": "Calcula 17 * 19 usando la calculadora y responde en una frase."
+          },
+          "provider": "ollama-runtime",
+          "framework": "langgraph",
+          "studio_version": "2.1.3"
+        },
+        "execution_id": "run-d5490102829d4bbf9cc3faa02c9f7f21",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "El resultado de 17 * 19 es 323.",
+            "final": {
+              "final_output": "El resultado de 17 * 19 es 323."
+            },
+            "data": {
+              "answer": "El resultado de 17 * 19 es 323.",
+              "provider": "ollama-runtime",
+              "framework": "langgraph",
+              "history_turns": 4,
+              "response_validation": {
+                "ok": true,
+                "repairs": 0
+              }
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 4,
+              "inference_requests": 3,
+              "tool_calls": 2,
+              "total_tokens": 892,
+              "completion_tokens": 59,
+              "prompt_tokens": 833,
+              "input_tokens": 833,
+              "output_tokens": 59,
+              "client_duration_ms": 1383.846
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "sequence",
+              "kind": "sequence",
+              "backend": "native"
+            },
+            "execution_id": "run-53783dc013c8433bb048b21097a51657",
+            "parent_execution_id": "run-d5490102829d4bbf9cc3faa02c9f7f21",
+            "children": [
+              {
+                "text": "",
+                "final": {
+                  "history": [
+                    {
+                      "role": "user",
+                      "content": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                    },
+                    {
+                      "role": "assistant",
+                      "content": "Tu proyecto se llama LINTERNA."
+                    },
+                    {
+                      "role": "user",
+                      "content": "¿Cómo se llama mi proyecto? Responde en una frase breve."
+                    },
+                    {
+                      "role": "assistant",
+                      "content": "Tu proyecto se llama LINTERNA."
+                    }
+                  ],
+                  "history_turns": 4,
+                  "memory": {
+                    "kind": "bounded-public-history",
+                    "maximum_messages": 12,
+                    "maximum_user_characters": 2000,
+                    "maximum_assistant_characters": 1200,
+                    "maximum_current_message_characters": 8000,
+                    "truncated_messages": 0
+                  },
+                  "policy": {
+                    "reasoning_is_private": true,
+                    "no_silent_fallback": true,
+                    "tools_are_evidence": true
+                  },
+                  "message": "Calcula 17 * 19 usando la calculadora y responde en una frase."
+                },
+                "data": {
+                  "history": [
+                    {
+                      "role": "user",
+                      "content": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                    },
+                    {
+                      "role": "assistant",
+                      "content": "Tu proyecto se llama LINTERNA."
+                    },
+                    {
+                      "role": "user",
+                      "content": "¿Cómo se llama mi proyecto? Responde en una frase breve."
+                    },
+                    {
+                      "role": "assistant",
+                      "content": "Tu proyecto se llama LINTERNA."
+                    }
+                  ],
+                  "history_turns": 4,
+                  "memory": {
+                    "kind": "bounded-public-history",
+                    "maximum_messages": 12,
+                    "maximum_user_characters": 2000,
+                    "maximum_assistant_characters": 1200,
+                    "maximum_current_message_characters": 8000,
+                    "truncated_messages": 0
+                  },
+                  "policy": {
+                    "reasoning_is_private": true,
+                    "no_silent_fallback": true,
+                    "tools_are_evidence": true
+                  },
+                  "message": "Calcula 17 * 19 usando la calculadora y responde en una frase."
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "requests": 1,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "context",
+                  "kind": "agent",
+                  "backend": "native",
+                  "skills": [],
+                  "step": "context"
+                },
+                "execution_id": "run-3e9e3258b649426e860c06322e02f465",
+                "parent_execution_id": "run-53783dc013c8433bb048b21097a51657",
+                "children": [
+                  {
+                    "text": "",
+                    "final": {
+                      "history": [
+                        {
+                          "role": "user",
+                          "content": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                        },
+                        {
+                          "role": "assistant",
+                          "content": "Tu proyecto se llama LINTERNA."
+                        },
+                        {
+                          "role": "user",
+                          "content": "¿Cómo se llama mi proyecto? Responde en una frase breve."
+                        },
+                        {
+                          "role": "assistant",
+                          "content": "Tu proyecto se llama LINTERNA."
+                        }
+                      ],
+                      "history_turns": 4,
+                      "memory": {
+                        "kind": "bounded-public-history",
+                        "maximum_messages": 12,
+                        "maximum_user_characters": 2000,
+                        "maximum_assistant_characters": 1200,
+                        "maximum_current_message_characters": 8000,
+                        "truncated_messages": 0
+                      },
+                      "policy": {
+                        "reasoning_is_private": true,
+                        "no_silent_fallback": true,
+                        "tools_are_evidence": true
+                      },
+                      "message": "Calcula 17 * 19 usando la calculadora y responde en una frase."
+                    },
+                    "data": {
+                      "history": [
+                        {
+                          "role": "user",
+                          "content": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                        },
+                        {
+                          "role": "assistant",
+                          "content": "Tu proyecto se llama LINTERNA."
+                        },
+                        {
+                          "role": "user",
+                          "content": "¿Cómo se llama mi proyecto? Responde en una frase breve."
+                        },
+                        {
+                          "role": "assistant",
+                          "content": "Tu proyecto se llama LINTERNA."
+                        }
+                      ],
+                      "history_turns": 4,
+                      "memory": {
+                        "kind": "bounded-public-history",
+                        "maximum_messages": 12,
+                        "maximum_user_characters": 2000,
+                        "maximum_assistant_characters": 1200,
+                        "maximum_current_message_characters": 8000,
+                        "truncated_messages": 0
+                      },
+                      "policy": {
+                        "reasoning_is_private": true,
+                        "no_silent_fallback": true,
+                        "tools_are_evidence": true
+                      },
+                      "message": "Calcula 17 * 19 usando la calculadora y responde en una frase."
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "requests": 1,
+                      "inference_requests": 0,
+                      "tool_calls": 1
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "default",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "name": "prepare",
+                      "kind": "action"
+                    },
+                    "execution_id": "run-c268ab42a59c4e698818bfe51607b21d",
+                    "parent_execution_id": "run-3e9e3258b649426e860c06322e02f465",
+                    "children": [
+                      {
+                        "text": "",
+                        "final": {
+                          "history": [
+                            {
+                              "role": "user",
+                              "content": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                            },
+                            {
+                              "role": "assistant",
+                              "content": "Tu proyecto se llama LINTERNA."
+                            },
+                            {
+                              "role": "user",
+                              "content": "¿Cómo se llama mi proyecto? Responde en una frase breve."
+                            },
+                            {
+                              "role": "assistant",
+                              "content": "Tu proyecto se llama LINTERNA."
+                            }
+                          ],
+                          "history_turns": 4,
+                          "memory": {
+                            "kind": "bounded-public-history",
+                            "maximum_messages": 12,
+                            "maximum_user_characters": 2000,
+                            "maximum_assistant_characters": 1200,
+                            "maximum_current_message_characters": 8000,
+                            "truncated_messages": 0
+                          },
+                          "policy": {
+                            "reasoning_is_private": true,
+                            "no_silent_fallback": true,
+                            "tools_are_evidence": true
+                          },
+                          "message": "Calcula 17 * 19 usando la calculadora y responde en una frase."
+                        },
+                        "data": {
+                          "history": [
+                            {
+                              "role": "user",
+                              "content": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                            },
+                            {
+                              "role": "assistant",
+                              "content": "Tu proyecto se llama LINTERNA."
+                            },
+                            {
+                              "role": "user",
+                              "content": "¿Cómo se llama mi proyecto? Responde en una frase breve."
+                            },
+                            {
+                              "role": "assistant",
+                              "content": "Tu proyecto se llama LINTERNA."
+                            }
+                          ],
+                          "history_turns": 4,
+                          "memory": {
+                            "kind": "bounded-public-history",
+                            "maximum_messages": 12,
+                            "maximum_user_characters": 2000,
+                            "maximum_assistant_characters": 1200,
+                            "maximum_current_message_characters": 8000,
+                            "truncated_messages": 0
+                          },
+                          "policy": {
+                            "reasoning_is_private": true,
+                            "no_silent_fallback": true,
+                            "tools_are_evidence": true
+                          },
+                          "message": "Calcula 17 * 19 usando la calculadora y responde en una frase."
+                        },
+                        "ok": true,
+                        "messages": [],
+                        "raw_responses": [],
+                        "usage": {
+                          "requests": 1,
+                          "inference_requests": 0,
+                          "tool_calls": 1
+                        },
+                        "engine": "python-runtime",
+                        "model": "",
+                        "mode": "tool",
+                        "trace_schema_version": "agentic_systems.trace.v1",
+                        "validation": null,
+                        "errors": [],
+                        "meta": {
+                          "tool_name": "",
+                          "input": {
+                            "messages": [
+                              {
+                                "role": "user",
+                                "content": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                              },
+                              {
+                                "role": "assistant",
+                                "content": "Tu proyecto se llama LINTERNA."
+                              },
+                              {
+                                "role": "user",
+                                "content": "¿Cómo se llama mi proyecto? Responde en una frase breve."
+                              },
+                              {
+                                "role": "assistant",
+                                "content": "Tu proyecto se llama LINTERNA."
+                              }
+                            ],
+                            "message": "Calcula 17 * 19 usando la calculadora y responde en una frase."
+                          },
+                          "tool_input": {
+                            "messages": [
+                              {
+                                "role": "user",
+                                "content": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                              },
+                              {
+                                "role": "assistant",
+                                "content": "Tu proyecto se llama LINTERNA."
+                              },
+                              {
+                                "role": "user",
+                                "content": "¿Cómo se llama mi proyecto? Responde en una frase breve."
+                              },
+                              {
+                                "role": "assistant",
+                                "content": "Tu proyecto se llama LINTERNA."
+                              }
+                            ],
+                            "message": "Calcula 17 * 19 usando la calculadora y responde en una frase."
+                          }
+                        },
+                        "execution_id": "run-21a12b0c70534ab698db451c0d65f230",
+                        "parent_execution_id": "run-c268ab42a59c4e698818bfe51607b21d",
+                        "children": [],
+                        "tool_events": [
+                          {
+                            "id": "tool-3a0ba96975fc4d0ea3d2cdfe0cb40b63",
+                            "name": "prepare_conversation_context",
+                            "input": {
+                              "messages": [
+                                {
+                                  "role": "user",
+                                  "content": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                                },
+                                {
+                                  "role": "assistant",
+                                  "content": "Tu proyecto se llama LINTERNA."
+                                },
+                                {
+                                  "role": "user",
+                                  "content": "¿Cómo se llama mi proyecto? Responde en una frase breve."
+                                },
+                                {
+                                  "role": "assistant",
+                                  "content": "Tu proyecto se llama LINTERNA."
+                                }
+                              ],
+                              "message": "Calcula 17 * 19 usando la calculadora y responde en una frase."
+                            },
+                            "output": {
+                              "data": {
+                                "history": [
+                                  {
+                                    "role": "user",
+                                    "content": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                                  },
+                                  {
+                                    "role": "assistant",
+                                    "content": "Tu proyecto se llama LINTERNA."
+                                  },
+                                  {
+                                    "role": "user",
+                                    "content": "¿Cómo se llama mi proyecto? Responde en una frase breve."
+                                  },
+                                  {
+                                    "role": "assistant",
+                                    "content": "Tu proyecto se llama LINTERNA."
+                                  }
+                                ],
+                                "history_turns": 4,
+                                "memory": {
+                                  "kind": "bounded-public-history",
+                                  "maximum_messages": 12,
+                                  "maximum_user_characters": 2000,
+                                  "maximum_assistant_characters": 1200,
+                                  "maximum_current_message_characters": 8000,
+                                  "truncated_messages": 0
+                                },
+                                "policy": {
+                                  "reasoning_is_private": true,
+                                  "no_silent_fallback": true,
+                                  "tools_are_evidence": true
+                                },
+                                "message": "Calcula 17 * 19 usando la calculadora y responde en una frase."
+                              }
+                            },
+                            "ok": true,
+                            "error": null,
+                            "duration_ms": null,
+                            "meta": {}
+                          }
+                        ]
+                      }
+                    ],
+                    "tool_events": []
+                  }
+                ],
+                "tool_events": []
+              },
+              {
+                "text": "El resultado de multiplicar 17 por 19 es 323.",
+                "final": {
+                  "final_output": "El resultado de multiplicar 17 por 19 es 323."
+                },
+                "data": {
+                  "history": [
+                    {
+                      "role": "user",
+                      "content": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                    },
+                    {
+                      "role": "assistant",
+                      "content": "Tu proyecto se llama LINTERNA."
+                    },
+                    {
+                      "role": "user",
+                      "content": "¿Cómo se llama mi proyecto? Responde en una frase breve."
+                    },
+                    {
+                      "role": "assistant",
+                      "content": "Tu proyecto se llama LINTERNA."
+                    }
+                  ],
+                  "history_turns": 4,
+                  "memory": {
+                    "kind": "bounded-public-history",
+                    "maximum_messages": 12,
+                    "maximum_user_characters": 2000,
+                    "maximum_assistant_characters": 1200,
+                    "maximum_current_message_characters": 8000,
+                    "truncated_messages": 0
+                  },
+                  "policy": {
+                    "reasoning_is_private": true,
+                    "no_silent_fallback": true,
+                    "tools_are_evidence": true
+                  },
+                  "message": "Calcula 17 * 19 usando la calculadora y responde en una frase.",
+                  "calculation_evidence": [
+                    {
+                      "expression": "17 * 19",
+                      "normalized_expression": "17 * 19",
+                      "result": 323,
+                      "verified_by": "python-runtime::safe_calculate"
+                    }
+                  ]
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "total_tokens": 400,
+                  "completion_tokens": 42,
+                  "prompt_tokens": 358,
+                  "input_tokens": 358,
+                  "output_tokens": 42,
+                  "requests": 2,
+                  "client_duration_ms": 885.0609999999999,
+                  "inference_requests": 2,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "grounding",
+                  "kind": "agent",
+                  "backend": "native",
+                  "skills": [],
+                  "step": "grounding"
+                },
+                "execution_id": "run-630e7e5fc3a54d1a8c0257770a9cf625",
+                "parent_execution_id": "run-53783dc013c8433bb048b21097a51657",
+                "children": [
+                  {
+                    "text": "El resultado de multiplicar 17 por 19 es 323.",
+                    "final": {
+                      "final_output": "El resultado de multiplicar 17 por 19 es 323."
+                    },
+                    "data": {
+                      "history": [
+                        {
+                          "role": "user",
+                          "content": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                        },
+                        {
+                          "role": "assistant",
+                          "content": "Tu proyecto se llama LINTERNA."
+                        },
+                        {
+                          "role": "user",
+                          "content": "¿Cómo se llama mi proyecto? Responde en una frase breve."
+                        },
+                        {
+                          "role": "assistant",
+                          "content": "Tu proyecto se llama LINTERNA."
+                        }
+                      ],
+                      "history_turns": 4,
+                      "memory": {
+                        "kind": "bounded-public-history",
+                        "maximum_messages": 12,
+                        "maximum_user_characters": 2000,
+                        "maximum_assistant_characters": 1200,
+                        "maximum_current_message_characters": 8000,
+                        "truncated_messages": 0
+                      },
+                      "policy": {
+                        "reasoning_is_private": true,
+                        "no_silent_fallback": true,
+                        "tools_are_evidence": true
+                      },
+                      "message": "Calcula 17 * 19 usando la calculadora y responde en una frase.",
+                      "calculation_evidence": [
+                        {
+                          "expression": "17 * 19",
+                          "normalized_expression": "17 * 19",
+                          "result": 323,
+                          "verified_by": "python-runtime::safe_calculate"
+                        }
+                      ]
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "total_tokens": 400,
+                      "completion_tokens": 42,
+                      "prompt_tokens": 358,
+                      "input_tokens": 358,
+                      "output_tokens": 42,
+                      "requests": 2,
+                      "client_duration_ms": 885.0609999999999,
+                      "inference_requests": 2,
+                      "tool_calls": 1
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "default",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "name": "ground",
+                      "kind": "action"
+                    },
+                    "execution_id": "run-f8469327c9214d7880e42ea3a4d57b5f",
+                    "parent_execution_id": "run-630e7e5fc3a54d1a8c0257770a9cf625",
+                    "children": [
+                      {
+                        "text": "El resultado de multiplicar 17 por 19 es 323.",
+                        "final": {
+                          "final_output": "El resultado de multiplicar 17 por 19 es 323."
+                        },
+                        "data": {
+                          "history": [
+                            {
+                              "role": "user",
+                              "content": "Mi proyecto se llama LINTERNA. Confirma en una frase breve."
+                            },
+                            {
+                              "role": "assistant",
+                              "content": "Tu proyecto se llama LINTERNA."
+                            },
+                            {
+                              "role": "user",
+                              "content": "¿Cómo se llama mi proyecto? Responde en una frase breve."
+                            },
+                            {
+                              "role": "assistant",
+                              "content": "Tu proyecto se llama LINTERNA."
+                            }
+                          ],
+                          "history_turns": 4,
+                          "memory": {
+                            "kind": "bounded-public-history",
+                            "maximum_messages": 12,
+                            "maximum_user_characters": 2000,
+                            "maximum_assistant_characters": 1200,
+                            "maximum_current_message_characters": 8000,
+                            "truncated_messages": 0
+                          },
+                          "policy": {
+                            "reasoning_is_private": true,
+                            "no_silent_fallback": true,
+                            "tools_are_evidence": true
+                          },
+                          "message": "Calcula 17 * 19 usando la calculadora y responde en una frase.",
+                          "calculation_evidence": [
+                            {
+                              "expression": "17 * 19",
+                              "normalized_expression": "17 * 19",
+                              "result": 323,
+                              "verified_by": "python-runtime::safe_calculate"
+                            }
+                          ]
+                        },
+                        "ok": true,
+                        "messages": [],
+                        "raw_responses": [],
+                        "usage": {
+                          "total_tokens": 400,
+                          "completion_tokens": 42,
+                          "prompt_tokens": 358,
+                          "input_tokens": 358,
+                          "output_tokens": 42,
+                          "requests": 2,
+                          "client_duration_ms": 885.0609999999999,
+                          "inference_requests": 2,
+                          "tool_calls": 1
+                        },
+                        "engine": "ollama-runtime",
+                        "model": "gemma4:31b-cloud",
+                        "mode": "default",
+                        "trace_schema_version": "agentic_systems.trace.v1",
+                        "validation": null,
+                        "errors": [],
+                        "meta": {
+                          "name": "calculator",
+                          "kind": "agent",
+                          "backend": "native",
+                          "skills": [
+                            "calculator"
+                          ],
+                          "actions_observed": 1,
+                          "input": "Call safe_calculate for this current request: Calcula 17 * 19 usando la calculadora y responde en una frase."
+                        },
+                        "execution_id": "run-6b9c3d9c67c24774abef6865fac22015",
+                        "parent_execution_id": "run-f8469327c9214d7880e42ea3a4d57b5f",
+                        "children": [
+                          {
+                            "text": "El resultado de multiplicar 17 por 19 es 323.",
+                            "final": {
+                              "final_output": "El resultado de multiplicar 17 por 19 es 323."
+                            },
+                            "data": {
+                              "final_output": "El resultado de multiplicar 17 por 19 es 323."
+                            },
+                            "ok": true,
+                            "messages": [],
+                            "raw_responses": [],
+                            "usage": {
+                              "total_tokens": 400,
+                              "completion_tokens": 42,
+                              "prompt_tokens": 358,
+                              "input_tokens": 358,
+                              "output_tokens": 42,
+                              "requests": 2,
+                              "client_duration_ms": 885.0609999999999,
+                              "inference_requests": 2,
+                              "tool_calls": 1
+                            },
+                            "engine": "ollama-runtime",
+                            "model": "gemma4:31b-cloud",
+                            "mode": "default",
+                            "trace_schema_version": "agentic_systems.trace.v1",
+                            "validation": null,
+                            "errors": [],
+                            "meta": {
+                              "name": "calculator",
+                              "kind": "model",
+                              "framework": "langgraph"
+                            },
+                            "execution_id": "run-4ec1e68155474e66ac4b9e4d33d81ba9",
+                            "parent_execution_id": "run-6b9c3d9c67c24774abef6865fac22015",
+                            "children": [
+                              {
+                                "text": "El resultado de multiplicar 17 por 19 es 323.",
+                                "final": {
+                                  "final_output": "El resultado de multiplicar 17 por 19 es 323."
+                                },
+                                "data": {
+                                  "final_output": "El resultado de multiplicar 17 por 19 es 323."
+                                },
+                                "ok": true,
+                                "messages": [],
+                                "raw_responses": [],
+                                "usage": {
+                                  "total_tokens": 400,
+                                  "completion_tokens": 42,
+                                  "prompt_tokens": 358,
+                                  "input_tokens": 358,
+                                  "output_tokens": 42,
+                                  "requests": 2,
+                                  "client_duration_ms": 885.0609999999999,
+                                  "scheduler": {
+                                    "attempts": 1,
+                                    "retries": 0,
+                                    "timed_out": false,
+                                    "latency_ms": 1419.483
+                                  },
+                                  "inference_requests": 2,
+                                  "tool_calls": 1
+                                },
+                                "engine": "ollama-runtime",
+                                "model": "gemma4:31b-cloud",
+                                "mode": "eval",
+                                "trace_schema_version": "agentic_systems.trace.v1",
+                                "validation": {
+                                  "ok": true,
+                                  "issues": []
+                                },
+                                "errors": [],
+                                "meta": {
+                                  "source_result_type": "ollama.openai_compatible.chat.completions",
+                                  "runtime_engine": "ollama-runtime",
+                                  "execution_engine": "ollama-runtime",
+                                  "contract_repairs": 0,
+                                  "rejected_tool_calls": [],
+                                  "framework": "langgraph",
+                                  "framework_requested": "langgraph",
+                                  "framework_adapter": "langgraph",
+                                  "runtime": {
+                                    "provider": "ollama-runtime",
+                                    "model_id": "gemma4:31b-cloud",
+                                    "region_name": null,
+                                    "endpoint": "https://ollama.com/v1",
+                                    "metadata": {},
+                                    "provider_priority": [
+                                      "openai-runtime",
+                                      "bedrock-runtime",
+                                      "ollama-runtime"
+                                    ],
+                                    "allow_python_fallback": false,
+                                    "scheduler": {
+                                      "max_turns": 5,
+                                      "max_tool_calls": 3,
+                                      "timeout_s": 60,
+                                      "max_concurrency": 1,
+                                      "max_retries": 0,
+                                      "backoff_s": 0.0
+                                    }
+                                  },
+                                  "scheduler": {
+                                    "max_turns": 5,
+                                    "max_tool_calls": 3,
+                                    "timeout_s": 60,
+                                    "max_concurrency": 1,
+                                    "max_retries": 0,
+                                    "backoff_s": 0.0
+                                  },
+                                  "scheduler_execution": {
+                                    "scheduler": {
+                                      "max_turns": 5,
+                                      "max_tool_calls": 3,
+                                      "timeout_s": 60,
+                                      "max_concurrency": 1,
+                                      "max_retries": 0,
+                                      "backoff_s": 0.0
+                                    },
+                                    "attempts": 1,
+                                    "retries": 0,
+                                    "timed_out": false,
+                                    "latency_ms": 1419.483
+                                  },
+                                  "framework_config": {
+                                    "name": "langgraph",
+                                    "agent_kwargs": {},
+                                    "run_kwargs": {}
+                                  },
+                                  "agent_name": "calculator",
+                                  "input": "Call safe_calculate for this current request: Calcula 17 * 19 usando la calculadora y responde en una frase.",
+                                  "requested_engine": "ollama-runtime"
+                                },
+                                "execution_id": "run-4ebdf451507e4491b70b8e32a871955d",
+                                "parent_execution_id": "run-4ec1e68155474e66ac4b9e4d33d81ba9",
+                                "children": [],
+                                "tool_events": [
+                                  {
+                                    "id": "tool-79af1eb714414905bdef27fed8da1caf",
+                                    "name": "safe_calculate",
+                                    "input": {
+                                      "expression": "17 * 19"
+                                    },
+                                    "output": {
+                                      "expression": "17 * 19",
+                                      "normalized_expression": "17 * 19",
+                                      "result": 323,
+                                      "verified_by": "python-runtime::safe_calculate"
+                                    },
+                                    "ok": true,
+                                    "error": null,
+                                    "duration_ms": null,
+                                    "meta": {
+                                      "tool_name": "safe_calculate",
+                                      "serializer": "AgenticSystems.ToolEnvelope.v1",
+                                      "timestamp_utc": "2026-10-23T00:00:48.253415+00:00",
+                                      "validated_input": {
+                                        "expression": "17 * 19"
+                                      },
+                                      "provider_tool_call_id": "call_qrhx59x8"
+                                    }
+                                  }
+                                ]
+                              }
+                            ],
+                            "tool_events": []
+                          }
+                        ],
+                        "tool_events": []
+                      }
+                    ],
+                    "tool_events": []
+                  }
+                ],
+                "tool_events": []
+              },
+              {
+                "text": "El resultado de 17 * 19 es 323.",
+                "final": {
+                  "final_output": "El resultado de 17 * 19 es 323."
+                },
+                "data": {
+                  "answer": "El resultado de 17 * 19 es 323.",
+                  "provider": "ollama-runtime",
+                  "framework": "langgraph",
+                  "history_turns": 4,
+                  "response_validation": {
+                    "ok": true,
+                    "repairs": 0
+                  }
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "total_tokens": 492,
+                  "completion_tokens": 17,
+                  "prompt_tokens": 475,
+                  "input_tokens": 475,
+                  "output_tokens": 17,
+                  "requests": 1,
+                  "client_duration_ms": 498.785,
+                  "inference_requests": 1,
+                  "tool_calls": 0
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "responding",
+                  "kind": "agent",
+                  "backend": "native",
+                  "skills": [],
+                  "step": "responding"
+                },
+                "execution_id": "run-004922a0e60e4898b76808b38132729f",
+                "parent_execution_id": "run-53783dc013c8433bb048b21097a51657",
+                "children": [
+                  {
+                    "text": "El resultado de 17 * 19 es 323.",
+                    "final": {
+                      "final_output": "El resultado de 17 * 19 es 323."
+                    },
+                    "data": {
+                      "answer": "El resultado de 17 * 19 es 323.",
+                      "provider": "ollama-runtime",
+                      "framework": "langgraph",
+                      "history_turns": 4,
+                      "response_validation": {
+                        "ok": true,
+                        "repairs": 0
+                      }
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "total_tokens": 492,
+                      "completion_tokens": 17,
+                      "prompt_tokens": 475,
+                      "input_tokens": 475,
+                      "output_tokens": 17,
+                      "requests": 1,
+                      "client_duration_ms": 498.785,
+                      "inference_requests": 1,
+                      "tool_calls": 0
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "default",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "name": "respond",
+                      "kind": "action"
+                    },
+                    "execution_id": "run-3dfe6eebc2bb4df895f3de8d9f813b03",
+                    "parent_execution_id": "run-004922a0e60e4898b76808b38132729f",
+                    "children": [
+                      {
+                        "text": "El resultado de 17 * 19 es 323.",
+                        "final": {
+                          "final_output": "El resultado de 17 * 19 es 323."
+                        },
+                        "data": {
+                          "answer": "El resultado de 17 * 19 es 323.",
+                          "provider": "ollama-runtime",
+                          "framework": "langgraph",
+                          "history_turns": 4,
+                          "response_validation": {
+                            "ok": true,
+                            "repairs": 0
+                          }
+                        },
+                        "ok": true,
+                        "messages": [],
+                        "raw_responses": [],
+                        "usage": {
+                          "total_tokens": 492,
+                          "completion_tokens": 17,
+                          "prompt_tokens": 475,
+                          "input_tokens": 475,
+                          "output_tokens": 17,
+                          "requests": 1,
+                          "client_duration_ms": 498.785,
+                          "inference_requests": 1,
+                          "tool_calls": 0
+                        },
+                        "engine": "python-runtime",
+                        "model": "",
+                        "mode": "default",
+                        "trace_schema_version": "agentic_systems.trace.v1",
+                        "validation": null,
+                        "errors": [],
+                        "meta": {
+                          "name": "answer_attempts",
+                          "kind": "system",
+                          "backend": "native",
+                          "skills": [],
+                          "actions_observed": 1,
+                          "input": {}
+                        },
+                        "execution_id": "run-694e952f5f0c4bf09f20362d68a7045f",
+                        "parent_execution_id": "run-3dfe6eebc2bb4df895f3de8d9f813b03",
+                        "children": [
+                          {
+                            "text": "El resultado de 17 * 19 es 323.",
+                            "final": {
+                              "final_output": "El resultado de 17 * 19 es 323."
+                            },
+                            "data": {
+                              "final_output": "El resultado de 17 * 19 es 323."
+                            },
+                            "ok": true,
+                            "messages": [],
+                            "raw_responses": [],
+                            "usage": {
+                              "total_tokens": 492,
+                              "completion_tokens": 17,
+                              "prompt_tokens": 475,
+                              "input_tokens": 475,
+                              "output_tokens": 17,
+                              "requests": 1,
+                              "client_duration_ms": 498.785,
+                              "inference_requests": 1,
+                              "tool_calls": 0
+                            },
+                            "engine": "python-runtime",
+                            "model": "",
+                            "mode": "default",
+                            "trace_schema_version": "agentic_systems.trace.v1",
+                            "validation": null,
+                            "errors": [],
+                            "meta": {
+                              "name": "sequence",
+                              "kind": "sequence",
+                              "backend": "native"
+                            },
+                            "execution_id": "run-47bd3c823a7c45c9a6c28ce98a12c514",
+                            "parent_execution_id": "run-694e952f5f0c4bf09f20362d68a7045f",
+                            "children": [
+                              {
+                                "text": "El resultado de 17 * 19 es 323.",
+                                "final": {
+                                  "final_output": "El resultado de 17 * 19 es 323."
+                                },
+                                "data": {
+                                  "final_output": "El resultado de 17 * 19 es 323."
+                                },
+                                "ok": true,
+                                "messages": [],
+                                "raw_responses": [],
+                                "usage": {
+                                  "total_tokens": 492,
+                                  "completion_tokens": 17,
+                                  "prompt_tokens": 475,
+                                  "input_tokens": 475,
+                                  "output_tokens": 17,
+                                  "requests": 1,
+                                  "client_duration_ms": 498.785,
+                                  "inference_requests": 1,
+                                  "tool_calls": 0
+                                },
+                                "engine": "python-runtime",
+                                "model": "",
+                                "mode": "default",
+                                "trace_schema_version": "agentic_systems.trace.v1",
+                                "validation": null,
+                                "errors": [],
+                                "meta": {
+                                  "name": "attempt_0",
+                                  "kind": "action",
+                                  "step": "attempt_0"
+                                },
+                                "execution_id": "run-89295bf0562f4bf484c1f1ac8cd0eb49",
+                                "parent_execution_id": "run-47bd3c823a7c45c9a6c28ce98a12c514",
+                                "children": [
+                                  {
+                                    "text": "El resultado de 17 * 19 es 323.",
+                                    "final": {
+                                      "final_output": "El resultado de 17 * 19 es 323."
+                                    },
+                                    "data": {
+                                      "final_output": "El resultado de 17 * 19 es 323."
+                                    },
+                                    "ok": true,
+                                    "messages": [],
+                                    "raw_responses": [],
+                                    "usage": {
+                                      "total_tokens": 492,
+                                      "completion_tokens": 17,
+                                      "prompt_tokens": 475,
+                                      "input_tokens": 475,
+                                      "output_tokens": 17,
+                                      "requests": 1,
+                                      "client_duration_ms": 498.785,
+                                      "inference_requests": 1,
+                                      "tool_calls": 0
+                                    },
+                                    "engine": "ollama-runtime",
+                                    "model": "gemma4:31b-cloud",
+                                    "mode": "default",
+                                    "trace_schema_version": "agentic_systems.trace.v1",
+                                    "validation": null,
+                                    "errors": [],
+                                    "meta": {
+                                      "name": "assistant",
+                                      "kind": "agent",
+                                      "backend": "native",
+                                      "skills": [
+                                        "studio"
+                                      ],
+                                      "actions_observed": 1,
+                                      "input": "Answer only the current message using this bounded public history and verified evidence. Use the user's language; never reveal private reasoning or invent tool calls. If code is requested, use the supplied SDK signatures exactly.\n{\"history\": [{\"role\": \"user\", \"content\": \"Mi proyecto se llama LINTERNA. Confirma en una frase breve.\"}, {\"role\": \"assistant\", \"content\": \"Tu proyecto se llama LINTERNA.\"}, {\"role\": \"user\", \"content\": \"¿Cómo se llama mi proyecto? Responde en una frase breve.\"}, {\"role\": \"assistant\", \"content\": \"Tu proyecto se llama LINTERNA.\"}], \"history_turns\": 4, \"memory\": {\"kind\": \"bounded-public-history\", \"maximum_messages\": 12, \"maximum_user_characters\": 2000, \"maximum_assistant_characters\": 1200, \"maximum_current_message_characters\": 8000, \"truncated_messages\": 0}, \"policy\": {\"reasoning_is_private\": true, \"no_silent_fallback\": true, \"tools_are_evidence\": true}, \"message\": \"Calcula 17 * 19 usando la calculadora y responde en una frase.\", \"calculation_evidence\": [{\"expression\": \"17 * 19\", \"normalized_expression\": \"17 * 19\", \"result\": 323, \"verified_by\": \"python-runtime::safe_calculate\"}]}"
+                                    },
+                                    "execution_id": "run-7003132fbebe4ba6886875ec22c6c274",
+                                    "parent_execution_id": "run-89295bf0562f4bf484c1f1ac8cd0eb49",
+                                    "children": [
+                                      {
+                                        "text": "El resultado de 17 * 19 es 323.",
+                                        "final": {
+                                          "final_output": "El resultado de 17 * 19 es 323."
+                                        },
+                                        "data": {
+                                          "final_output": "El resultado de 17 * 19 es 323."
+                                        },
+                                        "ok": true,
+                                        "messages": [],
+                                        "raw_responses": [],
+                                        "usage": {
+                                          "total_tokens": 492,
+                                          "completion_tokens": 17,
+                                          "prompt_tokens": 475,
+                                          "input_tokens": 475,
+                                          "output_tokens": 17,
+                                          "requests": 1,
+                                          "client_duration_ms": 498.785,
+                                          "inference_requests": 1,
+                                          "tool_calls": 0
+                                        },
+                                        "engine": "ollama-runtime",
+                                        "model": "gemma4:31b-cloud",
+                                        "mode": "default",
+                                        "trace_schema_version": "agentic_systems.trace.v1",
+                                        "validation": null,
+                                        "errors": [],
+                                        "meta": {
+                                          "name": "assistant",
+                                          "kind": "model",
+                                          "framework": "langgraph"
+                                        },
+                                        "execution_id": "run-df5102a2b58e484a979b005a235d7022",
+                                        "parent_execution_id": "run-7003132fbebe4ba6886875ec22c6c274",
+                                        "children": [
+                                          {
+                                            "text": "El resultado de 17 * 19 es 323.",
+                                            "final": {
+                                              "final_output": "El resultado de 17 * 19 es 323."
+                                            },
+                                            "data": {
+                                              "final_output": "El resultado de 17 * 19 es 323."
+                                            },
+                                            "ok": true,
+                                            "messages": [],
+                                            "raw_responses": [],
+                                            "usage": {
+                                              "total_tokens": 492,
+                                              "completion_tokens": 17,
+                                              "prompt_tokens": 475,
+                                              "input_tokens": 475,
+                                              "output_tokens": 17,
+                                              "requests": 1,
+                                              "client_duration_ms": 498.785,
+                                              "scheduler": {
+                                                "attempts": 1,
+                                                "retries": 0,
+                                                "timed_out": false,
+                                                "latency_ms": 1059.529
+                                              },
+                                              "inference_requests": 1,
+                                              "tool_calls": 0
+                                            },
+                                            "engine": "ollama-runtime",
+                                            "model": "gemma4:31b-cloud",
+                                            "mode": "eval",
+                                            "trace_schema_version": "agentic_systems.trace.v1",
+                                            "validation": {
+                                              "ok": true,
+                                              "issues": []
+                                            },
+                                            "errors": [],
+                                            "meta": {
+                                              "source_result_type": "ollama.openai_compatible.chat.completions",
+                                              "runtime_engine": "ollama-runtime",
+                                              "execution_engine": "ollama-runtime",
+                                              "contract_repairs": 0,
+                                              "rejected_tool_calls": [],
+                                              "framework": "langgraph",
+                                              "framework_requested": "langgraph",
+                                              "framework_adapter": "langgraph",
+                                              "runtime": {
+                                                "provider": "ollama-runtime",
+                                                "model_id": "gemma4:31b-cloud",
+                                                "region_name": null,
+                                                "endpoint": "https://ollama.com/v1",
+                                                "metadata": {},
+                                                "provider_priority": [
+                                                  "openai-runtime",
+                                                  "bedrock-runtime",
+                                                  "ollama-runtime"
+                                                ],
+                                                "allow_python_fallback": false,
+                                                "scheduler": {
+                                                  "max_turns": 5,
+                                                  "max_tool_calls": 3,
+                                                  "timeout_s": 60,
+                                                  "max_concurrency": 1,
+                                                  "max_retries": 0,
+                                                  "backoff_s": 0.0
+                                                }
+                                              },
+                                              "scheduler": {
+                                                "max_turns": 5,
+                                                "max_tool_calls": 3,
+                                                "timeout_s": 60,
+                                                "max_concurrency": 1,
+                                                "max_retries": 0,
+                                                "backoff_s": 0.0
+                                              },
+                                              "scheduler_execution": {
+                                                "scheduler": {
+                                                  "max_turns": 5,
+                                                  "max_tool_calls": 3,
+                                                  "timeout_s": 60,
+                                                  "max_concurrency": 1,
+                                                  "max_retries": 0,
+                                                  "backoff_s": 0.0
+                                                },
+                                                "attempts": 1,
+                                                "retries": 0,
+                                                "timed_out": false,
+                                                "latency_ms": 1059.529
+                                              },
+                                              "framework_config": {
+                                                "name": "langgraph",
+                                                "agent_kwargs": {},
+                                                "run_kwargs": {}
+                                              },
+                                              "agent_name": "assistant",
+                                              "input": "Answer only the current message using this bounded public history and verified evidence. Use the user's language; never reveal private reasoning or invent tool calls. If code is requested, use the supplied SDK signatures exactly.\n{\"history\": [{\"role\": \"user\", \"content\": \"Mi proyecto se llama LINTERNA. Confirma en una frase breve.\"}, {\"role\": \"assistant\", \"content\": \"Tu proyecto se llama LINTERNA.\"}, {\"role\": \"user\", \"content\": \"¿Cómo se llama mi proyecto? Responde en una frase breve.\"}, {\"role\": \"assistant\", \"content\": \"Tu proyecto se llama LINTERNA.\"}], \"history_turns\": 4, \"memory\": {\"kind\": \"bounded-public-history\", \"maximum_messages\": 12, \"maximum_user_characters\": 2000, \"maximum_assistant_characters\": 1200, \"maximum_current_message_characters\": 8000, \"truncated_messages\": 0}, \"policy\": {\"reasoning_is_private\": true, \"no_silent_fallback\": true, \"tools_are_evidence\": true}, \"message\": \"Calcula 17 * 19 usando la calculadora y responde en una frase.\", \"calculation_evidence\": [{\"expression\": \"17 * 19\", \"normalized_expression\": \"17 * 19\", \"result\": 323, \"verified_by\": \"python-runtime::safe_calculate\"}]}",
+                                              "requested_engine": "ollama-runtime"
+                                            },
+                                            "execution_id": "run-c650c70bb472430689872d24bede960c",
+                                            "parent_execution_id": "run-df5102a2b58e484a979b005a235d7022",
+                                            "children": [],
+                                            "tool_events": []
+                                          }
+                                        ],
+                                        "tool_events": []
+                                      }
+                                    ],
+                                    "tool_events": []
+                                  }
+                                ],
+                                "tool_events": []
+                              }
+                            ],
+                            "tool_events": []
+                          }
+                        ],
+                        "tool_events": []
+                      }
+                    ],
+                    "tool_events": []
+                  }
+                ],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      }
+    ],
+    "semantic_scope": "memory and exact arithmetic oracle"
+  },
+  "elapsed_s": 4.603
+}

@@ -1,0 +1,263 @@
+{
+  "example": "scope_clarification",
+  "example_passed": true,
+  "source_sha256": "a7bca0e2f472223ddb440999767a9feddc3e43ed720012af63cec4e71f386b96",
+  "inference_requests": 0,
+  "scope": "offline contract or configuration; no model-generation/semantic/IAM/GPU certification",
+  "output": {
+    "text": "",
+    "final": {
+      "accepted": false,
+      "supported": [
+        "count",
+        "sum"
+      ],
+      "reason": "outside declared capabilities"
+    },
+    "data": {
+      "accepted": false,
+      "supported": [
+        "count",
+        "sum"
+      ],
+      "reason": "outside declared capabilities"
+    },
+    "ok": true,
+    "messages": [],
+    "raw_responses": [],
+    "usage": {
+      "requests": 1,
+      "inference_requests": 0,
+      "tool_calls": 1
+    },
+    "engine": "python-runtime",
+    "model": "",
+    "mode": "default",
+    "trace_schema_version": "agentic_systems.trace.v1",
+    "validation": null,
+    "errors": [],
+    "meta": {
+      "name": "application",
+      "kind": "system",
+      "backend": "native",
+      "skills": [],
+      "actions_observed": 1,
+      "input": {
+        "input": {
+          "operation": "transfer_money"
+        }
+      }
+    },
+    "execution_id": "run-1a1177b809124625a26a3678ee64b6ba",
+    "parent_execution_id": null,
+    "children": [
+      {
+        "text": "",
+        "final": {
+          "accepted": false,
+          "supported": [
+            "count",
+            "sum"
+          ],
+          "reason": "outside declared capabilities"
+        },
+        "data": {
+          "accepted": false,
+          "supported": [
+            "count",
+            "sum"
+          ],
+          "reason": "outside declared capabilities"
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "sequence",
+          "kind": "sequence",
+          "backend": "native"
+        },
+        "execution_id": "run-ff5777cff0fe4b648fad224ff1bd919f",
+        "parent_execution_id": "run-1a1177b809124625a26a3678ee64b6ba",
+        "children": [
+          {
+            "text": "",
+            "final": {
+              "accepted": false,
+              "supported": [
+                "count",
+                "sum"
+              ],
+              "reason": "outside declared capabilities"
+            },
+            "data": {
+              "accepted": false,
+              "supported": [
+                "count",
+                "sum"
+              ],
+              "reason": "outside declared capabilities"
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 1,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "worker",
+              "kind": "agent",
+              "backend": "native",
+              "skills": [
+                "scope"
+              ],
+              "step": "worker"
+            },
+            "execution_id": "run-667b661f4b6246c9a5d3c728a58b5875",
+            "parent_execution_id": "run-ff5777cff0fe4b648fad224ff1bd919f",
+            "children": [
+              {
+                "text": "",
+                "final": {
+                  "accepted": false,
+                  "supported": [
+                    "count",
+                    "sum"
+                  ],
+                  "reason": "outside declared capabilities"
+                },
+                "data": {
+                  "accepted": false,
+                  "supported": [
+                    "count",
+                    "sum"
+                  ],
+                  "reason": "outside declared capabilities"
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "requests": 1,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "scope",
+                  "kind": "action"
+                },
+                "execution_id": "run-aa5b56165fe84572befc0566ad614c5d",
+                "parent_execution_id": "run-667b661f4b6246c9a5d3c728a58b5875",
+                "children": [
+                  {
+                    "text": "",
+                    "final": {
+                      "accepted": false,
+                      "supported": [
+                        "count",
+                        "sum"
+                      ],
+                      "reason": "outside declared capabilities"
+                    },
+                    "data": {
+                      "accepted": false,
+                      "supported": [
+                        "count",
+                        "sum"
+                      ],
+                      "reason": "outside declared capabilities"
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "requests": 1,
+                      "inference_requests": 0,
+                      "tool_calls": 1
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "tool",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "tool_name": "",
+                      "input": {
+                        "input": {
+                          "operation": "transfer_money"
+                        }
+                      },
+                      "tool_input": {
+                        "input": {
+                          "operation": "transfer_money"
+                        }
+                      }
+                    },
+                    "execution_id": "run-b4d0cdc386724af1ad3f664e787fd5fa",
+                    "parent_execution_id": "run-aa5b56165fe84572befc0566ad614c5d",
+                    "children": [],
+                    "tool_events": [
+                      {
+                        "id": "tool-3180be30be5847119c55f4c733542f34",
+                        "name": "scope",
+                        "input": {
+                          "input": {
+                            "operation": "transfer_money"
+                          }
+                        },
+                        "output": {
+                          "data": {
+                            "accepted": false,
+                            "supported": [
+                              "count",
+                              "sum"
+                            ],
+                            "reason": "outside declared capabilities"
+                          }
+                        },
+                        "ok": true,
+                        "error": null,
+                        "duration_ms": null,
+                        "meta": {}
+                      }
+                    ]
+                  }
+                ],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      }
+    ],
+    "tool_events": []
+  }
+}

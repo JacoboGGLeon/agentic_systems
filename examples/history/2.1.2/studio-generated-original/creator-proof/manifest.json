@@ -1,0 +1,86 @@
+{
+  "schema_version": "agentic-systems.studio/v1",
+  "id": "incident-response",
+  "name": "Incident Response",
+  "agentic_systems_version": "2.0.0",
+  "size": "large",
+  "stages": [
+    {
+      "id": "triage",
+      "name": "Triage operator",
+      "kind": "operator",
+      "capability": "incident-triage",
+      "tool_key": "triage_incident_signals",
+      "instructions": "Score only visible incident signals and timestamps."
+    },
+    {
+      "id": "command",
+      "name": "Incident commander",
+      "kind": "reasoner",
+      "capability": "incident-coordination",
+      "tool_key": "record_reasoning_evidence",
+      "instructions": "Set priorities, owners and stop conditions."
+    },
+    {
+      "id": "diagnose",
+      "name": "Diagnosis agent",
+      "kind": "reasoner",
+      "capability": "hypothesis-testing",
+      "tool_key": "record_reasoning_evidence",
+      "instructions": "Rank hypotheses and request discriminating evidence."
+    },
+    {
+      "id": "remediate",
+      "name": "Remediation agent",
+      "kind": "reasoner",
+      "capability": "remediation-planning",
+      "tool_key": "record_reasoning_evidence",
+      "instructions": "Propose reversible mitigation and validation steps."
+    },
+    {
+      "id": "review",
+      "name": "Safety reviewer",
+      "kind": "reviewer",
+      "capability": "operational-safety",
+      "tool_key": "validate_review_claim",
+      "instructions": "Reject unsafe certainty and return an action plan."
+    }
+  ],
+  "capabilities": [
+    "incident-triage",
+    "incident-coordination",
+    "hypothesis-testing",
+    "remediation-planning",
+    "operational-safety"
+  ],
+  "assets": [
+    "pyproject.toml",
+    "README.md",
+    ".env.example",
+    "manifest.json",
+    "src/creator_proof/__init__.py",
+    "src/creator_proof/__main__.py",
+    "src/creator_proof/tools.py",
+    "src/creator_proof/system.py",
+    "src/creator_proof/environment.py",
+    "src/creator_proof/evals.py",
+    "skills/codex-agentic-application/SKILL.md",
+    "skills/runtime/safe-incident-response.json",
+    "assets/system.mmd",
+    "notebooks/00_walkthrough.ipynb",
+    "tests/test_contract.py",
+    "data/app.db"
+  ],
+  "catalog_assets": [
+    "manifest.json",
+    "README.md",
+    "system.mmd",
+    "run.py",
+    "notebook.ipynb",
+    "tests/test_system.py",
+    "skills/runtime-skill.json",
+    "data/studio.db",
+    "assets/incident-runbook.md",
+    "assets/postmortem.md"
+  ]
+}

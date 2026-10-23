@@ -1,5 +1,33 @@
 # Changelog
 
+## 2.1.3 - Unreleased: single API revision
+
+- The root SDK implements one API. Agent and System share Sequence, Parallel
+  and Graph with direct decision functions, run/arun, optional compile and
+  native or LangGraph flow execution. Retired public modules and constructors
+  have been removed; 2.1.2 source compatibility is deliberately not provided.
+- Typed Tools, portable Skills, replayable Environment memory and strict Eval
+  checks/judges use the same serializable RunResult and lineage contract.
+  Contracts reject ignored options, preserve failed attempts and validate
+  JSON Schema output. Serving configuration has an explicit lifecycle.
+- Eleven tutorials teach one import and execution interface. All 34 historical
+  experiments have current executable adaptations with explicit fixture,
+  deterministic, configuration or protocol scope. Their previous evidence is
+  preserved separately. A seven-Agent order application and six Agent/System
+  flow examples connect Tools, Skills, Environment and Eval.
+- The installed CLI generates an independently runnable project with source,
+  notebook, tests, configuration and evidence. Validation uses a clean,
+  non-editable wheel; private provider adapters are exercised deterministically.
+- The separately authorized live campaign exercises Python, Ollama, Bedrock
+  API key and OpenAI across four frameworks, real handoffs and guardrails,
+  local MCP/A2A services, checkpoint/resume and mixed-framework composition.
+  Studio uses the same declarations and preserves all model attempts.
+- Agent/System now propagate textual presentation from their final child.
+  OpenAI Agents records native handoff events in normalized results.
+- Nothing is published. vLLM/Colab, AWS IAM, ADA IAM, real serving and
+  multi-Python CI execution remain pending. Exact scopes and the USD 10 /
+  300-request campaign ledger are in revisions/2.1.3/framework-evidence/REPORT.md.
+
 ## 2.1.2 - 2026-10-22
 
 The 2.1 grammar and execution contracts remain stable. This delivery hardens

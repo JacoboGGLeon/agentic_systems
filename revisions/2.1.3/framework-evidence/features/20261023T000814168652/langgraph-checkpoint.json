@@ -1,0 +1,139 @@
+{
+  "name": "langgraph-checkpoint",
+  "passed": true,
+  "report": {
+    "feature": "LangGraph interrupt/checkpoint/resume",
+    "input": {
+      "amount": 280
+    },
+    "paused": {
+      "text": "",
+      "final": null,
+      "data": {
+        "paused": true,
+        "request": {
+          "question": "Approve this expense?",
+          "amount": 280
+        }
+      },
+      "ok": true,
+      "messages": [],
+      "raw_responses": [],
+      "usage": {},
+      "engine": "python-runtime",
+      "model": "",
+      "mode": "default",
+      "trace_schema_version": "agentic_systems.trace.v1",
+      "validation": null,
+      "errors": [],
+      "meta": {
+        "name": "human_approval",
+        "kind": "agent",
+        "backend": "native",
+        "skills": [],
+        "actions_observed": 1,
+        "input": {
+          "amount": 280
+        }
+      },
+      "execution_id": "run-e9d77a6667aa4511807a87d81d410655",
+      "parent_execution_id": null,
+      "children": [
+        {
+          "text": "",
+          "final": null,
+          "data": {
+            "paused": true,
+            "request": {
+              "question": "Approve this expense?",
+              "amount": 280
+            }
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {},
+          "engine": "python-runtime",
+          "model": "",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "checkpoint",
+            "kind": "action"
+          },
+          "execution_id": "run-7341fc95f3e44479bc16ff7de2489476",
+          "parent_execution_id": "run-e9d77a6667aa4511807a87d81d410655",
+          "children": [],
+          "tool_events": []
+        }
+      ],
+      "tool_events": []
+    },
+    "resumed": {
+      "text": "",
+      "final": null,
+      "data": {
+        "paused": false,
+        "amount": 280,
+        "approved": true
+      },
+      "ok": true,
+      "messages": [],
+      "raw_responses": [],
+      "usage": {},
+      "engine": "python-runtime",
+      "model": "",
+      "mode": "default",
+      "trace_schema_version": "agentic_systems.trace.v1",
+      "validation": null,
+      "errors": [],
+      "meta": {
+        "name": "human_approval",
+        "kind": "agent",
+        "backend": "native",
+        "skills": [],
+        "actions_observed": 1,
+        "input": {
+          "resume": true
+        }
+      },
+      "execution_id": "run-5f1d063e6d2b4dc8856b6915485893f5",
+      "parent_execution_id": null,
+      "children": [
+        {
+          "text": "",
+          "final": null,
+          "data": {
+            "paused": false,
+            "amount": 280,
+            "approved": true
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {},
+          "engine": "python-runtime",
+          "model": "",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "checkpoint",
+            "kind": "action"
+          },
+          "execution_id": "run-7e92e223436445de99f85330cebff03f",
+          "parent_execution_id": "run-5f1d063e6d2b4dc8856b6915485893f5",
+          "children": [],
+          "tool_events": []
+        }
+      ],
+      "tool_events": []
+    },
+    "inference_requests": 0,
+    "scope": "Native LangGraph feature wrapped by Action; not an added toolkit constructor"
+  },
+  "elapsed_s": 0.018
+}
