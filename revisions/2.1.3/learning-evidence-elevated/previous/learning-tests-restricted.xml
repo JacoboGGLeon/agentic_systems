@@ -1,0 +1,596 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="5" failures="0" skipped="0" tests="17" time="15.991" timestamp="2026-10-22T23:03:29.260410-06:00" hostname="LAPTOP-9S7U91IR"><testcase classname="tests.release213.test_integrity" name="test_reviewed_sdk_source_and_live_evidence_are_still_identical" time="2.678" /><testcase classname="tests.release213.test_integrity" name="test_build_is_repeatable_and_detects_changed_bytes" time="0.071"><error message="failed on setup with &quot;OSError: could not create numbered dir with prefix pytest- in C:\Users\jacob\AppData\Local\Packages\sandbox.{ccf34c85-26fb-414e-a792-7629d51336eb}\AC\Temp\pytest-of-jacob after 10 tries&quot;">cls = &lt;class '_pytest.runner.CallInfo'&gt;
+func = &lt;function call_and_report.&lt;locals&gt;.&lt;lambda&gt; at 0x00000237668C8CA0&gt;
+when = 'setup'
+reraise = (&lt;class '_pytest.outcomes.Exit'&gt;, &lt;class 'KeyboardInterrupt'&gt;)
+
+    @classmethod
+    def from_call(
+        cls,
+        func: Callable[[], TResult],
+        when: Literal["collect", "setup", "call", "teardown"],
+        reraise: type[BaseException] | tuple[type[BaseException], ...] | None = None,
+    ) -&gt; CallInfo[TResult]:
+        """Call func, wrapping the result in a CallInfo.
+    
+        :param func:
+            The function to call. Called without arguments.
+        :type func: Callable[[], _pytest.runner.TResult]
+        :param when:
+            The phase in which the function is called.
+        :param reraise:
+            Exception or exceptions that shall propagate if raised by the
+            function, instead of being wrapped in the CallInfo.
+        """
+        excinfo = None
+        instant = timing.Instant()
+        try:
+&gt;           result: TResult | None = func()
+                                     ^^^^^^
+
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\runner.py:361: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\runner.py:250: in &lt;lambda&gt;
+    lambda: runtest_hook(item=item, **kwds),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\pluggy\_caller.py:197: in __call__
+    return self._hookexec(
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\pluggy\_manager.py:183: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\logging.py:858: in pytest_runtest_setup
+    yield
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\capture.py:895: in pytest_runtest_setup
+    return (yield)
+            ^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\runner.py:170: in pytest_runtest_setup
+    item.session._setupstate.setup(item)
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\runner.py:536: in setup
+    col.setup()
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\python.py:1710: in setup
+    self._request._fillfixtures()
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\fixtures.py:806: in _fillfixtures
+    item.funcargs[argname] = self.getfixturevalue(argname)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\fixtures.py:630: in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\pluggy\_caller.py:197: in __call__
+    return self._hookexec(
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\pluggy\_manager.py:183: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\fixtures.py:998: in call_fixture_func
+    fixture_result = next(generator)
+                     ^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\tmpdir.py:300: in tmp_path
+    path = _mk_tmp(request, tmp_path_factory)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\tmpdir.py:287: in _mk_tmp
+    return factory.mktemp(name, numbered=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\tmpdir.py:136: in mktemp
+    basename = self._ensure_relative_to_basetemp(basename)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\tmpdir.py:117: in _ensure_relative_to_basetemp
+    if (self.getbasetemp() / basename).resolve().parent != self.getbasetemp():
+        ^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\tmpdir.py:213: in getbasetemp
+    basetemp = make_numbered_dir_with_cleanup(
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\pathlib.py:420: in make_numbered_dir_with_cleanup
+    raise e
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\pathlib.py:401: in make_numbered_dir_with_cleanup
+    p = make_numbered_dir(root, prefix, mode)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+root = WindowsPath('C:/Users/jacob/AppData/Local/Packages/sandbox.{ccf34c85-26fb-414e-a792-7629d51336eb}/AC/Temp/pytest-of-jacob')
+prefix = 'pytest-', mode = 448
+
+    def make_numbered_dir(root: Path, prefix: str, mode: int = 0o700) -&gt; Path:
+        """Create a directory with an increased number as suffix for the given prefix."""
+        for i in range(10):
+            # try up to 10 times to create the directory
+            max_existing = max(map(parse_num, find_suffixes(root, prefix)), default=-1)
+            new_number = max_existing + 1
+            new_path = root.joinpath(f"{prefix}{new_number}")
+            try:
+                new_path.mkdir(mode=mode)
+            except Exception:
+                pass
+            else:
+                _force_symlink(root, prefix + "current", new_path)
+                return new_path
+        else:
+&gt;           raise OSError(
+                "could not create numbered dir with prefix "
+                f"{prefix} in {root} after 10 tries"
+            )
+E           OSError: could not create numbered dir with prefix pytest- in C:\Users\jacob\AppData\Local\Packages\sandbox.{ccf34c85-26fb-414e-a792-7629d51336eb}\AC\Temp\pytest-of-jacob after 10 tries
+
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\pathlib.py:239: OSError</error></testcase><testcase classname="tests.release213.test_integrity" name="test_no_overwrite_or_invalid_commit" time="0.077"><error message="failed on setup with &quot;OSError: could not create numbered dir with prefix pytest- in C:\Users\jacob\AppData\Local\Packages\sandbox.{ccf34c85-26fb-414e-a792-7629d51336eb}\AC\Temp\pytest-of-jacob after 10 tries&quot;">cls = &lt;class '_pytest.runner.CallInfo'&gt;
+func = &lt;function call_and_report.&lt;locals&gt;.&lt;lambda&gt; at 0x00000237668692D0&gt;
+when = 'setup'
+reraise = (&lt;class '_pytest.outcomes.Exit'&gt;, &lt;class 'KeyboardInterrupt'&gt;)
+
+    @classmethod
+    def from_call(
+        cls,
+        func: Callable[[], TResult],
+        when: Literal["collect", "setup", "call", "teardown"],
+        reraise: type[BaseException] | tuple[type[BaseException], ...] | None = None,
+    ) -&gt; CallInfo[TResult]:
+        """Call func, wrapping the result in a CallInfo.
+    
+        :param func:
+            The function to call. Called without arguments.
+        :type func: Callable[[], _pytest.runner.TResult]
+        :param when:
+            The phase in which the function is called.
+        :param reraise:
+            Exception or exceptions that shall propagate if raised by the
+            function, instead of being wrapped in the CallInfo.
+        """
+        excinfo = None
+        instant = timing.Instant()
+        try:
+&gt;           result: TResult | None = func()
+                                     ^^^^^^
+
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\runner.py:361: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\runner.py:250: in &lt;lambda&gt;
+    lambda: runtest_hook(item=item, **kwds),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\pluggy\_caller.py:197: in __call__
+    return self._hookexec(
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\pluggy\_manager.py:183: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\logging.py:858: in pytest_runtest_setup
+    yield
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\capture.py:895: in pytest_runtest_setup
+    return (yield)
+            ^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\runner.py:170: in pytest_runtest_setup
+    item.session._setupstate.setup(item)
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\runner.py:536: in setup
+    col.setup()
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\python.py:1710: in setup
+    self._request._fillfixtures()
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\fixtures.py:806: in _fillfixtures
+    item.funcargs[argname] = self.getfixturevalue(argname)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\fixtures.py:630: in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\pluggy\_caller.py:197: in __call__
+    return self._hookexec(
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\pluggy\_manager.py:183: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\fixtures.py:998: in call_fixture_func
+    fixture_result = next(generator)
+                     ^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\tmpdir.py:300: in tmp_path
+    path = _mk_tmp(request, tmp_path_factory)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\tmpdir.py:287: in _mk_tmp
+    return factory.mktemp(name, numbered=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\tmpdir.py:136: in mktemp
+    basename = self._ensure_relative_to_basetemp(basename)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\tmpdir.py:117: in _ensure_relative_to_basetemp
+    if (self.getbasetemp() / basename).resolve().parent != self.getbasetemp():
+        ^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\tmpdir.py:213: in getbasetemp
+    basetemp = make_numbered_dir_with_cleanup(
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\pathlib.py:420: in make_numbered_dir_with_cleanup
+    raise e
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\pathlib.py:401: in make_numbered_dir_with_cleanup
+    p = make_numbered_dir(root, prefix, mode)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+root = WindowsPath('C:/Users/jacob/AppData/Local/Packages/sandbox.{ccf34c85-26fb-414e-a792-7629d51336eb}/AC/Temp/pytest-of-jacob')
+prefix = 'pytest-', mode = 448
+
+    def make_numbered_dir(root: Path, prefix: str, mode: int = 0o700) -&gt; Path:
+        """Create a directory with an increased number as suffix for the given prefix."""
+        for i in range(10):
+            # try up to 10 times to create the directory
+            max_existing = max(map(parse_num, find_suffixes(root, prefix)), default=-1)
+            new_number = max_existing + 1
+            new_path = root.joinpath(f"{prefix}{new_number}")
+            try:
+                new_path.mkdir(mode=mode)
+            except Exception:
+                pass
+            else:
+                _force_symlink(root, prefix + "current", new_path)
+                return new_path
+        else:
+&gt;           raise OSError(
+                "could not create numbered dir with prefix "
+                f"{prefix} in {root} after 10 tries"
+            )
+E           OSError: could not create numbered dir with prefix pytest- in C:\Users\jacob\AppData\Local\Packages\sandbox.{ccf34c85-26fb-414e-a792-7629d51336eb}\AC\Temp\pytest-of-jacob after 10 tries
+
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\pathlib.py:239: OSError</error></testcase><testcase classname="tests.release213.test_integrity" name="test_altered_packaging_inputs_are_rejected" time="0.079"><error message="failed on setup with &quot;OSError: could not create numbered dir with prefix pytest- in C:\Users\jacob\AppData\Local\Packages\sandbox.{ccf34c85-26fb-414e-a792-7629d51336eb}\AC\Temp\pytest-of-jacob after 10 tries&quot;">cls = &lt;class '_pytest.runner.CallInfo'&gt;
+func = &lt;function call_and_report.&lt;locals&gt;.&lt;lambda&gt; at 0x000002376686AAE0&gt;
+when = 'setup'
+reraise = (&lt;class '_pytest.outcomes.Exit'&gt;, &lt;class 'KeyboardInterrupt'&gt;)
+
+    @classmethod
+    def from_call(
+        cls,
+        func: Callable[[], TResult],
+        when: Literal["collect", "setup", "call", "teardown"],
+        reraise: type[BaseException] | tuple[type[BaseException], ...] | None = None,
+    ) -&gt; CallInfo[TResult]:
+        """Call func, wrapping the result in a CallInfo.
+    
+        :param func:
+            The function to call. Called without arguments.
+        :type func: Callable[[], _pytest.runner.TResult]
+        :param when:
+            The phase in which the function is called.
+        :param reraise:
+            Exception or exceptions that shall propagate if raised by the
+            function, instead of being wrapped in the CallInfo.
+        """
+        excinfo = None
+        instant = timing.Instant()
+        try:
+&gt;           result: TResult | None = func()
+                                     ^^^^^^
+
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\runner.py:361: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\runner.py:250: in &lt;lambda&gt;
+    lambda: runtest_hook(item=item, **kwds),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\pluggy\_caller.py:197: in __call__
+    return self._hookexec(
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\pluggy\_manager.py:183: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\logging.py:858: in pytest_runtest_setup
+    yield
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\capture.py:895: in pytest_runtest_setup
+    return (yield)
+            ^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\runner.py:170: in pytest_runtest_setup
+    item.session._setupstate.setup(item)
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\runner.py:536: in setup
+    col.setup()
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\python.py:1710: in setup
+    self._request._fillfixtures()
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\fixtures.py:806: in _fillfixtures
+    item.funcargs[argname] = self.getfixturevalue(argname)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\fixtures.py:630: in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\pluggy\_caller.py:197: in __call__
+    return self._hookexec(
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\pluggy\_manager.py:183: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\fixtures.py:998: in call_fixture_func
+    fixture_result = next(generator)
+                     ^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\tmpdir.py:300: in tmp_path
+    path = _mk_tmp(request, tmp_path_factory)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\tmpdir.py:287: in _mk_tmp
+    return factory.mktemp(name, numbered=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\tmpdir.py:136: in mktemp
+    basename = self._ensure_relative_to_basetemp(basename)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\tmpdir.py:117: in _ensure_relative_to_basetemp
+    if (self.getbasetemp() / basename).resolve().parent != self.getbasetemp():
+        ^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\tmpdir.py:213: in getbasetemp
+    basetemp = make_numbered_dir_with_cleanup(
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\pathlib.py:420: in make_numbered_dir_with_cleanup
+    raise e
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\pathlib.py:401: in make_numbered_dir_with_cleanup
+    p = make_numbered_dir(root, prefix, mode)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+root = WindowsPath('C:/Users/jacob/AppData/Local/Packages/sandbox.{ccf34c85-26fb-414e-a792-7629d51336eb}/AC/Temp/pytest-of-jacob')
+prefix = 'pytest-', mode = 448
+
+    def make_numbered_dir(root: Path, prefix: str, mode: int = 0o700) -&gt; Path:
+        """Create a directory with an increased number as suffix for the given prefix."""
+        for i in range(10):
+            # try up to 10 times to create the directory
+            max_existing = max(map(parse_num, find_suffixes(root, prefix)), default=-1)
+            new_number = max_existing + 1
+            new_path = root.joinpath(f"{prefix}{new_number}")
+            try:
+                new_path.mkdir(mode=mode)
+            except Exception:
+                pass
+            else:
+                _force_symlink(root, prefix + "current", new_path)
+                return new_path
+        else:
+&gt;           raise OSError(
+                "could not create numbered dir with prefix "
+                f"{prefix} in {root} after 10 tries"
+            )
+E           OSError: could not create numbered dir with prefix pytest- in C:\Users\jacob\AppData\Local\Packages\sandbox.{ccf34c85-26fb-414e-a792-7629d51336eb}\AC\Temp\pytest-of-jacob after 10 tries
+
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\pathlib.py:239: OSError</error></testcase><testcase classname="tests.release213.test_integrity" name="test_complete_index_is_idempotent_and_absent_is_distinct" time="0.002" /><testcase classname="tests.release213.test_integrity" name="test_index_conflicts_block_publication[partial]" time="0.001" /><testcase classname="tests.release213.test_integrity" name="test_index_conflicts_block_publication[hash]" time="0.001" /><testcase classname="tests.release213.test_integrity" name="test_index_conflicts_block_publication[yanked]" time="0.001" /><testcase classname="tests.release213.test_integrity" name="test_index_conflicts_block_publication[duplicate]" time="0.001" /><testcase classname="tests.release213.test_integrity" name="test_index_conflicts_block_publication[foreign]" time="0.001" /><testcase classname="tests.release213.test_integrity" name="test_absence_never_satisfies_production_prerequisite" time="0.001" /><testcase classname="tests.release213.test_integrity" name="test_release_workflow_no_longer_uses_retired_api" time="0.008" /><testcase classname="tests.release213.test_integrity" name="test_manifest_rejects_path_traversal" time="0.002" /><testcase classname="tests.release213.test_learning_material" name="test_course_is_organized_and_core_is_self_contained" time="0.129" /><testcase classname="tests.release213.test_learning_material" name="test_original_learning_snapshot_is_independently_pinned" time="0.052" /><testcase classname="tests.release213.test_learning_material" name="test_bad_snapshot_is_rejected_before_package_verification" time="0.085"><error message="failed on setup with &quot;OSError: could not create numbered dir with prefix pytest- in C:\Users\jacob\AppData\Local\Packages\sandbox.{ccf34c85-26fb-414e-a792-7629d51336eb}\AC\Temp\pytest-of-jacob after 10 tries&quot;">cls = &lt;class '_pytest.runner.CallInfo'&gt;
+func = &lt;function call_and_report.&lt;locals&gt;.&lt;lambda&gt; at 0x0000023766868250&gt;
+when = 'setup'
+reraise = (&lt;class '_pytest.outcomes.Exit'&gt;, &lt;class 'KeyboardInterrupt'&gt;)
+
+    @classmethod
+    def from_call(
+        cls,
+        func: Callable[[], TResult],
+        when: Literal["collect", "setup", "call", "teardown"],
+        reraise: type[BaseException] | tuple[type[BaseException], ...] | None = None,
+    ) -&gt; CallInfo[TResult]:
+        """Call func, wrapping the result in a CallInfo.
+    
+        :param func:
+            The function to call. Called without arguments.
+        :type func: Callable[[], _pytest.runner.TResult]
+        :param when:
+            The phase in which the function is called.
+        :param reraise:
+            Exception or exceptions that shall propagate if raised by the
+            function, instead of being wrapped in the CallInfo.
+        """
+        excinfo = None
+        instant = timing.Instant()
+        try:
+&gt;           result: TResult | None = func()
+                                     ^^^^^^
+
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\runner.py:361: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\runner.py:250: in &lt;lambda&gt;
+    lambda: runtest_hook(item=item, **kwds),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\pluggy\_caller.py:197: in __call__
+    return self._hookexec(
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\pluggy\_manager.py:183: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\logging.py:858: in pytest_runtest_setup
+    yield
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\capture.py:895: in pytest_runtest_setup
+    return (yield)
+            ^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\runner.py:170: in pytest_runtest_setup
+    item.session._setupstate.setup(item)
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\runner.py:536: in setup
+    col.setup()
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\python.py:1710: in setup
+    self._request._fillfixtures()
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\fixtures.py:806: in _fillfixtures
+    item.funcargs[argname] = self.getfixturevalue(argname)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\fixtures.py:630: in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\pluggy\_caller.py:197: in __call__
+    return self._hookexec(
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\pluggy\_manager.py:183: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\fixtures.py:998: in call_fixture_func
+    fixture_result = next(generator)
+                     ^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\tmpdir.py:300: in tmp_path
+    path = _mk_tmp(request, tmp_path_factory)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\tmpdir.py:287: in _mk_tmp
+    return factory.mktemp(name, numbered=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\tmpdir.py:136: in mktemp
+    basename = self._ensure_relative_to_basetemp(basename)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\tmpdir.py:117: in _ensure_relative_to_basetemp
+    if (self.getbasetemp() / basename).resolve().parent != self.getbasetemp():
+        ^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\tmpdir.py:213: in getbasetemp
+    basetemp = make_numbered_dir_with_cleanup(
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\pathlib.py:420: in make_numbered_dir_with_cleanup
+    raise e
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\pathlib.py:401: in make_numbered_dir_with_cleanup
+    p = make_numbered_dir(root, prefix, mode)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+root = WindowsPath('C:/Users/jacob/AppData/Local/Packages/sandbox.{ccf34c85-26fb-414e-a792-7629d51336eb}/AC/Temp/pytest-of-jacob')
+prefix = 'pytest-', mode = 448
+
+    def make_numbered_dir(root: Path, prefix: str, mode: int = 0o700) -&gt; Path:
+        """Create a directory with an increased number as suffix for the given prefix."""
+        for i in range(10):
+            # try up to 10 times to create the directory
+            max_existing = max(map(parse_num, find_suffixes(root, prefix)), default=-1)
+            new_number = max_existing + 1
+            new_path = root.joinpath(f"{prefix}{new_number}")
+            try:
+                new_path.mkdir(mode=mode)
+            except Exception:
+                pass
+            else:
+                _force_symlink(root, prefix + "current", new_path)
+                return new_path
+        else:
+&gt;           raise OSError(
+                "could not create numbered dir with prefix "
+                f"{prefix} in {root} after 10 tries"
+            )
+E           OSError: could not create numbered dir with prefix pytest- in C:\Users\jacob\AppData\Local\Packages\sandbox.{ccf34c85-26fb-414e-a792-7629d51336eb}\AC\Temp\pytest-of-jacob after 10 tries
+
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\pathlib.py:239: OSError</error></testcase><testcase classname="tests.release213.test_learning_material" name="test_snapshot_cannot_excuse_a_changed_sdk" time="0.080"><error message="failed on setup with &quot;OSError: could not create numbered dir with prefix pytest- in C:\Users\jacob\AppData\Local\Packages\sandbox.{ccf34c85-26fb-414e-a792-7629d51336eb}\AC\Temp\pytest-of-jacob after 10 tries&quot;">cls = &lt;class '_pytest.runner.CallInfo'&gt;
+func = &lt;function call_and_report.&lt;locals&gt;.&lt;lambda&gt; at 0x000002376686A4B0&gt;
+when = 'setup'
+reraise = (&lt;class '_pytest.outcomes.Exit'&gt;, &lt;class 'KeyboardInterrupt'&gt;)
+
+    @classmethod
+    def from_call(
+        cls,
+        func: Callable[[], TResult],
+        when: Literal["collect", "setup", "call", "teardown"],
+        reraise: type[BaseException] | tuple[type[BaseException], ...] | None = None,
+    ) -&gt; CallInfo[TResult]:
+        """Call func, wrapping the result in a CallInfo.
+    
+        :param func:
+            The function to call. Called without arguments.
+        :type func: Callable[[], _pytest.runner.TResult]
+        :param when:
+            The phase in which the function is called.
+        :param reraise:
+            Exception or exceptions that shall propagate if raised by the
+            function, instead of being wrapped in the CallInfo.
+        """
+        excinfo = None
+        instant = timing.Instant()
+        try:
+&gt;           result: TResult | None = func()
+                                     ^^^^^^
+
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\runner.py:361: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\runner.py:250: in &lt;lambda&gt;
+    lambda: runtest_hook(item=item, **kwds),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\pluggy\_caller.py:197: in __call__
+    return self._hookexec(
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\pluggy\_manager.py:183: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\logging.py:858: in pytest_runtest_setup
+    yield
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\capture.py:895: in pytest_runtest_setup
+    return (yield)
+            ^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\runner.py:170: in pytest_runtest_setup
+    item.session._setupstate.setup(item)
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\runner.py:536: in setup
+    col.setup()
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\python.py:1710: in setup
+    self._request._fillfixtures()
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\fixtures.py:806: in _fillfixtures
+    item.funcargs[argname] = self.getfixturevalue(argname)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\fixtures.py:630: in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\fixtures.py:726: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\fixtures.py:1232: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\pluggy\_caller.py:197: in __call__
+    return self._hookexec(
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\pluggy\_manager.py:183: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\fixtures.py:1328: in pytest_fixture_setup
+    result = call_fixture_func(fixturefunc, request, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\fixtures.py:998: in call_fixture_func
+    fixture_result = next(generator)
+                     ^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\tmpdir.py:300: in tmp_path
+    path = _mk_tmp(request, tmp_path_factory)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\tmpdir.py:287: in _mk_tmp
+    return factory.mktemp(name, numbered=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\tmpdir.py:136: in mktemp
+    basename = self._ensure_relative_to_basetemp(basename)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\tmpdir.py:117: in _ensure_relative_to_basetemp
+    if (self.getbasetemp() / basename).resolve().parent != self.getbasetemp():
+        ^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\tmpdir.py:213: in getbasetemp
+    basetemp = make_numbered_dir_with_cleanup(
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\pathlib.py:420: in make_numbered_dir_with_cleanup
+    raise e
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\pathlib.py:401: in make_numbered_dir_with_cleanup
+    p = make_numbered_dir(root, prefix, mode)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+root = WindowsPath('C:/Users/jacob/AppData/Local/Packages/sandbox.{ccf34c85-26fb-414e-a792-7629d51336eb}/AC/Temp/pytest-of-jacob')
+prefix = 'pytest-', mode = 448
+
+    def make_numbered_dir(root: Path, prefix: str, mode: int = 0o700) -&gt; Path:
+        """Create a directory with an increased number as suffix for the given prefix."""
+        for i in range(10):
+            # try up to 10 times to create the directory
+            max_existing = max(map(parse_num, find_suffixes(root, prefix)), default=-1)
+            new_number = max_existing + 1
+            new_path = root.joinpath(f"{prefix}{new_number}")
+            try:
+                new_path.mkdir(mode=mode)
+            except Exception:
+                pass
+            else:
+                _force_symlink(root, prefix + "current", new_path)
+                return new_path
+        else:
+&gt;           raise OSError(
+                "could not create numbered dir with prefix "
+                f"{prefix} in {root} after 10 tries"
+            )
+E           OSError: could not create numbered dir with prefix pytest- in C:\Users\jacob\AppData\Local\Packages\sandbox.{ccf34c85-26fb-414e-a792-7629d51336eb}\AC\Temp\pytest-of-jacob after 10 tries
+
+..\..\..\AppData\Local\Temp\agentic-api-212-qbxx2oop\runtime\Lib\site-packages\_pytest\pathlib.py:239: OSError</error></testcase></testsuite></testsuites>

@@ -1,0 +1,472 @@
+{
+  "example": "judge_calibration",
+  "example_passed": true,
+  "source_sha256": "652c9c442ad2dc12515f893cedda88f45e7a47cc7318dabe9f24a546a6b274d9",
+  "inference_requests": 0,
+  "scope": "offline contract or configuration; no model-generation/semantic/IAM/GPU certification",
+  "output": {
+    "calibration": [
+      true,
+      false
+    ],
+    "false_approvals": 0,
+    "scope": "fixture protocol; no empirical model judge calibration",
+    "evaluation": {
+      "text": "",
+      "final": null,
+      "data": {
+        "ok": false,
+        "total": 2,
+        "passed": 1,
+        "failed": 1,
+        "pass_rate": 0.5,
+        "cases": [
+          {
+            "name": "0",
+            "ok": true,
+            "input": {
+              "answer": "VALID"
+            },
+            "expected": {
+              "data": {
+                "answer": "VALID"
+              }
+            },
+            "result": {
+              "text": "",
+              "final": null,
+              "data": {
+                "answer": "VALID"
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {},
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "candidate",
+                "kind": "agent",
+                "backend": "native",
+                "skills": []
+              },
+              "execution_id": "run-b6fec9a80001455eaf534c00548e6a07",
+              "parent_execution_id": null,
+              "children": [
+                {
+                  "text": "",
+                  "final": null,
+                  "data": {
+                    "answer": "VALID"
+                  },
+                  "ok": true,
+                  "messages": [],
+                  "raw_responses": [],
+                  "usage": {},
+                  "engine": "python-runtime",
+                  "model": "",
+                  "mode": "default",
+                  "trace_schema_version": "agentic_systems.trace.v1",
+                  "validation": null,
+                  "errors": [],
+                  "meta": {
+                    "name": "answer",
+                    "kind": "action"
+                  },
+                  "execution_id": "run-40c9a3fe37124b7e8336da8fe2fc2d0d",
+                  "parent_execution_id": "run-b6fec9a80001455eaf534c00548e6a07",
+                  "children": [],
+                  "tool_events": []
+                }
+              ],
+              "tool_events": []
+            },
+            "checks": [
+              {
+                "ok": true,
+                "issues": []
+              }
+            ],
+            "judge": {
+              "ok": true,
+              "criteria": {
+                "correctness": 1.0
+              },
+              "score": 1.0,
+              "raw": {
+                "criteria": {
+                  "correctness": 1.0
+                },
+                "findings": [],
+                "rationale": "Calibration fixture always approves"
+              },
+              "findings": [],
+              "consistent": true,
+              "certification_recorded": true,
+              "threshold": 0.9,
+              "usage": {}
+            },
+            "candidate_usage": {},
+            "judge_usage": {}
+          },
+          {
+            "name": "1",
+            "ok": false,
+            "input": {
+              "answer": "WRONG"
+            },
+            "expected": {
+              "data": {
+                "answer": "VALID"
+              }
+            },
+            "result": {
+              "text": "",
+              "final": null,
+              "data": {
+                "answer": "WRONG"
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {},
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "candidate",
+                "kind": "agent",
+                "backend": "native",
+                "skills": []
+              },
+              "execution_id": "run-c606401bde0b49eb8c0e0fd1498d34d9",
+              "parent_execution_id": null,
+              "children": [
+                {
+                  "text": "",
+                  "final": null,
+                  "data": {
+                    "answer": "WRONG"
+                  },
+                  "ok": true,
+                  "messages": [],
+                  "raw_responses": [],
+                  "usage": {},
+                  "engine": "python-runtime",
+                  "model": "",
+                  "mode": "default",
+                  "trace_schema_version": "agentic_systems.trace.v1",
+                  "validation": null,
+                  "errors": [],
+                  "meta": {
+                    "name": "answer",
+                    "kind": "action"
+                  },
+                  "execution_id": "run-2938339359074ec59d9f0e37db5b44fb",
+                  "parent_execution_id": "run-c606401bde0b49eb8c0e0fd1498d34d9",
+                  "children": [],
+                  "tool_events": []
+                }
+              ],
+              "tool_events": []
+            },
+            "checks": [
+              {
+                "ok": false,
+                "issues": [
+                  {
+                    "code": "expected_mismatch",
+                    "path": "data"
+                  }
+                ]
+              }
+            ],
+            "judge": {
+              "ok": true,
+              "criteria": {
+                "correctness": 1.0
+              },
+              "score": 1.0,
+              "raw": {
+                "criteria": {
+                  "correctness": 1.0
+                },
+                "findings": [],
+                "rationale": "Calibration fixture always approves"
+              },
+              "findings": [],
+              "consistent": true,
+              "certification_recorded": true,
+              "threshold": 0.9,
+              "usage": {}
+            },
+            "candidate_usage": {},
+            "judge_usage": {}
+          }
+        ]
+      },
+      "ok": false,
+      "messages": [],
+      "raw_responses": [],
+      "usage": {},
+      "engine": "python-runtime",
+      "model": "",
+      "mode": "default",
+      "trace_schema_version": "agentic_systems.trace.v1",
+      "validation": null,
+      "errors": [
+        {
+          "code": "eval_failed",
+          "message": "One or more required cases failed"
+        }
+      ],
+      "meta": {
+        "name": "calibration",
+        "kind": "eval",
+        "expected_failure_ids": [],
+        "actions_observed": 4,
+        "judge_mode": "deterministic-fixture"
+      },
+      "execution_id": "run-6ee7c033fde24e6c849a0c94ee3884fa",
+      "parent_execution_id": null,
+      "children": [
+        {
+          "text": "",
+          "final": null,
+          "data": {
+            "answer": "VALID"
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {},
+          "engine": "python-runtime",
+          "model": "",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "candidate",
+            "kind": "agent",
+            "backend": "native",
+            "skills": []
+          },
+          "execution_id": "run-b6fec9a80001455eaf534c00548e6a07",
+          "parent_execution_id": "run-6ee7c033fde24e6c849a0c94ee3884fa",
+          "children": [
+            {
+              "text": "",
+              "final": null,
+              "data": {
+                "answer": "VALID"
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {},
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "answer",
+                "kind": "action"
+              },
+              "execution_id": "run-40c9a3fe37124b7e8336da8fe2fc2d0d",
+              "parent_execution_id": "run-b6fec9a80001455eaf534c00548e6a07",
+              "children": [],
+              "tool_events": []
+            }
+          ],
+          "tool_events": []
+        },
+        {
+          "text": "",
+          "final": null,
+          "data": {
+            "criteria": {
+              "correctness": 1.0
+            },
+            "findings": [],
+            "rationale": "Calibration fixture always approves"
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {},
+          "engine": "python-runtime",
+          "model": "",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "optimistic_fixture",
+            "kind": "agent",
+            "backend": "native",
+            "skills": []
+          },
+          "execution_id": "run-f0b111a581e3482bb4e470ef8748183c",
+          "parent_execution_id": "run-6ee7c033fde24e6c849a0c94ee3884fa",
+          "children": [
+            {
+              "text": "",
+              "final": null,
+              "data": {
+                "criteria": {
+                  "correctness": 1.0
+                },
+                "findings": [],
+                "rationale": "Calibration fixture always approves"
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {},
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "score",
+                "kind": "action"
+              },
+              "execution_id": "run-e263167680aa4dee86a1f2102f63bb48",
+              "parent_execution_id": "run-f0b111a581e3482bb4e470ef8748183c",
+              "children": [],
+              "tool_events": []
+            }
+          ],
+          "tool_events": []
+        },
+        {
+          "text": "",
+          "final": null,
+          "data": {
+            "answer": "WRONG"
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {},
+          "engine": "python-runtime",
+          "model": "",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "candidate",
+            "kind": "agent",
+            "backend": "native",
+            "skills": []
+          },
+          "execution_id": "run-c606401bde0b49eb8c0e0fd1498d34d9",
+          "parent_execution_id": "run-6ee7c033fde24e6c849a0c94ee3884fa",
+          "children": [
+            {
+              "text": "",
+              "final": null,
+              "data": {
+                "answer": "WRONG"
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {},
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "answer",
+                "kind": "action"
+              },
+              "execution_id": "run-2938339359074ec59d9f0e37db5b44fb",
+              "parent_execution_id": "run-c606401bde0b49eb8c0e0fd1498d34d9",
+              "children": [],
+              "tool_events": []
+            }
+          ],
+          "tool_events": []
+        },
+        {
+          "text": "",
+          "final": null,
+          "data": {
+            "criteria": {
+              "correctness": 1.0
+            },
+            "findings": [],
+            "rationale": "Calibration fixture always approves"
+          },
+          "ok": true,
+          "messages": [],
+          "raw_responses": [],
+          "usage": {},
+          "engine": "python-runtime",
+          "model": "",
+          "mode": "default",
+          "trace_schema_version": "agentic_systems.trace.v1",
+          "validation": null,
+          "errors": [],
+          "meta": {
+            "name": "optimistic_fixture",
+            "kind": "agent",
+            "backend": "native",
+            "skills": []
+          },
+          "execution_id": "run-fdde201e34ee436f82082aa9eccde526",
+          "parent_execution_id": "run-6ee7c033fde24e6c849a0c94ee3884fa",
+          "children": [
+            {
+              "text": "",
+              "final": null,
+              "data": {
+                "criteria": {
+                  "correctness": 1.0
+                },
+                "findings": [],
+                "rationale": "Calibration fixture always approves"
+              },
+              "ok": true,
+              "messages": [],
+              "raw_responses": [],
+              "usage": {},
+              "engine": "python-runtime",
+              "model": "",
+              "mode": "default",
+              "trace_schema_version": "agentic_systems.trace.v1",
+              "validation": null,
+              "errors": [],
+              "meta": {
+                "name": "score",
+                "kind": "action"
+              },
+              "execution_id": "run-07df458059f44a618f3286e2b71153e9",
+              "parent_execution_id": "run-fdde201e34ee436f82082aa9eccde526",
+              "children": [],
+              "tool_events": []
+            }
+          ],
+          "tool_events": []
+        }
+      ],
+      "tool_events": []
+    }
+  }
+}

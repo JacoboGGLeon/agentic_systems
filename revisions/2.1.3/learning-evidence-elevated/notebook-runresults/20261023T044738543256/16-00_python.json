@@ -1,0 +1,315 @@
+{
+  "source": "tutorials/providers/00_python.ipynb",
+  "captured_boundaries": 1,
+  "root_results": 1,
+  "scope": "Observed SDK RunResult values; descendants retained inside parents. No fabricated results for configuration-only examples.",
+  "results": [
+    {
+      "run_result": {
+        "text": "certify -> {\"value\": 37, \"verified\": true}",
+        "final": {
+          "value": 37,
+          "verified": true,
+          "ok": true,
+          "tool": "certify"
+        },
+        "data": {
+          "value": 37,
+          "verified": true,
+          "ok": true,
+          "tool": "certify"
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "client_duration_ms": 1.942,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "python-runtime",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "verification",
+          "kind": "agent",
+          "backend": "native",
+          "skills": [
+            "evidence"
+          ],
+          "actions_observed": 1,
+          "input": {
+            "tool": "certify",
+            "input": {
+              "value": 37
+            }
+          }
+        },
+        "execution_id": "run-e7d2f04d1c8b421fb546b77fdb08aafe",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "certify -> {\"value\": 37, \"verified\": true}",
+            "final": {
+              "value": 37,
+              "verified": true,
+              "ok": true,
+              "tool": "certify"
+            },
+            "data": {
+              "value": 37,
+              "verified": true,
+              "ok": true,
+              "tool": "certify"
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "client_duration_ms": 1.942,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "python-runtime",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "verification",
+              "kind": "model",
+              "framework": "native"
+            },
+            "execution_id": "run-4234e083673648ef8d31ee38f2f43e1b",
+            "parent_execution_id": "run-e7d2f04d1c8b421fb546b77fdb08aafe",
+            "children": [
+              {
+                "text": "certify -> {\"value\": 37, \"verified\": true}",
+                "final": {
+                  "value": 37,
+                  "verified": true,
+                  "ok": true,
+                  "tool": "certify"
+                },
+                "data": {
+                  "value": 37,
+                  "verified": true,
+                  "ok": true,
+                  "tool": "certify"
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "scheduler": {
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 1.942
+                  },
+                  "client_duration_ms": 1.942,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "python-runtime",
+                "mode": "eval",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": {
+                  "ok": true,
+                  "issues": []
+                },
+                "errors": [],
+                "meta": {
+                  "source_result_type": "PythonRuntimeProvider",
+                  "agent_name": "verification",
+                  "tool_count": 1,
+                  "planned_tool_calls": 1,
+                  "runtime": {
+                    "provider": "python-runtime",
+                    "model_id": "python-runtime",
+                    "region_name": null,
+                    "endpoint": null,
+                    "metadata": {},
+                    "provider_priority": [
+                      "openai-runtime",
+                      "bedrock-runtime",
+                      "ollama-runtime"
+                    ],
+                    "allow_python_fallback": false,
+                    "scheduler": {
+                      "max_turns": 6,
+                      "max_tool_calls": 5,
+                      "timeout_s": 60.0,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    }
+                  },
+                  "scheduler": {
+                    "max_turns": 6,
+                    "max_tool_calls": 5,
+                    "timeout_s": 60.0,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "scheduler_execution": {
+                    "scheduler": {
+                      "max_turns": 6,
+                      "max_tool_calls": 5,
+                      "timeout_s": 60.0,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    },
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 1.942
+                  },
+                  "framework": "native",
+                  "framework_requested": "native",
+                  "framework_adapter": "native",
+                  "framework_config": {
+                    "name": "native",
+                    "agent_kwargs": {},
+                    "run_kwargs": {}
+                  },
+                  "input": {
+                    "tool": "certify",
+                    "input": {
+                      "value": 37
+                    }
+                  },
+                  "requested_engine": "python-runtime",
+                  "runtime_engine": "python-runtime",
+                  "execution_engine": "python-runtime"
+                },
+                "execution_id": "run-26e0104b0aae431086c19807607d9044",
+                "parent_execution_id": "run-4234e083673648ef8d31ee38f2f43e1b",
+                "children": [],
+                "tool_events": [
+                  {
+                    "id": "tool-a00c66f3ddb3411e909e3ad544f0abc1",
+                    "name": "certify",
+                    "input": {
+                      "value": 37
+                    },
+                    "output": {
+                      "data": {
+                        "value": 37,
+                        "verified": true
+                      }
+                    },
+                    "ok": true,
+                    "error": null,
+                    "duration_ms": null,
+                    "meta": {}
+                  }
+                ]
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "tutorials/providers/00_python.ipynb",
+        "question": "{\"tool\": \"certify\", \"input\": {\"value\": 37}}",
+        "goal": "",
+        "answer": "certify -> {\"value\": 37, \"verified\": true}",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-e7d2f04d1c8b421fb546b77fdb08aafe",
+            "kind": "execution",
+            "title": "verification",
+            "summary": "certify -> {\"value\": 37, \"verified\": true}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 37,
+                "verified": true,
+                "ok": true,
+                "tool": "certify"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-4234e083673648ef8d31ee38f2f43e1b",
+            "kind": "execution",
+            "title": "verification",
+            "summary": "certify -> {\"value\": 37, \"verified\": true}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 37,
+                "verified": true,
+                "ok": true,
+                "tool": "certify"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-26e0104b0aae431086c19807607d9044",
+            "kind": "execution",
+            "title": "eval",
+            "summary": "certify -> {\"value\": 37, \"verified\": true}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 37,
+                "verified": true,
+                "ok": true,
+                "tool": "certify"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "tool-a00c66f3ddb3411e909e3ad544f0abc1",
+            "kind": "tool",
+            "title": "certify",
+            "summary": "completed",
+            "source": "certify",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "value": 37,
+                "verified": true
+              }
+            }
+          }
+        ],
+        "usage": {
+          "client_duration_ms": 1.942,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    }
+  ]
+}

@@ -17,5 +17,5 @@ Código:
 
 Validación: **Offline ejecutado**. Installed version/API identity; CLI and generated projects are checked separately in SDK/distribution evidence. Final artifact binding is recorded in implementation evidence. No real inference.
 
-- [Measured offline report](../../../revisions/2.1.3/closeout-evidence/REPORT.md)
-- [Exact artifact and evidence hashes](../../../revisions/2.1.3/implementation-evidence/manifest.json)
+- [Nueva ejecución contra el wheel publicado](../../../revisions/2.1.3/learning-evidence-elevated/example-results/package_install/run.json)
+- [RunResult y lineage](../../../revisions/2.1.3/learning-evidence-elevated/example-results/package_install/runresults.json)

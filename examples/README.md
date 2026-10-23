@@ -65,7 +65,7 @@ Los resultados offline, live y de configuración se indican por separado. Un can
 | [Evaluar sin repetir](patterns/saved_execution_eval/README.md) | Restaurar RunResult y evaluar evidencia guardada. | Offline ejecutado |
 | [Bloquear un falso positivo](patterns/fixed_judge_pilot/README.md) | Impedir que un juez fixture apruebe una respuesta incorrecta. | Offline ejecutado |
 | [Exigir una respuesta literal](patterns/unambiguous_lm_gate/README.md) | Distinguir coincidencia exacta de parecido textual. | Offline ejecutado |
-| [Tutoriales de la API única 2.1.3](patterns/api_213_tutorials/README.md) | Teach every public 2.1.3 symbol through ten offline notebooks using only import agentic_systems. | Offline ejecutado |
+| [Tutoriales de la API única 2.1.3](patterns/api_213_tutorials/README.md) | Aprender la API por core, providers, frameworks y API en 19 notebooks. | Offline ejecutado |
 | [Tool Contracts — API 2.1.3](patterns/tool_contracts/README.md) | Pydantic input/output schemas, direct/async deterministic Tool and a controlled invalid input. | Offline ejecutado |
 | [Portable Skills — API 2.1.3](patterns/portable_skills/README.md) | Exact path loading, relative imports including lazy use, instructions and versioned capability. | Offline ejecutado |
 | [Flow Semantics — API 2.1.3](patterns/flow_semantics/README.md) | Six Agent/System × flow forms, each on native and real LangGraph, direct and compiled. | Offline ejecutado |
@@ -87,7 +87,7 @@ Los resultados offline, live y de configuración se indican por separado. Un can
 | [Preparar AWS IAM](validation/aws_iam/README.md) | Declarar Bedrock sin una API key embebida. | Configuración; entorno pendiente |
 | [Preparar ADA IAM](validation/ada_iam/README.md) | Preparar el mismo contrato para un workload empresarial. | Configuración; entorno pendiente |
 
-[Resultados y límites de esta campaña](../revisions/2.1.3/closeout-evidence/REPORT.md).
+[Resultados y límites de la nueva validación](../docs/LEARNING_VALIDATION_213.md).
 [RunResult y Lineage Memory de cada ejemplo y notebook](../docs/RUNRESULTS_LINEAGE_213.md): resultados observados y evidencia de cómo se obtuvieron.
 [Inventario exhaustivo de notebooks y gramática](../docs/NOTEBOOK_INVENTORY_213.md).
 [Catálogo completo y evidencia anterior](catalog.json).

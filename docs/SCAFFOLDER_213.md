@@ -14,7 +14,11 @@ src/agentic_systems/
   _scaffolding.py      # generación desde recursos instalados
   _templates/          # declaración única de pedidos y proyecto
   cli.py
-tutorials/             # once capítulos
+tutorials/             # 19 notebooks organizados
+  core/                # Tools, Skills, Agent/System, Environment, Eval y resultados
+  providers/           # Python, OpenAI, Ollama, Bedrock API key y serving
+  frameworks/          # LangGraph, OpenAI Agents, Strands e interoperabilidad
+  api/                 # contratos, jueces, runtime y opciones
 examples/              # aplicaciones, ejemplos focalizados e historia
 tests/v213/            # contratos actuales
 ```

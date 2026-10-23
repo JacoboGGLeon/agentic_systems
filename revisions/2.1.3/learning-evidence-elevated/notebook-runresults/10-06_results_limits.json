@@ -1,0 +1,1478 @@
+{
+  "source": "tutorials/core/06_results_limits.ipynb",
+  "captured_boundaries": 11,
+  "root_results": 4,
+  "scope": "Observed SDK RunResult values; descendants retained inside parents. No fabricated results for configuration-only examples.",
+  "results": [
+    {
+      "run_result": {
+        "text": "",
+        "final": {
+          "value": 8
+        },
+        "data": {
+          "value": 8
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 2,
+          "inference_requests": 0,
+          "tool_calls": 2
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "calculator",
+          "kind": "agent",
+          "backend": "native",
+          "skills": [
+            "arithmetic"
+          ],
+          "actions_observed": 2,
+          "input": {
+            "value": 3
+          }
+        },
+        "execution_id": "run-782e7858b04b456bbce4b51b93a0258c",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "",
+            "final": {
+              "value": 8
+            },
+            "data": {
+              "value": 8
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 2,
+              "inference_requests": 0,
+              "tool_calls": 2
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "sequence",
+              "kind": "sequence",
+              "backend": "native"
+            },
+            "execution_id": "run-f190572952514a8386918a448ec66203",
+            "parent_execution_id": "run-782e7858b04b456bbce4b51b93a0258c",
+            "children": [
+              {
+                "text": "",
+                "final": {
+                  "value": 4
+                },
+                "data": {
+                  "value": 4
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "requests": 1,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "increase",
+                  "kind": "action",
+                  "step": "increase"
+                },
+                "execution_id": "run-eed65a1dc3d148548dc81d33746b04ea",
+                "parent_execution_id": "run-f190572952514a8386918a448ec66203",
+                "children": [
+                  {
+                    "text": "",
+                    "final": {
+                      "value": 4
+                    },
+                    "data": {
+                      "value": 4
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "requests": 1,
+                      "inference_requests": 0,
+                      "tool_calls": 1
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "tool",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "tool_name": "",
+                      "input": {
+                        "value": 3
+                      },
+                      "tool_input": {
+                        "value": 3
+                      }
+                    },
+                    "execution_id": "run-4ca1489cc57d47ba9ad452f360bbda0d",
+                    "parent_execution_id": "run-eed65a1dc3d148548dc81d33746b04ea",
+                    "children": [],
+                    "tool_events": [
+                      {
+                        "id": "tool-f1193c7f702840a8988153287f0e9051",
+                        "name": "increment",
+                        "input": {
+                          "value": 3
+                        },
+                        "output": {
+                          "data": {
+                            "value": 4
+                          }
+                        },
+                        "ok": true,
+                        "error": null,
+                        "duration_ms": null,
+                        "meta": {}
+                      }
+                    ]
+                  }
+                ],
+                "tool_events": []
+              },
+              {
+                "text": "",
+                "final": {
+                  "value": 8
+                },
+                "data": {
+                  "value": 8
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "requests": 1,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "multiply",
+                  "kind": "action",
+                  "step": "multiply"
+                },
+                "execution_id": "run-c281fa0d4a604dcb86f664b4104dc774",
+                "parent_execution_id": "run-f190572952514a8386918a448ec66203",
+                "children": [
+                  {
+                    "text": "",
+                    "final": {
+                      "value": 8
+                    },
+                    "data": {
+                      "value": 8
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "requests": 1,
+                      "inference_requests": 0,
+                      "tool_calls": 1
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "tool",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "tool_name": "",
+                      "input": {
+                        "value": 4
+                      },
+                      "tool_input": {
+                        "value": 4
+                      }
+                    },
+                    "execution_id": "run-fc13b15bfcb74a799a4af7bb6dc6ed6e",
+                    "parent_execution_id": "run-c281fa0d4a604dcb86f664b4104dc774",
+                    "children": [],
+                    "tool_events": [
+                      {
+                        "id": "tool-50c62b891beb41c381964449f47d810e",
+                        "name": "double",
+                        "input": {
+                          "value": 4
+                        },
+                        "output": {
+                          "data": {
+                            "value": 8
+                          }
+                        },
+                        "ok": true,
+                        "error": null,
+                        "duration_ms": null,
+                        "meta": {}
+                      }
+                    ]
+                  }
+                ],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "tutorials/core/06_results_limits.ipynb",
+        "question": "{\"value\": 3}",
+        "goal": "",
+        "answer": "{\"value\": 8}",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-782e7858b04b456bbce4b51b93a0258c",
+            "kind": "execution",
+            "title": "calculator",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 8
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-f190572952514a8386918a448ec66203",
+            "kind": "execution",
+            "title": "sequence",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 8
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-eed65a1dc3d148548dc81d33746b04ea",
+            "kind": "execution",
+            "title": "increase",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-4ca1489cc57d47ba9ad452f360bbda0d",
+            "kind": "execution",
+            "title": "tool",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "tool-f1193c7f702840a8988153287f0e9051",
+            "kind": "tool",
+            "title": "increment",
+            "summary": "completed",
+            "source": "increment",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "value": 4
+              }
+            }
+          },
+          {
+            "step_id": "run-c281fa0d4a604dcb86f664b4104dc774",
+            "kind": "execution",
+            "title": "multiply",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 8
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-fc13b15bfcb74a799a4af7bb6dc6ed6e",
+            "kind": "execution",
+            "title": "tool",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 8
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "tool-50c62b891beb41c381964449f47d810e",
+            "kind": "tool",
+            "title": "double",
+            "summary": "completed",
+            "source": "double",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "value": 8
+              }
+            }
+          }
+        ],
+        "usage": {
+          "requests": 2,
+          "inference_requests": 0,
+          "tool_calls": 2
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    },
+    {
+      "run_result": {
+        "text": "",
+        "final": null,
+        "data": {},
+        "ok": false,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [
+          {
+            "code": "RuntimeError",
+            "message": "Shared action limit exceeded"
+          }
+        ],
+        "meta": {
+          "name": "calculator",
+          "kind": "agent",
+          "backend": "native",
+          "skills": [
+            "arithmetic"
+          ],
+          "actions_observed": 1,
+          "input": {
+            "value": 3
+          }
+        },
+        "execution_id": "run-72c9c4def8d8403e930104c28936bf45",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "",
+            "final": null,
+            "data": {},
+            "ok": false,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 1,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [
+              {
+                "code": "RuntimeError",
+                "message": "Shared action limit exceeded"
+              }
+            ],
+            "meta": {
+              "name": "sequence",
+              "kind": "sequence",
+              "backend": "native"
+            },
+            "execution_id": "run-4832b65aa1034321a80a281e0a636c31",
+            "parent_execution_id": "run-72c9c4def8d8403e930104c28936bf45",
+            "children": [
+              {
+                "text": "",
+                "final": {
+                  "value": 4
+                },
+                "data": {
+                  "value": 4
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "requests": 1,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "increase",
+                  "kind": "action",
+                  "step": "increase"
+                },
+                "execution_id": "run-0e654c7f6647413ea4cbc5168bf0c88d",
+                "parent_execution_id": "run-4832b65aa1034321a80a281e0a636c31",
+                "children": [
+                  {
+                    "text": "",
+                    "final": {
+                      "value": 4
+                    },
+                    "data": {
+                      "value": 4
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "requests": 1,
+                      "inference_requests": 0,
+                      "tool_calls": 1
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "tool",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "tool_name": "",
+                      "input": {
+                        "value": 3
+                      },
+                      "tool_input": {
+                        "value": 3
+                      }
+                    },
+                    "execution_id": "run-afa5d2361880488c952a82ee967a3609",
+                    "parent_execution_id": "run-0e654c7f6647413ea4cbc5168bf0c88d",
+                    "children": [],
+                    "tool_events": [
+                      {
+                        "id": "tool-b19055248ee44a929c2719fa26db3419",
+                        "name": "increment",
+                        "input": {
+                          "value": 3
+                        },
+                        "output": {
+                          "data": {
+                            "value": 4
+                          }
+                        },
+                        "ok": true,
+                        "error": null,
+                        "duration_ms": null,
+                        "meta": {}
+                      }
+                    ]
+                  }
+                ],
+                "tool_events": []
+              },
+              {
+                "text": "",
+                "final": null,
+                "data": {},
+                "ok": false,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {},
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [
+                  {
+                    "code": "RuntimeError",
+                    "message": "Shared action limit exceeded"
+                  }
+                ],
+                "meta": {
+                  "name": "multiply",
+                  "kind": "action",
+                  "step": "multiply"
+                },
+                "execution_id": "run-bd532f6335254edcb966c91f550473c9",
+                "parent_execution_id": "run-4832b65aa1034321a80a281e0a636c31",
+                "children": [],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "tutorials/core/06_results_limits.ipynb",
+        "question": "{\"value\": 3}",
+        "goal": "",
+        "answer": "{}",
+        "ok": false,
+        "steps": [
+          {
+            "step_id": "run-72c9c4def8d8403e930104c28936bf45",
+            "kind": "execution",
+            "title": "calculator",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": false,
+              "data": {},
+              "errors": [
+                {
+                  "code": "RuntimeError",
+                  "message": "Shared action limit exceeded"
+                }
+              ]
+            }
+          },
+          {
+            "step_id": "run-4832b65aa1034321a80a281e0a636c31",
+            "kind": "execution",
+            "title": "sequence",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": false,
+              "data": {},
+              "errors": [
+                {
+                  "code": "RuntimeError",
+                  "message": "Shared action limit exceeded"
+                }
+              ]
+            }
+          },
+          {
+            "step_id": "run-0e654c7f6647413ea4cbc5168bf0c88d",
+            "kind": "execution",
+            "title": "increase",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-afa5d2361880488c952a82ee967a3609",
+            "kind": "execution",
+            "title": "tool",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "tool-b19055248ee44a929c2719fa26db3419",
+            "kind": "tool",
+            "title": "increment",
+            "summary": "completed",
+            "source": "increment",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "value": 4
+              }
+            }
+          },
+          {
+            "step_id": "run-bd532f6335254edcb966c91f550473c9",
+            "kind": "execution",
+            "title": "multiply",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": false,
+              "data": {},
+              "errors": [
+                {
+                  "code": "RuntimeError",
+                  "message": "Shared action limit exceeded"
+                }
+              ]
+            }
+          }
+        ],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    },
+    {
+      "run_result": {
+        "text": "",
+        "final": {
+          "value": 8
+        },
+        "data": {
+          "value": 8
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 2,
+          "inference_requests": 0,
+          "tool_calls": 2
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "calculator",
+          "kind": "agent",
+          "backend": "native",
+          "skills": [
+            "arithmetic"
+          ],
+          "actions_observed": 2,
+          "input": {
+            "value": 3
+          }
+        },
+        "execution_id": "run-180baef5441f448fab54e94efe7bac1d",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "",
+            "final": {
+              "value": 8
+            },
+            "data": {
+              "value": 8
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 2,
+              "inference_requests": 0,
+              "tool_calls": 2
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "sequence",
+              "kind": "sequence",
+              "backend": "native"
+            },
+            "execution_id": "run-cd560b1d07834e078708ac42ac354a9d",
+            "parent_execution_id": "run-180baef5441f448fab54e94efe7bac1d",
+            "children": [
+              {
+                "text": "",
+                "final": {
+                  "value": 4
+                },
+                "data": {
+                  "value": 4
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "requests": 1,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "increase",
+                  "kind": "action",
+                  "step": "increase"
+                },
+                "execution_id": "run-95b0258cad7d43d6926f069cc431a7b6",
+                "parent_execution_id": "run-cd560b1d07834e078708ac42ac354a9d",
+                "children": [
+                  {
+                    "text": "",
+                    "final": {
+                      "value": 4
+                    },
+                    "data": {
+                      "value": 4
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "requests": 1,
+                      "inference_requests": 0,
+                      "tool_calls": 1
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "tool",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "tool_name": "",
+                      "input": {
+                        "value": 3
+                      },
+                      "tool_input": {
+                        "value": 3
+                      }
+                    },
+                    "execution_id": "run-220f636ab4484728a008f937d76f2e7d",
+                    "parent_execution_id": "run-95b0258cad7d43d6926f069cc431a7b6",
+                    "children": [],
+                    "tool_events": [
+                      {
+                        "id": "tool-5a04c13e1f494db78ee96d80141eecd0",
+                        "name": "increment",
+                        "input": {
+                          "value": 3
+                        },
+                        "output": {
+                          "data": {
+                            "value": 4
+                          }
+                        },
+                        "ok": true,
+                        "error": null,
+                        "duration_ms": null,
+                        "meta": {}
+                      }
+                    ]
+                  }
+                ],
+                "tool_events": []
+              },
+              {
+                "text": "",
+                "final": {
+                  "value": 8
+                },
+                "data": {
+                  "value": 8
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "requests": 1,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "multiply",
+                  "kind": "action",
+                  "step": "multiply"
+                },
+                "execution_id": "run-ed11c945cb474529820336578120a6c5",
+                "parent_execution_id": "run-cd560b1d07834e078708ac42ac354a9d",
+                "children": [
+                  {
+                    "text": "",
+                    "final": {
+                      "value": 8
+                    },
+                    "data": {
+                      "value": 8
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "requests": 1,
+                      "inference_requests": 0,
+                      "tool_calls": 1
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "tool",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "tool_name": "",
+                      "input": {
+                        "value": 4
+                      },
+                      "tool_input": {
+                        "value": 4
+                      }
+                    },
+                    "execution_id": "run-93c0d6ce048243899795ebe9863680fa",
+                    "parent_execution_id": "run-ed11c945cb474529820336578120a6c5",
+                    "children": [],
+                    "tool_events": [
+                      {
+                        "id": "tool-155479e88e7c4028a4c2fa215c1631fb",
+                        "name": "double",
+                        "input": {
+                          "value": 4
+                        },
+                        "output": {
+                          "data": {
+                            "value": 8
+                          }
+                        },
+                        "ok": true,
+                        "error": null,
+                        "duration_ms": null,
+                        "meta": {}
+                      }
+                    ]
+                  }
+                ],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "tutorials/core/06_results_limits.ipynb",
+        "question": "{\"value\": 3}",
+        "goal": "",
+        "answer": "{\"value\": 8}",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-180baef5441f448fab54e94efe7bac1d",
+            "kind": "execution",
+            "title": "calculator",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 8
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-cd560b1d07834e078708ac42ac354a9d",
+            "kind": "execution",
+            "title": "sequence",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 8
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-95b0258cad7d43d6926f069cc431a7b6",
+            "kind": "execution",
+            "title": "increase",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-220f636ab4484728a008f937d76f2e7d",
+            "kind": "execution",
+            "title": "tool",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "tool-5a04c13e1f494db78ee96d80141eecd0",
+            "kind": "tool",
+            "title": "increment",
+            "summary": "completed",
+            "source": "increment",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "value": 4
+              }
+            }
+          },
+          {
+            "step_id": "run-ed11c945cb474529820336578120a6c5",
+            "kind": "execution",
+            "title": "multiply",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 8
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-93c0d6ce048243899795ebe9863680fa",
+            "kind": "execution",
+            "title": "tool",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 8
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "tool-155479e88e7c4028a4c2fa215c1631fb",
+            "kind": "tool",
+            "title": "double",
+            "summary": "completed",
+            "source": "double",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "value": 8
+              }
+            }
+          }
+        ],
+        "usage": {
+          "requests": 2,
+          "inference_requests": 0,
+          "tool_calls": 2
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    },
+    {
+      "run_result": {
+        "text": "",
+        "final": {
+          "value": 8
+        },
+        "data": {
+          "value": 8
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 2,
+          "inference_requests": 0,
+          "tool_calls": 2
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "calculator",
+          "kind": "agent",
+          "backend": "native",
+          "skills": [
+            "arithmetic"
+          ],
+          "actions_observed": 2,
+          "input": {
+            "value": 3
+          }
+        },
+        "execution_id": "run-3d9bed26a62d482e84386ca26b0c2121",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "",
+            "final": {
+              "value": 8
+            },
+            "data": {
+              "value": 8
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 2,
+              "inference_requests": 0,
+              "tool_calls": 2
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "sequence",
+              "kind": "sequence",
+              "backend": "native"
+            },
+            "execution_id": "run-256e8edc2ef249f6ad105e18f41d64e2",
+            "parent_execution_id": "run-3d9bed26a62d482e84386ca26b0c2121",
+            "children": [
+              {
+                "text": "",
+                "final": {
+                  "value": 4
+                },
+                "data": {
+                  "value": 4
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "requests": 1,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "increase",
+                  "kind": "action",
+                  "step": "increase"
+                },
+                "execution_id": "run-3ab8a1337793413aaa519ba9cbe33efc",
+                "parent_execution_id": "run-256e8edc2ef249f6ad105e18f41d64e2",
+                "children": [
+                  {
+                    "text": "",
+                    "final": {
+                      "value": 4
+                    },
+                    "data": {
+                      "value": 4
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "requests": 1,
+                      "inference_requests": 0,
+                      "tool_calls": 1
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "tool",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "tool_name": "",
+                      "input": {
+                        "value": 3
+                      },
+                      "tool_input": {
+                        "value": 3
+                      }
+                    },
+                    "execution_id": "run-4abe69300dd548019533bd161bc74183",
+                    "parent_execution_id": "run-3ab8a1337793413aaa519ba9cbe33efc",
+                    "children": [],
+                    "tool_events": [
+                      {
+                        "id": "tool-a5c85c49e089440d938ee75e78e7b268",
+                        "name": "increment",
+                        "input": {
+                          "value": 3
+                        },
+                        "output": {
+                          "data": {
+                            "value": 4
+                          }
+                        },
+                        "ok": true,
+                        "error": null,
+                        "duration_ms": null,
+                        "meta": {}
+                      }
+                    ]
+                  }
+                ],
+                "tool_events": []
+              },
+              {
+                "text": "",
+                "final": {
+                  "value": 8
+                },
+                "data": {
+                  "value": 8
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "requests": 1,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "multiply",
+                  "kind": "action",
+                  "step": "multiply"
+                },
+                "execution_id": "run-61149400927340d0b048be37cbf8b1c0",
+                "parent_execution_id": "run-256e8edc2ef249f6ad105e18f41d64e2",
+                "children": [
+                  {
+                    "text": "",
+                    "final": {
+                      "value": 8
+                    },
+                    "data": {
+                      "value": 8
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "requests": 1,
+                      "inference_requests": 0,
+                      "tool_calls": 1
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "tool",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "tool_name": "",
+                      "input": {
+                        "value": 4
+                      },
+                      "tool_input": {
+                        "value": 4
+                      }
+                    },
+                    "execution_id": "run-df8beca5b1cd46968d294ce4500a8961",
+                    "parent_execution_id": "run-61149400927340d0b048be37cbf8b1c0",
+                    "children": [],
+                    "tool_events": [
+                      {
+                        "id": "tool-3c91bf77e8134d30a35c2328cd20bb2a",
+                        "name": "double",
+                        "input": {
+                          "value": 4
+                        },
+                        "output": {
+                          "data": {
+                            "value": 8
+                          }
+                        },
+                        "ok": true,
+                        "error": null,
+                        "duration_ms": null,
+                        "meta": {}
+                      }
+                    ]
+                  }
+                ],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "tutorials/core/06_results_limits.ipynb",
+        "question": "{\"value\": 3}",
+        "goal": "",
+        "answer": "{\"value\": 8}",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-3d9bed26a62d482e84386ca26b0c2121",
+            "kind": "execution",
+            "title": "calculator",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 8
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-256e8edc2ef249f6ad105e18f41d64e2",
+            "kind": "execution",
+            "title": "sequence",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 8
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-3ab8a1337793413aaa519ba9cbe33efc",
+            "kind": "execution",
+            "title": "increase",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-4abe69300dd548019533bd161bc74183",
+            "kind": "execution",
+            "title": "tool",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "tool-a5c85c49e089440d938ee75e78e7b268",
+            "kind": "tool",
+            "title": "increment",
+            "summary": "completed",
+            "source": "increment",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "value": 4
+              }
+            }
+          },
+          {
+            "step_id": "run-61149400927340d0b048be37cbf8b1c0",
+            "kind": "execution",
+            "title": "multiply",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 8
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-df8beca5b1cd46968d294ce4500a8961",
+            "kind": "execution",
+            "title": "tool",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 8
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "tool-3c91bf77e8134d30a35c2328cd20bb2a",
+            "kind": "tool",
+            "title": "double",
+            "summary": "completed",
+            "source": "double",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "value": 8
+              }
+            }
+          }
+        ],
+        "usage": {
+          "requests": 2,
+          "inference_requests": 0,
+          "tool_calls": 2
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    }
+  ]
+}

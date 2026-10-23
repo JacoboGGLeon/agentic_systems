@@ -1,6 +1,13 @@
 # Changelog
 
-## 2.1.3 - Unreleased: single API revision
+## Después de 2.1.3 · documentación y aprendizaje
+
+- Tutorials vuelve a organizarse por core, providers, frameworks y API.
+- README e instalación distinguen el SDK publicado, Studio y el material del repositorio.
+- Nueva campaña de tutorials/examples con presupuesto independiente y evidencia por fuente.
+- Se conservan los artefactos y la evidencia sellada del release sin modificarlos.
+
+## 2.1.3 - 2026-10-23: single API revision
 
 - The root SDK implements one API. Agent and System share Sequence, Parallel
   and Graph with direct decision functions, run/arun, optional compile and
@@ -24,9 +31,11 @@
   Studio uses the same declarations and preserves all model attempts.
 - Agent/System now propagate textual presentation from their final child.
   OpenAI Agents records native handoff events in normalized results.
-- Nothing is published. vLLM/Colab, AWS IAM, ADA IAM, real serving and
-  multi-Python CI execution remain pending. Exact scopes and the USD 10 /
-  300-request campaign ledger are in revisions/2.1.3/framework-evidence/REPORT.md.
+- Published to TestPyPI, PyPI and GitHub with matching SDK hashes after
+  successful Python 3.10–3.14 CI. The final campaign passed 75 scenarios using
+  238 transport attempts and USD 9.673028 in conservative reservations.
+  vLLM/Colab, AWS IAM, ADA IAM and real GPU serving remain pending.
+  Exact release evidence: revisions/2.1.3/closeout-evidence/REPORT.md.
 
 ## 2.1.2 - 2026-10-22
 

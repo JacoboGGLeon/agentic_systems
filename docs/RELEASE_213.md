@@ -1,4 +1,17 @@
-# Preparar y publicar 2.1.3
+# Publicación de 2.1.3 · completada
+
+2.1.3 está publicada en TestPyPI, PyPI y GitHub con los mismos archivos aprobados.
+Commit del tag: `3cf15b4195b1b0dbef5b7b0e0dc444fdcb5791a6`.
+
+- [CI de main: Python 3.10–3.14](https://github.com/JacoboGGLeon/agentic_systems/actions/runs/39898703661).
+- [Sello](https://github.com/JacoboGGLeon/agentic_systems/actions/runs/39899126948).
+- [TestPyPI](https://github.com/JacoboGGLeon/agentic_systems/actions/runs/39899262120).
+- [PyPI y GitHub](https://github.com/JacoboGGLeon/agentic_systems/actions/runs/39899686918).
+
+Los pasos siguientes documentan el procedimiento utilizado. Las mejoras actuales
+de tutorials, examples y README no autorizan sobrescribir esta versión. La
+[validación didáctica posterior](LEARNING_VALIDATION_213.md) tiene su propio presupuesto.
+
 
 El PR conserva el wheel de la campaña final, su sdist, Studio y la evidencia.
 GitHub Actions ejecuta ese wheel sin modo editable en Python 3.10–3.14.

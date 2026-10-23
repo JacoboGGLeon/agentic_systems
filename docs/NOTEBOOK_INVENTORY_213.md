@@ -1,6 +1,6 @@
 # Inventario exhaustivo de notebooks 2.1.3
 
-Se encontraron **42 notebooks: 13 vigentes y 29 históricos/generados**. Se incluyen las copias históricas, sin contarlas como ejemplos adicionales vigentes.
+Se encontraron **50 notebooks: 21 vigentes y 29 históricos/generados**. Se incluyen las copias históricas, sin contarlas como ejemplos adicionales vigentes.
 
 La gramática directa se obtiene del AST de las celdas. Las referencias compartidas recorren archivos importados del proyecto; pueden incluir funciones que ese notebook no ejecuta. La ejecución offline exige coincidencia del hash del source. Los nombres de proveedor/framework son configuración declarada, no evidencia live.
 
@@ -10,23 +10,31 @@ La gramática directa se obtiene del AST de las celdas. Las referencias comparti
 
 | Notebook | Gramática directa | Observada en RunResult | Referencias en módulos importados (no equivale a enseñanza) | Providers/frameworks declarados | Estado |
 |---|---|---|---|---|---|
-| [tutorials/00_api.ipynb](../tutorials/00_api.ipynb) | Action, Agent, RunResult | Action, Agent, RunResult | — | Dinámico/no declarado | Offline: pasa |
-| [tutorials/01_tools_skills.ipynb](../tutorials/01_tools_skills.ipynb) | Action, Agent, RunResult, load_skill, skill, tool | Action, Agent, RunResult, skill, tool | Action, Agent, Environment, Eval, Graph, Parallel, RunResult, Sequence, System, __version__, framework, load_skill, model_artifact, model_server, runtime, skill, tool | Dinámico/no declarado | Offline: pasa |
-| [tutorials/02_agent_flows.ipynb](../tutorials/02_agent_flows.ipynb) | Action, Agent, Graph, Parallel, RunResult, Sequence, skill, tool | Action, Agent, Graph, Parallel, RunResult, Sequence, skill, tool | — | langgraph, native | Offline: pasa |
-| [tutorials/03_system_flows.ipynb](../tutorials/03_system_flows.ipynb) | Action, Agent, Graph, Parallel, RunResult, Sequence, System, skill, tool | Action, Agent, Graph, Parallel, RunResult, Sequence, System, skill, tool | — | langgraph, native | Offline: pasa |
-| [tutorials/04_environment.ipynb](../tutorials/04_environment.ipynb) | Action, Agent, Environment, RunResult, Sequence, System, skill, tool | Action, Agent, Environment, RunResult, Sequence, System, skill, tool | Action, Agent, Environment, Eval, Graph, Parallel, RunResult, Sequence, System, __version__, framework, model_artifact, model_server, runtime, skill, tool | Dinámico/no declarado | Offline: pasa |
-| [tutorials/05_eval.ipynb](../tutorials/05_eval.ipynb) | Action, Agent, Eval, RunResult, Sequence, skill, tool | Action, Agent, Environment, Eval, RunResult, Sequence, skill, tool | Action, Agent, Environment, Eval, Graph, Parallel, RunResult, Sequence, System, __version__, framework, model_artifact, model_server, runtime, skill, tool | Dinámico/no declarado | Offline: pasa |
-| [tutorials/06_runtime_framework.ipynb](../tutorials/06_runtime_framework.ipynb) | Action, Agent, RunResult, framework, runtime, skill, tool | Agent, RunResult, framework, runtime, skill, tool | — | bedrock-runtime, ollama-runtime, openai-runtime, python-runtime, vllm-runtime, langgraph, native, openai-agents, strands | Offline: pasa |
-| [tutorials/07_results_limits.ipynb](../tutorials/07_results_limits.ipynb) | Action, Agent, Limits, RunResult, Sequence, skill, tool | Action, Agent, RunResult, Sequence, skill, tool | — | Dinámico/no declarado | Offline: pasa |
-| [tutorials/08_model_serving.ipynb](../tutorials/08_model_serving.ipynb) | model_artifact, model_server | Sin ejecución de unidades observada | Action, Agent, Environment, Eval, Graph, Parallel, RunResult, Sequence, System, __version__, framework, model_artifact, model_server, runtime, skill, tool | Dinámico/no declarado | Offline: pasa |
-| [tutorials/09_order_challenge.ipynb](../tutorials/09_order_challenge.ipynb) | Sin llamadas directas al SDK | Action, Agent, Environment, Eval, Graph, Parallel, RunResult, Sequence, System, skill, tool | Action, Agent, Environment, Eval, Graph, Parallel, RunResult, Sequence, System, __version__, framework, model_artifact, model_server, runtime, skill, tool | langgraph, native | Offline: pasa |
-| [tutorials/10_contracts_judges.ipynb](../tutorials/10_contracts_judges.ipynb) | Sin llamadas directas al SDK | Action, Agent, Environment, Eval, RunResult, framework, runtime, skill, tool | Action, Agent, Environment, Eval, Graph, Parallel, RunResult, Sequence, System, __version__, framework, model_artifact, model_server, runtime, skill, tool | Dinámico/no declarado | Offline: pasa |
+| [tutorials/api/01_runtime_framework.ipynb](../tutorials/api/01_runtime_framework.ipynb) | Action, Agent, RunResult, framework, runtime, skill, tool | Agent, RunResult, framework, runtime, skill, tool | — | bedrock-runtime, ollama-runtime, openai-runtime, python-runtime, vllm-runtime, langgraph, native, openai-agents, strands | Offline: pasa |
+| [tutorials/api/02_contracts_judges.ipynb](../tutorials/api/02_contracts_judges.ipynb) | Action, Agent, Environment, Eval, RunResult, framework, runtime, skill, tool | Action, Agent, Environment, Eval, RunResult, framework, runtime, skill, tool | — | python-runtime, langgraph, native, openai-agents, strands | Offline: pasa |
+| [tutorials/core/00_start.ipynb](../tutorials/core/00_start.ipynb) | Action, Agent, RunResult | Action, Agent, RunResult | — | Dinámico/no declarado | Offline: pasa |
+| [tutorials/core/01_tools_skills.ipynb](../tutorials/core/01_tools_skills.ipynb) | Action, Agent, RunResult, load_skill, skill, tool | Action, Agent, RunResult, skill, tool | — | Dinámico/no declarado | Offline: pasa |
+| [tutorials/core/02_agent_flows.ipynb](../tutorials/core/02_agent_flows.ipynb) | Action, Agent, Graph, Parallel, RunResult, Sequence, skill, tool | Action, Agent, Graph, Parallel, RunResult, Sequence, skill, tool | — | langgraph, native | Offline: pasa |
+| [tutorials/core/03_system_flows.ipynb](../tutorials/core/03_system_flows.ipynb) | Action, Agent, Graph, Parallel, RunResult, Sequence, System, skill, tool | Action, Agent, Graph, Parallel, RunResult, Sequence, System, skill, tool | — | langgraph, native | Offline: pasa |
+| [tutorials/core/04_environment.ipynb](../tutorials/core/04_environment.ipynb) | Action, Agent, Environment, RunResult, Sequence, System, skill, tool | Action, Agent, Environment, RunResult, Sequence, System, skill, tool | — | native | Offline: pasa |
+| [tutorials/core/05_eval.ipynb](../tutorials/core/05_eval.ipynb) | Action, Agent, Environment, Eval, RunResult, Sequence, skill, tool | Action, Agent, Environment, Eval, RunResult, Sequence, skill, tool | — | native | Offline: pasa |
+| [tutorials/core/06_results_limits.ipynb](../tutorials/core/06_results_limits.ipynb) | Action, Agent, Limits, RunResult, Sequence, skill, tool | Action, Agent, RunResult, Sequence, skill, tool | — | Dinámico/no declarado | Offline: pasa |
+| [tutorials/core/07_order_challenge.ipynb](../tutorials/core/07_order_challenge.ipynb) | Action, Agent, Environment, Eval, Graph, System, skill, tool | Action, Agent, Environment, Eval, Graph, RunResult, System, skill, tool | — | langgraph, native | Offline: pasa |
+| [tutorials/frameworks/01_langgraph.ipynb](../tutorials/frameworks/01_langgraph.ipynb) | Action, Agent, RunResult, __version__ | Action, Agent, RunResult | — | Dinámico/no declarado | Offline: pasa |
+| [tutorials/frameworks/02_openai_agents.ipynb](../tutorials/frameworks/02_openai_agents.ipynb) | Agent, Limits, RunResult, __version__, framework, runtime, skill, tool | Agent, RunResult, framework, runtime, skill, tool | Action, Agent, Eval, Graph, Limits, RunResult, Sequence, System, framework, runtime, skill, tool | python-runtime, openai-agents | Offline: pasa |
+| [tutorials/frameworks/03_strands.ipynb](../tutorials/frameworks/03_strands.ipynb) | Agent, Limits, RunResult, __version__, framework, runtime, skill, tool | Agent, RunResult, framework, runtime, skill, tool | Action, Agent, Eval, Graph, Limits, RunResult, Sequence, System, framework, runtime, skill, tool | python-runtime, strands | Offline: secciones seguras; live/servicios aparte; notebook completo con servicios/UI: pasa |
+| [tutorials/frameworks/04_interoperability.ipynb](../tutorials/frameworks/04_interoperability.ipynb) | Limits, __version__, runtime | Action, Agent, Graph, RunResult, Sequence, System, framework, runtime, skill, tool | Action, Agent, Eval, Graph, Limits, RunResult, Sequence, System, framework, runtime, skill, tool | python-runtime, langgraph, native, openai-agents, strands | Offline: pasa |
+| [tutorials/providers/00_python.ipynb](../tutorials/providers/00_python.ipynb) | Agent, Limits, RunResult, __version__, framework, runtime, skill, tool | Agent, RunResult, framework, runtime, skill, tool | — | python-runtime, native | Offline: pasa |
+| [tutorials/providers/01_openai.ipynb](../tutorials/providers/01_openai.ipynb) | Agent, Limits, RunResult, __version__, framework, runtime, skill, tool | Agent, RunResult, framework, runtime, skill, tool | — | openai-runtime, python-runtime, native | Offline: secciones seguras; live/servicios aparte; live notebook 4/4 frameworks |
+| [tutorials/providers/02_ollama.ipynb](../tutorials/providers/02_ollama.ipynb) | Agent, Limits, RunResult, __version__, framework, runtime, skill, tool | Agent, RunResult, framework, runtime, skill, tool | — | ollama-runtime, python-runtime, native | Offline: secciones seguras; live/servicios aparte; live notebook 4/4 frameworks |
+| [tutorials/providers/03_bedrock.ipynb](../tutorials/providers/03_bedrock.ipynb) | Agent, Limits, RunResult, __version__, framework, runtime, skill, tool | Agent, RunResult, framework, runtime, skill, tool | — | bedrock-runtime, python-runtime, native | Offline: secciones seguras; live/servicios aparte; live notebook 4/4 frameworks |
+| [tutorials/providers/04_vllm_serving.ipynb](../tutorials/providers/04_vllm_serving.ipynb) | model_artifact, model_server, runtime | Sin ejecución de unidades observada | — | vllm-runtime | Offline: pasa |
 
 ## Examples vigentes
 
 | Notebook | Gramática directa | Observada en RunResult | Referencias en módulos importados (no equivale a enseñanza) | Providers/frameworks declarados | Estado |
 |---|---|---|---|---|---|
-| [examples/agentic_systems_studio/notebooks/01_studio.ipynb](../examples/agentic_systems_studio/notebooks/01_studio.ipynb) | Sin llamadas directas al SDK | Action, Agent, RunResult, Sequence, System, framework, runtime, skill, tool | Action, Agent, Limits, RunResult, Sequence, System, __version__, framework, runtime, skill, tool | Dinámico/no declarado | Offline: pasa |
+| [examples/agentic_systems_studio/notebooks/01_studio.ipynb](../examples/agentic_systems_studio/notebooks/01_studio.ipynb) | __version__ | Action, Agent, RunResult, Sequence, System, framework, runtime, skill, tool | Action, Agent, Limits, RunResult, Sequence, System, __version__, framework, runtime, skill, tool | Dinámico/no declarado | Offline: secciones seguras; live/servicios aparte; notebook completo con servicios/UI: pasa |
 | [examples/api_walkthrough/01_api_user_guide.ipynb](../examples/api_walkthrough/01_api_user_guide.ipynb) | Action, Agent, Environment, Eval, Graph, Limits, Parallel, RunResult, Sequence, System, __version__, framework, load_skill, model_artifact, model_server, runtime, skill, tool | Action, Agent, Environment, Eval, Graph, Parallel, RunResult, Sequence, System, framework, runtime, skill, tool | — | openai-runtime, python-runtime, langgraph, native, openai-agents | Offline: pasa |
 
 ## Históricos y generados anteriores
@@ -67,24 +75,24 @@ La gramática directa se obtiene del AST de las celdas. Las referencias comparti
 
 | Elemento | Notebooks con referencia directa | Con referencia en archivos compartidos |
 |---|---:|---:|
-| `tool` | 8 | 7 |
-| `skill` | 8 | 7 |
-| `load_skill` | 2 | 1 |
-| `Action` | 9 | 7 |
-| `Agent` | 9 | 7 |
-| `System` | 3 | 7 |
-| `Sequence` | 6 | 7 |
-| `Parallel` | 3 | 6 |
-| `Graph` | 3 | 6 |
-| `Environment` | 2 | 6 |
-| `Eval` | 2 | 6 |
-| `Limits` | 2 | 1 |
-| `RunResult` | 9 | 7 |
-| `runtime` | 2 | 7 |
-| `framework` | 2 | 7 |
-| `model_artifact` | 2 | 6 |
-| `model_server` | 2 | 6 |
-| `__version__` | 1 | 7 |
+| `tool` | 16 | 4 |
+| `skill` | 16 | 4 |
+| `load_skill` | 2 | 0 |
+| `Action` | 12 | 4 |
+| `Agent` | 18 | 4 |
+| `System` | 4 | 4 |
+| `Sequence` | 6 | 4 |
+| `Parallel` | 3 | 0 |
+| `Graph` | 4 | 3 |
+| `Environment` | 5 | 0 |
+| `Eval` | 4 | 3 |
+| `Limits` | 9 | 4 |
+| `RunResult` | 17 | 4 |
+| `runtime` | 11 | 4 |
+| `framework` | 9 | 4 |
+| `model_artifact` | 2 | 0 |
+| `model_server` | 2 | 0 |
+| `__version__` | 10 | 1 |
 
 El JSON conserva la lista inversa por elemento, miembros, keywords por llamada, aliases, errores de parseo, hashes y módulos compartidos. El CSV permite filtrar cada método y parámetro usado. Esta cobertura no implica enseñar cada valor posible de los parámetros.
 
@@ -95,4 +103,4 @@ El JSON conserva la lista inversa por elemento, miembros, keywords por llamada, 
 - Stored outputs in historical notebooks are not a new acceptance attestation.
 - Current code uses toolkit; historical notebook imports and outputs are preserved.
 
-vLLM/Colab, AWS IAM y ADA IAM mantienen la validación en su entorno como pendiente. OpenAI, Ollama y Bedrock API key se contrastan con los cuatro frameworks en la campaña externa. El notebook de usuario permanece seguro de ejecutar offline.
+vLLM/Colab, AWS IAM y ADA IAM mantienen la validación en su entorno como pendiente. Los notebooks de OpenAI, Ollama y Bedrock API key se ejecutaron con los cuatro frameworks; sus celdas live consumen inferencia. El notebook integrado de usuario y core se ejecutan sin inferencia. [Alcance y presupuesto](LEARNING_VALIDATION_213.md).

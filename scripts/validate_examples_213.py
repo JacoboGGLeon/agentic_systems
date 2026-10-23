@@ -27,8 +27,9 @@ def execute(identifier):
     payload = result.to_dict() if hasattr(result, 'to_dict') else result
     json.dumps(payload, allow_nan=False)
     source = ROOT / 'examples' / entry['group'] / identifier / 'example.py'
-    directory = source.parent / 'evidence'
-    directory.mkdir(exist_ok=True)
+    base = os.environ.get('AGENTIC_213_EVIDENCE_DIR')
+    directory = ROOT / base / 'example-results' / entry['group'] / identifier if base else source.parent / 'evidence'
+    directory.mkdir(parents=True, exist_ok=True)
     capture.save(directory / 'runresults.json', 'examples/' + entry['group'] + '/' + identifier)
     previous = directory / 'current.json'
     if previous.exists():

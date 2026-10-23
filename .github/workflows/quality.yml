@@ -49,7 +49,11 @@ jobs:
           scripts/prepare_release_213.py tests/release213
           scripts/smoke_release_213.py
           examples/agentic_systems_studio/src examples/agentic_systems_studio/tests
-          examples/framework_interop examples/grammar_tour tutorials/lesson_examples.py
+          examples/framework_interop examples/grammar_tour
+          scripts/organize_learning_213.py scripts/start_learning_campaign_213.py
+          scripts/execute_live_notebooks_213.py scripts/execute_local_lessons_213.py
+          scripts/report_learning_213.py
+          scripts/verify_learning_evidence_213.py
           examples/run_offline_213.py examples/tool_contracts examples/flow_semantics
           examples/execution_lifecycle examples/results_lineage examples/episode_memory
           examples/evaluation_checks examples/provider_framework_conformance
@@ -57,10 +61,17 @@ jobs:
           examples/portable_skills examples/order_fulfillment
       - name: Scan repository for credential material
         run: python scripts/check_secrets.py
-      - name: Verify unchanged SDK, Studio, notebooks and final live acceptance
+      - name: Check names in every current learning notebook
+        run: >-
+          python -m ruff check tutorials
+          examples/api_walkthrough/01_api_user_guide.ipynb
+          examples/agentic_systems_studio/notebooks/01_studio.ipynb --select F821
+      - name: Verify published SDK, Studio and original acceptance snapshot
         run: |
           mkdir -p .tmp/ci-213-evidence
           python scripts/prepare_release_213.py | tee .tmp/ci-213-evidence/reviewed-integrity.json
+      - name: Verify current learning source and recorded live evidence without inference
+        run: python scripts/verify_learning_evidence_213.py
       - name: Test release integrity and publication conflict handling
         run: >-
           python -m pytest tests/release213 tests/release/test_release_publication.py

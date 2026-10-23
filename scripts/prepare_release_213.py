@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 from decimal import Decimal
 import json
 from pathlib import Path
@@ -27,6 +28,9 @@ SDK_SHA = 'b09785bc75faa97d15b4cf4c1fc25b18741319ce1b8024641c9597930115b283'
 SDIST_SHA = '88169951ced5c823bda436e15e227529f0133bd7efa422bf400f54e49e65b03f'
 STUDIO_SHA = '4aed36644d555e5a05f80da034645ed2dd9a6f100dccd224cddeef93a07adab4'
 PROFILE = 'single-api-213-reviewed-v1'
+LEARNING_ARCHIVE = 'revisions/2.1.3/published-learning-source.zip'
+LEARNING_SHA = '15061c2fbd0438dcc06afcc6016162188d3d879aa9b1c1767581c0639ddc7ae7'
+NOTES_SHA = '48defff5e81c8bb1ebff5f74a433c86316b940f8611e49c101e00739663a1903'
 PHASES = {'matrix': 16, 'features': 15, 'integrated': 16, 'studio': 16, 'studio-ui': 12}
 
 
@@ -46,19 +50,31 @@ def package_bytes(wheel, package):
 
 
 def verify_reviewed(root=ROOT):
-    """Bind the archived live acceptance to the current SDK and teaching source."""
+    """Verify published bytes; current learning material has separate acceptance."""
     manifest = read(root / EVIDENCE / 'manifest.json')
+    archived = {}
+    if (root / LEARNING_ARCHIVE).exists():
+        require(sha256(root / LEARNING_ARCHIVE) == LEARNING_SHA, 'Published learning archive changed')
+        with zipfile.ZipFile(root / LEARNING_ARCHIVE) as archive:
+            archived = {name: archive.read(name) for name in archive.namelist()}
+        require(all(name in manifest['sha256'] and hashlib.sha256(data).hexdigest() == manifest['sha256'][name]
+                    for name, data in archived.items()), 'Archive differs from original acceptance')
+
+    def reviewed_bytes(name):
+        return archived[name] if name in archived else (root / name).read_bytes()
     # Operational fixes can evolve after live acceptance. Package and application
     # declarations, source notebooks and all original evidence must stay exact.
     operational = ('.github/workflows/', 'scripts/', 'tests/')
+    harnesses = {'examples/run_offline_213.py', 'examples/catalog_tools.py'}
     changes = []
     for name, expected in manifest['sha256'].items():
         path = root / name
         if not path.is_file() or sha256(path) != expected:
-            require(name.startswith(operational), f'Reviewed source/evidence changed: {name}')
+            require(name.startswith(operational) or name in harnesses or name in archived, f'Reviewed source/evidence changed: {name}')
             changes.append(name)
     for name, expected in ((WHEEL, SDK_SHA), (SDIST, SDIST_SHA), (STUDIO, STUDIO_SHA)):
         require(sha256(root / ARTIFACTS / name) == expected, f'Reviewed artifact changed: {name}')
+    require(sha256(root / ARTIFACTS / 'RELEASE_NOTES_213.md') == NOTES_SHA, 'Published release notes changed')
     for name, package, source in ((WHEEL, 'agentic_systems', root / 'src'),
                                    (STUDIO, 'agentic_systems_studio', root / 'examples/agentic_systems_studio/src')):
         expected = package_bytes(root / ARTIFACTS / name, package)
@@ -70,7 +86,7 @@ def verify_reviewed(root=ROOT):
                  for member in archive.getmembers() if member.isfile() and '/' in member.name}
     for name in ('README.md', 'pyproject.toml', 'LICENSE'):
         if (root / name).exists():
-            require(files[name] == (root / name).read_bytes(), f'Frozen packaging input changed: {name}')
+            require(files[name] == reviewed_bytes(name), f'Frozen packaging input changed: {name}')
     for name, data in package_bytes(root / ARTIFACTS / WHEEL, 'agentic_systems').items():
         require(files['src/' + name] == data, 'sdist and wheel source differ')
     for phase, count in PHASES.items():
@@ -89,12 +105,12 @@ def verify_reviewed(root=ROOT):
     books = read(root / EVIDENCE / 'notebooks.json')
     require(books['passed'] == books['total'] == 13, 'Incomplete notebook acceptance')
     for row in books['notebooks']:
-        require(row['passed'] and sha256(root / row['notebook']) == row['source_sha256'], 'Notebook changed after acceptance')
+        require(row['passed'] and hashlib.sha256(reviewed_bytes(row['notebook'])).hexdigest() == row['source_sha256'], 'Notebook changed after acceptance')
     with zipfile.ZipFile(root / ARTIFACTS / STUDIO_ZIP) as archive:
         require(archive.read('wheels/' + WHEEL) == (root / ARTIFACTS / WHEEL).read_bytes(), 'Studio bundle contains another SDK')
         require(archive.read('wheels/' + STUDIO) == (root / ARTIFACTS / STUDIO).read_bytes(), 'Studio bundle contains another Studio')
         require(not any(Path(n).name == '.env' for n in archive.namelist()), 'Studio bundle contains dotenv credentials')
-    require((root / ARTIFACTS / GUIDE).read_bytes() == (root / 'examples/api_walkthrough' / GUIDE).read_bytes(), 'Downloadable guide differs')
+    require((root / ARTIFACTS / GUIDE).read_bytes() == reviewed_bytes('examples/api_walkthrough/' + GUIDE), 'Downloadable guide differs')
     return {'profile': PROFILE, 'sdk_wheel_sha256': SDK_SHA, 'sdk_sdist_sha256': SDIST_SHA,
             'studio_wheel_sha256': STUDIO_SHA, 'online_scenarios_passed': sum(PHASES.values()),
             'notebooks_passed': 13, 'budget': {'attempts': len(budget['attempts']), 'reserved_usd': str(reserved)},
@@ -136,14 +152,17 @@ def prepare(directory, commit, root=ROOT):
     directory.mkdir(parents=True)
     for name in (WHEEL, SDIST, STUDIO_ZIP, GUIDE):
         shutil.copyfile(root / ARTIFACTS / name, directory / name)
-    shutil.copyfile(root / 'docs/RELEASE_NOTES_213.md', directory / 'RELEASE_NOTES_213.md')
+    # The preview uses the downloaded, hash-verified published notes. Current
+    # learning material has its own campaign and cannot recertify this version.
+    shutil.copyfile(root / ARTIFACTS / 'RELEASE_NOTES_213.md', directory / 'RELEASE_NOTES_213.md')
     with zipfile.ZipFile(directory / EVIDENCE_ZIP, 'w', zipfile.ZIP_DEFLATED) as archive:
         for path in sorted((root / EVIDENCE).rglob('*')):
             if path.is_file():
                 archive.write(path, path.relative_to(root).as_posix())
         for name in ('docs/RUNRESULTS_LINEAGE_213.md', 'docs/NOTEBOOK_INVENTORY_213.md',
                      'docs/notebook_inventory_213.json', 'docs/notebook_parameters_213.csv'):
-            archive.write(root / name, name)
+            with zipfile.ZipFile(root / LEARNING_ARCHIVE) as frozen:
+                archive.writestr(name, frozen.read(name))
     summary = {**report, 'schema_version': 'agentic_systems.release-readiness-213.v1',
                'acceptance_profile': PROFILE, 'package_version': VERSION, 'assembly_commit_sha': commit,
                'state': 'reviewed-artifacts-not-published',

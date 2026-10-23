@@ -1,0 +1,101 @@
+{
+  "wheel_sha256": "b09785bc75faa97d15b4cf4c1fc25b18741319ce1b8024641c9597930115b283",
+  "cases": [
+    {
+      "notebook": "tutorials/providers/01_openai.ipynb",
+      "source_sha256": "9d53d322395ac4b4638846634db72b754b7d32fae5e75e4d837b2aa2f9922f90",
+      "framework": "native",
+      "oracle": "Required actual certify Tool event, unchanged input value=37, invariants and serializable RunResult"
+    },
+    {
+      "notebook": "tutorials/providers/01_openai.ipynb",
+      "source_sha256": "9d53d322395ac4b4638846634db72b754b7d32fae5e75e4d837b2aa2f9922f90",
+      "framework": "langgraph",
+      "oracle": "Required actual certify Tool event, unchanged input value=37, invariants and serializable RunResult"
+    },
+    {
+      "notebook": "tutorials/providers/01_openai.ipynb",
+      "source_sha256": "9d53d322395ac4b4638846634db72b754b7d32fae5e75e4d837b2aa2f9922f90",
+      "framework": "openai-agents",
+      "oracle": "Required actual certify Tool event, unchanged input value=37, invariants and serializable RunResult"
+    },
+    {
+      "notebook": "tutorials/providers/01_openai.ipynb",
+      "source_sha256": "9d53d322395ac4b4638846634db72b754b7d32fae5e75e4d837b2aa2f9922f90",
+      "framework": "strands",
+      "oracle": "Required actual certify Tool event, unchanged input value=37, invariants and serializable RunResult"
+    },
+    {
+      "notebook": "tutorials/providers/02_ollama.ipynb",
+      "source_sha256": "d95c7c5492bc0658a52778a8ea39e5c703093316c5fe58bc800591efa8f76772",
+      "framework": "native",
+      "oracle": "Required actual certify Tool event, unchanged input value=37, invariants and serializable RunResult"
+    },
+    {
+      "notebook": "tutorials/providers/02_ollama.ipynb",
+      "source_sha256": "d95c7c5492bc0658a52778a8ea39e5c703093316c5fe58bc800591efa8f76772",
+      "framework": "langgraph",
+      "oracle": "Required actual certify Tool event, unchanged input value=37, invariants and serializable RunResult"
+    },
+    {
+      "notebook": "tutorials/providers/02_ollama.ipynb",
+      "source_sha256": "d95c7c5492bc0658a52778a8ea39e5c703093316c5fe58bc800591efa8f76772",
+      "framework": "openai-agents",
+      "oracle": "Required actual certify Tool event, unchanged input value=37, invariants and serializable RunResult"
+    },
+    {
+      "notebook": "tutorials/providers/02_ollama.ipynb",
+      "source_sha256": "d95c7c5492bc0658a52778a8ea39e5c703093316c5fe58bc800591efa8f76772",
+      "framework": "strands",
+      "oracle": "Required actual certify Tool event, unchanged input value=37, invariants and serializable RunResult"
+    },
+    {
+      "notebook": "tutorials/providers/03_bedrock.ipynb",
+      "source_sha256": "dd03779d55eaf9bbb5afe9c58f2a867a11af6e20ebd5d96e5eb517cfafcf6f27",
+      "framework": "native",
+      "oracle": "Required actual certify Tool event, unchanged input value=37, invariants and serializable RunResult"
+    },
+    {
+      "notebook": "tutorials/providers/03_bedrock.ipynb",
+      "source_sha256": "dd03779d55eaf9bbb5afe9c58f2a867a11af6e20ebd5d96e5eb517cfafcf6f27",
+      "framework": "langgraph",
+      "oracle": "Required actual certify Tool event, unchanged input value=37, invariants and serializable RunResult"
+    },
+    {
+      "notebook": "tutorials/providers/03_bedrock.ipynb",
+      "source_sha256": "dd03779d55eaf9bbb5afe9c58f2a867a11af6e20ebd5d96e5eb517cfafcf6f27",
+      "framework": "openai-agents",
+      "oracle": "Required actual certify Tool event, unchanged input value=37, invariants and serializable RunResult"
+    },
+    {
+      "notebook": "tutorials/providers/03_bedrock.ipynb",
+      "source_sha256": "dd03779d55eaf9bbb5afe9c58f2a867a11af6e20ebd5d96e5eb517cfafcf6f27",
+      "framework": "strands",
+      "oracle": "Required actual certify Tool event, unchanged input value=37, invariants and serializable RunResult"
+    }
+  ],
+  "routes": {
+    "openai-runtime": {
+      "model": "gpt-4.1-mini",
+      "endpoint": "https://api.openai.com/v1",
+      "input_usd_per_million": 5,
+      "output_usd_per_million": 20
+    },
+    "ollama-runtime": {
+      "model": "gemma4:31b-cloud",
+      "endpoint": "https://ollama.com/v1",
+      "input_usd_per_million": 5,
+      "output_usd_per_million": 20
+    },
+    "bedrock-runtime": {
+      "model": "qwen.qwen3-32b-v1:0",
+      "endpoint": "https://bedrock-runtime.us-east-2.amazonaws.com",
+      "input_usd_per_million": 5,
+      "output_usd_per_million": 20
+    }
+  },
+  "limits": {
+    "usd": 10,
+    "requests": 300
+  }
+}

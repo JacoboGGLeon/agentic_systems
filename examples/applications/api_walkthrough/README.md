@@ -17,5 +17,5 @@ Código:
 
 Validación: **Live: escenario probado**. Notebook ejecutado offline. La declaración integrada se probó en 16 combinaciones; quote es determinista y los actores approve/review usan el runtime explícito. Conserva fallos previos y evidencia de Tools.
 
-- [Cierre final](../../../revisions/2.1.3/closeout-evidence/REPORT.md)
-- [RunResult y lineage](../../../docs/RUNRESULTS_LINEAGE_213.md)
+- [Nueva ejecución contra el wheel publicado](../../../revisions/2.1.3/learning-evidence-elevated/example-results/api_walkthrough/run.json)
+- [RunResult y lineage](../../../revisions/2.1.3/learning-evidence-elevated/example-results/api_walkthrough/runresults.json)

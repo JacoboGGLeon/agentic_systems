@@ -1,0 +1,13 @@
+{
+  "notebook": "tutorials/providers/01_openai.ipynb",
+  "framework": "strands",
+  "passed": false,
+  "source_sha256": "04d0c4096662da126edef94679659bb54429f30a91b401108d8067bc06272c3f",
+  "error": {
+    "type": "CellExecutionError",
+    "message": "An error occurred while executing the following cell:\n------------------\nimport os\nruntime = toolkit.runtime(\n    provider='openai-runtime', model=os.environ['OPENAI_MODEL_ID'],\n    api_key=os.environ['OPENAI_API_KEY'],\n    endpoint=os.getenv('OPENAI_BASE_URL'),\n    region=os.environ[\"AWS_REGION\"] if 'OPENAI' == \"BEDROCK\" else None,\n    max_tokens=256, max_turns=5, max_tool_calls=3, max_retries=0, timeout_s=60,\n)\nframework = \"native\"\nprint({\"provider\": runtime.provider, \"configuration\": \"explicit; credentials omitted\"})\n------------------\n\n\n\u001b[31m---------------------------------------------------------------------------\u001b[39m\n\u001b[31mKeyError\u001b[39m                                  Traceback (most recent call last)\n\u001b[36mCell\u001b[39m\u001b[36m \u001b[39m\u001b[32mIn[4]\u001b[39m\u001b[32m, line 3\u001b[39m\n\u001b[32m      1\u001b[39m \u001b[38;5;28;01mimport\u001b[39;00m os\n\u001b[32m      2\u001b[39m runtime = toolkit.runtime(\n\u001b[32m----> \u001b[39m\u001b[32m3\u001b[39m     provider=\u001b[33m'openai-runtime'\u001b[39m, model=os.environ[\u001b[33m'OPENAI_MODEL_ID'\u001b[39m],\n\u001b[32m      4\u001b[39m     api_key=os.environ[\u001b[33m'OPENAI_API_KEY'\u001b[39m],\n\u001b[32m      5\u001b[39m     endpoint=os.getenv(\u001b[33m'OPENAI_BASE_URL'\u001b[39m),\n\u001b[32m      6\u001b[39m     region=os.environ[\u001b[33m\"AWS_REGION\"\u001b[39m] \u001b[38;5;28;01mif\u001b[39;00m \u001b[33m'OPENAI'\u001b[39m == \u001b[33m\"BEDROCK\"\u001b[39m \u001b[38;5;28;01melse\u001b[39;00m \u001b[38;5;28;01mNone\u001b[39;00m,\n\n\u001b[36mFile \u001b[39m\u001b[32m<frozen os>:709\u001b[39m, in \u001b[36m_Environ.__getitem__\u001b[39m\u001b[34m(self, key)\u001b[39m\n\n\u001b[31mKeyError\u001b[39m: 'OPENAI_MODEL_ID'\n"
+  },
+  "evidence": "revisions/2.1.3/learning-evidence-elevated/live-notebooks/20261023T044701400349/01_openai--strands.ipynb",
+  "runresults": "revisions/2.1.3/learning-evidence-elevated/live-notebooks/20261023T044701400349/01_openai--strands-runresults.json",
+  "requests_so_far": 0
+}

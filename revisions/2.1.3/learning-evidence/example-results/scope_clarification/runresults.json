@@ -1,0 +1,407 @@
+{
+  "source": "examples/patterns/scope_clarification",
+  "captured_boundaries": 2,
+  "root_results": 1,
+  "scope": "Observed SDK RunResult values; descendants retained inside parents. No fabricated results for configuration-only examples.",
+  "results": [
+    {
+      "run_result": {
+        "text": "",
+        "final": {
+          "accepted": false,
+          "supported": [
+            "count",
+            "sum"
+          ],
+          "reason": "outside declared capabilities"
+        },
+        "data": {
+          "accepted": false,
+          "supported": [
+            "count",
+            "sum"
+          ],
+          "reason": "outside declared capabilities"
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "application",
+          "kind": "system",
+          "backend": "native",
+          "skills": [],
+          "actions_observed": 1,
+          "input": {
+            "input": {
+              "operation": "transfer_money"
+            }
+          }
+        },
+        "execution_id": "run-2e02c3a1a2604de0a21f91c2c6e1a103",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "",
+            "final": {
+              "accepted": false,
+              "supported": [
+                "count",
+                "sum"
+              ],
+              "reason": "outside declared capabilities"
+            },
+            "data": {
+              "accepted": false,
+              "supported": [
+                "count",
+                "sum"
+              ],
+              "reason": "outside declared capabilities"
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 1,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "sequence",
+              "kind": "sequence",
+              "backend": "native"
+            },
+            "execution_id": "run-429304cdb70741a4811ed6c801536715",
+            "parent_execution_id": "run-2e02c3a1a2604de0a21f91c2c6e1a103",
+            "children": [
+              {
+                "text": "",
+                "final": {
+                  "accepted": false,
+                  "supported": [
+                    "count",
+                    "sum"
+                  ],
+                  "reason": "outside declared capabilities"
+                },
+                "data": {
+                  "accepted": false,
+                  "supported": [
+                    "count",
+                    "sum"
+                  ],
+                  "reason": "outside declared capabilities"
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "requests": 1,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "worker",
+                  "kind": "agent",
+                  "backend": "native",
+                  "skills": [
+                    "scope"
+                  ],
+                  "step": "worker"
+                },
+                "execution_id": "run-c4d91ce576cf44a4bd89f24c592f9e2b",
+                "parent_execution_id": "run-429304cdb70741a4811ed6c801536715",
+                "children": [
+                  {
+                    "text": "",
+                    "final": {
+                      "accepted": false,
+                      "supported": [
+                        "count",
+                        "sum"
+                      ],
+                      "reason": "outside declared capabilities"
+                    },
+                    "data": {
+                      "accepted": false,
+                      "supported": [
+                        "count",
+                        "sum"
+                      ],
+                      "reason": "outside declared capabilities"
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "requests": 1,
+                      "inference_requests": 0,
+                      "tool_calls": 1
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "default",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "name": "scope",
+                      "kind": "action"
+                    },
+                    "execution_id": "run-97747556874549669fa4e7edbf8e8f3f",
+                    "parent_execution_id": "run-c4d91ce576cf44a4bd89f24c592f9e2b",
+                    "children": [
+                      {
+                        "text": "",
+                        "final": {
+                          "accepted": false,
+                          "supported": [
+                            "count",
+                            "sum"
+                          ],
+                          "reason": "outside declared capabilities"
+                        },
+                        "data": {
+                          "accepted": false,
+                          "supported": [
+                            "count",
+                            "sum"
+                          ],
+                          "reason": "outside declared capabilities"
+                        },
+                        "ok": true,
+                        "messages": [],
+                        "raw_responses": [],
+                        "usage": {
+                          "requests": 1,
+                          "inference_requests": 0,
+                          "tool_calls": 1
+                        },
+                        "engine": "python-runtime",
+                        "model": "",
+                        "mode": "tool",
+                        "trace_schema_version": "agentic_systems.trace.v1",
+                        "validation": null,
+                        "errors": [],
+                        "meta": {
+                          "tool_name": "",
+                          "input": {
+                            "input": {
+                              "operation": "transfer_money"
+                            }
+                          },
+                          "tool_input": {
+                            "input": {
+                              "operation": "transfer_money"
+                            }
+                          }
+                        },
+                        "execution_id": "run-e674496cea8446e0824522e81e948273",
+                        "parent_execution_id": "run-97747556874549669fa4e7edbf8e8f3f",
+                        "children": [],
+                        "tool_events": [
+                          {
+                            "id": "tool-5c42a4614744480ca7bba227effecd27",
+                            "name": "scope",
+                            "input": {
+                              "input": {
+                                "operation": "transfer_money"
+                              }
+                            },
+                            "output": {
+                              "data": {
+                                "accepted": false,
+                                "supported": [
+                                  "count",
+                                  "sum"
+                                ],
+                                "reason": "outside declared capabilities"
+                              }
+                            },
+                            "ok": true,
+                            "error": null,
+                            "duration_ms": null,
+                            "meta": {}
+                          }
+                        ]
+                      }
+                    ],
+                    "tool_events": []
+                  }
+                ],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "examples/patterns/scope_clarification",
+        "question": "{\"input\": {\"operation\": \"transfer_money\"}}",
+        "goal": "",
+        "answer": "{\"accepted\": false, \"supported\": [\"count\", \"sum\"], \"reason\": \"outside declared capabilities\"}",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-2e02c3a1a2604de0a21f91c2c6e1a103",
+            "kind": "execution",
+            "title": "application",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "accepted": false,
+                "supported": [
+                  "count",
+                  "sum"
+                ],
+                "reason": "outside declared capabilities"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-429304cdb70741a4811ed6c801536715",
+            "kind": "execution",
+            "title": "sequence",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "accepted": false,
+                "supported": [
+                  "count",
+                  "sum"
+                ],
+                "reason": "outside declared capabilities"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-c4d91ce576cf44a4bd89f24c592f9e2b",
+            "kind": "execution",
+            "title": "worker",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "accepted": false,
+                "supported": [
+                  "count",
+                  "sum"
+                ],
+                "reason": "outside declared capabilities"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-97747556874549669fa4e7edbf8e8f3f",
+            "kind": "execution",
+            "title": "scope",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "accepted": false,
+                "supported": [
+                  "count",
+                  "sum"
+                ],
+                "reason": "outside declared capabilities"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-e674496cea8446e0824522e81e948273",
+            "kind": "execution",
+            "title": "tool",
+            "summary": "",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "accepted": false,
+                "supported": [
+                  "count",
+                  "sum"
+                ],
+                "reason": "outside declared capabilities"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "tool-5c42a4614744480ca7bba227effecd27",
+            "kind": "tool",
+            "title": "scope",
+            "summary": "completed",
+            "source": "scope",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "accepted": false,
+                "supported": [
+                  "count",
+                  "sum"
+                ],
+                "reason": "outside declared capabilities"
+              }
+            }
+          }
+        ],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    }
+  ]
+}

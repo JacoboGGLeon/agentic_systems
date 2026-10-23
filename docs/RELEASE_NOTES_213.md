@@ -1,5 +1,11 @@
 # Agentic Systems 2.1.3
 
+**Publicada:** [PyPI](https://pypi.org/project/agentic-systems/2.1.3/) · [GitHub](https://github.com/JacoboGGLeon/agentic_systems/releases/tag/v2.1.3).
+
+Los números siguientes describen el sello original. El material actual tiene
+19 tutorials y dos notebooks de examples, con [validación adicional](LEARNING_VALIDATION_213.md).
+Los artefactos originales conservan sus bytes y sus notas aprobadas.
+
 Una sola API para construir, ejecutar y comprobar sistemas. Es una revisión
 incompatible de la gramática: los constructores anteriores no se conservan
 como aliases. La versión 2.1.2 sigue disponible para aplicaciones anteriores.
@@ -25,10 +31,12 @@ offline observados. No son 313 aplicaciones ni llamadas facturables.
 El wheel aprobado es
 `b09785bc75faa97d15b4cf4c1fc25b18741319ce1b8024641c9597930115b283`.
 Los workflows validan ese mismo archivo en Python 3.10–3.14 y promueven los
-mismos bytes a TestPyPI y después a PyPI cuando se autorice publicar.
+mismos bytes a TestPyPI y después a PyPI. La publicación terminó el 23 de
+octubre de 2026 UTC; no se reconstruye esta versión al mejorar su documentación.
 
 Pendientes de entornos propios: vLLM/Colab GPU, AWS IAM y ADA IAM. No se incluye
 el extra `[ada]`, ADA Studio ni wallet. La validación de los escenarios descritos
 no garantiza cualquier prompt o futuras versiones de SDKs externos.
 
-Esta nota prepara la publicación; no declara que haya ocurrido.
+La copia preparatoria de estas notas se conserva dentro del archivo de fuentes
+didácticas publicado en el repositorio. La nueva campaña no sustituye ese sello.

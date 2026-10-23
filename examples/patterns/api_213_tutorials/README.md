@@ -1,14 +1,13 @@
 # Tutoriales de la API única 2.1.3
 
-Teach every public 2.1.3 symbol through ten offline notebooks using only import agentic_systems.
+Aprender la API por core, providers, frameworks y API en 19 notebooks.
 
-Install candidate wheel → Tools/Skills → Agent/System flows → Environment/Eval → runtimes/results/serving → full challenge.
+Instalar 2.1.3 → construir → run → resultado; proveedores live y servicios locales se validan aparte.
 
 Código:
 - [Tutorial course](../../../tutorials/README.md)
 - [Complete API](../../../docs/API_213.md)
 
-Validación: **Offline ejecutado**. Canonical root implementation. Final wheel hash and measured offline scope are in implementation evidence; no real inference or publication.
+Validación: **Offline ejecutado**. Las secciones offline se ejecutan en kernels nuevos. Las celdas live no se cuentan como ejecutadas offline; su campaña tiene evidencia propia.
 
-- [Measured offline report](../../../revisions/2.1.3/closeout-evidence/REPORT.md)
-- [Exact artifact and evidence hashes](../../../revisions/2.1.3/implementation-evidence/manifest.json)
+- [Validación actual por notebook](../../../docs/LEARNING_VALIDATION_213.md)

@@ -1,0 +1,306 @@
+{
+  "source": "tutorials/providers/01_openai.ipynb",
+  "captured_boundaries": 1,
+  "root_results": 1,
+  "scope": "Observed SDK RunResult values; descendants retained inside parents. No fabricated results for configuration-only examples.",
+  "results": [
+    {
+      "run_result": {
+        "text": "The value 37 has been certified successfully. If you need any further assistance, feel free to ask!",
+        "final": {
+          "final_output": "The value 37 has been certified successfully. If you need any further assistance, feel free to ask!"
+        },
+        "data": {
+          "final_output": "The value 37 has been certified successfully. If you need any further assistance, feel free to ask!"
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "total_tokens": 246,
+          "completion_tokens": 35,
+          "prompt_tokens": 211,
+          "input_tokens": 211,
+          "output_tokens": 35,
+          "requests": 2,
+          "client_duration_ms": 4137.057,
+          "inference_requests": 2,
+          "tool_calls": 1
+        },
+        "engine": "openai-runtime",
+        "model": "gpt-4.1-mini",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "verification",
+          "kind": "agent",
+          "backend": "native",
+          "skills": [
+            "evidence"
+          ],
+          "actions_observed": 1,
+          "input": "Call certify with value=37."
+        },
+        "execution_id": "run-9f7782af21f24bc48fbadc4bb12b8001",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "The value 37 has been certified successfully. If you need any further assistance, feel free to ask!",
+            "final": {
+              "final_output": "The value 37 has been certified successfully. If you need any further assistance, feel free to ask!"
+            },
+            "data": {
+              "final_output": "The value 37 has been certified successfully. If you need any further assistance, feel free to ask!"
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "total_tokens": 246,
+              "completion_tokens": 35,
+              "prompt_tokens": 211,
+              "input_tokens": 211,
+              "output_tokens": 35,
+              "requests": 2,
+              "client_duration_ms": 4137.057,
+              "inference_requests": 2,
+              "tool_calls": 1
+            },
+            "engine": "openai-runtime",
+            "model": "gpt-4.1-mini",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "verification",
+              "kind": "model",
+              "framework": "native"
+            },
+            "execution_id": "run-03ec79402c534449a7660a3f0a12335a",
+            "parent_execution_id": "run-9f7782af21f24bc48fbadc4bb12b8001",
+            "children": [
+              {
+                "text": "The value 37 has been certified successfully. If you need any further assistance, feel free to ask!",
+                "final": {
+                  "final_output": "The value 37 has been certified successfully. If you need any further assistance, feel free to ask!"
+                },
+                "data": {
+                  "final_output": "The value 37 has been certified successfully. If you need any further assistance, feel free to ask!"
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "total_tokens": 246,
+                  "completion_tokens": 35,
+                  "prompt_tokens": 211,
+                  "input_tokens": 211,
+                  "output_tokens": 35,
+                  "requests": 2,
+                  "client_duration_ms": 4137.057,
+                  "scheduler": {
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 6444.8
+                  },
+                  "inference_requests": 2,
+                  "tool_calls": 1
+                },
+                "engine": "openai-runtime",
+                "model": "gpt-4.1-mini",
+                "mode": "eval",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": {
+                  "ok": true,
+                  "issues": []
+                },
+                "errors": [],
+                "meta": {
+                  "source_result_type": "openai.chat.completions",
+                  "runtime_engine": "openai-runtime",
+                  "execution_engine": "openai-runtime",
+                  "contract_repairs": 0,
+                  "rejected_tool_calls": [],
+                  "framework": "native",
+                  "framework_requested": "native",
+                  "framework_adapter": "native",
+                  "runtime": {
+                    "provider": "openai-runtime",
+                    "model_id": "gpt-4.1-mini",
+                    "region_name": null,
+                    "endpoint": null,
+                    "metadata": {},
+                    "provider_priority": [
+                      "openai-runtime",
+                      "bedrock-runtime",
+                      "ollama-runtime"
+                    ],
+                    "allow_python_fallback": false,
+                    "scheduler": {
+                      "max_turns": 5,
+                      "max_tool_calls": 3,
+                      "timeout_s": 60,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    }
+                  },
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "scheduler_execution": {
+                    "scheduler": {
+                      "max_turns": 5,
+                      "max_tool_calls": 3,
+                      "timeout_s": 60,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    },
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 6444.8
+                  },
+                  "framework_config": {
+                    "name": "native",
+                    "agent_kwargs": {},
+                    "run_kwargs": {}
+                  },
+                  "agent_name": "verification",
+                  "input": "Call certify with value=37.",
+                  "requested_engine": "openai-runtime"
+                },
+                "execution_id": "run-c5ada57ac63349ed8be4294f127ecd6e",
+                "parent_execution_id": "run-03ec79402c534449a7660a3f0a12335a",
+                "children": [],
+                "tool_events": [
+                  {
+                    "id": "tool-15a4a2ca9b1d453b9f0e4bee12fb665f",
+                    "name": "certify",
+                    "input": {
+                      "value": 37
+                    },
+                    "output": {
+                      "value": 37,
+                      "verified": true
+                    },
+                    "ok": true,
+                    "error": null,
+                    "duration_ms": null,
+                    "meta": {
+                      "tool_name": "certify",
+                      "serializer": "AgenticSystems.ToolEnvelope.v1",
+                      "timestamp_utc": "2026-10-23T04:50:07.447361+00:00",
+                      "validated_input": {
+                        "value": 37
+                      },
+                      "provider_tool_call_id": "call_AIjtbbHmwk1BVfZar4IOYBl8"
+                    }
+                  }
+                ]
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "tutorials/providers/01_openai.ipynb",
+        "question": "\"Call certify with value=37.\"",
+        "goal": "",
+        "answer": "The value 37 has been certified successfully. If you need any further assistance, feel free to ask!",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-9f7782af21f24bc48fbadc4bb12b8001",
+            "kind": "execution",
+            "title": "verification",
+            "summary": "The value 37 has been certified successfully. If you need any further assistance, feel free to ask!",
+            "source": "openai-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "final_output": "The value 37 has been certified successfully. If you need any further assistance, feel free to ask!"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-03ec79402c534449a7660a3f0a12335a",
+            "kind": "execution",
+            "title": "verification",
+            "summary": "The value 37 has been certified successfully. If you need any further assistance, feel free to ask!",
+            "source": "openai-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "final_output": "The value 37 has been certified successfully. If you need any further assistance, feel free to ask!"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-c5ada57ac63349ed8be4294f127ecd6e",
+            "kind": "execution",
+            "title": "eval",
+            "summary": "The value 37 has been certified successfully. If you need any further assistance, feel free to ask!",
+            "source": "openai-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "final_output": "The value 37 has been certified successfully. If you need any further assistance, feel free to ask!"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "tool-15a4a2ca9b1d453b9f0e4bee12fb665f",
+            "kind": "tool",
+            "title": "certify",
+            "summary": "completed",
+            "source": "certify",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "value": 37,
+              "verified": true
+            }
+          }
+        ],
+        "usage": {
+          "total_tokens": 246,
+          "completion_tokens": 35,
+          "prompt_tokens": 211,
+          "input_tokens": 211,
+          "output_tokens": 35,
+          "requests": 2,
+          "client_duration_ms": 4137.057,
+          "inference_requests": 2,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    }
+  ]
+}

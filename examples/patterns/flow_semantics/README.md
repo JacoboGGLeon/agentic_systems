@@ -17,5 +17,5 @@ Código:
 
 Validación: **Offline ejecutado**. Six forms: Agent/System with Sequence, Parallel or Graph, on native and real LangGraph, direct and compiled. Offline only; no inference.
 
-- [Measured offline report](../../../revisions/2.1.3/closeout-evidence/REPORT.md)
-- [Exact artifact and evidence hashes](../../../revisions/2.1.3/implementation-evidence/manifest.json)
+- [Nueva ejecución contra el wheel publicado](../../../revisions/2.1.3/learning-evidence-elevated/example-results/flow_semantics/run.json)
+- [RunResult y lineage](../../../revisions/2.1.3/learning-evidence-elevated/example-results/flow_semantics/runresults.json)

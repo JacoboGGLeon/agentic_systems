@@ -1,0 +1,412 @@
+{
+  "source": "revisions/2.1.3/learning-evidence-elevated/features/20261023T045243165383/ollama-runtime--mcp.json",
+  "root_results": 1,
+  "results": [
+    {
+      "run_result": {
+        "text": "{\n  \"value\": \"FRAMEWORKS_TOGETHER\",\n  \"transport\": \"mcp-streamable-http\"\n}",
+        "final": {
+          "text": "{\n  \"value\": \"FRAMEWORKS_TOGETHER\",\n  \"transport\": \"mcp-streamable-http\"\n}"
+        },
+        "data": {
+          "value": "FRAMEWORKS_TOGETHER",
+          "transport": "mcp-streamable-http"
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "inputTokens": 252,
+          "outputTokens": 51,
+          "totalTokens": 303,
+          "cacheReadInputTokens": 96,
+          "input_tokens": 252,
+          "output_tokens": 51,
+          "total_tokens": 303,
+          "client_duration_ms": 2766.448,
+          "requests": 2,
+          "inference_requests": 2,
+          "tool_calls": 1
+        },
+        "engine": "ollama-runtime",
+        "model": "gemma4:31b-cloud",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "strands_protocol",
+          "kind": "agent",
+          "backend": "native",
+          "skills": [],
+          "actions_observed": 1,
+          "input": "Call echo with value=FRAMEWORKS_TOGETHER."
+        },
+        "execution_id": "run-9538edd1cf2b4c699d758913aa68d137",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "{\n  \"value\": \"FRAMEWORKS_TOGETHER\",\n  \"transport\": \"mcp-streamable-http\"\n}",
+            "final": {
+              "text": "{\n  \"value\": \"FRAMEWORKS_TOGETHER\",\n  \"transport\": \"mcp-streamable-http\"\n}"
+            },
+            "data": {
+              "value": "FRAMEWORKS_TOGETHER",
+              "transport": "mcp-streamable-http"
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "inputTokens": 252,
+              "outputTokens": 51,
+              "totalTokens": 303,
+              "cacheReadInputTokens": 96,
+              "input_tokens": 252,
+              "output_tokens": 51,
+              "total_tokens": 303,
+              "client_duration_ms": 2766.448,
+              "requests": 2,
+              "inference_requests": 2,
+              "tool_calls": 1
+            },
+            "engine": "ollama-runtime",
+            "model": "gemma4:31b-cloud",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "strands_protocol",
+              "kind": "model",
+              "framework": "strands"
+            },
+            "execution_id": "run-9add10e2033c40e293d12f549649b75c",
+            "parent_execution_id": "run-9538edd1cf2b4c699d758913aa68d137",
+            "children": [
+              {
+                "text": "{\n  \"value\": \"FRAMEWORKS_TOGETHER\",\n  \"transport\": \"mcp-streamable-http\"\n}",
+                "final": {
+                  "text": "{\n  \"value\": \"FRAMEWORKS_TOGETHER\",\n  \"transport\": \"mcp-streamable-http\"\n}"
+                },
+                "data": {
+                  "value": "FRAMEWORKS_TOGETHER",
+                  "transport": "mcp-streamable-http"
+                },
+                "ok": true,
+                "messages": [
+                  {
+                    "role": "user",
+                    "content": [
+                      {
+                        "text": "Call echo with value=FRAMEWORKS_TOGETHER."
+                      }
+                    ],
+                    "tracking_id": "7dbbd312-f21e-45d4-a1b2-0362931734cf"
+                  },
+                  {
+                    "role": "assistant",
+                    "content": [
+                      {
+                        "toolUse": {
+                          "toolUseId": "call_qs224n58",
+                          "name": "echo",
+                          "input": {
+                            "value": "FRAMEWORKS_TOGETHER"
+                          }
+                        }
+                      }
+                    ],
+                    "metadata": {
+                      "usage": {
+                        "inputTokens": 100,
+                        "outputTokens": 17,
+                        "totalTokens": 117,
+                        "cacheReadInputTokens": 0
+                      },
+                      "metrics": {
+                        "latencyMs": 0,
+                        "timeToFirstByteMs": 1373
+                      }
+                    },
+                    "tracking_id": "17e049a3-a69e-4f35-847a-7c974eefa332"
+                  },
+                  {
+                    "role": "user",
+                    "content": [
+                      {
+                        "toolResult": {
+                          "status": "success",
+                          "toolUseId": "call_qs224n58",
+                          "content": [
+                            {
+                              "text": "{\n  \"value\": \"FRAMEWORKS_TOGETHER\",\n  \"transport\": \"mcp-streamable-http\"\n}"
+                            }
+                          ],
+                          "isError": false
+                        }
+                      }
+                    ],
+                    "tracking_id": "e64020ba-0558-4992-8776-31914677a207"
+                  },
+                  {
+                    "role": "assistant",
+                    "content": [
+                      {
+                        "text": "{\n  \"value\": \"FRAMEWORKS_TOGETHER\",\n  \"transport\": \"mcp-streamable-http\"\n}"
+                      }
+                    ],
+                    "metadata": {
+                      "usage": {
+                        "inputTokens": 152,
+                        "outputTokens": 34,
+                        "totalTokens": 186,
+                        "cacheReadInputTokens": 96
+                      },
+                      "metrics": {
+                        "latencyMs": 0,
+                        "timeToFirstByteMs": 1365
+                      }
+                    },
+                    "tracking_id": "cdb4ad01-3305-4b79-a651-e6c932a8e783"
+                  }
+                ],
+                "raw_responses": [
+                  {
+                    "role": "assistant",
+                    "content": [
+                      {
+                        "text": "{\n  \"value\": \"FRAMEWORKS_TOGETHER\",\n  \"transport\": \"mcp-streamable-http\"\n}"
+                      }
+                    ],
+                    "metadata": {
+                      "usage": {
+                        "inputTokens": 152,
+                        "outputTokens": 34,
+                        "totalTokens": 186,
+                        "cacheReadInputTokens": 96
+                      },
+                      "metrics": {
+                        "latencyMs": 0,
+                        "timeToFirstByteMs": 1365
+                      }
+                    },
+                    "tracking_id": "cdb4ad01-3305-4b79-a651-e6c932a8e783"
+                  }
+                ],
+                "usage": {
+                  "inputTokens": 252,
+                  "outputTokens": 51,
+                  "totalTokens": 303,
+                  "cacheReadInputTokens": 96,
+                  "input_tokens": 252,
+                  "output_tokens": 51,
+                  "total_tokens": 303,
+                  "client_duration_ms": 2766.448,
+                  "requests": 2,
+                  "scheduler": {
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 3438.638
+                  },
+                  "inference_requests": 2,
+                  "tool_calls": 1
+                },
+                "engine": "ollama-runtime",
+                "model": "gemma4:31b-cloud",
+                "mode": "eval",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": {
+                  "ok": true,
+                  "issues": []
+                },
+                "errors": [],
+                "meta": {
+                  "source_result_type": "AgentResult",
+                  "framework_adapter": "strands",
+                  "input": "Call echo with value=FRAMEWORKS_TOGETHER.",
+                  "stop_reason": "end_turn",
+                  "rejected_tool_calls": [],
+                  "output_materialization": [],
+                  "runtime": {
+                    "provider": "ollama-runtime",
+                    "model_id": "gemma4:31b-cloud",
+                    "region_name": null,
+                    "endpoint": "https://ollama.com/v1",
+                    "metadata": {},
+                    "provider_priority": [
+                      "openai-runtime",
+                      "bedrock-runtime",
+                      "ollama-runtime"
+                    ],
+                    "allow_python_fallback": false,
+                    "scheduler": {
+                      "max_turns": 5,
+                      "max_tool_calls": 3,
+                      "timeout_s": 60,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    }
+                  },
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "scheduler_execution": {
+                    "scheduler": {
+                      "max_turns": 5,
+                      "max_tool_calls": 3,
+                      "timeout_s": 60,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    },
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 3438.638
+                  },
+                  "framework": "strands",
+                  "framework_requested": "strands",
+                  "framework_config": {
+                    "name": "strands",
+                    "agent_kwargs": {
+                      "tools": "list"
+                    },
+                    "run_kwargs": {}
+                  },
+                  "agent_name": "strands_protocol",
+                  "requested_engine": "ollama-runtime",
+                  "runtime_engine": "ollama-runtime",
+                  "execution_engine": "ollama-runtime"
+                },
+                "execution_id": "run-0d60da8c3a804a06add86add6fae2b44",
+                "parent_execution_id": "run-9add10e2033c40e293d12f549649b75c",
+                "children": [],
+                "tool_events": [
+                  {
+                    "id": "call_qs224n58",
+                    "name": "echo",
+                    "input": {
+                      "value": "FRAMEWORKS_TOGETHER"
+                    },
+                    "output": {
+                      "value": "FRAMEWORKS_TOGETHER",
+                      "transport": "mcp-streamable-http"
+                    },
+                    "ok": true,
+                    "error": null,
+                    "duration_ms": null,
+                    "meta": {
+                      "source": "strands"
+                    }
+                  }
+                ]
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "features/ollama-runtime--mcp",
+        "question": "\"Call echo with value=FRAMEWORKS_TOGETHER.\"",
+        "goal": "",
+        "answer": "{\n  \"value\": \"FRAMEWORKS_TOGETHER\",\n  \"transport\": \"mcp-streamable-http\"\n}",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-9538edd1cf2b4c699d758913aa68d137",
+            "kind": "execution",
+            "title": "strands_protocol",
+            "summary": "{\n  \"value\": \"FRAMEWORKS_TOGETHER\",\n  \"transport\": \"mcp-streamable-http\"\n}",
+            "source": "ollama-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": "FRAMEWORKS_TOGETHER",
+                "transport": "mcp-streamable-http"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-9add10e2033c40e293d12f549649b75c",
+            "kind": "execution",
+            "title": "strands_protocol",
+            "summary": "{\n  \"value\": \"FRAMEWORKS_TOGETHER\",\n  \"transport\": \"mcp-streamable-http\"\n}",
+            "source": "ollama-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": "FRAMEWORKS_TOGETHER",
+                "transport": "mcp-streamable-http"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-0d60da8c3a804a06add86add6fae2b44",
+            "kind": "execution",
+            "title": "eval",
+            "summary": "{\n  \"value\": \"FRAMEWORKS_TOGETHER\",\n  \"transport\": \"mcp-streamable-http\"\n}",
+            "source": "ollama-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": "FRAMEWORKS_TOGETHER",
+                "transport": "mcp-streamable-http"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "call_qs224n58",
+            "kind": "tool",
+            "title": "echo",
+            "summary": "completed",
+            "source": "echo",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "value": "FRAMEWORKS_TOGETHER",
+              "transport": "mcp-streamable-http"
+            }
+          }
+        ],
+        "usage": {
+          "inputTokens": 252,
+          "outputTokens": 51,
+          "totalTokens": 303,
+          "cacheReadInputTokens": 96,
+          "input_tokens": 252,
+          "output_tokens": 51,
+          "total_tokens": 303,
+          "client_duration_ms": 2766.448,
+          "requests": 2,
+          "inference_requests": 2,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    }
+  ],
+  "scope": "Lineage derived offline from the unchanged observed live RunResult; no candidate or judge re-execution"
+}

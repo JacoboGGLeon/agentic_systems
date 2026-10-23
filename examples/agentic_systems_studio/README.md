@@ -1,6 +1,32 @@
 # Studio
 
-La misma aplicación se usa desde Python, notebook e interfaz.
+Conversa con un proveedor y framework explícitos, ejecuta Tools y consulta
+RunResult y lineage. La misma aplicación sirve desde Python, notebook e interfaz.
+
+## Instala y abre
+
+Descarga [Studio 2.1.3](https://github.com/JacoboGGLeon/agentic_systems/releases/download/v2.1.3/agentic-systems-studio-2.1.3-final-local.zip),
+descomprímelo y entra en la carpeta que contiene `wheels/`:
+
+```bash
+python -m pip install "./wheels/agentic_systems_studio-2.1.3-py3-none-any.whl[ui,frameworks,notebook]"
+```
+
+```python
+from agentic_systems_studio import launch_studio
+
+session = launch_studio()
+```
+
+Abre el enlace que devuelve la función. En notebook presenta un botón; Colab
+usa su proxy. Para terminar, `session.server.stop()`. También puedes seguir
+[el notebook de Studio](notebooks/01_studio.ipynb).
+
+Studio se distribuye por separado del SDK `agentic-systems==2.1.3`. El ZIP
+incluye ambos wheels, fuentes, notebook y tests. Las dependencias se descargan
+al instalarlo; el ZIP no es un wheelhouse desconectado.
+
+## Desde Python
 
 ```python
 from agentic_systems_studio import build_conversational_system
@@ -10,49 +36,44 @@ answer = studio.run("Hola")
 answer.text
 ```
 
-El ejemplo inicial es un mock determinista de Python. Para abrir la interfaz:
-
-```python
-from agentic_systems_studio import launch_studio
-
-launch_studio()
-```
-
-Selecciona proveedor y framework en la interfaz. `.env` contiene modelos,
-endpoints y credenciales; no se copian al código ni a los resultados. La
-campaña de validación usa su presupuesto persistente autorizado para las
-llamadas externas. Python funciona sin una asignación de inferencia.
-
-Desde Python también puedes elegir explícitamente:
+El inicio usa un mock determinista de Python sin credenciales ni inferencia.
+Para un modelo externo, configura sus variables en el entorno o `.env` antes
+de abrir Studio. Selecciona proveedor y framework en la interfaz. No hay fallback.
+Las claves no se copian al código ni a los resultados.
 
 ```python
 from agentic_systems_studio import ConversationConfig, build_conversational_system
 
-config = ConversationConfig(provider="openai-runtime", framework="langgraph")
-studio = build_conversational_system(config)
+studio = build_conversational_system(
+    ConversationConfig(provider="openai-runtime", framework="langgraph")
+)
 answer = studio.run("Calcula 17 * 19 usando la calculadora.")
 answer.text
 ```
 
-El contexto conserva un historial público acotado. El cálculo se verifica con
-una Tool y su evidencia permanece en RunResult. La aplicación valida los
-ejemplos de API que genera y conserva los intentos de reparación.
+Enviar este mensaje al modelo consume llamadas. La campaña de validación usa
+un contador persistente autorizado; la aplicación distingue ese perfil de su
+uso habitual. El cálculo se verifica mediante una Tool y su evento se conserva
+en RunResult. El historial público está acotado; no equivale a memoria persistente
+entre servidores nuevos.
 
-| Framework | Ejemplo disponible en la interfaz |
+## Explora las capacidades de cada framework
+
+| Framework | Laboratorio disponible |
 |---|---|
 | native | Tools, contexto y coordinación mediante la API común |
 | LangGraph | pausa, checkpoint y reanudación de una aprobación |
 | OpenAI Agents | transferencia a especialista, guardrail y sesión |
-| Strands | Tool MCP y agente A2A mediante servicios locales reales |
-| Todos | una sola declaración con cuatro actores; Python o proveedores mixtos |
+| Strands | Tool MCP y agente A2A con servicios locales reales |
+| Todos | cuatro actores en un System; Python o proveedores mixtos |
 
-Los detalles específicos de SDK están en `src/agentic_systems_studio/lab/`.
-No cambian la gramática pública. El catálogo de aplicaciones se construye
-también con Agent/System; sus reasoners requieren un proveedor de lenguaje.
+La [implementación](src/agentic_systems_studio/lab/) usa los SDKs nativos en las
+opciones del framework y conserva el resultado de la API común. No añade
+constructores alternativos a la librería.
 
-Instala este proyecto local junto al SDK 2.1.3 y el extra de interfaz/frameworks
-que uses. La versión anterior y su evidencia se preservan en
-`../history/2.1.2/studio/`; no se importan como compatibilidad.
+[Validación actual](../../docs/LEARNING_VALIDATION_213.md) ·
+[Evidencia original del release](../../revisions/2.1.3/closeout-evidence/REPORT.md) ·
+[Instalación y variables](../../INSTALL.md)
 
-La validación declara escenarios concretos, no éxito universal de cualquier
-conversación. [Resultados, modelos, presupuesto y límites](../../revisions/2.1.3/framework-evidence/REPORT.md).
+Los resultados acreditan escenarios concretos. vLLM/GPU, AWS IAM y ADA IAM
+requieren validación posterior; este Studio no es ADA Studio.

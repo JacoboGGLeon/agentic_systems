@@ -1,0 +1,412 @@
+{
+  "source": "tutorials/frameworks/03_strands.ipynb",
+  "captured_boundaries": 1,
+  "root_results": 1,
+  "scope": "Observed SDK RunResult values; descendants retained inside parents. No fabricated results for configuration-only examples.",
+  "results": [
+    {
+      "run_result": {
+        "text": "{\"value\": 37, \"verified\": true}",
+        "final": {
+          "text": "{\"value\": 37, \"verified\": true}"
+        },
+        "data": {
+          "value": 37,
+          "verified": true
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "inputTokens": 0,
+          "outputTokens": 0,
+          "totalTokens": 0,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "total_tokens": 0,
+          "client_duration_ms": 7.107,
+          "requests": 2,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "python-runtime",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "verification",
+          "kind": "agent",
+          "backend": "native",
+          "skills": [
+            "evidence"
+          ],
+          "actions_observed": 1,
+          "input": {
+            "tool": "certify",
+            "input": {
+              "value": 37
+            }
+          }
+        },
+        "execution_id": "run-e35adaed5c5a487eb8d94948073dc6b5",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "{\"value\": 37, \"verified\": true}",
+            "final": {
+              "text": "{\"value\": 37, \"verified\": true}"
+            },
+            "data": {
+              "value": 37,
+              "verified": true
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "inputTokens": 0,
+              "outputTokens": 0,
+              "totalTokens": 0,
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "total_tokens": 0,
+              "client_duration_ms": 7.107,
+              "requests": 2,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "python-runtime",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "verification",
+              "kind": "model",
+              "framework": "strands"
+            },
+            "execution_id": "run-e99d4f4b0e2a4076b3d718de70ad9d94",
+            "parent_execution_id": "run-e35adaed5c5a487eb8d94948073dc6b5",
+            "children": [
+              {
+                "text": "{\"value\": 37, \"verified\": true}",
+                "final": {
+                  "text": "{\"value\": 37, \"verified\": true}"
+                },
+                "data": {
+                  "value": 37,
+                  "verified": true
+                },
+                "ok": true,
+                "messages": [
+                  {
+                    "role": "user",
+                    "content": [
+                      {
+                        "text": "{\"tool\": \"certify\", \"input\": {\"value\": 37}}"
+                      }
+                    ],
+                    "tracking_id": "3f480702-686c-4ba4-86aa-48f74eb5bf9d"
+                  },
+                  {
+                    "role": "assistant",
+                    "content": [
+                      {
+                        "toolUse": {
+                          "toolUseId": "python_e8f5c7dc2db34d5b97d195cb16279d72",
+                          "name": "certify",
+                          "input": {
+                            "value": 37
+                          }
+                        }
+                      }
+                    ],
+                    "metadata": {
+                      "usage": {
+                        "inputTokens": 0,
+                        "outputTokens": 0,
+                        "totalTokens": 0
+                      },
+                      "metrics": {
+                        "latencyMs": 0
+                      }
+                    },
+                    "tracking_id": "f3439c1b-1c33-493e-9615-9670d1d9d953"
+                  },
+                  {
+                    "role": "user",
+                    "content": [
+                      {
+                        "toolResult": {
+                          "toolUseId": "python_e8f5c7dc2db34d5b97d195cb16279d72",
+                          "status": "success",
+                          "content": [
+                            {
+                              "text": "{\"value\": 37, \"verified\": true}"
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "tracking_id": "adde07fc-ab06-4e6a-a6c9-eb7b9f4f7352"
+                  },
+                  {
+                    "role": "assistant",
+                    "content": [
+                      {
+                        "text": "{\"value\": 37, \"verified\": true}"
+                      }
+                    ],
+                    "metadata": {
+                      "usage": {
+                        "inputTokens": 0,
+                        "outputTokens": 0,
+                        "totalTokens": 0
+                      },
+                      "metrics": {
+                        "latencyMs": 0
+                      }
+                    },
+                    "tracking_id": "40157b25-791b-4909-b28d-c11e7fb27676"
+                  }
+                ],
+                "raw_responses": [
+                  {
+                    "role": "assistant",
+                    "content": [
+                      {
+                        "text": "{\"value\": 37, \"verified\": true}"
+                      }
+                    ],
+                    "metadata": {
+                      "usage": {
+                        "inputTokens": 0,
+                        "outputTokens": 0,
+                        "totalTokens": 0
+                      },
+                      "metrics": {
+                        "latencyMs": 0
+                      }
+                    },
+                    "tracking_id": "40157b25-791b-4909-b28d-c11e7fb27676"
+                  }
+                ],
+                "usage": {
+                  "inputTokens": 0,
+                  "outputTokens": 0,
+                  "totalTokens": 0,
+                  "input_tokens": 0,
+                  "output_tokens": 0,
+                  "total_tokens": 0,
+                  "client_duration_ms": 7.107,
+                  "requests": 2,
+                  "scheduler": {
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 3980.433
+                  },
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "python-runtime",
+                "mode": "eval",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": {
+                  "ok": true,
+                  "issues": []
+                },
+                "errors": [],
+                "meta": {
+                  "source_result_type": "AgentResult",
+                  "framework_adapter": "strands",
+                  "input": {
+                    "tool": "certify",
+                    "input": {
+                      "value": 37
+                    }
+                  },
+                  "stop_reason": "end_turn",
+                  "rejected_tool_calls": [],
+                  "output_materialization": [],
+                  "runtime": {
+                    "provider": "python-runtime",
+                    "model_id": "python-runtime",
+                    "region_name": null,
+                    "endpoint": null,
+                    "metadata": {},
+                    "provider_priority": [
+                      "openai-runtime",
+                      "bedrock-runtime",
+                      "ollama-runtime"
+                    ],
+                    "allow_python_fallback": false,
+                    "scheduler": {
+                      "max_turns": 6,
+                      "max_tool_calls": 5,
+                      "timeout_s": 60.0,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    }
+                  },
+                  "scheduler": {
+                    "max_turns": 6,
+                    "max_tool_calls": 5,
+                    "timeout_s": 60.0,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "scheduler_execution": {
+                    "scheduler": {
+                      "max_turns": 6,
+                      "max_tool_calls": 5,
+                      "timeout_s": 60.0,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    },
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 3980.433
+                  },
+                  "framework": "strands",
+                  "framework_requested": "strands",
+                  "framework_config": {
+                    "name": "strands",
+                    "agent_kwargs": {},
+                    "run_kwargs": {}
+                  },
+                  "agent_name": "verification",
+                  "requested_engine": "python-runtime",
+                  "runtime_engine": "python-runtime",
+                  "execution_engine": "python-runtime"
+                },
+                "execution_id": "run-fe305873e5fe4c4d8316b3d50c65478e",
+                "parent_execution_id": "run-e99d4f4b0e2a4076b3d718de70ad9d94",
+                "children": [],
+                "tool_events": [
+                  {
+                    "id": "python_e8f5c7dc2db34d5b97d195cb16279d72",
+                    "name": "certify",
+                    "input": {
+                      "value": 37
+                    },
+                    "output": {
+                      "value": 37,
+                      "verified": true
+                    },
+                    "ok": true,
+                    "error": null,
+                    "duration_ms": null,
+                    "meta": {
+                      "source": "strands"
+                    }
+                  }
+                ]
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "tutorials/frameworks/03_strands.ipynb",
+        "question": "{\"tool\": \"certify\", \"input\": {\"value\": 37}}",
+        "goal": "",
+        "answer": "{\"value\": 37, \"verified\": true}",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-e35adaed5c5a487eb8d94948073dc6b5",
+            "kind": "execution",
+            "title": "verification",
+            "summary": "{\"value\": 37, \"verified\": true}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 37,
+                "verified": true
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-e99d4f4b0e2a4076b3d718de70ad9d94",
+            "kind": "execution",
+            "title": "verification",
+            "summary": "{\"value\": 37, \"verified\": true}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 37,
+                "verified": true
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-fe305873e5fe4c4d8316b3d50c65478e",
+            "kind": "execution",
+            "title": "eval",
+            "summary": "{\"value\": 37, \"verified\": true}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 37,
+                "verified": true
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "python_e8f5c7dc2db34d5b97d195cb16279d72",
+            "kind": "tool",
+            "title": "certify",
+            "summary": "completed",
+            "source": "certify",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "value": 37,
+              "verified": true
+            }
+          }
+        ],
+        "usage": {
+          "inputTokens": 0,
+          "outputTokens": 0,
+          "totalTokens": 0,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "total_tokens": 0,
+          "client_duration_ms": 7.107,
+          "requests": 2,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    }
+  ]
+}

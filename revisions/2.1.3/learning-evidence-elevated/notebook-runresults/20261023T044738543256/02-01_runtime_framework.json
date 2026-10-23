@@ -1,0 +1,1394 @@
+{
+  "source": "tutorials/api/01_runtime_framework.ipynb",
+  "captured_boundaries": 4,
+  "root_results": 4,
+  "scope": "Observed SDK RunResult values; descendants retained inside parents. No fabricated results for configuration-only examples.",
+  "results": [
+    {
+      "run_result": {
+        "text": "increment -> {\"value\": 4}",
+        "final": {
+          "value": 4,
+          "ok": true,
+          "tool": "increment"
+        },
+        "data": {
+          "value": 4,
+          "ok": true,
+          "tool": "increment"
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "client_duration_ms": 2.02,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "python-runtime",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "operator",
+          "kind": "agent",
+          "backend": "native",
+          "skills": [
+            "arithmetic"
+          ],
+          "actions_observed": 1,
+          "input": {
+            "tool": "increment",
+            "input": {
+              "value": 3
+            }
+          }
+        },
+        "execution_id": "run-9f4435333e984bff958ecee18c53ae8f",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "increment -> {\"value\": 4}",
+            "final": {
+              "value": 4,
+              "ok": true,
+              "tool": "increment"
+            },
+            "data": {
+              "value": 4,
+              "ok": true,
+              "tool": "increment"
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "client_duration_ms": 2.02,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "python-runtime",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "operator",
+              "kind": "model",
+              "framework": "native"
+            },
+            "execution_id": "run-4989d6d61e704a7d873fb95ebe7273a0",
+            "parent_execution_id": "run-9f4435333e984bff958ecee18c53ae8f",
+            "children": [
+              {
+                "text": "increment -> {\"value\": 4}",
+                "final": {
+                  "value": 4,
+                  "ok": true,
+                  "tool": "increment"
+                },
+                "data": {
+                  "value": 4,
+                  "ok": true,
+                  "tool": "increment"
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "scheduler": {
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 2.02
+                  },
+                  "client_duration_ms": 2.02,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "python-runtime",
+                "mode": "eval",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": {
+                  "ok": true,
+                  "issues": []
+                },
+                "errors": [],
+                "meta": {
+                  "source_result_type": "PythonRuntimeProvider",
+                  "agent_name": "operator",
+                  "tool_count": 2,
+                  "planned_tool_calls": 1,
+                  "runtime": {
+                    "provider": "python-runtime",
+                    "model_id": "python-runtime",
+                    "region_name": null,
+                    "endpoint": null,
+                    "metadata": {},
+                    "provider_priority": [
+                      "openai-runtime",
+                      "bedrock-runtime",
+                      "ollama-runtime"
+                    ],
+                    "allow_python_fallback": false,
+                    "scheduler": {
+                      "max_turns": 6,
+                      "max_tool_calls": 5,
+                      "timeout_s": 60.0,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    }
+                  },
+                  "scheduler": {
+                    "max_turns": 6,
+                    "max_tool_calls": 5,
+                    "timeout_s": 60.0,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "scheduler_execution": {
+                    "scheduler": {
+                      "max_turns": 6,
+                      "max_tool_calls": 5,
+                      "timeout_s": 60.0,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    },
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 2.02
+                  },
+                  "framework": "native",
+                  "framework_requested": "native",
+                  "framework_adapter": "native",
+                  "framework_config": {
+                    "name": "native",
+                    "agent_kwargs": {},
+                    "run_kwargs": {}
+                  },
+                  "input": {
+                    "tool": "increment",
+                    "input": {
+                      "value": 3
+                    }
+                  },
+                  "requested_engine": "python-runtime",
+                  "runtime_engine": "python-runtime",
+                  "execution_engine": "python-runtime"
+                },
+                "execution_id": "run-b7c107bd6eb440c3a8e4ded892efc55f",
+                "parent_execution_id": "run-4989d6d61e704a7d873fb95ebe7273a0",
+                "children": [],
+                "tool_events": [
+                  {
+                    "id": "tool-d9c2e7597a6f4104b60f3d4cb252b489",
+                    "name": "increment",
+                    "input": {
+                      "value": 3
+                    },
+                    "output": {
+                      "data": {
+                        "value": 4
+                      }
+                    },
+                    "ok": true,
+                    "error": null,
+                    "duration_ms": null,
+                    "meta": {}
+                  }
+                ]
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "tutorials/api/01_runtime_framework.ipynb",
+        "question": "{\"tool\": \"increment\", \"input\": {\"value\": 3}}",
+        "goal": "",
+        "answer": "increment -> {\"value\": 4}",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-9f4435333e984bff958ecee18c53ae8f",
+            "kind": "execution",
+            "title": "operator",
+            "summary": "increment -> {\"value\": 4}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4,
+                "ok": true,
+                "tool": "increment"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-4989d6d61e704a7d873fb95ebe7273a0",
+            "kind": "execution",
+            "title": "operator",
+            "summary": "increment -> {\"value\": 4}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4,
+                "ok": true,
+                "tool": "increment"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-b7c107bd6eb440c3a8e4ded892efc55f",
+            "kind": "execution",
+            "title": "eval",
+            "summary": "increment -> {\"value\": 4}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4,
+                "ok": true,
+                "tool": "increment"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "tool-d9c2e7597a6f4104b60f3d4cb252b489",
+            "kind": "tool",
+            "title": "increment",
+            "summary": "completed",
+            "source": "increment",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "value": 4
+              }
+            }
+          }
+        ],
+        "usage": {
+          "client_duration_ms": 2.02,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    },
+    {
+      "run_result": {
+        "text": "increment -> {\"value\": 4}",
+        "final": {
+          "value": 4,
+          "ok": true,
+          "tool": "increment"
+        },
+        "data": {
+          "value": 4,
+          "ok": true,
+          "tool": "increment"
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "client_duration_ms": 1686.215,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "python-runtime",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "operator",
+          "kind": "agent",
+          "backend": "native",
+          "skills": [
+            "arithmetic"
+          ],
+          "actions_observed": 1,
+          "input": {
+            "tool": "increment",
+            "input": {
+              "value": 3
+            }
+          }
+        },
+        "execution_id": "run-8df6160aecc24a9e80a736db8dad0869",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "increment -> {\"value\": 4}",
+            "final": {
+              "value": 4,
+              "ok": true,
+              "tool": "increment"
+            },
+            "data": {
+              "value": 4,
+              "ok": true,
+              "tool": "increment"
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "client_duration_ms": 1686.215,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "python-runtime",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "operator",
+              "kind": "model",
+              "framework": "langgraph"
+            },
+            "execution_id": "run-cdbb6eb956294544b11a9d66b71c0d75",
+            "parent_execution_id": "run-8df6160aecc24a9e80a736db8dad0869",
+            "children": [
+              {
+                "text": "increment -> {\"value\": 4}",
+                "final": {
+                  "value": 4,
+                  "ok": true,
+                  "tool": "increment"
+                },
+                "data": {
+                  "value": 4,
+                  "ok": true,
+                  "tool": "increment"
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "scheduler": {
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 1686.215
+                  },
+                  "client_duration_ms": 1686.215,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "python-runtime",
+                "mode": "eval",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": {
+                  "ok": true,
+                  "issues": []
+                },
+                "errors": [],
+                "meta": {
+                  "source_result_type": "PythonRuntimeProvider",
+                  "agent_name": "operator",
+                  "tool_count": 2,
+                  "planned_tool_calls": 1,
+                  "framework_adapter": "langgraph",
+                  "runtime": {
+                    "provider": "python-runtime",
+                    "model_id": "python-runtime",
+                    "region_name": null,
+                    "endpoint": null,
+                    "metadata": {},
+                    "provider_priority": [
+                      "openai-runtime",
+                      "bedrock-runtime",
+                      "ollama-runtime"
+                    ],
+                    "allow_python_fallback": false,
+                    "scheduler": {
+                      "max_turns": 6,
+                      "max_tool_calls": 5,
+                      "timeout_s": 60.0,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    }
+                  },
+                  "scheduler": {
+                    "max_turns": 6,
+                    "max_tool_calls": 5,
+                    "timeout_s": 60.0,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "scheduler_execution": {
+                    "scheduler": {
+                      "max_turns": 6,
+                      "max_tool_calls": 5,
+                      "timeout_s": 60.0,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    },
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 1686.215
+                  },
+                  "framework": "langgraph",
+                  "framework_requested": "langgraph",
+                  "framework_config": {
+                    "name": "langgraph",
+                    "agent_kwargs": {},
+                    "run_kwargs": {}
+                  },
+                  "input": {
+                    "tool": "increment",
+                    "input": {
+                      "value": 3
+                    }
+                  },
+                  "requested_engine": "python-runtime",
+                  "runtime_engine": "python-runtime",
+                  "execution_engine": "python-runtime"
+                },
+                "execution_id": "run-6aec4a1b487f4899aea9f88a54ce8ba7",
+                "parent_execution_id": "run-cdbb6eb956294544b11a9d66b71c0d75",
+                "children": [],
+                "tool_events": [
+                  {
+                    "id": "tool-6d32e48fface4ce9b40b11ec7398d2ee",
+                    "name": "increment",
+                    "input": {
+                      "value": 3
+                    },
+                    "output": {
+                      "data": {
+                        "value": 4
+                      }
+                    },
+                    "ok": true,
+                    "error": null,
+                    "duration_ms": null,
+                    "meta": {}
+                  }
+                ]
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "tutorials/api/01_runtime_framework.ipynb",
+        "question": "{\"tool\": \"increment\", \"input\": {\"value\": 3}}",
+        "goal": "",
+        "answer": "increment -> {\"value\": 4}",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-8df6160aecc24a9e80a736db8dad0869",
+            "kind": "execution",
+            "title": "operator",
+            "summary": "increment -> {\"value\": 4}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4,
+                "ok": true,
+                "tool": "increment"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-cdbb6eb956294544b11a9d66b71c0d75",
+            "kind": "execution",
+            "title": "operator",
+            "summary": "increment -> {\"value\": 4}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4,
+                "ok": true,
+                "tool": "increment"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-6aec4a1b487f4899aea9f88a54ce8ba7",
+            "kind": "execution",
+            "title": "eval",
+            "summary": "increment -> {\"value\": 4}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4,
+                "ok": true,
+                "tool": "increment"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "tool-6d32e48fface4ce9b40b11ec7398d2ee",
+            "kind": "tool",
+            "title": "increment",
+            "summary": "completed",
+            "source": "increment",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "value": 4
+              }
+            }
+          }
+        ],
+        "usage": {
+          "client_duration_ms": 1686.215,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    },
+    {
+      "run_result": {
+        "text": "{\"value\": 4}",
+        "final": {
+          "value": 4
+        },
+        "data": {
+          "value": 4
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 2,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "total_tokens": 0,
+          "client_duration_ms": 6907.067,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "python-runtime",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "operator",
+          "kind": "agent",
+          "backend": "native",
+          "skills": [
+            "arithmetic"
+          ],
+          "actions_observed": 1,
+          "input": {
+            "tool": "increment",
+            "input": {
+              "value": 3
+            }
+          }
+        },
+        "execution_id": "run-c9c26f0ea485448daeaca91478332ce8",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "{\"value\": 4}",
+            "final": {
+              "value": 4
+            },
+            "data": {
+              "value": 4
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 2,
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "total_tokens": 0,
+              "client_duration_ms": 6907.067,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "python-runtime",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "operator",
+              "kind": "model",
+              "framework": "openai-agents"
+            },
+            "execution_id": "run-1e365c920da74c5fa6f80c38eb60eaef",
+            "parent_execution_id": "run-c9c26f0ea485448daeaca91478332ce8",
+            "children": [
+              {
+                "text": "{\"value\": 4}",
+                "final": {
+                  "value": 4
+                },
+                "data": {
+                  "value": 4
+                },
+                "ok": true,
+                "messages": [
+                  {
+                    "content": "{\"tool\": \"increment\", \"input\": {\"value\": 3}}",
+                    "role": "user"
+                  },
+                  {
+                    "arguments": "{\"value\": 3}",
+                    "call_id": "call_023ceba2fb004fb2aaa86169be67239d",
+                    "name": "increment",
+                    "type": "function_call"
+                  },
+                  {
+                    "call_id": "call_023ceba2fb004fb2aaa86169be67239d",
+                    "output": "{'value': 4}",
+                    "type": "function_call_output"
+                  },
+                  {
+                    "id": "msg_866e47bf71e54f788c0596ea639e31b6",
+                    "content": [
+                      {
+                        "annotations": [],
+                        "text": "{\"value\": 4}",
+                        "type": "output_text"
+                      }
+                    ],
+                    "role": "assistant",
+                    "status": "completed",
+                    "type": "message"
+                  }
+                ],
+                "raw_responses": [
+                  {
+                    "output": [
+                      {
+                        "arguments": "{\"value\": 3}",
+                        "call_id": "call_023ceba2fb004fb2aaa86169be67239d",
+                        "name": "increment",
+                        "type": "function_call",
+                        "id": null,
+                        "caller": null,
+                        "namespace": null,
+                        "status": null
+                      }
+                    ],
+                    "usage": {
+                      "requests": 1,
+                      "input_tokens": 0,
+                      "input_tokens_details": {
+                        "cache_write_tokens": 0,
+                        "cached_tokens": 0
+                      },
+                      "output_tokens": 0,
+                      "output_tokens_details": {
+                        "reasoning_tokens": 0
+                      },
+                      "total_tokens": 0,
+                      "request_usage_entries": []
+                    },
+                    "response_id": "python_0f2c9e3b8c3d4c4989348cd30aca5731",
+                    "request_id": null
+                  },
+                  {
+                    "output": [
+                      {
+                        "id": "msg_866e47bf71e54f788c0596ea639e31b6",
+                        "content": [
+                          {
+                            "annotations": [],
+                            "text": "{\"value\": 4}",
+                            "type": "output_text",
+                            "logprobs": null
+                          }
+                        ],
+                        "role": "assistant",
+                        "status": "completed",
+                        "type": "message",
+                        "phase": null
+                      }
+                    ],
+                    "usage": {
+                      "requests": 1,
+                      "input_tokens": 0,
+                      "input_tokens_details": {
+                        "cache_write_tokens": 0,
+                        "cached_tokens": 0
+                      },
+                      "output_tokens": 0,
+                      "output_tokens_details": {
+                        "reasoning_tokens": 0
+                      },
+                      "total_tokens": 0,
+                      "request_usage_entries": []
+                    },
+                    "response_id": "response_38f6930a92684401951535cf52356531",
+                    "request_id": null
+                  }
+                ],
+                "usage": {
+                  "requests": 2,
+                  "input_tokens": 0,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cached_tokens": 0
+                  },
+                  "output_tokens": 0,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 0
+                  },
+                  "total_tokens": 0,
+                  "request_usage_entries": [],
+                  "scheduler": {
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 6907.067
+                  },
+                  "client_duration_ms": 6907.067,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "python-runtime",
+                "mode": "eval",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": {
+                  "ok": true,
+                  "issues": []
+                },
+                "errors": [],
+                "meta": {
+                  "source_result_type": "RunResult",
+                  "framework_adapter": "openai-agents",
+                  "input": {
+                    "tool": "increment",
+                    "input": {
+                      "value": 3
+                    }
+                  },
+                  "rejected_tool_calls": [],
+                  "runtime": {
+                    "provider": "python-runtime",
+                    "model_id": "python-runtime",
+                    "region_name": null,
+                    "endpoint": null,
+                    "metadata": {},
+                    "provider_priority": [
+                      "openai-runtime",
+                      "bedrock-runtime",
+                      "ollama-runtime"
+                    ],
+                    "allow_python_fallback": false,
+                    "scheduler": {
+                      "max_turns": 6,
+                      "max_tool_calls": 5,
+                      "timeout_s": 60.0,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    }
+                  },
+                  "scheduler": {
+                    "max_turns": 6,
+                    "max_tool_calls": 5,
+                    "timeout_s": 60.0,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "scheduler_execution": {
+                    "scheduler": {
+                      "max_turns": 6,
+                      "max_tool_calls": 5,
+                      "timeout_s": 60.0,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    },
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 6907.067
+                  },
+                  "framework": "openai-agents",
+                  "framework_requested": "openai-agents",
+                  "framework_config": {
+                    "name": "openai-agents",
+                    "agent_kwargs": {},
+                    "run_kwargs": {}
+                  },
+                  "agent_name": "operator",
+                  "requested_engine": "python-runtime",
+                  "runtime_engine": "python-runtime",
+                  "execution_engine": "python-runtime"
+                },
+                "execution_id": "run-7847b42421944f29b45ac8110e0e490e",
+                "parent_execution_id": "run-1e365c920da74c5fa6f80c38eb60eaef",
+                "children": [],
+                "tool_events": [
+                  {
+                    "id": "call_023ceba2fb004fb2aaa86169be67239d",
+                    "name": "increment",
+                    "input": {
+                      "value": 3
+                    },
+                    "output": {
+                      "data": {
+                        "value": 4
+                      }
+                    },
+                    "ok": true,
+                    "error": null,
+                    "duration_ms": null,
+                    "meta": {
+                      "source": "openai-agents"
+                    }
+                  }
+                ]
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "tutorials/api/01_runtime_framework.ipynb",
+        "question": "{\"tool\": \"increment\", \"input\": {\"value\": 3}}",
+        "goal": "",
+        "answer": "{\"value\": 4}",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-c9c26f0ea485448daeaca91478332ce8",
+            "kind": "execution",
+            "title": "operator",
+            "summary": "{\"value\": 4}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-1e365c920da74c5fa6f80c38eb60eaef",
+            "kind": "execution",
+            "title": "operator",
+            "summary": "{\"value\": 4}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-7847b42421944f29b45ac8110e0e490e",
+            "kind": "execution",
+            "title": "eval",
+            "summary": "{\"value\": 4}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "call_023ceba2fb004fb2aaa86169be67239d",
+            "kind": "tool",
+            "title": "increment",
+            "summary": "completed",
+            "source": "increment",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "value": 4
+              }
+            }
+          }
+        ],
+        "usage": {
+          "requests": 2,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "total_tokens": 0,
+          "client_duration_ms": 6907.067,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    },
+    {
+      "run_result": {
+        "text": "{\"value\": 4}",
+        "final": {
+          "text": "{\"value\": 4}"
+        },
+        "data": {
+          "value": 4
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "inputTokens": 0,
+          "outputTokens": 0,
+          "totalTokens": 0,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "total_tokens": 0,
+          "client_duration_ms": 5.586,
+          "requests": 2,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "python-runtime",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "operator",
+          "kind": "agent",
+          "backend": "native",
+          "skills": [
+            "arithmetic"
+          ],
+          "actions_observed": 1,
+          "input": {
+            "tool": "increment",
+            "input": {
+              "value": 3
+            }
+          }
+        },
+        "execution_id": "run-8abe37dcd9424111b543eda8bffac198",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "{\"value\": 4}",
+            "final": {
+              "text": "{\"value\": 4}"
+            },
+            "data": {
+              "value": 4
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "inputTokens": 0,
+              "outputTokens": 0,
+              "totalTokens": 0,
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "total_tokens": 0,
+              "client_duration_ms": 5.586,
+              "requests": 2,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "python-runtime",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "operator",
+              "kind": "model",
+              "framework": "strands"
+            },
+            "execution_id": "run-12858f0b0635416ea34bb4d8336020c2",
+            "parent_execution_id": "run-8abe37dcd9424111b543eda8bffac198",
+            "children": [
+              {
+                "text": "{\"value\": 4}",
+                "final": {
+                  "text": "{\"value\": 4}"
+                },
+                "data": {
+                  "value": 4
+                },
+                "ok": true,
+                "messages": [
+                  {
+                    "role": "user",
+                    "content": [
+                      {
+                        "text": "{\"tool\": \"increment\", \"input\": {\"value\": 3}}"
+                      }
+                    ],
+                    "tracking_id": "904f23bb-d0bb-4743-9536-e120c5b22f5d"
+                  },
+                  {
+                    "role": "assistant",
+                    "content": [
+                      {
+                        "toolUse": {
+                          "toolUseId": "python_39277d9b35934adea2432c2789ba69dd",
+                          "name": "increment",
+                          "input": {
+                            "value": 3
+                          }
+                        }
+                      }
+                    ],
+                    "metadata": {
+                      "usage": {
+                        "inputTokens": 0,
+                        "outputTokens": 0,
+                        "totalTokens": 0
+                      },
+                      "metrics": {
+                        "latencyMs": 0
+                      }
+                    },
+                    "tracking_id": "7bbf213e-2a3f-475b-8727-630fe7e4e28f"
+                  },
+                  {
+                    "role": "user",
+                    "content": [
+                      {
+                        "toolResult": {
+                          "toolUseId": "python_39277d9b35934adea2432c2789ba69dd",
+                          "status": "success",
+                          "content": [
+                            {
+                              "text": "{\"value\": 4}"
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "tracking_id": "d1448115-ed63-4740-ac03-1c2f1eddff54"
+                  },
+                  {
+                    "role": "assistant",
+                    "content": [
+                      {
+                        "text": "{\"value\": 4}"
+                      }
+                    ],
+                    "metadata": {
+                      "usage": {
+                        "inputTokens": 0,
+                        "outputTokens": 0,
+                        "totalTokens": 0
+                      },
+                      "metrics": {
+                        "latencyMs": 0
+                      }
+                    },
+                    "tracking_id": "d7478c9a-4ed4-4d45-9258-bd8b313f9b9c"
+                  }
+                ],
+                "raw_responses": [
+                  {
+                    "role": "assistant",
+                    "content": [
+                      {
+                        "text": "{\"value\": 4}"
+                      }
+                    ],
+                    "metadata": {
+                      "usage": {
+                        "inputTokens": 0,
+                        "outputTokens": 0,
+                        "totalTokens": 0
+                      },
+                      "metrics": {
+                        "latencyMs": 0
+                      }
+                    },
+                    "tracking_id": "d7478c9a-4ed4-4d45-9258-bd8b313f9b9c"
+                  }
+                ],
+                "usage": {
+                  "inputTokens": 0,
+                  "outputTokens": 0,
+                  "totalTokens": 0,
+                  "input_tokens": 0,
+                  "output_tokens": 0,
+                  "total_tokens": 0,
+                  "client_duration_ms": 5.586,
+                  "requests": 2,
+                  "scheduler": {
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 795.111
+                  },
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "python-runtime",
+                "mode": "eval",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": {
+                  "ok": true,
+                  "issues": []
+                },
+                "errors": [],
+                "meta": {
+                  "source_result_type": "AgentResult",
+                  "framework_adapter": "strands",
+                  "input": {
+                    "tool": "increment",
+                    "input": {
+                      "value": 3
+                    }
+                  },
+                  "stop_reason": "end_turn",
+                  "rejected_tool_calls": [],
+                  "output_materialization": [],
+                  "runtime": {
+                    "provider": "python-runtime",
+                    "model_id": "python-runtime",
+                    "region_name": null,
+                    "endpoint": null,
+                    "metadata": {},
+                    "provider_priority": [
+                      "openai-runtime",
+                      "bedrock-runtime",
+                      "ollama-runtime"
+                    ],
+                    "allow_python_fallback": false,
+                    "scheduler": {
+                      "max_turns": 6,
+                      "max_tool_calls": 5,
+                      "timeout_s": 60.0,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    }
+                  },
+                  "scheduler": {
+                    "max_turns": 6,
+                    "max_tool_calls": 5,
+                    "timeout_s": 60.0,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "scheduler_execution": {
+                    "scheduler": {
+                      "max_turns": 6,
+                      "max_tool_calls": 5,
+                      "timeout_s": 60.0,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    },
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 795.111
+                  },
+                  "framework": "strands",
+                  "framework_requested": "strands",
+                  "framework_config": {
+                    "name": "strands",
+                    "agent_kwargs": {},
+                    "run_kwargs": {}
+                  },
+                  "agent_name": "operator",
+                  "requested_engine": "python-runtime",
+                  "runtime_engine": "python-runtime",
+                  "execution_engine": "python-runtime"
+                },
+                "execution_id": "run-bf074e318f284ac49858dd8ef4be055b",
+                "parent_execution_id": "run-12858f0b0635416ea34bb4d8336020c2",
+                "children": [],
+                "tool_events": [
+                  {
+                    "id": "python_39277d9b35934adea2432c2789ba69dd",
+                    "name": "increment",
+                    "input": {
+                      "value": 3
+                    },
+                    "output": {
+                      "value": 4
+                    },
+                    "ok": true,
+                    "error": null,
+                    "duration_ms": null,
+                    "meta": {
+                      "source": "strands"
+                    }
+                  }
+                ]
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "tutorials/api/01_runtime_framework.ipynb",
+        "question": "{\"tool\": \"increment\", \"input\": {\"value\": 3}}",
+        "goal": "",
+        "answer": "{\"value\": 4}",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-8abe37dcd9424111b543eda8bffac198",
+            "kind": "execution",
+            "title": "operator",
+            "summary": "{\"value\": 4}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-12858f0b0635416ea34bb4d8336020c2",
+            "kind": "execution",
+            "title": "operator",
+            "summary": "{\"value\": 4}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-bf074e318f284ac49858dd8ef4be055b",
+            "kind": "execution",
+            "title": "eval",
+            "summary": "{\"value\": 4}",
+            "source": "python-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "value": 4
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "python_39277d9b35934adea2432c2789ba69dd",
+            "kind": "tool",
+            "title": "increment",
+            "summary": "completed",
+            "source": "increment",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "value": 4
+            }
+          }
+        ],
+        "usage": {
+          "inputTokens": 0,
+          "outputTokens": 0,
+          "totalTokens": 0,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "total_tokens": 0,
+          "client_duration_ms": 5.586,
+          "requests": 2,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    }
+  ]
+}

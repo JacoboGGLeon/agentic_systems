@@ -1,0 +1,194 @@
+{
+  "example": "grammar_tour",
+  "passed": true,
+  "source_sha256": "df57ce4c8659db8826835ac0e738f9e802b6de015bbd158ec8bf68723cef2fde",
+  "report": {
+    "input": {
+      "value": 3
+    },
+    "process": "Tools -> Skill -> Agent/System -> Environment -> Eval",
+    "rows": [
+      {
+        "backend": "native",
+        "unit": "agent_sequence",
+        "input": {
+          "value": 3
+        },
+        "output": {
+          "value": 8
+        },
+        "eval_ok": true
+      },
+      {
+        "backend": "native",
+        "unit": "agent_parallel",
+        "input": {
+          "value": 3
+        },
+        "output": {
+          "value": 10
+        },
+        "eval_ok": true
+      },
+      {
+        "backend": "native",
+        "unit": "agent_decision",
+        "input": {
+          "value": 3
+        },
+        "output": {
+          "value": 8
+        },
+        "eval_ok": true
+      },
+      {
+        "backend": "native",
+        "unit": "system_sequence",
+        "input": {
+          "value": 3
+        },
+        "output": {
+          "value": 8
+        },
+        "eval_ok": true
+      },
+      {
+        "backend": "native",
+        "unit": "system_parallel",
+        "input": {
+          "value": 3
+        },
+        "output": {
+          "value": 10
+        },
+        "eval_ok": true
+      },
+      {
+        "backend": "native",
+        "unit": "system_decision",
+        "input": {
+          "value": 3
+        },
+        "output": {
+          "value": 8
+        },
+        "eval_ok": true
+      },
+      {
+        "backend": "native",
+        "unit": "Environment + Eval",
+        "input": [
+          {
+            "value": 3
+          },
+          {
+            "value": -3
+          }
+        ],
+        "output": [
+          {
+            "value": 8
+          },
+          {
+            "value": -2
+          }
+        ],
+        "memory": {
+          "processed": 2
+        },
+        "eval_ok": true
+      },
+      {
+        "backend": "langgraph",
+        "unit": "agent_sequence",
+        "input": {
+          "value": 3
+        },
+        "output": {
+          "value": 8
+        },
+        "eval_ok": true
+      },
+      {
+        "backend": "langgraph",
+        "unit": "agent_parallel",
+        "input": {
+          "value": 3
+        },
+        "output": {
+          "value": 10
+        },
+        "eval_ok": true
+      },
+      {
+        "backend": "langgraph",
+        "unit": "agent_decision",
+        "input": {
+          "value": 3
+        },
+        "output": {
+          "value": 8
+        },
+        "eval_ok": true
+      },
+      {
+        "backend": "langgraph",
+        "unit": "system_sequence",
+        "input": {
+          "value": 3
+        },
+        "output": {
+          "value": 8
+        },
+        "eval_ok": true
+      },
+      {
+        "backend": "langgraph",
+        "unit": "system_parallel",
+        "input": {
+          "value": 3
+        },
+        "output": {
+          "value": 10
+        },
+        "eval_ok": true
+      },
+      {
+        "backend": "langgraph",
+        "unit": "system_decision",
+        "input": {
+          "value": 3
+        },
+        "output": {
+          "value": 8
+        },
+        "eval_ok": true
+      },
+      {
+        "backend": "langgraph",
+        "unit": "Environment + Eval",
+        "input": [
+          {
+            "value": 3
+          },
+          {
+            "value": -3
+          }
+        ],
+        "output": [
+          {
+            "value": 8
+          },
+          {
+            "value": -2
+          }
+        ],
+        "memory": {
+          "processed": 2
+        },
+        "eval_ok": true
+      }
+    ],
+    "inference_requests": 0
+  }
+}

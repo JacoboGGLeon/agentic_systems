@@ -1,0 +1,252 @@
+{
+  "example": "code_review",
+  "example_passed": true,
+  "source_sha256": "8e27282a54566f9500052ec58feeb4c086795369477dbb32a0a340f342cf46e8",
+  "inference_requests": 0,
+  "scope": "offline contract or configuration; no model-generation/semantic/IAM/GPU certification",
+  "output": {
+    "text": "",
+    "final": {
+      "syntax_ok": true,
+      "functions": 1,
+      "missing_return_annotations": [
+        "total"
+      ]
+    },
+    "data": {
+      "syntax_ok": true,
+      "functions": 1,
+      "missing_return_annotations": [
+        "total"
+      ]
+    },
+    "ok": true,
+    "messages": [],
+    "raw_responses": [],
+    "usage": {
+      "requests": 1,
+      "inference_requests": 0,
+      "tool_calls": 1
+    },
+    "engine": "python-runtime",
+    "model": "",
+    "mode": "default",
+    "trace_schema_version": "agentic_systems.trace.v1",
+    "validation": null,
+    "errors": [],
+    "meta": {
+      "name": "application",
+      "kind": "system",
+      "backend": "native",
+      "skills": [],
+      "actions_observed": 1,
+      "input": {
+        "input": {
+          "source": "def total(values):\n    return sum(values)\n"
+        }
+      }
+    },
+    "execution_id": "run-fbc7745bb8804b81bbb54ab2bf3dd127",
+    "parent_execution_id": null,
+    "children": [
+      {
+        "text": "",
+        "final": {
+          "syntax_ok": true,
+          "functions": 1,
+          "missing_return_annotations": [
+            "total"
+          ]
+        },
+        "data": {
+          "syntax_ok": true,
+          "functions": 1,
+          "missing_return_annotations": [
+            "total"
+          ]
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 1,
+          "inference_requests": 0,
+          "tool_calls": 1
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "sequence",
+          "kind": "sequence",
+          "backend": "native"
+        },
+        "execution_id": "run-b39a5fbab144429dae52a4717d982471",
+        "parent_execution_id": "run-fbc7745bb8804b81bbb54ab2bf3dd127",
+        "children": [
+          {
+            "text": "",
+            "final": {
+              "syntax_ok": true,
+              "functions": 1,
+              "missing_return_annotations": [
+                "total"
+              ]
+            },
+            "data": {
+              "syntax_ok": true,
+              "functions": 1,
+              "missing_return_annotations": [
+                "total"
+              ]
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 1,
+              "inference_requests": 0,
+              "tool_calls": 1
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "worker",
+              "kind": "agent",
+              "backend": "native",
+              "skills": [
+                "inspect_source"
+              ],
+              "step": "worker"
+            },
+            "execution_id": "run-9f9f34b0b2d942308cd7b65fa59b43f9",
+            "parent_execution_id": "run-b39a5fbab144429dae52a4717d982471",
+            "children": [
+              {
+                "text": "",
+                "final": {
+                  "syntax_ok": true,
+                  "functions": 1,
+                  "missing_return_annotations": [
+                    "total"
+                  ]
+                },
+                "data": {
+                  "syntax_ok": true,
+                  "functions": 1,
+                  "missing_return_annotations": [
+                    "total"
+                  ]
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "requests": 1,
+                  "inference_requests": 0,
+                  "tool_calls": 1
+                },
+                "engine": "python-runtime",
+                "model": "",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "inspect_source",
+                  "kind": "action"
+                },
+                "execution_id": "run-db1335e5144942a5971688e8e384c568",
+                "parent_execution_id": "run-9f9f34b0b2d942308cd7b65fa59b43f9",
+                "children": [
+                  {
+                    "text": "",
+                    "final": {
+                      "syntax_ok": true,
+                      "functions": 1,
+                      "missing_return_annotations": [
+                        "total"
+                      ]
+                    },
+                    "data": {
+                      "syntax_ok": true,
+                      "functions": 1,
+                      "missing_return_annotations": [
+                        "total"
+                      ]
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "requests": 1,
+                      "inference_requests": 0,
+                      "tool_calls": 1
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "tool",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "tool_name": "",
+                      "input": {
+                        "input": {
+                          "source": "def total(values):\n    return sum(values)\n"
+                        }
+                      },
+                      "tool_input": {
+                        "input": {
+                          "source": "def total(values):\n    return sum(values)\n"
+                        }
+                      }
+                    },
+                    "execution_id": "run-2f126e64d7ee469d8ef224a0bddc2102",
+                    "parent_execution_id": "run-db1335e5144942a5971688e8e384c568",
+                    "children": [],
+                    "tool_events": [
+                      {
+                        "id": "tool-9fd50f3c06b44cf08ee41849f3f4b592",
+                        "name": "inspect_source",
+                        "input": {
+                          "input": {
+                            "source": "def total(values):\n    return sum(values)\n"
+                          }
+                        },
+                        "output": {
+                          "data": {
+                            "syntax_ok": true,
+                            "functions": 1,
+                            "missing_return_annotations": [
+                              "total"
+                            ]
+                          }
+                        },
+                        "ok": true,
+                        "error": null,
+                        "duration_ms": null,
+                        "meta": {}
+                      }
+                    ]
+                  }
+                ],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      }
+    ],
+    "tool_events": []
+  }
+}

@@ -16,7 +16,8 @@ Código:
 
 Validación: **Configuración; entorno pendiente**. Configuración construida e inspeccionada. El entorno de destino no se ejecutó.
 
-- [Ejecución actual](../../../examples/validation/aws_iam/evidence/current.json)
+- [Nueva ejecución contra el wheel publicado](../../../revisions/2.1.3/learning-evidence-elevated/example-results/validation/aws_iam/current.json)
+- [RunResult y lineage](../../../revisions/2.1.3/learning-evidence-elevated/example-results/validation/aws_iam/runresults.json)
 
 <details>
 <summary>Evidencia del experimento anterior</summary>

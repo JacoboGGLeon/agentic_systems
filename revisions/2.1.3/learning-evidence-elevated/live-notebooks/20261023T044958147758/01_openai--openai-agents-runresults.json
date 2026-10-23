@@ -1,0 +1,426 @@
+{
+  "source": "tutorials/providers/01_openai.ipynb",
+  "captured_boundaries": 1,
+  "root_results": 1,
+  "scope": "Observed SDK RunResult values; descendants retained inside parents. No fabricated results for configuration-only examples.",
+  "results": [
+    {
+      "run_result": {
+        "text": "He llamado a la función certify con el valor 37 como solicitaste. ¿Hay algo más en lo que pueda ayudarte?",
+        "final": {
+          "text": "He llamado a la función certify con el valor 37 como solicitaste. ¿Hay algo más en lo que pueda ayudarte?"
+        },
+        "data": {
+          "text": "He llamado a la función certify con el valor 37 como solicitaste. ¿Hay algo más en lo que pueda ayudarte?"
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 2,
+          "input_tokens": 172,
+          "output_tokens": 42,
+          "total_tokens": 214,
+          "client_duration_ms": 11028.718,
+          "inference_requests": 2,
+          "tool_calls": 1
+        },
+        "engine": "openai-runtime",
+        "model": "gpt-4.1-mini",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "verification",
+          "kind": "agent",
+          "backend": "native",
+          "skills": [
+            "evidence"
+          ],
+          "actions_observed": 1,
+          "input": "Call certify with value=37."
+        },
+        "execution_id": "run-6709d2f91b654b71abe775a300eafbcf",
+        "parent_execution_id": null,
+        "children": [
+          {
+            "text": "He llamado a la función certify con el valor 37 como solicitaste. ¿Hay algo más en lo que pueda ayudarte?",
+            "final": {
+              "text": "He llamado a la función certify con el valor 37 como solicitaste. ¿Hay algo más en lo que pueda ayudarte?"
+            },
+            "data": {
+              "text": "He llamado a la función certify con el valor 37 como solicitaste. ¿Hay algo más en lo que pueda ayudarte?"
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 2,
+              "input_tokens": 172,
+              "output_tokens": 42,
+              "total_tokens": 214,
+              "client_duration_ms": 11028.718,
+              "inference_requests": 2,
+              "tool_calls": 1
+            },
+            "engine": "openai-runtime",
+            "model": "gpt-4.1-mini",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "verification",
+              "kind": "model",
+              "framework": "openai-agents"
+            },
+            "execution_id": "run-3e65b51ca9cf4ee3b732da6415777558",
+            "parent_execution_id": "run-6709d2f91b654b71abe775a300eafbcf",
+            "children": [
+              {
+                "text": "He llamado a la función certify con el valor 37 como solicitaste. ¿Hay algo más en lo que pueda ayudarte?",
+                "final": {
+                  "text": "He llamado a la función certify con el valor 37 como solicitaste. ¿Hay algo más en lo que pueda ayudarte?"
+                },
+                "data": {
+                  "text": "He llamado a la función certify con el valor 37 como solicitaste. ¿Hay algo más en lo que pueda ayudarte?"
+                },
+                "ok": true,
+                "messages": [
+                  {
+                    "content": "Call certify with value=37.",
+                    "role": "user"
+                  },
+                  {
+                    "arguments": "{\"value\":37}",
+                    "call_id": "call_d6VT5KxdfC9kE2meYO8mGBKU",
+                    "name": "certify",
+                    "type": "function_call",
+                    "id": "fc_0e7b5a5d20b21ccd006adae79b481887d191b1db9b6b051576",
+                    "status": "completed"
+                  },
+                  {
+                    "call_id": "call_d6VT5KxdfC9kE2meYO8mGBKU",
+                    "output": "{'value': 37, 'verified': True}",
+                    "type": "function_call_output"
+                  },
+                  {
+                    "id": "msg_0e7b5a5d20b21ccd006adae79c794887d1897fb64836df074b",
+                    "content": [
+                      {
+                        "annotations": [],
+                        "text": "He llamado a la función certify con el valor 37 como solicitaste. ¿Hay algo más en lo que pueda ayudarte?",
+                        "type": "output_text",
+                        "logprobs": []
+                      }
+                    ],
+                    "role": "assistant",
+                    "status": "completed",
+                    "type": "message"
+                  }
+                ],
+                "raw_responses": [
+                  {
+                    "output": [
+                      {
+                        "arguments": "{\"value\":37}",
+                        "call_id": "call_d6VT5KxdfC9kE2meYO8mGBKU",
+                        "name": "certify",
+                        "type": "function_call",
+                        "id": "fc_0e7b5a5d20b21ccd006adae79b481887d191b1db9b6b051576",
+                        "caller": null,
+                        "namespace": null,
+                        "status": "completed"
+                      }
+                    ],
+                    "usage": {
+                      "requests": 1,
+                      "input_tokens": 69,
+                      "input_tokens_details": {
+                        "cache_write_tokens": 0,
+                        "cached_tokens": 0
+                      },
+                      "output_tokens": 15,
+                      "output_tokens_details": {
+                        "reasoning_tokens": 0
+                      },
+                      "total_tokens": 84,
+                      "request_usage_entries": []
+                    },
+                    "response_id": "resp_0e7b5a5d20b21ccd006adae79a87e087d196253c7727bc9a07",
+                    "request_id": "req_3784028637f945218619155cd11cfbaf"
+                  },
+                  {
+                    "output": [
+                      {
+                        "id": "msg_0e7b5a5d20b21ccd006adae79c794887d1897fb64836df074b",
+                        "content": [
+                          {
+                            "annotations": [],
+                            "text": "He llamado a la función certify con el valor 37 como solicitaste. ¿Hay algo más en lo que pueda ayudarte?",
+                            "type": "output_text",
+                            "logprobs": []
+                          }
+                        ],
+                        "role": "assistant",
+                        "status": "completed",
+                        "type": "message",
+                        "phase": null
+                      }
+                    ],
+                    "usage": {
+                      "requests": 1,
+                      "input_tokens": 103,
+                      "input_tokens_details": {
+                        "cache_write_tokens": 0,
+                        "cached_tokens": 0
+                      },
+                      "output_tokens": 27,
+                      "output_tokens_details": {
+                        "reasoning_tokens": 0
+                      },
+                      "total_tokens": 130,
+                      "request_usage_entries": []
+                    },
+                    "response_id": "resp_0e7b5a5d20b21ccd006adae79bfcc887d1abecd06c7eac69ff",
+                    "request_id": "req_d2bd413fe4b5454fb9508430c86f90d3"
+                  }
+                ],
+                "usage": {
+                  "requests": 2,
+                  "input_tokens": 172,
+                  "input_tokens_details": {
+                    "cache_write_tokens": 0,
+                    "cached_tokens": 0
+                  },
+                  "output_tokens": 42,
+                  "output_tokens_details": {
+                    "reasoning_tokens": 0
+                  },
+                  "total_tokens": 214,
+                  "request_usage_entries": [
+                    {
+                      "input_tokens": 69,
+                      "output_tokens": 15,
+                      "total_tokens": 84,
+                      "input_tokens_details": {
+                        "cache_write_tokens": 0,
+                        "cached_tokens": 0
+                      },
+                      "output_tokens_details": {
+                        "reasoning_tokens": 0
+                      }
+                    },
+                    {
+                      "input_tokens": 103,
+                      "output_tokens": 27,
+                      "total_tokens": 130,
+                      "input_tokens_details": {
+                        "cache_write_tokens": 0,
+                        "cached_tokens": 0
+                      },
+                      "output_tokens_details": {
+                        "reasoning_tokens": 0
+                      }
+                    }
+                  ],
+                  "scheduler": {
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 11028.718
+                  },
+                  "client_duration_ms": 11028.718,
+                  "inference_requests": 2,
+                  "tool_calls": 1
+                },
+                "engine": "openai-runtime",
+                "model": "gpt-4.1-mini",
+                "mode": "eval",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": {
+                  "ok": true,
+                  "issues": []
+                },
+                "errors": [],
+                "meta": {
+                  "source_result_type": "RunResult",
+                  "framework_adapter": "openai-agents",
+                  "input": "Call certify with value=37.",
+                  "rejected_tool_calls": [],
+                  "runtime": {
+                    "provider": "openai-runtime",
+                    "model_id": "gpt-4.1-mini",
+                    "region_name": null,
+                    "endpoint": null,
+                    "metadata": {},
+                    "provider_priority": [
+                      "openai-runtime",
+                      "bedrock-runtime",
+                      "ollama-runtime"
+                    ],
+                    "allow_python_fallback": false,
+                    "scheduler": {
+                      "max_turns": 5,
+                      "max_tool_calls": 3,
+                      "timeout_s": 60,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    }
+                  },
+                  "scheduler": {
+                    "max_turns": 5,
+                    "max_tool_calls": 3,
+                    "timeout_s": 60,
+                    "max_concurrency": 1,
+                    "max_retries": 0,
+                    "backoff_s": 0.0
+                  },
+                  "scheduler_execution": {
+                    "scheduler": {
+                      "max_turns": 5,
+                      "max_tool_calls": 3,
+                      "timeout_s": 60,
+                      "max_concurrency": 1,
+                      "max_retries": 0,
+                      "backoff_s": 0.0
+                    },
+                    "attempts": 1,
+                    "retries": 0,
+                    "timed_out": false,
+                    "latency_ms": 11028.718
+                  },
+                  "framework": "openai-agents",
+                  "framework_requested": "openai-agents",
+                  "framework_config": {
+                    "name": "openai-agents",
+                    "agent_kwargs": {},
+                    "run_kwargs": {}
+                  },
+                  "agent_name": "verification",
+                  "requested_engine": "openai-runtime",
+                  "runtime_engine": "openai-runtime",
+                  "execution_engine": "openai-runtime"
+                },
+                "execution_id": "run-b835105c54d9431caae7ede69edac9b2",
+                "parent_execution_id": "run-3e65b51ca9cf4ee3b732da6415777558",
+                "children": [],
+                "tool_events": [
+                  {
+                    "id": "call_d6VT5KxdfC9kE2meYO8mGBKU",
+                    "name": "certify",
+                    "input": {
+                      "value": 37
+                    },
+                    "output": {
+                      "data": {
+                        "value": 37,
+                        "verified": true
+                      }
+                    },
+                    "ok": true,
+                    "error": null,
+                    "duration_ms": null,
+                    "meta": {
+                      "source": "openai-agents"
+                    }
+                  }
+                ]
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "lineage_memory": {
+        "name": "tutorials/providers/01_openai.ipynb",
+        "question": "\"Call certify with value=37.\"",
+        "goal": "",
+        "answer": "He llamado a la función certify con el valor 37 como solicitaste. ¿Hay algo más en lo que pueda ayudarte?",
+        "ok": true,
+        "steps": [
+          {
+            "step_id": "run-6709d2f91b654b71abe775a300eafbcf",
+            "kind": "execution",
+            "title": "verification",
+            "summary": "He llamado a la función certify con el valor 37 como solicitaste. ¿Hay algo más en lo que pueda ayudarte?",
+            "source": "openai-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "text": "He llamado a la función certify con el valor 37 como solicitaste. ¿Hay algo más en lo que pueda ayudarte?"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-3e65b51ca9cf4ee3b732da6415777558",
+            "kind": "execution",
+            "title": "verification",
+            "summary": "He llamado a la función certify con el valor 37 como solicitaste. ¿Hay algo más en lo que pueda ayudarte?",
+            "source": "openai-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "text": "He llamado a la función certify con el valor 37 como solicitaste. ¿Hay algo más en lo que pueda ayudarte?"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "run-b835105c54d9431caae7ede69edac9b2",
+            "kind": "execution",
+            "title": "eval",
+            "summary": "He llamado a la función certify con el valor 37 como solicitaste. ¿Hay algo más en lo que pueda ayudarte?",
+            "source": "openai-runtime",
+            "why": "Recorded execution evidence",
+            "evidence": {
+              "ok": true,
+              "data": {
+                "text": "He llamado a la función certify con el valor 37 como solicitaste. ¿Hay algo más en lo que pueda ayudarte?"
+              },
+              "errors": []
+            }
+          },
+          {
+            "step_id": "call_d6VT5KxdfC9kE2meYO8mGBKU",
+            "kind": "tool",
+            "title": "certify",
+            "summary": "completed",
+            "source": "certify",
+            "why": "Recorded Tool event",
+            "evidence": {
+              "data": {
+                "value": 37,
+                "verified": true
+              }
+            }
+          }
+        ],
+        "usage": {
+          "requests": 2,
+          "input_tokens": 172,
+          "output_tokens": 42,
+          "total_tokens": 214,
+          "client_duration_ms": 11028.718,
+          "inference_requests": 2,
+          "tool_calls": 1
+        },
+        "validation": null,
+        "tags": [],
+        "metadata": {},
+        "schema_version": "agentic_systems.lineage.v1"
+      },
+      "lineage_error": null,
+      "invariants": {
+        "ok": true,
+        "issues": []
+      }
+    }
+  ]
+}
