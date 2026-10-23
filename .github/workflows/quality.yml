@@ -57,7 +57,9 @@ jobs:
       - name: Scan repository for credential material
         run: python scripts/check_secrets.py
       - name: Verify unchanged SDK, Studio, notebooks and final live acceptance
-        run: python scripts/prepare_release_213.py
+        run: |
+          mkdir -p .tmp/ci-213-evidence
+          python scripts/prepare_release_213.py | tee .tmp/ci-213-evidence/reviewed-integrity.json
       - name: Test release integrity and publication conflict handling
         run: >-
           python -m pytest tests/release213 tests/release/test_release_publication.py
@@ -111,6 +113,9 @@ jobs:
             .tmp/ci-213/manifest.json
             .tmp/ci-213/dist/*
             .tmp/ci-213-evidence/
+            examples/**/evidence/*.json
+            !examples/history/**
+            !examples/**/evidence/previous/**
           if-no-files-found: error
 
   release-dry-run:
