@@ -58,6 +58,11 @@ jobs:
         run: python scripts/check_secrets.py
       - name: Verify unchanged SDK, Studio, notebooks and final live acceptance
         run: python scripts/prepare_release_213.py
+      - name: Test release integrity and publication conflict handling
+        run: >-
+          python -m pytest tests/release213 tests/release/test_release_publication.py
+          tests/release/test_release_finalization.py -q -o pythonpath=scripts
+          --junitxml=.tmp/ci-213-evidence/release-tests.xml
       - name: Build a clean candidate without an index
         run: python scripts/build_candidate_213.py .tmp/ci-213
       - name: Install the reviewed artifact used by the final live campaign
@@ -88,11 +93,6 @@ jobs:
         run: >-
           python -m pytest examples/api_walkthrough/tests -q -o pythonpath=.
           --junitxml=.tmp/ci-213-evidence/business-boundary-tests.xml
-      - name: Test release integrity and publication conflict handling
-        run: >-
-          python -m pytest tests/release213 tests/release/test_release_publication.py
-          tests/release/test_release_finalization.py -q -o pythonpath=scripts
-          --junitxml=.tmp/ci-213-evidence/release-tests.xml
       - name: Execute order application
         run: |
           python examples/order_fulfillment/run.py
