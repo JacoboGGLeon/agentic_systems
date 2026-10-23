@@ -17,6 +17,10 @@ from release_publication import (
 def build(directory: Path) -> Path:
     summary_path = directory / "final-certification-summary.json"
     summary = json.loads(summary_path.read_text(encoding="utf-8"))
+    if summary.get("schema_version") == "agentic_systems.release-readiness-213.v1":
+        from prepare_release_213 import build_manifest
+
+        return build_manifest(directory)
     if summary.get("schema_version") != "agentic_systems.release-certification.v1":
         raise ValueError("Unsupported certification schema")
     if (

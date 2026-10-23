@@ -46,6 +46,7 @@ jobs:
           scripts/inventory_notebooks_213.py scripts/unify_teaching_imports_213.py
           scripts/start_final_campaign_213.py examples/api_walkthrough
           scripts/capture_runresults_213.py scripts/report_runresults_213.py
+          scripts/prepare_release_213.py tests/release213
           examples/agentic_systems_studio/src examples/agentic_systems_studio/tests
           examples/framework_interop examples/grammar_tour tutorials/lesson_examples.py
           examples/run_offline_213.py examples/tool_contracts examples/flow_semantics
@@ -55,6 +56,8 @@ jobs:
           examples/portable_skills examples/order_fulfillment
       - name: Scan repository for credential material
         run: python scripts/check_secrets.py
+      - name: Verify unchanged SDK, Studio, notebooks and final live acceptance
+        run: python scripts/prepare_release_213.py
       - name: Build a clean candidate without an index
         run: python scripts/build_candidate_213.py .tmp/ci-213
       - name: Install the reviewed artifact used by the final live campaign
@@ -85,6 +88,11 @@ jobs:
         run: >-
           python -m pytest examples/api_walkthrough/tests -q -o pythonpath=.
           --junitxml=.tmp/ci-213-evidence/business-boundary-tests.xml
+      - name: Test release integrity and publication conflict handling
+        run: >-
+          python -m pytest tests/release213 tests/release/test_release_publication.py
+          tests/release/test_release_finalization.py -q -o pythonpath=scripts
+          --junitxml=.tmp/ci-213-evidence/release-tests.xml
       - name: Execute order application
         run: |
           python examples/order_fulfillment/run.py
@@ -103,4 +111,31 @@ jobs:
             .tmp/ci-213/manifest.json
             .tmp/ci-213/dist/*
             .tmp/ci-213-evidence/
+          if-no-files-found: error
+
+  release-dry-run:
+    needs: offline
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.14'
+      - run: python -m pip install 'pydantic>=2.7,<3' twine
+      - name: Prepare reviewed delivery without rebuilding or publishing
+        run: python scripts/prepare_release_213.py --output .tmp/release-preview
+      - name: Verify hashes and publication metadata
+        run: |
+          manifest_sha="$(sha256sum .tmp/release-preview/release-manifest.json | cut -d' ' -f1)"
+          python scripts/release_publication.py --manifest .tmp/release-preview/release-manifest.json --manifest-sha256 "$manifest_sha" --directory .tmp/release-preview --verify-only
+          python scripts/build_release_manifest.py --directory .tmp/release-preview
+          python -m twine check --strict .tmp/release-preview/*.whl .tmp/release-preview/*.tar.gz
+          echo "Publication dry run passed; no index upload, release or tag was created." >> "$GITHUB_STEP_SUMMARY"
+          echo "Reviewed manifest SHA256: $manifest_sha" >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: reviewed-213-publication-preview
+          path: .tmp/release-preview/*
           if-no-files-found: error
