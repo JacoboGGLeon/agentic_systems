@@ -8,6 +8,7 @@ import threading
 _lock = threading.Lock()
 _installed = False
 _blocked = 0
+_blocked_records = []
 
 
 def enforce_offline():
@@ -48,6 +49,9 @@ def _audit(event, args):
             locations.append(f"{frame.f_code.co_filename}:{frame.f_lineno}:{frame.f_code.co_name}")
             frame = frame.f_back
         # No event arguments: URLs, subprocess args and credentials stay private.
+        with _lock:
+            _blocked_records.append({"event": event, "test": os.getenv("PYTEST_CURRENT_TEST", "bootstrap"),
+                                     "stack": locations})
         print("Offline blocked:", event, "test:", os.getenv("PYTEST_CURRENT_TEST", "bootstrap"),
               "stack:", " <- ".join(locations), file=sys.stderr)
         raise RuntimeError(f"Offline prototype forbids {event}")
@@ -55,3 +59,7 @@ def _audit(event, args):
 
 def blocked_attempts():
     return _blocked
+
+
+def blocked_details():
+    return list(_blocked_records)
