@@ -1,5 +1,67 @@
 # Changelog
 
+## 2.1.4
+
+- One Pydantic-based public grammar; LangGraph orchestration for Agents, Systems and Environments.
+- Context, bounded Memory, explanatory lineage, human_results and isolated Eval cases.
+- Preserve Bedrock Tool selection, reject empty outputs and retain failed synthesis evidence.
+- Fix per-actor native Ollama connections for local/cloud coexistence, sync and async.
+- Restore explicit financial notebooks, English README, Studio and versioned skill.
+- Known limitation: Bedrock/Qwen can omit required nullable Tool fields; local validation rejects them without defaults. This scenario is excluded from passing acceptance.
+- Acceptance: offline CI on the stable artifact plus user-approved executable-payload equivalence to the dev8 wheel tested online; no new inference is claimed.
+
+
+## 2.1.4.dev8 · Graph y compilación (sin publicar)
+
+- Runtime Bedrock acepta una sesión prestada, conserva IAM sin cambiar IMDS
+  globalmente y serializa sus invocaciones. El complemento ADA independiente
+  ofrece diagnóstico read-only; no acredita acceso real a AWS/ADA.
+- compile reconoce propietarios callable y métodos ligados para validar hijos
+  y rechazar ciclos antes de ejecutar.
+- Se unifican suite canónica y CI; una construcción se prueba en las cinco
+  versiones Python. La ejecución remota continúa pendiente.
+- CLI tiene ayuda y errores explícitos; el scaffolder genera tests, ejemplo
+  mínimo y notebook completo. Lineage/Memory cambian decisiones y el notebook
+  muestra progreso por Environment y aislamiento por caso de Eval.
+- Las capacidades siguientes se incorporaron en dev7 y se conservan en dev8:
+- Graph es el único nombre público del StateGraph original de LangGraph; se
+  retira check público y se conserva compile para preparación estructural.
+- Tools Pydantic validan el binding de su parámetro modelo y funcionan como
+  nodos; el adaptador OpenAI evita envolturas y coerción previa de argumentos.
+- Eval usa vistas de Memory aisladas por caso, incluidos accesos desde Tools,
+  nodos y checks; no altera Memory de producción ni clona servicios externos.
+- human_results muestra operaciones y estados reales, con un ID raíz; las
+  entradas anidadas se conservan. La evidencia detallada permanece disponible.
+- Ejemplo explícito con funciones nombradas, Graph en tres niveles y métrica
+  de recompensa en Environment.update; sin reward= ni entrenamiento implícito.
+
+## 2.1.4.dev6 · gramática y comprobación local (sin publicar)
+
+- check valida construcción de Tools, Skills, Agents, Systems, Environments
+  y Evals; el decorador acepta Tools declaradas o fábricas sync/async.
+- Se retiran Limits, Action y Runtime públicos. Context se inyecta directamente
+  en Tools y nodos; proyecciones de input explícitas conservan evidencia hija.
+- Plazo raíz opcional en run/arun, compartido con scheduler y reintentos;
+  el número de nodos solo se observa y no constituye una cuota.
+- Agent organiza una capacidad y System coordina la aplicación, cada uno
+  con su grafo original LangGraph. Pausa/reanudación conserva trabajo y linaje.
+- Scaffolder, skill, tutorials/examples y Studio usan la misma API; nueva
+  aceptación offline vinculada al wheel, sin transferir resultados live previos.
+
+## 2.1.4.dev5 · corrección local de Bedrock, build 03 (sin publicar)
+
+- Activación de strict tool use para Qwen3 32B cuando el esquema original
+  pertenece al subconjunto soportado; una proyección común para native,
+  OpenAI Agents y Strands. Se preservan required, null, restricciones y datos.
+- Esquemas no representables y modelos no verificados conservan su esquema
+  original y validación local. No se reparan omisiones ni se imputan valores.
+- Transporte Bedrock con lectura de al menos 120 segundos para compilar el
+  esquema; el plazo del scheduler sigue siendo independiente. Dependencias
+  Bedrock elevadas a la versión de Botocore/Boto3 verificada (1.43.38).
+- Strands omite instrucciones ausentes en lugar de enviar texto vacío.
+- Regresiones offline con SDKs y serializador reales; piloto y aceptación
+  online pendientes. Los PASS de build 02 no certifican este build.
+
 ## Después de 2.1.3 · documentación y aprendizaje
 
 - Tutorials vuelve a organizarse por core, providers, frameworks y API.

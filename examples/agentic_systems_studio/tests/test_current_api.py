@@ -1,18 +1,19 @@
 import json
 from pathlib import Path
 import sys
-
 import pytest
+from agentic_systems_studio import ConversationConfig, build_conversational_system  # noqa: E402
+from agentic_systems_studio.conversation import (
+    safe_calculate,
+    prepare_conversation_context,
+)  # noqa: E402
+from agentic_systems_studio.presentation import validate_generated_agentic_systems_code  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "examples/agentic_systems_studio/src"))
 
-from agentic_systems_studio import ConversationConfig, build_conversational_system  # noqa: E402
-from agentic_systems_studio.conversation import safe_calculate, prepare_conversation_context  # noqa: E402
-from agentic_systems_studio.presentation import validate_generated_agentic_systems_code  # noqa: E402
 
-
-@pytest.mark.parametrize("framework", ["native", "langgraph", "openai-agents", "strands"])
+@pytest.mark.parametrize("framework", ["native", "openai-agents", "strands"])
 def test_conversation_uses_real_python_framework_with_memory(framework):
     studio = build_conversational_system(ConversationConfig(framework=framework))
     first = studio.run("Hola")
@@ -31,29 +32,57 @@ def test_tool_math_does_not_execute_arbitrary_python():
 
 
 def test_bounded_context_and_generated_api_validation():
-    result = prepare_conversation_context.run({"message": "new", "messages": [{"role": "user", "content": "x" * 5000}] * 20})
-    assert result.ok and len(result.data["history"]) == 12 and len(result.data["history"][0]["content"]) == 2000
-    validate_generated_agentic_systems_code("import agentic_systems as toolkit\na=toolkit.Agent('a',toolkit.Action('x',lambda d:d))")
+    result = prepare_conversation_context.run(
+        {"message": "new", "messages": [{"role": "user", "content": "x" * 5000}] * 20}
+    )
+    assert (
+        result.ok
+        and len(result.data["history"]) == 12
+        and len(result.data["history"][0]["content"]) == 2000
+    )
+    validate_generated_agentic_systems_code(
+        "import agentic_systems as toolkit\na=toolkit.Agent('a',graph=graph)"
+    )
     with pytest.raises(ValueError, match="not a public"):
-        validate_generated_agentic_systems_code("import agentic_systems as toolkit\na=toolkit.agent()")
-    validate_generated_agentic_systems_code("import agentic_systems as ag\na=ag.Agent('a',ag.Action('x',lambda d:d))")
+        validate_generated_agentic_systems_code(
+            "import agentic_systems as toolkit\na=toolkit.agent()"
+        )
+    validate_generated_agentic_systems_code(
+        "import agentic_systems as ag\na=ag.Agent('a',graph=graph)"
+    )
     with pytest.raises(ValueError, match="not a public"):
-        validate_generated_agentic_systems_code("import agentic_systems as ag\na=ag.agent()")
+        validate_generated_agentic_systems_code(
+            "import agentic_systems as ag\na=ag.agent()"
+        )
 
 
 def test_no_silent_provider_selection_and_no_ungoverned_live(monkeypatch):
     with pytest.raises(ValueError):
         ConversationConfig(provider="auto")
     from agentic_systems_studio.budget import ensure_budget
-    monkeypatch.delenv("AGENTIC_213_BUDGET_FILE", raising=False)
+
+    monkeypatch.delenv("AGENTIC_BUDGET_FILE", raising=False)
     with pytest.raises(RuntimeError, match="authorized"):
         ensure_budget()
 
 
 def test_budget_stops_before_second_request(tmp_path):
     from agentic_systems_studio.budget import CampaignBudget, BudgetExceeded
-    budget = CampaignBudget(tmp_path / "ledger.json", {"openai-runtime": {"endpoint": "https://api.openai.com/v1",
-        "model": "fixture", "input_usd_per_million": 5, "output_usd_per_million": 20}}, "offline", usd=1, requests=1)
+
+    budget = CampaignBudget(
+        tmp_path / "ledger.json",
+        {
+            "openai-runtime": {
+                "endpoint": "https://api.openai.com/v1",
+                "model": "fixture",
+                "input_usd_per_million": 5,
+                "output_usd_per_million": 20,
+            }
+        },
+        "offline",
+        usd=1,
+        requests=1,
+    )
     request = json.dumps({"model": "fixture", "max_tokens": 128})
     budget.reserve("https://api.openai.com/v1/chat/completions", request)
     with pytest.raises(BudgetExceeded):
@@ -64,12 +93,32 @@ def test_budget_stops_before_second_request(tmp_path):
 def test_catalog_builds_without_inference_and_launcher_is_packaged():
     from agentic_systems_studio.systems import build_all, compose_systems
     from agentic_systems_studio.server import resolve_studio_app
-    systems = build_all(ConversationConfig(provider="openai-runtime", model="configured-model"))
+
+    systems = build_all(
+        ConversationConfig(provider="openai-runtime", model="configured-model")
+    )
     assert len(systems) == 10
     for item in systems:
         assert item.inspect()["system"] and "flowchart" in item.mermaid()
     assert compose_systems(systems[:2]).inspect()
     assert resolve_studio_app().name == "ui.py"
     from agentic_systems_studio.components import TOOL_ASSETS
+
     assert TOOL_ASSETS and all(asset.metadata["tool_name"] for asset in TOOL_ASSETS)
     json.dumps([asset.to_dict() for asset in TOOL_ASSETS])
+
+
+def test_codegen_contract_runs_and_compile_is_not_dynamic_exec():
+    from agentic_systems_studio.conversation import _agentic_systems_grammar_contract
+
+    source = _agentic_systems_grammar_contract("")["canonical_example"]
+    validate_generated_agentic_systems_code(source + "\nprogram=app.compile()")
+    exec(compile(source, "trusted-regression", "exec"), {})
+    with pytest.raises(ValueError, match="Graph"):
+        validate_generated_agentic_systems_code(
+            "import agentic_systems as toolkit\na=toolkit.Agent('a',toolkit.Action('x',lambda d:d))"
+        )
+    with pytest.raises(ValueError, match="dynamic"):
+        validate_generated_agentic_systems_code(
+            "import agentic_systems as toolkit\ncompile('1','x','eval')"
+        )

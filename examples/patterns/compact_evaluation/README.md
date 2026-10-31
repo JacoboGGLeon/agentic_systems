@@ -1,31 +1,14 @@
-# Evaluar y resumir evidencia
+# Evaluar y resumir evidencia · 2.1.4
 
 Evaluar una ejecución guardada y consultar su traza.
 
-```python
-from examples.patterns.compact_evaluation.example import run
+La composición y las aserciones están visibles en [el código](example.py).
+Lee las declaraciones de Tools, Agents y Graph antes de ejecutar el ejemplo.
 
-result = run()
-result
-```
+Input → proceso → output: Suma 2 + 3 → guardar RunResult → Eval, trace y lineage sin repetir el candidato.
 
-Suma 2 + 3 → guardar RunResult → Eval, trace y lineage sin repetir el candidato.
+[Declaración](example.py) · [Evidencia dev8](../../../revisions/2.1.4/grammar-dev8/closure/examples/examples--patterns--compact_evaluation--example.py.json)
 
-Código:
-- [Current implementation](../../../examples/patterns/compact_evaluation/example.py)
+Perfil actual: **offline-passed**. El catálogo [de validación](../../../docs/LEARNING_VALIDATION_214.md) separa configuración, Python, servicios locales y pruebas de modelos. La evidencia 2.1.3 conservada es histórica y no certifica estos bytes.
 
-Validación: **Offline ejecutado**. Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.
-
-- [Nueva ejecución contra el wheel publicado](../../../revisions/2.1.3/learning-evidence-elevated/example-results/patterns/compact_evaluation/current.json)
-- [RunResult y lineage](../../../revisions/2.1.3/learning-evidence-elevated/example-results/patterns/compact_evaluation/runresults.json)
-
-<details>
-<summary>Evidencia del experimento anterior</summary>
-
-Estado anterior: mixed. Source matrix: 20/32 case gates passed; 8/16 routes passed both cases, including four deterministic Python controls. Ollama failed both cases on all four frameworks; OpenAI and Bedrock also retain failed cases. Not release certification.
-
-La adaptación actual tiene pruebas propias. La evidencia anterior conserva su versión y no certifica estos bytes.
-
-- [Matrix and failure classification](../../../docs/compact-matrix-results.md)
-
-</details>
+[Validación histórica dev5 de Pydantic y human_results](../../../revisions/2.1.4/contracts-dev5/REPORT.md). Las revisiones previas se conservan como evidencia histórica.

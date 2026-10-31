@@ -1,0 +1,1378 @@
+{
+  "schema_version": "agentic_systems.campaign-214-budget.v1",
+  "limits": {
+    "usd": 5,
+    "requests": 150
+  },
+  "routes": {
+    "openai-runtime": {
+      "model": "gpt-4.1-mini",
+      "endpoint": "https://api.openai.com/v1",
+      "input_usd_per_million": 0.4,
+      "output_usd_per_million": 1.6
+    },
+    "bedrock-runtime": {
+      "model": "qwen.qwen3-32b-v1:0",
+      "endpoint": "https://bedrock-runtime.us-east-2.amazonaws.com",
+      "input_usd_per_million": 1,
+      "output_usd_per_million": 4
+    },
+    "ollama-gpu": {
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "endpoint": "http://127.0.0.1:11434/v1",
+      "input_usd_per_million": 0,
+      "output_usd_per_million": 0
+    },
+    "ollama-cloud": {
+      "model": "gemma4:31b",
+      "endpoint": "https://ollama.com/v1",
+      "input_usd_per_million": 1,
+      "output_usd_per_million": 4
+    }
+  },
+  "attempts": [
+    {
+      "attempt": 1,
+      "phase": "tutorials/providers/01_openai.ipynb/native",
+      "provider": "openai-runtime",
+      "request_bytes": 498,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.003321",
+      "created_at": "2026-10-27T03:58:50.677383+00:00"
+    },
+    {
+      "attempt": 2,
+      "phase": "tutorials/providers/01_openai.ipynb/native",
+      "provider": "openai-runtime",
+      "request_bytes": 797,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.003471",
+      "created_at": "2026-10-27T03:58:53.792822+00:00"
+    },
+    {
+      "attempt": 3,
+      "phase": "tutorials/providers/01_openai.ipynb/openai-agents",
+      "provider": "openai-runtime",
+      "request_bytes": 582,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.003363",
+      "created_at": "2026-10-27T03:59:05.511353+00:00"
+    },
+    {
+      "attempt": 4,
+      "phase": "tutorials/providers/01_openai.ipynb/openai-agents",
+      "provider": "openai-runtime",
+      "request_bytes": 873,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.003509",
+      "created_at": "2026-10-27T03:59:07.604987+00:00"
+    },
+    {
+      "attempt": 5,
+      "phase": "tutorials/providers/01_openai.ipynb/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 601,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.003373",
+      "created_at": "2026-10-27T03:59:19.040152+00:00"
+    },
+    {
+      "attempt": 6,
+      "phase": "tutorials/providers/01_openai.ipynb/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 865,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.003505",
+      "created_at": "2026-10-27T03:59:19.974751+00:00"
+    },
+    {
+      "attempt": 7,
+      "phase": "tutorials/providers/03_bedrock.ipynb/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 547,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008364",
+      "created_at": "2026-10-27T03:59:27.479599+00:00"
+    },
+    {
+      "attempt": 8,
+      "phase": "tutorials/providers/03_bedrock.ipynb/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 541,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008357",
+      "created_at": "2026-10-27T03:59:39.320619+00:00"
+    },
+    {
+      "attempt": 9,
+      "phase": "tutorials/providers/03_bedrock.ipynb/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 573,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008397",
+      "created_at": "2026-10-27T03:59:50.089716+00:00"
+    },
+    {
+      "attempt": 10,
+      "phase": "tutorials/providers/05_ollama_gpu.ipynb/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 515,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:00:00.282903+00:00"
+    },
+    {
+      "attempt": 11,
+      "phase": "tutorials/providers/05_ollama_gpu.ipynb/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 820,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:00:06.207495+00:00"
+    },
+    {
+      "attempt": 12,
+      "phase": "tutorials/providers/05_ollama_gpu.ipynb/openai-agents",
+      "provider": "ollama-gpu",
+      "request_bytes": 539,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:00:18.680338+00:00"
+    },
+    {
+      "attempt": 13,
+      "phase": "tutorials/providers/05_ollama_gpu.ipynb/openai-agents",
+      "provider": "ollama-gpu",
+      "request_bytes": 545,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:00:19.315094+00:00"
+    },
+    {
+      "attempt": 14,
+      "phase": "tutorials/providers/05_ollama_gpu.ipynb/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 618,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:00:31.126297+00:00"
+    },
+    {
+      "attempt": 15,
+      "phase": "tutorials/providers/05_ollama_gpu.ipynb/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 888,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:00:31.987704+00:00"
+    },
+    {
+      "attempt": 16,
+      "phase": "tutorials/providers/02_ollama.ipynb/native",
+      "provider": "ollama-cloud",
+      "request_bytes": 496,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008300",
+      "created_at": "2026-10-27T04:00:40.700016+00:00"
+    },
+    {
+      "attempt": 17,
+      "phase": "tutorials/providers/02_ollama.ipynb/native",
+      "provider": "ollama-cloud",
+      "request_bytes": 763,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008634",
+      "created_at": "2026-10-27T04:00:45.548118+00:00"
+    },
+    {
+      "attempt": 18,
+      "phase": "tutorials/providers/02_ollama.ipynb/openai-agents",
+      "provider": "ollama-cloud",
+      "request_bytes": 520,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008330",
+      "created_at": "2026-10-27T04:00:57.466163+00:00"
+    },
+    {
+      "attempt": 19,
+      "phase": "tutorials/providers/02_ollama.ipynb/openai-agents",
+      "provider": "ollama-cloud",
+      "request_bytes": 488,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008290",
+      "created_at": "2026-10-27T04:00:57.917749+00:00"
+    },
+    {
+      "attempt": 20,
+      "phase": "tutorials/providers/02_ollama.ipynb/strands",
+      "provider": "ollama-cloud",
+      "request_bytes": 599,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008429",
+      "created_at": "2026-10-27T04:01:09.527618+00:00"
+    },
+    {
+      "attempt": 21,
+      "phase": "tutorials/providers/02_ollama.ipynb/strands",
+      "provider": "ollama-cloud",
+      "request_bytes": 831,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008719",
+      "created_at": "2026-10-27T04:01:10.253970+00:00"
+    },
+    {
+      "attempt": 22,
+      "phase": "tutorials/frameworks/02_openai_agents.ipynb/openai-agents",
+      "provider": "openai-runtime",
+      "request_bytes": 589,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.002855",
+      "created_at": "2026-10-27T04:01:24.322253+00:00"
+    },
+    {
+      "attempt": 23,
+      "phase": "tutorials/frameworks/02_openai_agents.ipynb/openai-agents",
+      "provider": "openai-runtime",
+      "request_bytes": 614,
+      "max_output_tokens": 128,
+      "reserved_usd": "0.002611",
+      "created_at": "2026-10-27T04:01:26.133386+00:00"
+    },
+    {
+      "attempt": 24,
+      "phase": "dev5/strands-mcp/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 647,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.002884",
+      "created_at": "2026-10-27T04:02:47.573009+00:00"
+    },
+    {
+      "attempt": 25,
+      "phase": "dev5/strands-mcp/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 979,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.003050",
+      "created_at": "2026-10-27T04:02:49.320274+00:00"
+    },
+    {
+      "attempt": 26,
+      "phase": "dev5/strands-a2a/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 648,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.002884",
+      "created_at": "2026-10-27T04:02:54.998880+00:00"
+    },
+    {
+      "attempt": 27,
+      "phase": "dev5/strands-a2a/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 1247,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.003184",
+      "created_at": "2026-10-27T04:02:56.263803+00:00"
+    },
+    {
+      "attempt": 28,
+      "phase": "dev5/strands-mcp/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 664,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:03:00.872650+00:00"
+    },
+    {
+      "attempt": 29,
+      "phase": "dev5/strands-mcp/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1002,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:03:02.516993+00:00"
+    },
+    {
+      "attempt": 30,
+      "phase": "dev5/strands-a2a/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 665,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:03:08.695943+00:00"
+    },
+    {
+      "attempt": 31,
+      "phase": "dev5/strands-a2a/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1270,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:03:11.378191+00:00"
+    },
+    {
+      "attempt": 32,
+      "phase": "dev5/strands-mcp/ollama-cloud/strands",
+      "provider": "ollama-cloud",
+      "request_bytes": 645,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.007207",
+      "created_at": "2026-10-27T04:03:19.113531+00:00"
+    },
+    {
+      "attempt": 33,
+      "phase": "dev5/strands-mcp/ollama-cloud/strands",
+      "provider": "ollama-cloud",
+      "request_bytes": 945,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.007582",
+      "created_at": "2026-10-27T04:03:19.937657+00:00"
+    },
+    {
+      "attempt": 34,
+      "phase": "dev5/strands-a2a/ollama-cloud/strands",
+      "provider": "ollama-cloud",
+      "request_bytes": 646,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.007208",
+      "created_at": "2026-10-27T04:03:24.963761+00:00"
+    },
+    {
+      "attempt": 35,
+      "phase": "dev5/strands-a2a/ollama-cloud/strands",
+      "provider": "ollama-cloud",
+      "request_bytes": 1213,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.007917",
+      "created_at": "2026-10-27T04:03:26.057768+00:00"
+    },
+    {
+      "attempt": 36,
+      "phase": "dev5/refund-pause-resume/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 2038,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.005115",
+      "created_at": "2026-10-27T04:05:29.848349+00:00"
+    },
+    {
+      "attempt": 37,
+      "phase": "dev5/studio-controller/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 1401,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.003773",
+      "created_at": "2026-10-27T04:05:31.957202+00:00"
+    },
+    {
+      "attempt": 38,
+      "phase": "dev5/studio-controller/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 1642,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.003893",
+      "created_at": "2026-10-27T04:05:32.927594+00:00"
+    },
+    {
+      "attempt": 39,
+      "phase": "dev5/studio-controller/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 3142,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.004643",
+      "created_at": "2026-10-27T04:05:33.930799+00:00"
+    },
+    {
+      "attempt": 40,
+      "phase": "dev5/refund-pause-resume/openai-runtime/openai-agents",
+      "provider": "openai-runtime",
+      "request_bytes": 2047,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.005120",
+      "created_at": "2026-10-27T04:05:36.621996+00:00"
+    },
+    {
+      "attempt": 41,
+      "phase": "dev5/studio-controller/openai-runtime/openai-agents",
+      "provider": "openai-runtime",
+      "request_bytes": 1504,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.003824",
+      "created_at": "2026-10-27T04:05:38.768597+00:00"
+    },
+    {
+      "attempt": 42,
+      "phase": "dev5/studio-controller/openai-runtime/openai-agents",
+      "provider": "openai-runtime",
+      "request_bytes": 1903,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.004024",
+      "created_at": "2026-10-27T04:05:39.784139+00:00"
+    },
+    {
+      "attempt": 43,
+      "phase": "dev5/studio-controller/openai-runtime/openai-agents",
+      "provider": "openai-runtime",
+      "request_bytes": 3261,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.004703",
+      "created_at": "2026-10-27T04:05:40.873474+00:00"
+    },
+    {
+      "attempt": 44,
+      "phase": "dev5/refund-pause-resume/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 2074,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.005133",
+      "created_at": "2026-10-27T04:05:42.930031+00:00"
+    },
+    {
+      "attempt": 45,
+      "phase": "dev5/studio-controller/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 1520,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.003832",
+      "created_at": "2026-10-27T04:05:44.514380+00:00"
+    },
+    {
+      "attempt": 46,
+      "phase": "dev5/studio-controller/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 1902,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.004023",
+      "created_at": "2026-10-27T04:05:45.746016+00:00"
+    },
+    {
+      "attempt": 47,
+      "phase": "dev5/studio-controller/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 3298,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.004721",
+      "created_at": "2026-10-27T04:05:47.049285+00:00"
+    },
+    {
+      "attempt": 48,
+      "phase": "dev5/refund-pause-resume/ollama-gpu/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 2055,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:05:48.079950+00:00"
+    },
+    {
+      "attempt": 49,
+      "phase": "dev5/studio-controller/ollama-gpu/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 1418,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:05:54.335088+00:00"
+    },
+    {
+      "attempt": 50,
+      "phase": "dev5/studio-controller/ollama-gpu/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 1665,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:05:55.764207+00:00"
+    },
+    {
+      "attempt": 51,
+      "phase": "dev5/studio-controller/ollama-gpu/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 3159,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:05:56.714567+00:00"
+    },
+    {
+      "attempt": 52,
+      "phase": "dev5/refund-pause-resume/ollama-gpu/openai-agents",
+      "provider": "ollama-gpu",
+      "request_bytes": 1980,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:05:58.465084+00:00"
+    },
+    {
+      "attempt": 53,
+      "phase": "dev5/studio-controller/ollama-gpu/openai-agents",
+      "provider": "ollama-gpu",
+      "request_bytes": 1461,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:06:03.320568+00:00"
+    },
+    {
+      "attempt": 54,
+      "phase": "dev5/studio-controller/ollama-gpu/openai-agents",
+      "provider": "ollama-gpu",
+      "request_bytes": 1828,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:06:04.601857+00:00"
+    },
+    {
+      "attempt": 55,
+      "phase": "dev5/studio-controller/ollama-gpu/openai-agents",
+      "provider": "ollama-gpu",
+      "request_bytes": 3231,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:06:05.534654+00:00"
+    },
+    {
+      "attempt": 56,
+      "phase": "dev5/refund-pause-resume/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 2091,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:06:07.499545+00:00"
+    },
+    {
+      "attempt": 57,
+      "phase": "dev5/studio-controller/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1537,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:06:12.510193+00:00"
+    },
+    {
+      "attempt": 58,
+      "phase": "dev5/studio-controller/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1925,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:06:14.100641+00:00"
+    },
+    {
+      "attempt": 59,
+      "phase": "dev5/studio-controller/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 3315,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:06:15.008249+00:00"
+    },
+    {
+      "attempt": 60,
+      "phase": "dev5/refund-pause-resume/ollama-cloud/native",
+      "provider": "ollama-cloud",
+      "request_bytes": 2036,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012785",
+      "created_at": "2026-10-27T04:06:16.938336+00:00"
+    },
+    {
+      "attempt": 61,
+      "phase": "dev5/studio-controller/ollama-cloud/native",
+      "provider": "ollama-cloud",
+      "request_bytes": 1399,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.009429",
+      "created_at": "2026-10-27T04:06:18.083453+00:00"
+    },
+    {
+      "attempt": 62,
+      "phase": "dev5/studio-controller/ollama-cloud/native",
+      "provider": "ollama-cloud",
+      "request_bytes": 1608,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.009690",
+      "created_at": "2026-10-27T04:06:18.678331+00:00"
+    },
+    {
+      "attempt": 63,
+      "phase": "dev5/studio-controller/ollama-cloud/native",
+      "provider": "ollama-cloud",
+      "request_bytes": 3140,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.011605",
+      "created_at": "2026-10-27T04:06:19.342136+00:00"
+    },
+    {
+      "attempt": 64,
+      "phase": "dev5/refund-pause-resume/ollama-cloud/openai-agents",
+      "provider": "ollama-cloud",
+      "request_bytes": 1961,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012692",
+      "created_at": "2026-10-27T04:06:20.198441+00:00"
+    },
+    {
+      "attempt": 65,
+      "phase": "dev5/studio-controller/ollama-cloud/openai-agents",
+      "provider": "ollama-cloud",
+      "request_bytes": 1442,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.009483",
+      "created_at": "2026-10-27T04:06:21.470256+00:00"
+    },
+    {
+      "attempt": 66,
+      "phase": "dev5/studio-controller/ollama-cloud/openai-agents",
+      "provider": "ollama-cloud",
+      "request_bytes": 1771,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.009894",
+      "created_at": "2026-10-27T04:06:21.876369+00:00"
+    },
+    {
+      "attempt": 67,
+      "phase": "dev5/studio-controller/ollama-cloud/openai-agents",
+      "provider": "ollama-cloud",
+      "request_bytes": 3212,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.011695",
+      "created_at": "2026-10-27T04:06:22.556892+00:00"
+    },
+    {
+      "attempt": 68,
+      "phase": "dev5/refund-pause-resume/ollama-cloud/strands",
+      "provider": "ollama-cloud",
+      "request_bytes": 2072,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012830",
+      "created_at": "2026-10-27T04:06:23.487866+00:00"
+    },
+    {
+      "attempt": 69,
+      "phase": "dev5/studio-controller/ollama-cloud/strands",
+      "provider": "ollama-cloud",
+      "request_bytes": 1518,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.009578",
+      "created_at": "2026-10-27T04:06:24.672397+00:00"
+    },
+    {
+      "attempt": 70,
+      "phase": "dev5/studio-controller/ollama-cloud/strands",
+      "provider": "ollama-cloud",
+      "request_bytes": 1868,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.010015",
+      "created_at": "2026-10-27T04:06:25.826883+00:00"
+    },
+    {
+      "attempt": 71,
+      "phase": "dev5/studio-controller/ollama-cloud/strands",
+      "provider": "ollama-cloud",
+      "request_bytes": 3296,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.011800",
+      "created_at": "2026-10-27T04:06:26.719408+00:00"
+    },
+    {
+      "attempt": 72,
+      "phase": "dev5/business:code_review/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 607,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004400",
+      "created_at": "2026-10-27T04:06:27.971128+00:00"
+    },
+    {
+      "attempt": 73,
+      "phase": "dev5/business:code_review/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 1052,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004622",
+      "created_at": "2026-10-27T04:06:28.576340+00:00"
+    },
+    {
+      "attempt": 74,
+      "phase": "dev5/business:customer_support/ollama-gpu/openai-agents",
+      "provider": "ollama-gpu",
+      "request_bytes": 626,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:06:29.769377+00:00"
+    },
+    {
+      "attempt": 75,
+      "phase": "dev5/business:customer_support/ollama-gpu/openai-agents",
+      "provider": "ollama-gpu",
+      "request_bytes": 657,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:06:31.194694+00:00"
+    },
+    {
+      "attempt": 76,
+      "phase": "dev5/business:data_quality/ollama-cloud/strands",
+      "provider": "ollama-cloud",
+      "request_bytes": 1175,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011709",
+      "created_at": "2026-10-27T04:06:32.143777+00:00"
+    },
+    {
+      "attempt": 77,
+      "phase": "dev5/business:data_quality/ollama-cloud/strands",
+      "provider": "ollama-cloud",
+      "request_bytes": 1493,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012107",
+      "created_at": "2026-10-27T04:06:32.898541+00:00"
+    },
+    {
+      "attempt": 78,
+      "phase": "dev5/business:decision_intelligence/openai-runtime/openai-agents",
+      "provider": "openai-runtime",
+      "request_bytes": 1025,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004609",
+      "created_at": "2026-10-27T04:06:33.801885+00:00"
+    },
+    {
+      "attempt": 79,
+      "phase": "dev5/business:decision_intelligence/openai-runtime/openai-agents",
+      "provider": "openai-runtime",
+      "request_bytes": 1420,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004806",
+      "created_at": "2026-10-27T04:06:34.985232+00:00"
+    },
+    {
+      "attempt": 80,
+      "phase": "dev5/business:incident_response/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 913,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:06:36.770727+00:00"
+    },
+    {
+      "attempt": 81,
+      "phase": "dev5/business:incident_response/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1300,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:06:38.929480+00:00"
+    },
+    {
+      "attempt": 82,
+      "phase": "dev5/business:meeting_action_center/ollama-cloud/native",
+      "provider": "ollama-cloud",
+      "request_bytes": 624,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011020",
+      "created_at": "2026-10-27T04:06:40.374137+00:00"
+    },
+    {
+      "attempt": 83,
+      "phase": "dev5/business:meeting_action_center/ollama-cloud/native",
+      "provider": "ollama-cloud",
+      "request_bytes": 984,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011470",
+      "created_at": "2026-10-27T04:06:40.921355+00:00"
+    },
+    {
+      "attempt": 84,
+      "phase": "dev5/business:prompt_security/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 713,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004453",
+      "created_at": "2026-10-27T04:06:41.686040+00:00"
+    },
+    {
+      "attempt": 85,
+      "phase": "dev5/business:prompt_security/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 1135,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004664",
+      "created_at": "2026-10-27T04:06:42.739835+00:00"
+    },
+    {
+      "attempt": 86,
+      "phase": "dev5/business:quantitative_analysis/ollama-gpu/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 925,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:06:44.302939+00:00"
+    },
+    {
+      "attempt": 87,
+      "phase": "dev5/business:quantitative_analysis/ollama-gpu/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 1207,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:06:47.090195+00:00"
+    },
+    {
+      "attempt": 88,
+      "phase": "dev5/business:refund_resolution/ollama-cloud/openai-agents",
+      "provider": "ollama-cloud",
+      "request_bytes": 832,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011280",
+      "created_at": "2026-10-27T04:06:48.172882+00:00"
+    },
+    {
+      "attempt": 89,
+      "phase": "dev5/business:refund_resolution/ollama-cloud/openai-agents",
+      "provider": "ollama-cloud",
+      "request_bytes": 692,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011105",
+      "created_at": "2026-10-27T04:06:48.705408+00:00"
+    },
+    {
+      "attempt": 90,
+      "phase": "dev5/business:research_synthesis/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 1094,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004643",
+      "created_at": "2026-10-27T04:06:49.420259+00:00"
+    },
+    {
+      "attempt": 91,
+      "phase": "dev5/business:research_synthesis/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 1382,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004787",
+      "created_at": "2026-10-27T04:06:50.546849+00:00"
+    },
+    {
+      "attempt": 92,
+      "phase": "dev5/business:retired_accountability_otc/ollama-gpu/openai-agents",
+      "provider": "ollama-gpu",
+      "request_bytes": 1053,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:06:51.835954+00:00"
+    },
+    {
+      "attempt": 93,
+      "phase": "dev5/business:retired_accountability_otc/ollama-gpu/openai-agents",
+      "provider": "ollama-gpu",
+      "request_bytes": 878,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:06:54.610184+00:00"
+    },
+    {
+      "attempt": 94,
+      "phase": "dev5/business:claim_review/ollama-cloud/strands",
+      "provider": "ollama-cloud",
+      "request_bytes": 1276,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011835",
+      "created_at": "2026-10-27T04:06:56.010232+00:00"
+    },
+    {
+      "attempt": 95,
+      "phase": "dev5/business:claim_review/ollama-cloud/strands",
+      "provider": "ollama-cloud",
+      "request_bytes": 1739,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012414",
+      "created_at": "2026-10-27T04:06:56.791187+00:00"
+    },
+    {
+      "attempt": 96,
+      "phase": "dev5/business:scope_clarification/openai-runtime/openai-agents",
+      "provider": "openai-runtime",
+      "request_bytes": 638,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004415",
+      "created_at": "2026-10-27T04:06:57.584564+00:00"
+    },
+    {
+      "attempt": 97,
+      "phase": "dev5/business:scope_clarification/openai-runtime/openai-agents",
+      "provider": "openai-runtime",
+      "request_bytes": 1009,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004601",
+      "created_at": "2026-10-27T04:06:58.742921+00:00"
+    },
+    {
+      "attempt": 98,
+      "phase": "dev5/business:semantic_calculation/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 989,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:07:00.536420+00:00"
+    },
+    {
+      "attempt": 99,
+      "phase": "dev5/business:semantic_calculation/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1320,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:07:02.451568+00:00"
+    },
+    {
+      "attempt": 100,
+      "phase": "dev5/business:text_analysis/ollama-cloud/native",
+      "provider": "ollama-cloud",
+      "request_bytes": 565,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.010947",
+      "created_at": "2026-10-27T04:07:03.982401+00:00"
+    },
+    {
+      "attempt": 101,
+      "phase": "dev5/business:text_analysis/ollama-cloud/native",
+      "provider": "ollama-cloud",
+      "request_bytes": 902,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011368",
+      "created_at": "2026-10-27T04:07:04.676851+00:00"
+    },
+    {
+      "attempt": 102,
+      "phase": "dev5/three-framework-interop/openai-runtime/native+openai-agents+strands",
+      "provider": "openai-runtime",
+      "request_bytes": 840,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004516",
+      "created_at": "2026-10-27T04:08:09.246325+00:00"
+    },
+    {
+      "attempt": 103,
+      "phase": "dev5/three-framework-interop/openai-runtime/native+openai-agents+strands",
+      "provider": "openai-runtime",
+      "request_bytes": 1052,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004622",
+      "created_at": "2026-10-27T04:08:10.171634+00:00"
+    },
+    {
+      "attempt": 104,
+      "phase": "dev5/three-framework-interop/openai-runtime/native+openai-agents+strands",
+      "provider": "openai-runtime",
+      "request_bytes": 1246,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004719",
+      "created_at": "2026-10-27T04:08:13.785886+00:00"
+    },
+    {
+      "attempt": 105,
+      "phase": "dev5/three-framework-interop/openai-runtime/native+openai-agents+strands",
+      "provider": "openai-runtime",
+      "request_bytes": 1591,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004892",
+      "created_at": "2026-10-27T04:08:14.994055+00:00"
+    },
+    {
+      "attempt": 106,
+      "phase": "dev5/three-framework-interop/openai-runtime/native+openai-agents+strands",
+      "provider": "openai-runtime",
+      "request_bytes": 1465,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004829",
+      "created_at": "2026-10-27T04:08:16.971124+00:00"
+    },
+    {
+      "attempt": 107,
+      "phase": "dev5/three-framework-interop/openai-runtime/native+openai-agents+strands",
+      "provider": "openai-runtime",
+      "request_bytes": 1815,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.005004",
+      "created_at": "2026-10-27T04:08:18.187521+00:00"
+    },
+    {
+      "attempt": 108,
+      "phase": "dev5/three-framework-interop/ollama-gpu/native+openai-agents+strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 857,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:08:19.418485+00:00"
+    },
+    {
+      "attempt": 109,
+      "phase": "dev5/three-framework-interop/ollama-gpu/native+openai-agents+strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1075,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:08:20.050359+00:00"
+    },
+    {
+      "attempt": 110,
+      "phase": "dev5/three-framework-interop/ollama-gpu/native+openai-agents+strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1203,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:08:21.215365+00:00"
+    },
+    {
+      "attempt": 111,
+      "phase": "dev5/three-framework-interop/ollama-gpu/native+openai-agents+strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1104,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:08:21.781480+00:00"
+    },
+    {
+      "attempt": 112,
+      "phase": "dev5/three-framework-interop/ollama-gpu/native+openai-agents+strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1482,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:08:22.461416+00:00"
+    },
+    {
+      "attempt": 113,
+      "phase": "dev5/three-framework-interop/ollama-gpu/native+openai-agents+strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1838,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-27T04:08:23.272556+00:00"
+    },
+    {
+      "attempt": 114,
+      "phase": "dev5/three-framework-interop/ollama-cloud/native+openai-agents+strands",
+      "provider": "ollama-cloud",
+      "request_bytes": 838,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011288",
+      "created_at": "2026-10-27T04:08:24.140776+00:00"
+    },
+    {
+      "attempt": 115,
+      "phase": "dev5/three-framework-interop/ollama-cloud/native+openai-agents+strands",
+      "provider": "ollama-cloud",
+      "request_bytes": 1018,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011513",
+      "created_at": "2026-10-27T04:08:24.596643+00:00"
+    },
+    {
+      "attempt": 116,
+      "phase": "tutorials/providers/03_bedrock.ipynb/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 547,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008364",
+      "created_at": "2026-10-27T04:10:48.401503+00:00"
+    },
+    {
+      "attempt": 117,
+      "phase": "tutorials/providers/03_bedrock.ipynb/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 541,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008357",
+      "created_at": "2026-10-27T04:11:00.450089+00:00"
+    },
+    {
+      "attempt": 118,
+      "phase": "tutorials/providers/03_bedrock.ipynb/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 573,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008397",
+      "created_at": "2026-10-27T04:11:11.173205+00:00"
+    },
+    {
+      "attempt": 119,
+      "phase": "dev5/strands-mcp/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 617,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.007172",
+      "created_at": "2026-10-27T04:11:18.064912+00:00"
+    },
+    {
+      "attempt": 120,
+      "phase": "dev5/strands-a2a/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 614,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.007168",
+      "created_at": "2026-10-27T04:11:22.881770+00:00"
+    },
+    {
+      "attempt": 121,
+      "phase": "dev5/refund-pause-resume/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2050,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012803",
+      "created_at": "2026-10-27T04:11:23.777912+00:00"
+    },
+    {
+      "attempt": 122,
+      "phase": "dev5/studio-controller/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1450,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.009493",
+      "created_at": "2026-10-27T04:11:24.548227+00:00"
+    },
+    {
+      "attempt": 123,
+      "phase": "dev5/refund-pause-resume/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2007,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012749",
+      "created_at": "2026-10-27T04:11:26.897088+00:00"
+    },
+    {
+      "attempt": 124,
+      "phase": "dev5/studio-controller/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1451,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.009494",
+      "created_at": "2026-10-27T04:11:27.806667+00:00"
+    },
+    {
+      "attempt": 125,
+      "phase": "dev5/refund-pause-resume/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2007,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012749",
+      "created_at": "2026-10-27T04:11:28.783133+00:00"
+    },
+    {
+      "attempt": 126,
+      "phase": "dev5/studio-controller/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1492,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.009545",
+      "created_at": "2026-10-27T04:11:29.535650+00:00"
+    },
+    {
+      "attempt": 127,
+      "phase": "dev5/mandatory-null/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1204,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011745",
+      "created_at": "2026-10-27T04:11:30.664600+00:00"
+    },
+    {
+      "attempt": 128,
+      "phase": "dev5/mandatory-null/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1142,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011668",
+      "created_at": "2026-10-27T04:11:31.680785+00:00"
+    },
+    {
+      "attempt": 129,
+      "phase": "dev5/mandatory-null/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1177,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011712",
+      "created_at": "2026-10-27T04:11:32.768635+00:00"
+    },
+    {
+      "attempt": 130,
+      "phase": "tutorials/providers/03_bedrock.ipynb/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 547,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008364",
+      "created_at": "2026-10-27T04:57:17.301020+00:00"
+    },
+    {
+      "attempt": 131,
+      "phase": "tutorials/providers/03_bedrock.ipynb/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1271,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.009269",
+      "created_at": "2026-10-27T04:57:18.279742+00:00"
+    },
+    {
+      "attempt": 132,
+      "phase": "dev5/mandatory-null/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1204,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011745",
+      "created_at": "2026-10-27T04:58:44.079785+00:00"
+    },
+    {
+      "attempt": 133,
+      "phase": "dev5/mandatory-null/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2050,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012803",
+      "created_at": "2026-10-27T04:58:44.996953+00:00"
+    },
+    {
+      "attempt": 134,
+      "phase": "dev5/mandatory-null/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1142,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011668",
+      "created_at": "2026-10-27T04:58:49.817934+00:00"
+    },
+    {
+      "attempt": 135,
+      "phase": "dev5/mandatory-null/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1810,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012503",
+      "created_at": "2026-10-27T04:58:50.701294+00:00"
+    },
+    {
+      "attempt": 136,
+      "phase": "dev5/mandatory-null/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1177,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011712",
+      "created_at": "2026-10-27T04:58:52.067825+00:00"
+    },
+    {
+      "attempt": 137,
+      "phase": "dev5/mandatory-null/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1731,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012404",
+      "created_at": "2026-10-27T04:58:53.009756+00:00"
+    },
+    {
+      "attempt": 138,
+      "phase": "tutorials/providers/03_bedrock.ipynb/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 541,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008357",
+      "created_at": "2026-10-27T04:59:04.278309+00:00"
+    },
+    {
+      "attempt": 139,
+      "phase": "tutorials/providers/03_bedrock.ipynb/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 834,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008723",
+      "created_at": "2026-10-27T04:59:05.040412+00:00"
+    },
+    {
+      "attempt": 140,
+      "phase": "tutorials/providers/03_bedrock.ipynb/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 573,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008397",
+      "created_at": "2026-10-27T04:59:18.138982+00:00"
+    },
+    {
+      "attempt": 141,
+      "phase": "tutorials/providers/03_bedrock.ipynb/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 872,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008770",
+      "created_at": "2026-10-27T04:59:19.177399+00:00"
+    },
+    {
+      "attempt": 142,
+      "phase": "dev5/refund-pause-resume/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2050,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012803",
+      "created_at": "2026-10-27T04:59:21.456925+00:00"
+    },
+    {
+      "attempt": 143,
+      "phase": "dev5/refund-pause-resume/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2007,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012749",
+      "created_at": "2026-10-27T04:59:22.858787+00:00"
+    },
+    {
+      "attempt": 144,
+      "phase": "dev5/refund-pause-resume/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2007,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012749",
+      "created_at": "2026-10-27T04:59:24.559896+00:00"
+    },
+    {
+      "attempt": 145,
+      "phase": "dev5/strands-mcp/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 617,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.007172",
+      "created_at": "2026-10-27T04:59:29.759574+00:00"
+    },
+    {
+      "attempt": 146,
+      "phase": "dev5/strands-mcp/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 982,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.007628",
+      "created_at": "2026-10-27T04:59:30.548757+00:00"
+    },
+    {
+      "attempt": 147,
+      "phase": "dev5/strands-a2a/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 614,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.007168",
+      "created_at": "2026-10-27T04:59:35.948361+00:00"
+    },
+    {
+      "attempt": 148,
+      "phase": "dev5/strands-a2a/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1246,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.007958",
+      "created_at": "2026-10-27T04:59:37.037952+00:00"
+    }
+  ],
+  "authorization": {
+    "user_text": "Autorizo una nueva campa\u00f1a dev5 de USD 5 y 150 solicitudes, incluidos los proveedores configurados",
+    "date_local": "2026-10-26",
+    "revision": "2.1.4.dev5"
+  },
+  "reservation_note": "Conservative per-token reservations, full output cap, byte-based input upper bound plus framing and 25% margin; not an invoice",
+  "pricing_sources": [
+    "https://developers.openai.com/api/docs/models/gpt-4.1-mini",
+    "https://aws.amazon.com/bedrock/pricing/",
+    "https://ollama.com/pricing"
+  ]
+}

@@ -1,35 +1,19 @@
-# Gramática única, de Tool a Eval
+# Seis flujos con una gramática · 2.1.4
 
-[example.py](example.py) contiene las seis declaraciones explícitas. No hace
-inferencia. Se ejecuta con el SDK 2.1.3 instalado y el extra LangGraph.
+La composición y las aserciones están visibles en [el código](example.py).
+Lee las declaraciones de Tools, Agents y Graph antes de ejecutar el ejemplo.
 
-| Propietario | Flujo | Input | Proceso | Output |
-|---|---|---|---|---|
-| Agent | Sequence | value=3 | incrementar, después duplicar | value=8 |
-| Agent | Parallel | value=3 | incrementar y duplicar el mismo input; sumar | value=10 |
-| Agent | Graph | value=3 | incrementar; duplicar si es no negativo | value=8 |
-| System | Sequence | value=3 | Agent incrementador, después Agent duplicador | value=8 |
-| System | Parallel | value=3 | dos Agents sobre el mismo input; sumar | value=10 |
-| System | Graph | value=3 | Agent incrementador; decidir si llamar al duplicador | value=8 |
+[example.py](example.py) declara seis grafos toolkit.Graph explícitos: Agent y
+System, cada uno en secuencia, paralelo y con decisiones. LangGraph es el único
+orquestador. Con value=3, los outputs son 8, 10 y 8 para ambos propietarios.
+Con value=-3, la decisión conserva -2. Las aserciones verifican ambas ramas.
 
-Con value=-3, la decisión termina después de incrementar: output value=-2.
-Cada declaración se ejecuta directamente y compilada en native y LangGraph.
+Tools calculan, Skill agrupa capacidades y System coordina Agents.
+Environment recorre records con estado propio y Eval contrasta sus resultados.
+run(input) y compile().run(input) tienen el mismo contrato RunResult.
+No se ejecuta inferencia.
 
-Las Tools implementan operaciones; Skill las agrupa y aporta instrucciones;
-Agent ejecuta su propio flujo; System coordina Agents. Environment repite el
-mismo System sobre records y mantiene memoria. Eval contrasta resultados exactos
-y checks. Eval puede observar tanto una unidad como un Environment completo.
+[Notebook integrado](../common_graph/01_common_graph.ipynb) ·
+[Validación histórica dev5](../../docs/LEARNING_VALIDATION_214.md).
 
-`run` ejecuta. `compile` prepara la misma declaración para reutilizarla:
-`unit.run(input)` y `unit.compile().run(input)` conservan el contrato RunResult.
-No hay que compilar antes de llamar run.
-
-```python
-from examples.grammar_tour.example import run
-
-report = run()
-report["rows"]
-```
-
-Las opciones de proveedor/framework se declaran en un Agent de runtime. Eso
-cambia quién ejecuta el actor; el System y sus flujos conservan esta gramática.
+[Validación histórica dev5 de Pydantic y human_results](../../revisions/2.1.4/contracts-dev5/REPORT.md). Las revisiones previas se conservan como evidencia histórica.

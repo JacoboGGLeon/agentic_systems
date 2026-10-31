@@ -1,3 +1,5 @@
+> **Histórico: no es la guía de la API 2.1.4.dev3.** Conserva propuestas/resultados de su versión original. Para implementar, usa [la API vigente](API_214.md).
+
 # RunResult y Lineage Memory · material actual 2.1.3
 
 Ejecuciones observadas contra el wheel publicado. Cada sección enlaza resultados completos, linaje e invariantes. Las salidas con ok=False pueden ser fallos controlados exigidos por el ejemplo. No se inventa un resultado para una configuración sin ejecución.

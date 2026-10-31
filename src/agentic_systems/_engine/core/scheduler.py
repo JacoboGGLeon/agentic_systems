@@ -12,12 +12,11 @@ import asyncio
 import concurrent.futures
 import threading
 import time
-from dataclasses import dataclass, field
 from typing import Any, Awaitable, Callable, TypeVar
 
-from pydantic import ValidationError
+from pydantic import PrivateAttr, ValidationError
 
-from agentic_systems._engine.schemas.execution import ExecutionLimits
+from agentic_systems._engine.schemas.execution import ExecutionLimits, SchedulerSettings
 
 T = TypeVar("T")
 _ACTIVE_SYNC_SCHEDULERS: ContextVar[frozenset[int]] = ContextVar(
@@ -25,16 +24,43 @@ _ACTIVE_SYNC_SCHEDULERS: ContextVar[frozenset[int]] = ContextVar(
 )
 
 
+_EXECUTION_DEADLINE: ContextVar[float | None] = ContextVar(
+    "agentic_systems_execution_deadline", default=None
+)
+
+
+def _effective_timeout(scheduler):
+    deadline = _EXECUTION_DEADLINE.get()
+    if deadline is None:
+        return scheduler.timeout_s
+    remaining = deadline - time.monotonic()
+    if remaining <= 0:
+        raise SchedulerTimeoutError("Shared run deadline exceeded")
+    return remaining if scheduler.timeout_s is None else min(float(scheduler.timeout_s), remaining)
+
+
+def _root_expired():
+    deadline = _EXECUTION_DEADLINE.get()
+    return deadline is not None and time.monotonic() >= deadline
+
+
+def _backoff_delay(scheduler):
+    deadline = _EXECUTION_DEADLINE.get()
+    if deadline is None:
+        return float(scheduler.backoff_s)
+    remaining = deadline - time.monotonic()
+    if remaining <= 0:
+        raise SchedulerTimeoutError("Shared run deadline exceeded before retry")
+    return min(float(scheduler.backoff_s), remaining)
+
 class SchedulerTimeoutError(TimeoutError):
     """Raised when a scheduler timeout is reached."""
 
 
-class SchedulerConfigError(ValueError):
-    """Raised when scheduler limits are invalid."""
+SchedulerConfigError = ValidationError
 
 
-@dataclass(frozen=True)
-class SchedulerConfig:
+class SchedulerConfig(SchedulerSettings):
     """Declarative execution limits used by runtimes and providers.
 
     Defaults are conservative for notebooks/sandboxes. ``max_concurrency`` is
@@ -42,42 +68,8 @@ class SchedulerConfig:
     executed one-at-a-time by the local providers.
     """
 
-    timeout_s: float | None = 60.0
-    max_retries: int = 0
-    max_tool_calls: int | None = 5
-    max_turns: int | None = 6
-    max_concurrency: int = 1
-    backoff_s: float = 0.0
-    _executor: concurrent.futures.ThreadPoolExecutor | None = field(
-        init=False, default=None, repr=False, compare=False
-    )
-    _executor_lock: threading.Lock = field(
-        init=False, default_factory=threading.Lock, repr=False, compare=False
-    )
-
-    def __post_init__(self) -> None:
-        try:
-            schema = ExecutionLimits.model_validate(
-                {
-                    "timeout_s": self.timeout_s,
-                    "max_retries": self.max_retries,
-                    "max_tool_calls": self.max_tool_calls,
-                    "max_turns": self.max_turns,
-                    "max_concurrency": self.max_concurrency,
-                    "backoff_s": self.backoff_s,
-                }
-            )
-        except ValidationError as exc:
-            raise SchedulerConfigError(str(exc)) from exc
-        for name in (
-            "timeout_s",
-            "max_retries",
-            "max_tool_calls",
-            "max_turns",
-            "max_concurrency",
-            "backoff_s",
-        ):
-            object.__setattr__(self, name, getattr(schema, name))
+    _executor: concurrent.futures.ThreadPoolExecutor | None = PrivateAttr(default=None)
+    _executor_lock: threading.Lock = PrivateAttr(default_factory=threading.Lock)
 
     @classmethod
     def coerce(
@@ -180,6 +172,10 @@ def execute_sync(
     retry_exception = should_retry_exception or (lambda _: True)
 
     for attempt in range(1, attempts + 1):
+        if _root_expired():
+            error = SchedulerTimeoutError('Shared run deadline exceeded before retry')
+            _annotate_exception(error, attempt - 1, timed_out=True)
+            raise error
         try:
             value = _call_with_timeout(fn, scheduler, inline=inline)
             last_value = value
@@ -195,7 +191,8 @@ def execute_sync(
             last_exc = SchedulerTimeoutError(
                 f"Execution exceeded timeout_s={scheduler.timeout_s}."
             )
-            if attempt == attempts:
+            if attempt == attempts or _root_expired():
+                _annotate_exception(last_exc, attempt, timed_out=True)
                 raise last_exc
         except BaseException as exc:  # noqa: BLE001 - scheduler retries arbitrary runtime callables.
             last_exc = exc
@@ -203,7 +200,7 @@ def execute_sync(
                 _annotate_exception(exc, attempt, timed_out=False)
                 raise
         if scheduler.backoff_s:
-            time.sleep(float(scheduler.backoff_s))
+            time.sleep(_backoff_delay(scheduler))
 
     if last_value is not None:  # pragma: no cover - defensive fallback.
         return last_value, _scheduler_meta(
@@ -233,11 +230,15 @@ async def execute_async(
     retry_exception = should_retry_exception or (lambda _: True)
     last_exc: BaseException | None = None
     for attempt in range(1, attempts + 1):
+        if _root_expired():
+            error = SchedulerTimeoutError('Shared run deadline exceeded before retry')
+            _annotate_exception(error, attempt - 1, timed_out=True)
+            raise error
         try:
-            if scheduler.timeout_s is None:
+            if _effective_timeout(scheduler) is None:
                 value = await fn()
             else:
-                value = await asyncio.wait_for(fn(), timeout=float(scheduler.timeout_s))
+                value = await asyncio.wait_for(fn(), timeout=float(_effective_timeout(scheduler)))
             if success_check(value) or attempt == attempts:
                 return value, _scheduler_meta(
                     scheduler, attempt, started, timed_out=False
@@ -250,7 +251,8 @@ async def execute_async(
             last_exc = SchedulerTimeoutError(
                 f"Execution exceeded timeout_s={scheduler.timeout_s}."
             )
-            if attempt == attempts:
+            if attempt == attempts or _root_expired():
+                _annotate_exception(last_exc, attempt, timed_out=True)
                 raise last_exc from exc
         except BaseException as exc:  # noqa: BLE001 - scheduler retries arbitrary runtime callables.
             last_exc = exc
@@ -258,7 +260,7 @@ async def execute_async(
                 _annotate_exception(exc, attempt, timed_out=False)
                 raise
         if scheduler.backoff_s:
-            await asyncio.sleep(float(scheduler.backoff_s))
+            await asyncio.sleep(_backoff_delay(scheduler))
     if last_exc is not None:  # pragma: no cover - defensive fallback.
         raise last_exc
     raise RuntimeError(
@@ -271,7 +273,7 @@ def _call_with_timeout(
 ) -> T:
     if inline or id(scheduler) in _ACTIVE_SYNC_SCHEDULERS.get():
         return fn()
-    timeout_s = scheduler.timeout_s
+    timeout_s = _effective_timeout(scheduler)
     if timeout_s is None:
         return fn()
     executor = _scheduler_executor(scheduler)
@@ -316,7 +318,7 @@ def _scheduler_executor(
                 max_workers=int(scheduler.max_concurrency),
                 thread_name_prefix="agentic-systems",
             )
-            object.__setattr__(scheduler, "_executor", executor)
+            scheduler._executor = executor
     return executor
 
 

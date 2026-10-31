@@ -10,6 +10,7 @@ from typing import Any, Dict, List, Optional, Sequence
 
 from .direct import _DirectRunner
 from .models import BedrockRunResult, RuntimeToolCallRecord
+from .schema import bedrock_strict_tools
 
 
 class _ConverseMixin:
@@ -51,7 +52,9 @@ class _ConverseMixin:
             kwargs["system"] = system
 
         if tools:
-            kwargs["toolConfig"] = {"tools": tools}
+            kwargs["toolConfig"] = {
+                "tools": bedrock_strict_tools(tools, kwargs["modelId"])
+            }
             if tool_choice:
                 kwargs["toolConfig"]["toolChoice"] = tool_choice
 
@@ -137,6 +140,8 @@ class _ConverseMixin:
 
     @staticmethod
     def _map_tool_choice(tool_choice: Optional[str]) -> Optional[Dict[str, Any]]:
+        if tool_choice == "none":
+            return None
         if tool_choice in {None, "auto"}:
             return {"auto": {}}
 

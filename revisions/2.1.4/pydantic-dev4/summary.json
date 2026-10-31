@@ -1,0 +1,3928 @@
+{
+  "version": "2.1.4.dev4",
+  "wheel_sha256": "a06317a8bb14b3cf8ba42684880a3a722e7396603df41962e877e019b888680b",
+  "offline_notebooks": 26,
+  "offline_examples": 53,
+  "offline_tests": {
+    "tests": 239,
+    "errors": 0,
+    "failures": 0,
+    "skipped": 0
+  },
+  "root_core_words_observed": 17,
+  "online_latest": [
+    {
+      "route": "openai-runtime",
+      "framework": "openai-agents",
+      "model": "gpt-4.1-mini",
+      "input": {
+        "value": 2
+      },
+      "expected": {
+        "answer": 3
+      },
+      "wheel_sha256": "a06317a8bb14b3cf8ba42684880a3a722e7396603df41962e877e019b888680b",
+      "budget_before": {
+        "attempts": 296,
+        "reserved_usd": "1.575337",
+        "limits": {
+          "usd": 10,
+          "requests": 300
+        },
+        "remaining_requests": 4,
+        "remaining_usd": "8.424663"
+      },
+      "passed": true,
+      "result": {
+        "text": "{\"answer\":3}",
+        "final": {
+          "answer": 3
+        },
+        "data": {
+          "answer": 3
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 1,
+          "input_tokens": 84,
+          "output_tokens": 6,
+          "total_tokens": 90,
+          "client_duration_ms": 4932.692,
+          "inference_requests": 1,
+          "tool_calls": 0
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "typed-reasoning",
+          "kind": "system",
+          "engine_name": "langgraph",
+          "lineage_refs": [
+            "run-71d15bd8692a4f2bad84f74154fd53ca"
+          ],
+          "writes": [
+            "answer"
+          ],
+          "context": {
+            "fingerprint": "664bdcf50b0cc5d0afc8b9b4b9af2bd34a287f27edb4d89c4671837180cd1ee1",
+            "sources": [],
+            "memory_revision": null,
+            "episode_ids": []
+          },
+          "actions_observed": 2,
+          "input": {
+            "value": 2,
+            "answer": null
+          },
+          "state_metrics": {
+            "snapshots": 2,
+            "max_bytes": 156,
+            "max_lineage_refs": 1
+          },
+          "resumes_execution_id": null
+        },
+        "execution_id": "run-16e93b74ae844408af1628d72a6cbe7d",
+        "parent_execution_id": null,
+        "status": "completed",
+        "interrupts": [],
+        "continuation": null,
+        "children": [
+          {
+            "text": "{\"answer\":3}",
+            "final": {
+              "answer": 3
+            },
+            "data": {
+              "answer": 3
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 1,
+              "input_tokens": 84,
+              "output_tokens": 6,
+              "total_tokens": 90,
+              "client_duration_ms": 4932.692,
+              "inference_requests": 1,
+              "tool_calls": 0
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "reasoner",
+              "kind": "node"
+            },
+            "execution_id": "run-71d15bd8692a4f2bad84f74154fd53ca",
+            "parent_execution_id": "run-16e93b74ae844408af1628d72a6cbe7d",
+            "status": "completed",
+            "interrupts": [],
+            "continuation": null,
+            "children": [
+              {
+                "text": "{\"answer\":3}",
+                "final": {
+                  "answer": 3
+                },
+                "data": {
+                  "answer": 3
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "requests": 1,
+                  "input_tokens": 84,
+                  "output_tokens": 6,
+                  "total_tokens": 90,
+                  "client_duration_ms": 4932.692,
+                  "inference_requests": 1,
+                  "tool_calls": 0
+                },
+                "engine": "openai-runtime",
+                "model": "gpt-4.1-mini",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "reasoner",
+                  "kind": "agent",
+                  "engine_name": "langgraph",
+                  "lineage_refs": [
+                    "run-59843514338948f4adca73493b159ce7"
+                  ],
+                  "writes": [
+                    "answer"
+                  ],
+                  "context": {
+                    "fingerprint": "664bdcf50b0cc5d0afc8b9b4b9af2bd34a287f27edb4d89c4671837180cd1ee1",
+                    "sources": [],
+                    "memory_revision": null,
+                    "episode_ids": []
+                  }
+                },
+                "execution_id": "run-f30686b637ae41e0bce86e1ee0ecb524",
+                "parent_execution_id": "run-71d15bd8692a4f2bad84f74154fd53ca",
+                "status": "completed",
+                "interrupts": [],
+                "continuation": null,
+                "children": [
+                  {
+                    "text": "{\"answer\":3}",
+                    "final": {
+                      "answer": 3
+                    },
+                    "data": {
+                      "output": {
+                        "answer": 3
+                      },
+                      "result_ref": "run-3e1c76030d5c471eb4547e530851110f"
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "requests": 1,
+                      "input_tokens": 84,
+                      "output_tokens": 6,
+                      "total_tokens": 90,
+                      "client_duration_ms": 4932.692,
+                      "inference_requests": 1,
+                      "tool_calls": 0
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "default",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "name": "actor",
+                      "kind": "node"
+                    },
+                    "execution_id": "run-59843514338948f4adca73493b159ce7",
+                    "parent_execution_id": "run-f30686b637ae41e0bce86e1ee0ecb524",
+                    "status": "completed",
+                    "interrupts": [],
+                    "continuation": null,
+                    "children": [
+                      {
+                        "text": "{\"answer\":3}",
+                        "final": {
+                          "answer": 3
+                        },
+                        "data": {
+                          "answer": 3
+                        },
+                        "ok": true,
+                        "messages": [],
+                        "raw_responses": [],
+                        "usage": {
+                          "requests": 1,
+                          "input_tokens": 84,
+                          "output_tokens": 6,
+                          "total_tokens": 90,
+                          "client_duration_ms": 4932.692,
+                          "inference_requests": 1,
+                          "tool_calls": 0
+                        },
+                        "engine": "openai-runtime",
+                        "model": "gpt-4.1-mini",
+                        "mode": "default",
+                        "trace_schema_version": "agentic_systems.trace.v1",
+                        "validation": null,
+                        "errors": [],
+                        "meta": {
+                          "name": "reasoner",
+                          "kind": "model",
+                          "framework": "openai-agents"
+                        },
+                        "execution_id": "run-3e1c76030d5c471eb4547e530851110f",
+                        "parent_execution_id": "run-59843514338948f4adca73493b159ce7",
+                        "status": "completed",
+                        "interrupts": [],
+                        "continuation": null,
+                        "children": [
+                          {
+                            "text": "{\"answer\":3}",
+                            "final": {
+                              "answer": 3
+                            },
+                            "data": {
+                              "answer": 3
+                            },
+                            "ok": true,
+                            "messages": [
+                              {
+                                "content": "{\"value\": 2}",
+                                "role": "user"
+                              },
+                              {
+                                "id": "msg_02d7fd95e375a791006adedec66eac87d19537c64dd4d10b3f",
+                                "content": [
+                                  {
+                                    "annotations": [],
+                                    "text": "{\"answer\":3}",
+                                    "type": "output_text",
+                                    "logprobs": []
+                                  }
+                                ],
+                                "role": "assistant",
+                                "status": "completed",
+                                "type": "message"
+                              }
+                            ],
+                            "raw_responses": [
+                              {
+                                "output": [
+                                  {
+                                    "id": "msg_02d7fd95e375a791006adedec66eac87d19537c64dd4d10b3f",
+                                    "content": [
+                                      {
+                                        "annotations": [],
+                                        "text": "{\"answer\":3}",
+                                        "type": "output_text",
+                                        "logprobs": []
+                                      }
+                                    ],
+                                    "role": "assistant",
+                                    "status": "completed",
+                                    "type": "message",
+                                    "phase": null
+                                  }
+                                ],
+                                "usage": {
+                                  "requests": 1,
+                                  "input_tokens": 84,
+                                  "input_tokens_details": {
+                                    "cache_write_tokens": 0,
+                                    "cached_tokens": 0
+                                  },
+                                  "output_tokens": 6,
+                                  "output_tokens_details": {
+                                    "reasoning_tokens": 0
+                                  },
+                                  "total_tokens": 90,
+                                  "request_usage_entries": []
+                                },
+                                "response_id": "resp_02d7fd95e375a791006adedec5838c87d1b9c676865e781607",
+                                "request_id": "req_8dbd5d77de7e4e8bab83feaa514db0e8"
+                              }
+                            ],
+                            "usage": {
+                              "requests": 1,
+                              "input_tokens": 84,
+                              "input_tokens_details": {
+                                "cache_write_tokens": 0,
+                                "cached_tokens": 0
+                              },
+                              "output_tokens": 6,
+                              "output_tokens_details": {
+                                "reasoning_tokens": 0
+                              },
+                              "total_tokens": 90,
+                              "request_usage_entries": [
+                                {
+                                  "input_tokens": 84,
+                                  "output_tokens": 6,
+                                  "total_tokens": 90,
+                                  "input_tokens_details": {
+                                    "cache_write_tokens": 0,
+                                    "cached_tokens": 0
+                                  },
+                                  "output_tokens_details": {
+                                    "reasoning_tokens": 0
+                                  }
+                                }
+                              ],
+                              "scheduler": {
+                                "attempts": 1,
+                                "retries": 0,
+                                "timed_out": false,
+                                "latency_ms": 4932.692
+                              },
+                              "client_duration_ms": 4932.692,
+                              "inference_requests": 1,
+                              "tool_calls": 0
+                            },
+                            "engine": "openai-runtime",
+                            "model": "gpt-4.1-mini",
+                            "mode": "eval",
+                            "trace_schema_version": "agentic_systems.trace.v1",
+                            "validation": {
+                              "ok": true,
+                              "issues": []
+                            },
+                            "errors": [],
+                            "meta": {
+                              "source_result_type": "RunResult",
+                              "framework_adapter": "openai-agents",
+                              "input": {
+                                "value": 2
+                              },
+                              "rejected_tool_calls": [],
+                              "runtime": {
+                                "provider": "openai-runtime",
+                                "model_id": "gpt-4.1-mini",
+                                "region_name": null,
+                                "endpoint": "https://api.openai.com/v1",
+                                "metadata": {},
+                                "provider_priority": [
+                                  "openai-runtime",
+                                  "bedrock-runtime",
+                                  "ollama-runtime"
+                                ],
+                                "allow_python_fallback": false,
+                                "scheduler": {
+                                  "max_turns": 1,
+                                  "max_tool_calls": 1,
+                                  "timeout_s": 60,
+                                  "max_concurrency": 1,
+                                  "max_retries": 0,
+                                  "backoff_s": 0.0
+                                }
+                              },
+                              "scheduler": {
+                                "max_turns": 1,
+                                "max_tool_calls": 1,
+                                "timeout_s": 60,
+                                "max_concurrency": 1,
+                                "max_retries": 0,
+                                "backoff_s": 0.0
+                              },
+                              "scheduler_execution": {
+                                "scheduler": {
+                                  "max_turns": 1,
+                                  "max_tool_calls": 1,
+                                  "timeout_s": 60,
+                                  "max_concurrency": 1,
+                                  "max_retries": 0,
+                                  "backoff_s": 0.0
+                                },
+                                "attempts": 1,
+                                "retries": 0,
+                                "timed_out": false,
+                                "latency_ms": 4932.692
+                              },
+                              "framework": "openai-agents",
+                              "framework_requested": "openai-agents",
+                              "framework_config": {
+                                "name": "openai-agents",
+                                "agent_kwargs": {},
+                                "run_kwargs": {}
+                              },
+                              "agent_name": "reasoner",
+                              "requested_engine": "openai-runtime",
+                              "runtime_engine": "openai-runtime",
+                              "execution_engine": "openai-runtime"
+                            },
+                            "execution_id": "run-b56f347a3c3d48a7823081c8977c2877",
+                            "parent_execution_id": "run-3e1c76030d5c471eb4547e530851110f",
+                            "status": "completed",
+                            "interrupts": [],
+                            "continuation": null,
+                            "children": [],
+                            "tool_events": []
+                          }
+                        ],
+                        "tool_events": []
+                      }
+                    ],
+                    "tool_events": []
+                  }
+                ],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "human_results": "typed-reasoning: COMPLETED\nExecution: run-16e93b74ae844408af1628d72a6cbe7d\nInput: {\"value\":2,\"answer\":null}\nOutput: {\"answer\":3}\nProcess (recorded steps):\n- {\"name\":\"typed-reasoning\",\"status\":\"{\\\"answer\\\":3}\",\"id\":\"run-16e93b74ae844408af1628d72a6cbe7d\"}\n- {\"name\":\"reasoner\",\"status\":\"{\\\"answer\\\":3}\",\"id\":\"run-3e1c76030d5c471eb4547e530851110f\"}\n- {\"name\":\"eval\",\"status\":\"{\\\"answer\\\":3}\",\"id\":\"run-b56f347a3c3d48a7823081c8977c2877\"}",
+      "agent_lineage": "{\"ok\":true,\"steps\":[{\"step_id\":\"run-16e93b74ae844408af1628d72a6cbe7d\",\"kind\":\"execution\",\"title\":\"typed-reasoning\",\"summary\":\"{\\\"answer\\\":3}\",\"source\":\"python-runtime\",\"why\":\"Recorded execution evidence\",\"evidence\":{\"ok\":true,\"data\":{\"answer\":3},\"errors\":[]}},{\"step_id\":\"run-3e1c76030d5c471eb4547e530851110f\",\"kind\":\"execution\",\"title\":\"reasoner\",\"summary\":\"{\\\"answer\\\":3}\",\"source\":\"openai-runtime\",\"why\":\"Recorded execution evidence\",\"evidence\":{\"ok\":true,\"data\":{\"answer\":3},\"errors\":[]}},{\"step_id\":\"run-b56f347a3c3d48a7823081c8977c2877\",\"kind\":\"execution\",\"title\":\"eval\",\"summary\":\"{\\\"answer\\\":3}\",\"source\":\"openai-runtime\",\"why\":\"Recorded execution evidence\",\"evidence\":{\"ok\":true,\"data\":{\"answer\":3},\"errors\":[]}}],\"omitted_steps\":0,\"failed_steps\":0,\"execution_id\":\"run-16e93b74ae844408af1628d72a6cbe7d\",\"answer\":\"{\\\"answer\\\":3}\"}",
+      "budget_after": {
+        "attempts": 297,
+        "reserved_usd": "1.578158",
+        "limits": {
+          "usd": 10,
+          "requests": 300
+        },
+        "remaining_requests": 3,
+        "remaining_usd": "8.421842"
+      },
+      "evidence": "revisions/2.1.4/pydantic-dev4/online/20261026T050152685584/results.json"
+    },
+    {
+      "route": "bedrock-runtime",
+      "framework": "native",
+      "model": "qwen.qwen3-32b-v1:0",
+      "input": {
+        "value": 2
+      },
+      "expected": {
+        "answer": 3
+      },
+      "wheel_sha256": "a06317a8bb14b3cf8ba42684880a3a722e7396603df41962e877e019b888680b",
+      "budget_before": {
+        "attempts": 297,
+        "reserved_usd": "1.578158",
+        "limits": {
+          "usd": 10,
+          "requests": 300
+        },
+        "remaining_requests": 3,
+        "remaining_usd": "8.421842"
+      },
+      "passed": true,
+      "result": {
+        "text": "```json\n{\"answer\":3}\n```",
+        "final": {
+          "text": "```json\n{\"answer\":3}\n```"
+        },
+        "data": {
+          "answer": 3
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "input_tokens": 93,
+          "output_tokens": 10,
+          "total_tokens": 103,
+          "requests": 1,
+          "service_latency_ms": 154.0,
+          "client_duration_ms": 663.424,
+          "inference_requests": 1,
+          "tool_calls": 0
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "typed-reasoning",
+          "kind": "system",
+          "engine_name": "langgraph",
+          "lineage_refs": [
+            "run-c15526f989464a5da4c15c053dc413b9"
+          ],
+          "writes": [
+            "answer"
+          ],
+          "context": {
+            "fingerprint": "664bdcf50b0cc5d0afc8b9b4b9af2bd34a287f27edb4d89c4671837180cd1ee1",
+            "sources": [],
+            "memory_revision": null,
+            "episode_ids": []
+          },
+          "actions_observed": 2,
+          "input": {
+            "value": 2,
+            "answer": null
+          },
+          "state_metrics": {
+            "snapshots": 2,
+            "max_bytes": 156,
+            "max_lineage_refs": 1
+          },
+          "resumes_execution_id": null
+        },
+        "execution_id": "run-cc45a2b9235841fe953b1b48deb6c293",
+        "parent_execution_id": null,
+        "status": "completed",
+        "interrupts": [],
+        "continuation": null,
+        "children": [
+          {
+            "text": "```json\n{\"answer\":3}\n```",
+            "final": {
+              "text": "```json\n{\"answer\":3}\n```"
+            },
+            "data": {
+              "answer": 3
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "input_tokens": 93,
+              "output_tokens": 10,
+              "total_tokens": 103,
+              "requests": 1,
+              "service_latency_ms": 154.0,
+              "client_duration_ms": 663.424,
+              "inference_requests": 1,
+              "tool_calls": 0
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "reasoner",
+              "kind": "node"
+            },
+            "execution_id": "run-c15526f989464a5da4c15c053dc413b9",
+            "parent_execution_id": "run-cc45a2b9235841fe953b1b48deb6c293",
+            "status": "completed",
+            "interrupts": [],
+            "continuation": null,
+            "children": [
+              {
+                "text": "```json\n{\"answer\":3}\n```",
+                "final": {
+                  "text": "```json\n{\"answer\":3}\n```"
+                },
+                "data": {
+                  "answer": 3
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "input_tokens": 93,
+                  "output_tokens": 10,
+                  "total_tokens": 103,
+                  "requests": 1,
+                  "service_latency_ms": 154.0,
+                  "client_duration_ms": 663.424,
+                  "inference_requests": 1,
+                  "tool_calls": 0
+                },
+                "engine": "bedrock-runtime",
+                "model": "qwen.qwen3-32b-v1:0",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "reasoner",
+                  "kind": "agent",
+                  "engine_name": "langgraph",
+                  "lineage_refs": [
+                    "run-338a76f4708b4573ba86c41be0230293"
+                  ],
+                  "writes": [
+                    "answer"
+                  ],
+                  "context": {
+                    "fingerprint": "664bdcf50b0cc5d0afc8b9b4b9af2bd34a287f27edb4d89c4671837180cd1ee1",
+                    "sources": [],
+                    "memory_revision": null,
+                    "episode_ids": []
+                  }
+                },
+                "execution_id": "run-13ca3d77814d4c52b5b9f0ac058f2d09",
+                "parent_execution_id": "run-c15526f989464a5da4c15c053dc413b9",
+                "status": "completed",
+                "interrupts": [],
+                "continuation": null,
+                "children": [
+                  {
+                    "text": "```json\n{\"answer\":3}\n```",
+                    "final": {
+                      "text": "```json\n{\"answer\":3}\n```"
+                    },
+                    "data": {
+                      "output": {
+                        "answer": 3
+                      },
+                      "result_ref": "run-872b6d554261462da527a1469834c597"
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "input_tokens": 93,
+                      "output_tokens": 10,
+                      "total_tokens": 103,
+                      "requests": 1,
+                      "service_latency_ms": 154.0,
+                      "client_duration_ms": 663.424,
+                      "inference_requests": 1,
+                      "tool_calls": 0
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "default",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "name": "actor",
+                      "kind": "node"
+                    },
+                    "execution_id": "run-338a76f4708b4573ba86c41be0230293",
+                    "parent_execution_id": "run-13ca3d77814d4c52b5b9f0ac058f2d09",
+                    "status": "completed",
+                    "interrupts": [],
+                    "continuation": null,
+                    "children": [
+                      {
+                        "text": "```json\n{\"answer\":3}\n```",
+                        "final": {
+                          "text": "```json\n{\"answer\":3}\n```"
+                        },
+                        "data": {
+                          "answer": 3
+                        },
+                        "ok": true,
+                        "messages": [],
+                        "raw_responses": [],
+                        "usage": {
+                          "input_tokens": 93,
+                          "output_tokens": 10,
+                          "total_tokens": 103,
+                          "requests": 1,
+                          "service_latency_ms": 154.0,
+                          "client_duration_ms": 663.424,
+                          "inference_requests": 1,
+                          "tool_calls": 0
+                        },
+                        "engine": "bedrock-runtime",
+                        "model": "qwen.qwen3-32b-v1:0",
+                        "mode": "default",
+                        "trace_schema_version": "agentic_systems.trace.v1",
+                        "validation": null,
+                        "errors": [],
+                        "meta": {
+                          "name": "reasoner",
+                          "kind": "model",
+                          "framework": "native"
+                        },
+                        "execution_id": "run-872b6d554261462da527a1469834c597",
+                        "parent_execution_id": "run-338a76f4708b4573ba86c41be0230293",
+                        "status": "completed",
+                        "interrupts": [],
+                        "continuation": null,
+                        "children": [
+                          {
+                            "text": "```json\n{\"answer\":3}\n```",
+                            "final": {
+                              "text": "```json\n{\"answer\":3}\n```"
+                            },
+                            "data": {
+                              "answer": 3
+                            },
+                            "ok": true,
+                            "messages": [
+                              {
+                                "role": "user",
+                                "content": [
+                                  {
+                                    "text": "{\n  \"value\": 2\n}"
+                                  }
+                                ]
+                              },
+                              {
+                                "role": "assistant",
+                                "content": [
+                                  {
+                                    "text": "```json\n{\"answer\":3}\n```"
+                                  }
+                                ]
+                              }
+                            ],
+                            "raw_responses": [
+                              {
+                                "request_id": "87daa182-1bb6-406b-8e35-1301b8f0480e",
+                                "http_status_code": 200,
+                                "usage": {
+                                  "inputTokens": 93,
+                                  "outputTokens": 10,
+                                  "totalTokens": 103
+                                },
+                                "stop_reason": "end_turn",
+                                "service_latency_ms": 154,
+                                "client_duration_ms": 663.424
+                              }
+                            ],
+                            "usage": {
+                              "input_tokens": 93,
+                              "output_tokens": 10,
+                              "total_tokens": 103,
+                              "requests": 1,
+                              "service_latency_ms": 154.0,
+                              "client_duration_ms": 663.424,
+                              "scheduler": {
+                                "attempts": 1,
+                                "retries": 0,
+                                "timed_out": false,
+                                "latency_ms": 664.34
+                              },
+                              "inference_requests": 1,
+                              "tool_calls": 0
+                            },
+                            "engine": "bedrock-runtime",
+                            "model": "qwen.qwen3-32b-v1:0",
+                            "mode": "eval",
+                            "trace_schema_version": "agentic_systems.trace.v1",
+                            "validation": {
+                              "ok": true,
+                              "issues": []
+                            },
+                            "errors": [],
+                            "meta": {
+                              "source_result_type": "BedrockRunResult",
+                              "runtime": {
+                                "provider": "bedrock-runtime",
+                                "model_id": "qwen.qwen3-32b-v1:0",
+                                "region_name": "us-east-2",
+                                "endpoint": "https://bedrock-runtime.us-east-2.amazonaws.com",
+                                "metadata": {},
+                                "provider_priority": [
+                                  "openai-runtime",
+                                  "bedrock-runtime",
+                                  "ollama-runtime"
+                                ],
+                                "allow_python_fallback": false,
+                                "scheduler": {
+                                  "max_turns": 1,
+                                  "max_tool_calls": 1,
+                                  "timeout_s": 60,
+                                  "max_concurrency": 1,
+                                  "max_retries": 0,
+                                  "backoff_s": 0.0
+                                }
+                              },
+                              "scheduler": {
+                                "max_turns": 1,
+                                "max_tool_calls": 1,
+                                "timeout_s": 60,
+                                "max_concurrency": 1,
+                                "max_retries": 0,
+                                "backoff_s": 0.0
+                              },
+                              "scheduler_execution": {
+                                "scheduler": {
+                                  "max_turns": 1,
+                                  "max_tool_calls": 1,
+                                  "timeout_s": 60,
+                                  "max_concurrency": 1,
+                                  "max_retries": 0,
+                                  "backoff_s": 0.0
+                                },
+                                "attempts": 1,
+                                "retries": 0,
+                                "timed_out": false,
+                                "latency_ms": 664.34
+                              },
+                              "framework": "native",
+                              "framework_requested": "native",
+                              "framework_adapter": "native",
+                              "framework_config": {
+                                "name": "native",
+                                "agent_kwargs": {},
+                                "run_kwargs": {}
+                              },
+                              "agent_name": "reasoner",
+                              "input": {
+                                "value": 2
+                              },
+                              "requested_engine": "bedrock-runtime",
+                              "runtime_engine": "bedrock-runtime",
+                              "execution_engine": "bedrock-runtime"
+                            },
+                            "execution_id": "run-4f58e14d40aa4984a5290c6d6dd3882c",
+                            "parent_execution_id": "run-872b6d554261462da527a1469834c597",
+                            "status": "completed",
+                            "interrupts": [],
+                            "continuation": null,
+                            "children": [],
+                            "tool_events": []
+                          }
+                        ],
+                        "tool_events": []
+                      }
+                    ],
+                    "tool_events": []
+                  }
+                ],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "human_results": "typed-reasoning: COMPLETED\nExecution: run-cc45a2b9235841fe953b1b48deb6c293\nInput: {\"value\":2,\"answer\":null}\nOutput: {\"answer\":3}\nProcess (recorded steps):\n- {\"name\":\"typed-reasoning\",\"status\":\"```json\\n{\\\"answer\\\":3}\\n```\",\"id\":\"run-cc45a2b9235841fe953b1b48deb6c293\"}\n- {\"name\":\"reasoner\",\"status\":\"```json\\n{\\\"answer\\\":3}\\n```\",\"id\":\"run-872b6d554261462da527a1469834c597\"}\n- {\"name\":\"eval\",\"status\":\"```json\\n{\\\"answer\\\":3}\\n```\",\"id\":\"run-4f58e14d40aa4984a5290c6d6dd3882c\"}",
+      "agent_lineage": "{\"ok\":true,\"steps\":[{\"step_id\":\"run-cc45a2b9235841fe953b1b48deb6c293\",\"kind\":\"execution\",\"title\":\"typed-reasoning\",\"summary\":\"```json\\n{\\\"answer\\\":3}\\n```\",\"source\":\"python-runtime\",\"why\":\"Recorded execution evidence\",\"evidence\":{\"ok\":true,\"data\":{\"answer\":3},\"errors\":[]}},{\"step_id\":\"run-872b6d554261462da527a1469834c597\",\"kind\":\"execution\",\"title\":\"reasoner\",\"summary\":\"```json\\n{\\\"answer\\\":3}\\n```\",\"source\":\"bedrock-runtime\",\"why\":\"Recorded execution evidence\",\"evidence\":{\"ok\":true,\"data\":{\"answer\":3},\"errors\":[]}},{\"step_id\":\"run-4f58e14d40aa4984a5290c6d6dd3882c\",\"kind\":\"execution\",\"title\":\"eval\",\"summary\":\"```json\\n{\\\"answer\\\":3}\\n```\",\"source\":\"bedrock-runtime\",\"why\":\"Recorded execution evidence\",\"evidence\":{\"ok\":true,\"data\":{\"answer\":3},\"errors\":[]}}],\"omitted_steps\":0,\"failed_steps\":0,\"execution_id\":\"run-cc45a2b9235841fe953b1b48deb6c293\",\"answer\":\"```json\\n{\\\"answer\\\":3}\\n```\"}",
+      "budget_after": {
+        "attempts": 298,
+        "reserved_usd": "1.585127",
+        "limits": {
+          "usd": 10,
+          "requests": 300
+        },
+        "remaining_requests": 2,
+        "remaining_usd": "8.414873"
+      },
+      "evidence": "revisions/2.1.4/pydantic-dev4/online/20261026T050152685584/results.json"
+    },
+    {
+      "route": "ollama-gpu",
+      "framework": "native",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "input": {
+        "value": 2
+      },
+      "expected": {
+        "answer": 3
+      },
+      "wheel_sha256": "a06317a8bb14b3cf8ba42684880a3a722e7396603df41962e877e019b888680b",
+      "budget_before": {
+        "attempts": 299,
+        "reserved_usd": "1.592210",
+        "limits": {
+          "usd": 10,
+          "requests": 300
+        },
+        "remaining_requests": 1,
+        "remaining_usd": "8.407790"
+      },
+      "passed": true,
+      "result": {
+        "text": "{\"answer\":3}",
+        "final": {
+          "final_output": "{\"answer\":3}"
+        },
+        "data": {
+          "answer": 3
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "total_tokens": 95,
+          "completion_tokens": 6,
+          "prompt_tokens": 89,
+          "input_tokens": 89,
+          "output_tokens": 6,
+          "requests": 1,
+          "client_duration_ms": 5656.252,
+          "inference_requests": 1,
+          "tool_calls": 0
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "typed-reasoning",
+          "kind": "system",
+          "engine_name": "langgraph",
+          "lineage_refs": [
+            "run-cddc59467ed143fbbe8081f84b6047c6"
+          ],
+          "writes": [
+            "answer"
+          ],
+          "context": {
+            "fingerprint": "664bdcf50b0cc5d0afc8b9b4b9af2bd34a287f27edb4d89c4671837180cd1ee1",
+            "sources": [],
+            "memory_revision": null,
+            "episode_ids": []
+          },
+          "actions_observed": 2,
+          "input": {
+            "value": 2,
+            "answer": null
+          },
+          "state_metrics": {
+            "snapshots": 2,
+            "max_bytes": 156,
+            "max_lineage_refs": 1
+          },
+          "resumes_execution_id": null
+        },
+        "execution_id": "run-4d46b5e3d3d94892b080bd7e9cb714c2",
+        "parent_execution_id": null,
+        "status": "completed",
+        "interrupts": [],
+        "continuation": null,
+        "children": [
+          {
+            "text": "{\"answer\":3}",
+            "final": {
+              "final_output": "{\"answer\":3}"
+            },
+            "data": {
+              "answer": 3
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "total_tokens": 95,
+              "completion_tokens": 6,
+              "prompt_tokens": 89,
+              "input_tokens": 89,
+              "output_tokens": 6,
+              "requests": 1,
+              "client_duration_ms": 5656.252,
+              "inference_requests": 1,
+              "tool_calls": 0
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "reasoner",
+              "kind": "node"
+            },
+            "execution_id": "run-cddc59467ed143fbbe8081f84b6047c6",
+            "parent_execution_id": "run-4d46b5e3d3d94892b080bd7e9cb714c2",
+            "status": "completed",
+            "interrupts": [],
+            "continuation": null,
+            "children": [
+              {
+                "text": "{\"answer\":3}",
+                "final": {
+                  "final_output": "{\"answer\":3}"
+                },
+                "data": {
+                  "answer": 3
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "total_tokens": 95,
+                  "completion_tokens": 6,
+                  "prompt_tokens": 89,
+                  "input_tokens": 89,
+                  "output_tokens": 6,
+                  "requests": 1,
+                  "client_duration_ms": 5656.252,
+                  "inference_requests": 1,
+                  "tool_calls": 0
+                },
+                "engine": "ollama-runtime",
+                "model": "qwen3:4b-instruct-2507-q4_K_M",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "reasoner",
+                  "kind": "agent",
+                  "engine_name": "langgraph",
+                  "lineage_refs": [
+                    "run-1b16b61d3e6246efa1671982ef54ce0e"
+                  ],
+                  "writes": [
+                    "answer"
+                  ],
+                  "context": {
+                    "fingerprint": "664bdcf50b0cc5d0afc8b9b4b9af2bd34a287f27edb4d89c4671837180cd1ee1",
+                    "sources": [],
+                    "memory_revision": null,
+                    "episode_ids": []
+                  }
+                },
+                "execution_id": "run-24c6af27dd1240e2a1834bdb5ecfbd2d",
+                "parent_execution_id": "run-cddc59467ed143fbbe8081f84b6047c6",
+                "status": "completed",
+                "interrupts": [],
+                "continuation": null,
+                "children": [
+                  {
+                    "text": "{\"answer\":3}",
+                    "final": {
+                      "final_output": "{\"answer\":3}"
+                    },
+                    "data": {
+                      "output": {
+                        "answer": 3
+                      },
+                      "result_ref": "run-5ac25e2fad6a412d97e6735b95f11188"
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "total_tokens": 95,
+                      "completion_tokens": 6,
+                      "prompt_tokens": 89,
+                      "input_tokens": 89,
+                      "output_tokens": 6,
+                      "requests": 1,
+                      "client_duration_ms": 5656.252,
+                      "inference_requests": 1,
+                      "tool_calls": 0
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "default",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "name": "actor",
+                      "kind": "node"
+                    },
+                    "execution_id": "run-1b16b61d3e6246efa1671982ef54ce0e",
+                    "parent_execution_id": "run-24c6af27dd1240e2a1834bdb5ecfbd2d",
+                    "status": "completed",
+                    "interrupts": [],
+                    "continuation": null,
+                    "children": [
+                      {
+                        "text": "{\"answer\":3}",
+                        "final": {
+                          "final_output": "{\"answer\":3}"
+                        },
+                        "data": {
+                          "answer": 3
+                        },
+                        "ok": true,
+                        "messages": [],
+                        "raw_responses": [],
+                        "usage": {
+                          "total_tokens": 95,
+                          "completion_tokens": 6,
+                          "prompt_tokens": 89,
+                          "input_tokens": 89,
+                          "output_tokens": 6,
+                          "requests": 1,
+                          "client_duration_ms": 5656.252,
+                          "inference_requests": 1,
+                          "tool_calls": 0
+                        },
+                        "engine": "ollama-runtime",
+                        "model": "qwen3:4b-instruct-2507-q4_K_M",
+                        "mode": "default",
+                        "trace_schema_version": "agentic_systems.trace.v1",
+                        "validation": null,
+                        "errors": [],
+                        "meta": {
+                          "name": "reasoner",
+                          "kind": "model",
+                          "framework": "native"
+                        },
+                        "execution_id": "run-5ac25e2fad6a412d97e6735b95f11188",
+                        "parent_execution_id": "run-1b16b61d3e6246efa1671982ef54ce0e",
+                        "status": "completed",
+                        "interrupts": [],
+                        "continuation": null,
+                        "children": [
+                          {
+                            "text": "{\"answer\":3}",
+                            "final": {
+                              "final_output": "{\"answer\":3}"
+                            },
+                            "data": {
+                              "answer": 3
+                            },
+                            "ok": true,
+                            "messages": [],
+                            "raw_responses": [],
+                            "usage": {
+                              "total_tokens": 95,
+                              "completion_tokens": 6,
+                              "prompt_tokens": 89,
+                              "input_tokens": 89,
+                              "output_tokens": 6,
+                              "requests": 1,
+                              "client_duration_ms": 5656.252,
+                              "scheduler": {
+                                "attempts": 1,
+                                "retries": 0,
+                                "timed_out": false,
+                                "latency_ms": 6761.116
+                              },
+                              "inference_requests": 1,
+                              "tool_calls": 0
+                            },
+                            "engine": "ollama-runtime",
+                            "model": "qwen3:4b-instruct-2507-q4_K_M",
+                            "mode": "eval",
+                            "trace_schema_version": "agentic_systems.trace.v1",
+                            "validation": {
+                              "ok": true,
+                              "issues": []
+                            },
+                            "errors": [],
+                            "meta": {
+                              "source_result_type": "ollama.openai_compatible.chat.completions",
+                              "runtime_engine": "ollama-runtime",
+                              "execution_engine": "ollama-runtime",
+                              "contract_repairs": 0,
+                              "rejected_tool_calls": [],
+                              "framework": "native",
+                              "framework_requested": "native",
+                              "framework_adapter": "native",
+                              "runtime": {
+                                "provider": "ollama-runtime",
+                                "model_id": "qwen3:4b-instruct-2507-q4_K_M",
+                                "region_name": null,
+                                "endpoint": "http://127.0.0.1:11434/v1",
+                                "metadata": {},
+                                "provider_priority": [
+                                  "openai-runtime",
+                                  "bedrock-runtime",
+                                  "ollama-runtime"
+                                ],
+                                "allow_python_fallback": false,
+                                "scheduler": {
+                                  "max_turns": 1,
+                                  "max_tool_calls": 1,
+                                  "timeout_s": 60,
+                                  "max_concurrency": 1,
+                                  "max_retries": 0,
+                                  "backoff_s": 0.0
+                                }
+                              },
+                              "scheduler": {
+                                "max_turns": 1,
+                                "max_tool_calls": 1,
+                                "timeout_s": 60,
+                                "max_concurrency": 1,
+                                "max_retries": 0,
+                                "backoff_s": 0.0
+                              },
+                              "scheduler_execution": {
+                                "scheduler": {
+                                  "max_turns": 1,
+                                  "max_tool_calls": 1,
+                                  "timeout_s": 60,
+                                  "max_concurrency": 1,
+                                  "max_retries": 0,
+                                  "backoff_s": 0.0
+                                },
+                                "attempts": 1,
+                                "retries": 0,
+                                "timed_out": false,
+                                "latency_ms": 6761.116
+                              },
+                              "framework_config": {
+                                "name": "native",
+                                "agent_kwargs": {},
+                                "run_kwargs": {}
+                              },
+                              "agent_name": "reasoner",
+                              "input": {
+                                "value": 2
+                              },
+                              "requested_engine": "ollama-runtime"
+                            },
+                            "execution_id": "run-bb0fe0eceaa141edae32775933cf990f",
+                            "parent_execution_id": "run-5ac25e2fad6a412d97e6735b95f11188",
+                            "status": "completed",
+                            "interrupts": [],
+                            "continuation": null,
+                            "children": [],
+                            "tool_events": []
+                          }
+                        ],
+                        "tool_events": []
+                      }
+                    ],
+                    "tool_events": []
+                  }
+                ],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "human_results": "typed-reasoning: COMPLETED\nExecution: run-4d46b5e3d3d94892b080bd7e9cb714c2\nInput: {\"value\":2,\"answer\":null}\nOutput: {\"answer\":3}\nProcess (recorded steps):\n- {\"name\":\"typed-reasoning\",\"status\":\"{\\\"answer\\\":3}\",\"id\":\"run-4d46b5e3d3d94892b080bd7e9cb714c2\"}\n- {\"name\":\"reasoner\",\"status\":\"{\\\"answer\\\":3}\",\"id\":\"run-5ac25e2fad6a412d97e6735b95f11188\"}\n- {\"name\":\"eval\",\"status\":\"{\\\"answer\\\":3}\",\"id\":\"run-bb0fe0eceaa141edae32775933cf990f\"}",
+      "agent_lineage": "{\"ok\":true,\"steps\":[{\"step_id\":\"run-4d46b5e3d3d94892b080bd7e9cb714c2\",\"kind\":\"execution\",\"title\":\"typed-reasoning\",\"summary\":\"{\\\"answer\\\":3}\",\"source\":\"python-runtime\",\"why\":\"Recorded execution evidence\",\"evidence\":{\"ok\":true,\"data\":{\"answer\":3},\"errors\":[]}},{\"step_id\":\"run-5ac25e2fad6a412d97e6735b95f11188\",\"kind\":\"execution\",\"title\":\"reasoner\",\"summary\":\"{\\\"answer\\\":3}\",\"source\":\"ollama-runtime\",\"why\":\"Recorded execution evidence\",\"evidence\":{\"ok\":true,\"data\":{\"answer\":3},\"errors\":[]}},{\"step_id\":\"run-bb0fe0eceaa141edae32775933cf990f\",\"kind\":\"execution\",\"title\":\"eval\",\"summary\":\"{\\\"answer\\\":3}\",\"source\":\"ollama-runtime\",\"why\":\"Recorded execution evidence\",\"evidence\":{\"ok\":true,\"data\":{\"answer\":3},\"errors\":[]}}],\"omitted_steps\":0,\"failed_steps\":0,\"execution_id\":\"run-4d46b5e3d3d94892b080bd7e9cb714c2\",\"answer\":\"{\\\"answer\\\":3}\"}",
+      "budget_after": {
+        "attempts": 300,
+        "reserved_usd": "1.592210",
+        "limits": {
+          "usd": 10,
+          "requests": 300
+        },
+        "remaining_requests": 0,
+        "remaining_usd": "8.407790"
+      },
+      "evidence": "revisions/2.1.4/pydantic-dev4/online/20261026T050358840840/results.json"
+    },
+    {
+      "route": "ollama-cloud",
+      "framework": "strands",
+      "model": "gemma4:31b",
+      "input": {
+        "value": 2
+      },
+      "expected": {
+        "answer": 3
+      },
+      "wheel_sha256": "a06317a8bb14b3cf8ba42684880a3a722e7396603df41962e877e019b888680b",
+      "budget_before": {
+        "attempts": 298,
+        "reserved_usd": "1.585127",
+        "limits": {
+          "usd": 10,
+          "requests": 300
+        },
+        "remaining_requests": 2,
+        "remaining_usd": "8.414873"
+      },
+      "passed": true,
+      "result": {
+        "text": "{\"answer\":3}",
+        "final": {
+          "text": "{\"answer\":3}"
+        },
+        "data": {
+          "answer": 3
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "inputTokens": 92,
+          "outputTokens": 6,
+          "totalTokens": 98,
+          "input_tokens": 92,
+          "output_tokens": 6,
+          "total_tokens": 98,
+          "client_duration_ms": 916.698,
+          "requests": 1,
+          "inference_requests": 1,
+          "tool_calls": 0
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "typed-reasoning",
+          "kind": "system",
+          "engine_name": "langgraph",
+          "lineage_refs": [
+            "run-7a5e441c51414913aba07a046837b50c"
+          ],
+          "writes": [
+            "answer"
+          ],
+          "context": {
+            "fingerprint": "664bdcf50b0cc5d0afc8b9b4b9af2bd34a287f27edb4d89c4671837180cd1ee1",
+            "sources": [],
+            "memory_revision": null,
+            "episode_ids": []
+          },
+          "actions_observed": 2,
+          "input": {
+            "value": 2,
+            "answer": null
+          },
+          "state_metrics": {
+            "snapshots": 2,
+            "max_bytes": 156,
+            "max_lineage_refs": 1
+          },
+          "resumes_execution_id": null
+        },
+        "execution_id": "run-6340bfaa8efe40369326723f33c12889",
+        "parent_execution_id": null,
+        "status": "completed",
+        "interrupts": [],
+        "continuation": null,
+        "children": [
+          {
+            "text": "{\"answer\":3}",
+            "final": {
+              "text": "{\"answer\":3}"
+            },
+            "data": {
+              "answer": 3
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "inputTokens": 92,
+              "outputTokens": 6,
+              "totalTokens": 98,
+              "input_tokens": 92,
+              "output_tokens": 6,
+              "total_tokens": 98,
+              "client_duration_ms": 916.698,
+              "requests": 1,
+              "inference_requests": 1,
+              "tool_calls": 0
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "reasoner",
+              "kind": "node"
+            },
+            "execution_id": "run-7a5e441c51414913aba07a046837b50c",
+            "parent_execution_id": "run-6340bfaa8efe40369326723f33c12889",
+            "status": "completed",
+            "interrupts": [],
+            "continuation": null,
+            "children": [
+              {
+                "text": "{\"answer\":3}",
+                "final": {
+                  "text": "{\"answer\":3}"
+                },
+                "data": {
+                  "answer": 3
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "inputTokens": 92,
+                  "outputTokens": 6,
+                  "totalTokens": 98,
+                  "input_tokens": 92,
+                  "output_tokens": 6,
+                  "total_tokens": 98,
+                  "client_duration_ms": 916.698,
+                  "requests": 1,
+                  "inference_requests": 1,
+                  "tool_calls": 0
+                },
+                "engine": "ollama-runtime",
+                "model": "gemma4:31b",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "reasoner",
+                  "kind": "agent",
+                  "engine_name": "langgraph",
+                  "lineage_refs": [
+                    "run-f222e15354fd42d38fb61aae53a3cb3c"
+                  ],
+                  "writes": [
+                    "answer"
+                  ],
+                  "context": {
+                    "fingerprint": "664bdcf50b0cc5d0afc8b9b4b9af2bd34a287f27edb4d89c4671837180cd1ee1",
+                    "sources": [],
+                    "memory_revision": null,
+                    "episode_ids": []
+                  }
+                },
+                "execution_id": "run-ae6679c6e3fd429aa4099953fff7eba0",
+                "parent_execution_id": "run-7a5e441c51414913aba07a046837b50c",
+                "status": "completed",
+                "interrupts": [],
+                "continuation": null,
+                "children": [
+                  {
+                    "text": "{\"answer\":3}",
+                    "final": {
+                      "text": "{\"answer\":3}"
+                    },
+                    "data": {
+                      "output": {
+                        "answer": 3
+                      },
+                      "result_ref": "run-a3299b30593d40af83e797421b3b8a41"
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "inputTokens": 92,
+                      "outputTokens": 6,
+                      "totalTokens": 98,
+                      "input_tokens": 92,
+                      "output_tokens": 6,
+                      "total_tokens": 98,
+                      "client_duration_ms": 916.698,
+                      "requests": 1,
+                      "inference_requests": 1,
+                      "tool_calls": 0
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "default",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "name": "actor",
+                      "kind": "node"
+                    },
+                    "execution_id": "run-f222e15354fd42d38fb61aae53a3cb3c",
+                    "parent_execution_id": "run-ae6679c6e3fd429aa4099953fff7eba0",
+                    "status": "completed",
+                    "interrupts": [],
+                    "continuation": null,
+                    "children": [
+                      {
+                        "text": "{\"answer\":3}",
+                        "final": {
+                          "text": "{\"answer\":3}"
+                        },
+                        "data": {
+                          "answer": 3
+                        },
+                        "ok": true,
+                        "messages": [],
+                        "raw_responses": [],
+                        "usage": {
+                          "inputTokens": 92,
+                          "outputTokens": 6,
+                          "totalTokens": 98,
+                          "input_tokens": 92,
+                          "output_tokens": 6,
+                          "total_tokens": 98,
+                          "client_duration_ms": 916.698,
+                          "requests": 1,
+                          "inference_requests": 1,
+                          "tool_calls": 0
+                        },
+                        "engine": "ollama-runtime",
+                        "model": "gemma4:31b",
+                        "mode": "default",
+                        "trace_schema_version": "agentic_systems.trace.v1",
+                        "validation": null,
+                        "errors": [],
+                        "meta": {
+                          "name": "reasoner",
+                          "kind": "model",
+                          "framework": "strands"
+                        },
+                        "execution_id": "run-a3299b30593d40af83e797421b3b8a41",
+                        "parent_execution_id": "run-f222e15354fd42d38fb61aae53a3cb3c",
+                        "status": "completed",
+                        "interrupts": [],
+                        "continuation": null,
+                        "children": [
+                          {
+                            "text": "{\"answer\":3}",
+                            "final": {
+                              "text": "{\"answer\":3}"
+                            },
+                            "data": {
+                              "answer": 3
+                            },
+                            "ok": true,
+                            "messages": [
+                              {
+                                "role": "user",
+                                "content": [
+                                  {
+                                    "text": "{\"value\": 2}"
+                                  }
+                                ],
+                                "tracking_id": "3a0a6d88-47df-40ea-a21b-57b75ba06ee6"
+                              },
+                              {
+                                "role": "assistant",
+                                "content": [
+                                  {
+                                    "text": "{\"answer\":3}"
+                                  }
+                                ],
+                                "metadata": {
+                                  "usage": {
+                                    "inputTokens": 92,
+                                    "outputTokens": 6,
+                                    "totalTokens": 98
+                                  },
+                                  "metrics": {
+                                    "latencyMs": 0,
+                                    "timeToFirstByteMs": 916
+                                  }
+                                },
+                                "tracking_id": "4ddd81c3-c82f-4a15-afbf-6fc64cf0ad71"
+                              }
+                            ],
+                            "raw_responses": [
+                              {
+                                "role": "assistant",
+                                "content": [
+                                  {
+                                    "text": "{\"answer\":3}"
+                                  }
+                                ],
+                                "metadata": {
+                                  "usage": {
+                                    "inputTokens": 92,
+                                    "outputTokens": 6,
+                                    "totalTokens": 98
+                                  },
+                                  "metrics": {
+                                    "latencyMs": 0,
+                                    "timeToFirstByteMs": 916
+                                  }
+                                },
+                                "tracking_id": "4ddd81c3-c82f-4a15-afbf-6fc64cf0ad71"
+                              }
+                            ],
+                            "usage": {
+                              "inputTokens": 92,
+                              "outputTokens": 6,
+                              "totalTokens": 98,
+                              "input_tokens": 92,
+                              "output_tokens": 6,
+                              "total_tokens": 98,
+                              "client_duration_ms": 916.698,
+                              "requests": 1,
+                              "scheduler": {
+                                "attempts": 1,
+                                "retries": 0,
+                                "timed_out": false,
+                                "latency_ms": 1132.957
+                              },
+                              "inference_requests": 1,
+                              "tool_calls": 0
+                            },
+                            "engine": "ollama-runtime",
+                            "model": "gemma4:31b",
+                            "mode": "eval",
+                            "trace_schema_version": "agentic_systems.trace.v1",
+                            "validation": {
+                              "ok": true,
+                              "issues": []
+                            },
+                            "errors": [],
+                            "meta": {
+                              "source_result_type": "AgentResult",
+                              "framework_adapter": "strands",
+                              "input": {
+                                "value": 2
+                              },
+                              "stop_reason": "end_turn",
+                              "rejected_tool_calls": [],
+                              "output_materialization": [],
+                              "runtime": {
+                                "provider": "ollama-runtime",
+                                "model_id": "gemma4:31b",
+                                "region_name": null,
+                                "endpoint": "https://ollama.com/v1",
+                                "metadata": {},
+                                "provider_priority": [
+                                  "openai-runtime",
+                                  "bedrock-runtime",
+                                  "ollama-runtime"
+                                ],
+                                "allow_python_fallback": false,
+                                "scheduler": {
+                                  "max_turns": 1,
+                                  "max_tool_calls": 1,
+                                  "timeout_s": 60,
+                                  "max_concurrency": 1,
+                                  "max_retries": 0,
+                                  "backoff_s": 0.0
+                                }
+                              },
+                              "scheduler": {
+                                "max_turns": 1,
+                                "max_tool_calls": 1,
+                                "timeout_s": 60,
+                                "max_concurrency": 1,
+                                "max_retries": 0,
+                                "backoff_s": 0.0
+                              },
+                              "scheduler_execution": {
+                                "scheduler": {
+                                  "max_turns": 1,
+                                  "max_tool_calls": 1,
+                                  "timeout_s": 60,
+                                  "max_concurrency": 1,
+                                  "max_retries": 0,
+                                  "backoff_s": 0.0
+                                },
+                                "attempts": 1,
+                                "retries": 0,
+                                "timed_out": false,
+                                "latency_ms": 1132.957
+                              },
+                              "framework": "strands",
+                              "framework_requested": "strands",
+                              "framework_config": {
+                                "name": "strands",
+                                "agent_kwargs": {},
+                                "run_kwargs": {}
+                              },
+                              "agent_name": "reasoner",
+                              "requested_engine": "ollama-runtime",
+                              "runtime_engine": "ollama-runtime",
+                              "execution_engine": "ollama-runtime"
+                            },
+                            "execution_id": "run-4a7010787a534caaa9dac151fc6319b0",
+                            "parent_execution_id": "run-a3299b30593d40af83e797421b3b8a41",
+                            "status": "completed",
+                            "interrupts": [],
+                            "continuation": null,
+                            "children": [],
+                            "tool_events": []
+                          }
+                        ],
+                        "tool_events": []
+                      }
+                    ],
+                    "tool_events": []
+                  }
+                ],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "human_results": "typed-reasoning: COMPLETED\nExecution: run-6340bfaa8efe40369326723f33c12889\nInput: {\"value\":2,\"answer\":null}\nOutput: {\"answer\":3}\nProcess (recorded steps):\n- {\"name\":\"typed-reasoning\",\"status\":\"{\\\"answer\\\":3}\",\"id\":\"run-6340bfaa8efe40369326723f33c12889\"}\n- {\"name\":\"reasoner\",\"status\":\"{\\\"answer\\\":3}\",\"id\":\"run-a3299b30593d40af83e797421b3b8a41\"}\n- {\"name\":\"eval\",\"status\":\"{\\\"answer\\\":3}\",\"id\":\"run-4a7010787a534caaa9dac151fc6319b0\"}",
+      "agent_lineage": "{\"ok\":true,\"steps\":[{\"step_id\":\"run-6340bfaa8efe40369326723f33c12889\",\"kind\":\"execution\",\"title\":\"typed-reasoning\",\"summary\":\"{\\\"answer\\\":3}\",\"source\":\"python-runtime\",\"why\":\"Recorded execution evidence\",\"evidence\":{\"ok\":true,\"data\":{\"answer\":3},\"errors\":[]}},{\"step_id\":\"run-a3299b30593d40af83e797421b3b8a41\",\"kind\":\"execution\",\"title\":\"reasoner\",\"summary\":\"{\\\"answer\\\":3}\",\"source\":\"ollama-runtime\",\"why\":\"Recorded execution evidence\",\"evidence\":{\"ok\":true,\"data\":{\"answer\":3},\"errors\":[]}},{\"step_id\":\"run-4a7010787a534caaa9dac151fc6319b0\",\"kind\":\"execution\",\"title\":\"eval\",\"summary\":\"{\\\"answer\\\":3}\",\"source\":\"ollama-runtime\",\"why\":\"Recorded execution evidence\",\"evidence\":{\"ok\":true,\"data\":{\"answer\":3},\"errors\":[]}}],\"omitted_steps\":0,\"failed_steps\":0,\"execution_id\":\"run-6340bfaa8efe40369326723f33c12889\",\"answer\":\"{\\\"answer\\\":3}\"}",
+      "budget_after": {
+        "attempts": 299,
+        "reserved_usd": "1.592210",
+        "limits": {
+          "usd": 10,
+          "requests": 300
+        },
+        "remaining_requests": 1,
+        "remaining_usd": "8.407790"
+      },
+      "evidence": "revisions/2.1.4/pydantic-dev4/online/20261026T050152685584/results.json"
+    }
+  ],
+  "online_all_attempts": [
+    {
+      "route": "openai-runtime",
+      "framework": "openai-agents",
+      "model": "gpt-4.1-mini",
+      "input": {
+        "value": 2
+      },
+      "expected": {
+        "answer": 3
+      },
+      "wheel_sha256": "a06317a8bb14b3cf8ba42684880a3a722e7396603df41962e877e019b888680b",
+      "budget_before": {
+        "attempts": 296,
+        "reserved_usd": "1.575337",
+        "limits": {
+          "usd": 10,
+          "requests": 300
+        },
+        "remaining_requests": 4,
+        "remaining_usd": "8.424663"
+      },
+      "passed": true,
+      "result": {
+        "text": "{\"answer\":3}",
+        "final": {
+          "answer": 3
+        },
+        "data": {
+          "answer": 3
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "requests": 1,
+          "input_tokens": 84,
+          "output_tokens": 6,
+          "total_tokens": 90,
+          "client_duration_ms": 4932.692,
+          "inference_requests": 1,
+          "tool_calls": 0
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "typed-reasoning",
+          "kind": "system",
+          "engine_name": "langgraph",
+          "lineage_refs": [
+            "run-71d15bd8692a4f2bad84f74154fd53ca"
+          ],
+          "writes": [
+            "answer"
+          ],
+          "context": {
+            "fingerprint": "664bdcf50b0cc5d0afc8b9b4b9af2bd34a287f27edb4d89c4671837180cd1ee1",
+            "sources": [],
+            "memory_revision": null,
+            "episode_ids": []
+          },
+          "actions_observed": 2,
+          "input": {
+            "value": 2,
+            "answer": null
+          },
+          "state_metrics": {
+            "snapshots": 2,
+            "max_bytes": 156,
+            "max_lineage_refs": 1
+          },
+          "resumes_execution_id": null
+        },
+        "execution_id": "run-16e93b74ae844408af1628d72a6cbe7d",
+        "parent_execution_id": null,
+        "status": "completed",
+        "interrupts": [],
+        "continuation": null,
+        "children": [
+          {
+            "text": "{\"answer\":3}",
+            "final": {
+              "answer": 3
+            },
+            "data": {
+              "answer": 3
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "requests": 1,
+              "input_tokens": 84,
+              "output_tokens": 6,
+              "total_tokens": 90,
+              "client_duration_ms": 4932.692,
+              "inference_requests": 1,
+              "tool_calls": 0
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "reasoner",
+              "kind": "node"
+            },
+            "execution_id": "run-71d15bd8692a4f2bad84f74154fd53ca",
+            "parent_execution_id": "run-16e93b74ae844408af1628d72a6cbe7d",
+            "status": "completed",
+            "interrupts": [],
+            "continuation": null,
+            "children": [
+              {
+                "text": "{\"answer\":3}",
+                "final": {
+                  "answer": 3
+                },
+                "data": {
+                  "answer": 3
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "requests": 1,
+                  "input_tokens": 84,
+                  "output_tokens": 6,
+                  "total_tokens": 90,
+                  "client_duration_ms": 4932.692,
+                  "inference_requests": 1,
+                  "tool_calls": 0
+                },
+                "engine": "openai-runtime",
+                "model": "gpt-4.1-mini",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "reasoner",
+                  "kind": "agent",
+                  "engine_name": "langgraph",
+                  "lineage_refs": [
+                    "run-59843514338948f4adca73493b159ce7"
+                  ],
+                  "writes": [
+                    "answer"
+                  ],
+                  "context": {
+                    "fingerprint": "664bdcf50b0cc5d0afc8b9b4b9af2bd34a287f27edb4d89c4671837180cd1ee1",
+                    "sources": [],
+                    "memory_revision": null,
+                    "episode_ids": []
+                  }
+                },
+                "execution_id": "run-f30686b637ae41e0bce86e1ee0ecb524",
+                "parent_execution_id": "run-71d15bd8692a4f2bad84f74154fd53ca",
+                "status": "completed",
+                "interrupts": [],
+                "continuation": null,
+                "children": [
+                  {
+                    "text": "{\"answer\":3}",
+                    "final": {
+                      "answer": 3
+                    },
+                    "data": {
+                      "output": {
+                        "answer": 3
+                      },
+                      "result_ref": "run-3e1c76030d5c471eb4547e530851110f"
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "requests": 1,
+                      "input_tokens": 84,
+                      "output_tokens": 6,
+                      "total_tokens": 90,
+                      "client_duration_ms": 4932.692,
+                      "inference_requests": 1,
+                      "tool_calls": 0
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "default",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "name": "actor",
+                      "kind": "node"
+                    },
+                    "execution_id": "run-59843514338948f4adca73493b159ce7",
+                    "parent_execution_id": "run-f30686b637ae41e0bce86e1ee0ecb524",
+                    "status": "completed",
+                    "interrupts": [],
+                    "continuation": null,
+                    "children": [
+                      {
+                        "text": "{\"answer\":3}",
+                        "final": {
+                          "answer": 3
+                        },
+                        "data": {
+                          "answer": 3
+                        },
+                        "ok": true,
+                        "messages": [],
+                        "raw_responses": [],
+                        "usage": {
+                          "requests": 1,
+                          "input_tokens": 84,
+                          "output_tokens": 6,
+                          "total_tokens": 90,
+                          "client_duration_ms": 4932.692,
+                          "inference_requests": 1,
+                          "tool_calls": 0
+                        },
+                        "engine": "openai-runtime",
+                        "model": "gpt-4.1-mini",
+                        "mode": "default",
+                        "trace_schema_version": "agentic_systems.trace.v1",
+                        "validation": null,
+                        "errors": [],
+                        "meta": {
+                          "name": "reasoner",
+                          "kind": "model",
+                          "framework": "openai-agents"
+                        },
+                        "execution_id": "run-3e1c76030d5c471eb4547e530851110f",
+                        "parent_execution_id": "run-59843514338948f4adca73493b159ce7",
+                        "status": "completed",
+                        "interrupts": [],
+                        "continuation": null,
+                        "children": [
+                          {
+                            "text": "{\"answer\":3}",
+                            "final": {
+                              "answer": 3
+                            },
+                            "data": {
+                              "answer": 3
+                            },
+                            "ok": true,
+                            "messages": [
+                              {
+                                "content": "{\"value\": 2}",
+                                "role": "user"
+                              },
+                              {
+                                "id": "msg_02d7fd95e375a791006adedec66eac87d19537c64dd4d10b3f",
+                                "content": [
+                                  {
+                                    "annotations": [],
+                                    "text": "{\"answer\":3}",
+                                    "type": "output_text",
+                                    "logprobs": []
+                                  }
+                                ],
+                                "role": "assistant",
+                                "status": "completed",
+                                "type": "message"
+                              }
+                            ],
+                            "raw_responses": [
+                              {
+                                "output": [
+                                  {
+                                    "id": "msg_02d7fd95e375a791006adedec66eac87d19537c64dd4d10b3f",
+                                    "content": [
+                                      {
+                                        "annotations": [],
+                                        "text": "{\"answer\":3}",
+                                        "type": "output_text",
+                                        "logprobs": []
+                                      }
+                                    ],
+                                    "role": "assistant",
+                                    "status": "completed",
+                                    "type": "message",
+                                    "phase": null
+                                  }
+                                ],
+                                "usage": {
+                                  "requests": 1,
+                                  "input_tokens": 84,
+                                  "input_tokens_details": {
+                                    "cache_write_tokens": 0,
+                                    "cached_tokens": 0
+                                  },
+                                  "output_tokens": 6,
+                                  "output_tokens_details": {
+                                    "reasoning_tokens": 0
+                                  },
+                                  "total_tokens": 90,
+                                  "request_usage_entries": []
+                                },
+                                "response_id": "resp_02d7fd95e375a791006adedec5838c87d1b9c676865e781607",
+                                "request_id": "req_8dbd5d77de7e4e8bab83feaa514db0e8"
+                              }
+                            ],
+                            "usage": {
+                              "requests": 1,
+                              "input_tokens": 84,
+                              "input_tokens_details": {
+                                "cache_write_tokens": 0,
+                                "cached_tokens": 0
+                              },
+                              "output_tokens": 6,
+                              "output_tokens_details": {
+                                "reasoning_tokens": 0
+                              },
+                              "total_tokens": 90,
+                              "request_usage_entries": [
+                                {
+                                  "input_tokens": 84,
+                                  "output_tokens": 6,
+                                  "total_tokens": 90,
+                                  "input_tokens_details": {
+                                    "cache_write_tokens": 0,
+                                    "cached_tokens": 0
+                                  },
+                                  "output_tokens_details": {
+                                    "reasoning_tokens": 0
+                                  }
+                                }
+                              ],
+                              "scheduler": {
+                                "attempts": 1,
+                                "retries": 0,
+                                "timed_out": false,
+                                "latency_ms": 4932.692
+                              },
+                              "client_duration_ms": 4932.692,
+                              "inference_requests": 1,
+                              "tool_calls": 0
+                            },
+                            "engine": "openai-runtime",
+                            "model": "gpt-4.1-mini",
+                            "mode": "eval",
+                            "trace_schema_version": "agentic_systems.trace.v1",
+                            "validation": {
+                              "ok": true,
+                              "issues": []
+                            },
+                            "errors": [],
+                            "meta": {
+                              "source_result_type": "RunResult",
+                              "framework_adapter": "openai-agents",
+                              "input": {
+                                "value": 2
+                              },
+                              "rejected_tool_calls": [],
+                              "runtime": {
+                                "provider": "openai-runtime",
+                                "model_id": "gpt-4.1-mini",
+                                "region_name": null,
+                                "endpoint": "https://api.openai.com/v1",
+                                "metadata": {},
+                                "provider_priority": [
+                                  "openai-runtime",
+                                  "bedrock-runtime",
+                                  "ollama-runtime"
+                                ],
+                                "allow_python_fallback": false,
+                                "scheduler": {
+                                  "max_turns": 1,
+                                  "max_tool_calls": 1,
+                                  "timeout_s": 60,
+                                  "max_concurrency": 1,
+                                  "max_retries": 0,
+                                  "backoff_s": 0.0
+                                }
+                              },
+                              "scheduler": {
+                                "max_turns": 1,
+                                "max_tool_calls": 1,
+                                "timeout_s": 60,
+                                "max_concurrency": 1,
+                                "max_retries": 0,
+                                "backoff_s": 0.0
+                              },
+                              "scheduler_execution": {
+                                "scheduler": {
+                                  "max_turns": 1,
+                                  "max_tool_calls": 1,
+                                  "timeout_s": 60,
+                                  "max_concurrency": 1,
+                                  "max_retries": 0,
+                                  "backoff_s": 0.0
+                                },
+                                "attempts": 1,
+                                "retries": 0,
+                                "timed_out": false,
+                                "latency_ms": 4932.692
+                              },
+                              "framework": "openai-agents",
+                              "framework_requested": "openai-agents",
+                              "framework_config": {
+                                "name": "openai-agents",
+                                "agent_kwargs": {},
+                                "run_kwargs": {}
+                              },
+                              "agent_name": "reasoner",
+                              "requested_engine": "openai-runtime",
+                              "runtime_engine": "openai-runtime",
+                              "execution_engine": "openai-runtime"
+                            },
+                            "execution_id": "run-b56f347a3c3d48a7823081c8977c2877",
+                            "parent_execution_id": "run-3e1c76030d5c471eb4547e530851110f",
+                            "status": "completed",
+                            "interrupts": [],
+                            "continuation": null,
+                            "children": [],
+                            "tool_events": []
+                          }
+                        ],
+                        "tool_events": []
+                      }
+                    ],
+                    "tool_events": []
+                  }
+                ],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "human_results": "typed-reasoning: COMPLETED\nExecution: run-16e93b74ae844408af1628d72a6cbe7d\nInput: {\"value\":2,\"answer\":null}\nOutput: {\"answer\":3}\nProcess (recorded steps):\n- {\"name\":\"typed-reasoning\",\"status\":\"{\\\"answer\\\":3}\",\"id\":\"run-16e93b74ae844408af1628d72a6cbe7d\"}\n- {\"name\":\"reasoner\",\"status\":\"{\\\"answer\\\":3}\",\"id\":\"run-3e1c76030d5c471eb4547e530851110f\"}\n- {\"name\":\"eval\",\"status\":\"{\\\"answer\\\":3}\",\"id\":\"run-b56f347a3c3d48a7823081c8977c2877\"}",
+      "agent_lineage": "{\"ok\":true,\"steps\":[{\"step_id\":\"run-16e93b74ae844408af1628d72a6cbe7d\",\"kind\":\"execution\",\"title\":\"typed-reasoning\",\"summary\":\"{\\\"answer\\\":3}\",\"source\":\"python-runtime\",\"why\":\"Recorded execution evidence\",\"evidence\":{\"ok\":true,\"data\":{\"answer\":3},\"errors\":[]}},{\"step_id\":\"run-3e1c76030d5c471eb4547e530851110f\",\"kind\":\"execution\",\"title\":\"reasoner\",\"summary\":\"{\\\"answer\\\":3}\",\"source\":\"openai-runtime\",\"why\":\"Recorded execution evidence\",\"evidence\":{\"ok\":true,\"data\":{\"answer\":3},\"errors\":[]}},{\"step_id\":\"run-b56f347a3c3d48a7823081c8977c2877\",\"kind\":\"execution\",\"title\":\"eval\",\"summary\":\"{\\\"answer\\\":3}\",\"source\":\"openai-runtime\",\"why\":\"Recorded execution evidence\",\"evidence\":{\"ok\":true,\"data\":{\"answer\":3},\"errors\":[]}}],\"omitted_steps\":0,\"failed_steps\":0,\"execution_id\":\"run-16e93b74ae844408af1628d72a6cbe7d\",\"answer\":\"{\\\"answer\\\":3}\"}",
+      "budget_after": {
+        "attempts": 297,
+        "reserved_usd": "1.578158",
+        "limits": {
+          "usd": 10,
+          "requests": 300
+        },
+        "remaining_requests": 3,
+        "remaining_usd": "8.421842"
+      },
+      "evidence": "revisions/2.1.4/pydantic-dev4/online/20261026T050152685584/results.json"
+    },
+    {
+      "route": "bedrock-runtime",
+      "framework": "native",
+      "model": "qwen.qwen3-32b-v1:0",
+      "input": {
+        "value": 2
+      },
+      "expected": {
+        "answer": 3
+      },
+      "wheel_sha256": "a06317a8bb14b3cf8ba42684880a3a722e7396603df41962e877e019b888680b",
+      "budget_before": {
+        "attempts": 297,
+        "reserved_usd": "1.578158",
+        "limits": {
+          "usd": 10,
+          "requests": 300
+        },
+        "remaining_requests": 3,
+        "remaining_usd": "8.421842"
+      },
+      "passed": true,
+      "result": {
+        "text": "```json\n{\"answer\":3}\n```",
+        "final": {
+          "text": "```json\n{\"answer\":3}\n```"
+        },
+        "data": {
+          "answer": 3
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "input_tokens": 93,
+          "output_tokens": 10,
+          "total_tokens": 103,
+          "requests": 1,
+          "service_latency_ms": 154.0,
+          "client_duration_ms": 663.424,
+          "inference_requests": 1,
+          "tool_calls": 0
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "typed-reasoning",
+          "kind": "system",
+          "engine_name": "langgraph",
+          "lineage_refs": [
+            "run-c15526f989464a5da4c15c053dc413b9"
+          ],
+          "writes": [
+            "answer"
+          ],
+          "context": {
+            "fingerprint": "664bdcf50b0cc5d0afc8b9b4b9af2bd34a287f27edb4d89c4671837180cd1ee1",
+            "sources": [],
+            "memory_revision": null,
+            "episode_ids": []
+          },
+          "actions_observed": 2,
+          "input": {
+            "value": 2,
+            "answer": null
+          },
+          "state_metrics": {
+            "snapshots": 2,
+            "max_bytes": 156,
+            "max_lineage_refs": 1
+          },
+          "resumes_execution_id": null
+        },
+        "execution_id": "run-cc45a2b9235841fe953b1b48deb6c293",
+        "parent_execution_id": null,
+        "status": "completed",
+        "interrupts": [],
+        "continuation": null,
+        "children": [
+          {
+            "text": "```json\n{\"answer\":3}\n```",
+            "final": {
+              "text": "```json\n{\"answer\":3}\n```"
+            },
+            "data": {
+              "answer": 3
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "input_tokens": 93,
+              "output_tokens": 10,
+              "total_tokens": 103,
+              "requests": 1,
+              "service_latency_ms": 154.0,
+              "client_duration_ms": 663.424,
+              "inference_requests": 1,
+              "tool_calls": 0
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "reasoner",
+              "kind": "node"
+            },
+            "execution_id": "run-c15526f989464a5da4c15c053dc413b9",
+            "parent_execution_id": "run-cc45a2b9235841fe953b1b48deb6c293",
+            "status": "completed",
+            "interrupts": [],
+            "continuation": null,
+            "children": [
+              {
+                "text": "```json\n{\"answer\":3}\n```",
+                "final": {
+                  "text": "```json\n{\"answer\":3}\n```"
+                },
+                "data": {
+                  "answer": 3
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "input_tokens": 93,
+                  "output_tokens": 10,
+                  "total_tokens": 103,
+                  "requests": 1,
+                  "service_latency_ms": 154.0,
+                  "client_duration_ms": 663.424,
+                  "inference_requests": 1,
+                  "tool_calls": 0
+                },
+                "engine": "bedrock-runtime",
+                "model": "qwen.qwen3-32b-v1:0",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "reasoner",
+                  "kind": "agent",
+                  "engine_name": "langgraph",
+                  "lineage_refs": [
+                    "run-338a76f4708b4573ba86c41be0230293"
+                  ],
+                  "writes": [
+                    "answer"
+                  ],
+                  "context": {
+                    "fingerprint": "664bdcf50b0cc5d0afc8b9b4b9af2bd34a287f27edb4d89c4671837180cd1ee1",
+                    "sources": [],
+                    "memory_revision": null,
+                    "episode_ids": []
+                  }
+                },
+                "execution_id": "run-13ca3d77814d4c52b5b9f0ac058f2d09",
+                "parent_execution_id": "run-c15526f989464a5da4c15c053dc413b9",
+                "status": "completed",
+                "interrupts": [],
+                "continuation": null,
+                "children": [
+                  {
+                    "text": "```json\n{\"answer\":3}\n```",
+                    "final": {
+                      "text": "```json\n{\"answer\":3}\n```"
+                    },
+                    "data": {
+                      "output": {
+                        "answer": 3
+                      },
+                      "result_ref": "run-872b6d554261462da527a1469834c597"
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "input_tokens": 93,
+                      "output_tokens": 10,
+                      "total_tokens": 103,
+                      "requests": 1,
+                      "service_latency_ms": 154.0,
+                      "client_duration_ms": 663.424,
+                      "inference_requests": 1,
+                      "tool_calls": 0
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "default",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "name": "actor",
+                      "kind": "node"
+                    },
+                    "execution_id": "run-338a76f4708b4573ba86c41be0230293",
+                    "parent_execution_id": "run-13ca3d77814d4c52b5b9f0ac058f2d09",
+                    "status": "completed",
+                    "interrupts": [],
+                    "continuation": null,
+                    "children": [
+                      {
+                        "text": "```json\n{\"answer\":3}\n```",
+                        "final": {
+                          "text": "```json\n{\"answer\":3}\n```"
+                        },
+                        "data": {
+                          "answer": 3
+                        },
+                        "ok": true,
+                        "messages": [],
+                        "raw_responses": [],
+                        "usage": {
+                          "input_tokens": 93,
+                          "output_tokens": 10,
+                          "total_tokens": 103,
+                          "requests": 1,
+                          "service_latency_ms": 154.0,
+                          "client_duration_ms": 663.424,
+                          "inference_requests": 1,
+                          "tool_calls": 0
+                        },
+                        "engine": "bedrock-runtime",
+                        "model": "qwen.qwen3-32b-v1:0",
+                        "mode": "default",
+                        "trace_schema_version": "agentic_systems.trace.v1",
+                        "validation": null,
+                        "errors": [],
+                        "meta": {
+                          "name": "reasoner",
+                          "kind": "model",
+                          "framework": "native"
+                        },
+                        "execution_id": "run-872b6d554261462da527a1469834c597",
+                        "parent_execution_id": "run-338a76f4708b4573ba86c41be0230293",
+                        "status": "completed",
+                        "interrupts": [],
+                        "continuation": null,
+                        "children": [
+                          {
+                            "text": "```json\n{\"answer\":3}\n```",
+                            "final": {
+                              "text": "```json\n{\"answer\":3}\n```"
+                            },
+                            "data": {
+                              "answer": 3
+                            },
+                            "ok": true,
+                            "messages": [
+                              {
+                                "role": "user",
+                                "content": [
+                                  {
+                                    "text": "{\n  \"value\": 2\n}"
+                                  }
+                                ]
+                              },
+                              {
+                                "role": "assistant",
+                                "content": [
+                                  {
+                                    "text": "```json\n{\"answer\":3}\n```"
+                                  }
+                                ]
+                              }
+                            ],
+                            "raw_responses": [
+                              {
+                                "request_id": "87daa182-1bb6-406b-8e35-1301b8f0480e",
+                                "http_status_code": 200,
+                                "usage": {
+                                  "inputTokens": 93,
+                                  "outputTokens": 10,
+                                  "totalTokens": 103
+                                },
+                                "stop_reason": "end_turn",
+                                "service_latency_ms": 154,
+                                "client_duration_ms": 663.424
+                              }
+                            ],
+                            "usage": {
+                              "input_tokens": 93,
+                              "output_tokens": 10,
+                              "total_tokens": 103,
+                              "requests": 1,
+                              "service_latency_ms": 154.0,
+                              "client_duration_ms": 663.424,
+                              "scheduler": {
+                                "attempts": 1,
+                                "retries": 0,
+                                "timed_out": false,
+                                "latency_ms": 664.34
+                              },
+                              "inference_requests": 1,
+                              "tool_calls": 0
+                            },
+                            "engine": "bedrock-runtime",
+                            "model": "qwen.qwen3-32b-v1:0",
+                            "mode": "eval",
+                            "trace_schema_version": "agentic_systems.trace.v1",
+                            "validation": {
+                              "ok": true,
+                              "issues": []
+                            },
+                            "errors": [],
+                            "meta": {
+                              "source_result_type": "BedrockRunResult",
+                              "runtime": {
+                                "provider": "bedrock-runtime",
+                                "model_id": "qwen.qwen3-32b-v1:0",
+                                "region_name": "us-east-2",
+                                "endpoint": "https://bedrock-runtime.us-east-2.amazonaws.com",
+                                "metadata": {},
+                                "provider_priority": [
+                                  "openai-runtime",
+                                  "bedrock-runtime",
+                                  "ollama-runtime"
+                                ],
+                                "allow_python_fallback": false,
+                                "scheduler": {
+                                  "max_turns": 1,
+                                  "max_tool_calls": 1,
+                                  "timeout_s": 60,
+                                  "max_concurrency": 1,
+                                  "max_retries": 0,
+                                  "backoff_s": 0.0
+                                }
+                              },
+                              "scheduler": {
+                                "max_turns": 1,
+                                "max_tool_calls": 1,
+                                "timeout_s": 60,
+                                "max_concurrency": 1,
+                                "max_retries": 0,
+                                "backoff_s": 0.0
+                              },
+                              "scheduler_execution": {
+                                "scheduler": {
+                                  "max_turns": 1,
+                                  "max_tool_calls": 1,
+                                  "timeout_s": 60,
+                                  "max_concurrency": 1,
+                                  "max_retries": 0,
+                                  "backoff_s": 0.0
+                                },
+                                "attempts": 1,
+                                "retries": 0,
+                                "timed_out": false,
+                                "latency_ms": 664.34
+                              },
+                              "framework": "native",
+                              "framework_requested": "native",
+                              "framework_adapter": "native",
+                              "framework_config": {
+                                "name": "native",
+                                "agent_kwargs": {},
+                                "run_kwargs": {}
+                              },
+                              "agent_name": "reasoner",
+                              "input": {
+                                "value": 2
+                              },
+                              "requested_engine": "bedrock-runtime",
+                              "runtime_engine": "bedrock-runtime",
+                              "execution_engine": "bedrock-runtime"
+                            },
+                            "execution_id": "run-4f58e14d40aa4984a5290c6d6dd3882c",
+                            "parent_execution_id": "run-872b6d554261462da527a1469834c597",
+                            "status": "completed",
+                            "interrupts": [],
+                            "continuation": null,
+                            "children": [],
+                            "tool_events": []
+                          }
+                        ],
+                        "tool_events": []
+                      }
+                    ],
+                    "tool_events": []
+                  }
+                ],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "human_results": "typed-reasoning: COMPLETED\nExecution: run-cc45a2b9235841fe953b1b48deb6c293\nInput: {\"value\":2,\"answer\":null}\nOutput: {\"answer\":3}\nProcess (recorded steps):\n- {\"name\":\"typed-reasoning\",\"status\":\"```json\\n{\\\"answer\\\":3}\\n```\",\"id\":\"run-cc45a2b9235841fe953b1b48deb6c293\"}\n- {\"name\":\"reasoner\",\"status\":\"```json\\n{\\\"answer\\\":3}\\n```\",\"id\":\"run-872b6d554261462da527a1469834c597\"}\n- {\"name\":\"eval\",\"status\":\"```json\\n{\\\"answer\\\":3}\\n```\",\"id\":\"run-4f58e14d40aa4984a5290c6d6dd3882c\"}",
+      "agent_lineage": "{\"ok\":true,\"steps\":[{\"step_id\":\"run-cc45a2b9235841fe953b1b48deb6c293\",\"kind\":\"execution\",\"title\":\"typed-reasoning\",\"summary\":\"```json\\n{\\\"answer\\\":3}\\n```\",\"source\":\"python-runtime\",\"why\":\"Recorded execution evidence\",\"evidence\":{\"ok\":true,\"data\":{\"answer\":3},\"errors\":[]}},{\"step_id\":\"run-872b6d554261462da527a1469834c597\",\"kind\":\"execution\",\"title\":\"reasoner\",\"summary\":\"```json\\n{\\\"answer\\\":3}\\n```\",\"source\":\"bedrock-runtime\",\"why\":\"Recorded execution evidence\",\"evidence\":{\"ok\":true,\"data\":{\"answer\":3},\"errors\":[]}},{\"step_id\":\"run-4f58e14d40aa4984a5290c6d6dd3882c\",\"kind\":\"execution\",\"title\":\"eval\",\"summary\":\"```json\\n{\\\"answer\\\":3}\\n```\",\"source\":\"bedrock-runtime\",\"why\":\"Recorded execution evidence\",\"evidence\":{\"ok\":true,\"data\":{\"answer\":3},\"errors\":[]}}],\"omitted_steps\":0,\"failed_steps\":0,\"execution_id\":\"run-cc45a2b9235841fe953b1b48deb6c293\",\"answer\":\"```json\\n{\\\"answer\\\":3}\\n```\"}",
+      "budget_after": {
+        "attempts": 298,
+        "reserved_usd": "1.585127",
+        "limits": {
+          "usd": 10,
+          "requests": 300
+        },
+        "remaining_requests": 2,
+        "remaining_usd": "8.414873"
+      },
+      "evidence": "revisions/2.1.4/pydantic-dev4/online/20261026T050152685584/results.json"
+    },
+    {
+      "route": "ollama-gpu",
+      "framework": "native",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "input": {
+        "value": 2
+      },
+      "expected": {
+        "answer": 3
+      },
+      "wheel_sha256": "a06317a8bb14b3cf8ba42684880a3a722e7396603df41962e877e019b888680b",
+      "budget_before": {
+        "attempts": 298,
+        "reserved_usd": "1.585127",
+        "limits": {
+          "usd": 10,
+          "requests": 300
+        },
+        "remaining_requests": 2,
+        "remaining_usd": "8.414873"
+      },
+      "passed": false,
+      "result": {
+        "text": "Connection error.",
+        "final": {
+          "ok": false,
+          "error": {
+            "code": "APIConnectionError",
+            "message": "Connection error."
+          }
+        },
+        "data": {},
+        "ok": false,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "inference_requests": 0,
+          "tool_calls": 0
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [
+          {
+            "code": "_NodeFailure",
+            "message": "Required node failed: reasoner"
+          },
+          {
+            "code": "_NodeFailure",
+            "message": "Required node failed: actor"
+          },
+          {
+            "code": "run_failed",
+            "message": "Connection error."
+          },
+          {
+            "code": "output_schema_mismatch",
+            "message": "'answer' is a required property",
+            "path": []
+          },
+          {
+            "code": "invalid_structured_output",
+            "message": "Model text is not JSON"
+          },
+          {
+            "code": "output_schema_mismatch",
+            "message": "'answer' is a required property",
+            "path": []
+          }
+        ],
+        "meta": {
+          "name": "typed-reasoning",
+          "kind": "system",
+          "engine_name": "langgraph",
+          "lineage_refs": [
+            "run-a1c04d9eb473431f8eae3382a8d3700c"
+          ],
+          "writes": [],
+          "context": {
+            "fingerprint": "664bdcf50b0cc5d0afc8b9b4b9af2bd34a287f27edb4d89c4671837180cd1ee1",
+            "sources": [],
+            "memory_revision": null,
+            "episode_ids": []
+          },
+          "actions_observed": 2,
+          "input": {
+            "value": 2,
+            "answer": null
+          },
+          "state_metrics": {
+            "snapshots": 0,
+            "max_bytes": 0,
+            "max_lineage_refs": 0
+          },
+          "resumes_execution_id": null
+        },
+        "execution_id": "run-91c1f76ca1004f64b9badd8eed4eb5f0",
+        "parent_execution_id": null,
+        "status": "failed",
+        "interrupts": [],
+        "continuation": null,
+        "children": [
+          {
+            "text": "Connection error.",
+            "final": {
+              "ok": false,
+              "error": {
+                "code": "APIConnectionError",
+                "message": "Connection error."
+              }
+            },
+            "data": {},
+            "ok": false,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "inference_requests": 0,
+              "tool_calls": 0
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [
+              {
+                "code": "_NodeFailure",
+                "message": "Required node failed: actor"
+              },
+              {
+                "code": "run_failed",
+                "message": "Connection error."
+              },
+              {
+                "code": "output_schema_mismatch",
+                "message": "'answer' is a required property",
+                "path": []
+              },
+              {
+                "code": "invalid_structured_output",
+                "message": "Model text is not JSON"
+              },
+              {
+                "code": "output_schema_mismatch",
+                "message": "'answer' is a required property",
+                "path": []
+              }
+            ],
+            "meta": {
+              "name": "reasoner",
+              "kind": "node"
+            },
+            "execution_id": "run-a1c04d9eb473431f8eae3382a8d3700c",
+            "parent_execution_id": "run-91c1f76ca1004f64b9badd8eed4eb5f0",
+            "status": "failed",
+            "interrupts": [],
+            "continuation": null,
+            "children": [
+              {
+                "text": "Connection error.",
+                "final": {
+                  "ok": false,
+                  "error": {
+                    "code": "APIConnectionError",
+                    "message": "Connection error."
+                  }
+                },
+                "data": {},
+                "ok": false,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "inference_requests": 0,
+                  "tool_calls": 0
+                },
+                "engine": "ollama-runtime",
+                "model": "qwen3:4b-instruct-2507-q4_K_M",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": {
+                  "ok": false,
+                  "issues": [
+                    {
+                      "code": "invalid_structured_output",
+                      "message": "Model text is not JSON"
+                    },
+                    {
+                      "code": "output_schema_mismatch",
+                      "message": "'answer' is a required property",
+                      "path": []
+                    }
+                  ]
+                },
+                "errors": [
+                  {
+                    "code": "_NodeFailure",
+                    "message": "Required node failed: actor"
+                  },
+                  {
+                    "code": "run_failed",
+                    "message": "Connection error."
+                  },
+                  {
+                    "code": "output_schema_mismatch",
+                    "message": "'answer' is a required property",
+                    "path": []
+                  },
+                  {
+                    "code": "invalid_structured_output",
+                    "message": "Model text is not JSON"
+                  },
+                  {
+                    "code": "output_schema_mismatch",
+                    "message": "'answer' is a required property",
+                    "path": []
+                  }
+                ],
+                "meta": {
+                  "name": "reasoner",
+                  "kind": "agent",
+                  "engine_name": "langgraph",
+                  "lineage_refs": [
+                    "run-64171f74f37844bca984985fc0012f8b"
+                  ],
+                  "writes": [],
+                  "context": {
+                    "fingerprint": "664bdcf50b0cc5d0afc8b9b4b9af2bd34a287f27edb4d89c4671837180cd1ee1",
+                    "sources": [],
+                    "memory_revision": null,
+                    "episode_ids": []
+                  }
+                },
+                "execution_id": "run-1b971b48118c4e6baa5e0cbe44bcd7ca",
+                "parent_execution_id": "run-a1c04d9eb473431f8eae3382a8d3700c",
+                "status": "failed",
+                "interrupts": [],
+                "continuation": null,
+                "children": [
+                  {
+                    "text": "Connection error.",
+                    "final": {
+                      "ok": false,
+                      "error": {
+                        "code": "APIConnectionError",
+                        "message": "Connection error."
+                      }
+                    },
+                    "data": {
+                      "output": {
+                        "ok": false,
+                        "error": {
+                          "code": "APIConnectionError",
+                          "message": "Connection error."
+                        }
+                      },
+                      "result_ref": "run-c677a7c440a347178c2d71d86c04f077"
+                    },
+                    "ok": false,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "inference_requests": 0,
+                      "tool_calls": 0
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "default",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [
+                      {
+                        "code": "run_failed",
+                        "message": "Connection error."
+                      },
+                      {
+                        "code": "output_schema_mismatch",
+                        "message": "'answer' is a required property",
+                        "path": []
+                      }
+                    ],
+                    "meta": {
+                      "name": "actor",
+                      "kind": "node"
+                    },
+                    "execution_id": "run-64171f74f37844bca984985fc0012f8b",
+                    "parent_execution_id": "run-1b971b48118c4e6baa5e0cbe44bcd7ca",
+                    "status": "failed",
+                    "interrupts": [],
+                    "continuation": null,
+                    "children": [
+                      {
+                        "text": "Connection error.",
+                        "final": {
+                          "ok": false,
+                          "error": {
+                            "code": "APIConnectionError",
+                            "message": "Connection error."
+                          }
+                        },
+                        "data": {
+                          "ok": false,
+                          "error": {
+                            "code": "APIConnectionError",
+                            "message": "Connection error."
+                          }
+                        },
+                        "ok": false,
+                        "messages": [],
+                        "raw_responses": [],
+                        "usage": {
+                          "inference_requests": 0,
+                          "tool_calls": 0
+                        },
+                        "engine": "ollama-runtime",
+                        "model": "qwen3:4b-instruct-2507-q4_K_M",
+                        "mode": "default",
+                        "trace_schema_version": "agentic_systems.trace.v1",
+                        "validation": null,
+                        "errors": [
+                          {
+                            "code": "run_failed",
+                            "message": "Connection error."
+                          },
+                          {
+                            "code": "output_schema_mismatch",
+                            "message": "'answer' is a required property",
+                            "path": []
+                          }
+                        ],
+                        "meta": {
+                          "name": "reasoner",
+                          "kind": "model",
+                          "framework": "native"
+                        },
+                        "execution_id": "run-c677a7c440a347178c2d71d86c04f077",
+                        "parent_execution_id": "run-64171f74f37844bca984985fc0012f8b",
+                        "status": "failed",
+                        "interrupts": [],
+                        "continuation": null,
+                        "children": [
+                          {
+                            "text": "Connection error.",
+                            "final": {
+                              "ok": false,
+                              "error": {
+                                "code": "APIConnectionError",
+                                "message": "Connection error."
+                              }
+                            },
+                            "data": {
+                              "ok": false,
+                              "error": {
+                                "code": "APIConnectionError",
+                                "message": "Connection error."
+                              }
+                            },
+                            "ok": false,
+                            "messages": [],
+                            "raw_responses": [],
+                            "usage": {
+                              "scheduler": {
+                                "attempts": 1,
+                                "retries": 0,
+                                "timed_out": false,
+                                "latency_ms": null
+                              },
+                              "inference_requests": 0,
+                              "tool_calls": 0
+                            },
+                            "engine": "ollama-runtime",
+                            "model": "qwen3:4b-instruct-2507-q4_K_M",
+                            "mode": "eval",
+                            "trace_schema_version": "agentic_systems.trace.v1",
+                            "validation": {
+                              "ok": false,
+                              "issues": [
+                                {
+                                  "code": "output_schema_mismatch",
+                                  "message": "'answer' is a required property",
+                                  "path": []
+                                }
+                              ]
+                            },
+                            "errors": [
+                              {
+                                "code": "run_failed",
+                                "message": "Connection error."
+                              },
+                              {
+                                "code": "output_schema_mismatch",
+                                "message": "'answer' is a required property",
+                                "path": []
+                              }
+                            ],
+                            "meta": {
+                              "input": {
+                                "value": 2
+                              },
+                              "source_result_type": "SchedulerFailure",
+                              "framework": "native",
+                              "framework_requested": "native",
+                              "framework_adapter": "native",
+                              "runtime_engine": "ollama-runtime",
+                              "execution_engine": "ollama-runtime",
+                              "runtime": {
+                                "provider": "ollama-runtime",
+                                "model_id": "qwen3:4b-instruct-2507-q4_K_M",
+                                "region_name": null,
+                                "endpoint": "http://127.0.0.1:11434/v1",
+                                "metadata": {},
+                                "provider_priority": [
+                                  "openai-runtime",
+                                  "bedrock-runtime",
+                                  "ollama-runtime"
+                                ],
+                                "allow_python_fallback": false,
+                                "scheduler": {
+                                  "max_turns": 1,
+                                  "max_tool_calls": 1,
+                                  "timeout_s": 60,
+                                  "max_concurrency": 1,
+                                  "max_retries": 0,
+                                  "backoff_s": 0.0
+                                }
+                              },
+                              "scheduler": {
+                                "max_turns": 1,
+                                "max_tool_calls": 1,
+                                "timeout_s": 60,
+                                "max_concurrency": 1,
+                                "max_retries": 0,
+                                "backoff_s": 0.0
+                              },
+                              "scheduler_execution": {
+                                "scheduler": {
+                                  "max_turns": 1,
+                                  "max_tool_calls": 1,
+                                  "timeout_s": 60,
+                                  "max_concurrency": 1,
+                                  "max_retries": 0,
+                                  "backoff_s": 0.0
+                                },
+                                "attempts": 1,
+                                "retries": 0,
+                                "timed_out": false
+                              },
+                              "framework_config": {
+                                "name": "native",
+                                "agent_kwargs": {},
+                                "run_kwargs": {}
+                              },
+                              "agent_name": "reasoner",
+                              "requested_engine": "ollama-runtime"
+                            },
+                            "execution_id": "run-0f55856ee56341b39a9e4336ac8ab79d",
+                            "parent_execution_id": "run-c677a7c440a347178c2d71d86c04f077",
+                            "status": "failed",
+                            "interrupts": [],
+                            "continuation": null,
+                            "children": [],
+                            "tool_events": []
+                          }
+                        ],
+                        "tool_events": []
+                      }
+                    ],
+                    "tool_events": []
+                  }
+                ],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "human_results": "typed-reasoning: FAILED\nExecution: run-91c1f76ca1004f64b9badd8eed4eb5f0\nFailed executions: 6\nInput: {\"value\":2,\"answer\":null}\nOutput: {}\nErrors: [{\"code\":\"_NodeFailure\",\"message\":\"Required node failed: reasoner\"},{\"code\":\"_NodeFailure\",\"message\":\"Required node failed: actor\"},{\"code\":\"run_failed\",\"message\":\"Connection error.\"},{\"code\":\"output_schema_mismatch\",\"message\":\"'answer' is a required property\",\"path\":[]},{\"code\":\"invalid_structured_output\",\"message\":\"Model text is not JSON\"},{\"code\":\"output_schema_mismatch\",\"message\":\"'answer' is a required property\",\"path\":[]}]\nProcess (recorded steps):\n- {\"name\":\"typed-reasoning\",\"status\":\"failed\",\"id\":\"run-91c1f76ca1004f64b9badd8eed4eb5f0\"}\n- {\"name\":\"reasoner\",\"status\":\"failed\",\"id\":\"run-c677a7c440a347178c2d71d86c04f077\"}\n- {\"name\":\"eval\",\"status\":\"failed\",\"id\":\"run-0f55856ee56341b39a9e4336ac8ab79d\"}",
+      "agent_lineage": "{\"ok\":false,\"steps\":[{\"step_id\":\"run-91c1f76ca1004f64b9badd8eed4eb5f0\",\"kind\":\"execution\",\"title\":\"typed-reasoning\",\"summary\":\"Connection error.\",\"source\":\"python-runtime\",\"why\":\"Recorded execution evidence\",\"evidence\":{\"ok\":false,\"data\":{},\"errors\":{\"preview\":\"[{\\\"code\\\":\\\"_NodeFailure\\\",\\\"message\\\":\\\"Required node failed: reasoner\\\"},{\\\"code\\\":\\\"_NodeFailure\\\",\\\"message\\\":\\\"Required node failed: actor\\\"},{\\\"code\\\":\\\"run_failed\\\",\\\"message\\\":\\\"Connection error.\\\"},{\\\"code\\\":\\\"output_schema_mismatch\\\",\\\"message\\\":\\\"'answer' is a required property\\\",\\\"path\\\":[]},{\\\"code\\\":\\\"invalid_structured_output\\\",\\\"message\\\":\\\"Model text is not JSON\\\"},{\\\"code\\\":\\\"output_schema_mismatch\\\",\\\"message\\\":\\\"'answer' is \",\"omitted\":true}}},{\"step_id\":\"run-c677a7c440a347178c2d71d86c04f077\",\"kind\":\"execution\",\"title\":\"reasoner\",\"summary\":\"Connection error.\",\"source\":\"ollama-runtime\",\"why\":\"Recorded execution evidence\",\"evidence\":{\"ok\":false,\"data\":{\"ok\":false,\"error\":{\"code\":\"APIConnectionError\",\"message\":\"Connection error.\"}},\"errors\":[{\"code\":\"run_failed\",\"message\":\"Connection error.\"},{\"code\":\"output_schema_mismatch\",\"message\":\"'answer' is a required property\",\"path\":[]}]}}],\"omitted_steps\":1,\"failed_steps\":3,\"execution_id\":\"run-91c1f76ca1004f64b9badd8eed4eb5f0\",\"answer\":\"Connection error.\"}",
+      "error": {
+        "type": "AssertionError",
+        "message": ""
+      },
+      "budget_after": {
+        "attempts": 298,
+        "reserved_usd": "1.585127",
+        "limits": {
+          "usd": 10,
+          "requests": 300
+        },
+        "remaining_requests": 2,
+        "remaining_usd": "8.414873"
+      },
+      "evidence": "revisions/2.1.4/pydantic-dev4/online/20261026T050152685584/results.json"
+    },
+    {
+      "route": "ollama-cloud",
+      "framework": "strands",
+      "model": "gemma4:31b",
+      "input": {
+        "value": 2
+      },
+      "expected": {
+        "answer": 3
+      },
+      "wheel_sha256": "a06317a8bb14b3cf8ba42684880a3a722e7396603df41962e877e019b888680b",
+      "budget_before": {
+        "attempts": 298,
+        "reserved_usd": "1.585127",
+        "limits": {
+          "usd": 10,
+          "requests": 300
+        },
+        "remaining_requests": 2,
+        "remaining_usd": "8.414873"
+      },
+      "passed": true,
+      "result": {
+        "text": "{\"answer\":3}",
+        "final": {
+          "text": "{\"answer\":3}"
+        },
+        "data": {
+          "answer": 3
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "inputTokens": 92,
+          "outputTokens": 6,
+          "totalTokens": 98,
+          "input_tokens": 92,
+          "output_tokens": 6,
+          "total_tokens": 98,
+          "client_duration_ms": 916.698,
+          "requests": 1,
+          "inference_requests": 1,
+          "tool_calls": 0
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "typed-reasoning",
+          "kind": "system",
+          "engine_name": "langgraph",
+          "lineage_refs": [
+            "run-7a5e441c51414913aba07a046837b50c"
+          ],
+          "writes": [
+            "answer"
+          ],
+          "context": {
+            "fingerprint": "664bdcf50b0cc5d0afc8b9b4b9af2bd34a287f27edb4d89c4671837180cd1ee1",
+            "sources": [],
+            "memory_revision": null,
+            "episode_ids": []
+          },
+          "actions_observed": 2,
+          "input": {
+            "value": 2,
+            "answer": null
+          },
+          "state_metrics": {
+            "snapshots": 2,
+            "max_bytes": 156,
+            "max_lineage_refs": 1
+          },
+          "resumes_execution_id": null
+        },
+        "execution_id": "run-6340bfaa8efe40369326723f33c12889",
+        "parent_execution_id": null,
+        "status": "completed",
+        "interrupts": [],
+        "continuation": null,
+        "children": [
+          {
+            "text": "{\"answer\":3}",
+            "final": {
+              "text": "{\"answer\":3}"
+            },
+            "data": {
+              "answer": 3
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "inputTokens": 92,
+              "outputTokens": 6,
+              "totalTokens": 98,
+              "input_tokens": 92,
+              "output_tokens": 6,
+              "total_tokens": 98,
+              "client_duration_ms": 916.698,
+              "requests": 1,
+              "inference_requests": 1,
+              "tool_calls": 0
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "reasoner",
+              "kind": "node"
+            },
+            "execution_id": "run-7a5e441c51414913aba07a046837b50c",
+            "parent_execution_id": "run-6340bfaa8efe40369326723f33c12889",
+            "status": "completed",
+            "interrupts": [],
+            "continuation": null,
+            "children": [
+              {
+                "text": "{\"answer\":3}",
+                "final": {
+                  "text": "{\"answer\":3}"
+                },
+                "data": {
+                  "answer": 3
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "inputTokens": 92,
+                  "outputTokens": 6,
+                  "totalTokens": 98,
+                  "input_tokens": 92,
+                  "output_tokens": 6,
+                  "total_tokens": 98,
+                  "client_duration_ms": 916.698,
+                  "requests": 1,
+                  "inference_requests": 1,
+                  "tool_calls": 0
+                },
+                "engine": "ollama-runtime",
+                "model": "gemma4:31b",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "reasoner",
+                  "kind": "agent",
+                  "engine_name": "langgraph",
+                  "lineage_refs": [
+                    "run-f222e15354fd42d38fb61aae53a3cb3c"
+                  ],
+                  "writes": [
+                    "answer"
+                  ],
+                  "context": {
+                    "fingerprint": "664bdcf50b0cc5d0afc8b9b4b9af2bd34a287f27edb4d89c4671837180cd1ee1",
+                    "sources": [],
+                    "memory_revision": null,
+                    "episode_ids": []
+                  }
+                },
+                "execution_id": "run-ae6679c6e3fd429aa4099953fff7eba0",
+                "parent_execution_id": "run-7a5e441c51414913aba07a046837b50c",
+                "status": "completed",
+                "interrupts": [],
+                "continuation": null,
+                "children": [
+                  {
+                    "text": "{\"answer\":3}",
+                    "final": {
+                      "text": "{\"answer\":3}"
+                    },
+                    "data": {
+                      "output": {
+                        "answer": 3
+                      },
+                      "result_ref": "run-a3299b30593d40af83e797421b3b8a41"
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "inputTokens": 92,
+                      "outputTokens": 6,
+                      "totalTokens": 98,
+                      "input_tokens": 92,
+                      "output_tokens": 6,
+                      "total_tokens": 98,
+                      "client_duration_ms": 916.698,
+                      "requests": 1,
+                      "inference_requests": 1,
+                      "tool_calls": 0
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "default",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "name": "actor",
+                      "kind": "node"
+                    },
+                    "execution_id": "run-f222e15354fd42d38fb61aae53a3cb3c",
+                    "parent_execution_id": "run-ae6679c6e3fd429aa4099953fff7eba0",
+                    "status": "completed",
+                    "interrupts": [],
+                    "continuation": null,
+                    "children": [
+                      {
+                        "text": "{\"answer\":3}",
+                        "final": {
+                          "text": "{\"answer\":3}"
+                        },
+                        "data": {
+                          "answer": 3
+                        },
+                        "ok": true,
+                        "messages": [],
+                        "raw_responses": [],
+                        "usage": {
+                          "inputTokens": 92,
+                          "outputTokens": 6,
+                          "totalTokens": 98,
+                          "input_tokens": 92,
+                          "output_tokens": 6,
+                          "total_tokens": 98,
+                          "client_duration_ms": 916.698,
+                          "requests": 1,
+                          "inference_requests": 1,
+                          "tool_calls": 0
+                        },
+                        "engine": "ollama-runtime",
+                        "model": "gemma4:31b",
+                        "mode": "default",
+                        "trace_schema_version": "agentic_systems.trace.v1",
+                        "validation": null,
+                        "errors": [],
+                        "meta": {
+                          "name": "reasoner",
+                          "kind": "model",
+                          "framework": "strands"
+                        },
+                        "execution_id": "run-a3299b30593d40af83e797421b3b8a41",
+                        "parent_execution_id": "run-f222e15354fd42d38fb61aae53a3cb3c",
+                        "status": "completed",
+                        "interrupts": [],
+                        "continuation": null,
+                        "children": [
+                          {
+                            "text": "{\"answer\":3}",
+                            "final": {
+                              "text": "{\"answer\":3}"
+                            },
+                            "data": {
+                              "answer": 3
+                            },
+                            "ok": true,
+                            "messages": [
+                              {
+                                "role": "user",
+                                "content": [
+                                  {
+                                    "text": "{\"value\": 2}"
+                                  }
+                                ],
+                                "tracking_id": "3a0a6d88-47df-40ea-a21b-57b75ba06ee6"
+                              },
+                              {
+                                "role": "assistant",
+                                "content": [
+                                  {
+                                    "text": "{\"answer\":3}"
+                                  }
+                                ],
+                                "metadata": {
+                                  "usage": {
+                                    "inputTokens": 92,
+                                    "outputTokens": 6,
+                                    "totalTokens": 98
+                                  },
+                                  "metrics": {
+                                    "latencyMs": 0,
+                                    "timeToFirstByteMs": 916
+                                  }
+                                },
+                                "tracking_id": "4ddd81c3-c82f-4a15-afbf-6fc64cf0ad71"
+                              }
+                            ],
+                            "raw_responses": [
+                              {
+                                "role": "assistant",
+                                "content": [
+                                  {
+                                    "text": "{\"answer\":3}"
+                                  }
+                                ],
+                                "metadata": {
+                                  "usage": {
+                                    "inputTokens": 92,
+                                    "outputTokens": 6,
+                                    "totalTokens": 98
+                                  },
+                                  "metrics": {
+                                    "latencyMs": 0,
+                                    "timeToFirstByteMs": 916
+                                  }
+                                },
+                                "tracking_id": "4ddd81c3-c82f-4a15-afbf-6fc64cf0ad71"
+                              }
+                            ],
+                            "usage": {
+                              "inputTokens": 92,
+                              "outputTokens": 6,
+                              "totalTokens": 98,
+                              "input_tokens": 92,
+                              "output_tokens": 6,
+                              "total_tokens": 98,
+                              "client_duration_ms": 916.698,
+                              "requests": 1,
+                              "scheduler": {
+                                "attempts": 1,
+                                "retries": 0,
+                                "timed_out": false,
+                                "latency_ms": 1132.957
+                              },
+                              "inference_requests": 1,
+                              "tool_calls": 0
+                            },
+                            "engine": "ollama-runtime",
+                            "model": "gemma4:31b",
+                            "mode": "eval",
+                            "trace_schema_version": "agentic_systems.trace.v1",
+                            "validation": {
+                              "ok": true,
+                              "issues": []
+                            },
+                            "errors": [],
+                            "meta": {
+                              "source_result_type": "AgentResult",
+                              "framework_adapter": "strands",
+                              "input": {
+                                "value": 2
+                              },
+                              "stop_reason": "end_turn",
+                              "rejected_tool_calls": [],
+                              "output_materialization": [],
+                              "runtime": {
+                                "provider": "ollama-runtime",
+                                "model_id": "gemma4:31b",
+                                "region_name": null,
+                                "endpoint": "https://ollama.com/v1",
+                                "metadata": {},
+                                "provider_priority": [
+                                  "openai-runtime",
+                                  "bedrock-runtime",
+                                  "ollama-runtime"
+                                ],
+                                "allow_python_fallback": false,
+                                "scheduler": {
+                                  "max_turns": 1,
+                                  "max_tool_calls": 1,
+                                  "timeout_s": 60,
+                                  "max_concurrency": 1,
+                                  "max_retries": 0,
+                                  "backoff_s": 0.0
+                                }
+                              },
+                              "scheduler": {
+                                "max_turns": 1,
+                                "max_tool_calls": 1,
+                                "timeout_s": 60,
+                                "max_concurrency": 1,
+                                "max_retries": 0,
+                                "backoff_s": 0.0
+                              },
+                              "scheduler_execution": {
+                                "scheduler": {
+                                  "max_turns": 1,
+                                  "max_tool_calls": 1,
+                                  "timeout_s": 60,
+                                  "max_concurrency": 1,
+                                  "max_retries": 0,
+                                  "backoff_s": 0.0
+                                },
+                                "attempts": 1,
+                                "retries": 0,
+                                "timed_out": false,
+                                "latency_ms": 1132.957
+                              },
+                              "framework": "strands",
+                              "framework_requested": "strands",
+                              "framework_config": {
+                                "name": "strands",
+                                "agent_kwargs": {},
+                                "run_kwargs": {}
+                              },
+                              "agent_name": "reasoner",
+                              "requested_engine": "ollama-runtime",
+                              "runtime_engine": "ollama-runtime",
+                              "execution_engine": "ollama-runtime"
+                            },
+                            "execution_id": "run-4a7010787a534caaa9dac151fc6319b0",
+                            "parent_execution_id": "run-a3299b30593d40af83e797421b3b8a41",
+                            "status": "completed",
+                            "interrupts": [],
+                            "continuation": null,
+                            "children": [],
+                            "tool_events": []
+                          }
+                        ],
+                        "tool_events": []
+                      }
+                    ],
+                    "tool_events": []
+                  }
+                ],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "human_results": "typed-reasoning: COMPLETED\nExecution: run-6340bfaa8efe40369326723f33c12889\nInput: {\"value\":2,\"answer\":null}\nOutput: {\"answer\":3}\nProcess (recorded steps):\n- {\"name\":\"typed-reasoning\",\"status\":\"{\\\"answer\\\":3}\",\"id\":\"run-6340bfaa8efe40369326723f33c12889\"}\n- {\"name\":\"reasoner\",\"status\":\"{\\\"answer\\\":3}\",\"id\":\"run-a3299b30593d40af83e797421b3b8a41\"}\n- {\"name\":\"eval\",\"status\":\"{\\\"answer\\\":3}\",\"id\":\"run-4a7010787a534caaa9dac151fc6319b0\"}",
+      "agent_lineage": "{\"ok\":true,\"steps\":[{\"step_id\":\"run-6340bfaa8efe40369326723f33c12889\",\"kind\":\"execution\",\"title\":\"typed-reasoning\",\"summary\":\"{\\\"answer\\\":3}\",\"source\":\"python-runtime\",\"why\":\"Recorded execution evidence\",\"evidence\":{\"ok\":true,\"data\":{\"answer\":3},\"errors\":[]}},{\"step_id\":\"run-a3299b30593d40af83e797421b3b8a41\",\"kind\":\"execution\",\"title\":\"reasoner\",\"summary\":\"{\\\"answer\\\":3}\",\"source\":\"ollama-runtime\",\"why\":\"Recorded execution evidence\",\"evidence\":{\"ok\":true,\"data\":{\"answer\":3},\"errors\":[]}},{\"step_id\":\"run-4a7010787a534caaa9dac151fc6319b0\",\"kind\":\"execution\",\"title\":\"eval\",\"summary\":\"{\\\"answer\\\":3}\",\"source\":\"ollama-runtime\",\"why\":\"Recorded execution evidence\",\"evidence\":{\"ok\":true,\"data\":{\"answer\":3},\"errors\":[]}}],\"omitted_steps\":0,\"failed_steps\":0,\"execution_id\":\"run-6340bfaa8efe40369326723f33c12889\",\"answer\":\"{\\\"answer\\\":3}\"}",
+      "budget_after": {
+        "attempts": 299,
+        "reserved_usd": "1.592210",
+        "limits": {
+          "usd": 10,
+          "requests": 300
+        },
+        "remaining_requests": 1,
+        "remaining_usd": "8.407790"
+      },
+      "evidence": "revisions/2.1.4/pydantic-dev4/online/20261026T050152685584/results.json"
+    },
+    {
+      "route": "ollama-gpu",
+      "framework": "native",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "input": {
+        "value": 2
+      },
+      "expected": {
+        "answer": 3
+      },
+      "wheel_sha256": "a06317a8bb14b3cf8ba42684880a3a722e7396603df41962e877e019b888680b",
+      "budget_before": {
+        "attempts": 299,
+        "reserved_usd": "1.592210",
+        "limits": {
+          "usd": 10,
+          "requests": 300
+        },
+        "remaining_requests": 1,
+        "remaining_usd": "8.407790"
+      },
+      "passed": true,
+      "result": {
+        "text": "{\"answer\":3}",
+        "final": {
+          "final_output": "{\"answer\":3}"
+        },
+        "data": {
+          "answer": 3
+        },
+        "ok": true,
+        "messages": [],
+        "raw_responses": [],
+        "usage": {
+          "total_tokens": 95,
+          "completion_tokens": 6,
+          "prompt_tokens": 89,
+          "input_tokens": 89,
+          "output_tokens": 6,
+          "requests": 1,
+          "client_duration_ms": 5656.252,
+          "inference_requests": 1,
+          "tool_calls": 0
+        },
+        "engine": "python-runtime",
+        "model": "",
+        "mode": "default",
+        "trace_schema_version": "agentic_systems.trace.v1",
+        "validation": null,
+        "errors": [],
+        "meta": {
+          "name": "typed-reasoning",
+          "kind": "system",
+          "engine_name": "langgraph",
+          "lineage_refs": [
+            "run-cddc59467ed143fbbe8081f84b6047c6"
+          ],
+          "writes": [
+            "answer"
+          ],
+          "context": {
+            "fingerprint": "664bdcf50b0cc5d0afc8b9b4b9af2bd34a287f27edb4d89c4671837180cd1ee1",
+            "sources": [],
+            "memory_revision": null,
+            "episode_ids": []
+          },
+          "actions_observed": 2,
+          "input": {
+            "value": 2,
+            "answer": null
+          },
+          "state_metrics": {
+            "snapshots": 2,
+            "max_bytes": 156,
+            "max_lineage_refs": 1
+          },
+          "resumes_execution_id": null
+        },
+        "execution_id": "run-4d46b5e3d3d94892b080bd7e9cb714c2",
+        "parent_execution_id": null,
+        "status": "completed",
+        "interrupts": [],
+        "continuation": null,
+        "children": [
+          {
+            "text": "{\"answer\":3}",
+            "final": {
+              "final_output": "{\"answer\":3}"
+            },
+            "data": {
+              "answer": 3
+            },
+            "ok": true,
+            "messages": [],
+            "raw_responses": [],
+            "usage": {
+              "total_tokens": 95,
+              "completion_tokens": 6,
+              "prompt_tokens": 89,
+              "input_tokens": 89,
+              "output_tokens": 6,
+              "requests": 1,
+              "client_duration_ms": 5656.252,
+              "inference_requests": 1,
+              "tool_calls": 0
+            },
+            "engine": "python-runtime",
+            "model": "",
+            "mode": "default",
+            "trace_schema_version": "agentic_systems.trace.v1",
+            "validation": null,
+            "errors": [],
+            "meta": {
+              "name": "reasoner",
+              "kind": "node"
+            },
+            "execution_id": "run-cddc59467ed143fbbe8081f84b6047c6",
+            "parent_execution_id": "run-4d46b5e3d3d94892b080bd7e9cb714c2",
+            "status": "completed",
+            "interrupts": [],
+            "continuation": null,
+            "children": [
+              {
+                "text": "{\"answer\":3}",
+                "final": {
+                  "final_output": "{\"answer\":3}"
+                },
+                "data": {
+                  "answer": 3
+                },
+                "ok": true,
+                "messages": [],
+                "raw_responses": [],
+                "usage": {
+                  "total_tokens": 95,
+                  "completion_tokens": 6,
+                  "prompt_tokens": 89,
+                  "input_tokens": 89,
+                  "output_tokens": 6,
+                  "requests": 1,
+                  "client_duration_ms": 5656.252,
+                  "inference_requests": 1,
+                  "tool_calls": 0
+                },
+                "engine": "ollama-runtime",
+                "model": "qwen3:4b-instruct-2507-q4_K_M",
+                "mode": "default",
+                "trace_schema_version": "agentic_systems.trace.v1",
+                "validation": null,
+                "errors": [],
+                "meta": {
+                  "name": "reasoner",
+                  "kind": "agent",
+                  "engine_name": "langgraph",
+                  "lineage_refs": [
+                    "run-1b16b61d3e6246efa1671982ef54ce0e"
+                  ],
+                  "writes": [
+                    "answer"
+                  ],
+                  "context": {
+                    "fingerprint": "664bdcf50b0cc5d0afc8b9b4b9af2bd34a287f27edb4d89c4671837180cd1ee1",
+                    "sources": [],
+                    "memory_revision": null,
+                    "episode_ids": []
+                  }
+                },
+                "execution_id": "run-24c6af27dd1240e2a1834bdb5ecfbd2d",
+                "parent_execution_id": "run-cddc59467ed143fbbe8081f84b6047c6",
+                "status": "completed",
+                "interrupts": [],
+                "continuation": null,
+                "children": [
+                  {
+                    "text": "{\"answer\":3}",
+                    "final": {
+                      "final_output": "{\"answer\":3}"
+                    },
+                    "data": {
+                      "output": {
+                        "answer": 3
+                      },
+                      "result_ref": "run-5ac25e2fad6a412d97e6735b95f11188"
+                    },
+                    "ok": true,
+                    "messages": [],
+                    "raw_responses": [],
+                    "usage": {
+                      "total_tokens": 95,
+                      "completion_tokens": 6,
+                      "prompt_tokens": 89,
+                      "input_tokens": 89,
+                      "output_tokens": 6,
+                      "requests": 1,
+                      "client_duration_ms": 5656.252,
+                      "inference_requests": 1,
+                      "tool_calls": 0
+                    },
+                    "engine": "python-runtime",
+                    "model": "",
+                    "mode": "default",
+                    "trace_schema_version": "agentic_systems.trace.v1",
+                    "validation": null,
+                    "errors": [],
+                    "meta": {
+                      "name": "actor",
+                      "kind": "node"
+                    },
+                    "execution_id": "run-1b16b61d3e6246efa1671982ef54ce0e",
+                    "parent_execution_id": "run-24c6af27dd1240e2a1834bdb5ecfbd2d",
+                    "status": "completed",
+                    "interrupts": [],
+                    "continuation": null,
+                    "children": [
+                      {
+                        "text": "{\"answer\":3}",
+                        "final": {
+                          "final_output": "{\"answer\":3}"
+                        },
+                        "data": {
+                          "answer": 3
+                        },
+                        "ok": true,
+                        "messages": [],
+                        "raw_responses": [],
+                        "usage": {
+                          "total_tokens": 95,
+                          "completion_tokens": 6,
+                          "prompt_tokens": 89,
+                          "input_tokens": 89,
+                          "output_tokens": 6,
+                          "requests": 1,
+                          "client_duration_ms": 5656.252,
+                          "inference_requests": 1,
+                          "tool_calls": 0
+                        },
+                        "engine": "ollama-runtime",
+                        "model": "qwen3:4b-instruct-2507-q4_K_M",
+                        "mode": "default",
+                        "trace_schema_version": "agentic_systems.trace.v1",
+                        "validation": null,
+                        "errors": [],
+                        "meta": {
+                          "name": "reasoner",
+                          "kind": "model",
+                          "framework": "native"
+                        },
+                        "execution_id": "run-5ac25e2fad6a412d97e6735b95f11188",
+                        "parent_execution_id": "run-1b16b61d3e6246efa1671982ef54ce0e",
+                        "status": "completed",
+                        "interrupts": [],
+                        "continuation": null,
+                        "children": [
+                          {
+                            "text": "{\"answer\":3}",
+                            "final": {
+                              "final_output": "{\"answer\":3}"
+                            },
+                            "data": {
+                              "answer": 3
+                            },
+                            "ok": true,
+                            "messages": [],
+                            "raw_responses": [],
+                            "usage": {
+                              "total_tokens": 95,
+                              "completion_tokens": 6,
+                              "prompt_tokens": 89,
+                              "input_tokens": 89,
+                              "output_tokens": 6,
+                              "requests": 1,
+                              "client_duration_ms": 5656.252,
+                              "scheduler": {
+                                "attempts": 1,
+                                "retries": 0,
+                                "timed_out": false,
+                                "latency_ms": 6761.116
+                              },
+                              "inference_requests": 1,
+                              "tool_calls": 0
+                            },
+                            "engine": "ollama-runtime",
+                            "model": "qwen3:4b-instruct-2507-q4_K_M",
+                            "mode": "eval",
+                            "trace_schema_version": "agentic_systems.trace.v1",
+                            "validation": {
+                              "ok": true,
+                              "issues": []
+                            },
+                            "errors": [],
+                            "meta": {
+                              "source_result_type": "ollama.openai_compatible.chat.completions",
+                              "runtime_engine": "ollama-runtime",
+                              "execution_engine": "ollama-runtime",
+                              "contract_repairs": 0,
+                              "rejected_tool_calls": [],
+                              "framework": "native",
+                              "framework_requested": "native",
+                              "framework_adapter": "native",
+                              "runtime": {
+                                "provider": "ollama-runtime",
+                                "model_id": "qwen3:4b-instruct-2507-q4_K_M",
+                                "region_name": null,
+                                "endpoint": "http://127.0.0.1:11434/v1",
+                                "metadata": {},
+                                "provider_priority": [
+                                  "openai-runtime",
+                                  "bedrock-runtime",
+                                  "ollama-runtime"
+                                ],
+                                "allow_python_fallback": false,
+                                "scheduler": {
+                                  "max_turns": 1,
+                                  "max_tool_calls": 1,
+                                  "timeout_s": 60,
+                                  "max_concurrency": 1,
+                                  "max_retries": 0,
+                                  "backoff_s": 0.0
+                                }
+                              },
+                              "scheduler": {
+                                "max_turns": 1,
+                                "max_tool_calls": 1,
+                                "timeout_s": 60,
+                                "max_concurrency": 1,
+                                "max_retries": 0,
+                                "backoff_s": 0.0
+                              },
+                              "scheduler_execution": {
+                                "scheduler": {
+                                  "max_turns": 1,
+                                  "max_tool_calls": 1,
+                                  "timeout_s": 60,
+                                  "max_concurrency": 1,
+                                  "max_retries": 0,
+                                  "backoff_s": 0.0
+                                },
+                                "attempts": 1,
+                                "retries": 0,
+                                "timed_out": false,
+                                "latency_ms": 6761.116
+                              },
+                              "framework_config": {
+                                "name": "native",
+                                "agent_kwargs": {},
+                                "run_kwargs": {}
+                              },
+                              "agent_name": "reasoner",
+                              "input": {
+                                "value": 2
+                              },
+                              "requested_engine": "ollama-runtime"
+                            },
+                            "execution_id": "run-bb0fe0eceaa141edae32775933cf990f",
+                            "parent_execution_id": "run-5ac25e2fad6a412d97e6735b95f11188",
+                            "status": "completed",
+                            "interrupts": [],
+                            "continuation": null,
+                            "children": [],
+                            "tool_events": []
+                          }
+                        ],
+                        "tool_events": []
+                      }
+                    ],
+                    "tool_events": []
+                  }
+                ],
+                "tool_events": []
+              }
+            ],
+            "tool_events": []
+          }
+        ],
+        "tool_events": []
+      },
+      "human_results": "typed-reasoning: COMPLETED\nExecution: run-4d46b5e3d3d94892b080bd7e9cb714c2\nInput: {\"value\":2,\"answer\":null}\nOutput: {\"answer\":3}\nProcess (recorded steps):\n- {\"name\":\"typed-reasoning\",\"status\":\"{\\\"answer\\\":3}\",\"id\":\"run-4d46b5e3d3d94892b080bd7e9cb714c2\"}\n- {\"name\":\"reasoner\",\"status\":\"{\\\"answer\\\":3}\",\"id\":\"run-5ac25e2fad6a412d97e6735b95f11188\"}\n- {\"name\":\"eval\",\"status\":\"{\\\"answer\\\":3}\",\"id\":\"run-bb0fe0eceaa141edae32775933cf990f\"}",
+      "agent_lineage": "{\"ok\":true,\"steps\":[{\"step_id\":\"run-4d46b5e3d3d94892b080bd7e9cb714c2\",\"kind\":\"execution\",\"title\":\"typed-reasoning\",\"summary\":\"{\\\"answer\\\":3}\",\"source\":\"python-runtime\",\"why\":\"Recorded execution evidence\",\"evidence\":{\"ok\":true,\"data\":{\"answer\":3},\"errors\":[]}},{\"step_id\":\"run-5ac25e2fad6a412d97e6735b95f11188\",\"kind\":\"execution\",\"title\":\"reasoner\",\"summary\":\"{\\\"answer\\\":3}\",\"source\":\"ollama-runtime\",\"why\":\"Recorded execution evidence\",\"evidence\":{\"ok\":true,\"data\":{\"answer\":3},\"errors\":[]}},{\"step_id\":\"run-bb0fe0eceaa141edae32775933cf990f\",\"kind\":\"execution\",\"title\":\"eval\",\"summary\":\"{\\\"answer\\\":3}\",\"source\":\"ollama-runtime\",\"why\":\"Recorded execution evidence\",\"evidence\":{\"ok\":true,\"data\":{\"answer\":3},\"errors\":[]}}],\"omitted_steps\":0,\"failed_steps\":0,\"execution_id\":\"run-4d46b5e3d3d94892b080bd7e9cb714c2\",\"answer\":\"{\\\"answer\\\":3}\"}",
+      "budget_after": {
+        "attempts": 300,
+        "reserved_usd": "1.592210",
+        "limits": {
+          "usd": 10,
+          "requests": 300
+        },
+        "remaining_requests": 0,
+        "remaining_usd": "8.407790"
+      },
+      "evidence": "revisions/2.1.4/pydantic-dev4/online/20261026T050358840840/results.json"
+    }
+  ],
+  "budget": {
+    "requests": 300,
+    "limit": 300,
+    "reserved_usd": "1.592210",
+    "usd_limit": 10
+  },
+  "published": false,
+  "full_online_matrix_repeated": false
+}

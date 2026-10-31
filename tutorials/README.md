@@ -1,65 +1,74 @@
-# Tutorials · Agentic Systems 2.1.3
+# Tutorials · Agentic Systems 2.1.4
 
-Abre un notebook y ejecuta sus celdas en orden. Cada lección explica
-**input → proceso → output** y usa `import agentic_systems as toolkit`.
-Instala [el SDK y los extras necesarios](../INSTALL.md) en el kernel de Jupyter.
-Los ejemplos de core son autónomos: no necesitan imports ocultos desde el repositorio.
+Empieza por core/00 y ejecuta las celdas en orden. Cada lección explica
+input → proceso → output y contiene aserciones. Usamos `import agentic_systems
+as toolkit` y Graph de LangGraph; no hay backend alternativo.
+
+Instala el wheel local y los extras en [INSTALL](../INSTALL.md). Core funciona
+sin Studio salvo los recursos del repositorio enlazados. Las secciones avanzadas
+que usan Studio lo indican expresamente. El wheel no instala estos notebooks.
+
+La ruta inicial es **00 Inicio → 01 Tools/Skills → 02 Agent → 03 System →
+04 Environment → 05 Eval**. Context y Memory se incorporan cuando el caso
+necesita referencia de dominio e historia. Después estudia controles y SDKs.
+Las declaraciones son visibles: no se importa un experimento completo para
+ocultar su construcción. Las funciones locales tienen su cuerpo en la lección.
 
 ## Core
 
-Sigue 00–03 para empezar. Añade episodios, evaluación y observabilidad según tu tarea.
-
-| Notebook | Lo que construyes |
-|---|---|
-| [00 · Inicio](core/00_start.ipynb) | Un Agent y su primer RunResult |
-| [01 · Tools y Skills](core/01_tools_skills.ipynb) | Operaciones, contratos y carga de una Skill portable |
-| [02 · Flujos de Agent](core/02_agent_flows.ipynb) | Secuencia, paralelo y decisiones; native y LangGraph |
-| [03 · Flujos de System](core/03_system_flows.ipynb) | Coordinación de agentes con los mismos tres flujos |
-| [04 · Environment](core/04_environment.ipynb) | Episodio, observe, update, stop y memoria |
-| [05 · Eval](core/05_eval.ipynb) | Expectativas exactas, checks y errores detectados |
-| [06 · Resultados y límites](core/06_results_limits.ipynb) | run/arun, compile, límites, JSON, eventos y lineage |
-| [07 · Pedidos](core/07_order_challenge.ipynb) | Tools, Skills, varios Agents, System, decisiones, Environment y Eval |
+| Lección | Qué aprendes |
+| --- | --- |
+| [00 Inicio](core/00_start.ipynb) | Tool, Agent y RunResult |
+| [01 Tools/Skills](core/01_tools_skills.ipynb) | Capacidades y load_skill |
+| [02 Agent](core/02_agent_flows.ipynb) | Secuencia, ramas y decisiones |
+| [03 System](core/03_system_flows.ipynb) | Coordinar Agents con la misma gramática |
+| [04 Environment](core/04_environment.ipynb) | state, observe, update, stop y Memory |
+| [05 Eval](core/05_eval.ipynb) | Expectativas y control negativo |
+| [06 Resultados](core/06_results.ipynb) | compile/run/arun, plazo raíz, JSON y linaje |
+| [07 Pedidos](core/07_order_challenge.ipynb) | Siete Agents y siete casos de negocio |
+| [08 Context/Memory](core/08_context_memory.ipynb) | Semántica, episodios y evidencia |
 
 ## Providers
 
-| Notebook | Ejecución y preparación |
-|---|---|
-| [00 · Python](providers/00_python.ipynb) | Tool real sin modelo de lenguaje ni credenciales |
-| [01 · OpenAI API key](providers/01_openai.ipynb) | Modelo configurado → invocación real de Tool → evidencia |
-| [02 · Ollama](providers/02_ollama.ipynb) | Endpoint y modelo explícitos → Tool → evidencia |
-| [03 · Bedrock API key](providers/03_bedrock.ipynb) | Región, modelo y bearer token → Tool → evidencia |
-| [04 · vLLM y serving](providers/04_vllm_serving.ipynb) | Artefacto, configuración de servidor y endpoint; sin iniciar GPU |
+| Lección | Alcance |
+| --- | --- |
+| [00 Python](providers/00_python.ipynb) | Operador real, sin LM |
+| [01 OpenAI API key](providers/01_openai.ipynb) | Tool y evidencia live |
+| [02 Ollama Cloud](providers/02_ollama.ipynb) | API key; Gemma4:31b autorizado porque Qwen cloud no estaba disponible |
+| [03 Bedrock API key](providers/03_bedrock.ipynb) | Qwen, región y bearer token; no acredita IAM |
+| [04 vLLM](providers/04_vllm_serving.ipynb) | Declaración offline; GPU/endpoint pendientes |
+| [05 Ollama GPU](providers/05_ollama_gpu.ipynb) | Qwen local y evidencia de asignación GPU |
 
-Los tres notebooks externos ejecutan inferencia al correr sus celdas **live**.
-Necesitan las variables del proveedor; no hay fallback. La validación offline
-omite esas celdas y reporta que la ruta live sigue sin ejecutarse en ese perfil.
-No se presenta inspeccionar configuración como validación de un modelo.
+Las celdas live consumen inferencia. La prueba offline las omite explícitamente;
+no acredita su generación. No hay sustitución automática de proveedor/modelo.
 
-## Frameworks
+## Orquestación y frameworks
 
-| Notebook | Capacidad que enseña |
-|---|---|
-| [01 · LangGraph](frameworks/01_langgraph.ipynb) | Checkpoint, pausa y reanudación con aprobación explícita |
-| [02 · OpenAI Agents](frameworks/02_openai_agents.ipynb) | Agent común, handoff a especialista, sesión y guardrail |
-| [03 · Strands](frameworks/03_strands.ipynb) | Agent común y Tools MCP / agente A2A sobre servicios locales |
-| [04 · Interoperabilidad](frameworks/04_interoperability.ipynb) | Los cuatro frameworks coordinados por un System |
+| Lección | Capacidad |
+| --- | --- |
+| [01 LangGraph](frameworks/01_langgraph.ipynb) | Único orquestador, pausa/reanudación |
+| [02 OpenAI Agents](frameworks/02_openai_agents.ipynb) | Actor Python; handoff/sesión/guardrail live |
+| [03 AWS Strands](frameworks/03_strands.ipynb) | Actor; MCP/A2A en perfil de servicios locales |
+| [04 Interoperabilidad](frameworks/04_interoperability.ipynb) | Tres actores en un System |
 
-El primer Agent usa Python Runtime sin inferencia. Los laboratorios de handoff,
-MCP/A2A e interoperabilidad reutilizan la implementación **instalada de Studio**,
-identificada y enlazada en cada lección. Instala [Studio](../examples/agentic_systems_studio/README.md)
-para esas secciones. MCP/A2A inicia servicios locales reales: no es una conexión
-externa ni una certificación semántica de un modelo. La campaña live prueba
-aparte las rutas configuradas de proveedores y frameworks.
+native es el actor propio del toolkit, no un alias de LangGraph. AWS Strands
+se selecciona con `framework('strands')`. Los modelos fixture de protocolos
+no acreditan razonamiento de un LM.
 
 ## API
 
-| Notebook | Consulta avanzada |
-|---|---|
-| [01 · Runtime y framework](api/01_runtime_framework.ipynb) | Los cuatro frameworks, opciones, límites del actor y configuración explícita |
-| [02 · Contratos y jueces](api/02_contracts_judges.ipynb) | Tool expectations, salida estructurada, juez fixture y checks |
+[01 Runtime/framework](api/01_runtime_framework.ipynb) separa los ejes.
+[02 Contratos/jueces](api/02_contracts_judges.ipynb) añade negativos y un juez fixture.
+[03 Runtime/scheduler y plazo raíz](api/03_execution_controls.ipynb) conserva los
+pilares de ejecución y explica qué control pertenece a cada nivel.
 
-El juez fixture comprueba el protocolo de evaluación; no acredita juicio semántico.
-La [referencia de firmas](../docs/API_213_SURFACE.md) complementa las lecciones.
+[Inventario por notebook](../docs/NOTEBOOK_INVENTORY_214.md) ·
+[Validación y pendientes](../docs/LEARNING_VALIDATION_214.md) ·
+[Examples](../examples/README.md) · [Firmas completas](../docs/API_214_SURFACE.md)
 
-[Examples](../examples/README.md) · [Studio notebook](../examples/agentic_systems_studio/notebooks/01_studio.ipynb) ·
-[Inventario de gramática](../docs/NOTEBOOK_INVENTORY_213.md) · [Resultados actuales](../docs/LEARNING_VALIDATION_213.md)
+[Estado por revisión](../docs/STATUS_214.md) ·
+[Validación dev8](../revisions/2.1.4/grammar-dev8/REPORT.md).
+La configuración del proveedor no acredita una prueba real. Las celdas live
+omitidas offline y las pruebas de protocolos locales se registran por separado.
+
+[Composición con Graph y compile](../examples/checked_composition/01_checked_composition.ipynb): Tools Pydantic, tres niveles de Graph y Memory aislada en Eval.

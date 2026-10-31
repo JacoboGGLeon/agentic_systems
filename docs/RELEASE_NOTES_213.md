@@ -1,3 +1,5 @@
+> **Histórico: no es la guía de la API 2.1.4.dev3.** Conserva propuestas/resultados de su versión original. Para implementar, usa [la API vigente](API_214.md).
+
 # Agentic Systems 2.1.3
 
 **Publicada:** [PyPI](https://pypi.org/project/agentic-systems/2.1.3/) · [GitHub](https://github.com/JacoboGGLeon/agentic_systems/releases/tag/v2.1.3).

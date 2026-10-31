@@ -610,15 +610,17 @@ def _finalize_run_result(
     rejected_tool_calls: list[dict[str, Any]] | None = None,
 ) -> RunResult:
     if ok and not str(text or "").strip():
+        rejected = list(rejected_tool_calls or ())
         result = _failure(
-            "Provider returned an empty model output.",
+            "Provider requested a Tool that could not be dispatched." if rejected else "Provider returned an empty model output.",
             agent,
             mode,
-            "empty_model_output",
+            "rejected_tool_calls" if rejected else "empty_model_output",
             meta={
                 "source_result_type": source,
                 "runtime_engine": runtime_engine,
                 "contract_repairs": contract_repairs,
+                "rejected_tool_calls": rejected,
             },
         )
         result.engine = runtime_engine
@@ -656,6 +658,7 @@ def _failure(
     return RunResult(
         text=message,
         data={"ok": False, "error": {"code": code, "message": message}},
+        errors=[{"code": code, "message": message}],
         ok=False,
         engine=OPENAI_RUNTIME_ENGINE,
         model=getattr(agent, "model", None) or DEFAULT_OPENAI_MODEL_ID,

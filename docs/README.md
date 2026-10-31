@@ -1,24 +1,21 @@
-# Documentación
+# Documentación · 2.1.4.dev8
 
-Empieza por [el primer Agent](../tutorials/core/00_start.ipynb) o usa este mapa:
+1. [Instala el wheel y Studio locales](../INSTALL.md).
+2. [Aprende por core, providers, frameworks y API](../tutorials/README.md).
+3. [Elige una implementación](../examples/README.md).
+4. [Consulta la API](API_214.md) y [todas las firmas](API_214_SURFACE.md).
+5. [Comprueba validación y pendientes](LEARNING_VALIDATION_214.md).
 
-| Necesidad | Guía |
-|---|---|
-| Instalar SDK y Studio | [Instalación](../INSTALL.md) |
-| Aprender la API paso a paso | [Tutorials: core, providers, frameworks y API](../tutorials/README.md) |
-| Elegir una implementación | [Examples](../examples/README.md) |
-| Abrir la interfaz | [Studio](../examples/agentic_systems_studio/README.md) |
-| Entender conceptos y flujos | [API 2.1.3](API_213.md) |
-| Consultar métodos y parámetros | [Firmas completas](API_213_SURFACE.md) |
-| Generar un proyecto | [CLI](CLI_213.md) · [Scaffolder](SCAFFOLDER_213.md) |
-| Ver dónde se enseña cada concepto | [Inventario de notebooks](NOTEBOOK_INVENTORY_213.md) |
-| Inspeccionar resultados y lineage | [Validación actual](LEARNING_VALIDATION_213.md) |
-| Mantener y verificar el proyecto | [Validación de desarrollo](VALIDATION_213.md) |
+[Plan de mejora](LEARNING_PLAN_214.md) · [Gramática](GRAMMAR_214.md) ·
+[Contratos](CONTRACTS_214.md) · [Inventario](NOTEBOOK_INVENTORY_214.md) ·
+[RunResults y linaje](RUNRESULTS_LINEAGE_214.md) · [vLLM GPU](VLLM_GPU_214.md)
 
-La versión 2.1.3 está publicada. El material didáctico actual puede evolucionar
-sin modificar los artefactos del release. La evidencia sellada conserva sus
-fuentes originales; la nueva campaña identifica sus propias fuentes y presupuesto.
+[Estado del release estable y condiciones pendientes](RELEASE_214.md).
 
-Los informes de experimentos anteriores y los documentos marcados como históricos
-se conservan por su procedencia. Para implementar, usa las guías 2.1.3 de este mapa.
-No representan otra gramática soportada ni una certificación de los ejemplos actuales.
+[Estado por revisión y evidencia](STATUS_214.md) ·
+[Runtime y scheduler](RUNTIME_SCHEDULER_214.md) ·
+[System y harness](SYSTEM_HARNESS_214.md).
+
+Los informes y propuestas anteriores llevan un aviso histórico. Conservan sus
+resultados originales; no enseñan una segunda API compatible. El SDK sigue
+siendo un desarrollo local, sin publicación de esta revisión.

@@ -1,21 +1,9 @@
-# Episode Memory — API 2.1.3
+# Estado de episodio y memoria · 2.1.4
 
-Record-to-record memory, observe/update/stop, deterministic replay and native/LangGraph.
+Observe, update, stop, replay e identidad de ejecuciones.
 
-```python
-from examples.episode_memory.example import run
+Consulta [la implementación mantenida](../../episode_memory/example.py). Esta carpeta es una referencia de navegación, no una segunda API ni una ejecución independiente.
 
-result = run()
-result
-```
+[Estado real y límites](../../../docs/LEARNING_VALIDATION_214.md). La evidencia 2.1.3 es histórica.
 
-Synthetic JSON input → canonical SDK computation/configuration → asserted output and JSON evidence.
-
-Código:
-- [Runnable example](../../../examples/episode_memory/example.py)
-- [Walkthrough](../../../examples/episode_memory/README.md)
-
-Validación: **Offline ejecutado**. Record-to-record memory, observe/update/stop, deterministic replay and native/LangGraph. Final artifact binding is recorded in implementation evidence. No real inference.
-
-- [Nueva ejecución contra el wheel publicado](../../../revisions/2.1.3/learning-evidence-elevated/example-results/episode_memory/run.json)
-- [RunResult y lineage](../../../revisions/2.1.3/learning-evidence-elevated/example-results/episode_memory/runresults.json)
+[Validación histórica dev5 de Pydantic y human_results](../../../revisions/2.1.4/contracts-dev5/REPORT.md). Las revisiones previas se conservan como evidencia histórica.

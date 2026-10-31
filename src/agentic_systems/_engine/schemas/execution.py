@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Annotated, Literal, TypeAlias
 
 from pydantic import (
+    ConfigDict,
     Field,
     SecretStr,
     StrictBool,
@@ -20,21 +21,27 @@ from .base import ContractModel, JsonValue
 EXECUTION_SCHEMA_VERSION = "agentic_systems.execution.v1"
 
 
-class ExecutionLimits(ContractModel):
+class SchedulerSettings(ContractModel):
+    """Shared validated scheduling contract; runtime resources are not data."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True, strict=True, allow_inf_nan=False, hide_input_in_errors=True)
+    max_turns: StrictInt | None = Field(default=6, ge=1)
+    max_tool_calls: StrictInt | None = Field(default=5, ge=0)
+    timeout_s: StrictFloat | StrictInt | None = Field(default=60.0, gt=0)
+    max_concurrency: StrictInt = Field(default=1, ge=1)
+    max_retries: StrictInt = Field(default=0, ge=0)
+    backoff_s: StrictFloat | StrictInt = Field(default=0.0, ge=0)
+
+
+class ExecutionLimits(SchedulerSettings):
     """Single source of truth for bounded execution semantics.
 
     ``max_tool_calls=None`` uses the caller default, zero forbids tools, and a
     positive value is the maximum number of calls permitted.
     """
 
-    max_turns: StrictInt | None = Field(default=6, ge=1)
-    max_tool_calls: StrictInt | None = Field(default=5, ge=0)
     max_tokens: StrictInt | None = Field(default=None, ge=1)
-    timeout_s: StrictFloat | StrictInt | None = Field(default=60.0, gt=0)
-    max_concurrency: StrictInt = Field(default=1, ge=1)
-    max_retries: StrictInt = Field(default=0, ge=0)
     max_repairs: StrictInt = Field(default=0, ge=0)
-    backoff_s: StrictFloat | StrictInt = Field(default=0.0, ge=0)
 
 
 class ContractExecutionBudget(ContractModel):

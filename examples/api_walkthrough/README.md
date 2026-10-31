@@ -1,16 +1,14 @@
-# Toda la API, desde el usuario
+# Toda la API: de Tool a Eval · 2.1.4
 
-Abre [01_api_user_guide.ipynb](01_api_user_guide.ipynb). Es autónomo y todas sus
-celdas ejecutables son offline. Incluye los seis flujos y una aprobación de
-pedidos con Tools, Skills, Agents, System, Environment y Eval.
+Recorrer la gramática completa y una aprobación de pedidos con resultados observables.
 
-```python
-from examples.api_walkthrough.example import run
+La composición y las aserciones están visibles en [el código](example.py).
+Lee las declaraciones de Tools, Agents y Graph antes de ejecutar el ejemplo.
 
-report = run()
-report
-```
+Input → proceso → output: Tools y Skills → seis flujos Agent/System → dos pedidos, decisiones, memoria y Eval → resultados y linaje.
 
-La declaración de pedidos se comparte con la validación online; la configuración
-del proveedor es explícita. El notebook no llama a proveedores externos.
-[Inventario exhaustivo](../../docs/NOTEBOOK_INVENTORY_213.md).
+[Declaración](example.py) · [Evidencia dev8](../../revisions/2.1.4/grammar-dev8/closure/examples/examples--api_walkthrough--example.py.json)
+
+Perfil actual: **offline-passed**. El catálogo [de validación](../../docs/LEARNING_VALIDATION_214.md) separa configuración, Python, servicios locales y pruebas de modelos. La evidencia 2.1.3 conservada es histórica y no certifica estos bytes.
+
+[Validación histórica dev5 de Pydantic y human_results](../../revisions/2.1.4/contracts-dev5/REPORT.md). Las revisiones previas se conservan como evidencia histórica.

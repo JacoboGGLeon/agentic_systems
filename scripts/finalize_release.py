@@ -101,7 +101,8 @@ def finalize(directory: Path, manifest_sha256: str) -> None:
             "--draft",
             "--title",
             f"Agentic Systems {manifest.version}",
-            "--generate-notes",
+            *(["--notes-file", str(directory / "release-notes.md")]
+              if (directory / "release-notes.md").exists() else ["--generate-notes"]),
         )
     for name in sorted(expected.keys() - names):
         command(

@@ -1,15 +1,17 @@
 """Deterministic contracts and measured evidence; no provider access."""
+
 from copy import deepcopy
 import json
 from pathlib import Path
-
 import agentic_systems as toolkit
 from .offline import blocked_attempts
-from .system import build_system
+from .system import build_system, State, Receipt
 
 
 def load_cases():
-    return json.loads((Path(__file__).parent / "fixtures/cases.json").read_text(encoding="utf-8"))
+    return json.loads(
+        (Path(__file__).parent / "fixtures/cases.json").read_text(encoding="utf-8")
+    )
 
 
 def check_tree(output):
@@ -24,13 +26,16 @@ def check_tree(output):
 
 
 def trace(output):
-    return [{"step": n.meta["name"], "ok": n.ok, "output": n.data}
-            for n in output.walk() if n.meta.get("kind") == "action"]
+    return [
+        {"step": n.meta["name"], "ok": n.ok, "output": n.data}
+        for n in output.walk()
+        if n.meta.get("kind") == "action"
+    ]
 
 
-def verify(backend="native"):
+def verify():
     blocked_before = blocked_attempts()
-    unit = build_system(backend)
+    unit = build_system()
     prepared = unit.compile()
     cases = load_cases()
     rows = []
@@ -47,40 +52,92 @@ def verify(backend="native"):
         if case["name"] == "invalid":
             assert names == {"normalize_order", "validate_order", "reject_order"}
         elif case["name"] == "inventory_failure":
-            assert names == {"normalize_order", "validate_order", "price_order", "check_inventory"}
-            assert any(e.name == "price_order" and e.ok for e in events)
-            assert any(e.name == "check_inventory" and not e.ok for e in events)
-            assert any("controlled_inventory_unavailable" in str(n.errors) for n in output.walk())
+            assert names == {
+                "normalize_order",
+                "validate_order",
+                "price_order",
+                "check_inventory",
+            }
+            assert any((e.name == "price_order" and e.ok for e in events))
+            assert any((e.name == "check_inventory" and (not e.ok) for e in events))
+            assert any(
+                (
+                    "controlled_inventory_unavailable" in str(n.errors)
+                    for n in output.walk()
+                )
+            )
         else:
-            terminal = {"approved": "approve_order", "review": "review_order", "rejected": "reject_order"}
-            assert names == {"normalize_order", "validate_order", "price_order", "check_inventory",
-                             "assess_policy", terminal[output.data["decision"]]}
-        rows.append({"name": case["name"], "input": case["input"], "passed": True,
-                     "expected": case["expected"], "process": trace(output),
-                     "output": output.data, "ok": output.ok, "result": output.to_dict()})
-
+            terminal = {
+                "approved": "approve_order",
+                "review": "review_order",
+                "rejected": "reject_order",
+            }
+            assert names == {
+                "normalize_order",
+                "validate_order",
+                "price_order",
+                "check_inventory",
+                "assess_policy",
+                terminal[output.data["decision"]],
+            }
+        rows.append(
+            {
+                "name": case["name"],
+                "input": case["input"],
+                "passed": True,
+                "expected": case["expected"],
+                "process": trace(output),
+                "output": output.data,
+                "ok": output.ok,
+                "result": output.to_dict(),
+            }
+        )
     accepted = [case for case in cases if case["expected"]["ok"]]
-    episode = toolkit.Environment("orders", unit, tuple(c["input"] for c in accepted)).run()
-    assert episode.ok and episode.data["outputs"] == [c["expected"]["data"] for c in accepted]
-    assert episode.data["summary"]["memory"] == {"processed": len(accepted)}
+    episode_graph = toolkit.Graph(State, output_schema=Receipt)
+    episode_graph.add_node("orders", unit)
+    episode_graph.add_edge(toolkit.START, "orders")
+    episode_graph.add_edge("orders", toolkit.END)
+    episode = toolkit.Environment(
+        "orders", graph=episode_graph, records=tuple((c["input"] for c in accepted))
+    ).run(timeout_s=None)
+    assert episode.ok and episode.data["outputs"] == [
+        c["expected"]["data"] for c in accepted
+    ]
+    assert episode.data["summary"]["state"] == {"processed": len(accepted)}
     assert len(episode.data["history"]) == len(accepted)
-    for transition, child in zip(episode.data["history"], episode.children):
-        assert transition["graph_state"]["run"]["execution_id"] == child.execution_id
+    all_ids = {node.execution_id for node in episode.walk()}
+    for transition in episode.data["history"]:
+        assert transition["execution_id"] in all_ids
     check_tree(episode)
-
-    judged = toolkit.Eval("order_contract", unit, tuple(accepted)).run()
-    assert judged.ok and judged.data["passed"] == len(accepted) and judged.data["failed"] == 0
+    judged = toolkit.Eval("order_contract", unit, tuple(accepted)).run(
+        timeout_s=None
+    )
+    assert (
+        judged.ok
+        and judged.data["passed"] == len(accepted)
+        and (judged.data["failed"] == 0)
+    )
     check_tree(judged)
     wrong = deepcopy(accepted[0])
     wrong["expected"]["data"]["total_cents"] += 1
     negative = toolkit.Eval("wrong_total", unit, (wrong,)).run()
-    assert not negative.ok and negative.data["failed"] == 1 and negative.children[0].ok
+    assert not negative.ok and negative.data["failed"] == 1
+    target_id = negative.data["cases"][0]["execution_id"]
+    assert next((node for node in negative.walk() if node.execution_id == target_id)).ok
     check_tree(negative)
     attempts = blocked_attempts() - blocked_before
     assert attempts == 0
-    return {"backend": backend, "passed": True, "target_version": "2.1.3",
-            "sdk_version": toolkit.__version__, "inference_requests": 0,
-            "blocked_network_or_subprocess_attempts": attempts,
-            "cases_passed": len(rows), "cases": rows, "topology": prepared.inspect(),
-            "environment": episode.to_dict(), "evaluation": judged.to_dict(),
-            "negative_control": negative.to_dict()}
+    return {
+        "orchestration": "langgraph",
+        "passed": True,
+        "target_version": toolkit.__version__,
+        "sdk_version": toolkit.__version__,
+        "inference_requests": 0,
+        "blocked_network_or_subprocess_attempts": attempts,
+        "cases_passed": len(rows),
+        "cases": rows,
+        "topology": prepared.inspect(),
+        "environment": episode.to_dict(),
+        "evaluation": judged.to_dict(),
+        "negative_control": negative.to_dict(),
+    }

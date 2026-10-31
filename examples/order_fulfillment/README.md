@@ -1,20 +1,14 @@
-# Pedidos — API única 2.1.3
+# Pedidos con la API única 2.1.4
 
-Ejemplo canónico que importa solamente `agentic_systems`. Requiere el wheel
-local 2.1.3; no funciona mediante aliases de 2.1.2 ni importa `unified_grammar`.
+Seven Agents and Skills coordinate validation, parallel checks and explicit business decisions through the single installed SDK API.
 
-Input → Intake valida → Pricing e Inventory en paralelo → Policy decide →
-Approve, Review o Reject devuelve una instrucción. Environment entrega seis
-pedidos de negocio; Eval compara sus resultados y detecta una diferencia
-incorrecta de un centavo. El séptimo caso conserva la cotización cuando falla
-inventario. No se modifican existencias ni se contactan servicios externos.
+La composición y las aserciones están visibles en [el código](example.py).
+Lee las declaraciones de Tools, Agents y Graph antes de ejecutar el ejemplo.
 
-La única declaración es `system.py:build_system`. Los datos y expectativas
-están en `fixtures/`; las operaciones en `tools.py` y sus Skills en `skills.py`.
+Input → proceso → output: Order JSON → validate → parallel price/stock → policy → approve/review/reject; Environment and Eval reuse the unit.
 
-```text
-python examples/order_fulfillment/run.py
-```
+[Declaración](example.py) · [Evidencia dev8](../../revisions/2.1.4/grammar-dev8/closure/examples/examples--order_fulfillment--example.py.json)
 
-Usa un proceso dedicado: el comprobador instala un guard offline que permanece
-activo hasta cerrar ese proceso. Las rutas de inferencia no se ejecutan.
+Perfil actual: **offline-passed**. El catálogo [de validación](../../docs/LEARNING_VALIDATION_214.md) separa configuración, Python, servicios locales y pruebas de modelos. La evidencia 2.1.3 conservada es histórica y no certifica estos bytes.
+
+[Validación histórica dev5 de Pydantic y human_results](../../revisions/2.1.4/contracts-dev5/REPORT.md). Las revisiones previas se conservan como evidencia histórica.

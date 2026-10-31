@@ -1,0 +1,2735 @@
+{
+  "schema_version": "agentic_systems.campaign-214-budget.v1",
+  "limits": {
+    "usd": 10,
+    "requests": 300
+  },
+  "routes": {
+    "openai-runtime": {
+      "model": "gpt-4.1-mini",
+      "endpoint": "https://api.openai.com/v1",
+      "input_usd_per_million": 0.4,
+      "output_usd_per_million": 1.6
+    },
+    "bedrock-runtime": {
+      "model": "qwen.qwen3-32b-v1:0",
+      "endpoint": "https://bedrock-runtime.us-east-2.amazonaws.com",
+      "input_usd_per_million": 1,
+      "output_usd_per_million": 4
+    },
+    "ollama-gpu": {
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "endpoint": "http://127.0.0.1:11434/v1",
+      "input_usd_per_million": 0,
+      "output_usd_per_million": 0
+    },
+    "ollama-cloud": {
+      "model": "gemma4:31b",
+      "endpoint": "https://ollama.com/v1",
+      "input_usd_per_million": 1,
+      "output_usd_per_million": 4
+    }
+  },
+  "attempts": [
+    {
+      "attempt": 1,
+      "phase": "tutorials/providers/01_openai.ipynb/native",
+      "provider": "openai-runtime",
+      "request_bytes": 498,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.003321",
+      "created_at": "2026-10-26T02:49:38.073326+00:00"
+    },
+    {
+      "attempt": 2,
+      "phase": "tutorials/providers/01_openai.ipynb/native",
+      "provider": "openai-runtime",
+      "request_bytes": 797,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.003471",
+      "created_at": "2026-10-26T02:49:40.214841+00:00"
+    },
+    {
+      "attempt": 3,
+      "phase": "tutorials/providers/01_openai.ipynb/openai-agents",
+      "provider": "openai-runtime",
+      "request_bytes": 582,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.003363",
+      "created_at": "2026-10-26T02:49:52.887017+00:00"
+    },
+    {
+      "attempt": 4,
+      "phase": "tutorials/providers/01_openai.ipynb/openai-agents",
+      "provider": "openai-runtime",
+      "request_bytes": 873,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.003509",
+      "created_at": "2026-10-26T02:49:54.937227+00:00"
+    },
+    {
+      "attempt": 5,
+      "phase": "tutorials/providers/01_openai.ipynb/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 601,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.003373",
+      "created_at": "2026-10-26T02:50:06.738756+00:00"
+    },
+    {
+      "attempt": 6,
+      "phase": "tutorials/providers/01_openai.ipynb/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 865,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.003505",
+      "created_at": "2026-10-26T02:50:07.883840+00:00"
+    },
+    {
+      "attempt": 7,
+      "phase": "tutorials/providers/03_bedrock.ipynb/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 547,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008364",
+      "created_at": "2026-10-26T02:50:17.073488+00:00"
+    },
+    {
+      "attempt": 8,
+      "phase": "tutorials/providers/03_bedrock.ipynb/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1271,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.009269",
+      "created_at": "2026-10-26T02:50:17.864497+00:00"
+    },
+    {
+      "attempt": 9,
+      "phase": "tutorials/providers/03_bedrock.ipynb/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 541,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008357",
+      "created_at": "2026-10-26T02:50:29.755005+00:00"
+    },
+    {
+      "attempt": 10,
+      "phase": "tutorials/providers/03_bedrock.ipynb/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 834,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008723",
+      "created_at": "2026-10-26T02:50:30.582789+00:00"
+    },
+    {
+      "attempt": 11,
+      "phase": "tutorials/providers/03_bedrock.ipynb/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 573,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008397",
+      "created_at": "2026-10-26T02:50:41.629951+00:00"
+    },
+    {
+      "attempt": 12,
+      "phase": "tutorials/providers/03_bedrock.ipynb/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 872,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008770",
+      "created_at": "2026-10-26T02:50:42.479560+00:00"
+    },
+    {
+      "attempt": 13,
+      "phase": "tutorials/providers/05_ollama_gpu.ipynb/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 515,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T02:50:51.940232+00:00"
+    },
+    {
+      "attempt": 14,
+      "phase": "tutorials/providers/05_ollama_gpu.ipynb/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 820,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T02:50:57.362280+00:00"
+    },
+    {
+      "attempt": 15,
+      "phase": "tutorials/providers/05_ollama_gpu.ipynb/openai-agents",
+      "provider": "ollama-gpu",
+      "request_bytes": 539,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T02:51:10.719262+00:00"
+    },
+    {
+      "attempt": 16,
+      "phase": "tutorials/providers/05_ollama_gpu.ipynb/openai-agents",
+      "provider": "ollama-gpu",
+      "request_bytes": 545,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T02:51:11.182359+00:00"
+    },
+    {
+      "attempt": 17,
+      "phase": "tutorials/providers/05_ollama_gpu.ipynb/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 618,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T02:51:22.767310+00:00"
+    },
+    {
+      "attempt": 18,
+      "phase": "tutorials/providers/05_ollama_gpu.ipynb/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 888,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T02:51:23.582672+00:00"
+    },
+    {
+      "attempt": 19,
+      "phase": "business/code_review/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 654,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004423",
+      "created_at": "2026-10-26T02:53:07.777455+00:00"
+    },
+    {
+      "attempt": 20,
+      "phase": "business/code_review/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 1099,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004646",
+      "created_at": "2026-10-26T02:53:08.896544+00:00"
+    },
+    {
+      "attempt": 21,
+      "phase": "business/code_review/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 764,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T02:53:13.613333+00:00"
+    },
+    {
+      "attempt": 22,
+      "phase": "business/code_review/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1152,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T02:53:14.891652+00:00"
+    },
+    {
+      "attempt": 23,
+      "phase": "business/customer_support/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 703,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011119",
+      "created_at": "2026-10-26T02:53:17.120824+00:00"
+    },
+    {
+      "attempt": 24,
+      "phase": "business/customer_support/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1061,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011567",
+      "created_at": "2026-10-26T02:53:17.991172+00:00"
+    },
+    {
+      "attempt": 25,
+      "phase": "business/customer_support/ollama-gpu/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 653,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T02:53:18.730206+00:00"
+    },
+    {
+      "attempt": 26,
+      "phase": "business/customer_support/ollama-gpu/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 1026,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T02:53:19.342737+00:00"
+    },
+    {
+      "attempt": 27,
+      "phase": "business/data_quality/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 747,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004470",
+      "created_at": "2026-10-26T02:53:20.015355+00:00"
+    },
+    {
+      "attempt": 28,
+      "phase": "business/data_quality/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 1110,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004651",
+      "created_at": "2026-10-26T02:53:21.327027+00:00"
+    },
+    {
+      "attempt": 29,
+      "phase": "business/data_quality/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 780,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011215",
+      "created_at": "2026-10-26T02:53:22.967601+00:00"
+    },
+    {
+      "attempt": 30,
+      "phase": "business/data_quality/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1958,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012688",
+      "created_at": "2026-10-26T02:53:23.835194+00:00"
+    },
+    {
+      "attempt": 31,
+      "phase": "business/decision_intelligence/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 705,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004449",
+      "created_at": "2026-10-26T02:53:24.810997+00:00"
+    },
+    {
+      "attempt": 32,
+      "phase": "business/decision_intelligence/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 1137,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004665",
+      "created_at": "2026-10-26T02:53:25.552805+00:00"
+    },
+    {
+      "attempt": 33,
+      "phase": "business/decision_intelligence/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 768,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T02:53:26.954093+00:00"
+    },
+    {
+      "attempt": 34,
+      "phase": "business/decision_intelligence/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1139,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T02:53:28.099528+00:00"
+    },
+    {
+      "attempt": 35,
+      "phase": "business/incident_response/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 712,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011130",
+      "created_at": "2026-10-26T02:53:28.642186+00:00"
+    },
+    {
+      "attempt": 36,
+      "phase": "business/incident_response/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1127,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011649",
+      "created_at": "2026-10-26T02:53:29.571336+00:00"
+    },
+    {
+      "attempt": 37,
+      "phase": "business/incident_response/ollama-gpu/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 744,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T02:53:30.521767+00:00"
+    },
+    {
+      "attempt": 38,
+      "phase": "business/incident_response/ollama-gpu/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 1231,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T02:53:31.264136+00:00"
+    },
+    {
+      "attempt": 39,
+      "phase": "business/meeting_action_center/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 734,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004463",
+      "created_at": "2026-10-26T02:53:32.051290+00:00"
+    },
+    {
+      "attempt": 40,
+      "phase": "business/meeting_action_center/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 1103,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004648",
+      "created_at": "2026-10-26T02:53:33.088009+00:00"
+    },
+    {
+      "attempt": 41,
+      "phase": "business/meeting_action_center/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 706,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011123",
+      "created_at": "2026-10-26T02:53:34.364367+00:00"
+    },
+    {
+      "attempt": 42,
+      "phase": "business/meeting_action_center/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1743,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012419",
+      "created_at": "2026-10-26T02:53:35.304176+00:00"
+    },
+    {
+      "attempt": 43,
+      "phase": "business/prompt_security/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 664,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004428",
+      "created_at": "2026-10-26T02:53:36.076301+00:00"
+    },
+    {
+      "attempt": 44,
+      "phase": "business/prompt_security/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 1157,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004675",
+      "created_at": "2026-10-26T02:53:37.019093+00:00"
+    },
+    {
+      "attempt": 45,
+      "phase": "business/prompt_security/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 774,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T02:53:38.596970+00:00"
+    },
+    {
+      "attempt": 46,
+      "phase": "business/prompt_security/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1215,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T02:53:39.453041+00:00"
+    },
+    {
+      "attempt": 47,
+      "phase": "business/quantitative_analysis/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 733,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011157",
+      "created_at": "2026-10-26T02:53:40.358316+00:00"
+    },
+    {
+      "attempt": 48,
+      "phase": "business/quantitative_analysis/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1152,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011680",
+      "created_at": "2026-10-26T02:53:42.162187+00:00"
+    },
+    {
+      "attempt": 49,
+      "phase": "business/quantitative_analysis/ollama-gpu/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 758,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T02:53:42.786228+00:00"
+    },
+    {
+      "attempt": 50,
+      "phase": "business/quantitative_analysis/ollama-gpu/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 1272,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T02:53:43.754576+00:00"
+    },
+    {
+      "attempt": 51,
+      "phase": "business/refund_resolution/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 764,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004478",
+      "created_at": "2026-10-26T02:53:44.304819+00:00"
+    },
+    {
+      "attempt": 52,
+      "phase": "business/refund_resolution/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 1150,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004671",
+      "created_at": "2026-10-26T02:53:45.447695+00:00"
+    },
+    {
+      "attempt": 53,
+      "phase": "business/refund_resolution/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 737,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011162",
+      "created_at": "2026-10-26T02:53:46.655332+00:00"
+    },
+    {
+      "attempt": 54,
+      "phase": "business/refund_resolution/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1802,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012493",
+      "created_at": "2026-10-26T02:53:47.535094+00:00"
+    },
+    {
+      "attempt": 55,
+      "phase": "business/research_synthesis/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 843,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004518",
+      "created_at": "2026-10-26T02:53:48.255373+00:00"
+    },
+    {
+      "attempt": 56,
+      "phase": "business/research_synthesis/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 1453,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004823",
+      "created_at": "2026-10-26T02:53:49.161426+00:00"
+    },
+    {
+      "attempt": 57,
+      "phase": "business/research_synthesis/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 859,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T02:53:50.536590+00:00"
+    },
+    {
+      "attempt": 58,
+      "phase": "business/research_synthesis/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1331,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T02:53:51.591458+00:00"
+    },
+    {
+      "attempt": 59,
+      "phase": "business/retired_accountability_otc/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 825,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011272",
+      "created_at": "2026-10-26T02:53:52.346119+00:00"
+    },
+    {
+      "attempt": 60,
+      "phase": "business/retired_accountability_otc/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1301,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011867",
+      "created_at": "2026-10-26T02:53:53.141121+00:00"
+    },
+    {
+      "attempt": 61,
+      "phase": "business/retired_accountability_otc/ollama-gpu/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 890,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T02:53:53.788554+00:00"
+    },
+    {
+      "attempt": 62,
+      "phase": "business/retired_accountability_otc/ollama-gpu/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 1472,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T02:53:54.859674+00:00"
+    },
+    {
+      "attempt": 63,
+      "phase": "business/claim_review/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 781,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004487",
+      "created_at": "2026-10-26T02:53:56.354447+00:00"
+    },
+    {
+      "attempt": 64,
+      "phase": "business/claim_review/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 1264,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004728",
+      "created_at": "2026-10-26T02:53:57.911468+00:00"
+    },
+    {
+      "attempt": 65,
+      "phase": "business/claim_review/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 808,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011250",
+      "created_at": "2026-10-26T02:53:59.929587+00:00"
+    },
+    {
+      "attempt": 66,
+      "phase": "business/claim_review/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2323,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.013144",
+      "created_at": "2026-10-26T02:54:00.904430+00:00"
+    },
+    {
+      "attempt": 67,
+      "phase": "business/scope_clarification/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 590,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004391",
+      "created_at": "2026-10-26T02:54:01.718014+00:00"
+    },
+    {
+      "attempt": 68,
+      "phase": "business/scope_clarification/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 997,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004595",
+      "created_at": "2026-10-26T02:54:02.339629+00:00"
+    },
+    {
+      "attempt": 69,
+      "phase": "business/scope_clarification/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 700,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T02:54:03.760442+00:00"
+    },
+    {
+      "attempt": 70,
+      "phase": "business/scope_clarification/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1071,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T02:54:04.675944+00:00"
+    },
+    {
+      "attempt": 71,
+      "phase": "business/semantic_calculation/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 722,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011143",
+      "created_at": "2026-10-26T02:54:05.468130+00:00"
+    },
+    {
+      "attempt": 72,
+      "phase": "business/semantic_calculation/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1089,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011602",
+      "created_at": "2026-10-26T02:54:06.436115+00:00"
+    },
+    {
+      "attempt": 73,
+      "phase": "business/semantic_calculation/ollama-gpu/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 713,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T02:54:07.242927+00:00"
+    },
+    {
+      "attempt": 74,
+      "phase": "business/text_analysis/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 713,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004453",
+      "created_at": "2026-10-26T02:54:08.259198+00:00"
+    },
+    {
+      "attempt": 75,
+      "phase": "business/text_analysis/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 1032,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004612",
+      "created_at": "2026-10-26T02:54:09.237476+00:00"
+    },
+    {
+      "attempt": 76,
+      "phase": "business/text_analysis/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 671,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011079",
+      "created_at": "2026-10-26T02:54:10.828488+00:00"
+    },
+    {
+      "attempt": 77,
+      "phase": "business/text_analysis/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1531,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012154",
+      "created_at": "2026-10-26T02:54:11.963267+00:00"
+    },
+    {
+      "attempt": 78,
+      "phase": "business/code_review/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 606,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004399",
+      "created_at": "2026-10-26T03:06:21.710833+00:00"
+    },
+    {
+      "attempt": 79,
+      "phase": "business/code_review/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 1051,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004622",
+      "created_at": "2026-10-26T03:06:22.738561+00:00"
+    },
+    {
+      "attempt": 80,
+      "phase": "business/code_review/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 650,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011053",
+      "created_at": "2026-10-26T03:06:26.464956+00:00"
+    },
+    {
+      "attempt": 81,
+      "phase": "business/code_review/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1040,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011540",
+      "created_at": "2026-10-26T03:06:27.187443+00:00"
+    },
+    {
+      "attempt": 82,
+      "phase": "business/code_review/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 727,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:06:28.477708+00:00"
+    },
+    {
+      "attempt": 83,
+      "phase": "business/code_review/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1102,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:06:34.310870+00:00"
+    },
+    {
+      "attempt": 84,
+      "phase": "business/customer_support/openai-runtime/openai-agents",
+      "provider": "openai-runtime",
+      "request_bytes": 668,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004430",
+      "created_at": "2026-10-26T03:06:36.233967+00:00"
+    },
+    {
+      "attempt": 85,
+      "phase": "business/customer_support/openai-runtime/openai-agents",
+      "provider": "openai-runtime",
+      "request_bytes": 1005,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004599",
+      "created_at": "2026-10-26T03:06:38.513244+00:00"
+    },
+    {
+      "attempt": 86,
+      "phase": "business/customer_support/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 668,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011075",
+      "created_at": "2026-10-26T03:06:40.078076+00:00"
+    },
+    {
+      "attempt": 87,
+      "phase": "business/customer_support/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1015,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011509",
+      "created_at": "2026-10-26T03:06:40.972605+00:00"
+    },
+    {
+      "attempt": 88,
+      "phase": "business/customer_support/ollama-gpu/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 608,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:06:41.853946+00:00"
+    },
+    {
+      "attempt": 89,
+      "phase": "business/customer_support/ollama-gpu/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 978,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:06:42.518754+00:00"
+    },
+    {
+      "attempt": 90,
+      "phase": "business/data_quality/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 961,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004577",
+      "created_at": "2026-10-26T03:06:43.092201+00:00"
+    },
+    {
+      "attempt": 91,
+      "phase": "business/data_quality/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 1311,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004752",
+      "created_at": "2026-10-26T03:06:44.378777+00:00"
+    },
+    {
+      "attempt": 92,
+      "phase": "business/data_quality/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 993,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011482",
+      "created_at": "2026-10-26T03:06:45.595093+00:00"
+    },
+    {
+      "attempt": 93,
+      "phase": "business/data_quality/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1839,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012539",
+      "created_at": "2026-10-26T03:06:46.504226+00:00"
+    },
+    {
+      "attempt": 94,
+      "phase": "business/data_quality/ollama-gpu/openai-agents",
+      "provider": "ollama-gpu",
+      "request_bytes": 896,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:06:47.357373+00:00"
+    },
+    {
+      "attempt": 95,
+      "phase": "business/data_quality/ollama-gpu/openai-agents",
+      "provider": "ollama-gpu",
+      "request_bytes": 714,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:06:48.117913+00:00"
+    },
+    {
+      "attempt": 96,
+      "phase": "business/decision_intelligence/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 1015,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004604",
+      "created_at": "2026-10-26T03:06:48.803127+00:00"
+    },
+    {
+      "attempt": 97,
+      "phase": "business/decision_intelligence/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 1215,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004704",
+      "created_at": "2026-10-26T03:06:49.595762+00:00"
+    },
+    {
+      "attempt": 98,
+      "phase": "business/decision_intelligence/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1019,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011514",
+      "created_at": "2026-10-26T03:06:50.677139+00:00"
+    },
+    {
+      "attempt": 99,
+      "phase": "business/decision_intelligence/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1411,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012004",
+      "created_at": "2026-10-26T03:06:51.404801+00:00"
+    },
+    {
+      "attempt": 100,
+      "phase": "business/decision_intelligence/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1066,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:06:52.193479+00:00"
+    },
+    {
+      "attempt": 101,
+      "phase": "business/decision_intelligence/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1457,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:06:53.488477+00:00"
+    },
+    {
+      "attempt": 102,
+      "phase": "business/incident_response/openai-runtime/openai-agents",
+      "provider": "openai-runtime",
+      "request_bytes": 876,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004534",
+      "created_at": "2026-10-26T03:06:53.953224+00:00"
+    },
+    {
+      "attempt": 103,
+      "phase": "business/incident_response/openai-runtime/openai-agents",
+      "provider": "openai-runtime",
+      "request_bytes": 1273,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004733",
+      "created_at": "2026-10-26T03:06:55.242934+00:00"
+    },
+    {
+      "attempt": 104,
+      "phase": "business/incident_response/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 886,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011348",
+      "created_at": "2026-10-26T03:06:56.689507+00:00"
+    },
+    {
+      "attempt": 105,
+      "phase": "business/incident_response/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1290,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011853",
+      "created_at": "2026-10-26T03:06:57.588037+00:00"
+    },
+    {
+      "attempt": 106,
+      "phase": "business/incident_response/ollama-gpu/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 870,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:06:58.500340+00:00"
+    },
+    {
+      "attempt": 107,
+      "phase": "business/incident_response/ollama-gpu/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 1163,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:06:59.054712+00:00"
+    },
+    {
+      "attempt": 108,
+      "phase": "business/meeting_action_center/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 718,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004455",
+      "created_at": "2026-10-26T03:06:59.795093+00:00"
+    },
+    {
+      "attempt": 109,
+      "phase": "business/meeting_action_center/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 1074,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004633",
+      "created_at": "2026-10-26T03:07:01.522355+00:00"
+    },
+    {
+      "attempt": 110,
+      "phase": "business/meeting_action_center/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 677,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011087",
+      "created_at": "2026-10-26T03:07:02.576767+00:00"
+    },
+    {
+      "attempt": 111,
+      "phase": "business/meeting_action_center/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1624,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012270",
+      "created_at": "2026-10-26T03:07:03.515224+00:00"
+    },
+    {
+      "attempt": 112,
+      "phase": "business/meeting_action_center/ollama-gpu/openai-agents",
+      "provider": "ollama-gpu",
+      "request_bytes": 649,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:07:04.253863+00:00"
+    },
+    {
+      "attempt": 113,
+      "phase": "business/meeting_action_center/ollama-gpu/openai-agents",
+      "provider": "ollama-gpu",
+      "request_bytes": 697,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:07:04.903621+00:00"
+    },
+    {
+      "attempt": 114,
+      "phase": "business/prompt_security/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 610,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004401",
+      "created_at": "2026-10-26T03:07:05.662317+00:00"
+    },
+    {
+      "attempt": 115,
+      "phase": "business/prompt_security/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 1109,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004651",
+      "created_at": "2026-10-26T03:07:06.334763+00:00"
+    },
+    {
+      "attempt": 116,
+      "phase": "business/prompt_security/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 654,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011058",
+      "created_at": "2026-10-26T03:07:07.266040+00:00"
+    },
+    {
+      "attempt": 117,
+      "phase": "business/prompt_security/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1095,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011609",
+      "created_at": "2026-10-26T03:07:08.160843+00:00"
+    },
+    {
+      "attempt": 118,
+      "phase": "business/prompt_security/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 729,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:07:08.958580+00:00"
+    },
+    {
+      "attempt": 119,
+      "phase": "business/prompt_security/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1157,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:07:09.882548+00:00"
+    },
+    {
+      "attempt": 120,
+      "phase": "business/quantitative_analysis/openai-runtime/openai-agents",
+      "provider": "openai-runtime",
+      "request_bytes": 935,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004564",
+      "created_at": "2026-10-26T03:07:10.904968+00:00"
+    },
+    {
+      "attempt": 121,
+      "phase": "business/quantitative_analysis/openai-runtime/openai-agents",
+      "provider": "openai-runtime",
+      "request_bytes": 1336,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004764",
+      "created_at": "2026-10-26T03:07:12.636180+00:00"
+    },
+    {
+      "attempt": 122,
+      "phase": "business/quantitative_analysis/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 949,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011427",
+      "created_at": "2026-10-26T03:07:14.348006+00:00"
+    },
+    {
+      "attempt": 123,
+      "phase": "business/quantitative_analysis/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1357,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011937",
+      "created_at": "2026-10-26T03:07:15.379873+00:00"
+    },
+    {
+      "attempt": 124,
+      "phase": "business/quantitative_analysis/ollama-gpu/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 924,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:07:16.010321+00:00"
+    },
+    {
+      "attempt": 125,
+      "phase": "business/quantitative_analysis/ollama-gpu/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 1206,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:07:16.925021+00:00"
+    },
+    {
+      "attempt": 126,
+      "phase": "business/refund_resolution/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 1024,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004608",
+      "created_at": "2026-10-26T03:07:17.455761+00:00"
+    },
+    {
+      "attempt": 127,
+      "phase": "business/refund_resolution/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 1397,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004795",
+      "created_at": "2026-10-26T03:07:18.529492+00:00"
+    },
+    {
+      "attempt": 128,
+      "phase": "business/refund_resolution/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 890,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011353",
+      "created_at": "2026-10-26T03:07:19.725476+00:00"
+    },
+    {
+      "attempt": 129,
+      "phase": "business/refund_resolution/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1677,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012337",
+      "created_at": "2026-10-26T03:07:20.648654+00:00"
+    },
+    {
+      "attempt": 130,
+      "phase": "business/refund_resolution/ollama-gpu/openai-agents",
+      "provider": "ollama-gpu",
+      "request_bytes": 850,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:07:21.352147+00:00"
+    },
+    {
+      "attempt": 131,
+      "phase": "business/refund_resolution/ollama-gpu/openai-agents",
+      "provider": "ollama-gpu",
+      "request_bytes": 748,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:07:22.285782+00:00"
+    },
+    {
+      "attempt": 132,
+      "phase": "business/research_synthesis/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 1093,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004643",
+      "created_at": "2026-10-26T03:07:22.955127+00:00"
+    },
+    {
+      "attempt": 133,
+      "phase": "business/research_synthesis/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 1381,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004787",
+      "created_at": "2026-10-26T03:07:24.023897+00:00"
+    },
+    {
+      "attempt": 134,
+      "phase": "business/research_synthesis/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1101,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011617",
+      "created_at": "2026-10-26T03:07:25.106728+00:00"
+    },
+    {
+      "attempt": 135,
+      "phase": "business/research_synthesis/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1559,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012189",
+      "created_at": "2026-10-26T03:07:26.009491+00:00"
+    },
+    {
+      "attempt": 136,
+      "phase": "business/research_synthesis/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1177,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:07:27.127598+00:00"
+    },
+    {
+      "attempt": 137,
+      "phase": "business/research_synthesis/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1636,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:07:28.310350+00:00"
+    },
+    {
+      "attempt": 138,
+      "phase": "business/retired_accountability_otc/openai-runtime/openai-agents",
+      "provider": "openai-runtime",
+      "request_bytes": 1095,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004644",
+      "created_at": "2026-10-26T03:07:29.044133+00:00"
+    },
+    {
+      "attempt": 139,
+      "phase": "business/retired_accountability_otc/openai-runtime/openai-agents",
+      "provider": "openai-runtime",
+      "request_bytes": 1555,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004874",
+      "created_at": "2026-10-26T03:07:30.189516+00:00"
+    },
+    {
+      "attempt": 140,
+      "phase": "business/retired_accountability_otc/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1136,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011660",
+      "created_at": "2026-10-26T03:07:32.321542+00:00"
+    },
+    {
+      "attempt": 141,
+      "phase": "business/retired_accountability_otc/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1601,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012242",
+      "created_at": "2026-10-26T03:07:33.233142+00:00"
+    },
+    {
+      "attempt": 142,
+      "phase": "business/retired_accountability_otc/ollama-gpu/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 1132,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:07:33.964985+00:00"
+    },
+    {
+      "attempt": 143,
+      "phase": "business/retired_accountability_otc/ollama-gpu/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 1398,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:07:35.124246+00:00"
+    },
+    {
+      "attempt": 144,
+      "phase": "business/claim_review/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 1277,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004735",
+      "created_at": "2026-10-26T03:07:36.057161+00:00"
+    },
+    {
+      "attempt": 145,
+      "phase": "business/claim_review/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 1772,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004982",
+      "created_at": "2026-10-26T03:07:37.118236+00:00"
+    },
+    {
+      "attempt": 146,
+      "phase": "business/claim_review/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1296,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011860",
+      "created_at": "2026-10-26T03:07:38.205144+00:00"
+    },
+    {
+      "attempt": 147,
+      "phase": "business/claim_review/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2279,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.013089",
+      "created_at": "2026-10-26T03:07:39.011146+00:00"
+    },
+    {
+      "attempt": 148,
+      "phase": "business/claim_review/ollama-gpu/openai-agents",
+      "provider": "ollama-gpu",
+      "request_bytes": 1176,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:07:39.750317+00:00"
+    },
+    {
+      "attempt": 149,
+      "phase": "business/claim_review/ollama-gpu/openai-agents",
+      "provider": "ollama-gpu",
+      "request_bytes": 899,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:07:40.750174+00:00"
+    },
+    {
+      "attempt": 150,
+      "phase": "business/scope_clarification/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 551,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004372",
+      "created_at": "2026-10-26T03:07:41.367438+00:00"
+    },
+    {
+      "attempt": 151,
+      "phase": "business/scope_clarification/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 949,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004571",
+      "created_at": "2026-10-26T03:07:42.156075+00:00"
+    },
+    {
+      "attempt": 152,
+      "phase": "business/scope_clarification/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 594,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.010983",
+      "created_at": "2026-10-26T03:07:43.319905+00:00"
+    },
+    {
+      "attempt": 153,
+      "phase": "business/scope_clarification/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 965,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011447",
+      "created_at": "2026-10-26T03:07:44.204177+00:00"
+    },
+    {
+      "attempt": 154,
+      "phase": "business/scope_clarification/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 675,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:07:44.910045+00:00"
+    },
+    {
+      "attempt": 155,
+      "phase": "business/scope_clarification/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1033,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:07:45.645037+00:00"
+    },
+    {
+      "attempt": 156,
+      "phase": "business/semantic_calculation/openai-runtime/openai-agents",
+      "provider": "openai-runtime",
+      "request_bytes": 943,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004568",
+      "created_at": "2026-10-26T03:07:46.311242+00:00"
+    },
+    {
+      "attempt": 157,
+      "phase": "business/semantic_calculation/openai-runtime/openai-agents",
+      "provider": "openai-runtime",
+      "request_bytes": 1290,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004741",
+      "created_at": "2026-10-26T03:07:47.347452+00:00"
+    },
+    {
+      "attempt": 158,
+      "phase": "business/semantic_calculation/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 968,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011450",
+      "created_at": "2026-10-26T03:07:48.589720+00:00"
+    },
+    {
+      "attempt": 159,
+      "phase": "business/semantic_calculation/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1324,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011895",
+      "created_at": "2026-10-26T03:07:49.833374+00:00"
+    },
+    {
+      "attempt": 160,
+      "phase": "business/semantic_calculation/ollama-gpu/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 916,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:07:50.549703+00:00"
+    },
+    {
+      "attempt": 161,
+      "phase": "business/semantic_calculation/ollama-gpu/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 1045,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:07:51.310173+00:00"
+    },
+    {
+      "attempt": 162,
+      "phase": "business/text_analysis/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 668,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004430",
+      "created_at": "2026-10-26T03:07:52.060980+00:00"
+    },
+    {
+      "attempt": 163,
+      "phase": "business/text_analysis/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 974,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004583",
+      "created_at": "2026-10-26T03:07:52.922000+00:00"
+    },
+    {
+      "attempt": 164,
+      "phase": "business/text_analysis/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 615,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011009",
+      "created_at": "2026-10-26T03:07:54.194326+00:00"
+    },
+    {
+      "attempt": 165,
+      "phase": "business/text_analysis/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1424,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012020",
+      "created_at": "2026-10-26T03:07:54.960370+00:00"
+    },
+    {
+      "attempt": 166,
+      "phase": "business/text_analysis/ollama-gpu/openai-agents",
+      "provider": "ollama-gpu",
+      "request_bytes": 604,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:07:55.630925+00:00"
+    },
+    {
+      "attempt": 167,
+      "phase": "business/text_analysis/ollama-gpu/openai-agents",
+      "provider": "ollama-gpu",
+      "request_bytes": 646,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:07:55.990194+00:00"
+    },
+    {
+      "attempt": 168,
+      "phase": "refund-graph/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 2038,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.005115",
+      "created_at": "2026-10-26T03:11:57.090854+00:00"
+    },
+    {
+      "attempt": 169,
+      "phase": "studio-conversation/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 2925,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.004535",
+      "created_at": "2026-10-26T03:11:59.195604+00:00"
+    },
+    {
+      "attempt": 170,
+      "phase": "studio-conversation/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 1401,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.003773",
+      "created_at": "2026-10-26T03:12:00.162989+00:00"
+    },
+    {
+      "attempt": 171,
+      "phase": "studio-conversation/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 1642,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.003893",
+      "created_at": "2026-10-26T03:12:01.338383+00:00"
+    },
+    {
+      "attempt": 172,
+      "phase": "studio-conversation/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 3142,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.004643",
+      "created_at": "2026-10-26T03:12:02.552505+00:00"
+    },
+    {
+      "attempt": 173,
+      "phase": "refund-graph/openai-runtime/openai-agents",
+      "provider": "openai-runtime",
+      "request_bytes": 2047,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.005120",
+      "created_at": "2026-10-26T03:12:04.850685+00:00"
+    },
+    {
+      "attempt": 174,
+      "phase": "studio-conversation/openai-runtime/openai-agents",
+      "provider": "openai-runtime",
+      "request_bytes": 3032,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.004588",
+      "created_at": "2026-10-26T03:12:06.714768+00:00"
+    },
+    {
+      "attempt": 175,
+      "phase": "studio-conversation/openai-runtime/openai-agents",
+      "provider": "openai-runtime",
+      "request_bytes": 1504,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.003824",
+      "created_at": "2026-10-26T03:12:08.245590+00:00"
+    },
+    {
+      "attempt": 176,
+      "phase": "studio-conversation/openai-runtime/openai-agents",
+      "provider": "openai-runtime",
+      "request_bytes": 1903,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.004024",
+      "created_at": "2026-10-26T03:12:09.426691+00:00"
+    },
+    {
+      "attempt": 177,
+      "phase": "studio-conversation/openai-runtime/openai-agents",
+      "provider": "openai-runtime",
+      "request_bytes": 3261,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.004703",
+      "created_at": "2026-10-26T03:12:10.557253+00:00"
+    },
+    {
+      "attempt": 178,
+      "phase": "refund-graph/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 2074,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.005133",
+      "created_at": "2026-10-26T03:12:12.524453+00:00"
+    },
+    {
+      "attempt": 179,
+      "phase": "studio-conversation/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 3081,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.004613",
+      "created_at": "2026-10-26T03:12:14.138157+00:00"
+    },
+    {
+      "attempt": 180,
+      "phase": "studio-conversation/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 1520,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.003832",
+      "created_at": "2026-10-26T03:12:15.183683+00:00"
+    },
+    {
+      "attempt": 181,
+      "phase": "studio-conversation/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 1902,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.004023",
+      "created_at": "2026-10-26T03:12:16.513054+00:00"
+    },
+    {
+      "attempt": 182,
+      "phase": "studio-conversation/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 3298,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.004721",
+      "created_at": "2026-10-26T03:12:17.780744+00:00"
+    },
+    {
+      "attempt": 183,
+      "phase": "handoff-and-guardrail/openai-runtime/openai-agents",
+      "provider": "openai-runtime",
+      "request_bytes": 601,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.002861",
+      "created_at": "2026-10-26T03:12:19.091550+00:00"
+    },
+    {
+      "attempt": 184,
+      "phase": "handoff-and-guardrail/openai-runtime/openai-agents",
+      "provider": "openai-runtime",
+      "request_bytes": 614,
+      "max_output_tokens": 128,
+      "reserved_usd": "0.002611",
+      "created_at": "2026-10-26T03:12:20.322558+00:00"
+    },
+    {
+      "attempt": 185,
+      "phase": "strands-mcp/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 647,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.002884",
+      "created_at": "2026-10-26T03:12:24.502911+00:00"
+    },
+    {
+      "attempt": 186,
+      "phase": "strands-mcp/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 979,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.003050",
+      "created_at": "2026-10-26T03:12:25.513781+00:00"
+    },
+    {
+      "attempt": 187,
+      "phase": "strands-a2a/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 648,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.002884",
+      "created_at": "2026-10-26T03:12:31.545423+00:00"
+    },
+    {
+      "attempt": 188,
+      "phase": "strands-a2a/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 1247,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.003184",
+      "created_at": "2026-10-26T03:12:32.803090+00:00"
+    },
+    {
+      "attempt": 189,
+      "phase": "three-framework-interop/openai-runtime/native+openai-agents+strands",
+      "provider": "openai-runtime",
+      "request_bytes": 840,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004516",
+      "created_at": "2026-10-26T03:12:34.364509+00:00"
+    },
+    {
+      "attempt": 190,
+      "phase": "three-framework-interop/openai-runtime/native+openai-agents+strands",
+      "provider": "openai-runtime",
+      "request_bytes": 1052,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004622",
+      "created_at": "2026-10-26T03:12:35.028188+00:00"
+    },
+    {
+      "attempt": 191,
+      "phase": "three-framework-interop/openai-runtime/native+openai-agents+strands",
+      "provider": "openai-runtime",
+      "request_bytes": 1246,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004719",
+      "created_at": "2026-10-26T03:12:35.973012+00:00"
+    },
+    {
+      "attempt": 192,
+      "phase": "three-framework-interop/openai-runtime/native+openai-agents+strands",
+      "provider": "openai-runtime",
+      "request_bytes": 1591,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004892",
+      "created_at": "2026-10-26T03:12:36.994079+00:00"
+    },
+    {
+      "attempt": 193,
+      "phase": "three-framework-interop/openai-runtime/native+openai-agents+strands",
+      "provider": "openai-runtime",
+      "request_bytes": 1465,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004829",
+      "created_at": "2026-10-26T03:12:38.424621+00:00"
+    },
+    {
+      "attempt": 194,
+      "phase": "three-framework-interop/openai-runtime/native+openai-agents+strands",
+      "provider": "openai-runtime",
+      "request_bytes": 1815,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.005004",
+      "created_at": "2026-10-26T03:12:39.635824+00:00"
+    },
+    {
+      "attempt": 195,
+      "phase": "refund-graph/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2050,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012803",
+      "created_at": "2026-10-26T03:12:40.909740+00:00"
+    },
+    {
+      "attempt": 196,
+      "phase": "studio-conversation/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2987,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.011414",
+      "created_at": "2026-10-26T03:12:42.656510+00:00"
+    },
+    {
+      "attempt": 197,
+      "phase": "studio-conversation/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1450,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.009493",
+      "created_at": "2026-10-26T03:12:43.945371+00:00"
+    },
+    {
+      "attempt": 198,
+      "phase": "studio-conversation/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2132,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.010345",
+      "created_at": "2026-10-26T03:12:44.709779+00:00"
+    },
+    {
+      "attempt": 199,
+      "phase": "studio-conversation/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 3493,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.012047",
+      "created_at": "2026-10-26T03:12:45.311700+00:00"
+    },
+    {
+      "attempt": 200,
+      "phase": "refund-graph/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2007,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012749",
+      "created_at": "2026-10-26T03:12:46.669246+00:00"
+    },
+    {
+      "attempt": 201,
+      "phase": "studio-conversation/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2991,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.011419",
+      "created_at": "2026-10-26T03:12:48.716824+00:00"
+    },
+    {
+      "attempt": 202,
+      "phase": "studio-conversation/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1451,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.009494",
+      "created_at": "2026-10-26T03:12:49.689426+00:00"
+    },
+    {
+      "attempt": 203,
+      "phase": "studio-conversation/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1850,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.009993",
+      "created_at": "2026-10-26T03:12:50.466568+00:00"
+    },
+    {
+      "attempt": 204,
+      "phase": "studio-conversation/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 3220,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.011705",
+      "created_at": "2026-10-26T03:12:51.096306+00:00"
+    },
+    {
+      "attempt": 205,
+      "phase": "refund-graph/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2007,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012749",
+      "created_at": "2026-10-26T03:12:52.462313+00:00"
+    },
+    {
+      "attempt": 206,
+      "phase": "studio-conversation/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 3068,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.011515",
+      "created_at": "2026-10-26T03:12:54.054416+00:00"
+    },
+    {
+      "attempt": 207,
+      "phase": "studio-conversation/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1492,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.009545",
+      "created_at": "2026-10-26T03:12:55.222713+00:00"
+    },
+    {
+      "attempt": 208,
+      "phase": "studio-conversation/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1907,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.010064",
+      "created_at": "2026-10-26T03:12:56.193233+00:00"
+    },
+    {
+      "attempt": 209,
+      "phase": "studio-conversation/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 3285,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.011787",
+      "created_at": "2026-10-26T03:12:56.811568+00:00"
+    },
+    {
+      "attempt": 210,
+      "phase": "handoff-and-guardrail/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 587,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.007134",
+      "created_at": "2026-10-26T03:12:58.548457+00:00"
+    },
+    {
+      "attempt": 211,
+      "phase": "handoff-and-guardrail/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 162,
+      "max_output_tokens": 128,
+      "reserved_usd": "0.005963",
+      "created_at": "2026-10-26T03:12:59.611475+00:00"
+    },
+    {
+      "attempt": 212,
+      "phase": "strands-mcp/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 617,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.007172",
+      "created_at": "2026-10-26T03:13:03.743200+00:00"
+    },
+    {
+      "attempt": 213,
+      "phase": "strands-mcp/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 982,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.007628",
+      "created_at": "2026-10-26T03:13:04.399871+00:00"
+    },
+    {
+      "attempt": 214,
+      "phase": "strands-a2a/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 614,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.007168",
+      "created_at": "2026-10-26T03:13:09.009980+00:00"
+    },
+    {
+      "attempt": 215,
+      "phase": "strands-a2a/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1246,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.007958",
+      "created_at": "2026-10-26T03:13:10.002259+00:00"
+    },
+    {
+      "attempt": 216,
+      "phase": "three-framework-interop/bedrock-runtime/native+openai-agents+strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 898,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011363",
+      "created_at": "2026-10-26T03:13:10.838883+00:00"
+    },
+    {
+      "attempt": 217,
+      "phase": "three-framework-interop/bedrock-runtime/native+openai-agents+strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1579,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012214",
+      "created_at": "2026-10-26T03:13:11.604264+00:00"
+    },
+    {
+      "attempt": 218,
+      "phase": "refund-graph/ollama-gpu/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 2055,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:13:12.491168+00:00"
+    },
+    {
+      "attempt": 219,
+      "phase": "studio-conversation/ollama-gpu/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 2942,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:13:19.080278+00:00"
+    },
+    {
+      "attempt": 220,
+      "phase": "studio-conversation/ollama-gpu/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 1418,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:13:19.715702+00:00"
+    },
+    {
+      "attempt": 221,
+      "phase": "studio-conversation/ollama-gpu/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 1665,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:13:20.164009+00:00"
+    },
+    {
+      "attempt": 222,
+      "phase": "studio-conversation/ollama-gpu/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 3159,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:13:20.699725+00:00"
+    },
+    {
+      "attempt": 223,
+      "phase": "refund-graph/ollama-gpu/openai-agents",
+      "provider": "ollama-gpu",
+      "request_bytes": 1980,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:13:21.475657+00:00"
+    },
+    {
+      "attempt": 224,
+      "phase": "studio-conversation/ollama-gpu/openai-agents",
+      "provider": "ollama-gpu",
+      "request_bytes": 3002,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:13:23.902149+00:00"
+    },
+    {
+      "attempt": 225,
+      "phase": "studio-conversation/ollama-gpu/openai-agents",
+      "provider": "ollama-gpu",
+      "request_bytes": 1461,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:13:24.708007+00:00"
+    },
+    {
+      "attempt": 226,
+      "phase": "studio-conversation/ollama-gpu/openai-agents",
+      "provider": "ollama-gpu",
+      "request_bytes": 1828,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:13:25.185149+00:00"
+    },
+    {
+      "attempt": 227,
+      "phase": "studio-conversation/ollama-gpu/openai-agents",
+      "provider": "ollama-gpu",
+      "request_bytes": 3231,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:13:25.709202+00:00"
+    },
+    {
+      "attempt": 228,
+      "phase": "refund-graph/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 2091,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:13:26.744995+00:00"
+    },
+    {
+      "attempt": 229,
+      "phase": "studio-conversation/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 3098,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:13:29.069834+00:00"
+    },
+    {
+      "attempt": 230,
+      "phase": "studio-conversation/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1537,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:13:29.919813+00:00"
+    },
+    {
+      "attempt": 231,
+      "phase": "studio-conversation/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1925,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:13:30.821064+00:00"
+    },
+    {
+      "attempt": 232,
+      "phase": "studio-conversation/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 3315,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:13:31.417989+00:00"
+    },
+    {
+      "attempt": 233,
+      "phase": "handoff-and-guardrail/ollama-gpu/openai-agents",
+      "provider": "ollama-gpu",
+      "request_bytes": 554,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:13:32.512726+00:00"
+    },
+    {
+      "attempt": 234,
+      "phase": "handoff-and-guardrail/ollama-gpu/openai-agents",
+      "provider": "ollama-gpu",
+      "request_bytes": 551,
+      "max_output_tokens": 128,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:13:32.881891+00:00"
+    },
+    {
+      "attempt": 235,
+      "phase": "strands-mcp/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 664,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:13:36.823214+00:00"
+    },
+    {
+      "attempt": 236,
+      "phase": "strands-mcp/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1002,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:13:37.639408+00:00"
+    },
+    {
+      "attempt": 237,
+      "phase": "strands-a2a/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 665,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:13:42.366191+00:00"
+    },
+    {
+      "attempt": 238,
+      "phase": "strands-a2a/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1270,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:13:43.463553+00:00"
+    },
+    {
+      "attempt": 239,
+      "phase": "three-framework-interop/ollama-gpu/native+openai-agents+strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 857,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:13:44.468240+00:00"
+    },
+    {
+      "attempt": 240,
+      "phase": "three-framework-interop/ollama-gpu/native+openai-agents+strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1075,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:13:44.956335+00:00"
+    },
+    {
+      "attempt": 241,
+      "phase": "three-framework-interop/ollama-gpu/native+openai-agents+strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1203,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:13:45.979254+00:00"
+    },
+    {
+      "attempt": 242,
+      "phase": "three-framework-interop/ollama-gpu/native+openai-agents+strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1104,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:13:46.478619+00:00"
+    },
+    {
+      "attempt": 243,
+      "phase": "three-framework-interop/ollama-gpu/native+openai-agents+strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1482,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:13:47.235045+00:00"
+    },
+    {
+      "attempt": 244,
+      "phase": "three-framework-interop/ollama-gpu/native+openai-agents+strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1838,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:13:48.098137+00:00"
+    },
+    {
+      "attempt": 245,
+      "phase": "three-framework-interop/openai-runtime/native+openai-agents+strands",
+      "provider": "openai-runtime",
+      "request_bytes": 840,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004516",
+      "created_at": "2026-10-26T03:16:54.980415+00:00"
+    },
+    {
+      "attempt": 246,
+      "phase": "three-framework-interop/openai-runtime/native+openai-agents+strands",
+      "provider": "openai-runtime",
+      "request_bytes": 1052,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004622",
+      "created_at": "2026-10-26T03:16:55.960106+00:00"
+    },
+    {
+      "attempt": 247,
+      "phase": "three-framework-interop/openai-runtime/native+openai-agents+strands",
+      "provider": "openai-runtime",
+      "request_bytes": 1246,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004719",
+      "created_at": "2026-10-26T03:16:59.472628+00:00"
+    },
+    {
+      "attempt": 248,
+      "phase": "three-framework-interop/openai-runtime/native+openai-agents+strands",
+      "provider": "openai-runtime",
+      "request_bytes": 1591,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004892",
+      "created_at": "2026-10-26T03:17:01.253727+00:00"
+    },
+    {
+      "attempt": 249,
+      "phase": "three-framework-interop/openai-runtime/native+openai-agents+strands",
+      "provider": "openai-runtime",
+      "request_bytes": 1465,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004829",
+      "created_at": "2026-10-26T03:17:03.113498+00:00"
+    },
+    {
+      "attempt": 250,
+      "phase": "three-framework-interop/openai-runtime/native+openai-agents+strands",
+      "provider": "openai-runtime",
+      "request_bytes": 1815,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.005004",
+      "created_at": "2026-10-26T03:17:04.248509+00:00"
+    },
+    {
+      "attempt": 251,
+      "phase": "three-framework-interop/bedrock-runtime/native+openai-agents+strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 898,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011363",
+      "created_at": "2026-10-26T03:17:05.665042+00:00"
+    },
+    {
+      "attempt": 252,
+      "phase": "three-framework-interop/bedrock-runtime/native+openai-agents+strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1579,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012214",
+      "created_at": "2026-10-26T03:17:06.585379+00:00"
+    },
+    {
+      "attempt": 253,
+      "phase": "three-framework-interop/bedrock-runtime/native+openai-agents+strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1202,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011743",
+      "created_at": "2026-10-26T03:17:07.264227+00:00"
+    },
+    {
+      "attempt": 254,
+      "phase": "three-framework-interop/bedrock-runtime/native+openai-agents+strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1547,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012174",
+      "created_at": "2026-10-26T03:17:08.226185+00:00"
+    },
+    {
+      "attempt": 255,
+      "phase": "three-framework-interop/bedrock-runtime/native+openai-agents+strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1448,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012050",
+      "created_at": "2026-10-26T03:17:08.843754+00:00"
+    },
+    {
+      "attempt": 256,
+      "phase": "three-framework-interop/bedrock-runtime/native+openai-agents+strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1827,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012524",
+      "created_at": "2026-10-26T03:17:09.568815+00:00"
+    },
+    {
+      "attempt": 257,
+      "phase": "three-framework-interop/ollama-gpu/native+openai-agents+strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 857,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:17:10.347296+00:00"
+    },
+    {
+      "attempt": 258,
+      "phase": "three-framework-interop/ollama-gpu/native+openai-agents+strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1075,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:17:10.883954+00:00"
+    },
+    {
+      "attempt": 259,
+      "phase": "three-framework-interop/ollama-gpu/native+openai-agents+strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1203,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:17:11.928608+00:00"
+    },
+    {
+      "attempt": 260,
+      "phase": "three-framework-interop/ollama-gpu/native+openai-agents+strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1104,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:17:12.377525+00:00"
+    },
+    {
+      "attempt": 261,
+      "phase": "three-framework-interop/ollama-gpu/native+openai-agents+strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1482,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:17:13.199403+00:00"
+    },
+    {
+      "attempt": 262,
+      "phase": "three-framework-interop/ollama-gpu/native+openai-agents+strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 1838,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:17:14.050538+00:00"
+    },
+    {
+      "attempt": 263,
+      "phase": "studio-ui/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 3009,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.004577",
+      "created_at": "2026-10-26T03:20:49.976289+00:00"
+    },
+    {
+      "attempt": 264,
+      "phase": "studio-ui/openai-runtime/openai-agents",
+      "provider": "openai-runtime",
+      "request_bytes": 3116,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.004630",
+      "created_at": "2026-10-26T03:20:54.944961+00:00"
+    },
+    {
+      "attempt": 265,
+      "phase": "studio-ui/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 3165,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.004655",
+      "created_at": "2026-10-26T03:20:58.647658+00:00"
+    },
+    {
+      "attempt": 266,
+      "phase": "studio-ui/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 3075,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.011524",
+      "created_at": "2026-10-26T03:21:00.624697+00:00"
+    },
+    {
+      "attempt": 267,
+      "phase": "studio-ui/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 3079,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.011529",
+      "created_at": "2026-10-26T03:21:02.387393+00:00"
+    },
+    {
+      "attempt": 268,
+      "phase": "studio-ui/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 3156,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.011625",
+      "created_at": "2026-10-26T03:21:04.100871+00:00"
+    },
+    {
+      "attempt": 269,
+      "phase": "studio-ui/ollama-gpu/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 3026,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:21:05.694243+00:00"
+    },
+    {
+      "attempt": 270,
+      "phase": "studio-ui/ollama-gpu/openai-agents",
+      "provider": "ollama-gpu",
+      "request_bytes": 3086,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:21:07.422530+00:00"
+    },
+    {
+      "attempt": 271,
+      "phase": "studio-ui/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 3182,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:21:08.845014+00:00"
+    },
+    {
+      "attempt": 272,
+      "phase": "studio-ui/openai-runtime/native",
+      "provider": "openai-runtime",
+      "request_bytes": 2909,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.004527",
+      "created_at": "2026-10-26T03:28:36.108156+00:00"
+    },
+    {
+      "attempt": 273,
+      "phase": "studio-ui/openai-runtime/openai-agents",
+      "provider": "openai-runtime",
+      "request_bytes": 3016,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.004580",
+      "created_at": "2026-10-26T03:28:40.749909+00:00"
+    },
+    {
+      "attempt": 274,
+      "phase": "studio-ui/openai-runtime/strands",
+      "provider": "openai-runtime",
+      "request_bytes": 3065,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.004605",
+      "created_at": "2026-10-26T03:28:43.799459+00:00"
+    },
+    {
+      "attempt": 275,
+      "phase": "studio-ui/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2975,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.011399",
+      "created_at": "2026-10-26T03:28:46.305192+00:00"
+    },
+    {
+      "attempt": 276,
+      "phase": "studio-ui/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2979,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.011404",
+      "created_at": "2026-10-26T03:28:48.137624+00:00"
+    },
+    {
+      "attempt": 277,
+      "phase": "studio-ui/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 3056,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.011500",
+      "created_at": "2026-10-26T03:28:49.913856+00:00"
+    },
+    {
+      "attempt": 278,
+      "phase": "studio-ui/ollama-gpu/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 2926,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:28:51.780969+00:00"
+    },
+    {
+      "attempt": 279,
+      "phase": "studio-ui/ollama-gpu/openai-agents",
+      "provider": "ollama-gpu",
+      "request_bytes": 2986,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:28:58.185417+00:00"
+    },
+    {
+      "attempt": 280,
+      "phase": "studio-ui/ollama-gpu/strands",
+      "provider": "ollama-gpu",
+      "request_bytes": 3082,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T03:28:59.641455+00:00"
+    },
+    {
+      "attempt": 281,
+      "phase": "tutorials/frameworks/02_openai_agents.ipynb/native",
+      "provider": "openai-runtime",
+      "request_bytes": 601,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.002861",
+      "created_at": "2026-10-26T03:32:30.306490+00:00"
+    },
+    {
+      "attempt": 282,
+      "phase": "tutorials/frameworks/02_openai_agents.ipynb/native",
+      "provider": "openai-runtime",
+      "request_bytes": 614,
+      "max_output_tokens": 128,
+      "reserved_usd": "0.002611",
+      "created_at": "2026-10-26T03:32:32.131929+00:00"
+    },
+    {
+      "attempt": 283,
+      "phase": "business/data_quality/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 993,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011482",
+      "created_at": "2026-10-26T04:07:17.707416+00:00"
+    },
+    {
+      "attempt": 284,
+      "phase": "business/data_quality/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1839,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012539",
+      "created_at": "2026-10-26T04:07:18.592051+00:00"
+    },
+    {
+      "attempt": 285,
+      "phase": "business/data_quality/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1203,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011744",
+      "created_at": "2026-10-26T04:10:57.265920+00:00"
+    },
+    {
+      "attempt": 286,
+      "phase": "business/data_quality/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2049,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012802",
+      "created_at": "2026-10-26T04:10:58.136644+00:00"
+    },
+    {
+      "attempt": 287,
+      "phase": "release-followup/ollama-cloud/native",
+      "provider": "ollama-cloud",
+      "request_bytes": 520,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008330",
+      "created_at": "2026-10-26T04:13:05.559422+00:00"
+    },
+    {
+      "attempt": 288,
+      "phase": "release-followup/ollama-cloud/native",
+      "provider": "ollama-cloud",
+      "request_bytes": 737,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008602",
+      "created_at": "2026-10-26T04:13:05.960704+00:00"
+    },
+    {
+      "attempt": 289,
+      "phase": "release-followup/ollama-cloud/openai-agents",
+      "provider": "ollama-cloud",
+      "request_bytes": 556,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008375",
+      "created_at": "2026-10-26T04:13:09.038209+00:00"
+    },
+    {
+      "attempt": 290,
+      "phase": "release-followup/ollama-cloud/openai-agents",
+      "provider": "ollama-cloud",
+      "request_bytes": 471,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008269",
+      "created_at": "2026-10-26T04:13:11.916437+00:00"
+    },
+    {
+      "attempt": 291,
+      "phase": "release-followup/ollama-cloud/strands",
+      "provider": "ollama-cloud",
+      "request_bytes": 628,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008465",
+      "created_at": "2026-10-26T04:13:13.039411+00:00"
+    },
+    {
+      "attempt": 292,
+      "phase": "release-followup/ollama-cloud/strands",
+      "provider": "ollama-cloud",
+      "request_bytes": 835,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008724",
+      "created_at": "2026-10-26T04:13:13.832346+00:00"
+    },
+    {
+      "attempt": 293,
+      "phase": "release-followup/bedrock-null-diagnostic",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1203,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.011744",
+      "created_at": "2026-10-26T04:13:43.062137+00:00"
+    },
+    {
+      "attempt": 294,
+      "phase": "release-followup/bedrock-null-diagnostic",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2049,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012802",
+      "created_at": "2026-10-26T04:13:43.794851+00:00"
+    },
+    {
+      "attempt": 295,
+      "phase": "release-followup/ollama-cloud/openai-agents",
+      "provider": "ollama-cloud",
+      "request_bytes": 556,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008375",
+      "created_at": "2026-10-26T04:14:57.450027+00:00"
+    },
+    {
+      "attempt": 296,
+      "phase": "release-followup/ollama-cloud/openai-agents",
+      "provider": "ollama-cloud",
+      "request_bytes": 471,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008269",
+      "created_at": "2026-10-26T04:15:00.026569+00:00"
+    },
+    {
+      "attempt": 297,
+      "phase": "pydantic-dev4/openai-runtime/openai-agents",
+      "provider": "openai-runtime",
+      "request_bytes": 521,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.002821",
+      "created_at": "2026-10-26T05:01:56.981624+00:00"
+    },
+    {
+      "attempt": 298,
+      "phase": "pydantic-dev4/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 455,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.006969",
+      "created_at": "2026-10-26T05:01:59.423117+00:00"
+    },
+    {
+      "attempt": 299,
+      "phase": "pydantic-dev4/ollama-cloud/strands",
+      "provider": "ollama-cloud",
+      "request_bytes": 546,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.007083",
+      "created_at": "2026-10-26T05:02:02.159749+00:00"
+    },
+    {
+      "attempt": 300,
+      "phase": "pydantic-dev4/ollama-gpu/native",
+      "provider": "ollama-gpu",
+      "request_bytes": 492,
+      "max_output_tokens": 256,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-26T05:04:01.804380+00:00"
+    }
+  ]
+}

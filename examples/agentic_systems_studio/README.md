@@ -1,79 +1,43 @@
-# Studio
+# Agentic Systems Studio · 2.1.4
 
-Conversa con un proveedor y framework explícitos, ejecuta Tools y consulta
-RunResult y lineage. La misma aplicación sirve desde Python, notebook e interfaz.
-
-## Instala y abre
-
-Descarga [Studio 2.1.3](https://github.com/JacoboGGLeon/agentic_systems/releases/download/v2.1.3/agentic-systems-studio-2.1.3-final-local.zip),
-descomprímelo y entra en la carpeta que contiene `wheels/`:
+Studio es una aplicación separada del SDK. Instala el wheel local 2.1.4 y luego
+`python -m pip install "./examples/agentic_systems_studio[ui,notebook]"`.
+Abre [el notebook](notebooks/01_studio.ipynb) o inicia la interfaz:
 
 ```bash
-python -m pip install "./wheels/agentic_systems_studio-2.1.3-py3-none-any.whl[ui,frameworks,notebook]"
+python -m streamlit run examples/agentic_systems_studio/src/agentic_systems_studio/ui.py
 ```
-
-```python
-from agentic_systems_studio import launch_studio
-
-session = launch_studio()
-```
-
-Abre el enlace que devuelve la función. En notebook presenta un botón; Colab
-usa su proxy. Para terminar, `session.server.stop()`. También puedes seguir
-[el notebook de Studio](notebooks/01_studio.ipynb).
-
-Studio se distribuye por separado del SDK `agentic-systems==2.1.3`. El ZIP
-incluye ambos wheels, fuentes, notebook y tests. Las dependencias se descargan
-al instalarlo; el ZIP no es un wheelhouse desconectado.
-
-## Desde Python
-
-```python
-from agentic_systems_studio import build_conversational_system
-
-studio = build_conversational_system()
-answer = studio.run("Hola")
-answer.text
-```
-
-El inicio usa un mock determinista de Python sin credenciales ni inferencia.
-Para un modelo externo, configura sus variables en el entorno o `.env` antes
-de abrir Studio. Selecciona proveedor y framework en la interfaz. No hay fallback.
-Las claves no se copian al código ni a los resultados.
 
 ```python
 from agentic_systems_studio import ConversationConfig, build_conversational_system
-
-studio = build_conversational_system(
-    ConversationConfig(provider="openai-runtime", framework="langgraph")
-)
-answer = studio.run("Calcula 17 * 19 usando la calculadora.")
-answer.text
+app = build_conversational_system(ConversationConfig(provider='python-runtime', framework='native'))
+result = app.run('Hola')
+assert result.ok
+print(result.data)
 ```
 
-Enviar este mensaje al modelo consume llamadas. La campaña de validación usa
-un contador persistente autorizado; la aplicación distingue ese perfil de su
-uso habitual. El cálculo se verifica mediante una Tool y su evento se conserva
-en RunResult. El historial público está acotado; no equivale a memoria persistente
-entre servidores nuevos.
+El controlador usa Graph de LangGraph; native, openai-agents y strands son actores.
+El estado interno de cada nodo lleva una envoltura payload de negocio, no
+árboles de resultados. El resultado público conserva answer, historial,
+validación, eventos y linaje. Las claves quedan fuera del estado.
 
-## Explora las capacidades de cada framework
+Las pruebas separan controlador/conversación, UI, handoffs y MCP/A2A. Los
+servicios locales usan fixtures sin LM; la integración con actores LM se prueba
+aparte. [Matriz, evidencia y pendientes](../../docs/LEARNING_VALIDATION_214.md).
 
-| Framework | Laboratorio disponible |
-|---|---|
-| native | Tools, contexto y coordinación mediante la API común |
-| LangGraph | pausa, checkpoint y reanudación de una aprobación |
-| OpenAI Agents | transferencia a especialista, guardrail y sesión |
-| Strands | Tool MCP y agente A2A con servicios locales reales |
-| Todos | cuatro actores en un System; Python o proveedores mixtos |
+Para inferencia configura las variables de entorno y AGENTIC_BUDGET_FILE con
+un contador persistente autorizado. La prueba de Python no acredita calidad de
+conversación de un modelo ni todos los controles de la interfaz.
 
-La [implementación](src/agentic_systems_studio/lab/) usa los SDKs nativos en las
-opciones del framework y conserva el resultado de la API común. No añade
-constructores alternativos a la librería.
+[La demostración explícita](example.py) muestra una conversación mínima con
+StateGraph, Tools, Skills, Agent, System, Context y Memory. La API de aplicación
+del controlador completo que aparece arriba es una integración adicional, no
+el reemplazo de esas declaraciones. El notebook muestra ambas fronteras.
 
-[Validación actual](../../docs/LEARNING_VALIDATION_213.md) ·
-[Evidencia original del release](../../revisions/2.1.3/closeout-evidence/REPORT.md) ·
-[Instalación y variables](../../INSTALL.md)
+[Validación histórica dev5](../../revisions/2.1.4/contracts-dev5/REPORT.md).
+La evidencia de revisiones anteriores permanece histórica.
 
-Los resultados acreditan escenarios concretos. vLLM/GPU, AWS IAM y ADA IAM
-requieren validación posterior; este Studio no es ADA Studio.
+El chat Python del controlador completo usa un fixture hello_world determinista;
+no interpreta lenguaje ni selecciona automáticamente la calculadora. La Tool
+safe_calculate puede ejecutarse explícitamente. Las pruebas online del controlador
+con LMs sí verifican historial y llamada a calculadora; no cubren todos los controles UI.

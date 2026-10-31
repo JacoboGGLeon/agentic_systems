@@ -1,0 +1,163 @@
+{
+  "passed": true,
+  "budget": {
+    "requests": 58,
+    "reserved_usd": "0.493025",
+    "remaining_requests": 12,
+    "remaining_usd": "1.506975"
+  },
+  "profiles": [
+    {
+      "profile": "pilots",
+      "passed": true,
+      "returncode": 0,
+      "before": {
+        "requests": 0,
+        "reserved_usd": "0",
+        "remaining_requests": 70,
+        "remaining_usd": "2"
+      },
+      "after_process_exit": {
+        "requests": 2,
+        "reserved_usd": "0.008212",
+        "remaining_requests": 68,
+        "remaining_usd": "1.991788"
+      },
+      "requests": 2
+    },
+    {
+      "profile": "sync",
+      "passed": true,
+      "returncode": 0,
+      "before": {
+        "requests": 2,
+        "reserved_usd": "0.008212",
+        "remaining_requests": 68,
+        "remaining_usd": "1.991788"
+      },
+      "after_process_exit": {
+        "requests": 10,
+        "reserved_usd": "0.044680",
+        "remaining_requests": 60,
+        "remaining_usd": "1.955320"
+      },
+      "requests": 8
+    },
+    {
+      "profile": "async",
+      "passed": true,
+      "returncode": 0,
+      "before": {
+        "requests": 10,
+        "reserved_usd": "0.044680",
+        "remaining_requests": 60,
+        "remaining_usd": "1.955320"
+      },
+      "after_process_exit": {
+        "requests": 18,
+        "reserved_usd": "0.081148",
+        "remaining_requests": 52,
+        "remaining_usd": "1.918852"
+      },
+      "requests": 8
+    },
+    {
+      "profile": "notebook_python",
+      "passed": true,
+      "returncode": 0,
+      "before": {
+        "requests": 18,
+        "reserved_usd": "0.081148",
+        "remaining_requests": 52,
+        "remaining_usd": "1.918852"
+      },
+      "after_process_exit": {
+        "requests": 18,
+        "reserved_usd": "0.081148",
+        "remaining_requests": 52,
+        "remaining_usd": "1.918852"
+      },
+      "requests": 0
+    },
+    {
+      "profile": "notebook_mixed",
+      "passed": true,
+      "returncode": 0,
+      "before": {
+        "requests": 18,
+        "reserved_usd": "0.081148",
+        "remaining_requests": 52,
+        "remaining_usd": "1.918852"
+      },
+      "after_process_exit": {
+        "requests": 58,
+        "reserved_usd": "0.493025",
+        "remaining_requests": 12,
+        "remaining_usd": "1.506975"
+      },
+      "requests": 40
+    }
+  ],
+  "observed_notebook_actors": [
+    [
+      "bedrock-runtime",
+      "qwen.qwen3-32b-v1:0",
+      "strands"
+    ],
+    [
+      "ollama-runtime",
+      "gemma4:31b",
+      "openai-agents"
+    ],
+    [
+      "ollama-runtime",
+      "qwen3:4b-instruct-2507-q4_K_M",
+      "native"
+    ],
+    [
+      "openai-runtime",
+      "gpt-4.1-mini",
+      "native"
+    ]
+  ],
+  "business_equal_python_mixed": true,
+  "business": {
+    "single": {
+      "payment_id": "SINGLE",
+      "amount": 15000,
+      "fee": 150,
+      "decision": "review",
+      "status": "pending_review"
+    },
+    "episodes": [
+      {
+        "payment_id": "PAY-001",
+        "amount": 5000,
+        "fee": 50,
+        "decision": "approve",
+        "status": "approved"
+      },
+      {
+        "payment_id": "PAY-001",
+        "amount": 5000,
+        "fee": 50,
+        "decision": "review_duplicate",
+        "status": "pending_review"
+      }
+    ],
+    "environment_state": {
+      "processed": 2,
+      "approved": 1,
+      "reward": 1
+    },
+    "eval": {
+      "total": 2,
+      "passed": 2,
+      "failed": 0
+    }
+  },
+  "historical_ledgers_unchanged": true,
+  "published": false,
+  "wheel_sha256": "2fd51f0ade843d9d8d4ef19bfbfd08d5f2d116947a5fc0b2cbed5c4f8dff6b60",
+  "scope": "Specific connection regression plus original financial application, not full release acceptance"
+}

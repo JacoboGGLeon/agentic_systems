@@ -1,0 +1,109 @@
+{
+  "version": "2.1.4.dev5",
+  "build": "03",
+  "wheel_sha256": "df328e52d7a2660d7b29ce45a40c689766ce99196c02d5672930dd5663bbde34",
+  "source": "examples/applications/financial_harness/progressive.py",
+  "source_sha256": "66b1ea656873d9cf159b54b6b653f0968f64199266e1531cbe737be93ce20529",
+  "runtime": {
+    "provider": "python-runtime",
+    "model": "python-runtime",
+    "region": null,
+    "endpoint": null,
+    "api_key_configured": false,
+    "timeout_s": 10,
+    "max_retries": 0,
+    "max_tool_calls": 1,
+    "max_turns": 2,
+    "max_tokens": null,
+    "backoff_s": 0.0,
+    "max_concurrency": 1
+  },
+  "actors": [
+    "native",
+    "openai-agents",
+    "strands"
+  ],
+  "orchestration": "langgraph",
+  "input": {
+    "amount_cents": 10000
+  },
+  "output": {
+    "amount_cents": 9450,
+    "currency": "MXN",
+    "budget_cents": 9000,
+    "decision": "review"
+  },
+  "activations": 8,
+  "node_records": [
+    {
+      "name": "quote",
+      "id": "run-50816835a1f04369a1ea4c1212bae5cb"
+    },
+    {
+      "name": "policy",
+      "id": "run-e94dfc8e289f4ca2ab1c2ee8fad2ed96"
+    },
+    {
+      "name": "fee",
+      "id": "run-6edfd8de67d44b22ae0e098b8d94ecc3"
+    },
+    {
+      "name": "actor",
+      "id": "run-38023419b86e47f9a48749433bd8bdb8"
+    },
+    {
+      "name": "discount",
+      "id": "run-f2564dfed7bf4a76902949273cbcabb1"
+    },
+    {
+      "name": "actor",
+      "id": "run-e627341b0ec74a96b7fd0c5d542d2657"
+    },
+    {
+      "name": "review",
+      "id": "run-6d72b300694c432987d90d6ca98236dc"
+    },
+    {
+      "name": "actor",
+      "id": "run-d7b68a9ca8ba4ec6a266283363b02eb8"
+    }
+  ],
+  "tool_calls": 3,
+  "single_actor_activations": 1,
+  "limit_cases": [
+    {
+      "max_actions": 1,
+      "ok": false,
+      "observed": 1,
+      "tool_calls": 0
+    },
+    {
+      "max_actions": 6,
+      "ok": false,
+      "observed": 6,
+      "tool_calls": 2
+    },
+    {
+      "max_actions": 7,
+      "ok": false,
+      "observed": 7,
+      "tool_calls": 2
+    },
+    {
+      "max_actions": 8,
+      "ok": true,
+      "observed": 8,
+      "tool_calls": 3
+    },
+    {
+      "max_actions": 9,
+      "ok": true,
+      "observed": 8,
+      "tool_calls": 3
+    }
+  ],
+  "inference_requests": 0,
+  "blocked_attempts": 0,
+  "budget_unchanged": "6ce1ae54e97e11835598312e56ca403ca7b267478a99ce1bc5c93a0bdbd5b9e6",
+  "scope": "SDK loops with deterministic Python; no live model acceptance"
+}

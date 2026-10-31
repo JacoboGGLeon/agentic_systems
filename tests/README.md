@@ -1,48 +1,39 @@
-# Test Matrix
+# Pruebas · 2.1.4.dev8
 
-The suite is organized by the contract owner, not by migration history.
+La suite canónica tiene **469 casos correctos**, sin fallos ni omisiones, en
+Python 3.14.2. Se ejecuta contra fuente y contra una instalación no editable
+fuera del checkout. CI prepara la misma suite para Python 3.10–3.14; su ejecución
+remota todavía está pendiente.
 
-| Area | Responsibility |
-|---|---|
-| `tests/api/` | Public behavior for Runtime, Tool, Skill, Agent, System, Graph, Environment, Eval, results and output. |
-| `tests/unit/` | Private branches owned by individual production modules. |
-| `tests/providers/` | Provider base, OpenAI, Python Runtime, vLLM and Bedrock behavior with fake clients. |
-| `tests/contracts/` | Public inventory, semantic invariants, optional-import boundary and frozen Bedrock signatures. |
-| `tests/frameworks/` | Real Framework SDK execution, the 5 x 4 matrix, forwarding and local MCP transports. |
-| `tests/release/` | Tutorials, packaging, artifacts, documentation and quarantine-absence gates. |
-| `tests/composition/` | Tool/Skill identity, conflicts, precedence, reuse and composition coherence. |
-| `tests/integration_conformance/` | Framework and Graph boundary profiles and state projection. |
+| Área | Casos | Responsabilidad |
+|---|---:|---|
+| tests/v214_graph | 120 | Graph, Context, episodios, pausa y RunResult |
+| tests/grammar214 | 44 | Tools Pydantic, contratos y Eval aislada |
+| tests/learning214 | 169 | Negocio, controles, ejemplos y configuración |
+| tests/release/test_release_publication.py | 20 | Identidad, conflictos y publicación |
+| Studio seleccionado | 13 | Controlador y widgets, sin certificar toda la UI |
+| tests/current | 103 | Sesión AWS, compilador, errores, linaje, CLI y contratos |
 
-There is no quarantine, dynamic loader or routed historical test body. Durable
-assertions from the former modules now live with their owner; redundant and
-layout-specific assertions were removed.
+[JUnit instalado](../revisions/2.1.4/grammar-dev8/installed-suite-closure.xml) ·
+[Cobertura](../revisions/2.1.4/grammar-dev8/installed-coverage-closure.json) ·
+[Informe](../revisions/2.1.4/grammar-dev8/REPORT.md).
 
-## Coverage policy
+## Ejecución
 
-Core coverage is blocking at 100% and omits both the public Bedrock facade and
-its internal package:
+`pyproject.toml` declara testpaths; runner y CI usan el mismo perfil. La suite
+histórica permanece fuera de esta selección vigente.
 
-```powershell
-python -m pytest -q --cov=agentic_systems --cov-config=pyproject.toml --cov-report=term-missing
+```console
+python -m pytest --collect-only -q
+python scripts/test_offline_214.py --source
+python scripts/test_offline_214.py
 ```
 
-Bedrock has an independent upward-only ratchet:
+El último comando exige el wheel instalado y no usa src mediante pythonpath.
+El runner bloquea conexiones de aplicación y subprocesos. Jupyter y MCP/A2A
+tienen perfiles locales separados. No se ejecutan proveedores LM.
 
-```powershell
-python -m pytest -q tests/providers/bedrock `
-  --cov=agentic_systems.providers.bedrock_runtime `
-  --cov=agentic_systems.providers.bedrock `
-  --cov-config=.coveragerc-bedrock `
-  --cov-report=term-missing
-```
-
-Current verified status:
-
-- Full suite: 469 passed; 15 deterministic notebooks execute under pytest.
-- Strands MCP: native stdio and Streamable HTTP transports execute locally.
-- Core: 100.00% over 7,060 statements.
-- Bedrock: 100% over 620 statements; `fail_under = 100`.
-- Core branches: 98.13% measured; `fail_under = 98.1`.
-- Provider branches: 97.76% measured; `fail_under = 97.7`.
-- Framework branches: 98.88% measured; `fail_under = 98.8`.
-- Ruff: green over `src`, `tests`, and the local tutorial MCP fixture.
+La cobertura de sentencias medida es 100%, sin bajar el umbral existente.
+La política excluye motor privado y plantillas; no es cobertura de toda la
+distribución ni de ramas. Se comprueban errores, intentos, consumo, serialización,
+Context, Memory aislada, plazos compartidos y efectos.

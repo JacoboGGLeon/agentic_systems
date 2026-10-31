@@ -1,32 +1,14 @@
-# Evaluar versos guardados
+# Evaluar versos guardados · 2.1.4
 
 Comprobar formato y una cifra en candidatos suministrados.
 
-```python
-from examples.patterns.evidence_grounded_poem.example import run
+La composición y las aserciones están visibles en [el código](example.py).
+Lee las declaraciones de Tools, Agents y Graph antes de ejecutar el ejemplo.
 
-result = run()
-result
-```
+Input → proceso → output: Dos textos guardados → Eval → uno aceptado y otro rechazado; sin generación ni juez semántico.
 
-Dos textos guardados → Eval → uno aceptado y otro rechazado; sin generación ni juez semántico.
+[Declaración](example.py) · [Evidencia dev8](../../../revisions/2.1.4/grammar-dev8/closure/examples/examples--patterns--evidence_grounded_poem--example.py.json)
 
-Código:
-- [Current implementation](../../../examples/patterns/evidence_grounded_poem/example.py)
+Perfil actual: **offline-passed**. El catálogo [de validación](../../../docs/LEARNING_VALIDATION_214.md) separa configuración, Python, servicios locales y pruebas de modelos. La evidencia 2.1.3 conservada es histórica y no certifica estos bytes.
 
-Validación: **Offline ejecutado**. Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.
-
-- [Nueva ejecución contra el wheel publicado](../../../revisions/2.1.3/learning-evidence-elevated/example-results/patterns/evidence_grounded_poem/current.json)
-- [RunResult y lineage](../../../revisions/2.1.3/learning-evidence-elevated/example-results/patterns/evidence_grounded_poem/runresults.json)
-
-<details>
-<summary>Evidencia del experimento anterior</summary>
-
-Estado anterior: accepted-2.1.2. Published 2.1.2 core-12-live-v1 acceptance: OpenAI, Bedrock API key and Ollama × native/LangGraph/OpenAI Agents/Strands, two passes. Four-framework Python controls are deterministic. This accepts the declared cases and routes only, not all SDK-specific features or arbitrary models. The poem case is a language-model case; Python does not demonstrate creative generation.
-
-La adaptación actual tiene pruebas propias. La evidencia anterior conserva su versión y no certifica estos bytes.
-
-- [Published exact-wheel acceptance summary](https://github.com/JacoboGGLeon/agentic_systems/releases/download/v2.1.2/final-certification-summary.json)
-- [Published release](https://github.com/JacoboGGLeon/agentic_systems/releases/tag/v2.1.2)
-
-</details>
+[Validación histórica dev5 de Pydantic y human_results](../../../revisions/2.1.4/contracts-dev5/REPORT.md). Las revisiones previas se conservan como evidencia histórica.

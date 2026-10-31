@@ -10,6 +10,6 @@ enforce_offline()
 
 import agentic_systems as toolkit  # noqa: E402
 
-assert toolkit.__version__ == "2.1.3"
+assert toolkit.__version__ == "2.1.4.dev1"
 if os.environ.get("AGENTIC_TEST_REQUIRE_INSTALLED") == "1":
     assert "site-packages" in Path(toolkit.__file__).parts, "Install the wheel non-editably"

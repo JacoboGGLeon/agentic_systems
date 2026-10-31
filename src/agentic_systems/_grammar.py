@@ -1,106 +1,143 @@
-"""Private implementation of the single Agentic Systems 2.1.3 API."""
-
+"""Agentic Systems 2.1.4: LangGraph state/nodes/edges, scoped execution contracts."""
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import json
-import operator
+import sys
 import threading
 import time
 import uuid
-from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field, replace
-from typing import Annotated, Any, Callable, TypedDict
+from typing import Any, Callable
+from pydantic import BaseModel, ConfigDict, Field, StrictFloat, StrictInt
 
-from ._tools import _Tool, _Skill
-from ._results import RunResult as _RunResult
 from ._configuration import _Runtime, _Framework, framework
-from ._contracts import _validate_contract, _validate_policy, _invoke_actor, _check_output, _closed
-
+from ._context import Context, Memory, _active_execution, _scope_context, _isolated_memory
+from ._contracts import _validate_contract, _validate_policy, _policy_model, _invoke_actor, _check_output, _closed
+from ._control import _PauseSignal, _propagate_control
+from ._results import RunResult as _RunResult, _json, _record_child
+from ._tools import _Skill
+from ._langgraph import _Evidence, _compile_graph, _strip, _graph_description, _schema_annotations, _validated_state
 
 
 def snapshot(value):
-    def check(item):
-        if isinstance(item, dict):
-            if not all(isinstance(key, str) for key in item):
-                raise TypeError("JSON state requires string keys")
-            for child in item.values():
-                check(child)
-        elif isinstance(item, list):
-            for child in item:
-                check(child)
-        elif type(item) not in {str, int, float, bool, type(None)}:
-            raise TypeError("Business state must contain only JSON values")
-
-    check(value)
-    return json.loads(json.dumps(value, allow_nan=False))
+    if isinstance(value, BaseModel):
+        _json(value)  # Validate finiteness before serialization.
+        supplied = value.model_dump(mode="json", exclude_unset=True)
+        defaults = value.model_dump(mode="json")
+        return snapshot({**{k: v for k, v in defaults.items() if v is not None}, **supplied})
+    if isinstance(value, dict):
+        return _json({k: snapshot(v) for k, v in value.items()})
+    if isinstance(value, (list, tuple)):
+        return [snapshot(v) for v in value]
+    return _json(value)
 
 
 def identity(value):
     return value
 
 
-@dataclass(frozen=True)
-class Action:
-    name: str
-    target: Any  # callable, public Tool, python-runtime Agent, or Skill Tool name
-    input: Callable = identity
+class _RunOptions(BaseModel):
+    """Validated root deadline; no node-count quota or public constructor."""
+    model_config = ConfigDict(extra="forbid", frozen=True, strict=True, allow_inf_nan=False, hide_input_in_errors=True)
+    timeout_s: StrictFloat | StrictInt | None = Field(default=None, gt=0)
 
 
-@dataclass(frozen=True)
-class Sequence:
-    steps: tuple
-    name: str = "sequence"
-
-
-@dataclass(frozen=True)
-class Parallel:
-    steps: tuple
-    join: Callable
-    name: str = "parallel"
-
-
-@dataclass(frozen=True)
-class Graph:
-    nodes: tuple  # (name, flow) pairs; a Parallel node expresses explicit fork/join
-    edges: tuple  # (source, destination name | callable | legacy decision function) pairs
-    start: str
-    max_visits: int = 20
-    name: str = "graph"
-
-
-@dataclass(frozen=True)
-class Limits:
-    max_actions: int = 100
-    timeout_s: float = 10
-
-    def __post_init__(self):
-        import math
-        if type(self.max_actions) is not int or self.max_actions < 1:
-            raise ValueError("max_actions must be a positive integer")
-        if type(self.timeout_s) not in {int, float} or not math.isfinite(self.timeout_s) or self.timeout_s <= 0:
-            raise ValueError("timeout_s must be positive and finite")
-
-
-class Context:
-    def __init__(self, limits):
-        if not isinstance(limits, Limits):
-            raise TypeError("Use Limits(...)")
-        self.limits = limits
+class _ExecutionContext:
+    def __init__(self, timeout_s=None, backend="langgraph", *, allow_pause=True):
+        self.timeout_s = _RunOptions(timeout_s=timeout_s).timeout_s
         self.started = time.monotonic()
-        self.actions = 0
+        self.nodes = 0
         self.lock = threading.Lock()
+        self.semantic = Context({})
+        self.limit_reason = None
+        self.backend = backend
+        self.allow_pause = allow_pause
+        self.in_actor = False
+        self.path = ("root",)
+        self.elapsed = 0.0
+        self.journal = {}
+        self.frames = {}
+        self.prepared_units = {}
+        self.evidence = _Evidence()
+        self.outputs = {}
+        self.state_metrics = {"snapshots": 0, "max_bytes": 0, "max_lineage_refs": 0}
+        self.semantic_snapshots = {}
+        self.sources = {}
+        self.source_rows = {}
+        self.active_nodes = set()
+
+    def at(self, component):
+        scope = self.scoped(self.semantic)
+        scope.path = (*self.path, component)
+        return scope
+
+    def memo_key(self, identity, value):
+        encoded = json.dumps(snapshot(value), sort_keys=True, ensure_ascii=False, separators=(",", ":"))
+        return (*self.path, identity, hashlib.sha256(encoded.encode("utf-8")).hexdigest())
+
+    def begin_segment(self):
+        self.started = time.monotonic()
+
+    def end_segment(self):
+        self.elapsed += time.monotonic() - self.started
+
+    def close(self):
+        for source in self.sources.values():
+            close = getattr(source, "close", None)
+            if close is not None:
+                close()
+        self.sources.clear()
+
+    def scoped(self, semantic):
+        scoped = object.__new__(_ExecutionScope)
+        scoped.parent = self
+        scoped.semantic = semantic
+        scoped.path = self.path
+        scoped.in_actor = self.in_actor
+        return scoped
 
     def check(self):
-        if time.monotonic() - self.started >= self.limits.timeout_s:
+        if self.timeout_s is not None and self.remaining_s <= 0:
+            self.limit_reason = "deadline"
             raise TimeoutError("Shared run deadline exceeded")
 
-    def take(self):
+    @property
+    def remaining_s(self):
+        if self.timeout_s is None:
+            return None
+        return self.timeout_s - self.elapsed - (time.monotonic() - self.started)
+
+    def observe_node(self):
         with self.lock:
             self.check()
-            if self.actions >= self.limits.max_actions:
-                raise RuntimeError("Shared action limit exceeded")
-            self.actions += 1
+            self.nodes += 1
+
+
+class _ExecutionScope:
+    """Read-only semantic scope with a shared deadline and node observations."""
+
+    @property
+    def nodes(self):
+        return self.parent.nodes
+
+    @property
+    def limit_reason(self):
+        return self.parent.limit_reason
+
+    def observe_node(self):
+        return self.parent.observe_node()
+
+    def check(self):
+        return self.parent.check()
+
+    def __getattr__(self, name):
+        return getattr(self.parent, name)
+
+    scoped = _ExecutionContext.scoped
+    at = _ExecutionContext.at
+    memo_key = _ExecutionContext.memo_key
 
 
 def result(name, kind, data, children=(), error=None, **meta):
@@ -127,430 +164,6 @@ def result(name, kind, data, children=(), error=None, **meta):
         execution_id=execution_id, meta={"name": name, "kind": kind, **meta})
 
 
-class _State(TypedDict, total=False):
-    value: Any
-    context: Context
-    records: Annotated[list, operator.add]
-    failed: bool
-    next: str
-    visits: int
-
-
-@dataclass(frozen=True)
-class _Prepared:
-    name: str
-    kind: str
-    backend: str
-    execute: Callable
-    native: Any = None
-    children: tuple = ()
-
-    def run(self, value, context):
-        try:
-            return self.execute(snapshot(value), context)
-        except Exception as exc:
-            return result(self.name, self.kind, {}, error=exc, backend=self.backend)
-
-
-def _action(action, registry, reserve=True):
-    target = (
-        registry[action.target] if isinstance(action.target, str) else action.target
-    )
-    if not callable(action.input):
-        raise TypeError("Action input binding must be callable")
-    if not isinstance(target, _Tool) and not callable(target):
-        raise TypeError("Action target must be a Tool or callable")
-
-    def execute(value, context):
-        children = []
-        try:
-            context.take() if reserve else context.check()
-            payload = snapshot(action.input(value))
-            raw = (
-                target.run(payload)
-                if isinstance(target, _Tool)
-                else target(payload)
-            )
-            if isinstance(raw, _RunResult):
-                # SDK-private native objects can be cyclic. Copy the result shell
-                # to attach its parent without deep-copying framework internals.
-                raw = replace(raw)
-                
-                children.append(raw)
-                data = raw.data
-            else:
-                data = raw
-            data = snapshot(data)
-            context.check()  # preserve a Tool result even if it completed late
-            return result(action.name, "action", data, children)
-        except Exception as exc:
-            return result(
-                action.name,
-                "action",
-                children[-1].data if children else {},
-                children,
-                exc,
-            )
-
-    return _Prepared(action.name, "action", "python", execute)
-
-
-def _composite(flow, backend, children):
-    names = [child.name for child in children]
-    if (
-        len(set(names)) != len(names)
-        or not names
-        or any(not name or name == "END" or name.startswith("__") for name in names)
-    ):
-        raise ValueError("Flow requires unique nonempty step names other than END")
-    kind = type(flow).__name__.lower()
-    graph_nodes = dict(zip(names, children))
-    edges = dict(flow.edges) if isinstance(flow, Graph) else {}
-    if isinstance(flow, Graph):
-        if (
-            len(edges) != len(flow.edges)
-            or set(edges) != set(names)
-            or flow.start not in names
-        ):
-            raise ValueError(
-                "Graph requires a start and exactly one edge/decision function per node"
-            )
-        if type(flow.max_visits) is not int or flow.max_visits < 1:
-            raise ValueError("Graph visit limit must be positive")
-        for edge in edges.values():
-            if callable(edge):
-                # Direct routers may select any node in this graph or END.
-                # Never execute or inspect user code to infer its destinations.
-                continue
-            if not isinstance(edge, str):
-                raise TypeError("Graph edge must be a destination name or callable")
-            targets = (edge,)
-            if not targets or any(target not in {*names, "END"} for target in targets):
-                raise ValueError("Unknown graph target")
-    if isinstance(flow, Parallel) and not callable(flow.join):
-        raise TypeError("Parallel requires an explicit join")
-
-    def node(name, state):
-        context = state["context"]
-        visits = state.get("visits", 0) + 1
-        if isinstance(flow, Graph) and visits > flow.max_visits:
-            current = result(
-                name,
-                "visit-limit",
-                {},
-                error=RuntimeError("Graph visit limit exceeded"),
-            )
-        else:
-            current = graph_nodes[name].run(state["value"], context)
-        current.meta["graph_node" if isinstance(flow, Graph) else "step"] = name
-        records = [(name, current)]
-        update = {
-            "value": current.data,
-            "records": records,
-            "failed": not current.ok,
-            "visits": visits,
-        }
-        if isinstance(flow, Graph) and current.ok:
-            try:
-                edge = edges[name]
-                router = edge if callable(edge) else None
-                if router is not None:
-                    context.take()
-                    target = router(snapshot(current.data))
-                    context.check()
-                    targets = (*names, "END")
-                    if not isinstance(target, str) or target not in targets:
-                        raise ValueError("decision function selected an undeclared target")
-                else:
-                    target = edge
-                current.meta["next"] = target
-                update["next"] = target
-            except Exception as exc:
-                records.append(
-                    (name + ":route", result(name + ":route", "route", {}, error=exc))
-                )
-                update["failed"] = True
-        return update
-
-    def join(records):
-        ordered = [dict(records)[name] for name in names]
-        try:
-            data = (
-                flow.join(
-                    {name: snapshot(child.data) for name, child in zip(names, ordered)}
-                )
-                if all(c.ok for c in ordered)
-                else {"branches": {name: c.data for name, c in zip(names, ordered)}}
-            )
-            return result(flow.name, kind, data, ordered, backend=backend)
-        except Exception as exc:
-            return result(flow.name, kind, {}, ordered, exc, backend=backend)
-
-    native = None
-    if backend == "langgraph":
-        from langgraph.graph import END, START, StateGraph
-
-        builder = StateGraph(_State)
-        if isinstance(flow, Parallel):
-            for name in names:
-
-                def branch(state, name=name):
-                    return {
-                        "records": [
-                            (
-                                name,
-                                graph_nodes[name].run(state["value"], state["context"]),
-                            )
-                        ]
-                    }
-
-                builder.add_node(name, branch)
-                builder.add_edge(START, name)
-            # A real barrier: join waits for every branch; never multiple writes to value.
-            builder.add_node("__join__", lambda state: {})
-            builder.add_edge(names, "__join__")
-            builder.add_edge("__join__", END)
-        else:
-            for index, name in enumerate(names):
-                builder.add_node(name, lambda state, name=name: node(name, state))
-                if isinstance(flow, Graph):
-                    builder.add_conditional_edges(
-                        name,
-                        lambda state: "END" if state["failed"] else state["next"],
-                        {n: n for n in names} | {"END": END},
-                    )
-                else:
-                    following = names[index + 1] if index + 1 < len(names) else "END"
-                    builder.add_conditional_edges(
-                        name,
-                        lambda state, following=following: (
-                            "END" if state["failed"] else following
-                        ),
-                        {n: n for n in names} | {"END": END},
-                    )
-            builder.add_edge(START, flow.start if isinstance(flow, Graph) else names[0])
-        native = builder.compile()
-
-    def execute(value, context):
-        state = {
-            "value": value,
-            "context": context,
-            "records": [],
-            "failed": False,
-            "visits": 0,
-        }
-        if native is not None:
-            state = native.invoke(
-                state,
-                config={
-                    "recursion_limit": (
-                        flow.max_visits if isinstance(flow, Graph) else len(names)
-                    )
-                    + 10
-                },
-            )
-        elif isinstance(flow, Parallel):
-            with ThreadPoolExecutor(max_workers=min(len(names), 8)) as pool:
-                outputs = list(
-                    pool.map(lambda c: c.run(snapshot(value), context), children)
-                )
-            state["records"] = list(zip(names, outputs))
-        else:
-            current = flow.start if isinstance(flow, Graph) else names[0]
-            while current != "END":
-                update = node(current, state)
-                state = {
-                    **state,
-                    **update,
-                    "records": state["records"] + update["records"],
-                }
-                if state["failed"]:
-                    break
-                current = (
-                    state["next"]
-                    if isinstance(flow, Graph)
-                    else (
-                        names[names.index(current) + 1]
-                        if names.index(current) + 1 < len(names)
-                        else "END"
-                    )
-                )
-        if isinstance(flow, Parallel):
-            output = join(state["records"])
-            try:
-                context.check()
-            except TimeoutError as exc:
-                output = replace(output, ok=False, errors=(*output.errors, {"code": "TimeoutError", "message": str(exc)}))
-            return output
-        return result(
-            flow.name,
-            kind,
-            state["value"],
-            [r for _, r in state["records"]],
-            backend=backend,
-        )
-
-    return _Prepared(flow.name, kind, backend, execute, native, tuple(children))
-
-
-def _prepare(flow, backend, registry, seen):
-    if id(flow) in seen:
-        raise ValueError("Recursive owner/flow definition")
-    seen = {*seen, id(flow)}
-    if isinstance(flow, _Unit):
-        return flow._compile(seen)
-    if isinstance(flow, Action):
-        return _action(flow, registry)
-    if isinstance(flow, (Sequence, Parallel)):
-        if not isinstance(flow.steps, tuple):
-            raise TypeError("Flow steps must be an immutable tuple")
-        return _composite(
-            flow,
-            backend,
-            tuple(_prepare(step, backend, registry, seen) for step in flow.steps),
-        )
-    if isinstance(flow, Graph):
-        if not isinstance(flow.nodes, tuple) or not isinstance(flow.edges, tuple):
-            raise TypeError("Graph nodes and edges must be immutable tuples")
-        keys = [name for name, _ in flow.nodes]
-        if len(keys) != len(set(keys)):
-            raise ValueError("Duplicate graph node")
-        children = []
-        for name, step in flow.nodes:
-            compiled = _prepare(step, backend, registry, seen)
-            # Graph node key is explicit; nested owner metadata is preserved inside.
-            children.append(
-                _Prepared(
-                    name,
-                    compiled.kind,
-                    compiled.backend,
-                    compiled.run,
-                    compiled.native,
-                    compiled.children,
-                )
-            )
-        return _composite(flow, backend, tuple(children))
-    raise TypeError("Expected Action, Sequence, Parallel, Graph, Agent or System")
-
-
-@dataclass(frozen=True)
-class _Unit:
-    name: str
-    flow: Any = None
-    backend: str = "native"
-    kind: str = field(default="unit", init=False)
-
-    def _compile(self, seen):
-        if self.backend not in {"native", "langgraph"}:
-            raise ValueError("Unsupported flow backend; no auto fallback")
-        if not isinstance(getattr(self, "skills", ()), tuple):
-            raise TypeError("Skills must be an immutable tuple")
-        registry = {}
-        for skill in getattr(self, "skills", ()):
-            if not isinstance(skill, _Skill):
-                raise TypeError("Expected a real Agentic Systems Skill")
-            for tool in skill.tools:
-                if tool.name in registry and registry[tool.name] is not tool:
-                    raise ValueError("Conflicting Skill Tool identity")
-                registry[tool.name] = tool
-        if isinstance(self, Agent) and self.runtime is not None:
-            body = _model_body(self)
-        else:
-            if self.flow is None:
-                raise ValueError("A flow is required")
-            body = _prepare(self.flow, self.backend, registry, seen)
-        skill_names = [skill.name for skill in getattr(self, "skills", ())]
-
-        def execute(value, context):
-            child = body.run(value, context)
-            output = result(
-                self.name,
-                self.kind,
-                child.data,
-                [child],
-                backend=self.backend,
-                skills=skill_names,
-            )
-            return replace(output, engine=child.engine, model=child.model)
-
-        return _Prepared(self.name, self.kind, self.backend, execute, children=(body,))
-
-    def compile(self):
-        if not isinstance(self.name, str) or not self.name.strip():
-            raise ValueError("Owner name is required")
-        return _Compiled(self._compile({id(self)}))
-
-    def run(self, input=None, *, limits=Limits()):
-        return self.compile().run(input, limits=limits)
-
-    async def arun(self, input=None, *, limits=Limits()):
-        return await self.compile().arun(input, limits=limits)
-
-    def inspect(self):
-        return self.compile().inspect()
-
-
-@dataclass(frozen=True)
-class Agent(_Unit):
-    skills: tuple = ()
-    runtime: Any = None
-    framework: Any = None
-    instructions: str = ""
-    contract: dict | None = None
-    policy: dict | None = None
-    kind: str = field(default="agent", init=False)
-
-    def __post_init__(self):
-        if self.runtime is not None and self.backend != "native":
-            raise ValueError("backend selects a flow, not the actor framework")
-        if (self.flow is None) == (self.runtime is None):
-            raise ValueError("Agent needs a flow or an explicit runtime")
-        if self.runtime is None and (self.framework is not None or self.instructions or self.contract is not None or self.policy is not None):
-            raise ValueError("Model options belong to an Agent with an explicit runtime")
-
-
-@dataclass(frozen=True)
-class System(_Unit):
-    kind: str = field(default="system", init=False)
-
-
-@dataclass(frozen=True)
-class _Compiled:
-    _prepared: _Prepared
-
-    def run(self, input=None, *, limits=Limits()):
-        context = Context(limits)
-        output = self._prepared.run(input, context)
-        metadata = {**output.meta, "actions_observed": context.actions}
-        try:
-            metadata["input"] = snapshot(input)
-        except (ValueError, TypeError):
-            metadata["input_error"] = "Input is not finite JSON"
-        output = replace(output, meta=metadata)
-        return _boundary(output)
-
-    async def arun(self, input=None, *, limits=Limits()):
-        return await asyncio.to_thread(self.run, input, limits=limits)
-
-    def inspect(self):
-        def describe(node):
-            return {
-                "name": node.name,
-                "kind": node.kind,
-                "backend": node.backend,
-                "native_type": type(node.native).__name__ if node.native else None,
-                "children": [describe(child) for child in node.children],
-            }
-
-        return describe(self._prepared)
-
-
-def _boundary(output):
-    validation = output.check_invariants()
-    if not validation.ok:
-        return replace(output, ok=False, errors=(*output.errors, {"code": "invariant_failed", "issues": validation.to_dict()["issues"]}))
-    return output
-
 
 def _model_body(owner):
     if not isinstance(owner.runtime, _Runtime):
@@ -558,7 +171,7 @@ def _model_body(owner):
     if not isinstance(owner.instructions, str):
         raise TypeError("instructions must be a string")
     selected = framework("native") if owner.framework is None else owner.framework
-    if not isinstance(selected, _Framework):
+    if not isinstance(selected, _Framework) or selected.name not in {"native", "openai-agents", "strands"}:
         raise TypeError("Use framework(...)")
     if owner.runtime.provider != "python-runtime" and not owner.runtime.model:
         raise ValueError("An external model Agent requires an explicit model identity")
@@ -572,8 +185,20 @@ def _model_body(owner):
         raise ValueError("Conflicting completion and finalize rules")
 
     def execute(value, context):
-        context.take()
-        child = _invoke_actor(owner, owner.runtime, selected, contract, policy, value)
+        from ._engine.core.scheduler import _EXECUTION_DEADLINE
+        context.check()
+        remaining = context.remaining_s
+        deadline_token = _EXECUTION_DEADLINE.set(
+            None if remaining is None else time.monotonic() + remaining
+        )
+        actor_context = context.scoped(context.semantic)
+        actor_context.in_actor = True
+        token = _active_execution.set(actor_context)
+        try:
+            child = _invoke_actor(owner, owner.runtime, selected, contract, policy, value)
+        finally:
+            _active_execution.reset(token)
+            _EXECUTION_DEADLINE.reset(deadline_token)
         child = _check_output(child, contract)
         output = result(owner.name, "model", child.data, (child,), framework=selected.name)
         output = replace(output, engine=child.engine, model=child.model)
@@ -583,110 +208,8 @@ def _model_body(owner):
         except Exception as exc:
             return replace(output, ok=False, errors=(*output.errors, {"code": type(exc).__name__, "message": str(exc)}))
 
-    return _Prepared(owner.name, "model", selected.name, execute)
+    return _Prepared(owner.name, "model", execute, actor=selected.name)
 
-
-@dataclass(frozen=True)
-class _Captured:
-    _name: str
-    _kind: str
-    _execute: Callable
-    _description: dict
-
-    def run(self, *, limits=Limits()):
-        context = Context(limits)
-        return _boundary(self._execute(context))
-
-    async def arun(self, *, limits=Limits()):
-        return await asyncio.to_thread(self.run, limits=limits)
-
-    def inspect(self):
-        return snapshot(self._description)
-
-
-@dataclass(frozen=True)
-class Environment:
-    name: str
-    unit: _Unit
-    records: tuple
-    max_steps: int | None = None
-    memory: Any = None
-    observe: Callable | None = None
-    update: Callable | None = None
-    stop: Callable | None = None
-
-    def compile(self):
-        if not isinstance(self.name, str) or not self.name:
-            raise ValueError("Environment name is required")
-        if not isinstance(self.unit, _Unit):
-            raise TypeError("Environment runs an Agent or System")
-        if not isinstance(self.records, tuple) or not self.records:
-            raise ValueError("Environment requires a nonempty tuple of records")
-        if self.max_steps is not None and (type(self.max_steps) is not int or self.max_steps < 1):
-            raise ValueError("max_steps must be positive")
-        if any(fn is not None and not callable(fn) for fn in (self.observe, self.update, self.stop)):
-            raise TypeError("Episode callbacks must be functions")
-        prepared = self.unit.compile()
-        records, initial = snapshot(list(self.records)), snapshot(self.memory)
-        description = {"name": self.name, "kind": "environment", "records": len(records),
-                       "max_steps": self.max_steps, "memory": initial is not None,
-                       "observe": self.observe is not None, "update": self.update is not None,
-                       "stop": self.stop is not None, "unit": prepared.inspect()}
-
-        def execute(context):
-            memory = snapshot(initial if initial is not None else {})
-            children, history, stopped, error = [], [], False, None
-            for index, row in enumerate(records):
-                if self.max_steps is not None and index >= self.max_steps:
-                    error = RuntimeError("Episode truncated before all records")
-                    break
-                before = snapshot(memory)
-                try:
-                    context.check()
-                    if self.observe is not None:
-                        context.take()
-                    value = self.observe(snapshot(row), snapshot(memory)) if self.observe else snapshot(row)
-                    child = prepared._prepared.run(value, context)
-                    children.append(child)
-                    if child.ok:
-                        if self.update is not None:
-                            context.take()
-                            memory = snapshot(self.update(snapshot(memory), snapshot(row), _RunResult(**child.to_dict())))
-                        elif initial is None:
-                            memory = {"processed": len(children)}
-                        if self.stop is not None:
-                            context.take()
-                            stopped = self.stop(snapshot(memory), _RunResult(**child.to_dict()))
-                            if type(stopped) is not bool:
-                                raise TypeError("stop must return a bool")
-                    history.append({"step": index, "record": snapshot(row), "memory_before": before,
-                                    "memory_after": snapshot(memory), "graph_state": {"run": child.to_dict()}})
-                    context.check()
-                    if stopped or not child.ok:
-                        break
-                except Exception as exc:
-                    error = exc
-                    if history and history[-1]["step"] == index:
-                        history[-1]["error"] = {"code": type(exc).__name__, "message": str(exc)}
-                    else:
-                        history.append({"step": index, "record": snapshot(row), "memory_before": before,
-                                        "memory_after": snapshot(memory), "error": {"code": type(exc).__name__, "message": str(exc)}})
-                    break
-            data = {"outputs": [c.data for c in children], "history": history,
-                    "summary": {"memory": memory, "processed": len(children), "terminated": stopped,
-                                "truncated": error is not None and len(children) < len(records)}}
-            return result(self.name, "environment", data, children, error, actions_observed=context.actions)
-
-        return _Captured(self.name, "environment", execute, description)
-
-    def run(self, *, limits=Limits()):
-        return self.compile().run(limits=limits)
-
-    async def arun(self, *, limits=Limits()):
-        return await self.compile().arun(limits=limits)
-
-    def inspect(self):
-        return self.compile().inspect()
 
 
 def _rubric(value):
@@ -733,107 +256,496 @@ def _judge_verdict(judged, actual, rubric):
             "threshold": rubric["threshold"], "usage": judged.usage}
 
 
+
+
 @dataclass(frozen=True)
-class Eval:
+class _Prepared:
+    name: str
+    kind: str
+    execute: Callable
+    native: Any = None
+    description: dict = field(default_factory=dict)
+    registry: dict = field(default_factory=dict, compare=False, repr=False)
+    actor: str | None = None
+
+    def run(self, value, context):
+        memo = context.memo_key("owner:" + self.kind + ":" + self.name, value)
+        cached = context.journal.get(memo)
+        if isinstance(cached, str):
+            return context.evidence.get(cached)
+        output = self.execute(snapshot(value), context)
+        ref = context.evidence.put(output)
+        context.journal[memo] = ref
+        return output
+
+
+def _children(context, frame):
+    return [context.evidence.get(ref) for _, _, ref in sorted(context.frames.get(frame, []))]
+
+
+def _owner_graph(owner, graph, registry, *, initial=identity, project=identity, finish=None, extra=None):
+    from ._langgraph import _observe_state
+    if not isinstance(owner.name, str) or not owner.name.strip():
+        raise ValueError("Owner name is required")
+    native = _compile_graph(graph, owner.name, owner_kind=owner.kind)
+    fields = set(_schema_annotations(graph.output_schema))
+    declared = getattr(owner, "contract", None)
+    if getattr(owner, "runtime", None) is not None:
+        declared = {k: v for k, v in (declared or {}).items() if k in {"input_schema", "output_schema"}}
+    contract = _validate_contract(declared)
+    if set(contract) - {"input_schema", "output_schema"}:
+        raise ValueError("Graph contracts accept input_schema and output_schema")
+    for attribute, cls in (("context", Context), ("memory", Memory)):
+        value = getattr(owner, attribute, None)
+        if value is not None and not isinstance(value, cls):
+            raise TypeError("Use " + cls.__name__ + "(...)")
+
+    def execute(value, context):
+        frame = context.memo_key("frame:" + owner.name, value)
+        context.frames.setdefault(frame, [])
+        captured = context.semantic_snapshots.get(frame)
+        if captured is None:
+            memory = getattr(owner, "memory", None)
+            revision, episodes = memory._snapshot() if memory is not None else (None, [])
+            semantic = _scope_context(context.semantic, getattr(owner, "context", None), episodes)
+            captured = (semantic, revision)
+            context.semantic_snapshots[frame] = captured
+        semantic, revision = captured
+        scoped = context.scoped(semantic)
+        scoped.frame = frame
+        token = _active_execution.set(scoped)
+        paused, error, business = False, None, {}
+        try:
+            if "input_schema" in contract:
+                from jsonschema import Draft202012Validator
+                Draft202012Validator(contract["input_schema"]).validate(value)
+            context.check()
+            graph_input = _validated_state(graph.input_schema, initial(value))
+            # Do not turn internal graph layout into a user-facing quota.
+            # Explicit deadlines and actor/episode controls govern termination.
+            state = native.invoke(graph_input, config={"recursion_limit": sys.maxsize}, context=scoped.semantic)
+            if state.get("__interrupt__"):
+                from langgraph.errors import GraphInterrupt
+                raise _PauseSignal(GraphInterrupt(tuple(state["__interrupt__"])))
+            _observe_state(context, state)
+            validated = _validated_state(graph.state_schema, _strip(state))
+            projected = _validated_state(graph.output_schema, {k: v for k, v in validated.items() if k in fields})
+            business = project(projected, scoped) if project is not identity else projected
+            context.check()
+        except _PauseSignal:
+            paused = True
+            raise
+        except Exception as exc:
+            try:
+                _propagate_control(exc)
+            except _PauseSignal:
+                paused = True
+                raise
+            error = exc
+        finally:
+            _active_execution.reset(token)
+            if finish is not None and not paused:
+                try:
+                    finish(scoped)
+                except Exception as exc:
+                    error = exc
+        children = _children(context, frame)
+        output = result(owner.name, owner.kind, business, children, error,
+                        engine_name="langgraph", input=snapshot(value), internal=description.get("internal", False),
+                        lineage_refs=[c.execution_id for c in children],
+                        writes=sorted(set().union(*(set(c.data) for c in children))) if project is identity else sorted(business),
+                        context={"fingerprint": semantic.fingerprint, "sources": list(semantic.sources),
+                                 "memory_revision": revision, "episode_ids": [e["execution_id"] for e in semantic.episodes]})
+        if getattr(owner, "runtime", None) is not None:
+            actor_result = next((run for child in children for run in child.walk() if run.meta.get("kind") == "model"), None)
+            if actor_result is not None:
+                output = replace(output, engine=actor_result.engine, model=actor_result.model, mode=actor_result.mode)
+        output = _check_output(output, contract)
+        if extra is not None:
+            output = extra(output, scoped)
+        memory = getattr(owner, "memory", None)
+        if memory is not None:
+            memory.remember(output)
+        return output
+    description = {"name": owner.name, "kind": owner.kind, "graph": _graph_description(graph)}
+    return _Prepared(owner.name, owner.kind, execute, native, description, registry)
+
+
+class _Executable:
+    def compile(self):
+        registry = {}
+        prepared = self._compile(set(), registry)
+        return _Compiled(prepared)
+
+    def inspect(self):
+        return self.compile().inspect()
+
+    def __call__(self, state):
+        state = snapshot(state)
+        active = _active_execution.get()
+        if active is None:
+            output = self.run(state)
+        else:
+            prepared = active.prepared_units.get(id(self))
+            if prepared is None:
+                prepared = self._compile(set(), active.prepared_units)
+            output = prepared.run(state, active)
+            _record_child(output)
+        return {key: value for key, value in output.data.items() if key in output.meta.get("writes", output.data)}
+
+
+def _nested(graph, seen, registry):
+    for spec in graph.nodes.values():
+        fn = getattr(spec.runnable, "func", None)
+        # LangGraph may retain a callable owner directly or its bound method.
+        # Both forms must participate in compile-time validation and cycle checks.
+        owner = fn if isinstance(fn, _Executable) else getattr(fn, "__self__", None)
+        if isinstance(owner, _Executable):
+            owner._compile(seen, registry)
+
+
+@dataclass(frozen=True)
+class _Unit(_Executable):
+    name: str
+    graph: Any = None
+    context: Context | None = field(default=None, kw_only=True)
+    memory: Memory | None = field(default=None, kw_only=True)
+    contract: dict | None = field(default=None, kw_only=True)
+    kind: str = field(default="unit", init=False)
+
+    def _compile(self, seen, registry):
+        from langgraph.graph import StateGraph, START, END
+        from typing_extensions import TypedDict
+        if id(self) in seen:
+            raise ValueError("Recursive owner definition")
+        if id(self) in registry:
+            return registry[id(self)]
+        seen = {*seen, id(self)}
+        if not isinstance(self.name, str) or not self.name.strip():
+            raise ValueError("Owner name is required")
+        graph = self.graph
+        if isinstance(self, Agent):
+            if not isinstance(self.skills, tuple) or any(not isinstance(s, _Skill) for s in self.skills):
+                raise TypeError("skills must be a tuple of runtime Skills")
+            names = [t.name for s in self.skills for t in s.tools]
+            if len(set(names)) != len(names):
+                raise ValueError("Duplicate Tool identity across Skills")
+            if self.runtime is not None and isinstance(self.runtime, _Runtime) and self.runtime.provider == "python-runtime" and len(names) != 1:
+                raise ValueError("A Python SDK actor wraps one Tool; declare multi-tool orchestration with graph=Graph(...)")
+        if isinstance(self, Agent) and self.runtime is not None:
+            actor = _model_body(self)
+            class ActorState(TypedDict, total=False):
+                input: dict
+                output: dict
+                result_ref: str
+            graph = StateGraph(ActorState)
+            def invoke(state):
+                active = _active_execution.get()
+                current = actor.run(state["input"], active)
+                active.last_result = current
+                return {"output": current.data, "result_ref": active.evidence.put(current)}
+            graph.add_node("actor", invoke)
+            graph.add_edge(START, "actor")
+            graph.add_edge("actor", END)
+            # The actor validates its business contract, not the private transport state.
+            prepared = _owner_graph(self, graph, registry, initial=lambda d: {"input": d},
+                                    project=lambda s, c: s["output"])
+            prepared.description["framework"] = "native" if self.framework is None else self.framework.name
+        else:
+            if not isinstance(graph, StateGraph):
+                raise TypeError("Pass graph=Graph(...); orchestration is LangGraph only")
+            _nested(graph, seen, registry)
+            prepared = _owner_graph(self, graph, registry)
+        registry[id(self)] = prepared
+        return prepared
+
+    def run(self, input=None, *, timeout_s=None):
+        active = _active_execution.get()
+        if active is not None:
+            if timeout_s is not None:
+                raise ValueError("Nested runs inherit the root deadline")
+            prepared = active.prepared_units.get(id(self)) or self._compile(set(), active.prepared_units)
+            return _record_child(prepared.run(input, active))
+        return self.compile().run(input, timeout_s=timeout_s)
+
+    async def arun(self, input=None, *, timeout_s=None):
+        return await asyncio.to_thread(self.run, input, timeout_s=timeout_s)
+
+
+@dataclass(frozen=True)
+class Agent(_Unit):
+    skills: tuple = ()
+    runtime: Any = None
+    framework: Any = None
+    instructions: str = ""
+    policy: dict | BaseModel | None = None
+    kind: str = field(default="agent", init=False)
+
+    def __post_init__(self):
+        if (self.graph is None) == (self.runtime is None):
+            raise ValueError("Agent needs graph=Graph(...) or an explicit runtime")
+        if self.runtime is None and (self.framework is not None or self.instructions or self.policy is not None):
+            raise ValueError("Actor SDK options require runtime; graph operators execute Python directly")
+        if self.policy is not None:
+            object.__setattr__(self, "policy", _policy_model(self.policy))
+
+
+@dataclass(frozen=True)
+class System(_Unit):
+    kind: str = field(default="system", init=False)
+
+
+@dataclass(frozen=True)
+class _Compiled:
+    _prepared: _Prepared
+    _driver: Any = field(init=False, repr=False, compare=False)
+
+    def __post_init__(self):
+        from ._continuation import _Driver
+        object.__setattr__(self, "_driver", _Driver(self._prepared))
+
+    def run(self, input=None, *, timeout_s=None):
+        active = _active_execution.get()
+        if active is not None:
+            if timeout_s is not None:
+                raise ValueError("Nested runs inherit the root deadline")
+            return _record_child(self._prepared.run(input, active))
+        context = _ExecutionContext(timeout_s,
+                                    allow_pause=self._prepared.kind != "eval")
+        context.prepared_units = self._prepared.registry
+        try:
+            return _boundary(self._driver.start({} if input is None else input, context))
+        except (TypeError, ValueError) as exc:
+            return result(self._prepared.name, self._prepared.kind, {}, error=exc)
+
+    async def arun(self, input=None, *, timeout_s=None):
+        return await asyncio.to_thread(self.run, input, timeout_s=timeout_s)
+
+    def resume(self, paused, value):
+        return _boundary(self._driver.resume(paused, value))
+
+    async def aresume(self, paused, value):
+        return await asyncio.to_thread(self.resume, paused, value)
+
+    def inspect(self):
+        return snapshot({**self._prepared.description, "continuations": "process-local",
+                         "checkpoint_state": "business data + bounded lineage references"})
+
+
+def _boundary(output):
+    validation = output.check_invariants()
+    if not validation.ok:
+        return replace(output, status="failed", ok=False, continuation=None,
+                       errors=(*output.errors, {"code": "invariant_failed", "issues": validation.to_dict()["issues"]}))
+    return output
+
+
+@dataclass(frozen=True)
+class Environment(_Executable):
+    name: str
+    graph: Any
+    records: Any
+    max_steps: int | None = None
+    state: Any = None
+    observe: Callable | None = None
+    update: Callable | None = None
+    stop: Callable | None = None
+    context: Context | None = field(default=None, kw_only=True)
+    memory: Memory | None = field(default=None, kw_only=True)
+    kind: str = field(default="environment", init=False)
+
+    def _compile(self, seen, registry):
+        from langgraph.graph import StateGraph, START, END
+        from typing_extensions import TypedDict
+        if id(self) in seen:
+            raise ValueError("Recursive Environment")
+        if id(self) in registry:
+            return registry[id(self)]
+        if not callable(self.records) and (not isinstance(self.records, tuple) or not self.records):
+            raise ValueError("records must be a nonempty tuple or a lazy factory")
+        if self.max_steps is not None and (type(self.max_steps) is not int or self.max_steps < 1):
+            raise ValueError("max_steps is None or a positive ceiling")
+        if any(fn is not None and not callable(fn) for fn in (self.observe, self.update, self.stop)):
+            raise TypeError("Environment callbacks must be callable")
+        step = System(self.name + ":step", self.graph)._compile({*seen, id(self)}, registry)
+        step.description["internal"] = True
+        records = None if callable(self.records) else snapshot(self.records)
+        initial = snapshot({} if self.state is None else self.state)
+        class EpisodeState(TypedDict, total=False):
+            state: dict
+            index: int
+            row: dict
+            value: dict
+            child_ref: str
+            reason: str
+        graph = StateGraph(EpisodeState)
+        def storage(active):
+            return active.outputs.setdefault((active.frame, "episode"), {"state": initial, "history": [], "refs": [], "reason": ""})
+        def observe(state):
+            active = _active_execution.get()
+            stored = storage(active)
+            index = state["index"]
+            if self.max_steps is not None and index >= self.max_steps:
+                reason = "records_exhausted" if records is not None and index >= len(records) else "step_limit"
+                stored["reason"] = reason
+                return {"reason": reason}
+            key = (active.frame, "source")
+            if key not in active.sources:
+                active.sources[key] = iter(self.records() if records is None else records)
+            try:
+                row = snapshot(next(active.sources[key]))
+            except StopIteration:
+                stored["reason"] = "records_exhausted"
+                return {"reason": "records_exhausted"}
+            value = self.observe(snapshot(row), snapshot(state["state"])) if self.observe else row
+            return {"row": row, "value": snapshot(value)}
+        def run(state):
+            active = _active_execution.get()
+            output = step.run(state["value"], active)
+            ref = active.evidence.put(output)
+            stored = storage(active)
+            if ref not in stored["refs"]:
+                stored["refs"].append(ref)
+            _record_child(output)
+            return {"child_ref": ref}
+        def update(state):
+            active = _active_execution.get()
+            output = active.evidence.get(state["child_ref"])
+            after = self.update(snapshot(state["state"]), snapshot(state["row"]), output) if self.update else ({"processed": state["index"] + 1} if self.state is None else state["state"])
+            after = snapshot(after)
+            stopped = self.stop(snapshot(after), output) if self.stop else False
+            if type(stopped) is not bool:
+                raise TypeError("stop must return bool")
+            stored = storage(active)
+            stored["state"] = after
+            stored["history"].append({"step": state["index"], "record": state["row"], "state_before": state["state"],
+                                      "state_after": after, "execution_id": output.execution_id})
+            stored["reason"] = "stop" if stopped else ""
+            return {"state": after, "index": state["index"] + 1, "reason": stored["reason"]}
+        graph.add_node("observe", observe)
+        graph.add_node("run", run)
+        graph.add_node("update", update)
+        graph.add_edge(START, "observe")
+        graph.add_conditional_edges("observe", lambda s: END if s.get("reason") else "run", [END, "run"])
+        graph.add_edge("run", "update")
+        graph.add_conditional_edges("update", lambda s: END if s.get("reason") else "observe", [END, "observe"])
+        def finish(active):
+            iterator = active.sources.pop((active.frame, "source"), None)
+            close = getattr(iterator, "close", None)
+            if close is not None:
+                try:
+                    close()
+                except Exception:
+                    storage(active)["reason"] = "source_close_failed"
+                    raise
+        def extra(output, active):
+            stored = storage(active)
+            reason = stored["reason"] or ("execution_limit" if active.limit_reason else "unit_failed")
+            data = {"outputs": [active.evidence.records[ref]["result"]["data"] for ref in stored["refs"]],
+                    "history": stored["history"], "summary": {"state": stored["state"], "processed": len(stored["refs"]),
+                    "terminated": reason in {"stop", "records_exhausted"}, "truncated": reason in {"step_limit", "execution_limit"}, "reason": reason}}
+            return replace(output, data=data, meta={**output.meta, "writes": sorted(data)})
+        prepared = _owner_graph(self, graph, registry, initial=lambda value: {"state": initial, "index": 0, "reason": ""},
+                                finish=finish, extra=extra)
+        prepared.description["episode_graph"] = step.description["graph"]
+        prepared.description["records"] = "lazy" if records is None else len(records)
+        registry[id(self)] = prepared
+        return prepared
+
+    def run(self, *, timeout_s=None):
+        return self.compile().run({}, timeout_s=timeout_s)
+
+    async def arun(self, *, timeout_s=None):
+        return await asyncio.to_thread(self.run, timeout_s=timeout_s)
+
+
+@dataclass(frozen=True)
+class Eval(_Executable):
     name: str
     unit: Any
     cases: tuple
     checks: tuple = ()
     judge: Agent | None = None
     rubric: dict | None = None
+    kind: str = field(default="eval", init=False)
 
-    def compile(self):
-        if not isinstance(self.name, str) or not self.name:
-            raise ValueError("Eval name is required")
+    def _compile(self, seen, registry):
+        from langgraph.graph import StateGraph, START, END
+        from typing_extensions import TypedDict
         if not isinstance(self.unit, (_Unit, Environment)):
             raise TypeError("Eval targets Agent, System or Environment")
         if not isinstance(self.cases, tuple) or not self.cases:
-            raise ValueError("Eval requires a nonempty tuple of cases")
+            raise ValueError("Eval needs a nonempty tuple of cases")
         if not isinstance(self.checks, tuple) or any(not callable(c) for c in self.checks):
-            raise TypeError("checks must be a tuple of functions")
-        if self.judge is not None and not isinstance(self.judge, Agent):
-            raise TypeError("judge must be an Agent")
+            raise TypeError("checks must be a tuple of callables")
         if self.judge is None and self.rubric is not None:
-            raise ValueError("A rubric requires a judge")
+            raise ValueError("A rubric needs a judge")
         rubric = _rubric(self.rubric) if self.judge else None
-        judge = self.judge.compile() if self.judge else None
-        cases, targets = snapshot(list(self.cases)), []
+        judge = self.judge._compile(seen, registry) if self.judge else None
+        cases = snapshot(self.cases)
+        targets = []
         for case in cases:
             _closed(case, {"name", "input", "expected"}, "case")
             expected = _closed(case.get("expected"), {"ok", "data"}, "expected")
-            if "ok" in expected and type(expected["ok"]) is not bool:
-                raise TypeError("expected.ok must be boolean")
-            if "data" in expected and not isinstance(expected["data"], dict):
-                raise TypeError("expected.data must be a dictionary")
             if not expected and not self.checks and judge is None:
-                raise ValueError("A case needs an expectation, a check or a judge")
-            if isinstance(self.unit, Environment):
-                value = _closed(case.get("input"), {"records", "memory"}, "episode input")
-                episode = replace(self.unit, records=tuple(value.get("records", self.unit.records)), memory=value.get("memory", self.unit.memory))
-                targets.append(episode.compile())
-            else:
-                targets.append(self.unit.compile())
+                raise ValueError("A case needs expected, checks or judge")
+            target = self.unit
+            if isinstance(target, Environment):
+                values = _closed(case.get("input"), {"records", "state"}, "episode input")
+                target = replace(target, records=tuple(values.get("records", target.records)), state=values.get("state", target.state))
+            targets.append(target._compile(seen, registry))
+        class EvalState(TypedDict):
+            index: int
+        graph = StateGraph(EvalState)
+        def evaluate_case(state):
+            active = _active_execution.get()
+            active.allow_pause = False
+            index = state["index"]
+            case = cases[index]
+            actual = targets[index].run(case.get("input") if not isinstance(self.unit, Environment) else {}, active)
+            checked = []
+            for key, expected in case.get("expected", {}).items():
+                observed = actual.ok if key == "ok" else actual.data
+                checked.append({"ok": observed == expected, "path": key})
+            for check in self.checks:
+                verdict = _closed(check(_RunResult(**actual.to_dict()), snapshot(case)), {"ok", "issues", "metrics"}, "check")
+                if type(verdict.get("ok")) is not bool:
+                    raise TypeError("A check returns a boolean ok")
+                checked.append(verdict)
+            verdict, judged = None, None
+            if judge is not None:
+                judged = judge.run({"input": case.get("input"), "expected": case.get("expected", {}),
+                                    "result": actual.to_dict(), "rubric": rubric}, active.at("judge"))
+                verdict = _judge_verdict(judged, actual, rubric)
+            accepted_failure = case.get("expected", {}).get("ok") is False
+            ok = (actual.ok or accepted_failure) and all(c["ok"] for c in checked) and (verdict is None or verdict["ok"])
+            rows = active.outputs.setdefault((active.frame, "eval"), [])
+            rows.append({"name": case.get("name", str(index)), "ok": ok, "input": case.get("input"),
+                         "execution_id": actual.execution_id, "checks": checked, "judge": verdict})
+            evidence = (actual,) if judged is None else (actual, judged)
+            outcome = result(self.name + ":case:" + str(index), "eval-case", {"index": index + 1}, evidence,
+                             expected_failure_ids=[actual.execution_id] if accepted_failure and ok else [])
+            return replace(outcome, ok=ok, errors=() if ok else (*outcome.errors, {"code": "eval_failed"}))
+        def evaluate(state):
+            with _isolated_memory():
+                return evaluate_case(state)
+        graph.add_node("evaluate", evaluate)
+        graph.add_edge(START, "evaluate")
+        graph.add_conditional_edges("evaluate", lambda s: "evaluate" if s["index"] < len(cases) else END, ["evaluate", END])
+        def extra(output, active):
+            rows = active.outputs.get((active.frame, "eval"), [])
+            passed = sum(row["ok"] for row in rows)
+            ok = passed == len(cases)
+            return replace(output, ok=ok, status="completed" if ok else "failed",
+                data={"total": len(cases), "passed": passed, "failed": len(cases)-passed, "cases": rows},
+                meta={**output.meta, "writes": ["total", "passed", "failed", "cases"], "memory_isolation": "per_case"},
+                errors=() if ok else (*output.errors, {"code": "eval_failed"}))
+        prepared = _owner_graph(self, graph, registry, initial=lambda value: {"index": 0}, extra=extra)
+        registry[id(self)] = prepared
+        return prepared
 
-        def execute(context):
-            rows, children, accepted_failures = [], [], []
-            for index, (case, target) in enumerate(zip(cases, targets)):
-                actual = None
-                try:
-                    context.check()
-                    actual = target._execute(context) if isinstance(target, _Captured) else target._prepared.run(case.get("input"), context)
-                    children.append(actual)
-                    validations = []
-                    for key, expected in case.get("expected", {}).items():
-                        observed = actual.ok if key == "ok" else actual.data
-                        equal = json.dumps(observed, sort_keys=True, allow_nan=False) == json.dumps(expected, sort_keys=True, allow_nan=False)
-                        validations.append({"ok": equal, "issues": [] if equal else [{"code": "expected_mismatch", "path": key}]})
-                    for check in self.checks:
-                        context.take()
-                        checked = _closed(check(_RunResult(**actual.to_dict()), snapshot(case)), {"ok", "issues", "metrics"}, "check output")
-                        if type(checked.get("ok")) is not bool or not isinstance(checked.get("issues", []), list):
-                            raise TypeError("A check returns boolean ok and a list of issues")
-                        if "metrics" in checked and not isinstance(checked["metrics"], dict):
-                            raise TypeError("check metrics must be a JSON dictionary")
-                        validations.append(checked)
-                        context.check()
-                    verdict, judged = None, None
-                    if judge is not None:
-                        payload = {"input": case.get("input"), "expected": case.get("expected", {}), "result": actual.to_dict(), "rubric": rubric,
-                                   "evidence": {"trace": actual.trace(), "tool_events": [e.name for n in actual.walk() for e in n.tool_events]}}
-                        judged = judge._prepared.run(payload, context)
-                        children.append(judged)
-                        verdict = _judge_verdict(judged, actual, rubric)
-                    expected_failure = case.get("expected", {}).get("ok") is False
-                    ok = (actual.ok or expected_failure) and all(v["ok"] for v in validations) and (verdict is None or verdict["ok"])
-                    context.check()
-                    if ok and not actual.ok:
-                        accepted_failures.append(actual.execution_id)
-                    rows.append({"name": case.get("name", str(index)), "ok": ok, "input": case.get("input"), "expected": case.get("expected", {}),
-                                 "result": actual.to_dict(), "checks": validations, "judge": verdict,
-                                 "candidate_usage": actual.usage, "judge_usage": judged.usage if judged else {}})
-                except Exception as exc:
-                    failed_row = {"name": case.get("name", str(index)), "ok": False, "input": case.get("input"), "expected": case.get("expected", {}),
-                                  "result": actual.to_dict() if actual else None, "error": {"code": type(exc).__name__, "message": str(exc)}}
-                    rows.append(failed_row)
-                    break
-            passed = sum(r["ok"] for r in rows)
-            ok = passed == len(cases) and len(rows) == len(cases)
-            output = result(self.name, "eval", {"ok": ok, "total": len(cases), "passed": passed, "failed": len(cases) - passed,
-                "pass_rate": passed / len(cases), "cases": rows}, children,
-                expected_failure_ids=accepted_failures, actions_observed=context.actions,
-                judge_mode="deterministic-fixture" if self.judge and (self.judge.runtime is None or self.judge.runtime.provider == "python-runtime") else "model" if self.judge else "none")
-            return replace(output, ok=ok, errors=() if ok else (*output.errors, {"code": "eval_failed", "message": "One or more required cases failed"}))
+    def run(self, *, timeout_s=None):
+        return self.compile().run({}, timeout_s=timeout_s)
 
-        return _Captured(self.name, "eval", execute, {"name": self.name, "kind": "eval", "cases": len(cases),
-            "checks": len(self.checks), "judge": judge.inspect() if judge else None, "rubric": rubric, "unit": self.unit.inspect()})
-
-    def run(self, *, limits=Limits()):
-        return self.compile().run(limits=limits)
-
-    async def arun(self, *, limits=Limits()):
-        return await self.compile().arun(limits=limits)
-
-    def inspect(self):
-        return self.compile().inspect()
-
-
+    async def arun(self, *, timeout_s=None):
+        return await asyncio.to_thread(self.run, timeout_s=timeout_s)

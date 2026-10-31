@@ -55,17 +55,15 @@ class OllamaRuntimeProvider:
         messages = _build_messages(agent, input)
         runtime = self._runtime(agent)
         tool_defs = _openai_tools(runtime, agent)
-        client = self._client or self._client_from_environment()
-        result = _run_chat_loop(
-            client,
-            messages,
-            tool_defs,
-            runtime=runtime,
-            agent=agent,
-            policy=policy,
-            mode=mode,
-            runtime_engine=OLLAMA_RUNTIME_ENGINE,
-        )
+        client = self._client if self._client is not None else self._client_from_environment(agent)
+        try:
+            result = _run_chat_loop(
+                client, messages, tool_defs, runtime=runtime, agent=agent,
+                policy=policy, mode=mode, runtime_engine=OLLAMA_RUNTIME_ENGINE,
+            )
+        finally:
+            if self._client is None:
+                client.close()
         return _as_ollama_result(result)
 
     async def arun(
@@ -79,17 +77,15 @@ class OllamaRuntimeProvider:
         runtime = self._runtime(agent)
         messages = _build_messages(agent, input)
         tool_defs = _openai_tools(runtime, agent)
-        client = self._async_client or self._async_client_from_environment()
-        result = await _run_chat_loop_async(
-            client,
-            messages,
-            tool_defs,
-            runtime=runtime,
-            agent=agent,
-            policy=policy,
-            mode=mode,
-            runtime_engine=OLLAMA_RUNTIME_ENGINE,
-        )
+        client = self._async_client if self._async_client is not None else self._async_client_from_environment(agent)
+        try:
+            result = await _run_chat_loop_async(
+                client, messages, tool_defs, runtime=runtime, agent=agent,
+                policy=policy, mode=mode, runtime_engine=OLLAMA_RUNTIME_ENGINE,
+            )
+        finally:
+            if self._async_client is None:
+                await client.close()
         return _as_ollama_result(result)
 
     def _runtime(self, agent: Any) -> Any:
@@ -97,19 +93,26 @@ class OllamaRuntimeProvider:
         runtime = system._runtime if system is not None else self.system
         return getattr(runtime, "_runtime", runtime)
 
-    def _client_from_environment(self) -> Any:
-        openai = _openai_module()
-        return openai.OpenAI(
-            base_url=_ollama_base_url(),
-            api_key=_ollama_api_key(),
-        )
+    def _connection(self, agent: Any = None) -> dict[str, Any]:
+        """Resolve per invocation; never mutate env or cache another actor's key."""
+        config = getattr(agent, "runtime_config", None)
+        if config is None:
+            config = getattr(self.system, "runtime_config", None)
+        key = getattr(config, "api_key", None)
+        if hasattr(key, "get_secret_value"):
+            key = key.get_secret_value()
+        return {
+            "base_url": getattr(config, "endpoint", None) or _ollama_base_url(),
+            "api_key": key if key is not None else _ollama_api_key(),
+        }
 
-    def _async_client_from_environment(self) -> Any:
+    def _client_from_environment(self, agent: Any = None) -> Any:
         openai = _openai_module()
-        return openai.AsyncOpenAI(
-            base_url=_ollama_base_url(),
-            api_key=_ollama_api_key(),
-        )
+        return openai.OpenAI(**self._connection(agent))
+
+    def _async_client_from_environment(self, agent: Any = None) -> Any:
+        openai = _openai_module()
+        return openai.AsyncOpenAI(**self._connection(agent))
 
 
 def _ollama_base_url() -> str:

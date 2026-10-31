@@ -1,12 +1,9 @@
 """Reusable non-system assets displayed by Agentic Systems Studio."""
 
 from __future__ import annotations
-
 from dataclasses import asdict, dataclass
 import agentic_systems as toolkit
-
 from typing import Any
-
 from .catalog import SYSTEM_SPECS
 from .operators import TOOLS
 
@@ -29,7 +26,10 @@ TOOL_ASSETS = tuple(
         name=name.replace("_", " ").title(),
         description=tool.description,
         capability="deterministic-operation",
-        metadata={"tool_name": tool.name, "input_schema": tool.inspect()["input_schema"]},
+        metadata={
+            "tool_name": tool.name,
+            "input_schema": tool.inspect()["input_schema"],
+        },
     )
     for name, tool in TOOLS.items()
 )

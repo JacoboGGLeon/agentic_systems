@@ -1,11 +1,9 @@
 """Canonical ``.env`` discovery and loading for Agentic Systems Studio."""
 
 from __future__ import annotations
-
 import os
 from pathlib import Path
 import re
-
 
 ENV_FILE_VARIABLE = "AGENTIC_SYSTEMS_ENV_FILE"
 _ENV_KEY = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")

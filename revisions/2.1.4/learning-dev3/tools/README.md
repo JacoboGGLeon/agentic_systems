@@ -1,0 +1,1 @@
+Migration provenance only. These one-time generators produced the first adaptation; the maintained sources are the current notebooks, examples and docs. Do not use them to overwrite later review fixes.

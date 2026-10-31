@@ -1,16 +1,13 @@
 """SQLite persistence for the local Studio catalog and execution evidence."""
 
 from __future__ import annotations
-
 import json
 from contextlib import contextmanager
 import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
-
 from .catalog import SYSTEM_SPECS
-
 
 SCHEMA = """
 PRAGMA foreign_keys = ON;

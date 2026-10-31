@@ -40,6 +40,9 @@ class BedrockOpenAIModel(Model):
         system = [{"text": str(system_instructions)}] if system_instructions else []
         system.extend(extra_system)
         tool_specs = _bedrock_tools([*(tools or []), *(handoffs or [])])
+        no_tools = getattr(model_settings, "tool_choice", None) == "none"
+        if no_tools:
+            tool_specs = []
         response = await asyncio.to_thread(
             self.runtime.converse,
             messages=messages,
@@ -54,6 +57,8 @@ class BedrockOpenAIModel(Model):
             temperature=getattr(model_settings, "temperature", None),
             top_p=getattr(model_settings, "top_p", None),
         )
+        if no_tools and any("toolUse" in block for block in response.get("output", {}).get("message", {}).get("content", [])):
+            raise ValueError("tool_choice='none' forbids provider-requested Tool execution")
         return _model_response(response)
 
     async def stream_response(self, *args: Any, **kwargs: Any) -> AsyncIterator[Any]:

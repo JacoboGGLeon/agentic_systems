@@ -8,9 +8,9 @@ import agentic_systems as toolkit
 
 def test_metadata_surface_and_cli(capsys):
     from agentic_systems.cli import main
-    assert toolkit.__version__ == "2.1.3"
-    assert len(toolkit.__all__) == 18
-    assert main(["version"]) == 0 and capsys.readouterr().out.strip() == "2.1.3"
+    assert toolkit.__version__ == "2.1.4.dev1"
+    assert len(toolkit.__all__) == 21
+    assert main(["version"]) == 0 and capsys.readouterr().out.strip() == "2.1.4.dev1"
     assert main(["api"]) == 0
     assert json.loads(capsys.readouterr().out)["public_api"] == toolkit.__all__
     assert main(["doctor"]) == 0
@@ -23,7 +23,7 @@ def test_scaffolder_from_installed_resources_is_complete_and_no_overwrite(tmp_pa
     assert (project / "src/order_fulfillment/system.py").is_file()
     assert (project / "src/order_fulfillment/fixtures/cases.json").is_file()
     assert not (project / "src/unified_grammar").exists()
-    assert 'agentic-systems==2.1.3' in (project / "pyproject.toml").read_text()
+    assert f'agentic-systems=={toolkit.__version__}' in (project / "pyproject.toml").read_text()
     assert (project / "notebooks/01_order_challenge.ipynb").is_file()
     assert 'notebooks/01_order_challenge.ipynb' in (project / "execute_notebook.py").read_text()
     assert json.loads((project / "manifest.json").read_text())["validation"] == "not-run"
@@ -61,4 +61,4 @@ def test_cli_module_entrypoint(monkeypatch, capsys):
     monkeypatch.setattr(sys, "argv", ["agentic-systems", "version"])
     with pytest.raises(SystemExit) as stopped:
         runpy.run_module("agentic_systems.cli", run_name="__main__")
-    assert stopped.value.code == 0 and capsys.readouterr().out.strip() == "2.1.3"
+    assert stopped.value.code == 0 and capsys.readouterr().out.strip() == "2.1.4.dev1"

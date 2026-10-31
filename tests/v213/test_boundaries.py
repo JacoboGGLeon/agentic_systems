@@ -97,9 +97,9 @@ def test_owner_modes_bad_capabilities_and_recursive_definition():
     with pytest.raises(ValueError):
         a.Agent("bad")
     with pytest.raises(ValueError):
-        a.Agent("bad", runtime=a.runtime(provider="python-runtime"), backend="langgraph")
+        a.Agent("bad", runtime=a.runtime(provider="python-runtime"), backend="unknown").compile()
     with pytest.raises(ValueError):
-        a.Agent("bad", a.Action("a", lambda d: d), contract={})
+        a.Agent("bad", a.Action("a", lambda d: d), contract={"completion": "always_finalize"}).compile()
     for options in ({"runtime": {}}, {"runtime": a.runtime(provider="python-runtime"), "instructions": 1},
                     {"runtime": a.runtime(provider="python-runtime"), "framework": "native"},
                     {"runtime": a.runtime(provider="openai-runtime")}):
@@ -181,7 +181,7 @@ def test_result_import_validation_and_lineage_retains_routes_and_limits_rows():
     result = a.Agent("rows", flow).run({})
     lineage = result.lineage(max_tool_rows=1)
     assert any(s["kind"] == "decision" for s in lineage.steps)
-    assert [s["evidence"]["data"]["rows"] for s in lineage.steps if s["kind"] == "tool"] == [[1]]
+    assert [s["evidence"]["output"]["data"]["rows"] for s in lineage.steps if s["kind"] == "tool"] == [[1]]
     assert set(s["kind"] for s in lineage.steps) <= {"execution", "decision", "tool"}
     with pytest.raises(ValueError):
         result.lineage(max_tool_rows=-1)

@@ -1,3 +1,5 @@
+> **Histórico: no es la guía de la API 2.1.4.dev3.** Conserva propuestas/resultados de su versión original. Para implementar, usa [la API vigente](API_214.md).
+
 # Validación de tutorials y examples · 2.1.3
 
 Campaña independiente, posterior al release. Se usa el wheel **publicado 2.1.3** instalado sin modo editable. La documentación y las fuentes didácticas pueden mejorar; no se reemplazan los artefactos publicados ni la evidencia original.

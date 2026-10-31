@@ -7,6 +7,10 @@ on:
         description: Successful quality run for this exact main commit (all five Python jobs)
         required: true
         type: string
+      acceptance_policy_sha256:
+        description: Reviewed release/policy-2.1.4.json SHA256; explicit executable equivalence acceptance
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -19,6 +23,7 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       QUALITY_RUN_ID: ${{ inputs.quality_run_id }}
+      POLICY_SHA256: ${{ inputs.acceptance_policy_sha256 }}
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
@@ -31,13 +36,20 @@ jobs:
           gh api "repos/$GITHUB_REPOSITORY/actions/runs/$QUALITY_RUN_ID" > run.json
           jq -e --arg commit "$GITHUB_SHA" '.conclusion == "success" and .head_sha == $commit and .head_branch == "main" and .path == ".github/workflows/quality.yml"' run.json
           gh api --paginate "repos/$GITHUB_REPOSITORY/actions/runs/$QUALITY_RUN_ID/jobs?per_page=100" --jq '.jobs[] | {name,conclusion}' | jq -s -e '([.[] | select(.name | startswith("offline ("))] | length == 5) and all(.[]; .conclusion == "success")'
-      - name: Prepare the same reviewed bytes and evidence
-        run: python scripts/prepare_release_213.py --output candidate --commit "$GITHUB_SHA"
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        with:
+          name: current-candidate-bytes
+          path: quality-bytes
+          run-id: ${{ inputs.quality_run_id }}
+          github-token: ${{ github.token }}
+      - name: Verify reviewed policy and seal quality-built bytes without rebuilding
+        run: |
+          echo "$POLICY_SHA256  release/policy-2.1.4.json" | sha256sum --check
+          python scripts/seal_release_214.py --distributions quality-bytes/dist --output candidate
       - name: Verify immutable manifest and package metadata
         run: |
           manifest_sha="$(sha256sum candidate/release-manifest.json | cut -d' ' -f1)"
           python scripts/release_publication.py --manifest candidate/release-manifest.json --manifest-sha256 "$manifest_sha" --directory candidate --verify-only
-          python scripts/build_release_manifest.py --directory candidate
           python -m twine check --strict candidate/*.whl candidate/*.tar.gz
           echo "Manifest SHA256: $manifest_sha" >> "$GITHUB_STEP_SUMMARY"
           echo "Nothing was published; review the artifact before dispatching release.yml." >> "$GITHUB_STEP_SUMMARY"

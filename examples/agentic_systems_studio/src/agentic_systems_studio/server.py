@@ -1,7 +1,6 @@
 """Shared Streamlit launcher for the Studio CLI and notebooks."""
 
 from __future__ import annotations
-
 import errno
 import html
 import os
@@ -14,7 +13,6 @@ import webbrowser
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Literal
-
 
 DEFAULT_HOST = "127.0.0.1"
 DEFAULT_PORT = 8501
@@ -189,11 +187,16 @@ def start_studio_server(
     app = resolve_studio_app(app_path)
     # Resolve the caller's configuration before the child changes directory.
     from .environment import load_studio_environment
+
     try:
         load_studio_environment()
     except FileNotFoundError:
         pass
-    logs = Path(log_dir).resolve() if log_dir is not None else Path.cwd() / ".agentic-studio"
+    logs = (
+        Path(log_dir).resolve()
+        if log_dir is not None
+        else Path.cwd() / ".agentic-studio"
+    )
     logs.mkdir(parents=True, exist_ok=True)
     pid_path = logs / "streamlit.pid"
     log_path = logs / "streamlit.log"

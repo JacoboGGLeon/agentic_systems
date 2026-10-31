@@ -99,7 +99,7 @@ jobs:
           EXPECTED_VERSION: ${{ needs.candidate.outputs.version }}
         run: |
           cd /tmp
-          python "$GITHUB_WORKSPACE/scripts/smoke_release_213.py"
+          python "$GITHUB_WORKSPACE/scripts/smoke_release.py"
           agentic-systems version
           agentic-systems api
 
@@ -172,7 +172,7 @@ jobs:
           python -c "import sys; from pathlib import Path; sys.path.insert(0,'scripts'); from release_publication import load_manifest,sha256; import os; m=load_manifest(Path('candidate/release-manifest.json'),os.environ['MANIFEST_SHA256']); a=next(a for a in m.artifacts if a.kind=='bdist_wheel'); assert sha256(Path('published')/a.filename)==a.sha256"
           python -m pip install published/*.whl
           cd /tmp
-          python "$GITHUB_WORKSPACE/scripts/smoke_release_213.py"
+          python "$GITHUB_WORKSPACE/scripts/smoke_release.py"
           agentic-systems version
           agentic-systems api
 

@@ -1,97 +1,88 @@
-# Examples
+# Examples Â· 2.1.4
 
-Ejemplos de la API única **2.1.3**. Elige una tarea, importa `run` y observa el resultado.
+[Sistema financiero paso a paso](financial_mixed/README.md): Python y mezcla de cuatro proveedores/tres frameworks, con Tools, Skills, Context, Memory, Agents, Graph, System, Environment, Eval, human_results y linaje visibles.
 
-```python
-from examples.applications.research_synthesis.example import run
+[Evidencia actual por archivo](../revisions/2.1.4/grammar-dev8/REPORT.md) Â·
+[SesiÃ³n AWS prestada y diagnÃ³stico ADA](aws_session/01_aws_session.ipynb).
+Los informes dev7 enlazados como antecedentes conservan su identidad y no
+constituyen aceptaciÃ³n de los bytes dev8.
 
-result = run()
-result.data
-```
+Ejemplos de implementaciÃ³n con `import agentic_systems as toolkit`, ejecuciÃ³n directa y LangGraph. Empieza por [la guÃ­a de toda la API](api_walkthrough/01_api_user_guide.ipynb), despuÃ©s [seis flujos](common_graph/01_common_graph.ipynb) y [Context/Memory](context_memory_lineage/01_context_memory_lineage.ipynb).
 
-El resultado también conserva evidencia de su ejecución:
+[Graph, Tools Pydantic y Eval con Memory aislada](checked_composition/01_checked_composition.ipynb)
+expone Tools, Skill, Agent con grafo, Agent operador, System, Environment y Eval.
+[Lineage y Memory que cambian decisiones](lineage_memory/01_lineage_memory_decisions.ipynb)
+muestra dos Agents, dos ejecuciones del mismo pago, Environment, Eval aislada,
+los Context completos y tres controles causales. ValidaciÃ³n offline adicional
+dev7: 18 celdas, ninguna omitida.
 
-```python
-result.ok
-result.lineage(name="research").to_dict()
-```
+[RevisiÃ³n de todos los examples y propuestas priorizadas](../docs/EXAMPLES_REVIEW_214.md).
+[Finanzas](applications/financial_harness/example.py) y
+[construcciÃ³n progresiva](applications/financial_harness/progressive.py) conservan
+declaraciones explÃ­citas. [Informe dev7](../revisions/2.1.4/grammar-dev7/REPORT.md).
 
-Empieza por [los seis flujos](grammar_tour/README.md), continúa con [pedidos](order_fulfillment/README.md) y abre [Studio](agentic_systems_studio/README.md).
-[Tutorials](../tutorials/README.md) enseña los conceptos; aquí se muestran implementaciones.
+El catÃ¡logo conserva los 34 experimentos histÃ³ricos adaptados; variantes del
+mismo experimento no cuentan como experimentos nuevos. La nueva pasada offline
+se identifica por archivo y hash. Las cifras y resultados dev5 son histÃ³ricos,
+no una aceptaciÃ³n live de los nuevos bytes. IAM/ADA/vLLM solo declaran
+configuraciÃ³n; MCP/A2A tiene un perfil local separado, sin LM.
 
-Con el SDK instalado, importa estos ejemplos desde la raíz del repositorio. Son material del repositorio, separado del paquete de PyPI.
-
-Los resultados offline, live y de configuración se indican por separado. Un candidato guardado no es una generación de un modelo.
-
-## Aplicaciones
-
-| Ejemplo | Para qué sirve | Validación actual |
+| Ejemplo | PropÃ³sito | Estado actual |
 |---|---|---|
-| [Generar un proyecto](applications/agentic_systems_creator/README.md) | Crear una aplicación con el scaffolder instalado. | Offline ejecutado |
-| [Separar afirmaciones y fuentes](applications/research_synthesis/README.md) | Distinguir afirmaciones con una referencia declarada de las que no la tienen. | Offline ejecutado |
-| [Comparar opciones](applications/decision_intelligence/README.md) | Aplicar una regla de puntuación explícita. | Offline ejecutado |
-| [Clasificar incidentes](applications/incident_response/README.md) | Convertir eventos en una decisión reproducible. | Offline ejecutado |
-| [Inspeccionar código](applications/code_review/README.md) | Revisar sintaxis y anotaciones de retorno con AST. | Offline ejecutado |
-| [Perfilar datos](applications/data_quality/README.md) | Detectar duplicados y valores ausentes. | Offline ejecutado |
-| [Detectar señales en un prompt](applications/prompt_security/README.md) | Marcar instrucciones sospechosas mediante reglas visibles. | Offline ejecutado |
-| [Estructurar tareas](applications/meeting_action_center/README.md) | Convertir notas de formato conocido en tareas. | Offline ejecutado |
-| [Calcular margen](applications/quantitative_analysis/README.md) | Sumar importes con Decimal. | Offline ejecutado |
-| [Enrutar un ticket](applications/customer_support/README.md) | Asignar un equipo mediante una regla explícita. | Offline ejecutado |
-| [Resolver un reembolso](applications/refund_resolution/README.md) | Aplicar una política de negocio pequeña y visible. | Offline ejecutado |
-| [Agent y System: seis flujos](applications/unified_grammar/README.md) | Aprender secuencia, paralelo y decisiones con la misma interfaz. | Offline ejecutado |
-| [Pedidos con la API única 2.1.3](applications/order_fulfillment_213/README.md) | Seven Agents and Skills coordinate validation, parallel checks and explicit business decisions through the single installed SDK API. | Offline ejecutado |
-| [Asignar responsables a evidencia](applications/retired_accountability_otc/README.md) | Mostrar un reemplazo público y sintético del experimento retirado. | Offline ejecutado |
-| [Cuatro frameworks juntos](applications/framework_interop/README.md) | Coordinar actores de cuatro SDKs y conservar la evidencia de cada Tool. | Live: escenario probado |
-| [Studio](applications/studio/README.md) | Conversar, conservar contexto y usar una calculadora con un proveedor y framework explícitos. | Live: escenario probado |
-| [Toda la API: de Tool a Eval](applications/api_walkthrough/README.md) | Recorrer la gramática completa y una aprobación de pedidos con resultados observables. | Live: escenario probado |
+| [Lineage y Memory que cambian decisiones](lineage_memory/01_lineage_memory_decisions.ipynb) | Evidencia entre Agents, duplicados con Memory, episodios de Environment y aislamiento por caso de Eval; Context exactos y human_results. | offline-passed; 18 celdas |
+| [Sesión AWS y ADA](aws_session/example.py) | Sesión prestada, compile y diagnóstico independiente, sin llamar a AWS. | configuration-offline-passed; IAM real pendiente |
+| [Sesión AWS y ADA](aws_session/example.py) | Sesión prestada, compile y diagnóstico independiente, sin llamar a AWS. | configuration-offline-passed; IAM real pendiente |
+| [Generar un proyecto](applications/agentic_systems_creator/example.py) | Crear una aplicaciÃ³n con el scaffolder instalado. | offline-passed |
+| [Separar afirmaciones y fuentes](applications/research_synthesis/example.py) | Distinguir afirmaciones con una referencia declarada de las que no la tienen. | offline-passed |
+| [Comparar opciones](applications/decision_intelligence/example.py) | Aplicar una regla de puntuaciÃ³n explÃ­cita. | offline-passed |
+| [Clasificar incidentes](applications/incident_response/example.py) | Convertir eventos en una decisiÃ³n reproducible. | offline-passed |
+| [Inspeccionar cÃ³digo](applications/code_review/example.py) | Revisar sintaxis y anotaciones de retorno con AST. | offline-passed |
+| [Perfilar datos](applications/data_quality/example.py) | Detectar duplicados y valores ausentes. | offline-passed |
+| [Detectar seÃ±ales en un prompt](applications/prompt_security/example.py) | Marcar instrucciones sospechosas mediante reglas visibles. | offline-passed |
+| [Estructurar tareas](applications/meeting_action_center/example.py) | Convertir notas de formato conocido en tareas. | offline-passed |
+| [Calcular margen](applications/quantitative_analysis/example.py) | Sumar importes con Decimal. | offline-passed |
+| [Enrutar un ticket](applications/customer_support/example.py) | Asignar un equipo mediante una regla explÃ­cita. | offline-passed |
+| [Calcular una factura](patterns/semantic_calculation/example.py) | Separar cÃ¡lculo verificable de presentaciÃ³n. | offline-passed |
+| [Contar texto](patterns/text_analysis/example.py) | Usar un Tool para anÃ¡lisis bÃ¡sico reproducible. | offline-passed |
+| [Respetar el alcance](patterns/scope_clarification/example.py) | Rechazar una operaciÃ³n no declarada. | offline-passed |
+| [Evaluar versos guardados](patterns/evidence_grounded_poem/example.py) | Comprobar formato y una cifra en candidatos suministrados. | offline-passed |
+| [Conservar un fallo](patterns/controlled_failure/example.py) | Inspeccionar errores, eventos y linaje de una operaciÃ³n fallida. | offline-passed |
+| [Conectar MCP y A2A](patterns/strands_protocol_graph/example.py) | Usar servicios locales reales desde Strands. | local-protocol-passed; zero-inference-fixture |
+| [Acotar una conversaciÃ³n](patterns/bounded_conversation/example.py) | Mantener una ventana de contexto explÃ­cita. | offline-passed |
+| [Calcular antes de presentar](patterns/two_phase_poem/example.py) | Conservar evidencia de un Tool al formatear una respuesta. | offline-passed |
+| [Evaluar y resumir evidencia](patterns/compact_evaluation/example.py) | Evaluar una ejecuciÃ³n guardada y consultar su traza. | offline-passed |
+| [Revisar referencias y causalidad](patterns/claim_review/example.py) | Aplicar comprobaciones explÃ­citas sobre afirmaciones estructuradas. | offline-passed |
+| [Validar una afirmaciÃ³n tipada](patterns/typed_claim_review/example.py) | Rechazar datos que incumplen el esquema de entrada. | offline-passed |
+| [Comprobar un juez optimista](patterns/judge_calibration/example.py) | Combinar expectativas exactas y un juez fixture. | offline-passed |
+| [Recorrer un episodio](patterns/long_environment/example.py) | Acumular memoria sin contaminar la siguiente ejecuciÃ³n. | offline-passed |
+| [Evaluar sin repetir](patterns/saved_execution_eval/example.py) | Restaurar RunResult y evaluar evidencia guardada. | offline-passed |
+| [Comparar run y compile](validation/api_contract_lab/example.py) | Comprobar que preparar una unidad conserva su ejecuciÃ³n. | offline-passed |
+| [Ejecutar tres actores](validation/provider_framework_conformance/example.py) | Usar los tres SDKs con Python determinista. | offline-passed |
+| [Preparar vLLM/Colab](validation/vllm_colab/example.py) | Inspeccionar la configuraciÃ³n antes de conectarse a una GPU. | configuration-offline-passed; target-live-pending |
+| [Preparar AWS IAM](validation/aws_iam/example.py) | Declarar Bedrock sin una API key embebida. | configuration-offline-passed; target-live-pending |
+| [Preparar ADA IAM](validation/ada_iam/example.py) | Preparar el mismo contrato para un workload empresarial. | configuration-offline-passed; target-live-pending |
+| [Resolver un reembolso](applications/refund_resolution/example.py) | Aplicar una polÃ­tica de negocio pequeÃ±a y visible. | offline-passed |
+| [Bloquear un falso positivo](patterns/fixed_judge_pilot/example.py) | Impedir que un juez fixture apruebe una respuesta incorrecta. | offline-passed |
+| [Exigir una respuesta literal](patterns/unambiguous_lm_gate/example.py) | Distinguir coincidencia exacta de parecido textual. | offline-passed |
+| [Agent y System: seis flujos](applications/unified_grammar/example.py) | Aprender secuencia, paralelo y decisiones con la misma interfaz. | offline-passed |
+| [Pedidos con siete Agents](order_fulfillment/example.py) | ValidaciÃ³n, precio/inventario en paralelo, polÃ­tica y decisiones con siete casos verificables. | offline-passed |
+| [Tutorials de la API dev7](../tutorials/README.md) | 22 notebooks organizados por core, providers, frameworks y API; la aceptaciÃ³n original cubre 6 notebooks en examples y lineage_memory aÃ±ade uno con evidencia separada. | Ver aceptaciÃ³n offline dev7 y validaciÃ³n adicional de lineage_memory |
+| [Asignar responsables a evidencia](applications/retired_accountability_otc/example.py) | Mostrar un reemplazo pÃºblico y sintÃ©tico del experimento retirado. | offline-passed |
+| [Tool Contracts â€” API 2.1.4](tool_contracts/example.py) | Pydantic input/output schemas, direct/async deterministic Tool and a controlled invalid input. | offline-passed |
+| [Portable Skills â€” API 2.1.4](portable_skills/example.py) | Exact path loading, relative imports including lazy use, instructions and versioned capability. | offline-passed |
+| [Agent/System con seis grafos](flow_semantics/example.py) | Secuencia, ramas disjuntas y decisiones; solo LangGraph. | offline-passed |
+| [Execution Lifecycle â€” API 2.1.4](execution_lifecycle/example.py) | Direct/compiled and async execution, shared root deadline and controlled timeout. | offline-passed |
+| [Results Lineage â€” API 2.1.4](results_lineage/example.py) | JSON roundtrip, invariants, execution hierarchy, trace and evidence-derived lineage. | offline-passed |
+| [Estado de episodio y memoria](episode_memory/example.py) | Observe, update, stop, replay e identidad de ejecuciones. | offline-passed |
+| [Checks y juez fixture](evaluation_checks/example.py) | Expectativas, checks, mÃ©trica de negocio y control negativo; sin juez LM. | offline-passed |
+| [Model Serving â€” API 2.1.4](model_serving/example.py) | Artifact and explicit server configuration/inspection only. Lifecycle exercised separately with fake HTTP/process in SDK tests; no GPU or model started. | offline-passed |
+| [Package Install â€” API 2.1.4](package_install/example.py) | Installed version/API identity; CLI and generated projects are checked separately in SDK/distribution evidence. | offline-passed |
+| [Agent Contracts â€” API 2.1.4](agent_contracts/example.py) | Required/allowed Tools, actor budget and portable JSON Schema positive/negative on three Python-runtime actors. | offline-passed |
+| [Tres actores en un System](framework_interop/example.py) | native, OpenAI Agents y Strands coordinados por un StateGraph. | offline-passed |
+| [Studio](agentic_systems_studio/example.py) | Grafo conversacional mÃ­nimo visible con historial y tres SDKs; controlador/UI completos se prueban por separado. | offline-passed |
+| [Toda la API: de Tool a Eval](api_walkthrough/example.py) | Recorrer la gramÃ¡tica completa y una aprobaciÃ³n de pedidos con resultados observables. | offline-passed |
+| [Runtime y scheduler](execution_controls/example.py) | Controles Pydantic del actor, plazo raÃ­z compartido y errores antes de efectos. | Ver aceptaciÃ³n offline dev7 |
 
-## Patrones
-
-| Ejemplo | Para qué sirve | Validación actual |
-|---|---|---|
-| [Calcular una factura](patterns/semantic_calculation/README.md) | Separar cálculo verificable de presentación. | Offline ejecutado |
-| [Contar texto](patterns/text_analysis/README.md) | Usar un Tool para análisis básico reproducible. | Offline ejecutado |
-| [Respetar el alcance](patterns/scope_clarification/README.md) | Rechazar una operación no declarada. | Offline ejecutado |
-| [Evaluar versos guardados](patterns/evidence_grounded_poem/README.md) | Comprobar formato y una cifra en candidatos suministrados. | Offline ejecutado |
-| [Conservar un fallo](patterns/controlled_failure/README.md) | Inspeccionar errores, eventos y linaje de una operación fallida. | Offline ejecutado |
-| [Conectar MCP y A2A](patterns/strands_protocol_graph/README.md) | Usar servicios locales reales desde Strands. | Offline ejecutado |
-| [Acotar una conversación](patterns/bounded_conversation/README.md) | Mantener una ventana de contexto explícita. | Offline ejecutado |
-| [Calcular antes de presentar](patterns/two_phase_poem/README.md) | Conservar evidencia de un Tool al formatear una respuesta. | Offline ejecutado |
-| [Evaluar y resumir evidencia](patterns/compact_evaluation/README.md) | Evaluar una ejecución guardada y consultar su traza. | Offline ejecutado |
-| [Revisar referencias y causalidad](patterns/claim_review/README.md) | Aplicar comprobaciones explícitas sobre afirmaciones estructuradas. | Offline ejecutado |
-| [Validar una afirmación tipada](patterns/typed_claim_review/README.md) | Rechazar datos que incumplen el esquema de entrada. | Offline ejecutado |
-| [Comprobar un juez optimista](patterns/judge_calibration/README.md) | Combinar expectativas exactas y un juez fixture. | Offline ejecutado |
-| [Recorrer un episodio](patterns/long_environment/README.md) | Acumular memoria sin contaminar la siguiente ejecución. | Offline ejecutado |
-| [Evaluar sin repetir](patterns/saved_execution_eval/README.md) | Restaurar RunResult y evaluar evidencia guardada. | Offline ejecutado |
-| [Bloquear un falso positivo](patterns/fixed_judge_pilot/README.md) | Impedir que un juez fixture apruebe una respuesta incorrecta. | Offline ejecutado |
-| [Exigir una respuesta literal](patterns/unambiguous_lm_gate/README.md) | Distinguir coincidencia exacta de parecido textual. | Offline ejecutado |
-| [Tutoriales de la API única 2.1.3](patterns/api_213_tutorials/README.md) | Aprender la API por core, providers, frameworks y API en 19 notebooks. | Offline ejecutado |
-| [Tool Contracts — API 2.1.3](patterns/tool_contracts/README.md) | Pydantic input/output schemas, direct/async deterministic Tool and a controlled invalid input. | Offline ejecutado |
-| [Portable Skills — API 2.1.3](patterns/portable_skills/README.md) | Exact path loading, relative imports including lazy use, instructions and versioned capability. | Offline ejecutado |
-| [Flow Semantics — API 2.1.3](patterns/flow_semantics/README.md) | Six Agent/System × flow forms, each on native and real LangGraph, direct and compiled. | Offline ejecutado |
-| [Execution Lifecycle — API 2.1.3](patterns/execution_lifecycle/README.md) | Direct/compiled and async execution, shared action limits and controlled exhaustion. | Offline ejecutado |
-| [Results Lineage — API 2.1.3](patterns/results_lineage/README.md) | JSON roundtrip, invariants, execution hierarchy, trace and evidence-derived lineage. | Offline ejecutado |
-| [Episode Memory — API 2.1.3](patterns/episode_memory/README.md) | Record-to-record memory, observe/update/stop, deterministic replay and native/LangGraph. | Offline ejecutado |
-| [Evaluation Checks — API 2.1.3](patterns/evaluation_checks/README.md) | Exact expected, custom checks, reward metrics, explicit fixture judge and negative control. No semantic model validation. | Offline ejecutado |
-| [Model Serving — API 2.1.3](patterns/model_serving/README.md) | Artifact and explicit server configuration/inspection only. Lifecycle exercised separately with fake HTTP/process in SDK tests; no GPU or model started. | Offline ejecutado |
-| [Package Install — API 2.1.3](patterns/package_install/README.md) | Installed version/API identity; CLI and generated projects are checked separately in SDK/distribution evidence. | Offline ejecutado |
-| [Agent Contracts — API 2.1.3](patterns/agent_contracts/README.md) | Required/allowed Tools, actor budget and portable JSON Schema positive/negative on four Python Runtime frameworks. | Offline ejecutado |
-
-## Integraciones y contratos
-
-| Ejemplo | Para qué sirve | Validación actual |
-|---|---|---|
-| [Comparar run y compile](validation/api_contract_lab/README.md) | Comprobar que preparar una unidad conserva su ejecución. | Offline ejecutado |
-| [Ejecutar cuatro frameworks](validation/provider_framework_conformance/README.md) | Usar los cuatro SDKs con Python determinista. | Offline ejecutado |
-| [Preparar vLLM/Colab](validation/vllm_colab/README.md) | Inspeccionar la configuración antes de conectarse a una GPU. | Configuración; entorno pendiente |
-| [Preparar AWS IAM](validation/aws_iam/README.md) | Declarar Bedrock sin una API key embebida. | Configuración; entorno pendiente |
-| [Preparar ADA IAM](validation/ada_iam/README.md) | Preparar el mismo contrato para un workload empresarial. | Configuración; entorno pendiente |
-
-[Resultados y límites de la nueva validación](../docs/LEARNING_VALIDATION_213.md).
-[RunResult y Lineage Memory de cada ejemplo y notebook](../docs/RUNRESULTS_LINEAGE_213.md): resultados observados y evidencia de cómo se obtuvieron.
-[Inventario exhaustivo de notebooks y gramática](../docs/NOTEBOOK_INVENTORY_213.md).
-[Catálogo completo y evidencia anterior](catalog.json).
-
-vLLM/Colab, AWS IAM y ADA IAM conservan la ejecución en su entorno como pendiente.
-
-Mantenimiento del catálogo y validadores: [guía de desarrollo](../docs/VALIDATION_213.md).
+[ValidaciÃ³n histÃ³rica dev5](../revisions/2.1.4/contracts-dev5/REPORT.md) Â·
+[Estado de revisiones](../docs/STATUS_214.md). Los estados de cada entrypoint
+se reconcilian con evidencia nueva, conservando los intentos fallidos.

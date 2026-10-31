@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import json
 import re
 
 
@@ -10,6 +11,21 @@ _REASONING_TAGS = ("thinking", "think", "reasoning")
 _OPENING = re.compile(
     r"^\ufeff?\s*<(?P<tag>thinking|think|reasoning)(?:\s[^>]*)?>", re.IGNORECASE
 )
+_JSON_FENCE = re.compile(
+    r"\A[ \t\r\n]*```(?:json)?[ \t]*\r?\n(?P<body>.*?)\r?\n```[ \t\r\n]*\Z",
+    re.DOTALL | re.IGNORECASE,
+)
+
+
+def _load_json_output(text: str | bytes | bytearray) -> object:
+    """Decode one complete JSON document, optionally in one JSON/unlabelled fence.
+
+    This removes formatting only. Prose, other fence languages, multiple blocks,
+    incomplete documents and schema repair are never recovered here. Callers
+    retain the original text and still validate the decoded value's contract.
+    """
+    match = _JSON_FENCE.fullmatch(text) if isinstance(text, str) else None
+    return json.loads(match["body"] if match else text)
 
 
 @dataclass(frozen=True)
@@ -56,4 +72,5 @@ def contains_leading_reasoning(value: object) -> bool:
     return _OPENING.match("" if value is None else str(value)) is not None
 
 
-__all__ = ["PublicTextProjection", "contains_leading_reasoning", "project_public_text"]
+# Explicitly exported within the private engine for its provider/contract callers.
+__all__ = ["PublicTextProjection", "contains_leading_reasoning", "project_public_text", "_load_json_output"]

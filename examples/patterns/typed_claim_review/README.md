@@ -1,31 +1,14 @@
-# Validar una afirmación tipada
+# Validar una afirmación tipada · 2.1.4
 
 Rechazar datos que incumplen el esquema de entrada.
 
-```python
-from examples.patterns.typed_claim_review.example import run
+La composición y las aserciones están visibles en [el código](example.py).
+Lee las declaraciones de Tools, Agents y Graph antes de ejecutar el ejemplo.
 
-result = run()
-result
-```
+Input → proceso → output: Una entrada válida y otra con texto numérico → Tool con esquema estricto → éxito y fallo conservados.
 
-Una entrada válida y otra con texto numérico → Tool con esquema estricto → éxito y fallo conservados.
+[Declaración](example.py) · [Evidencia dev8](../../../revisions/2.1.4/grammar-dev8/closure/examples/examples--patterns--typed_claim_review--example.py.json)
 
-Código:
-- [Current implementation](../../../examples/patterns/typed_claim_review/example.py)
+Perfil actual: **offline-passed**. El catálogo [de validación](../../../docs/LEARNING_VALIDATION_214.md) separa configuración, Python, servicios locales y pruebas de modelos. La evidencia 2.1.3 conservada es histórica y no certifica estos bytes.
 
-Validación: **Offline ejecutado**. Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.
-
-- [Nueva ejecución contra el wheel publicado](../../../revisions/2.1.3/learning-evidence-elevated/example-results/patterns/typed_claim_review/current.json)
-- [RunResult y lineage](../../../revisions/2.1.3/learning-evidence-elevated/example-results/patterns/typed_claim_review/runresults.json)
-
-<details>
-<summary>Evidencia del experimento anterior</summary>
-
-Estado anterior: mixed. Live source pilots: v1 OpenAI/langgraph 3/6 and Ollama/native 0/6; v2 OpenAI/langgraph 1/3 and Ollama/native 0/3. Extraction/audit defects remain unresolved. Offline callback tests across frameworks do not supply live framework acceptance.
-
-La adaptación actual tiene pruebas propias. La evidencia anterior conserva su versión y no certifica estos bytes.
-
-- [Results and limits](../../../docs/typed-claim-review-results.md)
-
-</details>
+[Validación histórica dev5 de Pydantic y human_results](../../../revisions/2.1.4/contracts-dev5/REPORT.md). Las revisiones previas se conservan como evidencia histórica.

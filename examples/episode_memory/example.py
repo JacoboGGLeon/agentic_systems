@@ -1,23 +1,55 @@
+"""Episode state and episodic Memory are separate concepts."""
+
+import pydantic
 import agentic_systems as toolkit
 
 
-def build(backend="native"):
-    worker = toolkit.Agent("sum", toolkit.Action("sum", lambda d: {"total": d["previous"] + d["amount"]}), backend=backend)
-    return toolkit.Environment("ledger", worker, ({"amount": 2}, {"amount": 3}, {"amount": 100}),
-        memory={"total": 0}, observe=lambda row, memory: {"amount": row["amount"], "previous": memory["total"]},
-        update=lambda memory, row, result: result.data, stop=lambda memory, result: memory["total"] >= 5)
+class State(pydantic.BaseModel):
+    amount: int | None = None
+    previous: int | None = None
+    total: int | None = None
+
+
+class Output(pydantic.BaseModel):
+    total: int
+
+
+def build():
+    graph = toolkit.Graph(State, output_schema=Output)
+    def sum_step(state):
+        return {"total": state.previous + state.amount}
+    graph.add_node("sum", sum_step)
+    graph.add_edge(toolkit.START, "sum")
+    graph.add_edge("sum", toolkit.END)
+    return toolkit.Environment(
+        "ledger",
+        graph=graph,
+        records=({"amount": 2}, {"amount": 3}, {"amount": 100}),
+        state={"total": 0},
+        memory=toolkit.Memory(capacity=3),
+        observe=lambda row, state: {
+            "amount": row["amount"],
+            "previous": state["total"],
+        },
+        update=lambda state, row, result: result.data,
+        stop=lambda state, result: state["total"] >= 5,
+    )
 
 
 def run():
-    reports = []
-    for backend in ("native", "langgraph"):
-        episode = build(backend)
-        result = episode.run()
-        assert result.ok and result.data["outputs"] == [{"total": 2}, {"total": 5}]
-        assert result.data["summary"]["terminated"]
-        replay = episode.run()
-        assert replay.data["outputs"] == result.data["outputs"]
-        assert replay.data["summary"] == result.data["summary"]
-        assert replay.execution_id != result.execution_id
-        reports.append({"backend": backend, "result": result.to_dict()})
-    return {"input": [{"amount": 2}, {"amount": 3}, {"amount": 100}], "process": "Memory 0 → 2 → 5; stop before 100", "output": reports}
+    episode = build()
+    result = episode.run()
+    replay = episode.run()
+    assert result.ok and result.data["outputs"] == [{"total": 2}, {"total": 5}]
+    assert result.data["summary"]["state"] == {"total": 5}
+    assert (
+        replay.data["outputs"] == result.data["outputs"]
+        and replay.data["summary"] == result.data["summary"]
+    )
+    assert replay.execution_id != result.execution_id
+    return {
+        "input": [{"amount": 2}, {"amount": 3}, {"amount": 100}],
+        "process": "state 0 to 2 to 5; stop before 100",
+        "output": result.to_dict(),
+        "memory": episode.memory.read(),
+    }

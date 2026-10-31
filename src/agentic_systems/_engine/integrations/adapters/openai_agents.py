@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import copy
 import dataclasses
 import json
@@ -21,6 +22,7 @@ from ...engines.names import (
     VLLM_RUNTIME_ENGINE,
 )
 from ...protocols import AsyncRunner, SyncRunner
+from ...normalization import _load_json_output
 from ...registry import provider_capability
 from ...results import RunResult, public_answer_text
 from ...tools.events import ToolEvent, classify_tool_failures
@@ -54,6 +56,30 @@ def _sdk_tool_failure(_context: Any, error: Exception) -> str:
     )
 
 
+def _sdk_contract_tool(tool, native_name):
+    """Expose an explicit Pydantic input contract without a parameter envelope.
+
+    Preserve raw inputs until the canonical Tool validates them: synthesizing
+    a function signature would let the SDK coerce values before our contract.
+    """
+    from agents import FunctionTool
+
+    async def invoke(context, arguments):
+        try:
+            payload = json.loads(arguments)
+        except (TypeError, json.JSONDecodeError) as exc:
+            return _sdk_tool_failure(context, exc)
+        result = await asyncio.to_thread(tool.run, payload)
+        if result.ok:
+            return result.data
+        error = result.errors[0] if result.errors else {"code": "tool_execution_failed", "message": result.text}
+        return {_TOOL_RESULT_MARKER: {"ok": False, "data": result.data, "error": error}}
+
+    return FunctionTool(name=native_name, description=tool.description or "",
+                        params_json_schema=tool.input_schema.model_json_schema(),
+                        on_invoke_tool=invoke, strict_json_schema=tool.strict)
+
+
 class OpenAIAgentsFrameworkAdapter(FrameworkAdapter):
     name = "openai-agents"
 
@@ -74,7 +100,8 @@ class OpenAIAgentsFrameworkAdapter(FrameworkAdapter):
             canonical_tools = agent.available_tools()
             aliases = tool_name_aliases(canonical_tools)
             converted = [
-                function_tool(
+                _sdk_contract_tool(tool, aliases.native(tool.name))
+                if tool.input_schema is not None else function_tool(
                     canonical_tool_callable(tool),
                     name_override=aliases.native(tool.name),
                     description_override=tool.description or None,
@@ -843,6 +870,7 @@ def _normalize_result(
     events = _tool_events(native_result, aliases)
     _recovered, unresolved = classify_tool_failures(events)
     failed = [ToolEvent.model_validate(item) for item in unresolved]
+    empty = not text.strip()
     if failed:
         failure_error = failed[0].error or {
             "code": "tool_execution_failed",
@@ -853,7 +881,7 @@ def _normalize_result(
     return RunResult(
         text=text,
         data=data,
-        ok=not failed,
+        ok=not failed and not empty,
         messages=[_jsonable(item) for item in native_result.to_input_list()],
         tool_events=events,
         raw_responses=raw_responses,
@@ -861,7 +889,7 @@ def _normalize_result(
         engine=agent.engine,
         model=agent.model or "",
         mode=mode,
-        errors=[event.error for event in failed if event.error],
+        errors=[event.error for event in failed if event.error] + ([{"code": "empty_model_output", "message": "Provider returned an empty model output."}] if empty else []),
         meta={
             "source_result_type": type(native_result).__name__,
             "framework_adapter": "openai-agents",
@@ -951,6 +979,8 @@ def _input_text(value: Any) -> str:
 
 
 def _output_text(value: Any) -> str:
+    if value is None or isinstance(value, str):
+        return value or ""
     projected = public_answer_text(value)
     if projected:
         return projected
@@ -962,7 +992,7 @@ def _output_data(value: Any, text: str) -> dict[str, Any]:
     if isinstance(payload, dict):
         return payload
     try:
-        parsed = json.loads(text)
+        parsed = _load_json_output(text)
     except (TypeError, json.JSONDecodeError):
         return {"text": text}
     return parsed if isinstance(parsed, dict) else {"value": parsed}

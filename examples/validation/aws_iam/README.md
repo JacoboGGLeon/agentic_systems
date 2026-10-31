@@ -1,33 +1,14 @@
-# Preparar AWS IAM
+# Preparar AWS IAM · 2.1.4
 
 Declarar Bedrock sin una API key embebida.
 
-```python
-from examples.validation.aws_iam.example import run
+La composición y las aserciones están visibles en [el código](example.py).
+Lee las declaraciones de Tools, Agents y Graph antes de ejecutar el ejemplo.
 
-result = run()
-result
-```
+Input → proceso → output: Modelo y región → runtime → configuración; el proceso de destino debe usar su rol IAM sin bearer token. Autenticación pendiente.
 
-Modelo y región → runtime → configuración; el proceso de destino debe usar su rol IAM sin bearer token. Autenticación pendiente.
+[Declaración](example.py) · [Evidencia dev8](../../../revisions/2.1.4/grammar-dev8/closure/examples/examples--validation--aws_iam--example.py.json)
 
-Código:
-- [Current implementation](../../../examples/validation/aws_iam/example.py)
+Perfil actual: **offline-passed**. El catálogo [de validación](../../../docs/LEARNING_VALIDATION_214.md) separa configuración, Python, servicios locales y pruebas de modelos. La evidencia 2.1.3 conservada es histórica y no certifica estos bytes.
 
-Validación: **Configuración; entorno pendiente**. Configuración construida e inspeccionada. El entorno de destino no se ejecutó.
-
-- [Nueva ejecución contra el wheel publicado](../../../revisions/2.1.3/learning-evidence-elevated/example-results/validation/aws_iam/current.json)
-- [RunResult y lineage](../../../revisions/2.1.3/learning-evidence-elevated/example-results/validation/aws_iam/runresults.json)
-
-<details>
-<summary>Evidencia del experimento anterior</summary>
-
-Estado anterior: pending-2.1.2. Earlier-release evidence is recorded in the changelog. vLLM/Colab, AWS IAM and ADA IAM remain explicitly pending for the exact published 2.1.2 wheel. ADA is an enterprise environment, not a provider or an installed [ada] extra.
-
-La adaptación actual tiene pruebas propias. La evidencia anterior conserva su versión y no certifica estos bytes.
-
-- [Published 2.1.2 pending routes](https://github.com/JacoboGGLeon/agentic_systems/releases/download/v2.1.2/final-certification-summary.json)
-- [Historical release scope](../../../CHANGELOG.md)
-- [Post-release validation instructions](../../../docs/POST_RELEASE_VALIDATION.md)
-
-</details>
+[Validación histórica dev5 de Pydantic y human_results](../../../revisions/2.1.4/contracts-dev5/REPORT.md). Las revisiones previas se conservan como evidencia histórica.

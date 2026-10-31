@@ -32,3 +32,5 @@ Use exact artifact evidence; external routes need separate execution authorizati
 
 This catalog update executed no inference. A historical or source-only result
 does not certify another wheel, model, framework or environment.
+
+[Validación histórica dev5 de Pydantic y human_results](../../../revisions/2.1.4/contracts-dev5/REPORT.md). Las revisiones previas se conservan como evidencia histórica.

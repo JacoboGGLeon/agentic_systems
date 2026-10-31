@@ -1,9 +1,7 @@
 """Streamlit chat UI for the portable Agentic Systems Studio."""
 
 from __future__ import annotations
-
 import streamlit as st
-
 from agentic_systems_studio.conversation import (
     ConversationConfig,
     build_conversational_system,
@@ -25,10 +23,8 @@ def main():
         layout="centered",
     )
 
-
     def _system(config: ConversationConfig):
         return build_conversational_system(config)
-
 
     try:
         environment_path = load_studio_environment()
@@ -67,21 +63,25 @@ def main():
         )
         with st.expander("Connection details"):
             st.json(
-            {
-                "source": ".env" if environment_path else "process environment; Python needs no credentials",
-                "path": str(environment_path) if environment_path else None,
-                "provider": config.provider,
-                "framework": config.framework,
-                "model": config.reasoning_runtime().model,
-                "timeout_s": config.timeout_s,
-            },
+                {
+                    "source": ".env"
+                    if environment_path
+                    else "process environment; Python needs no credentials",
+                    "path": str(environment_path) if environment_path else None,
+                    "provider": config.provider,
+                    "framework": config.framework,
+                    "model": config.reasoning_runtime().model,
+                    "timeout_s": config.timeout_s,
+                },
                 expanded=False,
             )
         st.caption(
             "Selections apply to this session only. Credentials and discovered routes "
             "remain owned by `.env` or the managed host environment."
         )
-        if st.button("Clear conversation", use_container_width=True):
+        if st.button(
+            "Clear conversation", key="clear_conversation", use_container_width=True
+        ):
             st.session_state.pop("messages", None)
             st.session_state.pop("last_result", None)
             st.rerun()
@@ -99,15 +99,9 @@ def main():
         st.exception(exc)
         st.stop()
 
-    messages = st.session_state.setdefault(
-        "messages",
-        [
-            {
-                "role": "assistant",
-                "content": "Ready. Ask a question or request a verified calculation.",
-            }
-        ],
-    )
+    messages = st.session_state.setdefault("messages", [])
+    if not messages:
+        st.info("Ready. Ask a question or request a verified calculation.")
 
     for message in messages:
         with st.chat_message(message["role"]):
@@ -159,21 +153,59 @@ def main():
     )
 
     with st.expander("Framework capabilities"):
-        scenario = st.selectbox("Example", ("LangGraph checkpoint", "OpenAI Agents handoff", "Strands MCP", "Strands A2A", "Four frameworks · Python", "Four frameworks · mixed providers"), key="example")
-        st.caption("Real SDK capabilities. MCP/A2A run isolated local services. External models share the authorized campaign budget.")
-        if st.button("Run example"):
+        scenario = st.selectbox(
+            "Example",
+            (
+                "LangGraph checkpoint",
+                "OpenAI Agents handoff",
+                "Strands MCP",
+                "Strands A2A",
+                "Three actors · Python",
+                "Three actors · mixed providers",
+            ),
+            key="example",
+        )
+        st.caption(
+            "Real SDK capabilities. MCP/A2A run isolated local services. External models share the authorized campaign budget."
+        )
+        unsupported = (
+            config.provider == "python-runtime" and scenario == "OpenAI Agents handoff"
+        )
+        if unsupported:
+            st.info(
+                "This handoff profile requires an explicitly configured LM; the Python actor requires one business Tool."
+            )
+        if st.button("Run example", disabled=unsupported):
             st.session_state.pop("lab_report", None)
             try:
                 from agentic_systems_studio.lab import probes
                 from agentic_systems_studio.budget import ensure_budget
-                budget = ensure_budget() if config.provider != "python-runtime" or scenario.endswith("mixed providers") else None
+
+                budget = (
+                    ensure_budget()
+                    if config.provider != "python-runtime"
+                    or scenario.endswith("mixed providers")
+                    else None
+                )
                 if scenario == "LangGraph checkpoint":
                     from agentic_systems_studio.lab.checkpoint import run
+
                     report = run()
                 elif scenario == "OpenAI Agents handoff":
                     report = probes.handoffs(config.provider)
                 elif scenario.startswith("Strands"):
-                    report = probes.protocols(config.provider, "mcp" if scenario.endswith("MCP") else "a2a", budget)
+                    if config.provider == "python-runtime":
+                        from examples.patterns.strands_protocol_graph.example import (
+                            run as local_protocols,
+                        )
+
+                        report = local_protocols()
+                    else:
+                        report = probes.protocols(
+                            config.provider,
+                            "mcp" if scenario.endswith("MCP") else "a2a",
+                            budget,
+                        )
                 else:
                     report = probes.interop(scenario.endswith("mixed providers"))
                 st.session_state["lab_report"] = report

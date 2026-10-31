@@ -1,13 +1,9 @@
-# Tutoriales de la API única 2.1.3
+# Tutorials de la API dev4 · 2.1.4
 
-Aprender la API por core, providers, frameworks y API en 19 notebooks.
+21 notebooks organizados por core, providers, frameworks y API.
 
-Instalar 2.1.3 → construir → run → resultado; proveedores live y servicios locales se validan aparte.
+Consulta [la implementación mantenida](../../../tutorials/README.md). Esta carpeta es una referencia de navegación, no una segunda API ni una ejecución independiente.
 
-Código:
-- [Tutorial course](../../../tutorials/README.md)
-- [Complete API](../../../docs/API_213.md)
+[Estado real y límites](../../../docs/LEARNING_VALIDATION_214.md). La evidencia 2.1.3 es histórica.
 
-Validación: **Offline ejecutado**. Las secciones offline se ejecutan en kernels nuevos. Las celdas live no se cuentan como ejecutadas offline; su campaña tiene evidencia propia.
-
-- [Validación actual por notebook](../../../docs/LEARNING_VALIDATION_213.md)
+[Validación histórica dev5 de Pydantic y human_results](../../../revisions/2.1.4/contracts-dev5/REPORT.md). Las revisiones previas se conservan como evidencia histórica.

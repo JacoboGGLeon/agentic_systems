@@ -1,32 +1,14 @@
-# Ejecutar cuatro frameworks
+# Ejecutar tres actores · 2.1.4
 
-Usar los cuatro SDKs con Python determinista.
+Usar los tres SDKs con Python determinista.
 
-```python
-from examples.validation.provider_framework_conformance.example import run
+La composición y las aserciones están visibles en [el código](example.py).
+Lee las declaraciones de Tools, Agents y Graph antes de ejecutar el ejemplo.
 
-result = run()
-result
-```
+Input → proceso → output: value=3 → Tool echo en native, OpenAI Agents y Strands, orquestados por LangGraph → misma evidencia; la matriz live se documenta aparte.
 
-value=3 → Tool echo en native, LangGraph, OpenAI Agents y Strands → misma evidencia; la matriz live se documenta aparte.
+[Declaración](example.py) · [Evidencia dev8](../../../revisions/2.1.4/grammar-dev8/closure/examples/examples--validation--provider_framework_conformance--example.py.json)
 
-Código:
-- [Current implementation](../../../examples/validation/provider_framework_conformance/example.py)
+Perfil actual: **offline-passed**. El catálogo [de validación](../../../docs/LEARNING_VALIDATION_214.md) separa configuración, Python, servicios locales y pruebas de modelos. La evidencia 2.1.3 conservada es histórica y no certifica estos bytes.
 
-Validación: **Offline ejecutado**. Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.
-
-- [Nueva ejecución contra el wheel publicado](../../../revisions/2.1.3/learning-evidence-elevated/example-results/validation/provider_framework_conformance/current.json)
-- [RunResult y lineage](../../../revisions/2.1.3/learning-evidence-elevated/example-results/validation/provider_framework_conformance/runresults.json)
-
-<details>
-<summary>Evidencia del experimento anterior</summary>
-
-Estado anterior: accepted-2.1.2. Published 2.1.2 core-12-live-v1 acceptance: OpenAI, Bedrock API key and Ollama × native/LangGraph/OpenAI Agents/Strands, two passes. Four-framework Python controls are deterministic. This accepts the declared cases and routes only, not all SDK-specific features or arbitrary models. The published summary totals 120 episodes including deterministic controls; it is not 120 independent LLM episodes.
-
-La adaptación actual tiene pruebas propias. La evidencia anterior conserva su versión y no certifica estos bytes.
-
-- [Published exact-wheel acceptance summary](https://github.com/JacoboGGLeon/agentic_systems/releases/download/v2.1.2/final-certification-summary.json)
-- [Published release](https://github.com/JacoboGGLeon/agentic_systems/releases/tag/v2.1.2)
-
-</details>
+[Validación histórica dev5 de Pydantic y human_results](../../../revisions/2.1.4/contracts-dev5/REPORT.md). Las revisiones previas se conservan como evidencia histórica.
