@@ -1,6 +1,7 @@
 """Process-local audit guard. This is an offline harness, not an OS sandbox."""
 
 import socket
+import os
 import sys
 import threading
 
@@ -39,6 +40,16 @@ def _audit(event, args):
     }:
         with _lock:
             _blocked += 1
+        frame = sys._getframe(1)
+        locations = []
+        for _ in range(12):
+            if frame is None:
+                break
+            locations.append(f"{frame.f_code.co_filename}:{frame.f_lineno}:{frame.f_code.co_name}")
+            frame = frame.f_back
+        # No event arguments: URLs, subprocess args and credentials stay private.
+        print("Offline blocked:", event, "test:", os.getenv("PYTEST_CURRENT_TEST", "bootstrap"),
+              "stack:", " <- ".join(locations), file=sys.stderr)
         raise RuntimeError(f"Offline prototype forbids {event}")
 
 
