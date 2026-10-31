@@ -152,6 +152,7 @@ jobs:
         python-version: ["3.10", "3.14"]
     env:
       VERSION: ${{ needs.candidate.outputs.version }}
+      EXPECTED_VERSION: ${{ needs.candidate.outputs.version }}
       INDEX: ${{ inputs.index }}
       MANIFEST_SHA256: ${{ inputs.manifest_sha256 }}
     steps:
