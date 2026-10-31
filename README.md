@@ -284,8 +284,10 @@ produce the same business results. It transfers no funds.
 
 The [validation report](revisions/2.1.4/ollama-connection-fix/01/live/REPORT.md)
 contains RunResults, human_results, lineage, artifact hashes and recorded consumption.
-The current wheel passed 544 offline tests and this focused online campaign;
-these results do not certify every provider feature or a complete release matrix.
+The reference development wheel passed 544 offline tests and this focused online campaign.
+Stable acceptance combines fresh offline CI with explicitly approved executable-payload
+equivalence, without claiming new stable live inference. These results do not certify
+every provider feature or a complete release matrix.
 
 ## Learn, scaffold and explore
 

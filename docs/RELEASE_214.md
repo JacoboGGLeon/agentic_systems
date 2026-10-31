@@ -1,16 +1,14 @@
-# Cierre de 2.1.4
+# Agentic Systems 2.1.4
 
-La revisión actual es 2.1.4.dev8, local y sin publicar.
-[Informe de pruebas](../revisions/2.1.4/grammar-dev8/REPORT.md).
+[Release notes](RELEASE_NOTES_214.md) · [Publishing procedure](RELEASE_PUBLISHING.md) ·
+[Release PR](https://github.com/JacoboGGLeon/agentic_systems/pull/12).
 
-Antes de un release estable: congelar bytes y dependencias, ejecutar CI con
-Python 3.10–3.14, autorizar campaña live, resolver casos obligatorios y repetir
-las rutas acordadas con ese mismo wheel no editable. Conservar fallos y
-consumo; un cambio de bytes invalida la aceptación anterior.
+One public Pydantic/LangGraph grammar, current SDK/Studio/skill and explicit learning
+material. Stable offline CI must pass across Python 3.10–3.14. The user authorized
+executable-payload equivalence to the development artifact tested online; only
+version/documentation differences are allowed. No new stable live inference is claimed.
 
-Las pruebas offline de Tools, grafos, Context/Memory, scheduler y pausa no
-sustituyen pruebas con un LM real. GPU/vLLM, AWS IAM y ADA IAM mantienen su
-estado pendiente. Los protocolos locales se informan aparte de inferencia.
-
-La publicación requerirá el flujo de TestPyPI → PyPI/GitHub y hashes idénticos
-de los artefactos aprobados. Esta tarea no la autoriza ni la ejecuta.
+Bedrock/Qwen nullable omission is a known integration limitation excluded from passing
+acceptance, not an unresolved library failure declared as a PASS. vLLM GPU and IAM/ADA
+remain pending their environments. PyPI/GitHub publication is only complete when the
+promotion workflows and published hash checks succeed.

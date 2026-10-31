@@ -21,7 +21,7 @@ server declaration is not GPU inference proof. Bedrock API key/bearer and IAM
 are distinct authentication profiles; an API-key test does not certify IAM.
 
 Prefer flat typed Tool parameters with closed Pydantic models for nested data.
-OpenAI Agents strict function schemas reject unconstrained dict inputs. The dev8 Quantity contract checks a single BaseModel parameter with explicit
+OpenAI Agents strict function schemas reject unconstrained dict inputs. The 2.1.4 Quantity contract checks a single BaseModel parameter with explicit
 input_schema in all three Python SDK actor paths. Other shapes need their own
 evidence; do not generalize that test to every Pydantic feature or live provider. Historical dev3 learning cases validated flat signatures
 against all three Python actor paths and selected real-provider projections.

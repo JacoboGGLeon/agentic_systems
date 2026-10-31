@@ -1,4 +1,4 @@
-# Concepts and boundaries · dev8
+# Concepts and boundaries · 2.1.4
 
 Tool is a typed operation; Skill groups Tools/instructions. Agent owns a capability
 or actor; System coordinates the application; Environment supplies episodes.
