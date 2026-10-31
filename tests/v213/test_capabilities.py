@@ -41,7 +41,7 @@ def test_invalid_runtime_fields_rejected(options):
         a.runtime(**options)
 
 
-@pytest.mark.parametrize("name", ["native", "langgraph", "openai-agents", "strands"])
+@pytest.mark.parametrize("name", ["native", "openai-agents", "strands"])
 def test_four_real_framework_paths_with_python_runtime(name):
     @a.tool
     def echo(value: int) -> dict:
@@ -129,7 +129,7 @@ def test_skill_identity_conflicts_and_removed_metadata_contracts():
 
 
 @pytest.mark.parametrize("provider", ["openai-runtime", "ollama-runtime", "bedrock-runtime", "vllm-runtime"])
-@pytest.mark.parametrize("framework", ["native", "langgraph", "openai-agents", "strands"])
+@pytest.mark.parametrize("framework", ["native", "openai-agents", "strands"])
 def test_model_boundary_forwarding_and_structured_output_without_inference(monkeypatch, provider, framework):
     import agentic_systems._engine.factories as implementation
     from agentic_systems._engine.results import RunResult as EngineResult

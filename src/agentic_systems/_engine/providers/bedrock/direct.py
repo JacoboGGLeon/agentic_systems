@@ -85,7 +85,7 @@ class _DirectRunner:
             messages=self.messages,
             model_id=self.model_id,
             system=self.system,
-            tools=self.bedrock_tools or None,
+            tools=None if self.tool_choice == "none" else (self.bedrock_tools or None),
             tool_choice=self._choice_for_turn(turn_index),
             max_tokens=self.max_tokens,
             temperature=self.temperature,
@@ -110,6 +110,9 @@ class _DirectRunner:
                 self._joined_final_text(),
                 extra_messages=[{"role": "assistant", "content": safe_content}],
             )
+
+        if self.tool_choice == "none":
+            raise ValueError("tool_choice='none' forbids provider-requested Tool execution")
 
         self.messages.append({"role": "assistant", "content": safe_content})
         tool_result_blocks, recoverable_failures = self._execute_tool_uses(tool_uses)
@@ -284,8 +287,14 @@ class _DirectRunner:
                         {"role": "assistant", "content": assistant_content},
                     ],
                 )
-        except Exception:
-            return None
+        except Exception as exc:
+            # This is a failed dispatch, not permission to make an implicit retry.
+            # Keep completed Tool work and the failed attempt in the same result.
+            self.raw_responses.append({
+                "phase": "final_synthesis", "usage_unknown": True,
+                "error": {"code": type(exc).__name__, "message": str(exc)},
+            })
+            return self._result("")
         return None
 
     def _result(

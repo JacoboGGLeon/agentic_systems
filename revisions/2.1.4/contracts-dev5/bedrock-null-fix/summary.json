@@ -1,0 +1,308 @@
+{
+  "version": "2.1.4.dev5",
+  "build": "03",
+  "published": false,
+  "artifact": {
+    "wheel": "revisions/2.1.4/contracts-dev5/builds/03/agentic_systems-2.1.4.dev5-py3-none-any.whl",
+    "wheel_sha256": "df328e52d7a2660d7b29ce45a40c689766ce99196c02d5672930dd5663bbde34",
+    "sdist": "revisions/2.1.4/contracts-dev5/builds/03/agentic_systems-2.1.4.dev5.tar.gz",
+    "sdist_sha256": "61660275c5f0aa267eea5436b3d5fd3f46d745b145571650439ead55a8a10891",
+    "installed_site": "C:\\Users\\jacob\\AppData\\Local\\Packages\\sandbox.{de7ab45d-af3a-4323-a3a7-73a9a7525581}\\AC\\Temp\\agentic-systems-bedrock-null-57ba774a98124c778167fae6a9459a39\\site-packages",
+    "outside_repository": true,
+    "wheel_record_valid": true,
+    "wheel_sdist_installed_source_match": true
+  },
+  "offline_tests": {
+    "tests": 319,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "new_regressions": 20,
+  "dependency_versions": {
+    "boto3": "1.43.38",
+    "botocore": "1.43.38",
+    "openai-agents": "0.18.3",
+    "strands-agents": "1.53.0",
+    "pydantic": "2.13.4",
+    "langgraph": "1.2.11"
+  },
+  "historical_diagnostic": {
+    "path": "revisions/2.1.4/release-followup/20261026T041342447431-bedrock-diagnostic/results.json",
+    "input_has_explicit_null": true,
+    "response_omits_required_field": true,
+    "request_did_not_enable_strict": true,
+    "does_not_isolate_model_from_service": true
+  },
+  "live_on_new_artifact": "not_executed",
+  "remaining_prior_failures_and_gaps": [
+    {
+      "name": "three-framework-interop",
+      "route": "ollama-cloud",
+      "framework": "native+openai-agents+strands",
+      "state": "failed"
+    },
+    {
+      "name": "studio-controller",
+      "route": "bedrock-runtime",
+      "framework": "native",
+      "state": "not_attempted"
+    },
+    {
+      "name": "studio-controller",
+      "route": "bedrock-runtime",
+      "framework": "openai-agents",
+      "state": "not_attempted"
+    },
+    {
+      "name": "studio-controller",
+      "route": "bedrock-runtime",
+      "framework": "strands",
+      "state": "not_attempted"
+    },
+    {
+      "name": "mandatory-null",
+      "route": "bedrock-runtime",
+      "framework": "native",
+      "state": "failed"
+    },
+    {
+      "name": "mandatory-null",
+      "route": "bedrock-runtime",
+      "framework": "openai-agents",
+      "state": "failed"
+    },
+    {
+      "name": "mandatory-null",
+      "route": "bedrock-runtime",
+      "framework": "strands",
+      "state": "failed"
+    },
+    {
+      "name": "three-framework-interop",
+      "route": "bedrock-runtime",
+      "framework": "native+openai-agents+strands",
+      "state": "no_evidence_on_build_02"
+    }
+  ],
+  "budget_unchanged": {
+    "requests": 148,
+    "request_limit": 150,
+    "reserved_usd": "0.875040",
+    "usd_limit": 5,
+    "remaining_requests": 2,
+    "remaining_usd": "4.124960",
+    "ledger_sha256": "6ce1ae54e97e11835598312e56ca403ca7b267478a99ce1bc5c93a0bdbd5b9e6",
+    "new_requests_this_task": 0
+  },
+  "proposed_not_authorized": {
+    "targeted": {
+      "additional_request_allowance": 60,
+      "new_total_limit": 210,
+      "baseline_requests": 48,
+      "margin_requests": 12,
+      "cases": [
+        {
+          "case": "pilot-null-native",
+          "requests": 2
+        },
+        {
+          "case": "two-pass-null-three-frameworks",
+          "requests": 12
+        },
+        {
+          "case": "studio-bedrock-three-frameworks",
+          "requests": 9
+        },
+        {
+          "case": "interop-ollama-cloud",
+          "requests": 6
+        },
+        {
+          "case": "interop-bedrock",
+          "requests": 6
+        },
+        {
+          "case": "bedrock-basic-refund-mcp-a2a",
+          "requests": 13
+        }
+      ]
+    },
+    "full_candidate": {
+      "additional_request_allowance": 200,
+      "new_total_limit": 350,
+      "remaining_from_current_counter": 202,
+      "baseline_requests": 150,
+      "separate_pilot_requests": 2,
+      "second_null_pass_requests": 6,
+      "expected_total_requests": 158,
+      "margin_requests": 44,
+      "usd_limit_unchanged": 5,
+      "baseline": [
+        {
+          "case": "provider-notebook",
+          "scenarios": 12,
+          "calls_each": 2
+        },
+        {
+          "case": "handoff-notebook",
+          "scenarios": 1,
+          "calls_each": 2
+        },
+        {
+          "case": "refund-pause-resume",
+          "scenarios": 12,
+          "calls_each": 1
+        },
+        {
+          "case": "studio-controller",
+          "scenarios": 12,
+          "calls_each": 3
+        },
+        {
+          "case": "strands-mcp",
+          "scenarios": 4,
+          "calls_each": 2
+        },
+        {
+          "case": "strands-a2a",
+          "scenarios": 4,
+          "calls_each": 2
+        },
+        {
+          "case": "three-framework-interop",
+          "scenarios": 4,
+          "calls_each": 6
+        },
+        {
+          "case": "business",
+          "scenarios": 15,
+          "calls_each": 2
+        },
+        {
+          "case": "mandatory-null",
+          "scenarios": 3,
+          "calls_each": 2
+        }
+      ]
+    },
+    "stop_on_required_failure": true,
+    "vllm_iam_ada_remain_pending": true
+  },
+  "source_snapshot": {
+    "src/agentic_systems/__init__.py": "355786ed1c571141761818bb9e097b20e4be0fddad02f93420e159d7c3b2ad84",
+    "src/agentic_systems/_configuration.py": "56778ca541b156bc9985ad470dab687ddda1e43a883c98b3dbafc1d2ea5736fd",
+    "src/agentic_systems/_context.py": "ad3d65969917105dc855b392a328aadd2f79a20905b3873d5eca8a65b58a459b",
+    "src/agentic_systems/_continuation.py": "42aa371ee57559d69455fe08e664a1ec6f53e021d57bf8f509e5627d0a2ab274",
+    "src/agentic_systems/_contracts.py": "c8b3d5e3b1c268972eacc9aa518e9e5122eb476e198f7d4e35ea2c280ea52baf",
+    "src/agentic_systems/_control.py": "e33fbbb7fcb9225ee9c3b12cdf36acb669a7aec2d8078cb39ebef84a64a0e359",
+    "src/agentic_systems/_grammar.py": "cfa666a8630ea0e7d8b7d6538a59c2d473164b6d73b9c6c83e11b01f84bf967d",
+    "src/agentic_systems/_langgraph.py": "a9dc81bb9ad90ddd955a715cd344bccc858d2e7b4262b2209424333f2763c15e",
+    "src/agentic_systems/_results.py": "65833351c554899b40808cfbab87c8b5aebe17286373fc0338990500be5dcab1",
+    "src/agentic_systems/_scaffolding.py": "a5138f22f26a2e941dc827b77b6c427f5b8f2a6c24e9209d4eb3b291af103ff7",
+    "src/agentic_systems/_tools.py": "310290bce832be23522337cb8b68c18e7ed5b6a782401094d8c37aa91faa823c",
+    "src/agentic_systems/cli.py": "8c0f1e08c7051bd925f79f50b6768a90e6232ea792609c1237ca4d891fded060",
+    "src/agentic_systems/_engine/__init__.py": "c7bfcb8808fa17de98656a57758fcffc428d05210f437c8f9b6c62f96a7cd9f6",
+    "src/agentic_systems/_engine/agents.py": "bf3765806267db7e896e50e3232363a94ed5a45417ddd8592693d8e0fe31f811",
+    "src/agentic_systems/_engine/bedrock_runtime_client.py": "154f9dfaeba8665db4ac1b2748987a4c65311e69b9123983dac23240b5dbeee8",
+    "src/agentic_systems/_engine/chain.py": "0c963c4e0cebb4fe32a3534b75d86afad5d385cf5ed1e59816bf5dcef7c1b397",
+    "src/agentic_systems/_engine/compatibility.py": "2dcb6719626e535bd4e5b0d83cd237438ad68eae8991fa91465dc96409022379",
+    "src/agentic_systems/_engine/composition.py": "5892c5989d9400ceed211487137cd432158fbbf6641f7a9af72d6a4ef02ef22f",
+    "src/agentic_systems/_engine/contracts.py": "906c27893cde36f961fcb3fdf93a153ad645a532190c0f8fe1d2376e65f765bf",
+    "src/agentic_systems/_engine/defaults.py": "9b990fdbfee062f98188dc1f1f2e5ebdd5f3e865c2f68c64cc2ff53f4a06fa1b",
+    "src/agentic_systems/_engine/delegation.py": "a99b0373d6ed9f65402250d09bd59b058054f6240a73aa91733ba12a6b5e1607",
+    "src/agentic_systems/_engine/environments.py": "257efaa579002a5ee6d581eb21d19ec44494b2aedd2b286e9a4d235a966fa5f2",
+    "src/agentic_systems/_engine/errors.py": "88a527b85b4544478254c778c2ad023989b3ad9b9385c87fe9de1d567d527b9d",
+    "src/agentic_systems/_engine/evals.py": "2d5a1af06c3c89f18f4d5b5c5006b2089a10c71d0f929f1cf75ea5e4531eb676",
+    "src/agentic_systems/_engine/execution.py": "e9a316c3a99c6f34b5bb0f506927a683dcbf2b88bedb64b0b233e29a101d099a",
+    "src/agentic_systems/_engine/expectations.py": "6f5658e6aee6a8777de8f1f2fb6b54cbb97f566f2af5c6108e55607279bd597c",
+    "src/agentic_systems/_engine/factories.py": "483faf32bcf2c618eb234923626166f72d325b9e7109d64c053bb9368084fb25",
+    "src/agentic_systems/_engine/final_answer.py": "86d4fd1c3d70076ae0d1f9b2329bc94ef37a727eb341939c1edcfda402d2e300",
+    "src/agentic_systems/_engine/human_output.py": "5f00c5fbd7a5fc3a8b23bdf0e07b3f1312cfb7aa6abbe2f955860b0083f0b1d4",
+    "src/agentic_systems/_engine/inspection.py": "1231152f761864a03c02ac79534c2450d146902b95706cc99da105e51acc1c2f",
+    "src/agentic_systems/_engine/lineage.py": "f546d321b254a944eeddc4792034272d8dd4bc3489ef27961b4de4a56fcfd759",
+    "src/agentic_systems/_engine/normalization.py": "9a139d0b362cb894b6616c287b159a9777aa1151ff04b4cb8b60450b61b825bc",
+    "src/agentic_systems/_engine/output_contracts.py": "fb2896b32649a440a33a4627146107a8120faf36cfac494968e883524eb998be",
+    "src/agentic_systems/_engine/protocols.py": "5245792d85792d42b56d2c39cc43b7e62a8dd0509c5b20804598769e0c0d153f",
+    "src/agentic_systems/_engine/registry.py": "043791ccec2cac937c492293086c3d47e0ccefc19b34d86753e02b7a4c3c08f6",
+    "src/agentic_systems/_engine/results.py": "f87d776ee37bd10ad0f74bb5ba4d92ba20c2b097295ee089380e2dafcc0d5c02",
+    "src/agentic_systems/_engine/system.py": "a464e3b459872593665e9e2888e3b4c85d550962a3e061b28265918c9056423a",
+    "src/agentic_systems/_engine/usage.py": "108f00966f023cc8589b568d113198a110d235a68878828aa54251da2558290a",
+    "src/agentic_systems/_engine/utils.py": "f457b1b82800c0a0806a6ee3ba28a99be4c25d308b025f7eb50b0125f0991f31",
+    "src/agentic_systems/_engine/core/__init__.py": "651f09358bfc94928bcd38f14cd8cf97c9dc10336e3428c4c895dea39f385305",
+    "src/agentic_systems/_engine/core/contracts.py": "fff7c1b61d8b491a865873bc3a636c38eb6bcc34dd9ee72515aaf3768b53eadb",
+    "src/agentic_systems/_engine/core/human_output.py": "292c6f8a7b4669e8b322280b3ba9e2566f48f54d8bf93b160056c6a47401a379",
+    "src/agentic_systems/_engine/core/lineage.py": "4d258cdfd28faf20a7b6aa1c8336e275023169c9454371c64ee36e042481ae0c",
+    "src/agentic_systems/_engine/core/provider.py": "12189c1d7cd1a7ff5610aaa4e937f5825c756fd716db4c966ee15e90e599e55e",
+    "src/agentic_systems/_engine/core/results.py": "b3df98467b67d5299c9bdd00b9b2c95f7864d864a16969b5235acb69c9c6cbe4",
+    "src/agentic_systems/_engine/core/runtime.py": "fd31bcc5d6a78173a46b287b9b72a1ed9af84a24fa9d9e49ed740611602960d8",
+    "src/agentic_systems/_engine/core/scheduler.py": "deed07eb845966088fd4a4948a91627c5f7bde6ae5154fc965f4a616c9b1f63d",
+    "src/agentic_systems/_engine/core/tools.py": "3f57c2c88b49262bfc97e13add9ac046e5f4c6dffc74f9c6e41f675d43739ff9",
+    "src/agentic_systems/_engine/engines/__init__.py": "2951acaccaf3c4835d4b69fcc97edd5c5adfe27728c67f4c3654e12a13dcafcb",
+    "src/agentic_systems/_engine/engines/bedrock.py": "f684522d8a3c78df6a451c7d58793f96d9e4d3965b52248add8fd730b7fa044c",
+    "src/agentic_systems/_engine/engines/names.py": "0194608875308cc6a5d3efa40a7f9cef9a6db3c2c392217168e5c01c22acd93c",
+    "src/agentic_systems/_engine/integrations/__init__.py": "700c6e668a69388ec9acb8e28bae364b34eed7de156d119326d774625cc9011d",
+    "src/agentic_systems/_engine/integrations/boundary.py": "b465ccab7804a76406dc9367d0ca78c9732bd82cd5a4a65a65992d38c9711f0a",
+    "src/agentic_systems/_engine/integrations/config.py": "af159bf41995743cd6c873a57ce8eba62b868da9205f4d8365f0b3957c21c351",
+    "src/agentic_systems/_engine/integrations/langgraph.py": "f055f0dfa4d1d912fff11c23c3780a3ba1ec51d5931691652d95c3b647037633",
+    "src/agentic_systems/_engine/integrations/adapters/__init__.py": "a1b2c8d6b0627870b2594f201cb59b30f5152bd858640f5d2a4a54ca7647c4cc",
+    "src/agentic_systems/_engine/integrations/adapters/base.py": "dc1f88314894e48d75e17db4fffdcc53af43b7c21cacb0fd12271105964b7da7",
+    "src/agentic_systems/_engine/integrations/adapters/bedrock_openai.py": "8ea0c7a2fdb4af929f4549c2ab0ca602c560bfe461d11c515b48b1b54a9b4c68",
+    "src/agentic_systems/_engine/integrations/adapters/langgraph.py": "7cb8e8902a55a6e21050c924670d26eb10f7e9f058725d9013398a7916c6db14",
+    "src/agentic_systems/_engine/integrations/adapters/native.py": "a46c2fc487ad116ac67c7ac34ee340fb27836059d7b84687c6d9977c16d128ea",
+    "src/agentic_systems/_engine/integrations/adapters/openai_agents.py": "2a09603c5558cdf066275cecd68c8fb7561289174bece713b0f5582500fe09b1",
+    "src/agentic_systems/_engine/integrations/adapters/openai_models.py": "113155f74f9d51c505d445c3cd69de5fb563241fa9d1e15a1431bb3447ffab56",
+    "src/agentic_systems/_engine/integrations/adapters/strands.py": "3aed3b876596d8927f268c05a7602a84d9c332995ff547417a51efe9065cae61",
+    "src/agentic_systems/_engine/integrations/adapters/strands_scripted.py": "e0b70cb2e4f10e3468f1280de5331496eaaf6ca294b931a4e38a4347331a8f0a",
+    "src/agentic_systems/_engine/integrations/adapters/tools.py": "749a5e8103e2fc42db920c0118220d78f75c542b48d402bb2affa9d05909ec1e",
+    "src/agentic_systems/_engine/providers/__init__.py": "2951acaccaf3c4835d4b69fcc97edd5c5adfe27728c67f4c3654e12a13dcafcb",
+    "src/agentic_systems/_engine/providers/base.py": "4d0f4b913e810fec6bbcbdfd7e83cbc92be2ed519ee1b891ce4e39d156b75a7c",
+    "src/agentic_systems/_engine/providers/bedrock_runtime.py": "b5ee44c839ed72426c9a553c8c3bdc0a99a9c61e373078c01a212dfb87ec5885",
+    "src/agentic_systems/_engine/providers/conformance.py": "812b98fae6447dac6937a86d6bec0c38a306a23d96077f223228c8f95dcf065b",
+    "src/agentic_systems/_engine/providers/ollama_runtime.py": "fd31a8eecfbaa656b1aa7c384be5c6a108e5940b5a9b02c508e0db5c5446e633",
+    "src/agentic_systems/_engine/providers/openai_runtime.py": "9ee5ea21dccf97d59f1ae0c30f2cfac6cf453f33b2e7f70aa6506598db68ff35",
+    "src/agentic_systems/_engine/providers/python_runtime.py": "3abc67b565a0c6bdf08e13586b2eb9ab9b66e67ace2c5f002e17303c666ad354",
+    "src/agentic_systems/_engine/providers/vllm_runtime.py": "8ab4311549c35e36f858116762e769677815ae4cc6e4df16e07e8fae6a599ba9",
+    "src/agentic_systems/_engine/providers/bedrock/__init__.py": "efec7ca3693a56ec185d272ab7af43f49c54d7092185eba680953467445545b7",
+    "src/agentic_systems/_engine/providers/bedrock/converse.py": "f6bace5af78c668e58738a77d09c181709446a0419a61118effb5b161c5d9cfa",
+    "src/agentic_systems/_engine/providers/bedrock/direct.py": "9c3bbca0ec31d502fa055b82252221b31e7da7b9323af00384beef4996fdf09f",
+    "src/agentic_systems/_engine/providers/bedrock/identity.py": "ddb4d95068dd63ae56a73b247cdf606638a49784d14c6de561f4262654089c96",
+    "src/agentic_systems/_engine/providers/bedrock/langgraph.py": "e0165477b6fbe3a6c8040f3118a3f56429b2b71914f52ee12855ed4a6e1d6854",
+    "src/agentic_systems/_engine/providers/bedrock/models.py": "5660f5fa8d89cad6b49c609ed4c3b3f032ab75f178e8c092c9f71593e373a2f0",
+    "src/agentic_systems/_engine/providers/bedrock/schema.py": "3443f1327f7802f1c2824fed5b6c5d10c7a6a0bb5b98da03473b21e902f300c2",
+    "src/agentic_systems/_engine/providers/bedrock/tools.py": "58acadd841d15e00003dad7ee54593ac95f233b1d4adf3f0818ce82a4780ffaf",
+    "src/agentic_systems/_engine/schemas/__init__.py": "2d4dbcb35c881e9c95c823d319ec442a563a2c36699636107183baf3f7eef7eb",
+    "src/agentic_systems/_engine/schemas/attestation.py": "51f5c9c03ee016a2c16674add91527d099ae06b505ab0dd0b751777df5107e77",
+    "src/agentic_systems/_engine/schemas/base.py": "f81abd7bd335e747ced148fff0134bfac83d7ed961cc76678d02bdb47b97e37f",
+    "src/agentic_systems/_engine/schemas/execution.py": "2852964b714852329a1f96f3bc3767b77b42fe6e68b9fcc534eeda09492e3420",
+    "src/agentic_systems/_engine/schemas/migrations.py": "854b769692d60e2c73667af2889c450813275467a74b53e9a75044bbf4f7e7a2",
+    "src/agentic_systems/_engine/schemas/results.py": "72617b7dc2db96bd23da410feb2887b1e4490459d1536b1ee3cf2d82045c9a05",
+    "src/agentic_systems/_engine/schemas/serving.py": "f2e4a249b9bf8f18cf93936a98dfb4c3db916564e56e4bed0e317fc52198f674",
+    "src/agentic_systems/_engine/schemas/specs.py": "792c524d3161c9165b23365644f91d61f1c5c869bd4762b684fa36ed50101455",
+    "src/agentic_systems/_engine/serving/__init__.py": "a0391fb47de8291bc2f289c1e4309dd2b3ac759d27bfa2b6295526339ca5b587",
+    "src/agentic_systems/_engine/serving/vllm.py": "cddbb9a59205bbd8a8dcaf344c2c7ca6e6ee5fe57040393744403670e9635fec",
+    "src/agentic_systems/_engine/skills/__init__.py": "24768319043945c4b9b5ca448c4dce1757d93d29823d752bbbee88528cc526d7",
+    "src/agentic_systems/_engine/skills/loader.py": "198f955ec6951a92c19d58e17030282503b3640177762f3fdaa3287a566df38b",
+    "src/agentic_systems/_engine/skills/skill.py": "c735abd8d7dfda2c2aa57be1494aed03e9041b5f437365c5e8f5100527379f8c",
+    "src/agentic_systems/_engine/tools/__init__.py": "1bcd0d6c2aae603c7df4f2f36a339b619236e6b3ae207f7ee209a86605d5a1a1",
+    "src/agentic_systems/_engine/tools/decorators.py": "a111ffb4e6d6ca22554668faa948ddd5e2a6fab465dd5f13c8164a4ed49c6635",
+    "src/agentic_systems/_engine/tools/events.py": "ac39c9bcc0c0db855410af040bf748b358c2efc6a83125860a3bc06e2cd8e2b9",
+    "src/agentic_systems/_engine/tools/parsing.py": "78c25b76746f131988ae2960bd5faa0ce66b44f8200de32c2b576e5ea71adf5d",
+    "src/agentic_systems/_engine/tools/runtime.py": "3fad46a7715192d85b9561320f5c96d787eddf731a36d12414ffe6ff9028e9d8",
+    "src/agentic_systems/_engine/tools/tool.py": "f7c0295fecd8223e94bfaeb4afaf94b25d0309ea028363f840022611dfbd45c7",
+    "src/agentic_systems/_engine/tools/toolkit.py": "c32083fb784a08c41d540aee625a1faf7a5a525a659fe657fb4e3309103c206d",
+    "src/agentic_systems/_engine/tools/toolset.py": "ddf982e4401302368fa6db67ec84ef2d01a31c9b34176798c8e3dd201b084fb5",
+    "src/agentic_systems/_templates/graph_project/.gitignore": "6de526abd966975f046e3b6ef4e292de6795f50eb49beb4a4f15d122db2e553e",
+    "src/agentic_systems/_templates/graph_project/README.md": "14475505b7ee81e6c447c007b3fbb4a3f18afdfc333fcce15d719427c744f4cc",
+    "src/agentic_systems/_templates/graph_project/app.py": "181f24b24e09c086720fa123f0c9a6f1f15e6603b70643ebd24b1b3b16abed01",
+    "src/agentic_systems/_templates/graph_project/execute_notebook.py": "b3a95d261b35c5fd95ddac99615387238a615257a0e7611d855af4bfa3125671",
+    "src/agentic_systems/_templates/graph_project/pyproject.toml": "409ef993fef8e393e7fd290715866bc36a9273b9bd24f9503a815ed9e5d05251",
+    "src/agentic_systems/_templates/graph_project/src/order_fulfillment/__init__.py": "60119ff7108d46014de5905dcd5ba0df7e3685dcfb5f44eb3c500e6676a18d91",
+    "src/agentic_systems/_templates/graph_project/src/order_fulfillment/application.py": "83715b05eb79e5f2808e32a456f7f943cc84a0c42d33e15936b2c6804616ac37",
+    "src/agentic_systems/_templates/graph_project/src/order_fulfillment/offline.py": "21f9a074dc02f92b7701afe86a317011761566c1ad51e70159fb1a7ed62af112",
+    "src/agentic_systems/_templates/graph_project/src/order_fulfillment/resources.py": "734bfd0532d0e4c5a4fa9ea10cb39c399ad2a10cda1c16854bf70321a3302754",
+    "src/agentic_systems/_templates/graph_project/src/order_fulfillment/skills/pricing/SKILL.md": "5903dcafa14e160a78ef27faa837adf69554ecc6e78d70dd60aa7a9d8814c5d0",
+    "src/agentic_systems/_templates/graph_project/src/order_fulfillment/skills/pricing/skill.py": "d76b60c2300cd0cff35a0f20c79b49bbdd53aac6cff356ac776559a3d37b844c",
+    "src/agentic_systems/_templates/graph_project/src/order_fulfillment/skills/pricing/tools.py": "43b3af575bf356910f05d0205b5ba6b998f43fd6d881489b7a5830b45d619f46"
+  }
+}

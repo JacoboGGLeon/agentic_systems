@@ -1,33 +1,14 @@
-# Comprobar un juez optimista
+# Comprobar un juez optimista · 2.1.4
 
 Combinar expectativas exactas y un juez fixture.
 
-```python
-from examples.patterns.judge_calibration.example import run
+La composición y las aserciones están visibles en [el código](example.py).
+Lee las declaraciones de Tools, Agents y Graph antes de ejecutar el ejemplo.
 
-result = run()
-result
-```
+Input → proceso → output: Respuestas VALID y WRONG → juez que siempre aprueba + expectativas → [True, False]; no es calibración empírica de un modelo.
 
-Respuestas VALID y WRONG → juez que siempre aprueba + expectativas → [True, False]; no es calibración empírica de un modelo.
+[Declaración](example.py) · [Evidencia dev8](../../../revisions/2.1.4/grammar-dev8/closure/examples/examples--patterns--judge_calibration--example.py.json)
 
-Código:
-- [Current implementation](../../../examples/patterns/judge_calibration/example.py)
+Perfil actual: **offline-passed**. El catálogo [de validación](../../../docs/LEARNING_VALIDATION_214.md) separa configuración, Python, servicios locales y pruebas de modelos. La evidencia 2.1.3 conservada es histórica y no certifica estos bytes.
 
-Validación: **Offline ejecutado**. Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.
-
-- [Nueva ejecución contra el wheel publicado](../../../revisions/2.1.3/learning-evidence-elevated/example-results/patterns/judge_calibration/current.json)
-- [RunResult y lineage](../../../revisions/2.1.3/learning-evidence-elevated/example-results/patterns/judge_calibration/runresults.json)
-
-<details>
-<summary>Evidencia del experimento anterior</summary>
-
-Estado anterior: mixed. Calibration includes false approvals, schema/citation failures and source-only observations. A local holdout report recorded ok=true, but that does not certify a full candidate matrix or a new wheel. Prior failures remain part of the record.
-
-La adaptación actual tiene pruebas propias. La evidencia anterior conserva su versión y no certifica estos bytes.
-
-- [Judge contract](../../../docs/judge-contract-v6.md)
-- [Fixed pilot results](../../../docs/judge-v6-pilot-results.md)
-- [Two-phase experiments](../../../docs/two-phase-212-status.md)
-
-</details>
+[Validación histórica dev5 de Pydantic y human_results](../../../revisions/2.1.4/contracts-dev5/REPORT.md). Las revisiones previas se conservan como evidencia histórica.

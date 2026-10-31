@@ -101,7 +101,6 @@ class AgenticSystem:
         strict: bool = True,
         runtime: RuntimeConfig | dict[str, Any] | None = None,
     ) -> None:
-        os.environ.setdefault("AWS_EC2_METADATA_DISABLED", "true")
         self.runtime_config = (
             RuntimeConfig.coerce(runtime) if runtime is not None else None
         )
@@ -677,12 +676,13 @@ class AgenticSystem:
         except Exception as exc:  # pragma: no cover - depends on optional install
             raise ImportError(
                 "Bedrock Runtime provider requires optional AWS dependencies. "
-                "Install with: pip install -e '.[bedrock]'."
+                "Install with: pip install 'agentic-systems[bedrock]'."
             ) from exc
         previous_runtime = self._runtime
         runtime = BedrockRuntime(
             model_id=self.model,
             region_name=self.region,
+            **({"session": self.runtime_config.session} if self.runtime_config is not None and self.runtime_config.session is not None else {}),
             max_tokens_default=getattr(previous_runtime, "max_tokens_default", 800),
             temperature_default=getattr(previous_runtime, "temperature_default", 0.0),
         )

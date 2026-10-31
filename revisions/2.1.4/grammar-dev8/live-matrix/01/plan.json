@@ -1,0 +1,67 @@
+{
+  "version": "2.1.4.dev8",
+  "created_at": "2026-10-30T04:33:33.266782+00:00",
+  "wheel_sha256": "14148af530c14660b888479f6a2eabb4ef1bf74637b7cc3244422f447b547e23",
+  "challenge_sha256": "9a67669afba614d99bfa7f30330666f565b8d0314d8874e80610b1f643f0e9b2",
+  "worker_sha256": "2cb28c4b54a216e668fd6d2c07906e8ac7a78c34f9277da1d881801e14f8d937",
+  "routes": {
+    "openai-runtime": {
+      "model": "gpt-4.1-mini",
+      "endpoint": "https://api.openai.com/v1",
+      "key_env": "OPENAI_API_KEY",
+      "input_usd_per_million": 0.4,
+      "output_usd_per_million": 1.6
+    },
+    "bedrock-runtime": {
+      "model": "qwen.qwen3-32b-v1:0",
+      "endpoint": "https://bedrock-runtime.us-east-2.amazonaws.com",
+      "region": "us-east-2",
+      "key_env": "AWS_BEARER_TOKEN_BEDROCK",
+      "input_usd_per_million": 1,
+      "output_usd_per_million": 4
+    },
+    "ollama-local": {
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "endpoint": "http://127.0.0.1:11434/v1",
+      "input_usd_per_million": 0,
+      "output_usd_per_million": 0
+    },
+    "ollama-cloud": {
+      "model": "gemma4:31b",
+      "configured_model": "gemma4:31b-cloud",
+      "endpoint": "https://ollama.com/v1",
+      "key_env": "OLLAMA_API_KEY",
+      "input_usd_per_million": 1,
+      "output_usd_per_million": 4
+    }
+  },
+  "frameworks": [
+    "native",
+    "openai-agents",
+    "strands"
+  ],
+  "limits": {
+    "usd": 10,
+    "requests": 300
+  },
+  "stages": [
+    "pilot",
+    "negatives",
+    "composition"
+  ],
+  "scope": "12 combinations; JSON generation; Agent Graphs with two real actors; conditional System; two Environment episodes; lineage-dependent Tools; duplicate-sensitive Memory; two independent Eval cases; strict schemas; negative controls and serializable evidence",
+  "expected_inference_requests_if_two_turn_tools": 252,
+  "metadata_requests_already_made": 5,
+  "pricing_sources": [
+    "https://developers.openai.com/api/docs/models/gpt-4.1-mini",
+    "https://aws.amazon.com/bedrock/pricing/",
+    "https://ollama.com/pricing"
+  ],
+  "pricing_note": "OpenAI official standard rates. Bedrock and Ollama cloud reserve a conservative USD1 input/USD4 output per million, above consulted published model prices. Every UTF8 request byte plus framing is reserved as input tokens; full max output plus 25 percent margin; no refunds. Not an invoice.",
+  "notes": [
+    "Ollama cloud -cloud suffix resolves to the same gemma4:31b catalog slug; no model substitution.",
+    "Local GPU use is unproven until api/ps records model VRAM.",
+    "Eval clones the outside Memory snapshot for each case; it does not erase history. EVAL-001 is new to outside Memory.",
+    "No publication; no SDK modifications."
+  ]
+}

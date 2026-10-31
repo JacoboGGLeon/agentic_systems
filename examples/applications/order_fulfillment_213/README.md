@@ -1,21 +1,9 @@
-# Pedidos con la API única 2.1.3
+# Pedidos con siete Agents · 2.1.4
 
-Seven Agents and Skills coordinate validation, parallel checks and explicit business decisions through the single installed SDK API.
+Validación, precio/inventario en paralelo, política y decisiones con siete casos verificables.
 
-```python
-from examples.order_fulfillment.example import run
+Consulta [la implementación mantenida](../../order_fulfillment/README.md). Esta carpeta es una referencia de navegación, no una segunda API ni una ejecución independiente.
 
-result = run()
-result
-```
+[Estado real y límites](../../../docs/LEARNING_VALIDATION_214.md). La evidencia 2.1.3 es histórica.
 
-Order JSON → validate → parallel price/stock → policy → approve/review/reject; Environment and Eval reuse the unit.
-
-Código:
-- [Application](../../../examples/order_fulfillment/README.md)
-- [Single declaration](../../../examples/order_fulfillment/system.py)
-
-Validación: **Offline ejecutado**. Canonical root implementation. Final wheel hash and measured offline scope are in implementation evidence; offline; el alcance live se informa por separado.
-
-- [Measured offline report](../../../revisions/2.1.3/closeout-evidence/REPORT.md)
-- [Exact artifact and evidence hashes](../../../revisions/2.1.3/implementation-evidence/manifest.json)
+[Validación histórica dev5 de Pydantic y human_results](../../../revisions/2.1.4/contracts-dev5/REPORT.md). Las revisiones previas se conservan como evidencia histórica.

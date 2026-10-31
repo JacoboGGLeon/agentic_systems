@@ -1,14 +1,9 @@
-# Studio
+# Studio · 2.1.4
 
 Conversar, conservar contexto y usar una calculadora con un proveedor y framework explícitos.
 
-Conversación de tres turnos → contexto acotado, Tool y actor → texto, evidencia y RunResult. Python es un mock visible.
+Consulta [la implementación mantenida](../../agentic_systems_studio/README.md). Esta carpeta es una referencia de navegación, no una segunda API ni una ejecución independiente.
 
-Código:
-- [Abrir Studio](../../../examples/agentic_systems_studio/README.md)
-- [Aplicación](../../../examples/agentic_systems_studio/src/agentic_systems_studio/conversation.py)
+[Estado real y límites](../../../docs/LEARNING_VALIDATION_214.md). La evidencia 2.1.3 es histórica.
 
-Validación: **Live: escenario probado**. Backend: 16 combinaciones, tres turnos cada una. Las pruebas de widgets y sus límites se detallan en el informe; no implica cualquier consulta o entorno.
-
-- [Validación actual y UI](../../../docs/LEARNING_VALIDATION_213.md)
-- [Publicación original](../../../revisions/2.1.3/closeout-evidence/REPORT.md)
+[Validación histórica dev5 de Pydantic y human_results](../../../revisions/2.1.4/contracts-dev5/REPORT.md). Las revisiones previas se conservan como evidencia histórica.

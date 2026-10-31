@@ -56,6 +56,7 @@ class BedrockRuntime(
         max_tokens_default: int = 800,
         temperature_default: float = 0.0,
         logger_name: str = "agentic_systems",
+        session=None,
     ) -> None:
         self.model_id = model_id
         self.max_tokens_default = max_tokens_default
@@ -67,10 +68,10 @@ class BedrockRuntime(
                 level=logging.INFO, format="%(levelname)s - %(message)s"
             )
 
-        self.session = boto3.Session(region_name=region_name)
+        self.session = session if session is not None else boto3.Session(region_name=region_name)
         bedrock_api_key = (os.getenv("AWS_BEARER_TOKEN_BEDROCK") or "").strip()
         self.auth_mode = (
-            "bedrock-api-key" if bedrock_api_key else "aws-credential-chain"
+            "bedrock-api-key" if session is None and bedrock_api_key else "aws-credential-chain"
         )
         self.streaming = _bedrock_streaming_from_environment()
         self.region_name = (
@@ -80,12 +81,17 @@ class BedrockRuntime(
             or DEFAULT_AWS_REGION
         )
 
-        client_kwargs: dict[str, object] = {"region_name": self.region_name}
+        # A first strict schema compilation can take about 90 seconds. Keep the
+        # transport alive for it; the caller's scheduler still owns its deadline.
+        client_kwargs: dict[str, object] = {
+            "region_name": self.region_name,
+            "config": Config(read_timeout=120),
+        }
         if self.auth_mode == "aws-credential-chain":
             # Botocore treats an existing but empty AWS_BEARER_TOKEN_BEDROCK as
             # a bearer-token signal. Agentic Systems defines an empty .env value
             # as IAM mode, so force SigV4 without mutating canonical config.
-            client_kwargs["config"] = Config(signature_version="v4")
+            client_kwargs["config"] = Config(signature_version="v4", read_timeout=120)
 
         self.runtime = self.session.client("bedrock-runtime", **client_kwargs)
         self.bedrock = self.session.client("bedrock", **client_kwargs)

@@ -1,3 +1,5 @@
+> **Histórico: no es la guía de la API 2.1.4.dev3.** Conserva propuestas/resultados de su versión original. Para implementar, usa [la API vigente](API_214.md).
+
 # Inventario exhaustivo de notebooks 2.1.3
 
 Se encontraron **50 notebooks: 21 vigentes y 29 históricos/generados**. Se incluyen las copias históricas, sin contarlas como ejemplos adicionales vigentes.

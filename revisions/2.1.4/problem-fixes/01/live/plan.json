@@ -1,0 +1,68 @@
+{
+  "version": "2.1.4.dev8",
+  "created_at": "2026-10-30T04:33:33.266782+00:00",
+  "wheel_sha256": "3fe02c467f5dd71855dfbdce95029393b893c773211bf6307700cb9e243238dd",
+  "challenge_sha256": "aa40518b3e36b6f2ec33ae1865d335830dcf4ed56d30e0231d6c6d6249c55680",
+  "worker_sha256": "0731ae2f1100b16f006b9efaaa57039eaabf6165703454a9f73e2633458512dc",
+  "routes": {
+    "openai-runtime": {
+      "model": "gpt-4.1-mini",
+      "endpoint": "https://api.openai.com/v1",
+      "key_env": "OPENAI_API_KEY",
+      "input_usd_per_million": 0.4,
+      "output_usd_per_million": 1.6
+    },
+    "bedrock-runtime": {
+      "model": "qwen.qwen3-32b-v1:0",
+      "endpoint": "https://bedrock-runtime.us-east-2.amazonaws.com",
+      "region": "us-east-2",
+      "key_env": "AWS_BEARER_TOKEN_BEDROCK",
+      "input_usd_per_million": 1,
+      "output_usd_per_million": 4
+    },
+    "ollama-local": {
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "endpoint": "http://127.0.0.1:11434/v1",
+      "input_usd_per_million": 0,
+      "output_usd_per_million": 0
+    },
+    "ollama-cloud": {
+      "model": "gemma4:31b",
+      "configured_model": "gemma4:31b-cloud",
+      "endpoint": "https://ollama.com/v1",
+      "key_env": "OLLAMA_API_KEY",
+      "input_usd_per_million": 1,
+      "output_usd_per_million": 4
+    }
+  },
+  "frameworks": [
+    "native",
+    "openai-agents",
+    "strands"
+  ],
+  "limits": {
+    "usd": 10,
+    "requests": 350
+  },
+  "stages": [
+    "pilot",
+    "negatives",
+    "composition"
+  ],
+  "scope": "Corrected artifact: four routes by three actors; Bedrock required, other routes auto; additional exact-null, mixed actors and Studio regressions",
+  "expected_inference_requests_if_two_turn_tools": 252,
+  "metadata_requests_already_made": 0,
+  "pricing_sources": [
+    "https://developers.openai.com/api/docs/models/gpt-4.1-mini",
+    "https://aws.amazon.com/bedrock/pricing/",
+    "https://ollama.com/pricing"
+  ],
+  "pricing_note": "USD reservation is conservative allowance: OpenAI .4/1.6; Bedrock and Ollama cloud 1/4 per million. Official pricing checked; no cached discounts, 25% overhead, input bytes + framing. Not invoice.",
+  "notes": [
+    "Ollama cloud -cloud suffix resolves to the same gemma4:31b catalog slug; no model substitution.",
+    "Local GPU use is unproven until api/ps records model VRAM.",
+    "Eval clones the outside Memory snapshot for each case; it does not erase history. EVAL-001 is new to outside Memory.",
+    "No publication; no SDK modifications."
+  ],
+  "authorization": "User: Autorizo USD 10 y 350 solicitudes; new separate campaign"
+}

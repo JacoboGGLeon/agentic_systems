@@ -1,32 +1,14 @@
-# Evaluar sin repetir
+# Evaluar sin repetir · 2.1.4
 
 Restaurar RunResult y evaluar evidencia guardada.
 
-```python
-from examples.patterns.saved_execution_eval.example import run
+La composición y las aserciones están visibles en [el código](example.py).
+Lee las declaraciones de Tools, Agents y Graph antes de ejecutar el ejemplo.
 
-result = run()
-result
-```
+Input → proceso → output: Suma 2 + 3 → serialización → Eval acepta total 5 sin volver a ejecutar el cálculo.
 
-Suma 2 + 3 → serialización → Eval acepta total 5 sin volver a ejecutar el cálculo.
+[Declaración](example.py) · [Evidencia dev8](../../../revisions/2.1.4/grammar-dev8/closure/examples/examples--patterns--saved_execution_eval--example.py.json)
 
-Código:
-- [Current implementation](../../../examples/patterns/saved_execution_eval/example.py)
+Perfil actual: **offline-passed**. El catálogo [de validación](../../../docs/LEARNING_VALIDATION_214.md) separa configuración, Python, servicios locales y pruebas de modelos. La evidencia 2.1.3 conservada es histórica y no certifica estos bytes.
 
-Validación: **Offline ejecutado**. Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.
-
-- [Nueva ejecución contra el wheel publicado](../../../revisions/2.1.3/learning-evidence-elevated/example-results/patterns/saved_execution_eval/current.json)
-- [RunResult y lineage](../../../revisions/2.1.3/learning-evidence-elevated/example-results/patterns/saved_execution_eval/runresults.json)
-
-<details>
-<summary>Evidencia del experimento anterior</summary>
-
-Estado anterior: mixed. One OpenAI/openai-agents episode: 7/7 original verdicts accepted and 7/7 negatives rejected; one explanation invented an increment. Later claim-based review retained irrelevant citations for six nonfactual fragments. Neither result certifies every explanation or the full matrix.
-
-La adaptación actual tiene pruebas propias. La evidencia anterior conserva su versión y no certifica estos bytes.
-
-- [Original semantic pilot](../../../docs/long-evals-v1.md)
-- [Later claim-based evaluation](../../../docs/claim-acceptance-v1-results.md)
-
-</details>
+[Validación histórica dev5 de Pydantic y human_results](../../../revisions/2.1.4/contracts-dev5/REPORT.md). Las revisiones previas se conservan como evidencia histórica.

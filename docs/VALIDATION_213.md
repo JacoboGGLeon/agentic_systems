@@ -1,3 +1,5 @@
+> **Histórico: no es la guía de la API 2.1.4.dev3.** Conserva propuestas/resultados de su versión original. Para implementar, usa [la API vigente](API_214.md).
+
 # Validación de desarrollo 2.1.3
 
 Para aprender a usar el SDK, abre [tutorials](../tutorials/README.md) o

@@ -1,0 +1,563 @@
+{
+  "schema_version": "agentic_systems.campaign-214-budget.v1",
+  "limits": {
+    "usd": 2,
+    "requests": 70
+  },
+  "routes": {
+    "openai-runtime": {
+      "model": "gpt-4.1-mini",
+      "endpoint": "https://api.openai.com/v1",
+      "key_env": "OPENAI_API_KEY",
+      "input_usd_per_million": 0.4,
+      "output_usd_per_million": 1.6
+    },
+    "bedrock-runtime": {
+      "model": "qwen.qwen3-32b-v1:0",
+      "endpoint": "https://bedrock-runtime.us-east-2.amazonaws.com",
+      "region": "us-east-2",
+      "key_env": "AWS_BEARER_TOKEN_BEDROCK",
+      "input_usd_per_million": 1,
+      "output_usd_per_million": 4
+    },
+    "ollama-local": {
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "endpoint": "http://127.0.0.1:11434/v1",
+      "input_usd_per_million": 0,
+      "output_usd_per_million": 0
+    },
+    "ollama-cloud": {
+      "model": "gemma4:31b",
+      "configured_model": "gemma4:31b-cloud",
+      "endpoint": "https://ollama.com/v1",
+      "key_env": "OLLAMA_API_KEY",
+      "input_usd_per_million": 1,
+      "output_usd_per_million": 4
+    }
+  },
+  "attempts": [
+    {
+      "attempt": 1,
+      "phase": "ollama-connection-fix/pilots",
+      "provider": "ollama-local",
+      "request_bytes": 444,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-31T06:41:46.382215+00:00"
+    },
+    {
+      "attempt": 2,
+      "phase": "ollama-connection-fix/pilots",
+      "provider": "ollama-cloud",
+      "request_bytes": 425,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008212",
+      "created_at": "2026-10-31T06:41:49.824512+00:00"
+    },
+    {
+      "attempt": 3,
+      "phase": "ollama-connection-fix/sync",
+      "provider": "ollama-local",
+      "request_bytes": 819,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-31T06:41:55.975053+00:00"
+    },
+    {
+      "attempt": 4,
+      "phase": "ollama-connection-fix/sync",
+      "provider": "ollama-local",
+      "request_bytes": 1062,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-31T06:41:57.192565+00:00"
+    },
+    {
+      "attempt": 5,
+      "phase": "ollama-connection-fix/sync",
+      "provider": "ollama-cloud",
+      "request_bytes": 1045,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008987",
+      "created_at": "2026-10-31T06:41:58.113312+00:00"
+    },
+    {
+      "attempt": 6,
+      "phase": "ollama-connection-fix/sync",
+      "provider": "ollama-cloud",
+      "request_bytes": 1250,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.009243",
+      "created_at": "2026-10-31T06:41:58.519302+00:00"
+    },
+    {
+      "attempt": 7,
+      "phase": "ollama-connection-fix/sync",
+      "provider": "ollama-local",
+      "request_bytes": 820,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-31T06:41:59.301774+00:00"
+    },
+    {
+      "attempt": 8,
+      "phase": "ollama-connection-fix/sync",
+      "provider": "ollama-local",
+      "request_bytes": 1066,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-31T06:42:00.121525+00:00"
+    },
+    {
+      "attempt": 9,
+      "phase": "ollama-connection-fix/sync",
+      "provider": "ollama-cloud",
+      "request_bytes": 1047,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008989",
+      "created_at": "2026-10-31T06:42:01.064837+00:00"
+    },
+    {
+      "attempt": 10,
+      "phase": "ollama-connection-fix/sync",
+      "provider": "ollama-cloud",
+      "request_bytes": 1255,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.009249",
+      "created_at": "2026-10-31T06:42:01.591374+00:00"
+    },
+    {
+      "attempt": 11,
+      "phase": "ollama-connection-fix/async",
+      "provider": "ollama-local",
+      "request_bytes": 819,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-31T06:42:09.123366+00:00"
+    },
+    {
+      "attempt": 12,
+      "phase": "ollama-connection-fix/async",
+      "provider": "ollama-local",
+      "request_bytes": 1062,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-31T06:42:18.714885+00:00"
+    },
+    {
+      "attempt": 13,
+      "phase": "ollama-connection-fix/async",
+      "provider": "ollama-cloud",
+      "request_bytes": 1045,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008987",
+      "created_at": "2026-10-31T06:42:19.423013+00:00"
+    },
+    {
+      "attempt": 14,
+      "phase": "ollama-connection-fix/async",
+      "provider": "ollama-cloud",
+      "request_bytes": 1250,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.009243",
+      "created_at": "2026-10-31T06:42:19.990049+00:00"
+    },
+    {
+      "attempt": 15,
+      "phase": "ollama-connection-fix/async",
+      "provider": "ollama-local",
+      "request_bytes": 820,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-31T06:42:24.177294+00:00"
+    },
+    {
+      "attempt": 16,
+      "phase": "ollama-connection-fix/async",
+      "provider": "ollama-local",
+      "request_bytes": 1066,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-31T06:42:25.266335+00:00"
+    },
+    {
+      "attempt": 17,
+      "phase": "ollama-connection-fix/async",
+      "provider": "ollama-cloud",
+      "request_bytes": 1047,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.008989",
+      "created_at": "2026-10-31T06:42:26.350677+00:00"
+    },
+    {
+      "attempt": 18,
+      "phase": "ollama-connection-fix/async",
+      "provider": "ollama-cloud",
+      "request_bytes": 1255,
+      "max_output_tokens": 512,
+      "reserved_usd": "0.009249",
+      "created_at": "2026-10-31T06:42:26.829151+00:00"
+    },
+    {
+      "attempt": 19,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "openai-runtime",
+      "request_bytes": 1603,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004898",
+      "created_at": "2026-10-31T06:42:51.263129+00:00"
+    },
+    {
+      "attempt": 20,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "openai-runtime",
+      "request_bytes": 1882,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.005037",
+      "created_at": "2026-10-31T06:42:52.437132+00:00"
+    },
+    {
+      "attempt": 21,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1992,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012730",
+      "created_at": "2026-10-31T06:42:54.405293+00:00"
+    },
+    {
+      "attempt": 22,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2390,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.013228",
+      "created_at": "2026-10-31T06:42:55.457682+00:00"
+    },
+    {
+      "attempt": 23,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "ollama-local",
+      "request_bytes": 2093,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-31T06:42:56.140506+00:00"
+    },
+    {
+      "attempt": 24,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "ollama-local",
+      "request_bytes": 2290,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-31T06:42:58.805282+00:00"
+    },
+    {
+      "attempt": 25,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "ollama-cloud",
+      "request_bytes": 2300,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.013115",
+      "created_at": "2026-10-31T06:43:02.291761+00:00"
+    },
+    {
+      "attempt": 26,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "ollama-cloud",
+      "request_bytes": 2064,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012820",
+      "created_at": "2026-10-31T06:43:02.749551+00:00"
+    },
+    {
+      "attempt": 27,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "openai-runtime",
+      "request_bytes": 4068,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.006130",
+      "created_at": "2026-10-31T06:43:03.968838+00:00"
+    },
+    {
+      "attempt": 28,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "openai-runtime",
+      "request_bytes": 4346,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.006269",
+      "created_at": "2026-10-31T06:43:04.877540+00:00"
+    },
+    {
+      "attempt": 29,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "bedrock-runtime",
+      "request_bytes": 4455,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.015809",
+      "created_at": "2026-10-31T06:43:06.099915+00:00"
+    },
+    {
+      "attempt": 30,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "bedrock-runtime",
+      "request_bytes": 4852,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.016305",
+      "created_at": "2026-10-31T06:43:06.882944+00:00"
+    },
+    {
+      "attempt": 31,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "ollama-local",
+      "request_bytes": 4557,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-31T06:43:07.578909+00:00"
+    },
+    {
+      "attempt": 32,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "ollama-local",
+      "request_bytes": 4754,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-31T06:43:11.077061+00:00"
+    },
+    {
+      "attempt": 33,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "ollama-cloud",
+      "request_bytes": 4764,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.016195",
+      "created_at": "2026-10-31T06:43:13.174142+00:00"
+    },
+    {
+      "attempt": 34,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "ollama-cloud",
+      "request_bytes": 4528,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.015900",
+      "created_at": "2026-10-31T06:43:13.782553+00:00"
+    },
+    {
+      "attempt": 35,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "openai-runtime",
+      "request_bytes": 6934,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.007563",
+      "created_at": "2026-10-31T06:43:14.867693+00:00"
+    },
+    {
+      "attempt": 36,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "openai-runtime",
+      "request_bytes": 7212,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.007702",
+      "created_at": "2026-10-31T06:43:15.846683+00:00"
+    },
+    {
+      "attempt": 37,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "bedrock-runtime",
+      "request_bytes": 7321,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.019392",
+      "created_at": "2026-10-31T06:43:16.655871+00:00"
+    },
+    {
+      "attempt": 38,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "bedrock-runtime",
+      "request_bytes": 7727,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.019899",
+      "created_at": "2026-10-31T06:43:17.574368+00:00"
+    },
+    {
+      "attempt": 39,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "ollama-local",
+      "request_bytes": 7441,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-31T06:43:18.376149+00:00"
+    },
+    {
+      "attempt": 40,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "ollama-local",
+      "request_bytes": 7665,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-31T06:43:22.500942+00:00"
+    },
+    {
+      "attempt": 41,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "ollama-cloud",
+      "request_bytes": 7657,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.019812",
+      "created_at": "2026-10-31T06:43:24.590310+00:00"
+    },
+    {
+      "attempt": 42,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "ollama-cloud",
+      "request_bytes": 7439,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.019539",
+      "created_at": "2026-10-31T06:43:25.155205+00:00"
+    },
+    {
+      "attempt": 43,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "openai-runtime",
+      "request_bytes": 6196,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.007194",
+      "created_at": "2026-10-31T06:43:26.425548+00:00"
+    },
+    {
+      "attempt": 44,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "openai-runtime",
+      "request_bytes": 6477,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.007335",
+      "created_at": "2026-10-31T06:43:27.612158+00:00"
+    },
+    {
+      "attempt": 45,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "bedrock-runtime",
+      "request_bytes": 6583,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018469",
+      "created_at": "2026-10-31T06:43:28.760636+00:00"
+    },
+    {
+      "attempt": 46,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "bedrock-runtime",
+      "request_bytes": 6982,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018968",
+      "created_at": "2026-10-31T06:43:29.838155+00:00"
+    },
+    {
+      "attempt": 47,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "ollama-local",
+      "request_bytes": 6686,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-31T06:43:30.643327+00:00"
+    },
+    {
+      "attempt": 48,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "ollama-local",
+      "request_bytes": 6886,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-31T06:43:35.338085+00:00"
+    },
+    {
+      "attempt": 49,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "ollama-cloud",
+      "request_bytes": 6894,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018858",
+      "created_at": "2026-10-31T06:43:37.743287+00:00"
+    },
+    {
+      "attempt": 50,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "ollama-cloud",
+      "request_bytes": 6660,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018565",
+      "created_at": "2026-10-31T06:43:38.468695+00:00"
+    },
+    {
+      "attempt": 51,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "openai-runtime",
+      "request_bytes": 6322,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.007257",
+      "created_at": "2026-10-31T06:43:39.373783+00:00"
+    },
+    {
+      "attempt": 52,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "openai-runtime",
+      "request_bytes": 6603,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.007398",
+      "created_at": "2026-10-31T06:43:39.951049+00:00"
+    },
+    {
+      "attempt": 53,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "bedrock-runtime",
+      "request_bytes": 6709,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018627",
+      "created_at": "2026-10-31T06:43:40.757013+00:00"
+    },
+    {
+      "attempt": 54,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "bedrock-runtime",
+      "request_bytes": 7108,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.019125",
+      "created_at": "2026-10-31T06:43:41.740167+00:00"
+    },
+    {
+      "attempt": 55,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "ollama-local",
+      "request_bytes": 6812,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-31T06:43:42.700580+00:00"
+    },
+    {
+      "attempt": 56,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "ollama-local",
+      "request_bytes": 7012,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-31T06:43:45.397031+00:00"
+    },
+    {
+      "attempt": 57,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "ollama-cloud",
+      "request_bytes": 7020,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.019015",
+      "created_at": "2026-10-31T06:43:47.433732+00:00"
+    },
+    {
+      "attempt": 58,
+      "phase": "ollama-connection-fix/notebook",
+      "provider": "ollama-cloud",
+      "request_bytes": 6786,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018723",
+      "created_at": "2026-10-31T06:43:47.953403+00:00"
+    }
+  ],
+  "authorization": "User: autorizo USD 2 y 70 solicitudes para repetir online local/native y cloud/native en sync/async y el notebook financiero original; conserva todos los intentos y actualiza la evidencia"
+}

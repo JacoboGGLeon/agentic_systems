@@ -156,7 +156,7 @@ class BedrockRunResult(BaseModel):
             if raw.get("stop_reason")
         ]
 
-        run_ok = bool(self.final_text) and len(unresolved_failed_tools) == 0
+        run_ok = bool(self.final_text) and len(unresolved_failed_tools) == 0 and not any(raw.get("error") for raw in self.raw_responses)
 
         return {
             "trace_schema_version": "ada.compact_trace.v3",

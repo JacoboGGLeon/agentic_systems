@@ -62,10 +62,10 @@ def verify(backend="native"):
     accepted = [case for case in cases if case["expected"]["ok"]]
     episode = toolkit.Environment("orders", unit, tuple(c["input"] for c in accepted)).run()
     assert episode.ok and episode.data["outputs"] == [c["expected"]["data"] for c in accepted]
-    assert episode.data["summary"]["memory"] == {"processed": len(accepted)}
+    assert episode.data["summary"]["state"] == {"processed": len(accepted)}
     assert len(episode.data["history"]) == len(accepted)
     for transition, child in zip(episode.data["history"], episode.children):
-        assert transition["graph_state"]["run"]["execution_id"] == child.execution_id
+        assert transition["execution_id"] == child.execution_id
     check_tree(episode)
 
     judged = toolkit.Eval("order_contract", unit, tuple(accepted)).run()
@@ -78,7 +78,7 @@ def verify(backend="native"):
     check_tree(negative)
     attempts = blocked_attempts() - blocked_before
     assert attempts == 0
-    return {"backend": backend, "passed": True, "target_version": "2.1.3",
+    return {"backend": backend, "passed": True, "target_version": toolkit.__version__,
             "sdk_version": toolkit.__version__, "inference_requests": 0,
             "blocked_network_or_subprocess_attempts": attempts,
             "cases_passed": len(rows), "cases": rows, "topology": prepared.inspect(),

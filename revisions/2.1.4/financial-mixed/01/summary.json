@@ -1,0 +1,119 @@
+{
+  "profiles": {
+    "python": {
+      "profile": "python",
+      "passed": true,
+      "error": null,
+      "wheel_sha256": "3fe02c467f5dd71855dfbdce95029393b893c773211bf6307700cb9e243238dd",
+      "source_sha256": "2815c0ccfd3a85eeb82b7a69185d0c422fb3ca6e0ec7b984bf67ee5e019e0ac4",
+      "requests_before": 304,
+      "requests_after": 304,
+      "requests": 0,
+      "reserved_usd_total": "2.843548",
+      "reserved_usd_this_run": "0",
+      "path": "revisions\\2.1.4\\financial-mixed\\01\\20261031T061618-python\\result.json"
+    },
+    "mixed": {
+      "profile": "mixed",
+      "passed": true,
+      "error": null,
+      "wheel_sha256": "3fe02c467f5dd71855dfbdce95029393b893c773211bf6307700cb9e243238dd",
+      "source_sha256": "2815c0ccfd3a85eeb82b7a69185d0c422fb3ca6e0ec7b984bf67ee5e019e0ac4",
+      "requests_before": 304,
+      "requests_after": 344,
+      "requests": 40,
+      "reserved_usd_total": "3.255425",
+      "reserved_usd_this_run": "0.411877",
+      "path": "revisions\\2.1.4\\financial-mixed\\01\\20261031T061627-mixed\\result.json"
+    }
+  },
+  "business_results_equal": true,
+  "business": {
+    "single": {
+      "payment_id": "SINGLE",
+      "amount": 15000,
+      "fee": 150,
+      "decision": "review",
+      "status": "pending_review"
+    },
+    "episodes": [
+      {
+        "payment_id": "PAY-001",
+        "amount": 5000,
+        "fee": 50,
+        "decision": "approve",
+        "status": "approved"
+      },
+      {
+        "payment_id": "PAY-001",
+        "amount": 5000,
+        "fee": 50,
+        "decision": "review_duplicate",
+        "status": "pending_review"
+      }
+    ],
+    "environment_state": {
+      "processed": 2,
+      "approved": 1,
+      "reward": 1
+    },
+    "eval": {
+      "total": 2,
+      "passed": 2,
+      "failed": 0
+    }
+  },
+  "contexts_per_profile": {
+    "python": 20,
+    "mixed": 20
+  },
+  "observed_runtime_model_framework": [
+    [
+      "bedrock-runtime",
+      "qwen.qwen3-32b-v1:0",
+      "strands"
+    ],
+    [
+      "bedrock-runtime",
+      "qwen.qwen3-32b-v1:0",
+      null
+    ],
+    [
+      "ollama-runtime",
+      "gemma4:31b",
+      "openai-agents"
+    ],
+    [
+      "ollama-runtime",
+      "gemma4:31b",
+      null
+    ],
+    [
+      "ollama-runtime",
+      "qwen3:4b-instruct-2507-q4_K_M",
+      "strands"
+    ],
+    [
+      "ollama-runtime",
+      "qwen3:4b-instruct-2507-q4_K_M",
+      null
+    ],
+    [
+      "openai-runtime",
+      "gpt-4.1-mini",
+      "native"
+    ],
+    [
+      "openai-runtime",
+      "gpt-4.1-mini",
+      null
+    ]
+  ],
+  "requests_this_task": 44,
+  "budget_requests_total": 344,
+  "budget_reserved_usd_total": "3.255425",
+  "remaining_requests": 6,
+  "secret_scan_files": 25,
+  "sdk_modified": false,
+  "published": false
+}

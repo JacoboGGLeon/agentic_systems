@@ -1,0 +1,48 @@
+{
+  "installation": {
+    "version": "2.1.4.dev8",
+    "site": "C:\\Users\\jacob\\AppData\\Local\\Temp\\agentic-ollama-fix-b16ut7_c\\site-packages",
+    "wheel": "revisions/2.1.4/ollama-connection-fix/01/build01/dist/agentic_systems-2.1.4.dev8-py3-none-any.whl",
+    "wheel_sha256": "2fd51f0ade843d9d8d4ef19bfbfd08d5f2d116947a5fc0b2cbed5c4f8dff6b60"
+  },
+  "limits": {
+    "usd": 2,
+    "requests": 70
+  },
+  "routes": {
+    "openai-runtime": {
+      "model": "gpt-4.1-mini",
+      "endpoint": "https://api.openai.com/v1",
+      "key_env": "OPENAI_API_KEY",
+      "input_usd_per_million": 0.4,
+      "output_usd_per_million": 1.6
+    },
+    "bedrock-runtime": {
+      "model": "qwen.qwen3-32b-v1:0",
+      "endpoint": "https://bedrock-runtime.us-east-2.amazonaws.com",
+      "region": "us-east-2",
+      "key_env": "AWS_BEARER_TOKEN_BEDROCK",
+      "input_usd_per_million": 1,
+      "output_usd_per_million": 4
+    },
+    "ollama-local": {
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "endpoint": "http://127.0.0.1:11434/v1",
+      "input_usd_per_million": 0,
+      "output_usd_per_million": 0
+    },
+    "ollama-cloud": {
+      "model": "gemma4:31b",
+      "configured_model": "gemma4:31b-cloud",
+      "endpoint": "https://ollama.com/v1",
+      "key_env": "OLLAMA_API_KEY",
+      "input_usd_per_million": 1,
+      "output_usd_per_million": 4
+    }
+  },
+  "authorization": "User: autorizo USD 2 y 70 solicitudes para repetir online local/native y cloud/native en sync/async y el notebook financiero original; conserva todos los intentos y actualiza la evidencia",
+  "notebook_code_sha256": "dd641c06046ebae0c6b9fbd821f8248cbffbf791171e7e9dc64cdedcfef6766e",
+  "scope": "2 pilots, 2 sync runs and 2 public arun runs of local/native + cloud/native System; original financial notebook with local/native",
+  "nominal_requests": 58,
+  "published": false
+}

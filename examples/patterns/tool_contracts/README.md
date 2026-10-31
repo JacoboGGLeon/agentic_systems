@@ -1,21 +1,9 @@
-# Tool Contracts — API 2.1.3
+# Tool Contracts — API 2.1.4 · 2.1.4
 
 Pydantic input/output schemas, direct/async deterministic Tool and a controlled invalid input.
 
-```python
-from examples.tool_contracts.example import run
+Consulta [la implementación mantenida](../../tool_contracts/example.py). Esta carpeta es una referencia de navegación, no una segunda API ni una ejecución independiente.
 
-result = run()
-result
-```
+[Estado real y límites](../../../docs/LEARNING_VALIDATION_214.md). La evidencia 2.1.3 es histórica.
 
-Synthetic JSON input → canonical SDK computation/configuration → asserted output and JSON evidence.
-
-Código:
-- [Runnable example](../../../examples/tool_contracts/example.py)
-- [Walkthrough](../../../examples/tool_contracts/README.md)
-
-Validación: **Offline ejecutado**. Pydantic input/output schemas, direct/async deterministic Tool and a controlled invalid input. Final artifact binding is recorded in implementation evidence. No real inference.
-
-- [Nueva ejecución contra el wheel publicado](../../../revisions/2.1.3/learning-evidence-elevated/example-results/tool_contracts/run.json)
-- [RunResult y lineage](../../../revisions/2.1.3/learning-evidence-elevated/example-results/tool_contracts/runresults.json)
+[Validación histórica dev5 de Pydantic y human_results](../../../revisions/2.1.4/contracts-dev5/REPORT.md). Las revisiones previas se conservan como evidencia histórica.

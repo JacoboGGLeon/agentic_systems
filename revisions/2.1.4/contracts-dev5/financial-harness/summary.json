@@ -1,0 +1,131 @@
+{
+  "version": "2.1.4.dev5",
+  "build": "03",
+  "wheel_sha256": "df328e52d7a2660d7b29ce45a40c689766ce99196c02d5672930dd5663bbde34",
+  "entrypoint": "examples/applications/financial_harness/example.py",
+  "source_sha256": "0160ba614e35c4e85700ea06ed78d988751a1b90432d6a9791ae670319af66fb",
+  "runtime": "python-runtime",
+  "actor_framework": "native",
+  "orchestration": "langgraph",
+  "demonstration": {
+    "single": {
+      "reference": "SINGLE",
+      "amount_cents": 12000,
+      "decision": "approved",
+      "balance_after_cents": 88000
+    },
+    "episode_outputs": [
+      {
+        "reference": "P-001",
+        "amount_cents": 12000,
+        "decision": "approved",
+        "balance_after_cents": 88000
+      },
+      {
+        "reference": "P-002",
+        "amount_cents": 40000,
+        "decision": "review",
+        "balance_after_cents": 88000
+      },
+      {
+        "reference": "P-003",
+        "amount_cents": 90000,
+        "decision": "rejected",
+        "balance_after_cents": 88000
+      }
+    ],
+    "episode_summary": {
+      "state": {
+        "balance_cents": 88000
+      },
+      "processed": 3,
+      "terminated": true,
+      "truncated": false,
+      "reason": "records_exhausted"
+    },
+    "eval": {
+      "total": 1,
+      "passed": 1,
+      "failed": 0
+    },
+    "system_memory_entries_after_demonstration": 7
+  },
+  "controls": {
+    "boundary_passed": 5,
+    "invalid_before_tools_passed": 5
+  },
+  "grammar": {
+    "core": [
+      "tool",
+      "skill",
+      "load_skill",
+      "Action",
+      "Agent",
+      "System",
+      "Environment",
+      "Eval",
+      "Context",
+      "Memory",
+      "RunResult",
+      "Limits",
+      "runtime",
+      "framework",
+      "pause",
+      "model_artifact",
+      "model_server"
+    ],
+    "langgraph_reexports": [
+      "StateGraph",
+      "START",
+      "END",
+      "Runtime",
+      "Command",
+      "Send"
+    ],
+    "metadata": [
+      "__version__"
+    ],
+    "core_signatures": {
+      "tool": "(function=None, /, *, name=None, description=None, input_schema=None, output_schema=None, metadata=None)",
+      "skill": "(*, name, description='', tools=(), instructions='', version='0.1.0', metadata=None)",
+      "load_skill": "(path)",
+      "Action": "(name: 'str', target: 'Any', input: 'Callable' = <function identity>) -> None",
+      "Agent": "(name: 'str', graph: 'Any' = None, skills: 'tuple' = (), runtime: 'Any' = None, framework: 'Any' = None, instructions: 'str' = '', policy: 'dict | BaseModel | None' = None, *, context: 'Context | None' = None, memory: 'Memory | None' = None, contract: 'dict | None' = None) -> None",
+      "System": "(name: 'str', graph: 'Any' = None, *, context: 'Context | None' = None, memory: 'Memory | None' = None, contract: 'dict | None' = None) -> None",
+      "Environment": "(name: 'str', graph: 'Any', records: 'Any', max_steps: 'int | None' = None, state: 'Any' = None, observe: 'Callable | None' = None, update: 'Callable | None' = None, stop: 'Callable | None' = None, *, context: 'Context | None' = None, memory: 'Memory | None' = None) -> None",
+      "Eval": "(name: 'str', unit: 'Any', cases: 'tuple', checks: 'tuple' = (), judge: 'Agent | None' = None, rubric: 'dict | None' = None) -> None",
+      "Context": "(data, *, sources=())",
+      "Memory": "(*, capacity=20)",
+      "RunResult": "(text: 'str' = '', final: 'dict' = <factory>, data: 'dict' = <factory>, ok: 'bool' = True, messages: 'tuple' = (), tool_events: 'tuple' = (), raw_responses: 'tuple' = (), usage: 'dict' = <factory>, engine: 'str' = 'python-runtime', model: 'str' = '', mode: 'str' = 'default', trace_schema_version: 'str' = 'agentic_systems.trace.v1', validation: 'dict | None' = None, errors: 'tuple' = (), meta: 'dict' = <factory>, execution_id: 'str' = <factory>, parent_execution_id: 'str | None' = None, children: 'tuple' = (), status: 'str' = '', interrupts: 'tuple' = (), continuation: 'dict | None' = None) -> None",
+      "Limits": "(*, max_actions: Annotated[int, Ge(ge=1), Strict(strict=True)] = 100, timeout_s: Annotated[Annotated[float, Strict(strict=True)] | Annotated[int, Strict(strict=True)], Gt(gt=0)] = 10) -> None",
+      "runtime": "(*, provider, model=None, region=None, endpoint=None, api_key=None, timeout_s=60.0, max_retries=0, max_tool_calls=5, max_turns=6, max_tokens=None, backoff_s=0.0, max_concurrency=1)",
+      "framework": "(name, *, agent_kwargs=None, run_kwargs=None)",
+      "pause": "(value)",
+      "model_artifact": "(model, *, base_model=None, adapter_path=None, tokenizer=None, revision=None, quantization=None, metadata=None)",
+      "model_server": "(artifact, *, profile='fast', served_model_name=None, host='127.0.0.1', port=8000, tool_call_parser='hermes', reasoning_parser=None, enable_auto_tool_choice=True, api_key='vllm', startup_timeout_s=600.0, log_path='vllm-server.log', binary='vllm', extra_args=(), gpu_memory_utilization=None, max_model_len=None, max_num_seqs=None)"
+    },
+    "used_core": [
+      "Action",
+      "Agent",
+      "Context",
+      "Environment",
+      "Eval",
+      "Limits",
+      "Memory",
+      "RunResult",
+      "System",
+      "runtime",
+      "skill",
+      "tool"
+    ],
+    "used_langgraph": [
+      "END",
+      "START",
+      "StateGraph"
+    ]
+  },
+  "inference_requests": 0,
+  "offline_guard_attempts": 0,
+  "campaign_ledger_unchanged": "6ce1ae54e97e11835598312e56ca403ca7b267478a99ce1bc5c93a0bdbd5b9e6",
+  "financial_transactions_executed": false
+}

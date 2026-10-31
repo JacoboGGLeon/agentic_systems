@@ -2,33 +2,66 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-import math
+import os
 from types import MappingProxyType
+from typing import Annotated, Any, Literal, Mapping
+from pydantic import ConfigDict, Field, PrivateAttr, SecretStr, StrictFloat, StrictInt, StrictStr, field_serializer, field_validator, model_validator
+from ._engine.schemas.execution import SchedulerSettings
+from ._engine.schemas.base import ContractModel
 
 from ._results import _json, _redact
 
 _PROVIDERS = {"python-runtime", "openai-runtime", "ollama-runtime", "bedrock-runtime", "vllm-runtime"}
-_FRAMEWORKS = {"native", "langgraph", "openai-agents", "strands"}
+_FRAMEWORKS = {"native", "openai-agents", "strands"}
 
 
-@dataclass(frozen=True)
-class _Runtime:
-    provider: str
-    model: str | None
-    region: str | None
-    endpoint: str | None
-    _api_key: str | None = field(repr=False)
-    timeout_s: float
-    max_retries: int
-    max_tool_calls: int
-    max_turns: int
-    max_tokens: int | None
-    backoff_s: float
-    max_concurrency: int
+_Text = Annotated[StrictStr, Field(min_length=1)]
+
+
+class _Runtime(SchedulerSettings):
+    _session_pid: int = PrivateAttr(default_factory=os.getpid)
+    provider: Literal["python-runtime", "openai-runtime", "ollama-runtime", "bedrock-runtime", "vllm-runtime"]
+    model: _Text | None = None
+    region: _Text | None = None
+    endpoint: _Text | None = None
+    api_key: SecretStr | None = Field(default=None, exclude=True, repr=False)
+    session: Any = Field(default=None, exclude=True, repr=False)
+    timeout_s: StrictFloat | StrictInt = Field(default=60.0, gt=0)
+    max_turns: StrictInt = Field(default=6, ge=1)
+    max_tool_calls: StrictInt = Field(default=5, ge=0)
+    max_tokens: StrictInt | None = Field(default=None, ge=1)
+
+    @field_validator("api_key")
+    @classmethod
+    def nonempty_secret(cls, value):
+        if value is not None and not value.get_secret_value():
+            raise ValueError("api_key must be nonempty")
+        return value
+
+    @model_validator(mode="after")
+    def provider_options(self):
+        from ._session import validate_session
+        validate_session(self.session, self.provider, self.region, self.api_key, self.endpoint)
+        if self.session is not None and self.region is None:
+            object.__setattr__(self, "region", getattr(self.session, "region_name", None))
+        if self.region is not None and self.provider != "bedrock-runtime":
+            raise ValueError("region belongs to Bedrock")
+        if self.provider == "python-runtime":
+            if any(value is not None for value in (self.region, self.endpoint, self.api_key, self.max_tokens)):
+                raise ValueError("Python Runtime does not consume model connection/generation options")
+            if self.model is None:
+                object.__setattr__(self, "model", "python-runtime")
+        return self
+
+    @property
+    def _api_key(self):
+        return None if self.api_key is None else self.api_key.get_secret_value()
 
     def inspect(self):
         return {"provider": self.provider, "model": self.model, "region": self.region, "endpoint": self.endpoint,
-                "api_key_configured": self._api_key is not None, "timeout_s": self.timeout_s,
+                "api_key_configured": self._api_key is not None, "session_configured": self.session is not None,
+                "authentication_mode": "aws-session-iam" if self.session is not None else "provider-configuration",
+                "timeout_s": self.timeout_s,
                 "max_retries": self.max_retries, "max_tool_calls": self.max_tool_calls,
                 "max_turns": self.max_turns, "max_tokens": self.max_tokens,
                 "backoff_s": self.backoff_s, "max_concurrency": self.max_concurrency}
@@ -37,42 +70,64 @@ class _Runtime:
         from ._engine.core.runtime import RuntimeConfig
         from ._engine.core.scheduler import SchedulerConfig
         return RuntimeConfig(provider=self.provider, model_id=self.model, region_name=self.region,
-                             endpoint=self.endpoint, api_key=self._api_key,
-                             scheduler=SchedulerConfig(timeout_s=self.timeout_s, max_retries=self.max_retries,
-                                 max_tool_calls=self.max_tool_calls, max_turns=self.max_turns,
-                                 max_concurrency=self.max_concurrency, backoff_s=self.backoff_s))
+                             endpoint=self.endpoint, api_key=self._api_key, session=self.session,
+                             scheduler=SchedulerConfig(**{name: getattr(self, name) for name in SchedulerSettings.model_fields}))
 
 
 def runtime(*, provider, model=None, region=None, endpoint=None, api_key=None, timeout_s=60.0,
-            max_retries=0, max_tool_calls=5, max_turns=6, max_tokens=None, backoff_s=0.0, max_concurrency=1):
-    if provider not in _PROVIDERS:
-        raise ValueError("Choose an explicit provider: " + ", ".join(sorted(_PROVIDERS)))
-    for name, value, minimum in (("max_retries", max_retries, 0), ("max_tool_calls", max_tool_calls, 0),
-                                  ("max_turns", max_turns, 1), ("max_concurrency", max_concurrency, 1)):
-        if type(value) is not int or value < minimum:
-            raise ValueError(name + " is outside its supported range")
-    if max_tokens is not None and (type(max_tokens) is not int or max_tokens < 1):
-        raise ValueError("max_tokens must be positive")
-    if type(timeout_s) not in {int, float} or not math.isfinite(timeout_s) or timeout_s <= 0:
-        raise ValueError("timeout_s must be positive and finite")
-    if type(backoff_s) not in {int, float} or not math.isfinite(backoff_s) or backoff_s < 0:
-        raise ValueError("backoff_s must be nonnegative and finite")
-    for name, value in (("model", model), ("region", region), ("endpoint", endpoint), ("api_key", api_key)):
-        if value is not None and (not isinstance(value, str) or not value):
-            raise TypeError(name + " must be a nonempty string")
-    if region is not None and provider != "bedrock-runtime":
-        raise ValueError("region belongs to Bedrock")
-    if provider == "python-runtime" and any(v is not None for v in (region, endpoint, api_key, max_tokens)):
-        raise ValueError("Python Runtime does not consume model connection/generation options")
-    return _Runtime(provider, model or ("python-runtime" if provider == "python-runtime" else None), region,
-                    endpoint, api_key, timeout_s, max_retries, max_tool_calls, max_turns, max_tokens, backoff_s, max_concurrency)
+            max_retries=0, max_tool_calls=5, max_turns=6, max_tokens=None, backoff_s=0.0, max_concurrency=1, session=None):
+    """Select an actor provider and its controls; optionally borrow an AWS session.
+
+    session selects IAM explicitly, even with a bearer token in the environment.
+    Toolkit invocations sharing it are serialized; external concurrent use and
+    resource lifetime remain the caller's responsibility. No credentials resolve
+    during construction. Serialization omits both the session and API key.
+    """
+    return _Runtime(provider=provider, model=model, region=region, endpoint=endpoint, api_key=api_key,
+                    timeout_s=timeout_s, max_retries=max_retries, max_tool_calls=max_tool_calls,
+                    max_turns=max_turns, max_tokens=max_tokens, backoff_s=backoff_s, max_concurrency=max_concurrency, session=session)
 
 
-@dataclass(frozen=True)
-class _Framework:
-    name: str
-    agent_kwargs: object
-    run_kwargs: object
+class _Framework(ContractModel):
+    model_config = ConfigDict(extra="forbid", frozen=True, strict=True, arbitrary_types_allowed=True, hide_input_in_errors=True)
+    name: Literal["native", "openai-agents", "strands"]
+    agent_kwargs: Mapping[str, Any] = Field(default_factory=dict)
+    run_kwargs: Mapping[str, Any] = Field(default_factory=dict)
+
+    @field_validator("name", mode="before")
+    @classmethod
+    def graph_is_not_actor(cls, value):
+        if value == "langgraph":
+            raise ValueError("LangGraph provides orchestration; pass graph=toolkit.Graph(...), not a framework selector")
+        return value
+
+    @field_validator("agent_kwargs", "run_kwargs", mode="before")
+    @classmethod
+    def options_are_mappings(cls, value):
+        if value is None:
+            return {}
+        if not isinstance(value, Mapping):
+            raise ValueError("Framework options must be dictionaries")
+        return dict(value)
+
+    @model_validator(mode="after")
+    def boundaries(self):
+        _check_framework_options(self.name, self.agent_kwargs, self.run_kwargs)
+        object.__setattr__(self, "agent_kwargs", MappingProxyType(dict(self.agent_kwargs)))
+        object.__setattr__(self, "run_kwargs", MappingProxyType(dict(self.run_kwargs)))
+        return self
+
+    @field_serializer("agent_kwargs", "run_kwargs", when_used="json")
+    def describe_sdk_objects(self, value):
+        def describe(item):
+            if isinstance(item, Mapping):
+                return {key: describe(child) for key, child in item.items()}
+            if isinstance(item, (list, tuple)):
+                return [describe(child) for child in item]
+            if item is None or type(item) in {str, int, bool, float}:
+                return _json(item)
+            return {"python_type": type(item).__module__ + "." + type(item).__qualname__}
+        return _redact(describe(value))
 
     def inspect(self):
         return {"name": self.name, "agent_kwargs": {k: type(v).__name__ for k, v in self.agent_kwargs.items()},
@@ -84,20 +139,23 @@ class _Framework:
 
 
 def framework(name, *, agent_kwargs=None, run_kwargs=None):
-    if name not in _FRAMEWORKS:
-        raise ValueError("Choose an exact framework name: " + ", ".join(sorted(_FRAMEWORKS)))
-    if agent_kwargs is not None and not isinstance(agent_kwargs, dict) or run_kwargs is not None and not isinstance(run_kwargs, dict):
-        raise TypeError("Framework options must be dictionaries")
-    if name in {"native", "langgraph"} and (agent_kwargs or run_kwargs):
+    return _Framework(name=name, agent_kwargs={} if agent_kwargs is None else agent_kwargs,
+                      run_kwargs={} if run_kwargs is None else run_kwargs)
+
+
+def _check_framework_options(name, agent_kwargs, run_kwargs):
+    if name == "native" and (agent_kwargs or run_kwargs):
         raise ValueError("This adapter does not forward native SDK options")
     from ._engine.integrations.config import RESERVED_AGENT_KWARGS, RESERVED_RUN_KWARGS
-    owned = {"runtime", "model", "provider", "api_key", "endpoint", "timeout_s", "max_retries", "max_tokens", "max_turns", "max_tool_calls", "contract", "policy", "limits"}
+    owned = {"runtime", "model", "provider", "api_key", "endpoint", "timeout_s", "max_retries", "max_tokens", "max_turns", "max_tool_calls", "max_concurrency", "backoff_s", "contract", "policy", "limits"}
     if (set(agent_kwargs or {}) & (set(RESERVED_AGENT_KWARGS) | owned)
             or set(run_kwargs or {}) & (set(RESERVED_RUN_KWARGS) | owned)):
         raise ValueError("Framework options cannot override toolkit-owned configuration")
     def nested_conflict(value):
-        if isinstance(value, dict):
+        if isinstance(value, Mapping):
             return bool(set(value) & owned) or any(nested_conflict(v) for v in value.values())
+        if isinstance(value, (list, tuple)):
+            return any(nested_conflict(v) for v in value)
         return False
     for options in (agent_kwargs or {}, run_kwargs or {}):
         for key, value in options.items():
@@ -106,7 +164,6 @@ def framework(name, *, agent_kwargs=None, run_kwargs=None):
                 settings = {k: v for k, v in settings.items() if v is not None}
                 if nested_conflict(settings):
                     raise ValueError("Nested SDK options cannot override toolkit-owned configuration")
-    return _Framework(name, MappingProxyType(dict(agent_kwargs or {})), MappingProxyType(dict(run_kwargs or {})))
 
 
 @dataclass(frozen=True)

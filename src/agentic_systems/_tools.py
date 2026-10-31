@@ -13,7 +13,8 @@ from types import MappingProxyType
 import uuid
 import weakref
 
-from ._results import _from_engine, _json
+from ._results import _from_engine, _json, _record_child
+from ._context import Context, _active_execution
 
 
 @dataclass(frozen=True)
@@ -33,8 +34,26 @@ class _Tool:
 
     def _to_engine(self):
         from ._engine.tools.tool import Tool
+        signature = inspect.signature(self._function)
+        annotations = inspect.get_annotations(self._function, eval_str=True)
+        contextual = "context" in signature.parameters
+        business = [p for p in signature.parameters.values() if p.name != "context"]
+        if self._input_schema is not None and len(business) == 1:
+            declared = annotations.get(business[0].name, inspect.Signature.empty)
+            from typing import Any
+            if declared not in (inspect.Signature.empty, Any) and not (
+                isinstance(declared, type) and issubclass(self._input_schema, declared)
+            ):
+                raise TypeError("A single-parameter Tool with input_schema receives that Pydantic model; annotate the parameter accordingly")
+        if contextual and signature.parameters["context"].kind is not inspect.Parameter.KEYWORD_ONLY:
+            raise TypeError("Injected Tool context must be keyword-only")
+        if contextual and annotations.get("context") is not Context:
+            raise TypeError("Injected Tool context must be annotated with Context")
         @wraps(self._function)
         def execute(*args, **kwargs):
+            if contextual:
+                active = _active_execution.get()
+                kwargs["context"] = active.semantic if active is not None else Context({})
             raw = self._function(*args, **kwargs)
             source = raw.model_dump(mode="python") if hasattr(raw, "model_dump") else raw
             def finite(value):
@@ -49,15 +68,31 @@ class _Tool:
             finite(source)
             _json(raw.model_dump(mode="json") if hasattr(raw, "model_dump") else raw)
             return raw
-        execute.__annotations__ = inspect.get_annotations(self._function, eval_str=True)
+        execute.__annotations__ = {k: v for k, v in annotations.items() if k != "context"}
+        execute.__signature__ = signature.replace(parameters=[p for p in signature.parameters.values() if p.name != "context"])
         return Tool(execute, name=self.name, description=self.description,
                     input_schema=self._input_schema, output_schema=self._output_schema, metadata=dict(self.metadata))
 
     def run(self, input=None):
-        return _from_engine(self._to_engine().run(input))
+        output = _from_engine(self._to_engine().run(input))
+        return _record_child(replace(output, meta={**output.meta, "name": self.name, "kind": "tool"}))
 
     async def arun(self, input=None):
         return await asyncio.to_thread(self.run, input)
+
+    def __call__(self, state):
+        """Use a Tool directly as a LangGraph node; bind only declared inputs."""
+        state = _json(state)
+        parameters = inspect.signature(self._function).parameters
+        accepted = self._input_schema.model_fields if self._input_schema is not None else parameters
+        payload = {key: value for key, value in state.items() if key in accepted and key != "context"}
+        output = self.run(payload)
+        active = _active_execution.get()
+        if active is not None:
+            active.last_result = output
+        elif not output.ok:
+            raise RuntimeError(str(output.errors))
+        return output.data
 
 
 def tool(function=None, /, *, name=None, description=None, input_schema=None, output_schema=None, metadata=None):
@@ -121,13 +156,13 @@ def load_skill(path):
     spec = importlib.util.spec_from_file_location(package, folder / "__init__.py", submodule_search_locations=[str(folder)])
     module = importlib.util.module_from_spec(spec)
     sys.modules[package] = module
-    if (folder / "__init__.py").is_file():
-        spec.loader.exec_module(module)
-    source = importlib.util.spec_from_file_location(package + ".skill", folder / "skill.py")
-    loaded = importlib.util.module_from_spec(source)
-    sys.modules[source.name] = loaded
     success = False
     try:
+        if (folder / "__init__.py").is_file():
+            spec.loader.exec_module(module)
+        source = importlib.util.spec_from_file_location(package + ".skill", folder / "skill.py")
+        loaded = importlib.util.module_from_spec(source)
+        sys.modules[source.name] = loaded
         source.loader.exec_module(loaded)
         build = getattr(loaded, "build_skill", None)
         if not callable(build):

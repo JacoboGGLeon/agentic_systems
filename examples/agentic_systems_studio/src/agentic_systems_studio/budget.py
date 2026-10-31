@@ -5,7 +5,6 @@ Only request metadata is persisted; prompts, responses and credentials are omitt
 """
 
 from __future__ import annotations
-
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from decimal import Decimal, ROUND_UP
@@ -21,7 +20,9 @@ class BudgetExceeded(RuntimeError):
 
 
 class CampaignBudget:
-    def __init__(self, path: Path, routes: dict[str, dict], phase: str, *, usd=10, requests=300):
+    def __init__(
+        self, path: Path, routes: dict[str, dict], phase: str, *, usd=10, requests=300
+    ):
         self.path = path
         self.routes = routes
         self.phase = phase
@@ -117,16 +118,18 @@ class CampaignBudget:
                     raise ValueError("Frozen budget identity changed")
             else:
                 ledger = {
-                    "schema_version": "agentic_systems.campaign-213-budget.v1",
+                    "schema_version": "agentic_systems.campaign-214-budget.v1",
                     "limits": self.limits,
                     "routes": self.routes,
                     "attempts": [],
                 }
             rows = ledger["attempts"]
             total = sum((Decimal(str(r["reserved_usd"])) for r in rows), Decimal(0))
-            if len(rows) >= self.limits["requests"] or total + reserve > Decimal(str(self.limits["usd"])):
+            if len(rows) >= self.limits["requests"] or total + reserve > Decimal(
+                str(self.limits["usd"])
+            ):
                 raise BudgetExceeded(
-                    "Authorized 2.1.3 campaign allocation exhausted"
+                    "Authorized 2.1.4.dev3 campaign allocation exhausted"
                 )
             rows.append(
                 {
@@ -174,20 +177,28 @@ class CampaignBudget:
         httpx.AsyncClient._send_single_request = asynchronous
         URLLib3Session.send = boto
 
-
     def is_protocol(self, url):
         parsed = urlsplit(str(url))
-        return parsed.hostname in {"127.0.0.1", "localhost", "::1"} and parsed.port in self.local_protocol_ports
+        return (
+            parsed.hostname in {"127.0.0.1", "localhost", "::1"}
+            and parsed.port in self.local_protocol_ports
+        )
 
     def summary(self):
         if not self.path.exists():
             return {"attempts": 0, "reserved_usd": "0", "limits": self.limits}
         with self.locked():
             ledger = json.loads(self.path.read_text(encoding="utf-8"))
-        total = sum((Decimal(row["reserved_usd"]) for row in ledger["attempts"]), Decimal(0))
-        return {"attempts": len(ledger["attempts"]), "reserved_usd": str(total), "limits": ledger["limits"],
-                "remaining_requests": self.limits["requests"] - len(ledger["attempts"]),
-                "remaining_usd": str(Decimal(str(self.limits["usd"])) - total)}
+        total = sum(
+            (Decimal(row["reserved_usd"]) for row in ledger["attempts"]), Decimal(0)
+        )
+        return {
+            "attempts": len(ledger["attempts"]),
+            "reserved_usd": str(total),
+            "limits": ledger["limits"],
+            "remaining_requests": self.limits["requests"] - len(ledger["attempts"]),
+            "remaining_usd": str(Decimal(str(self.limits["usd"])) - total),
+        }
 
 
 _active = None
@@ -195,14 +206,16 @@ _active = None
 
 def ensure_budget():
     global _active
-    path = os.getenv("AGENTIC_213_BUDGET_FILE")
+    path = os.getenv("AGENTIC_BUDGET_FILE")
     if not path:
-        raise RuntimeError("Live inference requires the authorized 2.1.3 campaign ledger. Python works without it.")
+        raise RuntimeError(
+            "Live inference requires the authorized 2.1.4.dev3 campaign ledger. Python works without it."
+        )
     path = Path(path).resolve()
     if _active is None:
         ledger = json.loads(path.read_text(encoding="utf-8"))
-        if ledger.get("schema_version") != "agentic_systems.campaign-213-budget.v1":
-            raise ValueError("Not a 2.1.3 campaign allocation")
+        if ledger.get("schema_version") != "agentic_systems.campaign-214-budget.v1":
+            raise ValueError("Not a 2.1.4.dev3 campaign allocation")
         _active = CampaignBudget(path, ledger["routes"], "studio", **ledger["limits"])
         _active.install()
     elif _active.path.resolve() != path:

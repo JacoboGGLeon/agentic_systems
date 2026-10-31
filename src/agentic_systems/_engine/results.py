@@ -323,11 +323,13 @@ class RunResult(BaseModel):
             else dict(runtime_result)
         )
         raw_responses = raw.get("raw_responses") or []
+        dispatch_errors = [item["error"] for item in raw_responses if item.get("error")]
         usage = _usage_totals(raw_responses)
         result = cls(
             text=str(raw.get("final_text") or raw.get("text") or ""),
             data=data or {},
-            ok=bool(raw.get("final_text") or raw.get("text")),
+            ok=bool(raw.get("final_text") or raw.get("text")) and not dispatch_errors,
+            errors=dispatch_errors,
             messages=raw.get("messages") or [],
             tool_events=[
                 ToolEvent.from_runtime_record(item)

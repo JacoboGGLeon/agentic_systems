@@ -1,99 +1,33 @@
-# Narrative Contract
+# Narrativa de producto · 2.1.4.dev8
 
-> **Referencia anterior a la API 2.1.3.** Se conserva como diseño, operación o evidencia histórica. Para implementar con la API vigente, consulta [la guía actual](API_213.md) y [tutorials](../tutorials/README.md). Sus ejemplos antiguos no son otra API soportada.
+Agentic Systems coordina código y agentes de distintos SDK, con contratos y
+evidencia de ejecución compartidos. LangGraph es el único orquestador.
 
-Agentic Systems is a computational grammar for composing deterministic
-capabilities and language-model reasoning into systems whose execution can be
-inspected, evaluated and reproduced as evidence.
+Tools ejecutan operaciones; Skills declaran capacidades e instrucciones;
+Agent organiza operaciones o utiliza un actor; System coordina unidades;
+Environment procesa episodios; Eval comprueba resultados explícitamente.
+Context conserva referencia de dominio, State canales de trabajo, Memory
+episodios locales y linaje evidencia observada. Son responsabilidades distintas.
 
-This document is the editorial contract for the README, tutorials, Studio,
-CLI, API reference, tests and release bundles. Those surfaces may teach at
-different depths, but they must describe the same product.
+Runtime y scheduler son pilares: conexión, ejecución y controles del actor.
+Framework selecciona native, OpenAI Agents o Strands. El plazo raíz se comparte
+entre unidades; la cantidad de nodos internos no impone una cuota.
+Pydantic valida estados y contratos de ejecución. No se añaden Harness,
+Scheduler, Policy ni otra forma de grafo como constructores públicos.
 
-## The Grammar
+Un System puede definir la coordinación de un harness. El harness completo
+incluye capacidades, contexto y controles; la palabra no acredita aislamiento,
+persistencia o recuperación tras reinicio.
 
-Agentic Systems has three related views. They must not be flattened into one
-conveyor belt.
+La enseñanza muestra declaraciones relevantes, funciones locales visibles,
+input → proceso → output y aserciones. Importar otro experimento completo no
+sustituye enseñar su construcción. CLI e inspección de paquetes se explican
+como ejemplos de sus propias interfaces públicas.
 
-```text
-Computation: Tool -> Skill -> Agent -> System
-Time:        Environment -> Episode -> Step
-Evidence:    Eval -> observes Agent, System or Episode
-```
+Las afirmaciones separan configuración, ejecución offline, protocolos locales
+y proveedor real. Un PASS debe identificar caso, revisión y artefacto. Un
+resultado válido no certifica todos los parámetros ni toda la matriz de SDK.
+Memory y continuaciones son locales; Environment no es una API RL completa.
 
-- A **Tool** is an executable capability.
-- A **Skill** packages tools, instructions and contracts for runtime use.
-- An **Agent** transforms context into actions and answers.
-- A **System** composes agents and graphs into coordinated behavior.
-- An **Environment** supplies the world and records iterative episodes.
-- An **Eval** measures claims against deterministic evidence and, when used,
-  judge evidence. It does not become another execution stage.
-
-Graph is an orchestration structure owned by a System. Provider and Framework
-are execution choices. MCP and A2A are integration protocols. None of them
-replaces a node in the grammar.
-
-## Two Operating Paths
-
-The same grammar supports two operational patterns.
-
-```text
-Fast path:
-user -> online Agent -> live Tool or Agent collaboration -> answer
-
-Deliberative path:
-user -> client Agent -> offline System/Graph -> augmented evidence -> answer
-```
-
-The fast path favors interactive work and direct collaboration. The
-deliberative path favors bounded processing, data augmentation, review and
-durable evidence. A product may use either path or combine them.
-
-These names describe system topology and operating latency. They are not a
-claim that the library implements a psychological model of human cognition.
-
-## Execution Choices
-
-The canonical Providers are `python-runtime`, `openai-runtime`,
-`ollama-runtime`, `bedrock-runtime` and `vllm-runtime`. `auto` is a selection
-mode, not a sixth Provider.
-
-The canonical Frameworks are `native`, `langgraph`, `openai-agents` and
-`strands`.
-
-Provider answers where inference runs. Framework answers who owns the Agent
-loop. The application grammar and normalized `RunResult` contract remain
-stable across those choices, while wording, latency, token accounting and
-vendor-specific capabilities may differ.
-
-## Evidence Before Claims
-
-Every public claim must identify its evidence boundary:
-
-```text
-declared -> configured -> ready -> executed -> semantically certified
-```
-
-Static compatibility is not live verification. A successful tool call is not
-semantic certification. Missing SDK metrics remain absent; they are never
-invented. Python is identified as a deterministic control, not presented as a
-language model. Fallbacks, retries and degraded capabilities remain visible.
-
-## Mirror Rule
-
-The public surfaces are mirrors of one contract:
-
-```text
-Source/API -> Docs -> Tutorials/Studio -> Tests -> Release evidence
-```
-
-- The source registry owns canonical Provider and Framework identities.
-- The API reference owns public names and signatures.
-- Documentation explains boundaries and supported behavior.
-- Tutorials and Studio demonstrate only public, supported behavior.
-- Tests gate mechanically verifiable claims.
-- Release attestations bind live claims to one commit and wheel hash.
-
-Generated references and attestations may be terse. Teaching and product
-narratives should be direct, graceful and useful, but never compensate for
-missing evidence with promotional language.
+[Estado](STATUS_214.md) · [API](API_214.md) · [Ruta de aprendizaje](LEARNING_PATH_214.md) ·
+[Runtime/scheduler](RUNTIME_SCHEDULER_214.md) · [System/harness](SYSTEM_HARNESS_214.md).

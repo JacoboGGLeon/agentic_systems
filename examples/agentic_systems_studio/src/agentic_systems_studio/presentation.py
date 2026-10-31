@@ -1,15 +1,12 @@
 """Public-evidence projections used by the Studio presentation adapter."""
 
 from __future__ import annotations
-
 import ast
 from collections.abc import Mapping
 import inspect
 import re
 from typing import Any
-
 import agentic_systems as toolkit
-
 
 _DYNAMIC_EXECUTION_PRIMITIVES = frozenset({"__import__", "compile", "eval", "exec"})
 
@@ -19,7 +16,7 @@ def _generated_python_blocks(text: str) -> list[str]:
     if blocks:
         return [_normalize_aliases(block) for block in blocks]
     clean = text.strip()
-    if clean.startswith(("import agentic_systems", "from agentic_systems")):
+    if clean.startswith(("import agentic_systems", "from agentic_systems", "import pydantic", "from pydantic")):
         ast.parse(clean)
         return [_normalize_aliases(clean)]
     return []
@@ -30,7 +27,11 @@ def _normalize_aliases(source):
     aliases, symbols = set(), {}
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
-            aliases.update(item.asname or item.name for item in node.names if item.name == "agentic_systems")
+            aliases.update(
+                item.asname or item.name
+                for item in node.names
+                if item.name == "agentic_systems"
+            )
         elif isinstance(node, ast.ImportFrom) and node.module == "agentic_systems":
             for item in node.names:
                 if item.name not in toolkit.__all__:
@@ -42,8 +43,16 @@ def _normalize_aliases(source):
             if node.id in aliases:
                 return ast.copy_location(ast.Name(id="toolkit", ctx=node.ctx), node)
             if node.id in symbols:
-                return ast.copy_location(ast.Attribute(value=ast.Name(id="toolkit", ctx=ast.Load()), attr=symbols[node.id], ctx=node.ctx), node)
+                return ast.copy_location(
+                    ast.Attribute(
+                        value=ast.Name(id="toolkit", ctx=ast.Load()),
+                        attr=symbols[node.id],
+                        ctx=node.ctx,
+                    ),
+                    node,
+                )
             return node
+
     return ast.unparse(ast.fix_missing_locations(Normalize().visit(tree)))
 
 
@@ -62,11 +71,21 @@ def _usage_fields(value: Any, *, prefix: str = "") -> list[tuple[str, Any]]:
 
 def processing_mark(result):
     tools = sorted({event.name for node in result.walk() for event in node.tool_events})
-    return ("Procesado" if result.ok else "Falló") + " · " + str(result.meta.get("provider", result.engine)) + " · " + str(result.meta.get("framework", "native")) + " · tools=" + ", ".join(tools)
+    return (
+        ("Procesado" if result.ok else "Falló")
+        + " · "
+        + str(result.meta.get("provider", result.engine))
+        + " · "
+        + str(result.meta.get("framework", "native"))
+        + " · tools="
+        + ", ".join(tools)
+    )
 
 
 def usage_mark(result):
-    return "Usage: " + " | ".join(f"{key}={value}" for key, value in result.usage.items())
+    return "Usage: " + " | ".join(
+        f"{key}={value}" for key, value in result.usage.items()
+    )
 
 
 def public_result_payload(result):
@@ -110,10 +129,31 @@ def validate_generated_python_safety(
         )
     for block in blocks:
         tree = ast.parse(block)
+        units = {
+            target.id
+            for statement in ast.walk(tree)
+            if isinstance(statement, ast.Assign)
+            and isinstance(statement.value, ast.Call)
+            and ast.unparse(statement.value.func)
+            in {
+                "toolkit.Agent",
+                "toolkit.System",
+                "toolkit.Environment",
+                "toolkit.Eval",
+            }
+            for target in statement.targets
+            if isinstance(target, ast.Name)
+        }
         unsafe_calls = {
             node.func.id if isinstance(node.func, ast.Name) else node.func.attr
             for node in ast.walk(tree)
             if isinstance(node, ast.Call)
+            and not (
+                isinstance(node.func, ast.Attribute)
+                and node.func.attr == "compile"
+                and isinstance(node.func.value, ast.Name)
+                and node.func.value.id in units
+            )
             and (
                 isinstance(node.func, ast.Name)
                 and node.func.id in _DYNAMIC_EXECUTION_PRIMITIVES
@@ -185,7 +225,24 @@ def validate_generated_agentic_systems_code(
                     observed_calls.add(symbol)
                     public_factory = getattr(toolkit, symbol, None)
                     if symbol not in toolkit.__all__ or not callable(public_factory):
-                        raise ValueError(f"toolkit.{symbol} is not a public 2.1.3 constructor")
+                        raise ValueError(
+                            f"toolkit.{symbol} is not a public {toolkit.__version__} constructor"
+                        )
+                    if symbol in {"Agent", "System", "Environment"}:
+                        graph = next(
+                            (k.value for k in node.keywords if k.arg == "graph"),
+                            node.args[1] if len(node.args) > 1 else None,
+                        )
+                        if (
+                            isinstance(graph, ast.Call)
+                            and ast.unparse(graph.func) == "toolkit.Action"
+                        ) or (
+                            isinstance(graph, ast.Name)
+                            and factory_results.get(graph.id) == "Action"
+                        ):
+                            raise ValueError(
+                                "Use graph=Graph(...); Action is not a public constructor"
+                            )
                     if callable(public_factory):
                         signature = inspect.signature(public_factory)
                         if not any(

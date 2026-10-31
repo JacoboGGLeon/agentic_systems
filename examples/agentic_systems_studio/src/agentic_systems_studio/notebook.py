@@ -1,21 +1,17 @@
 """Notebook-native presentation adapter for hosts without WebSocket proxying."""
 
 from __future__ import annotations
-
 from dataclasses import dataclass, field
 import html
 import json
 from typing import Any, Callable
-
 from .routes import FRAMEWORK_NAMES
-
 from .conversation import (
     ConversationConfig,
     build_conversational_system,
     configured_provider_names,
 )
 from .presentation import processing_mark, public_result_payload, usage_mark
-
 
 _GREETING = "Ready. Ask a question or request a verified calculation."
 

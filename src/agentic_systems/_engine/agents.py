@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import inspect
+from copy import deepcopy
 import json
 import uuid
+import threading
 from collections import Counter
 from collections.abc import Callable, Iterable
 from typing import Any, cast
@@ -453,8 +455,22 @@ class Agent:
 
         adapter = framework_adapter(self.framework_config.name)
 
+        attempt_history = []
+        attempt_lock = threading.Lock()
         def _run_engine() -> RunResult:
-            return adapter.run(self, engine, clean_input, policy, mode=mode)
+            with attempt_lock:
+                row = {"number": len(attempt_history) + 1, "status": "running"}
+                attempt_history.append(row)
+            try:
+                output = adapter.run(self, engine, clean_input, policy, mode=mode)
+                payload = output.to_dict()
+                with attempt_lock:
+                    row.update(status="completed" if output.ok else "failed", result=payload)
+                return output
+            except BaseException as exc:
+                with attempt_lock:
+                    row.update(status="failed", error={"type": type(exc).__name__, "message": str(exc)})
+                raise
 
         if scheduler is None:
             result = _run_engine()
@@ -478,8 +494,8 @@ class Agent:
             )
             scheduler_meta = {
                 "scheduler": scheduler.to_dict(),
-                "attempts": int(scheduler.max_retries) + 1,
-                "retries": int(scheduler.max_retries),
+                "attempts": int(getattr(exc, "_agentic_scheduler_attempts", 1)),
+                "retries": max(0, int(getattr(exc, "_agentic_scheduler_attempts", 1)) - 1),
                 "timed_out": True,
             }
         except Exception as exc:  # noqa: BLE001 - return scheduler/runtime failures as RunResult.
@@ -493,6 +509,7 @@ class Agent:
                 "retries": max(0, actual_attempts - 1),
                 "timed_out": False,
             }
+        result = self._attach_scheduler_attempts(result, scheduler_meta, attempt_history, attempt_lock)
         return self._finalize_result(
             self._attach_scheduler_meta(result, scheduler_meta),
             clean_input,
@@ -546,8 +563,22 @@ class Agent:
 
         adapter = framework_adapter(self.framework_config.name)
 
+        attempt_history = []
+        attempt_lock = threading.Lock()
         async def _run_engine() -> RunResult:
-            return await adapter.arun(self, engine, clean_input, policy, mode=mode)
+            with attempt_lock:
+                row = {"number": len(attempt_history) + 1, "status": "running"}
+                attempt_history.append(row)
+            try:
+                output = await adapter.arun(self, engine, clean_input, policy, mode=mode)
+                payload = output.to_dict()
+                with attempt_lock:
+                    row.update(status="completed" if output.ok else "failed", result=payload)
+                return output
+            except BaseException as exc:
+                with attempt_lock:
+                    row.update(status="failed", error={"type": type(exc).__name__, "message": str(exc)})
+                raise
 
         if scheduler is None:
             result = await _run_engine()
@@ -567,8 +598,8 @@ class Agent:
             )
             scheduler_meta = {
                 "scheduler": scheduler.to_dict(),
-                "attempts": int(scheduler.max_retries) + 1,
-                "retries": int(scheduler.max_retries),
+                "attempts": int(getattr(exc, "_agentic_scheduler_attempts", 1)),
+                "retries": max(0, int(getattr(exc, "_agentic_scheduler_attempts", 1)) - 1),
                 "timed_out": True,
             }
         except Exception as exc:  # noqa: BLE001 - return scheduler/runtime failures as RunResult.
@@ -582,6 +613,7 @@ class Agent:
                 "retries": max(0, actual_attempts - 1),
                 "timed_out": False,
             }
+        result = self._attach_scheduler_attempts(result, scheduler_meta, attempt_history, attempt_lock)
         return self._finalize_result(
             self._attach_scheduler_meta(result, scheduler_meta),
             clean_input,
@@ -595,6 +627,27 @@ class Agent:
 
     def _policy_for_runtime(self, policy: RunPolicy) -> RunPolicy:
         return merge_policy_with_scheduler(policy, self._scheduler())
+
+    @staticmethod
+    def _attach_scheduler_attempts(result, scheduler_meta, history, lock):
+        # Freeze what is observed at return. A timed-out worker can still finish;
+        # its transport ledger must remain active outside this result snapshot.
+        with lock:
+            rows = deepcopy(history)
+        # The final result already records a sole completed attempt. Avoid
+        # repeating its full trace in the ordinary, non-retry path.
+        if len(rows) > 1 or any(row["status"] == "running" for row in rows):
+            scheduler_meta["attempt_history"] = rows
+        if any(row["status"] == "running" for row in rows):
+            scheduler_meta["pending_completion"] = True
+        if len(rows) > 1:
+            totals = {}
+            for row in rows:
+                for key, value in row.get("result", {}).get("usage", {}).items():
+                    if isinstance(value, (int, float)) and not isinstance(value, bool):
+                        totals[key] = totals.get(key, 0) + value
+            result.usage.update(totals)
+        return result
 
     def _attach_scheduler_meta(
         self, result: RunResult, scheduler_meta: dict[str, Any]

@@ -1,31 +1,14 @@
-# Calcular antes de presentar
+# Calcular antes de presentar · 2.1.4
 
 Conservar evidencia de un Tool al formatear una respuesta.
 
-```python
-from examples.patterns.two_phase_poem.example import run
+La composición y las aserciones están visibles en [el código](example.py).
+Lee las declaraciones de Tools, Agents y Graph antes de ejecutar el ejemplo.
 
-result = run()
-result
-```
+Input → proceso → output: 3 × 116 → Tool exact_total → tres versos de una plantilla con total 348; sin generación de lenguaje.
 
-3 × 116 → Tool exact_total → tres versos de una plantilla con total 348; sin generación de lenguaje.
+[Declaración](example.py) · [Evidencia dev8](../../../revisions/2.1.4/grammar-dev8/closure/examples/examples--patterns--two_phase_poem--example.py.json)
 
-Código:
-- [Current implementation](../../../examples/patterns/two_phase_poem/example.py)
+Perfil actual: **offline-passed**. El catálogo [de validación](../../../docs/LEARNING_VALIDATION_214.md) separa configuración, Python, servicios locales y pruebas de modelos. La evidencia 2.1.3 conservada es histórica y no certifica estos bytes.
 
-Validación: **Offline ejecutado**. Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.
-
-- [Nueva ejecución contra el wheel publicado](../../../revisions/2.1.3/learning-evidence-elevated/example-results/patterns/two_phase_poem/current.json)
-- [RunResult y lineage](../../../revisions/2.1.3/learning-evidence-elevated/example-results/patterns/two_phase_poem/runresults.json)
-
-<details>
-<summary>Evidencia del experimento anterior</summary>
-
-Estado anterior: mixed. The source report records deterministic candidate gates, but judge explanations and citation/schema experiments retain failures. Twelve automatic judge approvals were not twelve fully faithful explanations. This experiment is distinct from the final core release acceptance.
-
-La adaptación actual tiene pruebas propias. La evidencia anterior conserva su versión y no certifica estos bytes.
-
-- [Detailed experiment status](../../../docs/two-phase-212-status.md)
-
-</details>
+[Validación histórica dev5 de Pydantic y human_results](../../../revisions/2.1.4/contracts-dev5/REPORT.md). Las revisiones previas se conservan como evidencia histórica.

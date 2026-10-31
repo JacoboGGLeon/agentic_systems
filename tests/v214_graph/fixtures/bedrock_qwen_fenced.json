@@ -1,0 +1,10 @@
+[
+  {
+    "framework": "openai-agents",
+    "raw_text": "```json\n{\n  \"order_id\": \"R-17\",\n  \"amount\": 240,\n  \"total_units\": 2,\n  \"missing_units\": 1,\n  \"reason\": \"El cliente recibió solo el adaptador, el sensor no llegó. La caja estaba sellada, lo que indica que el sensor no fue incluido en el envío.\",\n  \"sources\": [\"packing-slip\", \"customer-report\"]\n}\n```"
+  },
+  {
+    "framework": "strands",
+    "raw_text": "```json\n{\n  \"order_id\": \"R-17\",\n  \"amount\": 240,\n  \"total_units\": 2,\n  \"missing_units\": 1,\n  \"reason\": \"El cliente reportó que el sensor no llegó, aunque el adaptador sí. La caja estaba sellada, lo cual respalda la veracidad del informe. Según la política, se reembolsará proporcionalmente por el artículo faltante.\",\n  \"sources\": [\"packing-slip\", \"customer-report\", \"refund-policy-v1\"]\n}\n```"
+  }
+]

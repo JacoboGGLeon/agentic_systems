@@ -1,3 +1,5 @@
+> **Histórico: no es la guía de la API 2.1.4.dev3.** Conserva propuestas/resultados de su versión original. Para implementar, usa [la API vigente](../API_214.md).
+
 # Apariciones actuales de los 18 exports
 
 Referencias estáticas de código; no acreditan ejecución ni cobertura de cada parámetro.

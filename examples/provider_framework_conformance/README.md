@@ -1,19 +1,12 @@
-# Ejecutar cuatro frameworks
+# Tres actores con Python · 2.1.4
 
-Usar los cuatro SDKs con Python determinista.
+La composición y las aserciones están visibles en [el código](example.py).
+Lee las declaraciones de Tools, Agents y Graph antes de ejecutar el ejemplo.
 
-```python
-from examples.provider_framework_conformance.example import run
+value=3 → Tool determinista dentro de native, OpenAI Agents y Strands →
+misma salida tipada y evidencia. LangGraph es el orquestador; no un cuarto actor.
+Esta prueba usa python-runtime, sin inferencia.
 
-report = run()
-report
-```
+[Declaración](example.py) · [Matriz live y pendientes](../../docs/LEARNING_VALIDATION_214.md).
 
-value=3 → Tool echo en native, LangGraph, OpenAI Agents y Strands → misma evidencia; la matriz live se documenta aparte.
-
-La declaración completa está en [example.py](example.py). El resultado conserva
-la entrada, el proceso y la salida observados, con aserciones del contrato.
-
-Validación offline: Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.
-[Evidencia actual](evidence/run.json). [Resultados y límites de la campaña](../../revisions/2.1.3/framework-evidence/REPORT.md).
-El mantenimiento y los runners están en [la guía de validación](../../docs/VALIDATION_213.md).
+[Validación histórica dev5 de Pydantic y human_results](../../revisions/2.1.4/contracts-dev5/REPORT.md). Las revisiones previas se conservan como evidencia histórica.

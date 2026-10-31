@@ -1,19 +1,23 @@
-# Episode Memory — API 2.1.3
+# Estado de Environment y Memory · 2.1.4
 
-Record-to-record memory, observe/update/stop, deterministic replay and native/LangGraph.
+Input: importes 2, 3 y 100. observe combina el siguiente importe con el total
+actual; el Graph suma; update conserva el total. stop termina al alcanzar 5,
+antes de consumir 100. Outputs: total=2 y total=5. Repetir run reinicia el
+estado del episodio y produce los mismos totales con otro execution_id.
 
-```python
-from examples.episode_memory.example import run
+El acumulador es estado del Environment. Memory conserva episodios observados;
+no participa en esta suma y no debe presentarse como aprendizaje. Para ver cómo
+sí modifica una decisión, y cómo Eval aísla sus escrituras, consulta
+[el notebook de lineage y Memory](../lineage_memory/01_lineage_memory_decisions.ipynb).
 
-report = run()
-report
-```
+La composición y las aserciones están visibles en [el código](example.py).
+Lee las declaraciones de Tools, Agents y Graph antes de ejecutar el ejemplo.
 
-Synthetic JSON input → canonical SDK computation/configuration → asserted output and JSON evidence.
+El código expone observe, update, stop y Graph. El replay determinista no implica
+persistencia ni reanudación después de reiniciar el proceso.
 
-La declaración completa está en [example.py](example.py). El resultado conserva
-la entrada, el proceso y la salida observados, con aserciones del contrato.
+[Declaración](example.py) · [Evidencia dev8](../../revisions/2.1.4/grammar-dev8/closure/examples/examples--episode_memory--example.py.json)
 
-Validación offline: Record-to-record memory, observe/update/stop, deterministic replay and native/LangGraph. Final artifact binding is recorded in implementation evidence. No real inference.
-[Evidencia actual](evidence/run.json). [Resultados y límites de la campaña](../../revisions/2.1.3/framework-evidence/REPORT.md).
-El mantenimiento y los runners están en [la guía de validación](../../docs/VALIDATION_213.md).
+Perfil actual: **offline-passed**. El catálogo [de validación](../../docs/LEARNING_VALIDATION_214.md) separa configuración, Python, servicios locales y pruebas de modelos. La evidencia 2.1.3 conservada es histórica y no certifica estos bytes.
+
+[Validación histórica dev5 de Pydantic y human_results](../../revisions/2.1.4/contracts-dev5/REPORT.md). Las revisiones previas se conservan como evidencia histórica.

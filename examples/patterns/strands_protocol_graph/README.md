@@ -1,32 +1,14 @@
-# Conectar MCP y A2A
+# Conectar MCP y A2A · 2.1.4
 
 Usar servicios locales reales desde Strands.
 
-```python
-from examples.patterns.strands_protocol_graph.example import run
+La composición y las aserciones están visibles en [el código](example.py).
+Lee las declaraciones de Tools, Agents y Graph antes de ejecutar el ejemplo.
 
-result = run()
-result
-```
+Input → proceso → output: Valor conocido → MCP Streamable HTTP y agente A2A → evidencia remota; modelos deterministas y cero inferencia.
 
-Valor conocido → MCP Streamable HTTP y agente A2A → evidencia remota; modelos deterministas y cero inferencia.
+[Declaración](example.py) · [Evidencia](../../../revisions/2.1.4/pydantic-dev4/local-protocol-example.json)
 
-Código:
-- [Current implementation](../../../examples/patterns/strands_protocol_graph/example.py)
+Perfil actual: **local-protocol-profile**. El catálogo [de validación](../../../docs/LEARNING_VALIDATION_214.md) separa configuración, Python, servicios locales y pruebas de modelos. La evidencia 2.1.3 conservada es histórica y no certifica estos bytes.
 
-Validación: **Offline ejecutado**. Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.
-
-- [Nueva ejecución contra el wheel publicado](../../../revisions/2.1.3/learning-evidence-elevated/example-results/patterns/strands_protocol_graph/current.json)
-- [RunResult y lineage](../../../revisions/2.1.3/learning-evidence-elevated/example-results/patterns/strands_protocol_graph/runresults.json)
-
-<details>
-<summary>Evidencia del experimento anterior</summary>
-
-Estado anterior: historical-pass. Three historical routes passed on a 2.1.0 wheel with SHA-256 46fa5e7e117d6482a4d15332d52d9520b897fd2beeef92bdcb816bf93896b9d5. This differs from the published 2.1.2 wheel. Shipping the source bundle does not transfer that acceptance.
-
-La adaptación actual tiene pruebas propias. La evidencia anterior conserva su versión y no certifica estos bytes.
-
-- [Historical summary extract](../../../examples/evidence/historical-protocol-summary.json)
-- [Challenge contract](../../../semantic_challenges/strands_protocol_graph/README.md)
-
-</details>
+[Validación histórica dev5 de Pydantic y human_results](../../../revisions/2.1.4/contracts-dev5/REPORT.md). Las revisiones previas se conservan como evidencia histórica.

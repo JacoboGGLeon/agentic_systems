@@ -16,34 +16,41 @@ def _copy(source, destination):
 
 
 def create_project(destination):
+    from . import __version__
     destination = Path(destination).resolve()
     if destination.exists() or destination.is_symlink():
         raise FileExistsError("Choose a new directory; existing projects are never overwritten")
     templates = resources.files("agentic_systems").joinpath("_templates")
     destination.mkdir(parents=True)
-    _copy(templates.joinpath("project"), destination)
-    _copy(templates.joinpath("order_fulfillment"), destination / "src/order_fulfillment")
+    _copy(templates.joinpath("graph_project"), destination)
+    for path in destination.rglob("*"):
+        if path.is_file() and path.suffix in {".py", ".md", ".toml"}:
+            path.write_text(path.read_text(encoding="utf-8").replace("__SDK_VERSION__", __version__), encoding="utf-8")
     (destination / "evidence").mkdir()
-    manifest = {"sdk_version": "2.1.3", "api": "agentic_systems", "inference_permitted": False,
-                "declaration": "order_fulfillment.system:build_system", "validation": "not-run"}
+    manifest = {"sdk_version": __version__, "api": "agentic_systems", "inference_permitted": False,
+                "declaration": "order_fulfillment.application:build_system", "validation": "not-run"}
     (destination / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     notebook = {
         "nbformat": 4, "nbformat_minor": 5,
         "metadata": {"kernelspec": {"name": "python3", "display_name": "Python 3", "language": "python"}},
         "cells": [
-            {"cell_type": "markdown", "id": "intro", "metadata": {}, "source": ["# Pedidos · API única 2.1.3\n", "Input → validación → precio/stock → política → decisión. Sin inferencia."]},
+            {"cell_type": "markdown", "id": "intro", "metadata": {}, "source": [f"# Pedidos · API única {__version__}\n", "Input → validación → precio/stock → política → decisión. Sin inferencia."]},
             {"cell_type": "code", "id": "run", "metadata": {}, "execution_count": None, "outputs": [],
              "source": ['from pathlib import Path\n', 'import sys\n',
                         'root = next(p for p in (Path.cwd(), *Path.cwd().parents) if (p / "app.py").is_file())\n',
                         'sys.path.insert(0, str(root / "src"))\n',
                         'from order_fulfillment.offline import enforce_offline\n', 'enforce_offline()\n',
-                        'import agentic_systems as toolkit\n', 'assert toolkit.__version__ == "2.1.3"\n',
-                        'from order_fulfillment import verify\n',
-                        'reports = [verify(backend) for backend in ("native", "langgraph")]\n',
-                        'assert all(r["cases_passed"] == 7 for r in reports)\n',
-                        'for report in reports:\n',
-                        '    for case in report["cases"]:\n',
-                        '        print(report["backend"], case["name"], case["output"])\n']},
+                        'import agentic_systems as toolkit\n', f'assert toolkit.__version__ == "{__version__}"\n',
+                        ]},
+            {"cell_type": "markdown", "id": "declarations-title", "metadata": {},
+             "source": ["## Declaración completa\n", "Las Tools, Skills, Agents, System, Environment y Eval están visibles; las funciones locales muestran su implementación."]},
+            {"cell_type": "code", "id": "declarations", "metadata": {}, "execution_count": None, "outputs": [],
+             "source": (destination / "src/order_fulfillment/application.py").read_text(encoding="utf-8").splitlines(keepends=True)},
+            {"cell_type": "code", "id": "evidence", "metadata": {}, "execution_count": None, "outputs": [],
+             "source": ['report = demonstrate()\n',
+                        'print("Input:", report["input"])\n',
+                        'print("Process:", report["process"])\n',
+                        'print("Output:", report["output"])\n']},
         ],
     }
     (destination / "notebooks").mkdir()

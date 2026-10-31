@@ -1,3 +1,5 @@
+> **Histórico: no es la guía de la API 2.1.4.dev3.** Conserva propuestas/resultados de su versión original. Para implementar, usa [la API vigente](API_214.md).
+
 # Claim partition audit and first held-out sample
 
 > **Referencia anterior a la API 2.1.3.** Se conserva como diseño, operación o evidencia histórica. Para implementar con la API vigente, consulta [la guía actual](API_213.md) y [tutorials](../tutorials/README.md). Sus ejemplos antiguos no son otra API soportada.

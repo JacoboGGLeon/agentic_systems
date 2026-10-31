@@ -1,0 +1,109 @@
+{
+  "version": "2.1.4.dev8",
+  "wheel_sha256": "14148af530c14660b888479f6a2eabb4ef1bf74637b7cc3244422f447b547e23",
+  "base_auto_passed": 9,
+  "base_auto_total": 12,
+  "followup_required_bedrock_passed": 2,
+  "followup_required_bedrock_total": 3,
+  "qualified_configurations_passed": 11,
+  "matrix": [
+    {
+      "route": "openai-runtime",
+      "model": "gpt-4.1-mini",
+      "cells": {
+        "native": {
+          "passed": true,
+          "tool_choice": "auto",
+          "original_auto_passed": true
+        },
+        "openai-agents": {
+          "passed": true,
+          "tool_choice": "auto",
+          "original_auto_passed": true
+        },
+        "strands": {
+          "passed": true,
+          "tool_choice": "auto",
+          "original_auto_passed": true
+        }
+      }
+    },
+    {
+      "route": "bedrock-runtime",
+      "model": "qwen.qwen3-32b-v1:0",
+      "cells": {
+        "native": {
+          "passed": true,
+          "tool_choice": "required",
+          "original_auto_passed": false
+        },
+        "openai-agents": {
+          "passed": true,
+          "tool_choice": "required",
+          "original_auto_passed": false
+        },
+        "strands": {
+          "passed": false,
+          "tool_choice": "auto",
+          "original_auto_passed": false
+        }
+      }
+    },
+    {
+      "route": "ollama-local",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "cells": {
+        "native": {
+          "passed": true,
+          "tool_choice": "auto",
+          "original_auto_passed": true
+        },
+        "openai-agents": {
+          "passed": true,
+          "tool_choice": "auto",
+          "original_auto_passed": true
+        },
+        "strands": {
+          "passed": true,
+          "tool_choice": "auto",
+          "original_auto_passed": true
+        }
+      }
+    },
+    {
+      "route": "ollama-cloud",
+      "model": "gemma4:31b",
+      "cells": {
+        "native": {
+          "passed": true,
+          "tool_choice": "auto",
+          "original_auto_passed": true
+        },
+        "openai-agents": {
+          "passed": true,
+          "tool_choice": "auto",
+          "original_auto_passed": true
+        },
+        "strands": {
+          "passed": true,
+          "tool_choice": "auto",
+          "original_auto_passed": true
+        }
+      }
+    }
+  ],
+  "generation_pilots_passed": 12,
+  "negative_profiles_passed": 12,
+  "requests": 294,
+  "inference_requests": 288,
+  "metadata_requests": 6,
+  "reserved_usd": "2.837193",
+  "remaining_requests": 6,
+  "remaining_usd": "7.162807",
+  "late_dispatches_after_worker_snapshot": 0,
+  "full_acceptance": false,
+  "published": false,
+  "blocker": "Strands Bedrock adapter does not forward policy.tool_choice=required: offline capture observes auto instead of any.",
+  "base_evidence": "revisions/2.1.4/grammar-dev8/live-matrix/01/runs/20261030T043436/results.json",
+  "followup_evidence": "revisions/2.1.4/grammar-dev8/live-matrix/01/required-policy-runs/20261030T044910/results.json"
+}

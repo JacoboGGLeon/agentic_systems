@@ -88,7 +88,7 @@ def test_compilation_is_pure_capture_and_budgets_are_shared(monkeypatch):
     monkeypatch.setattr(implementation, "_invoke_actor", forbidden)
     a.Agent("model", runtime=a.runtime(provider="openai-runtime", model="explicit"), instructions="configured only").compile().inspect()
     a.Agent("callbacks", a.Graph((("step", a.Action("step", forbidden)),), (("step", forbidden),), "step")).inspect()
-    episode = a.Environment("episode", unit(), ({"value": 1},), memory={}, observe=forbidden, update=forbidden, stop=forbidden)
+    episode = a.Environment("episode", unit(), ({"value": 1},), state={}, observe=forbidden, update=forbidden, stop=forbidden)
     episode.compile().inspect()
     a.Eval("eval", unit(), ({"input": {"value": 1}, "expected": {"ok": True}},), checks=(forbidden,)).compile().inspect()
     assert not calls
@@ -114,24 +114,24 @@ def test_cooperative_timeout_retains_late_result(monkeypatch):
 @pytest.mark.parametrize("backend", ["native", "langgraph"])
 def test_real_episode_memory_stop_replay_and_eval_episode(backend):
     worker = a.Agent("sum", a.Action("sum", lambda d: {"total": d["previous"] + d["amount"]}), backend=backend)
-    episode = a.Environment("ledger", worker, ({"amount": 2}, {"amount": 3}, {"amount": 100}), memory={"total": 0},
+    episode = a.Environment("ledger", worker, ({"amount": 2}, {"amount": 3}, {"amount": 100}), state={"total": 0},
         observe=lambda row, memory: {"amount": row["amount"], "previous": memory["total"]},
         update=lambda memory, row, result: result.data,
         stop=lambda memory, result: memory["total"] >= 5)
     captured = episode.compile()
     for run in (episode.run(), captured.run(), asyncio.run(episode.arun()), asyncio.run(captured.arun())):
         assert run.ok and run.data["outputs"] == [{"total": 2}, {"total": 5}]
-        assert run.data["summary"]["memory"] == {"total": 5}
+        assert run.data["summary"]["state"] == {"total": 5}
         assert run.data["summary"]["terminated"] and not run.data["summary"]["truncated"]
         assert_result(run)
     assert captured.inspect() == episode.inspect()
-    result = a.Eval("episode_contract", episode, ({"input": {"records": [{"amount": 4}], "memory": {"total": 10}}, "expected": {"ok": True}},),
-        checks=(lambda result, case: {"ok": result.data["summary"]["memory"] == {"total": 14}, "issues": [], "metrics": {"reward": 14}},)).run()
+    result = a.Eval("episode_contract", episode, ({"input": {"records": [{"amount": 4}], "state": {"total": 10}}, "expected": {"ok": True}},),
+        checks=(lambda result, case: {"ok": result.data["summary"]["state"] == {"total": 14}, "issues": [], "metrics": {"reward": 14}},)).run()
     assert result.ok, result.to_dict()
     assert result.data["cases"][0]["checks"][1]["metrics"]["reward"] == 14
     assert_result(result)
     truncated = replace(episode, max_steps=1, stop=None).run()
-    assert not truncated.ok and truncated.data["summary"]["truncated"]
+    assert truncated.ok and truncated.data["summary"]["truncated"]
     assert_result(truncated)
 
 

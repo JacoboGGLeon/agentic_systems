@@ -1,74 +1,63 @@
-# Instalación · Agentic Systems 2.1.3
+# Install Agentic Systems 2.1.4
 
-Python 3.10–3.14. Crea y activa un entorno virtual para tu proyecto:
+Use Python 3.10–3.14 in a clean environment:
 
 ```bash
 python -m venv .venv
-python -m pip install agentic-systems==2.1.3
+# Activate .venv with your operating system's usual command.
+python -m pip install --upgrade pip
+python -m pip install "agentic-systems==2.1.4"
+```
+
+For the supported model-backed actor integrations:
+
+```bash
+python -m pip install "agentic-systems[openai,bedrock,openai-agents,strands]==2.1.4"
+```
+
+```python
+import pydantic
+import agentic_systems as toolkit
+assert toolkit.__version__ == "2.1.4"
+```
+
+The wheel includes the SDK and CLI. Python execution does not require model credentials.
+Configure OpenAI, Bedrock or Ollama credentials outside code and notebooks; do not
+commit a .env file. Declare endpoint and key explicitly when mixing Ollama local/cloud.
+The CLI's doctor checks installed dependencies, not provider access.
+
+```bash
 agentic-systems version
+agentic-systems api
 agentic-systems doctor
 agentic-systems new my_project
 ```
 
-En Windows activa con `.venv\Scripts\Activate.ps1`; en macOS/Linux usa
-`source .venv/bin/activate`. Selecciona ese mismo intérprete como kernel de Jupyter.
+## Studio, learning material and skill
 
-Para todos los proveedores y frameworks probados aquí:
+Download the matching assets from the GitHub release:
+https://github.com/JacoboGGLeon/agentic_systems/releases/tag/v2.1.4
 
-```bash
-python -m pip install "agentic-systems[openai,bedrock,langgraph,openai-agents,strands]==2.1.3" jupyter
-```
-
-Los extras son `openai`, `bedrock`, `langgraph`, `openai-agents`, `strands`,
-`vllm`, `vllm-client`, `vllm-server`, `dev` y `all`. `all` excluye el servidor
-vLLM GPU, que necesita un entorno preparado. No existe el extra `[ada]`.
-Instalar dependencias no inicia servidores ni valida un modelo.
-
-## Variables para los tutorials de proveedores
-
-Configúralas en el entorno del proceso que inicia Jupyter. Los notebooks leen
-`os.environ`; no cargan claves desde archivos del repositorio ni las imprimen.
-Si ya tienes `.env`, puedes cargarlo en tu sesión antes de iniciar Jupyter.
-Studio sí dispone de su propio cargador de `.env`.
-
-| Ruta | Variables |
-|---|---|
-| Python | Ninguna |
-| OpenAI | `OPENAI_API_KEY`, `OPENAI_MODEL_ID`; `OPENAI_BASE_URL` opcional |
-| Ollama | `OLLAMA_API_KEY`, `OLLAMA_MODEL_ID`, `OLLAMA_BASE_URL` |
-| Bedrock API key | `AWS_BEARER_TOKEN_BEDROCK`, `BEDROCK_MODEL_ID`, `AWS_REGION`; `BEDROCK_BASE_URL` opcional |
-
-Para Ollama local sin autenticación puedes usar un valor no secreto en
-`OLLAMA_API_KEY`; el endpoint y modelo deben corresponder a tu servidor.
-No cambies de modelo para convertir un fallo en un éxito sin registrar el cambio.
-AWS IAM y ADA IAM tienen preparación y aceptación separadas, todavía pendientes.
-
-## Studio
-
-1. Descarga [Studio 2.1.3](https://github.com/JacoboGGLeon/agentic_systems/releases/download/v2.1.3/agentic-systems-studio-2.1.3-final-local.zip).
-2. Descomprímelo y entra en la carpeta que contiene `wheels/`.
-3. Instala el wheel de Studio y abre la interfaz:
+Extract agentic-systems-studio-2.1.4.zip. From its studio directory:
 
 ```bash
-python -m pip install "./wheels/agentic_systems_studio-2.1.3-py3-none-any.whl[ui,frameworks,notebook]"
+python -m pip install "wheels/agentic_systems_studio-2.1.4-py3-none-any.whl[ui,notebook]"
+python -m streamlit run app.py
 ```
 
-```python
-from agentic_systems_studio import launch_studio
-session = launch_studio()
-```
+Follow the included Studio README for launch commands. Tutorials/examples and docs
+are in agentic-systems-learning-2.1.4.zip. Install a Jupyter kernel in this same
+environment before executing notebooks. Live cells require configured providers
+and an explicitly authorized persistent budget; reading saved outputs costs nothing.
 
-Python funciona sin credenciales. Consulta [Studio](examples/agentic_systems_studio/README.md)
-para el uso desde notebook y sus laboratorios. El ZIP contiene el SDK y la aplicación;
-no contiene claves ni todas las dependencias para una instalación desconectada.
+Extract agentic-systems-skill-2.1.4.zip into your Codex/ChatGPT skills directory,
+retaining the agentic-systems folder and its SKILL.md, references, scripts and assets.
+The optional ADA asset is separate; its diagnostics do not certify AWS/ADA access.
 
-## Artefactos y validación
+## Reproducibility
 
-El [release](https://github.com/JacoboGGLeon/agentic_systems/releases/tag/v2.1.3)
-publica hashes y evidencia del SDK, sdist, Studio y notebook aprobado. Para una
-instalación desconectada, prepara además un wheelhouse con sus dependencias y usa
-`--no-index --find-links`. Los tests se ejecutan contra el wheel instalado, sin
-modo editable; no se considera el checkout como evidencia del paquete instalado.
-
-[Tutorials](tutorials/README.md) · [Examples](examples/README.md) ·
-[API](docs/API_213.md) · [Resultados actuales](docs/LEARNING_VALIDATION_213.md)
+Verify SHA-256 against release-manifest.json before installation. TestPyPI, PyPI and
+GitHub promote the same SDK distributions. Historical dev8 runs retain their original
+artifact identities; stable acceptance explicitly uses approved executable-payload
+equivalence plus stable offline CI, without claiming new stable live inference.
+See docs/RELEASE_NOTES_214.md for known limitations and the acceptance scope.

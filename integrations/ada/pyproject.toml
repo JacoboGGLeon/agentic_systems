@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agentic-systems-ada"
+version = "2.1.4"
+description = "Optional offline-first AWS/ADA configuration diagnostics for Agentic Systems"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+dependencies = ["agentic-systems[bedrock]==2.1.4"]
+
+[project.scripts]
+agentic-systems-ada = "agentic_systems_ada:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

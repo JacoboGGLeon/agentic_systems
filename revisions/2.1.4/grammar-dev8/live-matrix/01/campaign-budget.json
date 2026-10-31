@@ -1,0 +1,2688 @@
+{
+  "schema_version": "agentic_systems.campaign-214-budget.v1",
+  "authorization": "New campaign explicitly authorized by user: USD10 and 300 total provider requests. Includes errors, retries, evaluators and Ollama.",
+  "limits": {
+    "usd": 10,
+    "requests": 300
+  },
+  "routes": {
+    "openai-runtime": {
+      "model": "gpt-4.1-mini",
+      "endpoint": "https://api.openai.com/v1",
+      "key_env": "OPENAI_API_KEY",
+      "input_usd_per_million": 0.4,
+      "output_usd_per_million": 1.6
+    },
+    "bedrock-runtime": {
+      "model": "qwen.qwen3-32b-v1:0",
+      "endpoint": "https://bedrock-runtime.us-east-2.amazonaws.com",
+      "region": "us-east-2",
+      "key_env": "AWS_BEARER_TOKEN_BEDROCK",
+      "input_usd_per_million": 1,
+      "output_usd_per_million": 4
+    },
+    "ollama-local": {
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "endpoint": "http://127.0.0.1:11434/v1",
+      "input_usd_per_million": 0,
+      "output_usd_per_million": 0
+    },
+    "ollama-cloud": {
+      "model": "gemma4:31b",
+      "configured_model": "gemma4:31b-cloud",
+      "endpoint": "https://ollama.com/v1",
+      "key_env": "OLLAMA_API_KEY",
+      "input_usd_per_million": 1,
+      "output_usd_per_million": 4
+    }
+  },
+  "attempts": [
+    {
+      "attempt": 1,
+      "kind": "metadata",
+      "phase": "preflight",
+      "provider": "ollama-local",
+      "request_bytes": 0,
+      "max_output_tokens": 0,
+      "reserved_usd": "0.000000"
+    },
+    {
+      "attempt": 2,
+      "kind": "metadata",
+      "phase": "preflight",
+      "provider": "ollama-local",
+      "request_bytes": 0,
+      "max_output_tokens": 0,
+      "reserved_usd": "0.000000"
+    },
+    {
+      "attempt": 3,
+      "kind": "metadata",
+      "phase": "preflight",
+      "provider": "ollama-cloud",
+      "request_bytes": 0,
+      "max_output_tokens": 0,
+      "reserved_usd": "0.000000"
+    },
+    {
+      "attempt": 4,
+      "kind": "metadata",
+      "phase": "preflight",
+      "provider": "ollama-cloud",
+      "request_bytes": 0,
+      "max_output_tokens": 0,
+      "reserved_usd": "0.000000"
+    },
+    {
+      "attempt": 5,
+      "kind": "metadata",
+      "phase": "preflight",
+      "provider": "ollama-cloud",
+      "request_bytes": 0,
+      "max_output_tokens": 0,
+      "reserved_usd": "0.000000"
+    },
+    {
+      "attempt": 6,
+      "phase": "openai-runtime/native/pilot",
+      "provider": "openai-runtime",
+      "request_bytes": 462,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004327",
+      "created_at": "2026-10-30T04:34:42.390018+00:00"
+    },
+    {
+      "attempt": 7,
+      "phase": "openai-runtime/openai-agents/pilot",
+      "provider": "openai-runtime",
+      "request_bytes": 514,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004353",
+      "created_at": "2026-10-30T04:34:51.205448+00:00"
+    },
+    {
+      "attempt": 8,
+      "phase": "openai-runtime/strands/pilot",
+      "provider": "openai-runtime",
+      "request_bytes": 541,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004367",
+      "created_at": "2026-10-30T04:34:59.465213+00:00"
+    },
+    {
+      "attempt": 9,
+      "phase": "bedrock-runtime/native/pilot",
+      "provider": "bedrock-runtime",
+      "request_bytes": 442,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.010793",
+      "created_at": "2026-10-30T04:35:05.422182+00:00"
+    },
+    {
+      "attempt": 10,
+      "phase": "bedrock-runtime/openai-agents/pilot",
+      "provider": "bedrock-runtime",
+      "request_bytes": 442,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.010793",
+      "created_at": "2026-10-30T04:35:12.747884+00:00"
+    },
+    {
+      "attempt": 11,
+      "phase": "bedrock-runtime/strands/pilot",
+      "provider": "bedrock-runtime",
+      "request_bytes": 442,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.010793",
+      "created_at": "2026-10-30T04:35:18.443859+00:00"
+    },
+    {
+      "attempt": 12,
+      "phase": "ollama-local/native/pilot",
+      "provider": "ollama-local",
+      "request_bytes": 479,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:35:25.626372+00:00"
+    },
+    {
+      "attempt": 13,
+      "phase": "ollama-local/openai-agents/pilot",
+      "provider": "ollama-local",
+      "request_bytes": 447,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:35:40.694711+00:00"
+    },
+    {
+      "attempt": 14,
+      "phase": "ollama-local/strands/pilot",
+      "provider": "ollama-local",
+      "request_bytes": 558,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:35:48.842949+00:00"
+    },
+    {
+      "attempt": 15,
+      "phase": "ollama-cloud/native/pilot",
+      "provider": "ollama-cloud",
+      "request_bytes": 460,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.010815",
+      "created_at": "2026-10-30T04:35:56.272826+00:00"
+    },
+    {
+      "attempt": 16,
+      "phase": "ollama-cloud/openai-agents/pilot",
+      "provider": "ollama-cloud",
+      "request_bytes": 428,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.010775",
+      "created_at": "2026-10-30T04:36:05.020999+00:00"
+    },
+    {
+      "attempt": 17,
+      "phase": "ollama-cloud/strands/pilot",
+      "provider": "ollama-cloud",
+      "request_bytes": 539,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.010914",
+      "created_at": "2026-10-30T04:36:14.187973+00:00"
+    },
+    {
+      "attempt": 18,
+      "phase": "openai-runtime/native/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 1603,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004898",
+      "created_at": "2026-10-30T04:36:54.545552+00:00"
+    },
+    {
+      "attempt": 19,
+      "phase": "openai-runtime/native/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 1882,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.005037",
+      "created_at": "2026-10-30T04:36:55.688143+00:00"
+    },
+    {
+      "attempt": 20,
+      "phase": "openai-runtime/native/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 1837,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.005015",
+      "created_at": "2026-10-30T04:36:56.716137+00:00"
+    },
+    {
+      "attempt": 21,
+      "phase": "openai-runtime/native/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 2091,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.005142",
+      "created_at": "2026-10-30T04:36:57.395708+00:00"
+    },
+    {
+      "attempt": 22,
+      "phase": "openai-runtime/native/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 1832,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.005012",
+      "created_at": "2026-10-30T04:36:58.633477+00:00"
+    },
+    {
+      "attempt": 23,
+      "phase": "openai-runtime/native/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 2110,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.005151",
+      "created_at": "2026-10-30T04:37:00.015800+00:00"
+    },
+    {
+      "attempt": 24,
+      "phase": "openai-runtime/native/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 2064,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.005128",
+      "created_at": "2026-10-30T04:37:01.981024+00:00"
+    },
+    {
+      "attempt": 25,
+      "phase": "openai-runtime/native/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 2316,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.005254",
+      "created_at": "2026-10-30T04:37:02.714383+00:00"
+    },
+    {
+      "attempt": 26,
+      "phase": "openai-runtime/native/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 4655,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.006424",
+      "created_at": "2026-10-30T04:37:04.105448+00:00"
+    },
+    {
+      "attempt": 27,
+      "phase": "openai-runtime/native/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 4933,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.006563",
+      "created_at": "2026-10-30T04:37:04.844589+00:00"
+    },
+    {
+      "attempt": 28,
+      "phase": "openai-runtime/native/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 4887,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.006540",
+      "created_at": "2026-10-30T04:37:05.806822+00:00"
+    },
+    {
+      "attempt": 29,
+      "phase": "openai-runtime/native/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 5148,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.006670",
+      "created_at": "2026-10-30T04:37:06.567217+00:00"
+    },
+    {
+      "attempt": 30,
+      "phase": "openai-runtime/native/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 6112,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.007152",
+      "created_at": "2026-10-30T04:37:08.229364+00:00"
+    },
+    {
+      "attempt": 31,
+      "phase": "openai-runtime/native/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 6393,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.007293",
+      "created_at": "2026-10-30T04:37:08.843283+00:00"
+    },
+    {
+      "attempt": 32,
+      "phase": "openai-runtime/native/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 6344,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.007268",
+      "created_at": "2026-10-30T04:37:09.823919+00:00"
+    },
+    {
+      "attempt": 33,
+      "phase": "openai-runtime/native/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 6599,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.007396",
+      "created_at": "2026-10-30T04:37:11.417628+00:00"
+    },
+    {
+      "attempt": 34,
+      "phase": "openai-runtime/native/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 6238,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.007215",
+      "created_at": "2026-10-30T04:37:12.569230+00:00"
+    },
+    {
+      "attempt": 35,
+      "phase": "openai-runtime/native/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 6519,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.007356",
+      "created_at": "2026-10-30T04:37:13.341676+00:00"
+    },
+    {
+      "attempt": 36,
+      "phase": "openai-runtime/native/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 6470,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.007331",
+      "created_at": "2026-10-30T04:37:14.432265+00:00"
+    },
+    {
+      "attempt": 37,
+      "phase": "openai-runtime/native/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 6725,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.007459",
+      "created_at": "2026-10-30T04:37:15.382379+00:00"
+    },
+    {
+      "attempt": 38,
+      "phase": "openai-runtime/openai-agents/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 1696,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004944",
+      "created_at": "2026-10-30T04:37:25.749248+00:00"
+    },
+    {
+      "attempt": 39,
+      "phase": "openai-runtime/openai-agents/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 2045,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.005119",
+      "created_at": "2026-10-30T04:37:27.015962+00:00"
+    },
+    {
+      "attempt": 40,
+      "phase": "openai-runtime/openai-agents/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 1927,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.005060",
+      "created_at": "2026-10-30T04:37:28.354455+00:00"
+    },
+    {
+      "attempt": 41,
+      "phase": "openai-runtime/openai-agents/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 2310,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.005251",
+      "created_at": "2026-10-30T04:37:29.306996+00:00"
+    },
+    {
+      "attempt": 42,
+      "phase": "openai-runtime/openai-agents/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 1925,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.005059",
+      "created_at": "2026-10-30T04:37:30.920002+00:00"
+    },
+    {
+      "attempt": 43,
+      "phase": "openai-runtime/openai-agents/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 2273,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.005233",
+      "created_at": "2026-10-30T04:37:32.233302+00:00"
+    },
+    {
+      "attempt": 44,
+      "phase": "openai-runtime/openai-agents/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 2154,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.005173",
+      "created_at": "2026-10-30T04:37:33.905470+00:00"
+    },
+    {
+      "attempt": 45,
+      "phase": "openai-runtime/openai-agents/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 2536,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.005364",
+      "created_at": "2026-10-30T04:37:35.092300+00:00"
+    },
+    {
+      "attempt": 46,
+      "phase": "openai-runtime/openai-agents/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 4748,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.006470",
+      "created_at": "2026-10-30T04:37:36.534808+00:00"
+    },
+    {
+      "attempt": 47,
+      "phase": "openai-runtime/openai-agents/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 5096,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.006644",
+      "created_at": "2026-10-30T04:37:37.502236+00:00"
+    },
+    {
+      "attempt": 48,
+      "phase": "openai-runtime/openai-agents/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 4977,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.006585",
+      "created_at": "2026-10-30T04:37:38.629144+00:00"
+    },
+    {
+      "attempt": 49,
+      "phase": "openai-runtime/openai-agents/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 5368,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.006780",
+      "created_at": "2026-10-30T04:37:39.787065+00:00"
+    },
+    {
+      "attempt": 50,
+      "phase": "openai-runtime/openai-agents/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 6205,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.007199",
+      "created_at": "2026-10-30T04:37:41.729091+00:00"
+    },
+    {
+      "attempt": 51,
+      "phase": "openai-runtime/openai-agents/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 6555,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.007374",
+      "created_at": "2026-10-30T04:37:42.876077+00:00"
+    },
+    {
+      "attempt": 52,
+      "phase": "openai-runtime/openai-agents/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 6434,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.007313",
+      "created_at": "2026-10-30T04:37:44.581152+00:00"
+    },
+    {
+      "attempt": 53,
+      "phase": "openai-runtime/openai-agents/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 6818,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.007505",
+      "created_at": "2026-10-30T04:37:45.619452+00:00"
+    },
+    {
+      "attempt": 54,
+      "phase": "openai-runtime/openai-agents/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 6331,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.007262",
+      "created_at": "2026-10-30T04:37:47.284207+00:00"
+    },
+    {
+      "attempt": 55,
+      "phase": "openai-runtime/openai-agents/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 6681,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.007437",
+      "created_at": "2026-10-30T04:37:48.206227+00:00"
+    },
+    {
+      "attempt": 56,
+      "phase": "openai-runtime/openai-agents/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 6560,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.007376",
+      "created_at": "2026-10-30T04:37:49.761424+00:00"
+    },
+    {
+      "attempt": 57,
+      "phase": "openai-runtime/openai-agents/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 6944,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.007568",
+      "created_at": "2026-10-30T04:37:50.847107+00:00"
+    },
+    {
+      "attempt": 58,
+      "phase": "openai-runtime/strands/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 1741,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.004967",
+      "created_at": "2026-10-30T04:38:00.601564+00:00"
+    },
+    {
+      "attempt": 59,
+      "phase": "openai-runtime/strands/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 2069,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.005131",
+      "created_at": "2026-10-30T04:38:01.801520+00:00"
+    },
+    {
+      "attempt": 60,
+      "phase": "openai-runtime/strands/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 2001,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.005097",
+      "created_at": "2026-10-30T04:38:02.929852+00:00"
+    },
+    {
+      "attempt": 61,
+      "phase": "openai-runtime/strands/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 2369,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.005281",
+      "created_at": "2026-10-30T04:38:04.034922+00:00"
+    },
+    {
+      "attempt": 62,
+      "phase": "openai-runtime/strands/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 1970,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.005081",
+      "created_at": "2026-10-30T04:38:05.430975+00:00"
+    },
+    {
+      "attempt": 63,
+      "phase": "openai-runtime/strands/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 2297,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.005245",
+      "created_at": "2026-10-30T04:38:06.818042+00:00"
+    },
+    {
+      "attempt": 64,
+      "phase": "openai-runtime/strands/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 2228,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.005210",
+      "created_at": "2026-10-30T04:38:08.062057+00:00"
+    },
+    {
+      "attempt": 65,
+      "phase": "openai-runtime/strands/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 2595,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.005394",
+      "created_at": "2026-10-30T04:38:09.183021+00:00"
+    },
+    {
+      "attempt": 66,
+      "phase": "openai-runtime/strands/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 4803,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.006498",
+      "created_at": "2026-10-30T04:38:10.576573+00:00"
+    },
+    {
+      "attempt": 67,
+      "phase": "openai-runtime/strands/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 5130,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.006661",
+      "created_at": "2026-10-30T04:38:11.954994+00:00"
+    },
+    {
+      "attempt": 68,
+      "phase": "openai-runtime/strands/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 5061,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.006627",
+      "created_at": "2026-10-30T04:38:13.083552+00:00"
+    },
+    {
+      "attempt": 69,
+      "phase": "openai-runtime/strands/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 5437,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.006815",
+      "created_at": "2026-10-30T04:38:14.233972+00:00"
+    },
+    {
+      "attempt": 70,
+      "phase": "openai-runtime/strands/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 6270,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.007231",
+      "created_at": "2026-10-30T04:38:16.069618+00:00"
+    },
+    {
+      "attempt": 71,
+      "phase": "openai-runtime/strands/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 6599,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.007396",
+      "created_at": "2026-10-30T04:38:17.222289+00:00"
+    },
+    {
+      "attempt": 72,
+      "phase": "openai-runtime/strands/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 6528,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.007360",
+      "created_at": "2026-10-30T04:38:18.509154+00:00"
+    },
+    {
+      "attempt": 73,
+      "phase": "openai-runtime/strands/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 6897,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.007545",
+      "created_at": "2026-10-30T04:38:19.704722+00:00"
+    },
+    {
+      "attempt": 74,
+      "phase": "openai-runtime/strands/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 6396,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.007294",
+      "created_at": "2026-10-30T04:38:21.450432+00:00"
+    },
+    {
+      "attempt": 75,
+      "phase": "openai-runtime/strands/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 6725,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.007459",
+      "created_at": "2026-10-30T04:38:22.685355+00:00"
+    },
+    {
+      "attempt": 76,
+      "phase": "openai-runtime/strands/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 6654,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.007423",
+      "created_at": "2026-10-30T04:38:24.189239+00:00"
+    },
+    {
+      "attempt": 77,
+      "phase": "openai-runtime/strands/composition",
+      "provider": "openai-runtime",
+      "request_bytes": 7023,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.007608",
+      "created_at": "2026-10-30T04:38:25.554958+00:00"
+    },
+    {
+      "attempt": 78,
+      "phase": "bedrock-runtime/native/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1660,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012315",
+      "created_at": "2026-10-30T04:38:34.805415+00:00"
+    },
+    {
+      "attempt": 79,
+      "phase": "bedrock-runtime/native/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2282,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.013093",
+      "created_at": "2026-10-30T04:38:36.268631+00:00"
+    },
+    {
+      "attempt": 80,
+      "phase": "bedrock-runtime/native/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1902,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012618",
+      "created_at": "2026-10-30T04:38:37.211320+00:00"
+    },
+    {
+      "attempt": 81,
+      "phase": "bedrock-runtime/native/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1889,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012602",
+      "created_at": "2026-10-30T04:38:38.959147+00:00"
+    },
+    {
+      "attempt": 82,
+      "phase": "bedrock-runtime/native/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2510,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.013378",
+      "created_at": "2026-10-30T04:38:39.957045+00:00"
+    },
+    {
+      "attempt": 83,
+      "phase": "bedrock-runtime/native/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2129,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012902",
+      "created_at": "2026-10-30T04:38:40.714170+00:00"
+    },
+    {
+      "attempt": 84,
+      "phase": "bedrock-runtime/native/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 3812,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.015005",
+      "created_at": "2026-10-30T04:38:42.276011+00:00"
+    },
+    {
+      "attempt": 85,
+      "phase": "bedrock-runtime/native/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 4436,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.015785",
+      "created_at": "2026-10-30T04:38:43.290802+00:00"
+    },
+    {
+      "attempt": 86,
+      "phase": "bedrock-runtime/native/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 4052,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.015305",
+      "created_at": "2026-10-30T04:38:44.068108+00:00"
+    },
+    {
+      "attempt": 87,
+      "phase": "bedrock-runtime/native/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 4721,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.016142",
+      "created_at": "2026-10-30T04:38:45.604305+00:00"
+    },
+    {
+      "attempt": 88,
+      "phase": "bedrock-runtime/native/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 3938,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.015163",
+      "created_at": "2026-10-30T04:38:46.391616+00:00"
+    },
+    {
+      "attempt": 89,
+      "phase": "bedrock-runtime/native/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 4562,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.015943",
+      "created_at": "2026-10-30T04:38:47.393329+00:00"
+    },
+    {
+      "attempt": 90,
+      "phase": "bedrock-runtime/native/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 4178,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.015463",
+      "created_at": "2026-10-30T04:38:48.080764+00:00"
+    },
+    {
+      "attempt": 91,
+      "phase": "bedrock-runtime/native/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 4847,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.016299",
+      "created_at": "2026-10-30T04:38:49.201326+00:00"
+    },
+    {
+      "attempt": 92,
+      "phase": "bedrock-runtime/openai-agents/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1651,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012304",
+      "created_at": "2026-10-30T04:38:58.516896+00:00"
+    },
+    {
+      "attempt": 93,
+      "phase": "bedrock-runtime/openai-agents/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2000,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012740",
+      "created_at": "2026-10-30T04:38:59.337254+00:00"
+    },
+    {
+      "attempt": 94,
+      "phase": "bedrock-runtime/openai-agents/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1890,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012603",
+      "created_at": "2026-10-30T04:39:00.124951+00:00"
+    },
+    {
+      "attempt": 95,
+      "phase": "bedrock-runtime/openai-agents/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1880,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012590",
+      "created_at": "2026-10-30T04:39:01.603432+00:00"
+    },
+    {
+      "attempt": 96,
+      "phase": "bedrock-runtime/openai-agents/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2228,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.013025",
+      "created_at": "2026-10-30T04:39:02.898452+00:00"
+    },
+    {
+      "attempt": 97,
+      "phase": "bedrock-runtime/openai-agents/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2117,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012887",
+      "created_at": "2026-10-30T04:39:03.732677+00:00"
+    },
+    {
+      "attempt": 98,
+      "phase": "bedrock-runtime/openai-agents/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 3803,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.014994",
+      "created_at": "2026-10-30T04:39:05.389190+00:00"
+    },
+    {
+      "attempt": 99,
+      "phase": "bedrock-runtime/openai-agents/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 4153,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.015432",
+      "created_at": "2026-10-30T04:39:06.430184+00:00"
+    },
+    {
+      "attempt": 100,
+      "phase": "bedrock-runtime/openai-agents/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 4040,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.015290",
+      "created_at": "2026-10-30T04:39:07.164399+00:00"
+    },
+    {
+      "attempt": 101,
+      "phase": "bedrock-runtime/openai-agents/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 4424,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.015770",
+      "created_at": "2026-10-30T04:39:08.224568+00:00"
+    },
+    {
+      "attempt": 102,
+      "phase": "bedrock-runtime/openai-agents/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 3929,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.015152",
+      "created_at": "2026-10-30T04:39:09.056647+00:00"
+    },
+    {
+      "attempt": 103,
+      "phase": "bedrock-runtime/openai-agents/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 4279,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.015589",
+      "created_at": "2026-10-30T04:39:10.009254+00:00"
+    },
+    {
+      "attempt": 104,
+      "phase": "bedrock-runtime/openai-agents/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 4166,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.015448",
+      "created_at": "2026-10-30T04:39:11.304707+00:00"
+    },
+    {
+      "attempt": 105,
+      "phase": "bedrock-runtime/openai-agents/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 4550,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.015928",
+      "created_at": "2026-10-30T04:39:12.319126+00:00"
+    },
+    {
+      "attempt": 106,
+      "phase": "bedrock-runtime/strands/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1723,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012394",
+      "created_at": "2026-10-30T04:39:20.027966+00:00"
+    },
+    {
+      "attempt": 107,
+      "phase": "bedrock-runtime/strands/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2082,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012843",
+      "created_at": "2026-10-30T04:39:21.320717+00:00"
+    },
+    {
+      "attempt": 108,
+      "phase": "bedrock-runtime/strands/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1993,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012732",
+      "created_at": "2026-10-30T04:39:22.045889+00:00"
+    },
+    {
+      "attempt": 109,
+      "phase": "bedrock-runtime/strands/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1952,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012680",
+      "created_at": "2026-10-30T04:39:23.641782+00:00"
+    },
+    {
+      "attempt": 110,
+      "phase": "bedrock-runtime/strands/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2310,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.013128",
+      "created_at": "2026-10-30T04:39:24.624771+00:00"
+    },
+    {
+      "attempt": 111,
+      "phase": "bedrock-runtime/strands/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2220,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.013015",
+      "created_at": "2026-10-30T04:39:25.536239+00:00"
+    },
+    {
+      "attempt": 112,
+      "phase": "bedrock-runtime/strands/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 3875,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.015084",
+      "created_at": "2026-10-30T04:39:27.390664+00:00"
+    },
+    {
+      "attempt": 113,
+      "phase": "bedrock-runtime/strands/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 4235,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.015534",
+      "created_at": "2026-10-30T04:39:28.381027+00:00"
+    },
+    {
+      "attempt": 114,
+      "phase": "bedrock-runtime/strands/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 4143,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.015419",
+      "created_at": "2026-10-30T04:39:29.137788+00:00"
+    },
+    {
+      "attempt": 115,
+      "phase": "bedrock-runtime/strands/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 4541,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.015917",
+      "created_at": "2026-10-30T04:39:30.268481+00:00"
+    },
+    {
+      "attempt": 116,
+      "phase": "bedrock-runtime/strands/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 4001,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.015242",
+      "created_at": "2026-10-30T04:39:31.193866+00:00"
+    },
+    {
+      "attempt": 117,
+      "phase": "bedrock-runtime/strands/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 4361,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.015692",
+      "created_at": "2026-10-30T04:39:32.357574+00:00"
+    },
+    {
+      "attempt": 118,
+      "phase": "bedrock-runtime/strands/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 4269,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.015577",
+      "created_at": "2026-10-30T04:39:33.102797+00:00"
+    },
+    {
+      "attempt": 119,
+      "phase": "bedrock-runtime/strands/composition",
+      "provider": "bedrock-runtime",
+      "request_bytes": 4667,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.016074",
+      "created_at": "2026-10-30T04:39:34.035951+00:00"
+    },
+    {
+      "attempt": 120,
+      "phase": "ollama-local/native/composition",
+      "provider": "ollama-local",
+      "request_bytes": 1620,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:39:43.171043+00:00"
+    },
+    {
+      "attempt": 121,
+      "phase": "ollama-local/native/composition",
+      "provider": "ollama-local",
+      "request_bytes": 1905,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:39:45.033288+00:00"
+    },
+    {
+      "attempt": 122,
+      "phase": "ollama-local/native/composition",
+      "provider": "ollama-local",
+      "request_bytes": 1854,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:39:46.781904+00:00"
+    },
+    {
+      "attempt": 123,
+      "phase": "ollama-local/native/composition",
+      "provider": "ollama-local",
+      "request_bytes": 2114,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:39:48.792532+00:00"
+    },
+    {
+      "attempt": 124,
+      "phase": "ollama-local/native/composition",
+      "provider": "ollama-local",
+      "request_bytes": 1849,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:39:51.005200+00:00"
+    },
+    {
+      "attempt": 125,
+      "phase": "ollama-local/native/composition",
+      "provider": "ollama-local",
+      "request_bytes": 2133,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:39:52.925248+00:00"
+    },
+    {
+      "attempt": 126,
+      "phase": "ollama-local/native/composition",
+      "provider": "ollama-local",
+      "request_bytes": 2081,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:39:54.857188+00:00"
+    },
+    {
+      "attempt": 127,
+      "phase": "ollama-local/native/composition",
+      "provider": "ollama-local",
+      "request_bytes": 2339,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:39:57.182624+00:00"
+    },
+    {
+      "attempt": 128,
+      "phase": "ollama-local/native/composition",
+      "provider": "ollama-local",
+      "request_bytes": 4682,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:39:59.328736+00:00"
+    },
+    {
+      "attempt": 129,
+      "phase": "ollama-local/native/composition",
+      "provider": "ollama-local",
+      "request_bytes": 4966,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:40:02.406999+00:00"
+    },
+    {
+      "attempt": 130,
+      "phase": "ollama-local/native/composition",
+      "provider": "ollama-local",
+      "request_bytes": 4914,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:40:04.521049+00:00"
+    },
+    {
+      "attempt": 131,
+      "phase": "ollama-local/native/composition",
+      "provider": "ollama-local",
+      "request_bytes": 5181,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:40:08.160580+00:00"
+    },
+    {
+      "attempt": 132,
+      "phase": "ollama-local/native/composition",
+      "provider": "ollama-local",
+      "request_bytes": 6149,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:40:10.924569+00:00"
+    },
+    {
+      "attempt": 133,
+      "phase": "ollama-local/native/composition",
+      "provider": "ollama-local",
+      "request_bytes": 6436,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:40:14.056763+00:00"
+    },
+    {
+      "attempt": 134,
+      "phase": "ollama-local/native/composition",
+      "provider": "ollama-local",
+      "request_bytes": 6381,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:40:16.391134+00:00"
+    },
+    {
+      "attempt": 135,
+      "phase": "ollama-local/native/composition",
+      "provider": "ollama-local",
+      "request_bytes": 6642,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:40:19.980753+00:00"
+    },
+    {
+      "attempt": 136,
+      "phase": "ollama-local/native/composition",
+      "provider": "ollama-local",
+      "request_bytes": 6275,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:40:22.862351+00:00"
+    },
+    {
+      "attempt": 137,
+      "phase": "ollama-local/native/composition",
+      "provider": "ollama-local",
+      "request_bytes": 6562,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:40:25.596701+00:00"
+    },
+    {
+      "attempt": 138,
+      "phase": "ollama-local/native/composition",
+      "provider": "ollama-local",
+      "request_bytes": 6507,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:40:28.251054+00:00"
+    },
+    {
+      "attempt": 139,
+      "phase": "ollama-local/native/composition",
+      "provider": "ollama-local",
+      "request_bytes": 6768,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:40:30.965902+00:00"
+    },
+    {
+      "attempt": 140,
+      "phase": "ollama-local/openai-agents/composition",
+      "provider": "ollama-local",
+      "request_bytes": 1653,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:40:49.983598+00:00"
+    },
+    {
+      "attempt": 141,
+      "phase": "ollama-local/openai-agents/composition",
+      "provider": "ollama-local",
+      "request_bytes": 1579,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:40:51.926499+00:00"
+    },
+    {
+      "attempt": 142,
+      "phase": "ollama-local/openai-agents/composition",
+      "provider": "ollama-local",
+      "request_bytes": 1884,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:40:54.086775+00:00"
+    },
+    {
+      "attempt": 143,
+      "phase": "ollama-local/openai-agents/composition",
+      "provider": "ollama-local",
+      "request_bytes": 1767,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:40:56.316483+00:00"
+    },
+    {
+      "attempt": 144,
+      "phase": "ollama-local/openai-agents/composition",
+      "provider": "ollama-local",
+      "request_bytes": 1882,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:40:59.111793+00:00"
+    },
+    {
+      "attempt": 145,
+      "phase": "ollama-local/openai-agents/composition",
+      "provider": "ollama-local",
+      "request_bytes": 1807,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:41:01.310096+00:00"
+    },
+    {
+      "attempt": 146,
+      "phase": "ollama-local/openai-agents/composition",
+      "provider": "ollama-local",
+      "request_bytes": 2111,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:41:03.927191+00:00"
+    },
+    {
+      "attempt": 147,
+      "phase": "ollama-local/openai-agents/composition",
+      "provider": "ollama-local",
+      "request_bytes": 1993,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:41:06.350309+00:00"
+    },
+    {
+      "attempt": 148,
+      "phase": "ollama-local/openai-agents/composition",
+      "provider": "ollama-local",
+      "request_bytes": 4715,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:41:09.374756+00:00"
+    },
+    {
+      "attempt": 149,
+      "phase": "ollama-local/openai-agents/composition",
+      "provider": "ollama-local",
+      "request_bytes": 4640,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:41:13.125556+00:00"
+    },
+    {
+      "attempt": 150,
+      "phase": "ollama-local/openai-agents/composition",
+      "provider": "ollama-local",
+      "request_bytes": 4944,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:41:15.889978+00:00"
+    },
+    {
+      "attempt": 151,
+      "phase": "ollama-local/openai-agents/composition",
+      "provider": "ollama-local",
+      "request_bytes": 4835,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:41:20.145671+00:00"
+    },
+    {
+      "attempt": 152,
+      "phase": "ollama-local/openai-agents/composition",
+      "provider": "ollama-local",
+      "request_bytes": 6182,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:41:27.212929+00:00"
+    },
+    {
+      "attempt": 153,
+      "phase": "ollama-local/openai-agents/composition",
+      "provider": "ollama-local",
+      "request_bytes": 6109,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:41:31.113789+00:00"
+    },
+    {
+      "attempt": 154,
+      "phase": "ollama-local/openai-agents/composition",
+      "provider": "ollama-local",
+      "request_bytes": 6411,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:41:34.468286+00:00"
+    },
+    {
+      "attempt": 155,
+      "phase": "ollama-local/openai-agents/composition",
+      "provider": "ollama-local",
+      "request_bytes": 6295,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:41:40.159946+00:00"
+    },
+    {
+      "attempt": 156,
+      "phase": "ollama-local/openai-agents/composition",
+      "provider": "ollama-local",
+      "request_bytes": 6308,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:41:47.030242+00:00"
+    },
+    {
+      "attempt": 157,
+      "phase": "ollama-local/openai-agents/composition",
+      "provider": "ollama-local",
+      "request_bytes": 6235,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:41:51.778882+00:00"
+    },
+    {
+      "attempt": 158,
+      "phase": "ollama-local/openai-agents/composition",
+      "provider": "ollama-local",
+      "request_bytes": 6537,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:41:58.507386+00:00"
+    },
+    {
+      "attempt": 159,
+      "phase": "ollama-local/openai-agents/composition",
+      "provider": "ollama-local",
+      "request_bytes": 6421,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:42:03.148163+00:00"
+    },
+    {
+      "attempt": 160,
+      "phase": "ollama-local/strands/composition",
+      "provider": "ollama-local",
+      "request_bytes": 1758,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:42:25.360443+00:00"
+    },
+    {
+      "attempt": 161,
+      "phase": "ollama-local/strands/composition",
+      "provider": "ollama-local",
+      "request_bytes": 2092,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:42:28.010860+00:00"
+    },
+    {
+      "attempt": 162,
+      "phase": "ollama-local/strands/composition",
+      "provider": "ollama-local",
+      "request_bytes": 2018,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:42:30.176172+00:00"
+    },
+    {
+      "attempt": 163,
+      "phase": "ollama-local/strands/composition",
+      "provider": "ollama-local",
+      "request_bytes": 2392,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:42:33.802837+00:00"
+    },
+    {
+      "attempt": 164,
+      "phase": "ollama-local/strands/composition",
+      "provider": "ollama-local",
+      "request_bytes": 1987,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:42:37.341277+00:00"
+    },
+    {
+      "attempt": 165,
+      "phase": "ollama-local/strands/composition",
+      "provider": "ollama-local",
+      "request_bytes": 2320,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:42:41.062875+00:00"
+    },
+    {
+      "attempt": 166,
+      "phase": "ollama-local/strands/composition",
+      "provider": "ollama-local",
+      "request_bytes": 2245,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:42:44.113589+00:00"
+    },
+    {
+      "attempt": 167,
+      "phase": "ollama-local/strands/composition",
+      "provider": "ollama-local",
+      "request_bytes": 2618,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:42:48.476899+00:00"
+    },
+    {
+      "attempt": 168,
+      "phase": "ollama-local/strands/composition",
+      "provider": "ollama-local",
+      "request_bytes": 4820,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:42:52.071711+00:00"
+    },
+    {
+      "attempt": 169,
+      "phase": "ollama-local/strands/composition",
+      "provider": "ollama-local",
+      "request_bytes": 5153,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:42:57.778941+00:00"
+    },
+    {
+      "attempt": 170,
+      "phase": "ollama-local/strands/composition",
+      "provider": "ollama-local",
+      "request_bytes": 5078,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:43:03.050362+00:00"
+    },
+    {
+      "attempt": 171,
+      "phase": "ollama-local/strands/composition",
+      "provider": "ollama-local",
+      "request_bytes": 5460,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:43:11.183829+00:00"
+    },
+    {
+      "attempt": 172,
+      "phase": "ollama-local/strands/composition",
+      "provider": "ollama-local",
+      "request_bytes": 6287,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:43:17.403723+00:00"
+    },
+    {
+      "attempt": 173,
+      "phase": "ollama-local/strands/composition",
+      "provider": "ollama-local",
+      "request_bytes": 6622,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:43:24.529150+00:00"
+    },
+    {
+      "attempt": 174,
+      "phase": "ollama-local/strands/composition",
+      "provider": "ollama-local",
+      "request_bytes": 6545,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:43:32.427399+00:00"
+    },
+    {
+      "attempt": 175,
+      "phase": "ollama-local/strands/composition",
+      "provider": "ollama-local",
+      "request_bytes": 6920,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:43:42.407418+00:00"
+    },
+    {
+      "attempt": 176,
+      "phase": "ollama-local/strands/composition",
+      "provider": "ollama-local",
+      "request_bytes": 6413,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:43:48.666312+00:00"
+    },
+    {
+      "attempt": 177,
+      "phase": "ollama-local/strands/composition",
+      "provider": "ollama-local",
+      "request_bytes": 6748,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:43:57.007944+00:00"
+    },
+    {
+      "attempt": 178,
+      "phase": "ollama-local/strands/composition",
+      "provider": "ollama-local",
+      "request_bytes": 6671,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:44:02.175857+00:00"
+    },
+    {
+      "attempt": 179,
+      "phase": "ollama-local/strands/composition",
+      "provider": "ollama-local",
+      "request_bytes": 7046,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:44:08.718713+00:00"
+    },
+    {
+      "attempt": 180,
+      "phase": "ollama-cloud/native/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 1601,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012242",
+      "created_at": "2026-10-30T04:44:34.565925+00:00"
+    },
+    {
+      "attempt": 181,
+      "phase": "ollama-cloud/native/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 1848,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012550",
+      "created_at": "2026-10-30T04:44:35.616424+00:00"
+    },
+    {
+      "attempt": 182,
+      "phase": "ollama-cloud/native/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 1835,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012534",
+      "created_at": "2026-10-30T04:44:36.870291+00:00"
+    },
+    {
+      "attempt": 183,
+      "phase": "ollama-cloud/native/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 2057,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012812",
+      "created_at": "2026-10-30T04:44:37.357150+00:00"
+    },
+    {
+      "attempt": 184,
+      "phase": "ollama-cloud/native/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 1830,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012528",
+      "created_at": "2026-10-30T04:44:39.062484+00:00"
+    },
+    {
+      "attempt": 185,
+      "phase": "ollama-cloud/native/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 2076,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012835",
+      "created_at": "2026-10-30T04:44:39.563132+00:00"
+    },
+    {
+      "attempt": 186,
+      "phase": "ollama-cloud/native/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 2062,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012818",
+      "created_at": "2026-10-30T04:44:40.862292+00:00"
+    },
+    {
+      "attempt": 187,
+      "phase": "ollama-cloud/native/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 2282,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.013093",
+      "created_at": "2026-10-30T04:44:41.432514+00:00"
+    },
+    {
+      "attempt": 188,
+      "phase": "ollama-cloud/native/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 4663,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.016069",
+      "created_at": "2026-10-30T04:44:42.968449+00:00"
+    },
+    {
+      "attempt": 189,
+      "phase": "ollama-cloud/native/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 4909,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.016377",
+      "created_at": "2026-10-30T04:44:43.682217+00:00"
+    },
+    {
+      "attempt": 190,
+      "phase": "ollama-cloud/native/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 4895,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.016359",
+      "created_at": "2026-10-30T04:44:44.951451+00:00"
+    },
+    {
+      "attempt": 191,
+      "phase": "ollama-cloud/native/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 5124,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.016645",
+      "created_at": "2026-10-30T04:44:45.593667+00:00"
+    },
+    {
+      "attempt": 192,
+      "phase": "ollama-cloud/native/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 6130,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.017903",
+      "created_at": "2026-10-30T04:44:47.425926+00:00"
+    },
+    {
+      "attempt": 193,
+      "phase": "ollama-cloud/native/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 6379,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018214",
+      "created_at": "2026-10-30T04:44:48.005064+00:00"
+    },
+    {
+      "attempt": 194,
+      "phase": "ollama-cloud/native/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 6362,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018193",
+      "created_at": "2026-10-30T04:44:49.416226+00:00"
+    },
+    {
+      "attempt": 195,
+      "phase": "ollama-cloud/native/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 6585,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018472",
+      "created_at": "2026-10-30T04:44:49.974875+00:00"
+    },
+    {
+      "attempt": 196,
+      "phase": "ollama-cloud/native/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 6256,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018060",
+      "created_at": "2026-10-30T04:44:51.371708+00:00"
+    },
+    {
+      "attempt": 197,
+      "phase": "ollama-cloud/native/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 6505,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018372",
+      "created_at": "2026-10-30T04:44:55.495233+00:00"
+    },
+    {
+      "attempt": 198,
+      "phase": "ollama-cloud/native/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 6488,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018350",
+      "created_at": "2026-10-30T04:44:56.679592+00:00"
+    },
+    {
+      "attempt": 199,
+      "phase": "ollama-cloud/native/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 6711,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018629",
+      "created_at": "2026-10-30T04:44:57.410183+00:00"
+    },
+    {
+      "attempt": 200,
+      "phase": "ollama-cloud/openai-agents/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 1634,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012283",
+      "created_at": "2026-10-30T04:45:11.819772+00:00"
+    },
+    {
+      "attempt": 201,
+      "phase": "ollama-cloud/openai-agents/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 1522,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012143",
+      "created_at": "2026-10-30T04:45:12.578285+00:00"
+    },
+    {
+      "attempt": 202,
+      "phase": "ollama-cloud/openai-agents/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 1865,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012572",
+      "created_at": "2026-10-30T04:45:13.889774+00:00"
+    },
+    {
+      "attempt": 203,
+      "phase": "ollama-cloud/openai-agents/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 1710,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012378",
+      "created_at": "2026-10-30T04:45:14.329005+00:00"
+    },
+    {
+      "attempt": 204,
+      "phase": "ollama-cloud/openai-agents/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 1863,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012569",
+      "created_at": "2026-10-30T04:45:15.743819+00:00"
+    },
+    {
+      "attempt": 205,
+      "phase": "ollama-cloud/openai-agents/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 1750,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012428",
+      "created_at": "2026-10-30T04:45:16.241715+00:00"
+    },
+    {
+      "attempt": 206,
+      "phase": "ollama-cloud/openai-agents/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 2092,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012855",
+      "created_at": "2026-10-30T04:45:17.476700+00:00"
+    },
+    {
+      "attempt": 207,
+      "phase": "ollama-cloud/openai-agents/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 1936,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012660",
+      "created_at": "2026-10-30T04:45:18.085282+00:00"
+    },
+    {
+      "attempt": 208,
+      "phase": "ollama-cloud/openai-agents/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 4696,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.016110",
+      "created_at": "2026-10-30T04:45:19.441660+00:00"
+    },
+    {
+      "attempt": 209,
+      "phase": "ollama-cloud/openai-agents/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 4583,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.015969",
+      "created_at": "2026-10-30T04:45:19.897847+00:00"
+    },
+    {
+      "attempt": 210,
+      "phase": "ollama-cloud/openai-agents/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 4925,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.016397",
+      "created_at": "2026-10-30T04:45:21.216864+00:00"
+    },
+    {
+      "attempt": 211,
+      "phase": "ollama-cloud/openai-agents/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 4778,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.016213",
+      "created_at": "2026-10-30T04:45:21.782235+00:00"
+    },
+    {
+      "attempt": 212,
+      "phase": "ollama-cloud/openai-agents/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 6163,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.017944",
+      "created_at": "2026-10-30T04:45:23.461643+00:00"
+    },
+    {
+      "attempt": 213,
+      "phase": "ollama-cloud/openai-agents/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 6052,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.017805",
+      "created_at": "2026-10-30T04:45:24.038087+00:00"
+    },
+    {
+      "attempt": 214,
+      "phase": "ollama-cloud/openai-agents/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 6392,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018230",
+      "created_at": "2026-10-30T04:45:25.294618+00:00"
+    },
+    {
+      "attempt": 215,
+      "phase": "ollama-cloud/openai-agents/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 6238,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018038",
+      "created_at": "2026-10-30T04:45:25.950422+00:00"
+    },
+    {
+      "attempt": 216,
+      "phase": "ollama-cloud/openai-agents/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 6289,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018102",
+      "created_at": "2026-10-30T04:45:27.425769+00:00"
+    },
+    {
+      "attempt": 217,
+      "phase": "ollama-cloud/openai-agents/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 6178,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.017963",
+      "created_at": "2026-10-30T04:45:28.121851+00:00"
+    },
+    {
+      "attempt": 218,
+      "phase": "ollama-cloud/openai-agents/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 6518,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018388",
+      "created_at": "2026-10-30T04:45:29.390114+00:00"
+    },
+    {
+      "attempt": 219,
+      "phase": "ollama-cloud/openai-agents/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 6364,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018195",
+      "created_at": "2026-10-30T04:45:29.976055+00:00"
+    },
+    {
+      "attempt": 220,
+      "phase": "ollama-cloud/strands/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 1739,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012414",
+      "created_at": "2026-10-30T04:45:42.256014+00:00"
+    },
+    {
+      "attempt": 221,
+      "phase": "ollama-cloud/strands/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 2035,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012784",
+      "created_at": "2026-10-30T04:45:43.332056+00:00"
+    },
+    {
+      "attempt": 222,
+      "phase": "ollama-cloud/strands/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 1999,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012739",
+      "created_at": "2026-10-30T04:45:44.359031+00:00"
+    },
+    {
+      "attempt": 223,
+      "phase": "ollama-cloud/strands/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 2335,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.013159",
+      "created_at": "2026-10-30T04:45:45.584017+00:00"
+    },
+    {
+      "attempt": 224,
+      "phase": "ollama-cloud/strands/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 1968,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012700",
+      "created_at": "2026-10-30T04:45:47.064187+00:00"
+    },
+    {
+      "attempt": 225,
+      "phase": "ollama-cloud/strands/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 2263,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.013069",
+      "created_at": "2026-10-30T04:45:48.125747+00:00"
+    },
+    {
+      "attempt": 226,
+      "phase": "ollama-cloud/strands/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 2226,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.013023",
+      "created_at": "2026-10-30T04:45:49.303269+00:00"
+    },
+    {
+      "attempt": 227,
+      "phase": "ollama-cloud/strands/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 2561,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.013442",
+      "created_at": "2026-10-30T04:45:50.541024+00:00"
+    },
+    {
+      "attempt": 228,
+      "phase": "ollama-cloud/strands/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 4801,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.016242",
+      "created_at": "2026-10-30T04:45:51.952340+00:00"
+    },
+    {
+      "attempt": 229,
+      "phase": "ollama-cloud/strands/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 5096,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.016610",
+      "created_at": "2026-10-30T04:45:53.094840+00:00"
+    },
+    {
+      "attempt": 230,
+      "phase": "ollama-cloud/strands/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 5059,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.016564",
+      "created_at": "2026-10-30T04:45:54.157035+00:00"
+    },
+    {
+      "attempt": 231,
+      "phase": "ollama-cloud/strands/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 5403,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.016994",
+      "created_at": "2026-10-30T04:45:55.235828+00:00"
+    },
+    {
+      "attempt": 232,
+      "phase": "ollama-cloud/strands/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 6268,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018075",
+      "created_at": "2026-10-30T04:45:56.961210+00:00"
+    },
+    {
+      "attempt": 233,
+      "phase": "ollama-cloud/strands/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 6565,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018447",
+      "created_at": "2026-10-30T04:45:57.997276+00:00"
+    },
+    {
+      "attempt": 234,
+      "phase": "ollama-cloud/strands/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 6526,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018398",
+      "created_at": "2026-10-30T04:45:59.124711+00:00"
+    },
+    {
+      "attempt": 235,
+      "phase": "ollama-cloud/strands/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 6863,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018819",
+      "created_at": "2026-10-30T04:46:00.502239+00:00"
+    },
+    {
+      "attempt": 236,
+      "phase": "ollama-cloud/strands/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 6394,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018233",
+      "created_at": "2026-10-30T04:46:01.686419+00:00"
+    },
+    {
+      "attempt": 237,
+      "phase": "ollama-cloud/strands/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 6691,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018604",
+      "created_at": "2026-10-30T04:46:02.695544+00:00"
+    },
+    {
+      "attempt": 238,
+      "phase": "ollama-cloud/strands/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 6652,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018555",
+      "created_at": "2026-10-30T04:46:03.838347+00:00"
+    },
+    {
+      "attempt": 239,
+      "phase": "ollama-cloud/strands/composition",
+      "provider": "ollama-cloud",
+      "request_bytes": 6989,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018977",
+      "created_at": "2026-10-30T04:46:05.090825+00:00"
+    },
+    {
+      "attempt": 240,
+      "kind": "metadata",
+      "phase": "gpu-observation-after-local-acceptance",
+      "provider": "ollama-local",
+      "request_bytes": 0,
+      "max_output_tokens": 0,
+      "reserved_usd": "0.000000",
+      "created_at": "2026-10-30T04:48:33.718741+00:00"
+    },
+    {
+      "attempt": 241,
+      "phase": "policy-required/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1659,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012314",
+      "created_at": "2026-10-30T04:49:16.227512+00:00"
+    },
+    {
+      "attempt": 242,
+      "phase": "policy-required/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2282,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.013093",
+      "created_at": "2026-10-30T04:49:17.317216+00:00"
+    },
+    {
+      "attempt": 243,
+      "phase": "policy-required/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1901,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012617",
+      "created_at": "2026-10-30T04:49:18.040272+00:00"
+    },
+    {
+      "attempt": 244,
+      "phase": "policy-required/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2570,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.013453",
+      "created_at": "2026-10-30T04:49:19.143005+00:00"
+    },
+    {
+      "attempt": 245,
+      "phase": "policy-required/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1888,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012600",
+      "created_at": "2026-10-30T04:49:20.176548+00:00"
+    },
+    {
+      "attempt": 246,
+      "phase": "policy-required/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2510,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.013378",
+      "created_at": "2026-10-30T04:49:21.140524+00:00"
+    },
+    {
+      "attempt": 247,
+      "phase": "policy-required/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2128,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012900",
+      "created_at": "2026-10-30T04:49:21.901910+00:00"
+    },
+    {
+      "attempt": 248,
+      "phase": "policy-required/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2795,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.013734",
+      "created_at": "2026-10-30T04:49:22.910485+00:00"
+    },
+    {
+      "attempt": 249,
+      "phase": "policy-required/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 4713,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.016132",
+      "created_at": "2026-10-30T04:49:23.760103+00:00"
+    },
+    {
+      "attempt": 250,
+      "phase": "policy-required/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 5335,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.016909",
+      "created_at": "2026-10-30T04:49:24.908246+00:00"
+    },
+    {
+      "attempt": 251,
+      "phase": "policy-required/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 4953,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.016432",
+      "created_at": "2026-10-30T04:49:25.713485+00:00"
+    },
+    {
+      "attempt": 252,
+      "phase": "policy-required/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 5629,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.017277",
+      "created_at": "2026-10-30T04:49:26.719916+00:00"
+    },
+    {
+      "attempt": 253,
+      "phase": "policy-required/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 6172,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.017955",
+      "created_at": "2026-10-30T04:49:27.685444+00:00"
+    },
+    {
+      "attempt": 254,
+      "phase": "policy-required/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 6797,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018737",
+      "created_at": "2026-10-30T04:49:28.829240+00:00"
+    },
+    {
+      "attempt": 255,
+      "phase": "policy-required/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 6412,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018255",
+      "created_at": "2026-10-30T04:49:29.597662+00:00"
+    },
+    {
+      "attempt": 256,
+      "phase": "policy-required/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 7082,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.019093",
+      "created_at": "2026-10-30T04:49:30.588134+00:00"
+    },
+    {
+      "attempt": 257,
+      "phase": "policy-required/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 6298,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018113",
+      "created_at": "2026-10-30T04:49:31.344566+00:00"
+    },
+    {
+      "attempt": 258,
+      "phase": "policy-required/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 6923,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018894",
+      "created_at": "2026-10-30T04:49:32.217655+00:00"
+    },
+    {
+      "attempt": 259,
+      "phase": "policy-required/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 6538,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018413",
+      "created_at": "2026-10-30T04:49:33.045193+00:00"
+    },
+    {
+      "attempt": 260,
+      "phase": "policy-required/bedrock-runtime/native",
+      "provider": "bedrock-runtime",
+      "request_bytes": 7208,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.019250",
+      "created_at": "2026-10-30T04:49:34.132327+00:00"
+    },
+    {
+      "attempt": 261,
+      "phase": "policy-required/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1650,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012303",
+      "created_at": "2026-10-30T04:49:43.920776+00:00"
+    },
+    {
+      "attempt": 262,
+      "phase": "policy-required/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2000,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012740",
+      "created_at": "2026-10-30T04:49:44.815853+00:00"
+    },
+    {
+      "attempt": 263,
+      "phase": "policy-required/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1889,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012602",
+      "created_at": "2026-10-30T04:49:45.578747+00:00"
+    },
+    {
+      "attempt": 264,
+      "phase": "policy-required/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2273,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.013082",
+      "created_at": "2026-10-30T04:49:46.588444+00:00"
+    },
+    {
+      "attempt": 265,
+      "phase": "policy-required/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1879,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012589",
+      "created_at": "2026-10-30T04:49:47.506327+00:00"
+    },
+    {
+      "attempt": 266,
+      "phase": "policy-required/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2228,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.013025",
+      "created_at": "2026-10-30T04:49:48.599585+00:00"
+    },
+    {
+      "attempt": 267,
+      "phase": "policy-required/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2116,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012885",
+      "created_at": "2026-10-30T04:49:49.420286+00:00"
+    },
+    {
+      "attempt": 268,
+      "phase": "policy-required/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2499,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.013364",
+      "created_at": "2026-10-30T04:49:50.495167+00:00"
+    },
+    {
+      "attempt": 269,
+      "phase": "policy-required/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 4704,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.016120",
+      "created_at": "2026-10-30T04:49:51.439090+00:00"
+    },
+    {
+      "attempt": 270,
+      "phase": "policy-required/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 5053,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.016557",
+      "created_at": "2026-10-30T04:49:52.473154+00:00"
+    },
+    {
+      "attempt": 271,
+      "phase": "policy-required/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 4941,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.016417",
+      "created_at": "2026-10-30T04:49:53.244982+00:00"
+    },
+    {
+      "attempt": 272,
+      "phase": "policy-required/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 5333,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.016907",
+      "created_at": "2026-10-30T04:49:54.250948+00:00"
+    },
+    {
+      "attempt": 273,
+      "phase": "policy-required/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 6163,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.017944",
+      "created_at": "2026-10-30T04:49:55.258060+00:00"
+    },
+    {
+      "attempt": 274,
+      "phase": "policy-required/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 6514,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018383",
+      "created_at": "2026-10-30T04:49:56.420278+00:00"
+    },
+    {
+      "attempt": 275,
+      "phase": "policy-required/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 6400,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018240",
+      "created_at": "2026-10-30T04:49:57.337136+00:00"
+    },
+    {
+      "attempt": 276,
+      "phase": "policy-required/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 6785,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018722",
+      "created_at": "2026-10-30T04:49:58.366713+00:00"
+    },
+    {
+      "attempt": 277,
+      "phase": "policy-required/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 6289,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018102",
+      "created_at": "2026-10-30T04:49:59.165738+00:00"
+    },
+    {
+      "attempt": 278,
+      "phase": "policy-required/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 6640,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018540",
+      "created_at": "2026-10-30T04:50:00.129879+00:00"
+    },
+    {
+      "attempt": 279,
+      "phase": "policy-required/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 6526,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018398",
+      "created_at": "2026-10-30T04:50:00.947664+00:00"
+    },
+    {
+      "attempt": 280,
+      "phase": "policy-required/bedrock-runtime/openai-agents",
+      "provider": "bedrock-runtime",
+      "request_bytes": 6911,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.018879",
+      "created_at": "2026-10-30T04:50:01.935569+00:00"
+    },
+    {
+      "attempt": 281,
+      "phase": "policy-required/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1723,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012394",
+      "created_at": "2026-10-30T04:50:10.015577+00:00"
+    },
+    {
+      "attempt": 282,
+      "phase": "policy-required/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2082,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012843",
+      "created_at": "2026-10-30T04:50:10.960406+00:00"
+    },
+    {
+      "attempt": 283,
+      "phase": "policy-required/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1993,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012732",
+      "created_at": "2026-10-30T04:50:11.728034+00:00"
+    },
+    {
+      "attempt": 284,
+      "phase": "policy-required/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 1952,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.012680",
+      "created_at": "2026-10-30T04:50:13.276367+00:00"
+    },
+    {
+      "attempt": 285,
+      "phase": "policy-required/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2310,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.013128",
+      "created_at": "2026-10-30T04:50:14.236564+00:00"
+    },
+    {
+      "attempt": 286,
+      "phase": "policy-required/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 2220,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.013015",
+      "created_at": "2026-10-30T04:50:15.402290+00:00"
+    },
+    {
+      "attempt": 287,
+      "phase": "policy-required/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 3875,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.015084",
+      "created_at": "2026-10-30T04:50:16.958986+00:00"
+    },
+    {
+      "attempt": 288,
+      "phase": "policy-required/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 4235,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.015534",
+      "created_at": "2026-10-30T04:50:18.582462+00:00"
+    },
+    {
+      "attempt": 289,
+      "phase": "policy-required/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 4143,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.015419",
+      "created_at": "2026-10-30T04:50:19.373560+00:00"
+    },
+    {
+      "attempt": 290,
+      "phase": "policy-required/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 4541,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.015917",
+      "created_at": "2026-10-30T04:50:20.562294+00:00"
+    },
+    {
+      "attempt": 291,
+      "phase": "policy-required/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 4001,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.015242",
+      "created_at": "2026-10-30T04:50:21.669457+00:00"
+    },
+    {
+      "attempt": 292,
+      "phase": "policy-required/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 4361,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.015692",
+      "created_at": "2026-10-30T04:50:22.849587+00:00"
+    },
+    {
+      "attempt": 293,
+      "phase": "policy-required/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 4269,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.015577",
+      "created_at": "2026-10-30T04:50:23.656318+00:00"
+    },
+    {
+      "attempt": 294,
+      "phase": "policy-required/bedrock-runtime/strands",
+      "provider": "bedrock-runtime",
+      "request_bytes": 4667,
+      "max_output_tokens": 1024,
+      "reserved_usd": "0.016074",
+      "created_at": "2026-10-30T04:50:24.507279+00:00"
+    }
+  ]
+}

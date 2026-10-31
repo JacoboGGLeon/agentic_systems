@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "agentic-systems"
-version = "2.1.3"
+version = "2.1.4"
 description = "Agentic Systems: a computational grammar for building, executing, observing, and evaluating intelligent systems."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -25,6 +25,7 @@ dependencies = [
     "typing-extensions>=4.10.0",
     "rich>=13.0.0",
     "jsonschema>=4.23,<5",
+    "langgraph>=1.2.11,<2",
 ]
 
 
@@ -34,8 +35,7 @@ Repository = "https://www.github.com/JacoboGGLeon/agentic_systems"
 LinkedIn = "https://www.linkedin.com/in/jacoboggleon/"
 
 [project.optional-dependencies]
-bedrock = ["boto3>=1.39.0", "botocore>=1.39.0"]
-langgraph = ["langgraph>=0.2.0", "typing-extensions>=4.10.0"]
+bedrock = ["boto3>=1.43.38", "botocore>=1.43.38"]
 openai = ["openai>=2.45.0,<3"]
 openai-agents = ["openai-agents>=0.18.3,<0.19"]
 strands = ["strands-agents[a2a]>=1.29.0,<2", "mcp>=1,<2"]
@@ -60,9 +60,9 @@ dev = [
     "mutmut>=3.7,<4",
 ]
 all = [
-    "boto3>=1.39.0",
-    "botocore>=1.39.0",
-    "langgraph>=0.2.0",
+    "boto3>=1.43.38",
+    "botocore>=1.43.38",
+    "langgraph>=1.2.11,<2",
     "openai>=2.45.0,<3",
     "openai-agents>=0.18.3,<0.19",
     "strands-agents[a2a]>=1.29.0,<2",
@@ -90,20 +90,24 @@ agentic-systems = "agentic_systems.cli:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["agentic_systems*"]
+exclude = ["agentic_systems._templates.project*", "agentic_systems._templates.order_fulfillment*"]
 
 [tool.pytest.ini_options]
 filterwarnings = [
     "ignore:'asyncio.get_event_loop_policy' is deprecated and slated for removal in Python 3.16:DeprecationWarning:agents\\.run",
 ]
 pythonpath = ["src"]
-testpaths = ["tests/v213"]
+testpaths = ["tests/v214_graph", "tests/grammar214", "tests/learning214", "tests/release/test_release_publication.py", "examples/agentic_systems_studio/tests", "tests/current"]
 cache_dir = ".tmp/pytest_cache"
 
 [tool.ruff]
 extend-exclude = ["artifacts", "src/agentic_systems/_engine"]
 
 [tool.setuptools.package-data]
-agentic_systems = ["_templates/**/*", "_templates/project/.env.example", "_templates/project/.gitignore"]
+agentic_systems = ["_templates/graph_project/**/*", "_templates/graph_project/.gitignore"]
+
+[tool.setuptools.exclude-package-data]
+"*" = ["**/__pycache__/*", "**/*.pyc", "**/*.pyo"]
 
 [tool.ruff.lint.per-file-ignores]
 "src/agentic_systems/__init__.py" = ["F401"]
@@ -128,5 +132,5 @@ exclude_lines = [
 
 [tool.mutmut]
 source_paths = ["src/agentic_systems/_contracts.py", "src/agentic_systems/_configuration.py", "src/agentic_systems/_results.py"]
-pytest_add_cli_args_test_selection = ["tests/v213"]
+pytest_add_cli_args_test_selection = ["tests/v214_graph", "tests/grammar214", "tests/current"]
 mutate_only_covered_lines = true

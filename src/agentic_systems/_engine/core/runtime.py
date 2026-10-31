@@ -49,6 +49,7 @@ class RuntimeConfig:
     metadata: dict[str, Any] = field(default_factory=dict)
     provider_priority: tuple[str, ...] | None = None
     allow_python_fallback: bool = False
+    session: Any = field(default=None, repr=False, compare=False)
 
     def __post_init__(self) -> None:
         provider = canonical_engine_name(self.provider)
@@ -94,6 +95,7 @@ class RuntimeConfig:
             if not overrides:
                 return value
             base = value.to_dict()
+            base["session"] = value.session
         elif value is None:
             base = {}
         elif isinstance(value, dict):

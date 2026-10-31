@@ -1,0 +1,44 @@
+{
+  "version": "2.1.4.dev5",
+  "wheel_sha256": "0e8e84221c8caee96b7a9d14f5dc056c62e42a0b651a55bf54e7499d6c865dec",
+  "routes": {
+    "openai-runtime": {
+      "model": "gpt-4.1-mini",
+      "endpoint": "https://api.openai.com/v1",
+      "input_usd_per_million": 0.4,
+      "output_usd_per_million": 1.6
+    },
+    "bedrock-runtime": {
+      "model": "qwen.qwen3-32b-v1:0",
+      "endpoint": "https://bedrock-runtime.us-east-2.amazonaws.com",
+      "input_usd_per_million": 1,
+      "output_usd_per_million": 4
+    },
+    "ollama-gpu": {
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "endpoint": "http://127.0.0.1:11434/v1",
+      "input_usd_per_million": 0,
+      "output_usd_per_million": 0
+    },
+    "ollama-cloud": {
+      "model": "gemma4:31b",
+      "endpoint": "https://ollama.com/v1",
+      "input_usd_per_million": 1,
+      "output_usd_per_million": 4
+    }
+  },
+  "frameworks": [
+    "native",
+    "openai-agents",
+    "strands"
+  ],
+  "phase": "pilot",
+  "limits": {
+    "usd": 5,
+    "requests": 150
+  },
+  "selected_routes": [
+    "bedrock-runtime"
+  ],
+  "scope": "12 provider-notebook routes; handoff; MCP/A2A; refund pause/resume; Studio controller; 15 rotating Tool projections and mandatory Bedrock null case"
+}

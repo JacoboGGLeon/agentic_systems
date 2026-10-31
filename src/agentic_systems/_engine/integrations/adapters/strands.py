@@ -21,6 +21,7 @@ from ...engines.names import (
     VLLM_RUNTIME_ENGINE,
 )
 from ...protocols import AsyncRunner, SyncRunner
+from ...normalization import _load_json_output
 from ...registry import provider_capability
 from ...results import RunResult, public_answer_text
 from ...tools.parsing import parse_textual_tool_call
@@ -62,7 +63,7 @@ class StrandsFrameworkAdapter(FrameworkAdapter):
             return NativeAgent(
                 model=_materialize_model(agent, engine),
                 tools=tools,
-                system_prompt=agent.instructions,
+                system_prompt=agent.instructions or None,
                 name=agent.name,
                 **kwargs,
             )
@@ -182,7 +183,7 @@ def _materialize_model(agent: Any, engine: Any) -> Any:
             "boto_session": session,
             "streaming": bool(getattr(runtime, "streaming", False)),
             "boto_client_config": (
-                Config(signature_version="v4")
+                Config(signature_version="v4", read_timeout=120)
                 if auth_mode == "aws-credential-chain"
                 else None
             ),
@@ -194,6 +195,19 @@ def _materialize_model(agent: Any, engine: Any) -> Any:
 
         class ContractAwareBedrockModel(BedrockModel):
             """Release a forced Tool after the declared contract is satisfied."""
+
+            def format_request(self, *args: Any, **kwargs: Any) -> Any:
+                from ...providers.bedrock.schema import bedrock_strict_tools
+
+                request = super().format_request(*args, **kwargs)
+                if getattr(self, "_agentic_systems_tool_choice", None) == "none":
+                    request.pop("toolConfig", None)
+                config = request.get("toolConfig")
+                if config and config.get("tools"):
+                    config["tools"] = bedrock_strict_tools(
+                        config["tools"], request["modelId"]
+                    )
+                return request
 
             async def stream(
                 self,
@@ -212,7 +226,7 @@ def _materialize_model(agent: Any, engine: Any) -> Any:
                         tool_specs,
                         system_prompt,
                         tool_choice=_budgeted_continuation_tool_choice(
-                            self, agent, messages, tool_choice
+                            self, agent, messages, tool_choice or getattr(self, "_agentic_systems_tool_choice", None)
                         ),
                         **kwargs,
                     )
@@ -445,6 +459,10 @@ def _budgeted_continuation_tool_choice(
     a second call after the declared positive budget has been exhausted.
     """
 
+    if tool_choice == "required":
+        tool_choice = {"any": {}}
+    elif tool_choice in ("auto", "none"):
+        tool_choice = {"auto": {}}
     resolved = _continuation_tool_choice(agent, messages, tool_choice)
     limit = getattr(model, "_agentic_systems_max_tool_calls", None)
     emitted = getattr(model, "_agentic_systems_emitted_tool_calls", 0)
@@ -495,6 +513,9 @@ def _limit_tool_use_events(
 ) -> list[Any]:
     """Keep only ToolUse blocks authorized by budget and contract completion."""
 
+    if getattr(model, "_agentic_systems_tool_choice", None) == "none":
+        if any(_stream_tool_use_count(_jsonable(event)) for event in events):
+            raise ValueError("tool_choice='none' forbids provider-requested Tool execution")
     limit = getattr(model, "_agentic_systems_max_tool_calls", None)
     if not isinstance(limit, int):
         return events
@@ -802,6 +823,7 @@ def _configure_model(model: Any, policy: RunPolicy, mode: str) -> None:
     # This state belongs to one public Agent.run invocation. It is deliberately
     # private and is reset even when the Framework caches its native model.
     _reset_tool_budget(model, policy.max_tool_calls)
+    setattr(model, "_agentic_systems_tool_choice", policy.tool_choice)
     configure = getattr(model, "configure", None)
     if callable(configure):
         configure(policy, mode)
@@ -1078,7 +1100,7 @@ def _tool_events(
                         id=call_id,
                         name=aliases.canonical(str(original.get("name") or "")),
                         input=dict(original.get("input") or {}),
-                        output=_strands_tool_output(result.get("content")),
+                        output=_strands_tool_output(result.get("content"), presentation=False),
                         ok=status == "success",
                         error=None if status == "success" else {"status": status},
                         meta={"source": "strands"},
@@ -1087,7 +1109,7 @@ def _tool_events(
     return events
 
 
-def _strands_tool_output(value: Any) -> dict[str, Any]:
+def _strands_tool_output(value: Any, *, presentation: bool = True) -> dict[str, Any]:
     """Decode Strands content blocks into stable public Tool evidence."""
 
     payload = _jsonable(value)
@@ -1106,7 +1128,7 @@ def _strands_tool_output(value: Any) -> dict[str, Any]:
     if isinstance(payload, Mapping):
         public = dict(payload)
         answer = public.get("answer") or public.get("text")
-        if isinstance(answer, str) and answer:
+        if presentation and isinstance(answer, str) and answer:
             return {"text": answer, "evidence": public}
         return public
     return {"value": payload}
@@ -1146,7 +1168,7 @@ def _output_data(value: Any, text: str) -> dict[str, Any]:
     if isinstance(payload, dict):
         return payload
     try:
-        parsed = json.loads(text)
+        parsed = _load_json_output(text)
     except (TypeError, json.JSONDecodeError):
         return {"text": text}
     return parsed if isinstance(parsed, dict) else {"value": parsed}

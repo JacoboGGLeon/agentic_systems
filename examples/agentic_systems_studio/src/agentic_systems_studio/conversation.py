@@ -1,21 +1,20 @@
 """Provider/framework-agnostic conversational reference system for Studio."""
 
 from __future__ import annotations
-
 import ast
 from dataclasses import dataclass
 import json
 import math
 import re
+from decimal import Decimal
 from typing import Any
-
 import agentic_systems as toolkit
 from .routes import FRAMEWORK_NAMES, PROVIDER_NAMES
+from ._graph import pipeline as _pipeline
 from agentic_systems_studio.environment import load_studio_environment
 from agentic_systems_studio.presentation import (
     validate_generated_agentic_systems_code,
 )
-
 
 _BINARY_OPERATORS = {
     ast.Add: lambda left, right: left + right,
@@ -35,6 +34,28 @@ _MAX_HISTORY_MESSAGES = 12
 _MAX_USER_HISTORY_CHARS = 2000
 _MAX_ASSISTANT_HISTORY_CHARS = 1200
 _MAX_CURRENT_MESSAGE_CHARS = 8000
+
+
+def _validate_calculation_answer(answer, evidence):
+    """Check numeric grounding, not general truth of unrestricted prose.
+
+    Results must be stated; any other number must come from the expression.
+    Exact decimal comparison avoids accepting a plausible but invented value.
+    """
+    def numbers(text):
+        return {Decimal(match) for match in re.findall(r"(?<![\w.])-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?", str(text))}
+    observed = numbers(answer)
+    expected, allowed = set(), set()
+    for envelope in evidence:
+        value = envelope
+        while isinstance(value, dict) and "result" not in value and isinstance(value.get("data"), dict):
+            value = value["data"]
+        if not isinstance(value, dict) or "result" not in value:
+            raise ValueError("Calculation evidence has no verified result")
+        expected.update(numbers(value["result"]))
+        allowed.update(numbers(value.get("expression", "")))
+    if expected and (not expected.issubset(observed) or not observed.issubset(allowed | expected)):
+        raise ValueError("The answer contradicts or omits verified calculation results")
 _CALCULATION_OPERATOR_PATTERN = re.compile(
     r"\d(?:[\d.,]*\d)?\s*"
     r"(?:[+\-*/%×]|\b(?:x|times|multiplied\s+by|divided\s+by|por|entre|más|menos)\b)"
@@ -214,8 +235,7 @@ def hello_world(message: str) -> dict[str, Any]:
 
     return {
         "message": (
-            "Modo Python: mock determinista sin modelo de lenguaje. "
-            f"Recibí: {message}"
+            f"Modo Python: mock determinista sin modelo de lenguaje. Recibí: {message}"
         ),
         "execution_kind": "deterministic-mock",
     }
@@ -223,18 +243,33 @@ def hello_world(message: str) -> dict[str, Any]:
 
 def _agentic_systems_grammar_contract(request):
     import inspect
-    return {"request": request[:1000], "version": toolkit.__version__,
-            "public_symbols": list(toolkit.__all__),
-            "signatures": {name: str(inspect.signature(getattr(toolkit, name)))
-                           for name in toolkit.__all__ if callable(getattr(toolkit, name))},
-            "canonical_example": "import agentic_systems as toolkit\n"
-                "worker = toolkit.Agent('worker', toolkit.Action('increment', lambda d: {'value': d['value'] + 1}))\n"
-                "app = toolkit.System('app', toolkit.Sequence((worker,)))\n"
-                "print(app.run({'value': 3}).to_dict())",
-            "rules": ["Agent or System owns Sequence, Parallel or Graph", "Graph decisions are direct functions",
-                      "Skills contain Tools and instructions", "run executes; compile prepares without inference",
-                      "Environment owns records and memory; Eval owns cases and checks",
-                      "Only explicit provider/framework names; no auto or fallback"]}
+
+    return {
+        "request": request[:1000],
+        "version": toolkit.__version__,
+        "public_symbols": list(toolkit.__all__),
+        "signatures": {
+            name: str(inspect.signature(getattr(toolkit, name)))
+            for name in toolkit.__all__
+            if callable(getattr(toolkit, name))
+        },
+        "canonical_example": "import pydantic\nimport agentic_systems as toolkit\n"
+        "class State(pydantic.BaseModel):\n    value: int\n"
+        "graph = toolkit.Graph(State)\n"
+        "def increment(state):\n    return {'value': state.value + 1}\ngraph.add_node('increment', increment)\n"
+        "graph.add_edge(toolkit.START, 'increment')\n"
+        "graph.add_edge('increment', toolkit.END)\n"
+        "app = toolkit.Agent('worker', graph=graph)\n"
+        "print(app.run({'value': 3}).human_results())",
+        "rules": [
+            "Agent, System and Environment own Graph; LangGraph is the sole orchestrator",
+            "Graph decisions are direct Python functions",
+            "Skills contain Tools and instructions",
+            "run executes; compile prepares without inference",
+            "Environment owns records and state; Memory stores episodes; Eval owns cases and checks",
+            "Only explicit provider/framework names; no auto or fallback",
+        ],
+    }
 
 
 @toolkit.tool
@@ -268,17 +303,30 @@ class ConversationConfig:
         except FileNotFoundError:
             pass
         from .routes import values
+
         selected = provider or "python-runtime"
-        return cls(provider=selected, framework=framework or "native", model=values(selected)["model"])
+        return cls(
+            provider=selected,
+            framework=framework or "native",
+            model=values(selected)["model"],
+        )
 
     def reasoning_runtime(self):
         from .routes import make_runtime
-        return make_runtime(self.provider, model=self.model, timeout_s=self.timeout_s,
-                            max_turns=self.max_turns, max_tool_calls=self.max_tool_calls, max_tokens=self.max_tokens)
+
+        return make_runtime(
+            self.provider,
+            model=self.model,
+            timeout_s=self.timeout_s,
+            max_turns=self.max_turns,
+            max_tool_calls=self.max_tool_calls,
+            max_tokens=self.max_tokens,
+        )
 
 
 def configured_provider_names():
     from .routes import configured
+
     return tuple(provider for provider in PROVIDER_NAMES if configured(provider))
 
 
@@ -290,37 +338,58 @@ class ConversationalStudio:
     calculation_agent: object
 
     def inspect(self):
-        return {"version": toolkit.__version__, "provider": self.config.provider,
-                "framework": self.config.framework, "runtime": self.config.reasoning_runtime().inspect(),
-                "context": self.context_agent.inspect(), "assistant": self.assistant.inspect(),
-                "grammar": _agentic_systems_grammar_contract("")}
+        return {
+            "version": toolkit.__version__,
+            "provider": self.config.provider,
+            "framework": self.config.framework,
+            "runtime": self.config.reasoning_runtime().inspect(),
+            "context": self.context_agent.inspect(),
+            "assistant": self.assistant.inspect(),
+            "grammar": _agentic_systems_grammar_contract(""),
+        }
 
     def run(self, message, *, history=()):
         from dataclasses import replace
+
         if not isinstance(message, str) or not message.strip():
             raise ValueError("A nonempty message is required")
         if self.config.provider != "python-runtime":
             from .budget import ensure_budget
+
             ensure_budget()
         selected = self.config
 
         def ground(context):
-            if re.search(r"agentic|\b(?:agent|system|skill|environment|eval)\b", message, re.I):
+            if re.search(
+                r"agentic|\b(?:agent|system|skill|environment|eval)\b", message, re.I
+            ):
                 context["sdk_contract"] = _agentic_systems_grammar_contract(message)
-            if selected.provider != "python-runtime" and _CALCULATION_OPERATOR_PATTERN.search(message):
-                raw = self.calculation_agent.run("Call safe_calculate for this current request: " + message,
-                    limits=toolkit.Limits(timeout_s=selected.timeout_s * selected.max_turns))
-                evidence = [event.output for node in raw.walk() for event in node.tool_events if event.name == "safe_calculate" and event.ok]
+            if (
+                selected.provider != "python-runtime"
+                and _CALCULATION_OPERATOR_PATTERN.search(message)
+            ):
+                raw = self.calculation_agent.run(
+                    "Call safe_calculate for this current request: " + message
+                )
+                evidence = [
+                    event.output
+                    for node in raw.walk()
+                    for event in node.tool_events
+                    if event.name == "safe_calculate" and event.ok
+                ]
                 return replace(raw, data={**context, "calculation_evidence": evidence})
             return context
 
         def respond(context):
-            request = ({"tool": "hello_world", "input": {"message": context["message"]}}
-                       if selected.provider == "python-runtime" else
-                       "Answer only the current message using this bounded public history and verified evidence. "
-                       "Use the user's language; never reveal private reasoning or invent tool calls. "
-                       "If code is requested, use the supplied SDK signatures exactly.\n" + json.dumps(context, ensure_ascii=False))
-            raw = self.assistant.run(request, limits=toolkit.Limits(timeout_s=selected.timeout_s * selected.max_turns))
+            request = (
+                {"tool": "hello_world", "input": {"message": context["message"]}}
+                if selected.provider == "python-runtime"
+                else "Answer only the current message using this bounded public history and verified evidence. "
+                "Use the user's language; never reveal private reasoning or invent tool calls. "
+                "If code is requested, use the supplied SDK signatures exactly.\n"
+                + json.dumps(context, ensure_ascii=False)
+            )
+            raw = self.assistant.run(request)
             if selected.provider == "python-runtime":
                 raw = replace(raw, text=str(raw.data.get("message", raw.text)))
             attempts = [raw]
@@ -329,10 +398,15 @@ class ConversationalStudio:
                 answer = raw.text
                 try:
                     if not raw.ok or not answer.strip():
-                        raise ValueError("The actor did not return a successful public answer")
+                        raise ValueError(
+                            "The actor did not return a successful public answer"
+                        )
                     if selected.provider != "python-runtime":
+                        _validate_calculation_answer(answer, context.get("calculation_evidence", ()))
                         validate_generated_agentic_systems_code(answer)
-                        if _SINGLE_SENTENCE_REQUEST_PATTERN.search(message) and not _is_single_sentence(answer):
+                        if _SINGLE_SENTENCE_REQUEST_PATTERN.search(
+                            message
+                        ) and not _is_single_sentence(answer):
                             raise ValueError("Exactly one sentence was requested")
                     validation_error = None
                     break
@@ -340,52 +414,107 @@ class ConversationalStudio:
                     validation_error = str(exc)
                     if attempt == selected.max_response_repairs or not raw.ok:
                         break
-                    raw = self.assistant.run("Correct this answer according to the current request and exact SDK contract. "
-                        + json.dumps({"message": message, "answer": answer, "error": validation_error,
-                                      "context": context}, ensure_ascii=False),
-                        limits=toolkit.Limits(timeout_s=selected.timeout_s * selected.max_turns))
+                    raw = self.assistant.run(
+                        "Correct this answer according to the current request and exact SDK contract. "
+                        + json.dumps(
+                            {
+                                "message": message,
+                                "answer": answer,
+                                "error": validation_error,
+                                "context": context,
+                            },
+                            ensure_ascii=False,
+                        )
+                    )
                     attempts.append(raw)
             # Keep all attempts as recorded children of a public System result.
-            collected = toolkit.System("answer_attempts", toolkit.Sequence(tuple(
-                toolkit.Action("attempt_" + str(i), lambda value, captured=child: captured)
-                for i, child in enumerate(attempts)))).run({})
+            collected = _pipeline(
+                "answer_attempts",
+                tuple(lambda value, captured=child: captured for child in attempts),
+            ).run({"payload": {}})
             errors = collected.errors
             if validation_error:
-                errors = (*errors, {"code": "studio_response_validation_failed", "message": validation_error})
-            return replace(collected, text=raw.text, ok=collected.ok and validation_error is None, errors=errors,
-                data={"answer": raw.text, "provider": selected.provider, "framework": selected.framework,
-                      "history_turns": context["history_turns"],
-                      "response_validation": {"ok": validation_error is None, "repairs": len(attempts) - 1}})
+                errors = (
+                    *errors,
+                    {
+                        "code": "studio_response_validation_failed",
+                        "message": validation_error,
+                    },
+                )
+            return replace(
+                collected,
+                text=raw.text,
+                ok=collected.ok and validation_error is None,
+                errors=errors,
+                data={
+                    "answer": raw.text,
+                    "provider": selected.provider,
+                    "framework": selected.framework,
+                    "history_turns": context["history_turns"],
+                    "response_validation": {
+                        "ok": validation_error is None,
+                        "repairs": len(attempts) - 1,
+                    },
+                },
+            )
 
-        pipeline = toolkit.System("studio_conversation", toolkit.Sequence((
-            self.context_agent,
-            toolkit.Agent("grounding", toolkit.Action("ground", ground)),
-            toolkit.Agent("responding", toolkit.Action("respond", respond)),
-        )))
-        raw = pipeline.run({"messages": list(history), "message": message},
-                           limits=toolkit.Limits(max_actions=100, timeout_s=selected.timeout_s * selected.max_turns * 3))
-        return replace(raw, meta={**raw.meta, "provider": selected.provider, "framework": selected.framework,
-                                  "studio_version": toolkit.__version__})
+        pipeline = _pipeline(
+            "studio_conversation", (self.context_agent, ground, respond)
+        )
+        raw = pipeline.run(
+            {"payload": {"messages": list(history), "message": message}},
+            timeout_s=selected.timeout_s * selected.max_turns * 3,
+        )
+        raw = replace(raw, data=raw.data.get("payload", {}))
+        return replace(
+            raw,
+            meta={
+                **raw.meta,
+                "provider": selected.provider,
+                "framework": selected.framework,
+                "studio_version": toolkit.__version__,
+            },
+        )
 
 
 def build_conversational_system(config=None):
     selected = config or ConversationConfig.from_environment()
-    capabilities = toolkit.skill(name="studio", tools=(safe_calculate, inspect_agentic_systems_grammar),
-        instructions="Only call the calculator for a newly requested calculation; inspect the SDK before writing SDK code.")
-    context = toolkit.Agent("context", toolkit.Action("prepare", prepare_conversation_context))
+    capabilities = toolkit.skill(
+        name="studio",
+        tools=(safe_calculate, inspect_agentic_systems_grammar),
+        instructions="Only call the calculator for a newly requested calculation; inspect the SDK before writing SDK code.",
+    )
+    context = prepare_conversation_context
     if selected.provider == "python-runtime":
-        assistant = toolkit.Agent("deterministic_mock", runtime=selected.reasoning_runtime(),
+        assistant = toolkit.Agent(
+            "deterministic_mock",
+            runtime=selected.reasoning_runtime(),
             framework=toolkit.framework(selected.framework),
-            skills=(toolkit.skill(name="mock", tools=(hello_world,)),))
+            skills=(toolkit.skill(name="mock", tools=(hello_world,)),),
+        )
     else:
-        assistant = toolkit.Agent("assistant", runtime=selected.reasoning_runtime(),
-            framework=toolkit.framework(selected.framework), skills=(capabilities,),
+        assistant = toolkit.Agent(
+            "assistant",
+            runtime=selected.reasoning_runtime(),
+            framework=toolkit.framework(selected.framework),
+            skills=(capabilities,),
             instructions="Answer the current user clearly using bounded context. Use only observed evidence. Never expose private reasoning.",
-            policy={"repair": False})
-    calculator = None if selected.provider == "python-runtime" else toolkit.Agent("calculator",
-        runtime=selected.reasoning_runtime(), framework=toolkit.framework(selected.framework),
-        skills=(toolkit.skill(name="calculator", tools=(safe_calculate,)),),
-        instructions="Call safe_calculate once with the requested arithmetic expression.",
-        contract={"tool_expectation": {"all_of": ["safe_calculate"]}, "completion": "when_required_tools_satisfied"},
-        policy={"repair": False})
+            policy={"repair": False},
+        )
+    calculator = (
+        None
+        if selected.provider == "python-runtime"
+        else toolkit.Agent(
+            "calculator",
+            runtime=selected.reasoning_runtime(),
+            framework=toolkit.framework(selected.framework),
+            skills=(toolkit.skill(name="calculator", tools=(safe_calculate,)),),
+            instructions="Call safe_calculate once with the requested arithmetic expression.",
+            contract={
+                "tool_expectation": {"all_of": ["safe_calculate"]},
+                "completion": "when_required_tools_satisfied",
+            },
+            policy={"repair": False, "tool_choice": "required"},
+        )
+    )
     return ConversationalStudio(selected, context, assistant, calculator)

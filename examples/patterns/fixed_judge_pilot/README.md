@@ -1,31 +1,14 @@
-# Bloquear un falso positivo
+# Bloquear un falso positivo · 2.1.4
 
 Impedir que un juez fixture apruebe una respuesta incorrecta.
 
-```python
-from examples.patterns.fixed_judge_pilot.example import run
+La composición y las aserciones están visibles en [el código](example.py).
+Lee las declaraciones de Tools, Agents y Graph antes de ejecutar el ejemplo.
 
-result = run()
-result
-```
+Input → proceso → output: WRONG → expectativa VALID y juez optimista → caso rechazado, conservando ambos resultados.
 
-WRONG → expectativa VALID y juez optimista → caso rechazado, conservando ambos resultados.
+[Declaración](example.py) · [Evidencia dev8](../../../revisions/2.1.4/grammar-dev8/closure/examples/examples--patterns--fixed_judge_pilot--example.py.json)
 
-Código:
-- [Current implementation](../../../examples/patterns/fixed_judge_pilot/example.py)
+Perfil actual: **offline-passed**. El catálogo [de validación](../../../docs/LEARNING_VALIDATION_214.md) separa configuración, Python, servicios locales y pruebas de modelos. La evidencia 2.1.3 conservada es histórica y no certifica estos bytes.
 
-Validación: **Offline ejecutado**. Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.
-
-- [Nueva ejecución contra el wheel publicado](../../../revisions/2.1.3/learning-evidence-elevated/example-results/patterns/fixed_judge_pilot/current.json)
-- [RunResult y lineage](../../../revisions/2.1.3/learning-evidence-elevated/example-results/patterns/fixed_judge_pilot/runresults.json)
-
-<details>
-<summary>Evidencia del experimento anterior</summary>
-
-Estado anterior: mixed. Six native pilot cases, 14 guarded requests. OpenAI schema failures, Bedrock unsupported positive explanation and budget-interrupted negative, Ollama citation/type errors and false semantic approval. Expansion was blocked; no release certification.
-
-La adaptación actual tiene pruebas propias. La evidencia anterior conserva su versión y no certifica estos bytes.
-
-- [Fixed v6 pilot report](../../../docs/judge-v6-pilot-results.md)
-
-</details>
+[Validación histórica dev5 de Pydantic y human_results](../../../revisions/2.1.4/contracts-dev5/REPORT.md). Las revisiones previas se conservan como evidencia histórica.

@@ -1,0 +1,1 @@
+Original source hash is preserved in frozen-plan and live-results. Reconstructed source is provided for readability; it does not reproduce the original byte hash. Original model response and failing RunResults remain unmodified.

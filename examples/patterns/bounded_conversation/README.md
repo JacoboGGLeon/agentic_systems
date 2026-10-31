@@ -1,32 +1,14 @@
-# Acotar una conversación
+# Acotar una conversación · 2.1.4
 
 Mantener una ventana de contexto explícita.
 
-```python
-from examples.patterns.bounded_conversation.example import run
+La composición y las aserciones están visibles en [el código](example.py).
+Lee las declaraciones de Tools, Agents y Graph antes de ejecutar el ejemplo.
 
-result = run()
-result
-```
+Input → proceso → output: Cuatro mensajes → últimas tres entradas, longitud acotada → historia conservada.
 
-Cuatro mensajes → últimas tres entradas, longitud acotada → historia conservada.
+[Declaración](example.py) · [Evidencia dev8](../../../revisions/2.1.4/grammar-dev8/closure/examples/examples--patterns--bounded_conversation--example.py.json)
 
-Código:
-- [Current implementation](../../../examples/patterns/bounded_conversation/example.py)
+Perfil actual: **offline-passed**. El catálogo [de validación](../../../docs/LEARNING_VALIDATION_214.md) separa configuración, Python, servicios locales y pruebas de modelos. La evidencia 2.1.3 conservada es histórica y no certifica estos bytes.
 
-Validación: **Offline ejecutado**. Adaptación 2.1.3 ejecutada offline. Las aserciones comprueban el alcance descrito; cero inferencia. Los fallos intencionales se verifican como resultados esperados.
-
-- [Nueva ejecución contra el wheel publicado](../../../revisions/2.1.3/learning-evidence-elevated/example-results/patterns/bounded_conversation/current.json)
-- [RunResult y lineage](../../../revisions/2.1.3/learning-evidence-elevated/example-results/patterns/bounded_conversation/runresults.json)
-
-<details>
-<summary>Evidencia del experimento anterior</summary>
-
-Estado anterior: mixed. Historical conversation runs include passes and failures. A local artifact named studio-long-certified.json recorded failures for all three LLM providers; its filename is not acceptance. Source reports also retain judge schema and explanation defects. No blanket 2.1.2 conversation certification is claimed.
-
-La adaptación actual tiene pruebas propias. La evidencia anterior conserva su versión y no certifica estos bytes.
-
-- [Studio implementation and contract](../../../examples/agentic_systems_studio/README.md)
-- [Preserved calibration and notebook limits](../../../docs/two-phase-212-status.md)
-
-</details>
+[Validación histórica dev5 de Pydantic y human_results](../../../revisions/2.1.4/contracts-dev5/REPORT.md). Las revisiones previas se conservan como evidencia histórica.
