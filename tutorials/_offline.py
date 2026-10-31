@@ -2,6 +2,7 @@
 
 import socket
 import os
+import platform
 import sys
 import threading
 
@@ -15,6 +16,10 @@ def enforce_offline():
     global _installed
     with _lock:
         if not _installed:
+            # SDK user-agent headers lazily ask stdlib for OS/CPU metadata.
+            # Linux may use `uname -p`, Windows `ver`. Prepare that stdlib cache
+            # before the application guard; never permit app subprocesses.
+            platform.platform()
             sys.addaudithook(_audit)
             _installed = True
 
