@@ -42,7 +42,7 @@ Extract agentic-systems-studio-2.1.4.zip. From its studio directory:
 
 ```bash
 python -m pip install "wheels/agentic_systems_studio-2.1.4-py3-none-any.whl[ui,notebook]"
-agentic-systems-studio --help
+python -m streamlit run app.py
 ```
 
 Follow the included Studio README for launch commands. Tutorials/examples and docs
