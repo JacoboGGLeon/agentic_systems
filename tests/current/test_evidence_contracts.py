@@ -81,7 +81,7 @@ def test_render_reports_truncation_and_failures_outside_the_view(size):
     assert len([s for s in text.splitlines() if s.startswith("- ")]) == min(size, 12)
     if size > 12:
         assert f"{size - 12} more steps; retrieve evidence by execution_id." in text
-        assert f"{size - 12} failures outside this view: " + ", ".join(str(i) for i in range(12, min(size, 15))) in text
+        assert text.splitlines()[-1] == f"{size - 12} failures outside this view: " + ", ".join(str(i) for i in range(12, min(size, 15)))
 
 
 def test_prompt_budget_preserves_failed_evidence_and_json_envelope():
@@ -207,3 +207,57 @@ def test_lineage_defaults_fallbacks_nested_rows_and_paused_status():
     paused = RunResult(status="paused", interrupts=({"question": "approve"},), continuation={"id": "resume"}).lineage()
     assert paused.render().startswith("run: PAUSED\n")
     assert json.loads(paused.to_prompt_context())["status"] == "paused"
+
+
+@pytest.mark.parametrize("value", [True, False, 0, -1, 1.5, "2", None])
+def test_view_step_limits_require_positive_integers(value):
+    run = RunResult()
+    for view in (run.trace, run.human_results):
+        with pytest.raises(ValueError, match="max_steps must be a positive integer"):
+            view(max_steps=value)
+
+
+@pytest.mark.parametrize("value", [True, 0, -1, 255, 256.0, "256", None])
+def test_human_character_limit_requires_an_integer_at_least_256(value):
+    with pytest.raises(ValueError, match="max_chars must be an integer of at least 256"):
+        RunResult().human_results(max_chars=value)
+
+
+@pytest.mark.parametrize("value", [True, 0, -1, 1.0, "1", None])
+def test_prompt_character_limit_requires_a_positive_integer(value):
+    with pytest.raises(ValueError, match="max_chars must be positive"):
+        RunResult().lineage().to_prompt_context(max_chars=value)
+
+
+def test_trace_default_limit_is_twenty_and_retains_recorded_order():
+    children = tuple(RunResult(execution_id=str(i), ok=i != 20) for i in range(21))
+    trace = RunResult(execution_id="root", children=children).trace()
+    assert trace["omitted_steps"] == 2
+    assert [step["execution_id"] for step in trace["steps"]] == ["root", *map(str, range(18)), "20"]
+
+
+def test_human_default_eight_operations_prioritize_failures_in_recorded_order():
+    children = tuple(RunResult(execution_id=str(i), ok=i != 9, meta={"kind": "node", "name": str(i)}) for i in range(10))
+    report = RunResult(execution_id="root", children=children).human_results()
+    assert [line for line in report.splitlines() if line.startswith("- ")] == [
+        *(f"- Step {i}: completed" for i in range(7)), "- Step 9: failed"]
+    assert report.splitlines()[-1] == "2 operations omitted; inspect lineage for full evidence."
+
+
+@pytest.mark.parametrize("length", [22, 23, 24])
+def test_human_unicode_input_clipping_at_exact_24_character_budget(length):
+    # At the minimum report size, the input allocation is 24 characters including JSON quotes.
+    value = "ñ" * length
+    report = RunResult(execution_id="r", meta={"input": value}).human_results(max_chars=256)
+    expected = '"' + value + '"' if length == 22 else '"' + "ñ" * 22 + "…"
+    assert report.splitlines()[2] == "Input: " + expected
+
+
+def test_prompt_includes_answer_at_exact_json_budget_and_preserves_unicode():
+    line = RunResult(execution_id="r", text="revisión").lineage()
+    full = line.to_prompt_context(max_chars=10000)
+    assert "revisión" in full
+    assert line.to_prompt_context(max_chars=len(full)) == full
+    smaller = json.loads(line.to_prompt_context(max_chars=len(full) - 1))
+    assert "answer" not in smaller
+    assert smaller["steps"] == json.loads(full)["steps"]
