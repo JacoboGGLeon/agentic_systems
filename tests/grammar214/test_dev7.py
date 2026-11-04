@@ -1,6 +1,8 @@
 """One Graph grammar, typed Tools, isolated Eval memory and readable evidence."""
 
 import json
+from pathlib import Path
+import runpy
 import pydantic
 import pytest
 import agentic_systems as t
@@ -193,9 +195,9 @@ def test_environment_reward_is_an_explicit_state_metric_not_a_public_parameter()
             ({"value": 1},),
             reward=lambda result: 1,
         )
-    from examples.checked_composition.example import run
-
-    report = run()
+    # mutmut runs pytest repeatedly in one process; each demo needs fresh Memory.
+    example = Path(__file__).resolve().parents[2] / "examples/checked_composition/example.py"
+    report = runpy.run_path(str(example))["run"]()
     assert report["episode"].data["summary"]["state"]["total_reward"] == 2
     assert report["evaluation"].data["passed"] == 2
     assert len(report["memory"]) == 3

@@ -131,6 +131,9 @@ exclude_lines = [
 ]
 
 [tool.mutmut]
-source_paths = ["src/agentic_systems/_contracts.py", "src/agentic_systems/_configuration.py", "src/agentic_systems/_results.py"]
+debug = true
+also_copy = ["tutorials", "examples", "scripts"]
+source_paths = ["src/agentic_systems"]
+only_mutate = ["src/agentic_systems/_contracts.py", "src/agentic_systems/_configuration.py", "src/agentic_systems/_results.py"]
 pytest_add_cli_args_test_selection = ["tests/v214_graph", "tests/grammar214", "tests/current"]
 mutate_only_covered_lines = true
