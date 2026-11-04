@@ -127,3 +127,9 @@ def test_actor_bridge_translates_contract_and_policy_without_schema_leakage(monk
         "require_no_unresolved_tool_failures": failure_policy != "allow"}
     assert observed["policy"] == {"temperature": 0.3, "max_tokens": 11, "max_turns": 2, "max_tool_calls": 3}
     assert observed["instructions"] == 'Use policy.\nReturn a JSON object satisfying this JSON Schema: {"type": "object"}'
+
+
+@pytest.mark.parametrize("count", [-1, True, 1.5, "1"])
+def test_invalid_minimum_tool_count_retains_actionable_diagnostic(count):
+    with pytest.raises(ValueError, match="^min_count must be nonnegative$"):
+        _validate_contract({"tool_expectation": {"min_count": count}}, ())

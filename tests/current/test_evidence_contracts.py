@@ -213,13 +213,13 @@ def test_lineage_defaults_fallbacks_nested_rows_and_paused_status():
 def test_view_step_limits_require_positive_integers(value):
     run = RunResult()
     for view in (run.trace, run.human_results):
-        with pytest.raises(ValueError, match="max_steps must be a positive integer"):
+        with pytest.raises(ValueError, match="^max_steps must be a positive integer$"):
             view(max_steps=value)
 
 
 @pytest.mark.parametrize("value", [True, 0, -1, 255, 256.0, "256", None])
 def test_human_character_limit_requires_an_integer_at_least_256(value):
-    with pytest.raises(ValueError, match="max_chars must be an integer of at least 256"):
+    with pytest.raises(ValueError, match="^max_chars must be an integer of at least 256$"):
         RunResult().human_results(max_chars=value)
 
 
