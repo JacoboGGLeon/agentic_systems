@@ -1,13 +1,13 @@
 ---
 name: agentic-systems
-description: Design, scaffold, implement or audit applications using the Agentic Systems 2.1.4 API, LangGraph orchestration, deterministic Tools and portable agent actors.
+description: Design, scaffold, implement or audit applications using the Agentic Systems 2.1.5 API, LangGraph orchestration, deterministic Tools and portable agent actors.
 metadata:
-  short-description: Build and validate Agentic Systems 2.1.4 apps
+  short-description: Build and validate Agentic Systems 2.1.5 apps
 ---
 
-# Agentic Systems 2.1.4
+# Agentic Systems 2.1.5
 
-Use `import agentic_systems as toolkit`. Target version 2.1.4 and verify installed signatures before writing executable examples.
+Use `import agentic_systems as toolkit`. Target version 2.1.5 and verify installed signatures before writing executable examples.
 
 ## Construction
 

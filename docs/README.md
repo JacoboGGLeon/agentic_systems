@@ -1,4 +1,4 @@
-# Documentation · Agentic Systems 2.1.4
+# Documentation · Agentic Systems 2.1.5
 
 1. [Install the SDK and optional applications](../INSTALL.md).
 2. [Learn through English notebooks and reading views](NOTEBOOKS.md).
@@ -8,6 +8,6 @@
 
 The SDK wheel contains the computational grammar and CLI. Notebooks and Studio source are separate repository resources; PyPI is a package index, not a documentation file server. README and project metadata links use absolute GitHub URLs so they remain usable from PyPI.
 
-The published 2.1.4 distributions are immutable. Repository documentation corrections become visible on main after integration; package-description changes require a new distribution release. Do not treat historical validation reports as acceptance of changed source or new artifacts.
+The published 2.1.4 distributions are immutable. The maintenance updates are documented in [2.1.5 release notes](RELEASE_NOTES_215.md); package-description updates ship with that distribution. Do not treat historical validation reports as acceptance of changed source or new artifacts.
 
 Current notebook explanations and generated reading views are in English. Historical campaign evidence under revisions and examples/history retains its original provenance and is not the current learning path.

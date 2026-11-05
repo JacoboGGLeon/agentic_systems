@@ -8,7 +8,7 @@ on:
         required: true
         type: string
       acceptance_policy_sha256:
-        description: Reviewed release/policy-2.1.4.json SHA256; explicit executable equivalence acceptance
+        description: Reviewed version-specific maintenance acceptance policy SHA256
         required: true
         type: string
 
@@ -36,6 +36,20 @@ jobs:
           gh api "repos/$GITHUB_REPOSITORY/actions/runs/$QUALITY_RUN_ID" > run.json
           jq -e --arg commit "$GITHUB_SHA" '.conclusion == "success" and .head_sha == $commit and .head_branch == "main" and .path == ".github/workflows/quality.yml"' run.json
           gh api --paginate "repos/$GITHUB_REPOSITORY/actions/runs/$QUALITY_RUN_ID/jobs?per_page=100" --jq '.jobs[] | {name,conclusion}' | jq -s -e '([.[] | select(.name | startswith("offline ("))] | length == 5) and all(.[]; .conclusion == "success")'
+      - name: Require successful mutation gate for the exact main commit
+        id: mutation
+        run: |
+          gh api "repos/$GITHUB_REPOSITORY/actions/workflows/mutation.yml/runs?head_sha=$GITHUB_SHA&status=success" > mutation-runs.json
+          run_id="$(jq -r --arg commit "$GITHUB_SHA" '[.workflow_runs[] | select(.head_sha == $commit and .head_branch == "main" and .conclusion == "success")][0].id // empty' mutation-runs.json)"
+          [[ "$run_id" =~ ^[0-9]+$ ]]
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$run_id/jobs?per_page=100" | jq -e '(.jobs | length > 0) and all(.jobs[]; .conclusion == "success")'
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        with:
+          name: mutation-results
+          path: mutation-bytes
+          run-id: ${{ steps.mutation.outputs.run_id }}
+          github-token: ${{ github.token }}
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
         with:
           name: current-candidate-bytes
@@ -44,8 +58,11 @@ jobs:
           github-token: ${{ github.token }}
       - name: Verify reviewed policy and seal quality-built bytes without rebuilding
         run: |
-          echo "$POLICY_SHA256  release/policy-2.1.4.json" | sha256sum --check
-          python scripts/seal_release_214.py --distributions quality-bytes/dist --output candidate
+          version="$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml", "rb"))["project"]["version"])')"
+          [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          policy="release/policy-$version.json"
+          echo "$POLICY_SHA256  $policy" | sha256sum --check
+          python scripts/seal_release.py --quality quality-bytes --mutation mutation-bytes --policy "$policy" --output candidate
       - name: Verify immutable manifest and package metadata
         run: |
           manifest_sha="$(sha256sum candidate/release-manifest.json | cut -d' ' -f1)"

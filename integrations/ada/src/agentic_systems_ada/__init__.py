@@ -4,7 +4,7 @@ import argparse
 import json
 import os
 
-__version__ = "2.1.4"
+__version__ = "2.1.5"
 __all__ = ["diagnose"]
 _AWS_KEYS = (
     "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_SESSION_TOKEN",

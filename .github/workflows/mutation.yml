@@ -1,6 +1,8 @@
 name: mutation-quality
 
 on:
+  push:
+    branches: [main]
   pull_request:
   schedule:
     - cron: "41 5 * * 1"
