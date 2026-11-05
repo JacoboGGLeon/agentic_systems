@@ -139,8 +139,7 @@ class _Framework(ContractModel):
 
 
 def framework(name, *, agent_kwargs=None, run_kwargs=None):
-    return _Framework(name=name, agent_kwargs={} if agent_kwargs is None else agent_kwargs,
-                      run_kwargs={} if run_kwargs is None else run_kwargs)
+    return _Framework(name=name, agent_kwargs=agent_kwargs, run_kwargs=run_kwargs)
 
 
 def _check_framework_options(name, agent_kwargs, run_kwargs):
@@ -262,7 +261,7 @@ def model_server(artifact, *, profile="fast", served_model_name=None, host="127.
         raise TypeError("Pass model_artifact(...)")
     managed = {"--host", "--port", "--served-model-name", "--gpu-memory-utilization", "--max-model-len", "--max-num-seqs",
                "--tool-call-parser", "--reasoning-parser", "--enable-auto-tool-choice", "--api-key", "--generation-config"}
-    if not isinstance(extra_args, tuple) or any(not isinstance(v, str) or v.split("=", 1)[0] in managed for v in extra_args):
+    if not isinstance(extra_args, tuple) or any(not isinstance(v, str) or v.partition("=")[0] in managed for v in extra_args):
         raise ValueError("extra_args cannot override managed server parameters")
     if profile not in {"fast", "medium", "power", "custom"}:
         raise ValueError("Unknown exact server profile")

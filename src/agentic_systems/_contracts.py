@@ -116,7 +116,7 @@ def _invoke_actor(owner, config, selected_framework, contract, policy, value):
 
 def _invoke_actor_with_connection(owner, config, selected_framework, contract, policy, value):
     from ._engine.factories import agent
-    expectation = contract.get("tool_expectation", {})
+    expectation = contract.get("tool_expectation")
     private_contract = {k: v for k, v in contract.items() if k not in {"input_schema", "output_schema"}}
     if expectation:
         private_contract["tool_expectation"] = {k: v for k, v in expectation.items() if k != "forbidden"}
