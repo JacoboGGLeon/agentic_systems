@@ -1,6 +1,6 @@
 # Release and verification status · Agentic Systems 2.1.4
 
-The 2.1.4 SDK is published on [PyPI](https://pypi.org/project/agentic-systems/2.1.4/). Published wheel and source artifacts are immutable. Documentation and mutation-quality improvements in the open PR are candidate repository changes, not replacements for published artifacts.
+The 2.1.4 SDK is published on [PyPI](https://pypi.org/project/agentic-systems/2.1.4/). Published wheel and source artifacts are immutable. Documentation and mutation-quality improvements were integrated through PR #15. The 2.1.5 maintenance release is described in [its release notes](RELEASE_NOTES_215.md); it does not replace the immutable 2.1.4 artifacts.
 
 [PR #15](https://github.com/JacoboGGLeon/agentic_systems/pull/15) verifies stronger contracts and an audited equivalent-aware gate. Before the current documentation updates, [quality](https://github.com/JacoboGGLeon/agentic_systems/actions/runs/41954709455) passed Python 3.10–3.14 and [mutation quality](https://github.com/JacoboGGLeon/agentic_systems/actions/runs/41954709456) passed with 2,360 detected mutants, six reviewed equivalents and zero unresolved cases out of 2,366. These results belong to their recorded commit; changed documentation must receive its own validation.
 

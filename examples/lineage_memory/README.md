@@ -1,8 +1,8 @@
-# Lineage and Memory that change decisions · 2.1.4
+# Lineage and Memory that change decisions · 2.1.5
 
 **Input → process → output:** payment PAY-001 arrives with 5000 MXN cents. One Agent computes a fee of 50; another checks its evidence and decides. The first run approves. The second receives exactly the same input and requests duplicate review because Memory retained the previous episode.
 
-Everything uses deterministic Python coordinated by LangGraph: no models, keys or inference. Install local SDK **2.1.4** and its dependencies first. The notebook installs nothing. Run cells in order from a clean kernel.
+Everything uses deterministic Python coordinated by LangGraph: no models, keys or inference. Install local SDK **2.1.5** and its dependencies first. The notebook installs nothing. Run cells in order from a clean kernel.
 
 | Channel | Contents | Decision role |
 |---|---|---|

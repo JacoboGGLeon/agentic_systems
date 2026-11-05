@@ -1,4 +1,4 @@
-# Borrowed AWS session and ADA add-on · 2.1.4
+# Borrowed AWS session and ADA add-on · 2.1.5
 
 Input: a prepared boto3 session, model and region. Process: validate runtime, compile the Agent and inspect configuration. Output: a credential-free configuration-only report. [Notebook](01_aws_session.ipynb) · [English reading view](01_aws_session.md) · [Code](example.py).
 

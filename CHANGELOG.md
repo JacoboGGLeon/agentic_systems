@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.1.5
+
+- Add behavioral contract coverage and simplify redundant result/configuration normalization.
+- Execute every selected mutation and reject every unresolved outcome; retain six individually reviewed JSON-encoding equivalents separately.
+- Translate all 33 active notebooks and their guides into English; add validated Markdown reading views and complete Python metadata.
+- Fix PyPI description links and expose documentation/tutorial URLs.
+- Refresh the versioned skill and optional application packages.
+- Verify exact release bytes on Python 3.10–3.14 and require the mutation gate before sealing. New live inference and IAM/GPU certification are not claimed.
+
 ## 2.1.4
 
 - One Pydantic-based public grammar; LangGraph orchestration for Agents, Systems and Environments.

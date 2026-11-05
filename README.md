@@ -8,11 +8,11 @@ Start with a Python function. Turn it into a Tool, give an Agent a capability,
 and compose Agents into a System. Add Context, Memory, episodic execution and
 evaluation as the application grows.
 
-**Release 2.1.4** uses one public grammar. Install the SDK with
-`pip install agentic-systems==2.1.4`; see [installation](https://github.com/JacoboGGLeon/agentic_systems/blob/main/INSTALL.md) for optional
+**Release 2.1.5** uses one public grammar. Install the SDK with
+`pip install agentic-systems==2.1.5`; see [installation](https://github.com/JacoboGGLeon/agentic_systems/blob/main/INSTALL.md) for optional
 framework/provider extras and Studio. Historical live evidence retains its original
-artifact identity; this release uses the explicitly approved payload-equivalence
-acceptance described in the release notes.
+artifact identity. This maintenance release uses fresh offline and mutation checks;
+see the [2.1.5 release notes](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/RELEASE_NOTES_215.md).
 
 ## Build from the bottom up
 
@@ -285,8 +285,9 @@ produce the same business results. It transfers no funds.
 The [validation report](https://github.com/JacoboGGLeon/agentic_systems/blob/main/revisions/2.1.4/ollama-connection-fix/01/live/REPORT.md)
 contains RunResults, human_results, lineage, artifact hashes and recorded consumption.
 The reference development wheel passed 544 offline tests and this focused online campaign.
-Stable acceptance combines fresh offline CI with explicitly approved executable-payload
-equivalence, without claiming new stable live inference. These results do not certify
+The 2.1.4 release used approved executable-payload equivalence to that development wheel.
+Version 2.1.5 includes reviewed runtime simplifications and fresh offline/mutation checks;
+it does not claim a new live provider campaign. These results do not certify
 every provider feature or a complete release matrix.
 
 ## Learn, scaffold and explore

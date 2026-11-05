@@ -1,4 +1,4 @@
-# Examples · Agentic Systems 2.1.4
+# Examples · Agentic Systems 2.1.5
 
 Examples use the public toolkit API and LangGraph orchestration. Begin with the [complete API walkthrough](api_walkthrough/01_api_user_guide.md), then [common graph patterns](common_graph/01_common_graph.md), [typed composition](checked_composition/01_checked_composition.md) and [Context/Memory](context_memory_lineage/01_context_memory_lineage.md).
 
