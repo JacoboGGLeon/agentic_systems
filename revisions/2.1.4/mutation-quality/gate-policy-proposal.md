@@ -1,3 +1,5 @@
+> Historical proposal. The user approved this direction; implemented policy is documented in gate-policy.md.
+
 # Gate closure proposal — not applied
 
 The gate still rejects every survivor. No workflow rule or mutation exclusion has been changed.
