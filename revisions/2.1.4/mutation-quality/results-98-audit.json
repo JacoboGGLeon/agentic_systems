@@ -1,0 +1,590 @@
+[
+  {
+    "name": "agentic_systems._results.x__json__mutmut_18",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -13,7 +13,7 @@\n             elif isinstance(item, float) and not math.isfinite(item):\n                 raise TypeError(\"Expected finite JSON data\")\n         finite(value)\n-        return _json(value.model_dump(mode=\"json\"))\n+        return _json(value.model_dump(mode=None))\n     if isinstance(value, dict):\n         if any(not isinstance(k, str) for k in value):\n             raise TypeError(\"JSON keys must be strings\")"
+  },
+  {
+    "name": "agentic_systems._results.x__json__mutmut_19",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -13,7 +13,7 @@\n             elif isinstance(item, float) and not math.isfinite(item):\n                 raise TypeError(\"Expected finite JSON data\")\n         finite(value)\n-        return _json(value.model_dump(mode=\"json\"))\n+        return _json(value.model_dump(mode=\"XXjsonXX\"))\n     if isinstance(value, dict):\n         if any(not isinstance(k, str) for k in value):\n             raise TypeError(\"JSON keys must be strings\")"
+  },
+  {
+    "name": "agentic_systems._results.x__json__mutmut_20",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -13,7 +13,7 @@\n             elif isinstance(item, float) and not math.isfinite(item):\n                 raise TypeError(\"Expected finite JSON data\")\n         finite(value)\n-        return _json(value.model_dump(mode=\"json\"))\n+        return _json(value.model_dump(mode=\"JSON\"))\n     if isinstance(value, dict):\n         if any(not isinstance(k, str) for k in value):\n             raise TypeError(\"JSON keys must be strings\")"
+  },
+  {
+    "name": "agentic_systems._results.x__json__mutmut_23",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -16,7 +16,7 @@\n         return _json(value.model_dump(mode=\"json\"))\n     if isinstance(value, dict):\n         if any(not isinstance(k, str) for k in value):\n-            raise TypeError(\"JSON keys must be strings\")\n+            raise TypeError(None)\n         return {k: _json(v) for k, v in value.items()}\n     if isinstance(value, (list, tuple)):\n         return [_json(v) for v in value]"
+  },
+  {
+    "name": "agentic_systems._results.x__json__mutmut_24",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -16,7 +16,7 @@\n         return _json(value.model_dump(mode=\"json\"))\n     if isinstance(value, dict):\n         if any(not isinstance(k, str) for k in value):\n-            raise TypeError(\"JSON keys must be strings\")\n+            raise TypeError(\"XXJSON keys must be stringsXX\")\n         return {k: _json(v) for k, v in value.items()}\n     if isinstance(value, (list, tuple)):\n         return [_json(v) for v in value]"
+  },
+  {
+    "name": "agentic_systems._results.x__json__mutmut_25",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -16,7 +16,7 @@\n         return _json(value.model_dump(mode=\"json\"))\n     if isinstance(value, dict):\n         if any(not isinstance(k, str) for k in value):\n-            raise TypeError(\"JSON keys must be strings\")\n+            raise TypeError(\"json keys must be strings\")\n         return {k: _json(v) for k, v in value.items()}\n     if isinstance(value, (list, tuple)):\n         return [_json(v) for v in value]"
+  },
+  {
+    "name": "agentic_systems._results.x__json__mutmut_26",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -16,7 +16,7 @@\n         return _json(value.model_dump(mode=\"json\"))\n     if isinstance(value, dict):\n         if any(not isinstance(k, str) for k in value):\n-            raise TypeError(\"JSON keys must be strings\")\n+            raise TypeError(\"JSON KEYS MUST BE STRINGS\")\n         return {k: _json(v) for k, v in value.items()}\n     if isinstance(value, (list, tuple)):\n         return [_json(v) for v in value]"
+  },
+  {
+    "name": "agentic_systems._results.x__json__mutmut_35",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -24,4 +24,4 @@\n         return value\n     if type(value) is float and math.isfinite(value):\n         return value\n-    raise TypeError(\"Expected finite JSON data\")\n+    raise TypeError(None)"
+  },
+  {
+    "name": "agentic_systems._results.x__json__mutmut_36",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -24,4 +24,4 @@\n         return value\n     if type(value) is float and math.isfinite(value):\n         return value\n-    raise TypeError(\"Expected finite JSON data\")\n+    raise TypeError(\"XXExpected finite JSON dataXX\")"
+  },
+  {
+    "name": "agentic_systems._results.x__json__mutmut_37",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -24,4 +24,4 @@\n         return value\n     if type(value) is float and math.isfinite(value):\n         return value\n-    raise TypeError(\"Expected finite JSON data\")\n+    raise TypeError(\"expected finite json data\")"
+  },
+  {
+    "name": "agentic_systems._results.x__json__mutmut_38",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -24,4 +24,4 @@\n         return value\n     if type(value) is float and math.isfinite(value):\n         return value\n-    raise TypeError(\"Expected finite JSON data\")\n+    raise TypeError(\"EXPECTED FINITE JSON DATA\")"
+  },
+  {
+    "name": "agentic_systems._results.x__preview__mutmut_7",
+    "exit_code": 0,
+    "outcome": "equivalent_with_argument",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -1,4 +1,4 @@\n def _preview(value, max_chars=400):\n     value = _redact(_json(value))\n-    encoded = json.dumps(value, ensure_ascii=False, separators=(\",\", \":\"))\n+    encoded = json.dumps(value, ensure_ascii=None, separators=(\",\", \":\"))\n     return value if len(encoded) <= max_chars else {\"preview\": encoded[:max_chars], \"omitted\": True}"
+  },
+  {
+    "name": "agentic_systems._results.x__preview__mutmut_8",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -1,4 +1,4 @@\n def _preview(value, max_chars=400):\n     value = _redact(_json(value))\n-    encoded = json.dumps(value, ensure_ascii=False, separators=(\",\", \":\"))\n+    encoded = json.dumps(value, ensure_ascii=False, separators=None)\n     return value if len(encoded) <= max_chars else {\"preview\": encoded[:max_chars], \"omitted\": True}"
+  },
+  {
+    "name": "agentic_systems._results.x__preview__mutmut_10",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -1,4 +1,4 @@\n def _preview(value, max_chars=400):\n     value = _redact(_json(value))\n-    encoded = json.dumps(value, ensure_ascii=False, separators=(\",\", \":\"))\n+    encoded = json.dumps(value, separators=(\",\", \":\"))\n     return value if len(encoded) <= max_chars else {\"preview\": encoded[:max_chars], \"omitted\": True}"
+  },
+  {
+    "name": "agentic_systems._results.x__preview__mutmut_11",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -1,4 +1,4 @@\n def _preview(value, max_chars=400):\n     value = _redact(_json(value))\n-    encoded = json.dumps(value, ensure_ascii=False, separators=(\",\", \":\"))\n+    encoded = json.dumps(value, ensure_ascii=False, )\n     return value if len(encoded) <= max_chars else {\"preview\": encoded[:max_chars], \"omitted\": True}"
+  },
+  {
+    "name": "agentic_systems._results.x__preview__mutmut_12",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -1,4 +1,4 @@\n def _preview(value, max_chars=400):\n     value = _redact(_json(value))\n-    encoded = json.dumps(value, ensure_ascii=False, separators=(\",\", \":\"))\n+    encoded = json.dumps(value, ensure_ascii=True, separators=(\",\", \":\"))\n     return value if len(encoded) <= max_chars else {\"preview\": encoded[:max_chars], \"omitted\": True}"
+  },
+  {
+    "name": "agentic_systems._results.x__preview__mutmut_13",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -1,4 +1,4 @@\n def _preview(value, max_chars=400):\n     value = _redact(_json(value))\n-    encoded = json.dumps(value, ensure_ascii=False, separators=(\",\", \":\"))\n+    encoded = json.dumps(value, ensure_ascii=False, separators=(\"XX,XX\", \":\"))\n     return value if len(encoded) <= max_chars else {\"preview\": encoded[:max_chars], \"omitted\": True}"
+  },
+  {
+    "name": "agentic_systems._results.x__preview__mutmut_14",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -1,4 +1,4 @@\n def _preview(value, max_chars=400):\n     value = _redact(_json(value))\n-    encoded = json.dumps(value, ensure_ascii=False, separators=(\",\", \":\"))\n+    encoded = json.dumps(value, ensure_ascii=False, separators=(\",\", \"XX:XX\"))\n     return value if len(encoded) <= max_chars else {\"preview\": encoded[:max_chars], \"omitted\": True}"
+  },
+  {
+    "name": "agentic_systems._results.xǁ_Lineageǁrender__mutmut_32",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -5,7 +5,7 @@\n         lines.append(f\"- {step['title']}: {step['summary']} [{step['step_id']}]\")\n     if len(self.steps) > 12:\n         lines.append(f\"{len(self.steps) - 12} more steps; retrieve evidence by execution_id.\")\n-    failed = [s for s in self.steps[12:] if s.get(\"evidence\", {}).get(\"ok\") is False]\n+    failed = [s for s in self.steps[12:] if s.get(\"evidence\", None).get(\"ok\") is False]\n     if failed:\n         lines.append(f\"{len(failed)} failures outside this view: \" + \", \".join(s[\"step_id\"] for s in failed[:3]))\n     return \"\\n\".join(lines)"
+  },
+  {
+    "name": "agentic_systems._results.xǁ_Lineageǁrender__mutmut_34",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -5,7 +5,7 @@\n         lines.append(f\"- {step['title']}: {step['summary']} [{step['step_id']}]\")\n     if len(self.steps) > 12:\n         lines.append(f\"{len(self.steps) - 12} more steps; retrieve evidence by execution_id.\")\n-    failed = [s for s in self.steps[12:] if s.get(\"evidence\", {}).get(\"ok\") is False]\n+    failed = [s for s in self.steps[12:] if s.get(\"evidence\", ).get(\"ok\") is False]\n     if failed:\n         lines.append(f\"{len(failed)} failures outside this view: \" + \", \".join(s[\"step_id\"] for s in failed[:3]))\n     return \"\\n\".join(lines)"
+  },
+  {
+    "name": "agentic_systems._results.xǁ_Lineageǁto_prompt_context__mutmut_1",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -1,4 +1,4 @@\n-def to_prompt_context(self, *, max_chars=1600):\n+def to_prompt_context(self, *, max_chars=1601):\n     if type(max_chars) is not int or max_chars < 1:\n         raise ValueError(\"max_chars must be positive\")\n     def encode(value):"
+  },
+  {
+    "name": "agentic_systems._results.xǁ_Lineageǁto_prompt_context__mutmut_5",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -1,5 +1,5 @@\n def to_prompt_context(self, *, max_chars=1600):\n-    if type(max_chars) is not int or max_chars < 1:\n+    if type(max_chars) is not int or max_chars <= 1:\n         raise ValueError(\"max_chars must be positive\")\n     def encode(value):\n         return json.dumps(_redact(_json(value)), ensure_ascii=False, separators=(\",\", \":\"))"
+  },
+  {
+    "name": "agentic_systems._results.xǁ_Lineageǁto_prompt_context__mutmut_6",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -1,5 +1,5 @@\n def to_prompt_context(self, *, max_chars=1600):\n-    if type(max_chars) is not int or max_chars < 1:\n+    if type(max_chars) is not int or max_chars < 2:\n         raise ValueError(\"max_chars must be positive\")\n     def encode(value):\n         return json.dumps(_redact(_json(value)), ensure_ascii=False, separators=(\",\", \":\"))"
+  },
+  {
+    "name": "agentic_systems._results.xǁ_Lineageǁto_prompt_context__mutmut_8",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -1,6 +1,6 @@\n def to_prompt_context(self, *, max_chars=1600):\n     if type(max_chars) is not int or max_chars < 1:\n-        raise ValueError(\"max_chars must be positive\")\n+        raise ValueError(\"XXmax_chars must be positiveXX\")\n     def encode(value):\n         return json.dumps(_redact(_json(value)), ensure_ascii=False, separators=(\",\", \":\"))\n     failed = [s for s in self.steps if s.get(\"evidence\", {}).get(\"ok\") is False]"
+  },
+  {
+    "name": "agentic_systems._results.xǁ_Lineageǁto_prompt_context__mutmut_11",
+    "exit_code": 0,
+    "outcome": "equivalent_with_argument",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -2,7 +2,7 @@\n     if type(max_chars) is not int or max_chars < 1:\n         raise ValueError(\"max_chars must be positive\")\n     def encode(value):\n-        return json.dumps(_redact(_json(value)), ensure_ascii=False, separators=(\",\", \":\"))\n+        return json.dumps(_redact(_json(value)), ensure_ascii=None, separators=(\",\", \":\"))\n     failed = [s for s in self.steps if s.get(\"evidence\", {}).get(\"ok\") is False]\n     payload = {\"ok\": self.ok, \"steps\": [], \"omitted_steps\": len(self.steps), \"failed_steps\": len(failed)}\n     if self.status == \"paused\":"
+  },
+  {
+    "name": "agentic_systems._results.xǁ_Lineageǁto_prompt_context__mutmut_12",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -2,7 +2,7 @@\n     if type(max_chars) is not int or max_chars < 1:\n         raise ValueError(\"max_chars must be positive\")\n     def encode(value):\n-        return json.dumps(_redact(_json(value)), ensure_ascii=False, separators=(\",\", \":\"))\n+        return json.dumps(_redact(_json(value)), ensure_ascii=False, separators=None)\n     failed = [s for s in self.steps if s.get(\"evidence\", {}).get(\"ok\") is False]\n     payload = {\"ok\": self.ok, \"steps\": [], \"omitted_steps\": len(self.steps), \"failed_steps\": len(failed)}\n     if self.status == \"paused\":"
+  },
+  {
+    "name": "agentic_systems._results.xǁ_Lineageǁto_prompt_context__mutmut_15",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -2,7 +2,7 @@\n     if type(max_chars) is not int or max_chars < 1:\n         raise ValueError(\"max_chars must be positive\")\n     def encode(value):\n-        return json.dumps(_redact(_json(value)), ensure_ascii=False, separators=(\",\", \":\"))\n+        return json.dumps(_redact(_json(value)), ensure_ascii=False, )\n     failed = [s for s in self.steps if s.get(\"evidence\", {}).get(\"ok\") is False]\n     payload = {\"ok\": self.ok, \"steps\": [], \"omitted_steps\": len(self.steps), \"failed_steps\": len(failed)}\n     if self.status == \"paused\":"
+  },
+  {
+    "name": "agentic_systems._results.xǁ_Lineageǁto_prompt_context__mutmut_24",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -3,7 +3,7 @@\n         raise ValueError(\"max_chars must be positive\")\n     def encode(value):\n         return json.dumps(_redact(_json(value)), ensure_ascii=False, separators=(\",\", \":\"))\n-    failed = [s for s in self.steps if s.get(\"evidence\", {}).get(\"ok\") is False]\n+    failed = [s for s in self.steps if s.get(\"evidence\", None).get(\"ok\") is False]\n     payload = {\"ok\": self.ok, \"steps\": [], \"omitted_steps\": len(self.steps), \"failed_steps\": len(failed)}\n     if self.status == \"paused\":\n         payload[\"status\"] = self.status"
+  },
+  {
+    "name": "agentic_systems._results.xǁ_Lineageǁto_prompt_context__mutmut_26",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -3,7 +3,7 @@\n         raise ValueError(\"max_chars must be positive\")\n     def encode(value):\n         return json.dumps(_redact(_json(value)), ensure_ascii=False, separators=(\",\", \":\"))\n-    failed = [s for s in self.steps if s.get(\"evidence\", {}).get(\"ok\") is False]\n+    failed = [s for s in self.steps if s.get(\"evidence\", ).get(\"ok\") is False]\n     payload = {\"ok\": self.ok, \"steps\": [], \"omitted_steps\": len(self.steps), \"failed_steps\": len(failed)}\n     if self.status == \"paused\":\n         payload[\"status\"] = self.status"
+  },
+  {
+    "name": "agentic_systems._results.xǁ_Lineageǁto_prompt_context__mutmut_31",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -3,7 +3,7 @@\n         raise ValueError(\"max_chars must be positive\")\n     def encode(value):\n         return json.dumps(_redact(_json(value)), ensure_ascii=False, separators=(\",\", \":\"))\n-    failed = [s for s in self.steps if s.get(\"evidence\", {}).get(\"ok\") is False]\n+    failed = [s for s in self.steps if s.get(\"evidence\", {}).get(\"ok\") is not False]\n     payload = {\"ok\": self.ok, \"steps\": [], \"omitted_steps\": len(self.steps), \"failed_steps\": len(failed)}\n     if self.status == \"paused\":\n         payload[\"status\"] = self.status"
+  },
+  {
+    "name": "agentic_systems._results.xǁ_Lineageǁto_prompt_context__mutmut_32",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -3,7 +3,7 @@\n         raise ValueError(\"max_chars must be positive\")\n     def encode(value):\n         return json.dumps(_redact(_json(value)), ensure_ascii=False, separators=(\",\", \":\"))\n-    failed = [s for s in self.steps if s.get(\"evidence\", {}).get(\"ok\") is False]\n+    failed = [s for s in self.steps if s.get(\"evidence\", {}).get(\"ok\") is True]\n     payload = {\"ok\": self.ok, \"steps\": [], \"omitted_steps\": len(self.steps), \"failed_steps\": len(failed)}\n     if self.status == \"paused\":\n         payload[\"status\"] = self.status"
+  },
+  {
+    "name": "agentic_systems._results.xǁ_Lineageǁto_prompt_context__mutmut_48",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -7,7 +7,7 @@\n     payload = {\"ok\": self.ok, \"steps\": [], \"omitted_steps\": len(self.steps), \"failed_steps\": len(failed)}\n     if self.status == \"paused\":\n         payload[\"status\"] = self.status\n-    if len(encode(payload)) > max_chars:\n+    if len(encode(payload)) >= max_chars:\n         raise ValueError(\"Context budget is too small for a valid lineage envelope\")\n     if len(encode({**payload, \"execution_id\": self.execution_id})) <= max_chars:\n         payload[\"execution_id\"] = self.execution_id"
+  },
+  {
+    "name": "agentic_systems._results.xǁ_Lineageǁto_prompt_context__mutmut_49",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -8,7 +8,7 @@\n     if self.status == \"paused\":\n         payload[\"status\"] = self.status\n     if len(encode(payload)) > max_chars:\n-        raise ValueError(\"Context budget is too small for a valid lineage envelope\")\n+        raise ValueError(None)\n     if len(encode({**payload, \"execution_id\": self.execution_id})) <= max_chars:\n         payload[\"execution_id\"] = self.execution_id\n     failed_ids = {s[\"step_id\"] for s in failed}"
+  },
+  {
+    "name": "agentic_systems._results.xǁ_Lineageǁto_prompt_context__mutmut_50",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -8,7 +8,7 @@\n     if self.status == \"paused\":\n         payload[\"status\"] = self.status\n     if len(encode(payload)) > max_chars:\n-        raise ValueError(\"Context budget is too small for a valid lineage envelope\")\n+        raise ValueError(\"XXContext budget is too small for a valid lineage envelopeXX\")\n     if len(encode({**payload, \"execution_id\": self.execution_id})) <= max_chars:\n         payload[\"execution_id\"] = self.execution_id\n     failed_ids = {s[\"step_id\"] for s in failed}"
+  },
+  {
+    "name": "agentic_systems._results.xǁ_Lineageǁto_prompt_context__mutmut_51",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -8,7 +8,7 @@\n     if self.status == \"paused\":\n         payload[\"status\"] = self.status\n     if len(encode(payload)) > max_chars:\n-        raise ValueError(\"Context budget is too small for a valid lineage envelope\")\n+        raise ValueError(\"context budget is too small for a valid lineage envelope\")\n     if len(encode({**payload, \"execution_id\": self.execution_id})) <= max_chars:\n         payload[\"execution_id\"] = self.execution_id\n     failed_ids = {s[\"step_id\"] for s in failed}"
+  },
+  {
+    "name": "agentic_systems._results.xǁ_Lineageǁto_prompt_context__mutmut_52",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -8,7 +8,7 @@\n     if self.status == \"paused\":\n         payload[\"status\"] = self.status\n     if len(encode(payload)) > max_chars:\n-        raise ValueError(\"Context budget is too small for a valid lineage envelope\")\n+        raise ValueError(\"CONTEXT BUDGET IS TOO SMALL FOR A VALID LINEAGE ENVELOPE\")\n     if len(encode({**payload, \"execution_id\": self.execution_id})) <= max_chars:\n         payload[\"execution_id\"] = self.execution_id\n     failed_ids = {s[\"step_id\"] for s in failed}"
+  },
+  {
+    "name": "agentic_systems._results.xǁ_Lineageǁto_prompt_context__mutmut_53",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -9,7 +9,7 @@\n         payload[\"status\"] = self.status\n     if len(encode(payload)) > max_chars:\n         raise ValueError(\"Context budget is too small for a valid lineage envelope\")\n-    if len(encode({**payload, \"execution_id\": self.execution_id})) <= max_chars:\n+    if len(encode({**payload, \"execution_id\": self.execution_id})) < max_chars:\n         payload[\"execution_id\"] = self.execution_id\n     failed_ids = {s[\"step_id\"] for s in failed}\n     ordered = [*failed, *(s for s in self.steps if s[\"step_id\"] not in failed_ids)]"
+  },
+  {
+    "name": "agentic_systems._results.xǁ_Lineageǁto_prompt_context__mutmut_79",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -16,7 +16,7 @@\n     positions = {s[\"step_id\"]: i for i, s in enumerate(self.steps)}\n     for step in ordered:\n         candidate = {**payload, \"steps\": [*payload[\"steps\"], step], \"omitted_steps\": payload[\"omitted_steps\"] - 1}\n-        if len(encode(candidate)) <= max_chars:\n+        if len(encode(candidate)) < max_chars:\n             payload = candidate\n     payload[\"steps\"].sort(key=lambda s: positions[s[\"step_id\"]])\n     with_answer = {**payload, \"answer\": self.answer}"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁ__post_init____mutmut_3",
+    "exit_code": 0,
+    "outcome": "equivalent_with_argument",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -1,5 +1,5 @@\n def __post_init__(self):\n-    status = self.status or (\"completed\" if self.ok else \"failed\")\n+    status = self.status or (\"completed\" if (self.ok) and False else \"failed\")\n     if status not in {\"completed\", \"failed\", \"paused\"}:\n         raise ValueError(\"Unknown execution status\")\n     if status != \"paused\":"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁ__post_init____mutmut_4",
+    "exit_code": 0,
+    "outcome": "equivalent_with_argument",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -1,5 +1,5 @@\n def __post_init__(self):\n-    status = self.status or (\"completed\" if self.ok else \"failed\")\n+    status = self.status or (\"completed\" if (self.ok) or True else \"failed\")\n     if status not in {\"completed\", \"failed\", \"paused\"}:\n         raise ValueError(\"Unknown execution status\")\n     if status != \"paused\":"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁ__post_init____mutmut_54",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -7,7 +7,7 @@\n     elif not self.ok or self.errors or not self.interrupts or not self.continuation:\n         raise ValueError(\"A paused result requires interrupts and a continuation, without errors\")\n     object.__setattr__(self, \"status\", status)\n-    object.__setattr__(self, \"interrupts\", tuple(_json(self.interrupts)))\n+    object.__setattr__(self, \"XXinterruptsXX\", tuple(_json(self.interrupts)))\n     object.__setattr__(self, \"continuation\", _json(self.continuation))\n     if type(self.ok) is not bool or not isinstance(self.data, dict):\n         raise TypeError(\"RunResult requires boolean ok and dictionary data\")"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁ__post_init____mutmut_55",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -7,7 +7,7 @@\n     elif not self.ok or self.errors or not self.interrupts or not self.continuation:\n         raise ValueError(\"A paused result requires interrupts and a continuation, without errors\")\n     object.__setattr__(self, \"status\", status)\n-    object.__setattr__(self, \"interrupts\", tuple(_json(self.interrupts)))\n+    object.__setattr__(self, \"INTERRUPTS\", tuple(_json(self.interrupts)))\n     object.__setattr__(self, \"continuation\", _json(self.continuation))\n     if type(self.ok) is not bool or not isinstance(self.data, dict):\n         raise TypeError(\"RunResult requires boolean ok and dictionary data\")"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁ__post_init____mutmut_64",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -8,7 +8,7 @@\n         raise ValueError(\"A paused result requires interrupts and a continuation, without errors\")\n     object.__setattr__(self, \"status\", status)\n     object.__setattr__(self, \"interrupts\", tuple(_json(self.interrupts)))\n-    object.__setattr__(self, \"continuation\", _json(self.continuation))\n+    object.__setattr__(self, \"XXcontinuationXX\", _json(self.continuation))\n     if type(self.ok) is not bool or not isinstance(self.data, dict):\n         raise TypeError(\"RunResult requires boolean ok and dictionary data\")\n     children = tuple(RunResult(**v) if isinstance(v, dict) else v for v in self.children)"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁ__post_init____mutmut_65",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -8,7 +8,7 @@\n         raise ValueError(\"A paused result requires interrupts and a continuation, without errors\")\n     object.__setattr__(self, \"status\", status)\n     object.__setattr__(self, \"interrupts\", tuple(_json(self.interrupts)))\n-    object.__setattr__(self, \"continuation\", _json(self.continuation))\n+    object.__setattr__(self, \"CONTINUATION\", _json(self.continuation))\n     if type(self.ok) is not bool or not isinstance(self.data, dict):\n         raise TypeError(\"RunResult requires boolean ok and dictionary data\")\n     children = tuple(RunResult(**v) if isinstance(v, dict) else v for v in self.children)"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁ__post_init____mutmut_152",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -22,4 +22,4 @@\n     object.__setattr__(self, \"tool_events\", events)\n     for name in (\"data\", \"final\", \"usage\", \"meta\", \"messages\", \"raw_responses\", \"validation\", \"errors\"):\n         value = _redact(_json(getattr(self, name)))\n-        object.__setattr__(self, name, tuple(value) if name in {\"messages\", \"raw_responses\", \"errors\"} else value)\n+        object.__setattr__(self, name, tuple(value) if name in {\"XXmessagesXX\", \"raw_responses\", \"errors\"} else value)"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁ__post_init____mutmut_153",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -22,4 +22,4 @@\n     object.__setattr__(self, \"tool_events\", events)\n     for name in (\"data\", \"final\", \"usage\", \"meta\", \"messages\", \"raw_responses\", \"validation\", \"errors\"):\n         value = _redact(_json(getattr(self, name)))\n-        object.__setattr__(self, name, tuple(value) if name in {\"messages\", \"raw_responses\", \"errors\"} else value)\n+        object.__setattr__(self, name, tuple(value) if name in {\"MESSAGES\", \"raw_responses\", \"errors\"} else value)"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁ__post_init____mutmut_154",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -22,4 +22,4 @@\n     object.__setattr__(self, \"tool_events\", events)\n     for name in (\"data\", \"final\", \"usage\", \"meta\", \"messages\", \"raw_responses\", \"validation\", \"errors\"):\n         value = _redact(_json(getattr(self, name)))\n-        object.__setattr__(self, name, tuple(value) if name in {\"messages\", \"raw_responses\", \"errors\"} else value)\n+        object.__setattr__(self, name, tuple(value) if name in {\"messages\", \"XXraw_responsesXX\", \"errors\"} else value)"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁ__post_init____mutmut_155",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -22,4 +22,4 @@\n     object.__setattr__(self, \"tool_events\", events)\n     for name in (\"data\", \"final\", \"usage\", \"meta\", \"messages\", \"raw_responses\", \"validation\", \"errors\"):\n         value = _redact(_json(getattr(self, name)))\n-        object.__setattr__(self, name, tuple(value) if name in {\"messages\", \"raw_responses\", \"errors\"} else value)\n+        object.__setattr__(self, name, tuple(value) if name in {\"messages\", \"RAW_RESPONSES\", \"errors\"} else value)"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁto_dict__mutmut_8",
+    "exit_code": 0,
+    "outcome": "equivalent_with_argument",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -1,5 +1,5 @@\n def to_dict(self):\n-    payload = {f.name: getattr(self, f.name) for f in fields(self) if f.name not in {\"children\", \"tool_events\"}}\n+    payload = {f.name: getattr(self, f.name) for f in fields(self) if f.name not in {\"XXchildrenXX\", \"tool_events\"}}\n     payload[\"children\"] = [c.to_dict() for c in self.children]\n     payload[\"tool_events\"] = [{f.name: getattr(e, f.name) for f in fields(e)} for e in self.tool_events]\n     return _redact(_json(payload))"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁto_dict__mutmut_9",
+    "exit_code": 0,
+    "outcome": "equivalent_with_argument",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -1,5 +1,5 @@\n def to_dict(self):\n-    payload = {f.name: getattr(self, f.name) for f in fields(self) if f.name not in {\"children\", \"tool_events\"}}\n+    payload = {f.name: getattr(self, f.name) for f in fields(self) if f.name not in {\"CHILDREN\", \"tool_events\"}}\n     payload[\"children\"] = [c.to_dict() for c in self.children]\n     payload[\"tool_events\"] = [{f.name: getattr(e, f.name) for f in fields(e)} for e in self.tool_events]\n     return _redact(_json(payload))"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁto_dict__mutmut_10",
+    "exit_code": 0,
+    "outcome": "equivalent_with_argument",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -1,5 +1,5 @@\n def to_dict(self):\n-    payload = {f.name: getattr(self, f.name) for f in fields(self) if f.name not in {\"children\", \"tool_events\"}}\n+    payload = {f.name: getattr(self, f.name) for f in fields(self) if f.name not in {\"children\", \"XXtool_eventsXX\"}}\n     payload[\"children\"] = [c.to_dict() for c in self.children]\n     payload[\"tool_events\"] = [{f.name: getattr(e, f.name) for f in fields(e)} for e in self.tool_events]\n     return _redact(_json(payload))"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁto_dict__mutmut_11",
+    "exit_code": 0,
+    "outcome": "equivalent_with_argument",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -1,5 +1,5 @@\n def to_dict(self):\n-    payload = {f.name: getattr(self, f.name) for f in fields(self) if f.name not in {\"children\", \"tool_events\"}}\n+    payload = {f.name: getattr(self, f.name) for f in fields(self) if f.name not in {\"children\", \"TOOL_EVENTS\"}}\n     payload[\"children\"] = [c.to_dict() for c in self.children]\n     payload[\"tool_events\"] = [{f.name: getattr(e, f.name) for f in fields(e)} for e in self.tool_events]\n     return _redact(_json(payload))"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_2",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -1,4 +1,4 @@\n-def human_results(self, *, max_steps=8, max_chars=4000):\n+def human_results(self, *, max_steps=8, max_chars=4001):\n     \"\"\"Present observed business work, with one execution ID and bounded data.\n \n         Technical wrappers are omitted; failed operations have priority. Full"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_21",
+    "exit_code": 0,
+    "outcome": "equivalent_with_argument",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -9,7 +9,7 @@\n     if type(max_chars) is not int or max_chars < 256:\n         raise ValueError(\"max_chars must be an integer of at least 256\")\n     def clipped(value, size):\n-        text = json.dumps(_redact(_json(value)), ensure_ascii=False, separators=(\",\", \":\"))\n+        text = json.dumps(_redact(_json(value)), ensure_ascii=None, separators=(\",\", \":\"))\n         return text if len(text) <= size else text[:max(0, size - 1)] + \"…\"\n     def title(run):\n         return str(run.meta.get(\"name\") or run.meta.get(\"tool_name\") or \"run\").replace(\"\\n\", \" \")[:80]"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_39",
+    "exit_code": 0,
+    "outcome": "equivalent_with_argument",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -10,7 +10,7 @@\n         raise ValueError(\"max_chars must be an integer of at least 256\")\n     def clipped(value, size):\n         text = json.dumps(_redact(_json(value)), ensure_ascii=False, separators=(\",\", \":\"))\n-        return text if len(text) <= size else text[:max(0, size - 1)] + \"…\"\n+        return text if len(text) <= size else text[:max(1, size - 1)] + \"…\"\n     def title(run):\n         return str(run.meta.get(\"name\") or run.meta.get(\"tool_name\") or \"run\").replace(\"\\n\", \" \")[:80]\n     room = max(16, min(500, (max_chars - 160) // 4))"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_56",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -12,7 +12,7 @@\n         text = json.dumps(_redact(_json(value)), ensure_ascii=False, separators=(\",\", \":\"))\n         return text if len(text) <= size else text[:max(0, size - 1)] + \"…\"\n     def title(run):\n-        return str(run.meta.get(\"name\") or run.meta.get(\"tool_name\") or \"run\").replace(\"\\n\", \" \")[:80]\n+        return str(run.meta.get(\"name\") or run.meta.get(\"tool_name\") or \"XXrunXX\").replace(\"\\n\", \" \")[:80]\n     room = max(16, min(500, (max_chars - 160) // 4))\n     kind = self.meta.get(\"kind\")\n     observed_input = self.meta.get(\"input\")"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_57",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -12,7 +12,7 @@\n         text = json.dumps(_redact(_json(value)), ensure_ascii=False, separators=(\",\", \":\"))\n         return text if len(text) <= size else text[:max(0, size - 1)] + \"…\"\n     def title(run):\n-        return str(run.meta.get(\"name\") or run.meta.get(\"tool_name\") or \"run\").replace(\"\\n\", \" \")[:80]\n+        return str(run.meta.get(\"name\") or run.meta.get(\"tool_name\") or \"RUN\").replace(\"\\n\", \" \")[:80]\n     room = max(16, min(500, (max_chars - 160) // 4))\n     kind = self.meta.get(\"kind\")\n     observed_input = self.meta.get(\"input\")"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_66",
+    "exit_code": 0,
+    "outcome": "equivalent_with_argument",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -13,7 +13,7 @@\n         return text if len(text) <= size else text[:max(0, size - 1)] + \"…\"\n     def title(run):\n         return str(run.meta.get(\"name\") or run.meta.get(\"tool_name\") or \"run\").replace(\"\\n\", \" \")[:80]\n-    room = max(16, min(500, (max_chars - 160) // 4))\n+    room = max(17, min(500, (max_chars - 160) // 4))\n     kind = self.meta.get(\"kind\")\n     observed_input = self.meta.get(\"input\")\n     shown_output = self.data"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_71",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -13,7 +13,7 @@\n         return text if len(text) <= size else text[:max(0, size - 1)] + \"…\"\n     def title(run):\n         return str(run.meta.get(\"name\") or run.meta.get(\"tool_name\") or \"run\").replace(\"\\n\", \" \")[:80]\n-    room = max(16, min(500, (max_chars - 160) // 4))\n+    room = max(16, min(501, (max_chars - 160) // 4))\n     kind = self.meta.get(\"kind\")\n     observed_input = self.meta.get(\"input\")\n     shown_output = self.data"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_121",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -23,7 +23,7 @@\n                    and run.meta.get(\"owner_name\") == self.meta.get(\"name\")\n                    and run.meta.get(\"name\") == \"observe\" and \"row\" in run.data]\n         if not records:\n-            records = [row[\"record\"] for row in self.data.get(\"history\", [])]\n+            records = [row[\"record\"] for row in self.data.get(\"history\", None)]\n         observed_input = {\"records_observed\": records}\n         shown_output = {key: self.data[key] for key in (\"outputs\", \"summary\") if key in self.data}\n     elif kind == \"eval\":"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_123",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -23,7 +23,7 @@\n                    and run.meta.get(\"owner_name\") == self.meta.get(\"name\")\n                    and run.meta.get(\"name\") == \"observe\" and \"row\" in run.data]\n         if not records:\n-            records = [row[\"record\"] for row in self.data.get(\"history\", [])]\n+            records = [row[\"record\"] for row in self.data.get(\"history\", )]\n         observed_input = {\"records_observed\": records}\n         shown_output = {key: self.data[key] for key in (\"outputs\", \"summary\") if key in self.data}\n     elif kind == \"eval\":"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_145",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -27,7 +27,7 @@\n         observed_input = {\"records_observed\": records}\n         shown_output = {key: self.data[key] for key in (\"outputs\", \"summary\") if key in self.data}\n     elif kind == \"eval\":\n-        observed_input = {\"cases_executed\": [row.get(\"input\") for row in self.data.get(\"cases\", [])]}\n+        observed_input = {\"cases_executed\": [row.get(\"input\") for row in self.data.get(\"cases\", None)]}\n         shown_output = {key: self.data[key] for key in (\"total\", \"passed\", \"failed\") if key in self.data}\n     status = {\"completed\": \"COMPLETED\", \"failed\": \"FAILED\", \"paused\": \"PAUSED\"}[self.status]\n     lines = [f\"{title(self)}: {status}\", \"Execution: \" + self.execution_id[:80],"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_147",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -27,7 +27,7 @@\n         observed_input = {\"records_observed\": records}\n         shown_output = {key: self.data[key] for key in (\"outputs\", \"summary\") if key in self.data}\n     elif kind == \"eval\":\n-        observed_input = {\"cases_executed\": [row.get(\"input\") for row in self.data.get(\"cases\", [])]}\n+        observed_input = {\"cases_executed\": [row.get(\"input\") for row in self.data.get(\"cases\", )]}\n         shown_output = {key: self.data[key] for key in (\"total\", \"passed\", \"failed\") if key in self.data}\n     status = {\"completed\": \"COMPLETED\", \"failed\": \"FAILED\", \"paused\": \"PAUSED\"}[self.status]\n     lines = [f\"{title(self)}: {status}\", \"Execution: \" + self.execution_id[:80],"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_169",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -29,7 +29,7 @@\n     elif kind == \"eval\":\n         observed_input = {\"cases_executed\": [row.get(\"input\") for row in self.data.get(\"cases\", [])]}\n         shown_output = {key: self.data[key] for key in (\"total\", \"passed\", \"failed\") if key in self.data}\n-    status = {\"completed\": \"COMPLETED\", \"failed\": \"FAILED\", \"paused\": \"PAUSED\"}[self.status]\n+    status = {\"completed\": \"COMPLETED\", \"failed\": \"FAILED\", \"paused\": \"XXPAUSEDXX\"}[self.status]\n     lines = [f\"{title(self)}: {status}\", \"Execution: \" + self.execution_id[:80],\n              \"Input: \" + (clipped(observed_input, room) if observed_input is not None else \"not recorded\"),\n              \"Output: \" + clipped(shown_output, room)]"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_170",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -29,7 +29,7 @@\n     elif kind == \"eval\":\n         observed_input = {\"cases_executed\": [row.get(\"input\") for row in self.data.get(\"cases\", [])]}\n         shown_output = {key: self.data[key] for key in (\"total\", \"passed\", \"failed\") if key in self.data}\n-    status = {\"completed\": \"COMPLETED\", \"failed\": \"FAILED\", \"paused\": \"PAUSED\"}[self.status]\n+    status = {\"completed\": \"COMPLETED\", \"failed\": \"FAILED\", \"paused\": \"paused\"}[self.status]\n     lines = [f\"{title(self)}: {status}\", \"Execution: \" + self.execution_id[:80],\n              \"Input: \" + (clipped(observed_input, room) if observed_input is not None else \"not recorded\"),\n              \"Output: \" + clipped(shown_output, room)]"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_203",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -34,7 +34,7 @@\n              \"Input: \" + (clipped(observed_input, room) if observed_input is not None else \"not recorded\"),\n              \"Output: \" + clipped(shown_output, room)]\n     if self.status == \"paused\":\n-        lines.append(\"Awaiting resume; execution is not complete.\")\n+        lines.append(\"XXAwaiting resume; execution is not complete.XX\")\n     if self.errors:\n         lines.append(\"Errors: \" + clipped(self.errors, room))\n     entries = []"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_229",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -40,7 +40,7 @@\n     entries = []\n     def collect(run):\n         current_kind = run.meta.get(\"kind\")\n-        internal = run.meta.get(\"internal\") or run.meta.get(\"owner_kind\") in {\"environment\", \"eval\"}\n+        internal = run.meta.get(\"internal\") or run.meta.get(\"owner_kind\") in {\"XXenvironmentXX\", \"eval\"}\n         if run is not self and not internal:\n             if current_kind in {\"agent\", \"system\", \"environment\", \"eval\"}:\n                 entries.append((not run.ok, current_kind.title() + \" \" + title(run) + \": \" + run.status))"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_230",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -40,7 +40,7 @@\n     entries = []\n     def collect(run):\n         current_kind = run.meta.get(\"kind\")\n-        internal = run.meta.get(\"internal\") or run.meta.get(\"owner_kind\") in {\"environment\", \"eval\"}\n+        internal = run.meta.get(\"internal\") or run.meta.get(\"owner_kind\") in {\"ENVIRONMENT\", \"eval\"}\n         if run is not self and not internal:\n             if current_kind in {\"agent\", \"system\", \"environment\", \"eval\"}:\n                 entries.append((not run.ok, current_kind.title() + \" \" + title(run) + \": \" + run.status))"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_246",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -43,7 +43,7 @@\n         internal = run.meta.get(\"internal\") or run.meta.get(\"owner_kind\") in {\"environment\", \"eval\"}\n         if run is not self and not internal:\n             if current_kind in {\"agent\", \"system\", \"environment\", \"eval\"}:\n-                entries.append((not run.ok, current_kind.title() + \" \" + title(run) + \": \" + run.status))\n+                entries.append((run.ok, current_kind.title() + \" \" + title(run) + \": \" + run.status))\n             elif current_kind == \"node\" and not run.children:\n                 entries.append((not run.ok, \"Step \" + title(run) + \": \" + run.status))\n             elif not run.ok and not run.children and not run.tool_events:"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_275",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -47,7 +47,7 @@\n             elif current_kind == \"node\" and not run.children:\n                 entries.append((not run.ok, \"Step \" + title(run) + \": \" + run.status))\n             elif not run.ok and not run.children and not run.tool_events:\n-                entries.append((True, \"Failure \" + title(run) + \": failed\"))\n+                entries.append((False, \"Failure \" + title(run) + \": failed\"))\n         for child in run.children:\n             collect(child)\n         for event in run.tool_events:"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_305",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -56,7 +56,7 @@\n                 output = output[\"data\"]\n             state = \"completed\" if event.ok else \"failed\"\n             value = output if event.ok else event.error\n-            entries.append((not event.ok, \"Tool \" + event.name + \": \" + state + \" -> \" + clipped(value, room)))\n+            entries.append((event.ok, \"Tool \" + event.name + \": \" + state + \" -> \" + clipped(value, room)))\n         attempts = run.meta.get(\"scheduler_execution\", {}).get(\"attempt_history\", ())\n         if len(attempts) > 1:\n             for attempt in attempts:"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_338",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -60,7 +60,7 @@\n         attempts = run.meta.get(\"scheduler_execution\", {}).get(\"attempt_history\", ())\n         if len(attempts) > 1:\n             for attempt in attempts:\n-                entries.append((attempt[\"status\"] != \"completed\", \"Attempt \" + str(attempt[\"number\"]) + \": \" + attempt[\"status\"]))\n+                entries.append((attempt[\"status\"] == \"completed\", \"Attempt \" + str(attempt[\"number\"]) + \": \" + attempt[\"status\"]))\n         if \"next\" in run.meta and not internal:\n             entries.append((False, \"Decision \" + title(run) + \" -> \" + clipped(run.meta[\"next\"], room)))\n     collect(self)"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_339",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -60,7 +60,7 @@\n         attempts = run.meta.get(\"scheduler_execution\", {}).get(\"attempt_history\", ())\n         if len(attempts) > 1:\n             for attempt in attempts:\n-                entries.append((attempt[\"status\"] != \"completed\", \"Attempt \" + str(attempt[\"number\"]) + \": \" + attempt[\"status\"]))\n+                entries.append((attempt[\"status\"] != \"XXcompletedXX\", \"Attempt \" + str(attempt[\"number\"]) + \": \" + attempt[\"status\"]))\n         if \"next\" in run.meta and not internal:\n             entries.append((False, \"Decision \" + title(run) + \" -> \" + clipped(run.meta[\"next\"], room)))\n     collect(self)"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_340",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -60,7 +60,7 @@\n         attempts = run.meta.get(\"scheduler_execution\", {}).get(\"attempt_history\", ())\n         if len(attempts) > 1:\n             for attempt in attempts:\n-                entries.append((attempt[\"status\"] != \"completed\", \"Attempt \" + str(attempt[\"number\"]) + \": \" + attempt[\"status\"]))\n+                entries.append((attempt[\"status\"] != \"COMPLETED\", \"Attempt \" + str(attempt[\"number\"]) + \": \" + attempt[\"status\"]))\n         if \"next\" in run.meta and not internal:\n             entries.append((False, \"Decision \" + title(run) + \" -> \" + clipped(run.meta[\"next\"], room)))\n     collect(self)"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_359",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -62,7 +62,7 @@\n             for attempt in attempts:\n                 entries.append((attempt[\"status\"] != \"completed\", \"Attempt \" + str(attempt[\"number\"]) + \": \" + attempt[\"status\"]))\n         if \"next\" in run.meta and not internal:\n-            entries.append((False, \"Decision \" + title(run) + \" -> \" + clipped(run.meta[\"next\"], room)))\n+            entries.append((True, \"Decision \" + title(run) + \" -> \" + clipped(run.meta[\"next\"], room)))\n     collect(self)\n     order = sorted(range(len(entries)), key=lambda index: not entries[index][0])\n     selected = sorted(order[:max_steps])"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_396",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -70,7 +70,7 @@\n     shown = 0\n     for index in selected:\n         line = \"- \" + entries[index][1]\n-        if sum(len(value) + 1 for value in lines) + len(line) > max_chars - 80:\n+        if sum(len(value) + 1 for value in lines) - len(line) > max_chars - 80:\n             break\n         lines.append(line)\n         shown += 1"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_398",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -70,7 +70,7 @@\n     shown = 0\n     for index in selected:\n         line = \"- \" + entries[index][1]\n-        if sum(len(value) + 1 for value in lines) + len(line) > max_chars - 80:\n+        if sum(len(value) - 1 for value in lines) + len(line) > max_chars - 80:\n             break\n         lines.append(line)\n         shown += 1"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_399",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -70,7 +70,7 @@\n     shown = 0\n     for index in selected:\n         line = \"- \" + entries[index][1]\n-        if sum(len(value) + 1 for value in lines) + len(line) > max_chars - 80:\n+        if sum(len(value) + 2 for value in lines) + len(line) > max_chars - 80:\n             break\n         lines.append(line)\n         shown += 1"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_400",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -70,7 +70,7 @@\n     shown = 0\n     for index in selected:\n         line = \"- \" + entries[index][1]\n-        if sum(len(value) + 1 for value in lines) + len(line) > max_chars - 80:\n+        if sum(len(value) + 1 for value in lines) + len(line) >= max_chars - 80:\n             break\n         lines.append(line)\n         shown += 1"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_401",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -70,7 +70,7 @@\n     shown = 0\n     for index in selected:\n         line = \"- \" + entries[index][1]\n-        if sum(len(value) + 1 for value in lines) + len(line) > max_chars - 80:\n+        if sum(len(value) + 1 for value in lines) + len(line) > max_chars + 80:\n             break\n         lines.append(line)\n         shown += 1"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_402",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -70,7 +70,7 @@\n     shown = 0\n     for index in selected:\n         line = \"- \" + entries[index][1]\n-        if sum(len(value) + 1 for value in lines) + len(line) > max_chars - 80:\n+        if sum(len(value) + 1 for value in lines) + len(line) > max_chars - 81:\n             break\n         lines.append(line)\n         shown += 1"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_424",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -79,4 +79,4 @@\n     if not entries:\n         lines.append(\"- No business operation recorded.\")\n     text = \"\\n\".join(lines)\n-    return text if len(text) <= max_chars else text[:max_chars - 1] + \"…\"\n+    return text if (len(text) <= max_chars) or True else text[:max_chars - 1] + \"…\""
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_425",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -79,4 +79,4 @@\n     if not entries:\n         lines.append(\"- No business operation recorded.\")\n     text = \"\\n\".join(lines)\n-    return text if len(text) <= max_chars else text[:max_chars - 1] + \"…\"\n+    return text if len(text) < max_chars else text[:max_chars - 1] + \"…\""
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_426",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -79,4 +79,4 @@\n     if not entries:\n         lines.append(\"- No business operation recorded.\")\n     text = \"\\n\".join(lines)\n-    return text if len(text) <= max_chars else text[:max_chars - 1] + \"…\"\n+    return text if len(text) <= max_chars else text[:max_chars - 1] - \"…\""
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_427",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -79,4 +79,4 @@\n     if not entries:\n         lines.append(\"- No business operation recorded.\")\n     text = \"\\n\".join(lines)\n-    return text if len(text) <= max_chars else text[:max_chars - 1] + \"…\"\n+    return text if len(text) <= max_chars else text[:max_chars + 1] + \"…\""
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_428",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -79,4 +79,4 @@\n     if not entries:\n         lines.append(\"- No business operation recorded.\")\n     text = \"\\n\".join(lines)\n-    return text if len(text) <= max_chars else text[:max_chars - 1] + \"…\"\n+    return text if len(text) <= max_chars else text[:max_chars - 2] + \"…\""
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁhuman_results__mutmut_429",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -79,4 +79,4 @@\n     if not entries:\n         lines.append(\"- No business operation recorded.\")\n     text = \"\\n\".join(lines)\n-    return text if len(text) <= max_chars else text[:max_chars - 1] + \"…\"\n+    return text if len(text) <= max_chars else text[:max_chars - 1] + \"XX…XX\""
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁtrace__mutmut_54",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -10,6 +10,6 @@\n     selected_ids = {r.execution_id for r in selected}\n     return {\"ok\": self.ok, \"status\": self.status, \"execution_id\": self.execution_id, \"engine\": self.engine,\n             \"model\": self.model, \"data\": _preview(self.data), \"errors\": _preview(self.errors),\n-            \"omitted_steps\": max(0, len(runs) - max_steps),\n+            \"omitted_steps\": max(1, len(runs) - max_steps),\n             \"steps\": [{\"execution_id\": r.execution_id, \"parent_execution_id\": r.parent_execution_id,\n                        \"name\": r.meta.get(\"name\"), \"ok\": r.ok} for r in runs if r.execution_id in selected_ids]}"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁlineage__mutmut_86",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -16,7 +16,7 @@\n                           \"source\": run.engine, \"why\": \"Recorded execution evidence\",\n                           \"evidence\": {\"ok\": run.ok, \"data\": _preview(run.data), \"errors\": _preview(run.errors)}})\n         attempts = run.meta.get(\"scheduler_execution\", {}).get(\"attempt_history\", ())\n-        if len(attempts) > 1 or any(row[\"status\"] != \"completed\" for row in attempts):\n+        if len(attempts) > 2 or any(row[\"status\"] != \"completed\" for row in attempts):\n             for attempt in attempts:\n                 observed = attempt.get(\"result\", {})\n                 steps.append({\"step_id\": run.execution_id + \":attempt:\" + str(attempt[\"number\"]),"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁlineage__mutmut_220",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -32,7 +32,7 @@\n                           \"why\": \"Recorded graph routing result\", \"evidence\": {\"next\": run.meta[\"next\"]}})\n         for event in run.tool_events:\n             steps.append({\"step_id\": event.id, \"kind\": \"tool\", \"title\": event.name,\n-                          \"summary\": \"completed\" if event.ok else \"failed\", \"source\": event.name,\n+                          \"summary\": \"completed\" if (event.ok) and False else \"failed\", \"source\": event.name,\n                           \"why\": \"Recorded Tool event\", \"evidence\": {\"ok\": event.ok, \"output\": _preview(limit_rows(_json(event.output))), \"error\": _preview(event.error)}})\n     return _Lineage(name, question if question is not None else json.dumps(_preview(self.meta.get(\"input\")), ensure_ascii=False), goal, self.text[:400] or json.dumps(_preview(self.data), ensure_ascii=False),\n                     self.ok, tuple(steps), _json(self.usage), _json(self.validation), tuple(tags or ()), _json(metadata or {}), execution_id=self.execution_id, status=self.status)"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁlineage__mutmut_222",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -32,7 +32,7 @@\n                           \"why\": \"Recorded graph routing result\", \"evidence\": {\"next\": run.meta[\"next\"]}})\n         for event in run.tool_events:\n             steps.append({\"step_id\": event.id, \"kind\": \"tool\", \"title\": event.name,\n-                          \"summary\": \"completed\" if event.ok else \"failed\", \"source\": event.name,\n+                          \"summary\": \"XXcompletedXX\" if event.ok else \"failed\", \"source\": event.name,\n                           \"why\": \"Recorded Tool event\", \"evidence\": {\"ok\": event.ok, \"output\": _preview(limit_rows(_json(event.output))), \"error\": _preview(event.error)}})\n     return _Lineage(name, question if question is not None else json.dumps(_preview(self.meta.get(\"input\")), ensure_ascii=False), goal, self.text[:400] or json.dumps(_preview(self.data), ensure_ascii=False),\n                     self.ok, tuple(steps), _json(self.usage), _json(self.validation), tuple(tags or ()), _json(metadata or {}), execution_id=self.execution_id, status=self.status)"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁlineage__mutmut_223",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -32,7 +32,7 @@\n                           \"why\": \"Recorded graph routing result\", \"evidence\": {\"next\": run.meta[\"next\"]}})\n         for event in run.tool_events:\n             steps.append({\"step_id\": event.id, \"kind\": \"tool\", \"title\": event.name,\n-                          \"summary\": \"completed\" if event.ok else \"failed\", \"source\": event.name,\n+                          \"summary\": \"COMPLETED\" if event.ok else \"failed\", \"source\": event.name,\n                           \"why\": \"Recorded Tool event\", \"evidence\": {\"ok\": event.ok, \"output\": _preview(limit_rows(_json(event.output))), \"error\": _preview(event.error)}})\n     return _Lineage(name, question if question is not None else json.dumps(_preview(self.meta.get(\"input\")), ensure_ascii=False), goal, self.text[:400] or json.dumps(_preview(self.data), ensure_ascii=False),\n                     self.ok, tuple(steps), _json(self.usage), _json(self.validation), tuple(tags or ()), _json(metadata or {}), execution_id=self.execution_id, status=self.status)"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁlineage__mutmut_273",
+    "exit_code": 0,
+    "outcome": "equivalent_with_argument",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -34,5 +34,5 @@\n             steps.append({\"step_id\": event.id, \"kind\": \"tool\", \"title\": event.name,\n                           \"summary\": \"completed\" if event.ok else \"failed\", \"source\": event.name,\n                           \"why\": \"Recorded Tool event\", \"evidence\": {\"ok\": event.ok, \"output\": _preview(limit_rows(_json(event.output))), \"error\": _preview(event.error)}})\n-    return _Lineage(name, question if question is not None else json.dumps(_preview(self.meta.get(\"input\")), ensure_ascii=False), goal, self.text[:400] or json.dumps(_preview(self.data), ensure_ascii=False),\n+    return _Lineage(name, question if question is not None else json.dumps(_preview(self.meta.get(\"input\")), ensure_ascii=None), goal, self.text[:400] or json.dumps(_preview(self.data), ensure_ascii=False),\n                     self.ok, tuple(steps), _json(self.usage), _json(self.validation), tuple(tags or ()), _json(metadata or {}), execution_id=self.execution_id, status=self.status)"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁlineage__mutmut_275",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -34,5 +34,5 @@\n             steps.append({\"step_id\": event.id, \"kind\": \"tool\", \"title\": event.name,\n                           \"summary\": \"completed\" if event.ok else \"failed\", \"source\": event.name,\n                           \"why\": \"Recorded Tool event\", \"evidence\": {\"ok\": event.ok, \"output\": _preview(limit_rows(_json(event.output))), \"error\": _preview(event.error)}})\n-    return _Lineage(name, question if question is not None else json.dumps(_preview(self.meta.get(\"input\")), ensure_ascii=False), goal, self.text[:400] or json.dumps(_preview(self.data), ensure_ascii=False),\n+    return _Lineage(name, question if question is not None else json.dumps(_preview(self.meta.get(\"input\")), ), goal, self.text[:400] or json.dumps(_preview(self.data), ensure_ascii=False),\n                     self.ok, tuple(steps), _json(self.usage), _json(self.validation), tuple(tags or ()), _json(metadata or {}), execution_id=self.execution_id, status=self.status)"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁlineage__mutmut_280",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -34,5 +34,5 @@\n             steps.append({\"step_id\": event.id, \"kind\": \"tool\", \"title\": event.name,\n                           \"summary\": \"completed\" if event.ok else \"failed\", \"source\": event.name,\n                           \"why\": \"Recorded Tool event\", \"evidence\": {\"ok\": event.ok, \"output\": _preview(limit_rows(_json(event.output))), \"error\": _preview(event.error)}})\n-    return _Lineage(name, question if question is not None else json.dumps(_preview(self.meta.get(\"input\")), ensure_ascii=False), goal, self.text[:400] or json.dumps(_preview(self.data), ensure_ascii=False),\n+    return _Lineage(name, question if question is not None else json.dumps(_preview(self.meta.get(\"input\")), ensure_ascii=True), goal, self.text[:400] or json.dumps(_preview(self.data), ensure_ascii=False),\n                     self.ok, tuple(steps), _json(self.usage), _json(self.validation), tuple(tags or ()), _json(metadata or {}), execution_id=self.execution_id, status=self.status)"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁlineage__mutmut_284",
+    "exit_code": 0,
+    "outcome": "equivalent_with_argument",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -34,5 +34,5 @@\n             steps.append({\"step_id\": event.id, \"kind\": \"tool\", \"title\": event.name,\n                           \"summary\": \"completed\" if event.ok else \"failed\", \"source\": event.name,\n                           \"why\": \"Recorded Tool event\", \"evidence\": {\"ok\": event.ok, \"output\": _preview(limit_rows(_json(event.output))), \"error\": _preview(event.error)}})\n-    return _Lineage(name, question if question is not None else json.dumps(_preview(self.meta.get(\"input\")), ensure_ascii=False), goal, self.text[:400] or json.dumps(_preview(self.data), ensure_ascii=False),\n+    return _Lineage(name, question if question is not None else json.dumps(_preview(self.meta.get(\"input\")), ensure_ascii=False), goal, self.text[:400] or json.dumps(_preview(self.data), ensure_ascii=None),\n                     self.ok, tuple(steps), _json(self.usage), _json(self.validation), tuple(tags or ()), _json(metadata or {}), execution_id=self.execution_id, status=self.status)"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁlineage__mutmut_286",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -34,5 +34,5 @@\n             steps.append({\"step_id\": event.id, \"kind\": \"tool\", \"title\": event.name,\n                           \"summary\": \"completed\" if event.ok else \"failed\", \"source\": event.name,\n                           \"why\": \"Recorded Tool event\", \"evidence\": {\"ok\": event.ok, \"output\": _preview(limit_rows(_json(event.output))), \"error\": _preview(event.error)}})\n-    return _Lineage(name, question if question is not None else json.dumps(_preview(self.meta.get(\"input\")), ensure_ascii=False), goal, self.text[:400] or json.dumps(_preview(self.data), ensure_ascii=False),\n+    return _Lineage(name, question if question is not None else json.dumps(_preview(self.meta.get(\"input\")), ensure_ascii=False), goal, self.text[:400] or json.dumps(_preview(self.data), ),\n                     self.ok, tuple(steps), _json(self.usage), _json(self.validation), tuple(tags or ()), _json(metadata or {}), execution_id=self.execution_id, status=self.status)"
+  },
+  {
+    "name": "agentic_systems._results.xǁRunResultǁlineage__mutmut_288",
+    "exit_code": 1,
+    "outcome": "killed",
+    "diff": "--- src/agentic_systems/_results.py\n+++ src/agentic_systems/_results.py\n@@ -34,5 +34,5 @@\n             steps.append({\"step_id\": event.id, \"kind\": \"tool\", \"title\": event.name,\n                           \"summary\": \"completed\" if event.ok else \"failed\", \"source\": event.name,\n                           \"why\": \"Recorded Tool event\", \"evidence\": {\"ok\": event.ok, \"output\": _preview(limit_rows(_json(event.output))), \"error\": _preview(event.error)}})\n-    return _Lineage(name, question if question is not None else json.dumps(_preview(self.meta.get(\"input\")), ensure_ascii=False), goal, self.text[:400] or json.dumps(_preview(self.data), ensure_ascii=False),\n+    return _Lineage(name, question if question is not None else json.dumps(_preview(self.meta.get(\"input\")), ensure_ascii=False), goal, self.text[:400] or json.dumps(_preview(self.data), ensure_ascii=True),\n                     self.ok, tuple(steps), _json(self.usage), _json(self.validation), tuple(tags or ()), _json(metadata or {}), execution_id=self.execution_id, status=self.status)"
+  }
+]
