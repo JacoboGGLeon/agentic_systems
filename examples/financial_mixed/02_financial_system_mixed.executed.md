@@ -542,7 +542,7 @@ for row in received:
     print(row["agent"], row["input"]["payment_id"],
           "policy=", context["data"],
           "episodes=", len(context["episodes"]),
-          "linaje=", [step["name"] for step in context["lineage"]])
+          "lineage=", [step["name"] for step in context["lineage"]])
 
 review_context = next(row["context"] for row in received if row["agent"] == "reviewer")
 print("EXACT CONTEXT OF THE FIRST REVIEWER:")
@@ -565,26 +565,26 @@ evidence = {
 print("Checks complete:", profile)
 ```
 
-    fees SINGLE policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 0 linaje= ['validate']
-    reviewer SINGLE policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 0 linaje= ['fees']
-    local SINGLE policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 0 linaje= ['fees', 'reviewer']
-    cloud SINGLE policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 0 linaje= ['fees', 'reviewer', 'local_verifier']
-    fees PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 1 linaje= ['observe', 'validate']
-    reviewer PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 1 linaje= ['observe', 'fees']
-    local PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 1 linaje= ['observe', 'fees', 'reviewer']
-    cloud PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 1 linaje= ['observe', 'fees', 'reviewer', 'local_verifier']
-    fees PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 linaje= ['observe', 'run', 'update', 'observe', 'validate']
-    reviewer PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 linaje= ['observe', 'run', 'update', 'observe', 'fees']
-    local PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 linaje= ['observe', 'run', 'update', 'observe', 'fees', 'reviewer']
-    cloud PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 linaje= ['observe', 'run', 'update', 'observe', 'fees', 'reviewer', 'local_verifier']
-    fees EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 linaje= ['validate']
-    reviewer EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 linaje= ['fees']
-    local EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 linaje= ['fees', 'reviewer']
-    cloud EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 linaje= ['fees', 'reviewer', 'local_verifier']
-    fees EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 linaje= ['evaluate', 'validate']
-    reviewer EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 linaje= ['evaluate', 'fees']
-    local EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 linaje= ['evaluate', 'fees', 'reviewer']
-    cloud EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 linaje= ['evaluate', 'fees', 'reviewer', 'local_verifier']
+    fees SINGLE policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 0 lineage= ['validate']
+    reviewer SINGLE policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 0 lineage= ['fees']
+    local SINGLE policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 0 lineage= ['fees', 'reviewer']
+    cloud SINGLE policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 0 lineage= ['fees', 'reviewer', 'local_verifier']
+    fees PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 1 lineage= ['observe', 'validate']
+    reviewer PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 1 lineage= ['observe', 'fees']
+    local PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 1 lineage= ['observe', 'fees', 'reviewer']
+    cloud PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 1 lineage= ['observe', 'fees', 'reviewer', 'local_verifier']
+    fees PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 lineage= ['observe', 'run', 'update', 'observe', 'validate']
+    reviewer PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 lineage= ['observe', 'run', 'update', 'observe', 'fees']
+    local PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 lineage= ['observe', 'run', 'update', 'observe', 'fees', 'reviewer']
+    cloud PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 lineage= ['observe', 'run', 'update', 'observe', 'fees', 'reviewer', 'local_verifier']
+    fees EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 lineage= ['validate']
+    reviewer EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 lineage= ['fees']
+    local EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 lineage= ['fees', 'reviewer']
+    cloud EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 lineage= ['fees', 'reviewer', 'local_verifier']
+    fees EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 lineage= ['evaluate', 'validate']
+    reviewer EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 lineage= ['evaluate', 'fees']
+    local EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 lineage= ['evaluate', 'fees', 'reviewer']
+    cloud EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 lineage= ['evaluate', 'fees', 'reviewer', 'local_verifier']
     EXACT CONTEXT OF THE FIRST REVIEWER:
     {
       "data": {

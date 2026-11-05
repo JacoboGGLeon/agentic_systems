@@ -122,7 +122,7 @@ assert all((r.check_invariants().ok for r in (single, team, batch, checked)))
 assert blocked_attempts() == 0
 print('Eval:', checked.ok)
 print(batch.lineage().render())
-print('Episodios locales:', len(memory.read()))
+print('Local episodes:', len(memory.read()))
 
 ```
 
@@ -142,5 +142,5 @@ print('Episodios locales:', len(memory.read()))
     - Next node: run [run-8f827013dc92410eb20343597e3aab43:decision]
     - Next node: approve [run-cb243a47e2ec4af9b14c4b0ebf57e66c:decision]
     7 more steps; retrieve evidence by execution_id.
-    Episodios locales: 3
+    Local episodes: 3
 
