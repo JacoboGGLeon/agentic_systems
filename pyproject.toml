@@ -30,8 +30,11 @@ dependencies = [
 
 
 [project.urls]
-Homepage = "https://www.github.com/JacoboGGLeon/agentic_systems"
-Repository = "https://www.github.com/JacoboGGLeon/agentic_systems"
+Documentation = "https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/README.md"
+Tutorials = "https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/NOTEBOOKS.md"
+Issues = "https://github.com/JacoboGGLeon/agentic_systems/issues"
+Homepage = "https://github.com/JacoboGGLeon/agentic_systems"
+Repository = "https://github.com/JacoboGGLeon/agentic_systems"
 LinkedIn = "https://www.linkedin.com/in/jacoboggleon/"
 
 [project.optional-dependencies]
@@ -51,6 +54,7 @@ dev = [
     "jupyterlab>=4.0.0",
     "nbclient>=0.10.0",
     "nbformat>=5.10.0",
+    "nbconvert==7.17.2",
     "hypothesis>=6.100.0",
     "pyright>=1.1.390",
     "import-linter>=2.0.0",
@@ -71,6 +75,7 @@ all = [
     "jupyterlab>=4.0.0",
     "nbclient>=0.10.0",
     "nbformat>=5.10.0",
+    "nbconvert==7.17.2",
     "pytest>=8.0.0",
     "pytest-cov>=5.0.0",
     "ruff==0.15.22",
@@ -132,7 +137,7 @@ exclude_lines = [
 
 [tool.mutmut]
 debug = true
-also_copy = ["tutorials", "examples", "scripts"]
+also_copy = ["README.md", "tutorials", "examples", "scripts"]
 source_paths = ["src/agentic_systems"]
 only_mutate = ["src/agentic_systems/_contracts.py", "src/agentic_systems/_configuration.py", "src/agentic_systems/_results.py"]
 pytest_add_cli_args_test_selection = ["tests/v214_graph", "tests/grammar214", "tests/current"]

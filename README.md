@@ -9,7 +9,7 @@ and compose Agents into a System. Add Context, Memory, episodic execution and
 evaluation as the application grows.
 
 **Release 2.1.4** uses one public grammar. Install the SDK with
-`pip install agentic-systems==2.1.4`; see [installation](INSTALL.md) for optional
+`pip install agentic-systems==2.1.4`; see [installation](https://github.com/JacoboGGLeon/agentic_systems/blob/main/INSTALL.md) for optional
 framework/provider extras and Studio. Historical live evidence retains its original
 artifact identity; this release uses the explicitly approved payload-equivalence
 acceptance described in the release notes.
@@ -48,7 +48,7 @@ Keep credentials outside application code.
 
 `run(..., timeout_s=60)` establishes a shared root deadline. A timeout does not
 guarantee that a running thread stops or that external effects are rolled back.
-[Execution controls and precedence](docs/RUNTIME_SCHEDULER_214.md).
+[Execution controls and precedence](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/RUNTIME_SCHEDULER_214.md).
 
 ### 2. Tool: implement a concrete operation
 
@@ -276,13 +276,13 @@ that every model statement is true.**
 
 ## See the pieces working together
 
-[Open the executed financial notebook](examples/financial_mixed/03_financial_system_native_local.executed.ipynb).
+[Open the executed financial notebook](https://github.com/JacoboGGLeon/agentic_systems/blob/main/examples/financial_mixed/03_financial_system_native_local.executed.ipynb).
 It combines OpenAI/native, Bedrock/Strands, Ollama local/native and Ollama
 cloud/OpenAI Agents in one System, with Tools, Skills, Context, Memory,
 Environment, reward calculation and Eval. Python and mixed-provider runs
 produce the same business results. It transfers no funds.
 
-The [validation report](revisions/2.1.4/ollama-connection-fix/01/live/REPORT.md)
+The [validation report](https://github.com/JacoboGGLeon/agentic_systems/blob/main/revisions/2.1.4/ollama-connection-fix/01/live/REPORT.md)
 contains RunResults, human_results, lineage, artifact hashes and recorded consumption.
 The reference development wheel passed 544 offline tests and this focused online campaign.
 Stable acceptance combines fresh offline CI with explicitly approved executable-payload
@@ -291,13 +291,13 @@ every provider feature or a complete release matrix.
 
 ## Learn, scaffold and explore
 
-- [Install the matching SDK and Studio](INSTALL.md).
-- [Tutorials: core, providers, frameworks and API](tutorials/README.md).
-- [Examples and their validation status](examples/README.md).
-- [Full API walkthrough](examples/api_walkthrough/01_api_user_guide.ipynb).
-- [Lineage and Memory that change decisions](examples/lineage_memory/01_lineage_memory_decisions.ipynb).
-- [API contracts and signatures](docs/API_214_SURFACE.md).
-- [Studio](examples/agentic_systems_studio/README.md) and the [Codex/ChatGPT skill](skills/agentic-systems/SKILL.md).
+- [Install the matching SDK and Studio](https://github.com/JacoboGGLeon/agentic_systems/blob/main/INSTALL.md).
+- [Tutorials: core, providers, frameworks and API](https://github.com/JacoboGGLeon/agentic_systems/blob/main/tutorials/README.md).
+- [Examples and their validation status](https://github.com/JacoboGGLeon/agentic_systems/blob/main/examples/README.md).
+- [Full API walkthrough](https://github.com/JacoboGGLeon/agentic_systems/blob/main/examples/api_walkthrough/01_api_user_guide.ipynb).
+- [Lineage and Memory that change decisions](https://github.com/JacoboGGLeon/agentic_systems/blob/main/examples/lineage_memory/01_lineage_memory_decisions.ipynb).
+- [API contracts and signatures](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/API_214_SURFACE.md).
+- [Studio](https://github.com/JacoboGGLeon/agentic_systems/blob/main/examples/agentic_systems_studio/README.md) and the [Codex/ChatGPT skill](https://github.com/JacoboGGLeon/agentic_systems/blob/main/skills/agentic-systems/SKILL.md).
 
 `agentic-systems new my_project` scaffolds an application using the same grammar.
 Studio and the skill are separate deliverables from the SDK wheel.
@@ -311,8 +311,8 @@ outside serialized state, Context, Memory and evidence, and the toolkit does not
 close it. Toolkit invocations sharing it are serialized; external use remains
 the owner's responsibility. The resource cannot be moved across processes.
 
-[Session example](examples/aws_session/01_aws_session.ipynb) ·
-[Independent ADA package](integrations/ada/README.md).
+[Session example](https://github.com/JacoboGGLeon/agentic_systems/blob/main/examples/aws_session/01_aws_session.ipynb) ·
+[Independent ADA package](https://github.com/JacoboGGLeon/agentic_systems/blob/main/integrations/ada/README.md).
 The optional diagnostic package is not included in `all`; its offline diagnostics
 do not resolve credentials or certify real AWS/ADA access.
 
@@ -322,11 +322,13 @@ Bedrock/Qwen has reproducibly omitted an obligatory `amount` key when its value
 was `null`, despite a strict schema. The received Tool arguments already lack
 the key before local validation. Agentic Systems rejects them; it does not insert
 defaults or invent values. This is a **known integration limitation**, not a PASS
-for that scenario. [Reproduction and evidence](revisions/2.1.4/problem-fixes/01/REPORT.md).
+for that scenario. [Reproduction and evidence](https://github.com/JacoboGGLeon/agentic_systems/blob/main/revisions/2.1.4/problem-fixes/01/REPORT.md).
 
 vLLM GPU, AWS IAM and ADA IAM remain pending their environments. Configuration
 support, offline tests and live validation are reported separately. SDK integrations
 do not promise universal feature parity. Memory and pause/resume remain local to
 the process; durable recovery is not implemented.
 
-[Current status](docs/STATUS_214.md) · [Known issues](docs/OPEN_ISSUES_214.md).
+[Current status](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/STATUS_214.md) · [Known issues](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/OPEN_ISSUES_214.md).
+
+For notebook reading views that do not depend on GitHub’s notebook renderer, see the [English notebook index](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/NOTEBOOKS.md).

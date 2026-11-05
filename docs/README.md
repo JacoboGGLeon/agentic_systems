@@ -1,21 +1,13 @@
-# Documentación · 2.1.4.dev8
+# Documentation · Agentic Systems 2.1.4
 
-1. [Instala el wheel y Studio locales](../INSTALL.md).
-2. [Aprende por core, providers, frameworks y API](../tutorials/README.md).
-3. [Elige una implementación](../examples/README.md).
-4. [Consulta la API](API_214.md) y [todas las firmas](API_214_SURFACE.md).
-5. [Comprueba validación y pendientes](LEARNING_VALIDATION_214.md).
+1. [Install the SDK and optional applications](../INSTALL.md).
+2. [Learn through English notebooks and reading views](NOTEBOOKS.md).
+3. [Explore executable examples](../examples/README.md).
+4. [Inspect the API and signatures](API_214_SURFACE.md).
+5. [Use the current assistant skill](../skills/agentic-systems/SKILL.md).
 
-[Plan de mejora](LEARNING_PLAN_214.md) · [Gramática](GRAMMAR_214.md) ·
-[Contratos](CONTRACTS_214.md) · [Inventario](NOTEBOOK_INVENTORY_214.md) ·
-[RunResults y linaje](RUNRESULTS_LINEAGE_214.md) · [vLLM GPU](VLLM_GPU_214.md)
+The SDK wheel contains the computational grammar and CLI. Notebooks and Studio source are separate repository resources; PyPI is a package index, not a documentation file server. README and project metadata links use absolute GitHub URLs so they remain usable from PyPI.
 
-[Estado del release estable y condiciones pendientes](RELEASE_214.md).
+The published 2.1.4 distributions are immutable. Repository documentation corrections become visible on main after integration; package-description changes require a new distribution release. Do not treat historical validation reports as acceptance of changed source or new artifacts.
 
-[Estado por revisión y evidencia](STATUS_214.md) ·
-[Runtime y scheduler](RUNTIME_SCHEDULER_214.md) ·
-[System y harness](SYSTEM_HARNESS_214.md).
-
-Los informes y propuestas anteriores llevan un aviso histórico. Conservan sus
-resultados originales; no enseñan una segunda API compatible. El SDK sigue
-siendo un desarrollo local, sin publicación de esta revisión.
+Current notebook explanations and generated reading views are in English. Historical campaign evidence under revisions and examples/history retains its original provenance and is not the current learning path.

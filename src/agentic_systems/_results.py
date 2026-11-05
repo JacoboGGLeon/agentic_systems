@@ -169,9 +169,9 @@ class RunResult:
     continuation: dict | None = None
 
     def __post_init__(self):
-        status = self.status or ("completed" if self.ok else "failed")
-        if status not in {"completed", "failed", "paused"}:
+        if self.status and self.status not in {"completed", "failed", "paused"}:
             raise ValueError("Unknown execution status")
+        status = self.status
         if status != "paused":
             status = "completed" if self.ok else "failed"
         elif not self.ok or self.errors or not self.interrupts or not self.continuation:
@@ -195,9 +195,14 @@ class RunResult:
             object.__setattr__(self, name, tuple(value) if name in {"messages", "raw_responses", "errors"} else value)
 
     def to_dict(self):
-        payload = {f.name: getattr(self, f.name) for f in fields(self) if f.name not in {"children", "tool_events"}}
-        payload["children"] = [c.to_dict() for c in self.children]
-        payload["tool_events"] = [{f.name: getattr(e, f.name) for f in fields(e)} for e in self.tool_events]
+        payload = {}
+        for item in fields(self):
+            if item.name == "children":
+                payload[item.name] = [child.to_dict() for child in self.children]
+            elif item.name == "tool_events":
+                payload[item.name] = [{f.name: getattr(event, f.name) for f in fields(event)} for event in self.tool_events]
+            else:
+                payload[item.name] = getattr(self, item.name)
         return _redact(_json(payload))
 
     def walk(self):
@@ -217,10 +222,10 @@ class RunResult:
             raise ValueError("max_chars must be an integer of at least 256")
         def clipped(value, size):
             text = json.dumps(_redact(_json(value)), ensure_ascii=False, separators=(",", ":"))
-            return text if len(text) <= size else text[:max(0, size - 1)] + "…"
+            return text if len(text) <= size else text[:size - 1] + "…"
         def title(run):
             return str(run.meta.get("name") or run.meta.get("tool_name") or "run").replace("\n", " ")[:80]
-        room = max(16, min(500, (max_chars - 160) // 4))
+        room = min(500, (max_chars - 160) // 4)
         kind = self.meta.get("kind")
         observed_input = self.meta.get("input")
         shown_output = self.data

@@ -106,11 +106,18 @@ def test_lazy_source_closes_at_ceiling_without_extra_read():
     assert output.ok and seen == [0, 1] and closed == [True]
 
 
-def test_unbounded_environment_still_obeys_root_limits():
+def test_unbounded_environment_still_obeys_root_limits(monkeypatch):
+    from types import SimpleNamespace
+    import agentic_systems._grammar as grammar
+    clock = [time.monotonic()]
+    monkeypatch.setattr(grammar, "time", SimpleNamespace(monotonic=lambda: clock[0]))
     def source():
         while True:
             yield {"value": 1}
-    output = t.Environment("stream", graph(), source).run(timeout_s=0.05)
+            # Expire the root deadline after one completed record, independently
+            # of runner speed and coverage instrumentation.
+            clock[0] += 61
+    output = t.Environment("stream", graph(), source).run(timeout_s=60)
     assert not output.ok and output.meta['nodes_observed'] > 0
     assert output.data["summary"]["reason"] == "execution_limit"
     assert_result(output)

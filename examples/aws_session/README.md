@@ -1,18 +1,9 @@
-# Sesión AWS prestada y complemento ADA · 2.1.4
+# Borrowed AWS session and ADA add-on · 2.1.4
 
-Input: una sesión boto3 ya preparada, modelo y región. Proceso: validar runtime,
-compilar el Agent e inspeccionar configuración. Output: informe sin credenciales
-y alcance configuration-only. [Notebook](01_aws_session.ipynb) · [Código](example.py).
+Input: a prepared boto3 session, model and region. Process: validate runtime, compile the Agent and inspect configuration. Output: a credential-free configuration-only report. [Notebook](01_aws_session.ipynb) · [English reading view](01_aws_session.md) · [Code](example.py).
 
-El ejemplo usa claves fixture explícitas para no consultar credenciales ni
-metadatos. No crea clientes ni invoca modelos. En ADA se entrega al mismo runtime
-la sesión que preparó la plataforma; la gramática Agent/System no cambia.
+Explicit fixture credentials prevent credential or metadata lookup. No client or model is invoked. In ADA, pass the same platform-prepared session to runtime; Agent/System grammar is unchanged.
 
-Requiere los wheels locales SDK y agentic-systems-ada dev8, más boto3. El
-complemento no se instala con all. Su diagnóstico no repara variables ni valida
-identidad/acceso. Las regresiones de los tres actores usan transporte simulado;
-AWS IAM y ADA IAM reales continúan pendientes.
+Install the matching SDK and separate agentic-systems-ada package plus boto3. The add-on is not included in all. Diagnostics do not repair environment variables or certify identity/access. Adapter regressions use simulated transport; real AWS IAM/ADA access requires separate verification.
 
-Dentro del toolkit, las invocaciones que comparten una sesión se serializan.
-La coordinación con usos externos y su lifetime corresponden al propietario;
-la sesión no se cierra ni se guarda en Context, Memory, estado o evidencia.
+Toolkit invocations sharing a session are serialized. Its owner coordinates external concurrent use and lifetime. The toolkit does not close the session or store it in Context, Memory, state or evidence.

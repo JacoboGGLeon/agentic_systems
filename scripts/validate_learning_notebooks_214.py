@@ -17,6 +17,7 @@ parser.add_argument(
     "--profile", choices=("offline", "live", "local"), default="offline"
 )
 parser.add_argument("--path", default="")
+parser.add_argument("--no-write-source", action="store_true", help="Preserve source notebooks and save execution evidence separately")
 parser.add_argument(
     "--framework", choices=("native", "openai-agents", "strands"), default="native"
 )
@@ -154,7 +155,7 @@ for __name, __value in tuple(globals().items()):
     snapshot = destination / relative.replace("/", "--")
     nbformat.write(nb, snapshot)
     # Only the default, unparameterized lesson replaces its visible output.
-    if args.profile == "offline" or args.framework == "native":
+    if not args.no_write_source and (args.profile == "offline" or args.framework == "native"):
         original = nbformat.read(path, 4)
         for source, target in zip(nb.cells, original.cells):
             if source.cell_type == "code":
