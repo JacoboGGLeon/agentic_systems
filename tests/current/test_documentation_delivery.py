@@ -19,6 +19,7 @@ def test_current_notebooks_have_english_reading_views():
         notebook = nbformat.read(path, as_version=4)
         nbformat.validate(notebook)
         assert path.with_suffix('.md').is_file(), path
-        prose = '\n'.join(c.source for c in notebook.cells if c.cell_type == 'markdown')
+        prose = '\n'.join(c.source for c in notebook.cells)
+        prose += '\n' + '\n'.join(o.get('text', '') for c in notebook.cells for o in c.get('outputs', []) if o.get('output_type') == 'stream')
         assert not re.search(r'\b(ejecución|resultados|comisión|contratos|recompensa|aprendizaje|proveedores|capacidad)\b', prose, re.I), path
         assert json.loads(path.read_text())['nbformat'] == 4

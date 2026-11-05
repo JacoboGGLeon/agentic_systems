@@ -513,7 +513,7 @@ without_memory = toolkit.System(
     "payments", payment_graph, context=system.context,
 ).run(payment)
 assert without_memory.ok and without_memory.data["decision"] == "approve"
-print("Sin Memory:")
+print("Without Memory:")
 print(without_memory.human_results())
 
 missing_lineage = toolkit.System(
@@ -521,11 +521,11 @@ missing_lineage = toolkit.System(
 ).run({**payment, "fee": 50})
 assert not missing_lineage.ok
 assert "Missing successful fees lineage" in str(missing_lineage.errors)
-print("\nSin linaje previo:")
+print("\nWithout prior lineage:")
 print(missing_lineage.human_results())
 ```
 
-    Sin Memory:
+    Without Memory:
     payments: COMPLETED
     Execution: run-b80204c715154a9bb7afbe5814bae4f4
     Input: {"payment_id":"PAY-001","amount":5000}
@@ -536,7 +536,7 @@ print(missing_lineage.human_results())
     - Agent reviewer: completed
     - Tool decide: completed -> {"decision":"approve"}
     
-    Sin linaje previo:
+    Without prior lineage:
     missing_evidence: FAILED
     Execution: run-e7218c417e1e4a6c8257db8a63caf58b
     Input: {"payment_id":"PAY-001","amount":5000,"fee":50}
@@ -585,7 +585,7 @@ print(inconsistent_lineage.human_results())
 ```python
 main_contexts = first_contexts + second_contexts
 assert len(main_contexts) == 4
-print("Run | Agent    | lineage actual | episodios previos")
+print("Run | Agent    | current lineage | previous episodes")
 for index, row in enumerate(main_contexts):
     context = row["context"]
     assert context["data"] == {"currency": "MXN", "fee_bps": 100, "ceiling": 10000}
@@ -600,24 +600,24 @@ for index, row in enumerate(main_contexts):
     print(index // 2 + 1, row["agent"], len(context["lineage"]), len(context["episodes"]), sep=" | ")
 
 assert set(first.data) == set(second.data) == {"payment_id", "amount", "fee", "decision"}
-print("\nPrimer resultado:", first.data)
-print("Segundo resultado:", second.data)
-print("Campos de estado:", list(Payment.model_fields))
-print("Episodios conservados:", len(memory.read()))
-print("Dos ejecuciones y tres controles: correctos.")
+print("\nFirst result:", first.data)
+print("Second result:", second.data)
+print("State fields:", list(Payment.model_fields))
+print("Retained episodes:", len(memory.read()))
+print("Two executions and three controls: passed.")
 ```
 
-    Run | Agent    | lineage actual | episodios previos
+    Run | Agent    | current lineage | previous episodes
     1 | fees | 0 | 0
     1 | reviewer | 1 | 0
     2 | fees | 0 | 1
     2 | reviewer | 1 | 1
     
-    Primer resultado: {'payment_id': 'PAY-001', 'amount': 5000, 'fee': 50, 'decision': 'approve'}
-    Segundo resultado: {'payment_id': 'PAY-001', 'amount': 5000, 'fee': 50, 'decision': 'review_duplicate'}
-    Campos de estado: ['payment_id', 'amount', 'fee', 'decision']
-    Episodios conservados: 2
-    Dos ejecuciones y tres controles: correctos.
+    First result: {'payment_id': 'PAY-001', 'amount': 5000, 'fee': 50, 'decision': 'approve'}
+    Second result: {'payment_id': 'PAY-001', 'amount': 5000, 'fee': 50, 'decision': 'review_duplicate'}
+    State fields: ['payment_id', 'amount', 'fee', 'decision']
+    Retained episodes: 2
+    Two executions and three controls: passed.
 
 
 ## 8. Environment: Memory evolves between episodes
@@ -675,10 +675,10 @@ assert environment_memory_history[0]["memory"][0]["execution_id"] == second.exec
 assert environment_memory_history[1]["memory"][0]["execution_id"] == environment_memory_history[0]["memory"][1]["execution_id"]
 assert [e["execution_id"] for e in environment_contexts[2]["context"]["episodes"]] == [e["execution_id"] for e in environment_memory_history[0]["memory"]]
 print(episode.human_results())
-print("\nEstado del Environment:", episode.data["summary"]["state"])
-print("Antes:", [e["execution_id"] for e in memory_before_environment])
+print("\nEnvironment state:", episode.data["summary"]["state"])
+print("Before:", [e["execution_id"] for e in memory_before_environment])
 for index, row in enumerate(environment_memory_history, 1):
-    print("Después del episodio", index, row["decision"], [e["execution_id"] for e in row["memory"]])
+    print("After episode", index, row["decision"], [e["execution_id"] for e in row["memory"]])
 ```
 
     payment_day: COMPLETED
@@ -696,10 +696,10 @@ for index, row in enumerate(environment_memory_history, 1):
     - Tool calculate_fee: completed -> {"fee":50}
     2 operations omitted; inspect lineage for full evidence.
     
-    Estado del Environment: {'processed': 2, 'reward': 1, 'total_reward': 2}
-    Antes: ['run-10043c15b7ac4ed3bd549d001b112e61', 'run-3bfadcdc65084eba92fb8075ac993539']
-    Después del episodio 1 approve ['run-3bfadcdc65084eba92fb8075ac993539', 'run-9956139e296e4b17ab860471a1729c2c']
-    Después del episodio 2 review_duplicate ['run-9956139e296e4b17ab860471a1729c2c', 'run-bc6f52d4511545d3b632dc4f14753b83']
+    Environment state: {'processed': 2, 'reward': 1, 'total_reward': 2}
+    Before: ['run-10043c15b7ac4ed3bd549d001b112e61', 'run-3bfadcdc65084eba92fb8075ac993539']
+    After episode 1 approve ['run-3bfadcdc65084eba92fb8075ac993539', 'run-9956139e296e4b17ab860471a1729c2c']
+    After episode 2 review_duplicate ['run-9956139e296e4b17ab860471a1729c2c', 'run-bc6f52d4511545d3b632dc4f14753b83']
 
 
 ### Exact Context objects during Environment
@@ -709,11 +709,11 @@ The second Tool pair receives the first PAY-002 episode. The observation list is
 
 ```python
 for index, row in enumerate(environment_contexts):
-    print("Episodio", index // 2 + 1, "Agent:", row["agent"])
+    print("Episode", index // 2 + 1, "Agent:", row["agent"])
     print(json.dumps(row["context"], ensure_ascii=False, indent=2))
 ```
 
-    Episodio 1 Agent: fees
+    Episode 1 Agent: fees
     {
       "data": {
         "ceiling": 10000,
@@ -954,7 +954,7 @@ for index, row in enumerate(environment_contexts):
         }
       ]
     }
-    Episodio 1 Agent: reviewer
+    Episode 1 Agent: reviewer
     {
       "data": {
         "ceiling": 10000,
@@ -1203,7 +1203,7 @@ for index, row in enumerate(environment_contexts):
         }
       ]
     }
-    Episodio 2 Agent: fees
+    Episode 2 Agent: fees
     {
       "data": {
         "ceiling": 10000,
@@ -1485,7 +1485,7 @@ for index, row in enumerate(environment_contexts):
         }
       ]
     }
-    Episodio 2 Agent: reviewer
+    Episode 2 Agent: reviewer
     {
       "data": {
         "ceiling": 10000,
@@ -1827,11 +1827,11 @@ for offset in (0, 4):
     assert [e["execution_id"] for e in second_episode] != production_ids
 assert [e["execution_id"] for e in eval_memory_views[0]["memory"]] != [e["execution_id"] for e in eval_memory_views[1]["memory"]]
 print(evaluated.human_results())
-print("\nMemory producción antes:", production_ids)
+print("\nProduction Memory before:", production_ids)
 for row in eval_memory_views:
-    print("Vista privada", row["case"], [e["execution_id"] for e in row["memory"]])
-print("Memory producción después:", [e["execution_id"] for e in memory.read()])
-print("Igualdad exacta antes/después:", memory.read() == production_before_eval)
+    print("Private view", row["case"], [e["execution_id"] for e in row["memory"]])
+print("Production Memory after:", [e["execution_id"] for e in memory.read()])
+print("Exact equality before/after:", memory.read() == production_before_eval)
 ```
 
     isolated_payment_days: COMPLETED
@@ -1849,11 +1849,11 @@ print("Igualdad exacta antes/después:", memory.read() == production_before_eval
     - Agent fees: completed
     14 operations omitted; inspect lineage for full evidence.
     
-    Memory producción antes: ['run-9956139e296e4b17ab860471a1729c2c', 'run-bc6f52d4511545d3b632dc4f14753b83']
-    Vista privada case-a ['run-65acfe1e2794468a8ae0c9b3193c63d1', 'run-8044b9c498b74ae1871255a39e1b45e8']
-    Vista privada case-b ['run-72397a35b91a4dbc9bd303060df911ad', 'run-595a2f37f4844580b14717b5f46874d3']
-    Memory producción después: ['run-9956139e296e4b17ab860471a1729c2c', 'run-bc6f52d4511545d3b632dc4f14753b83']
-    Igualdad exacta antes/después: True
+    Production Memory before: ['run-9956139e296e4b17ab860471a1729c2c', 'run-bc6f52d4511545d3b632dc4f14753b83']
+    Private view case-a ['run-65acfe1e2794468a8ae0c9b3193c63d1', 'run-8044b9c498b74ae1871255a39e1b45e8']
+    Private view case-b ['run-72397a35b91a4dbc9bd303060df911ad', 'run-595a2f37f4844580b14717b5f46874d3']
+    Production Memory after: ['run-9956139e296e4b17ab860471a1729c2c', 'run-bc6f52d4511545d3b632dc4f14753b83']
+    Exact equality before/after: True
 
 
 ### Exact Context objects during Eval
@@ -1863,17 +1863,17 @@ Eight Context objects are shown: two cases × two episodes × two Agents. Both c
 
 ```python
 for index, row in enumerate(eval_contexts):
-    print("Caso", index // 4 + 1, "episodio", (index % 4) // 2 + 1, "Agent:", row["agent"])
+    print("Case", index // 4 + 1, "episode", (index % 4) // 2 + 1, "Agent:", row["agent"])
     print(json.dumps(row["context"], ensure_ascii=False, indent=2))
 
 for result in (first, second, episode, evaluated):
     assert result.check_invariants().ok
     assert result.usage.get("inference_requests", 0) == 0
 assert set(Payment.model_fields) == {"payment_id", "amount", "fee", "decision"}
-print("Environment y Eval correctos; Memory de producción intacta tras Eval.")
+print("Environment and Eval passed; production Memory unchanged after Eval.")
 ```
 
-    Caso 1 episodio 1 Agent: fees
+    Case 1 episode 1 Agent: fees
     {
       "data": {
         "ceiling": 10000,
@@ -2118,7 +2118,7 @@ print("Environment y Eval correctos; Memory de producción intacta tras Eval.")
         }
       ]
     }
-    Caso 1 episodio 1 Agent: reviewer
+    Case 1 episode 1 Agent: reviewer
     {
       "data": {
         "ceiling": 10000,
@@ -2371,7 +2371,7 @@ print("Environment y Eval correctos; Memory de producción intacta tras Eval.")
         }
       ]
     }
-    Caso 1 episodio 2 Agent: fees
+    Case 1 episode 2 Agent: fees
     {
       "data": {
         "ceiling": 10000,
@@ -2654,7 +2654,7 @@ print("Environment y Eval correctos; Memory de producción intacta tras Eval.")
         }
       ]
     }
-    Caso 1 episodio 2 Agent: reviewer
+    Case 1 episode 2 Agent: reviewer
     {
       "data": {
         "ceiling": 10000,
@@ -2945,7 +2945,7 @@ print("Environment y Eval correctos; Memory de producción intacta tras Eval.")
         }
       ]
     }
-    Caso 2 episodio 1 Agent: fees
+    Case 2 episode 1 Agent: fees
     {
       "data": {
         "ceiling": 10000,
@@ -3198,7 +3198,7 @@ print("Environment y Eval correctos; Memory de producción intacta tras Eval.")
         }
       ]
     }
-    Caso 2 episodio 1 Agent: reviewer
+    Case 2 episode 1 Agent: reviewer
     {
       "data": {
         "ceiling": 10000,
@@ -3459,7 +3459,7 @@ print("Environment y Eval correctos; Memory de producción intacta tras Eval.")
         }
       ]
     }
-    Caso 2 episodio 2 Agent: fees
+    Case 2 episode 2 Agent: fees
     {
       "data": {
         "ceiling": 10000,
@@ -3750,7 +3750,7 @@ print("Environment y Eval correctos; Memory de producción intacta tras Eval.")
         }
       ]
     }
-    Caso 2 episodio 2 Agent: reviewer
+    Case 2 episode 2 Agent: reviewer
     {
       "data": {
         "ceiling": 10000,
@@ -4049,7 +4049,7 @@ print("Environment y Eval correctos; Memory de producción intacta tras Eval.")
         }
       ]
     }
-    Environment y Eval correctos; Memory de producción intacta tras Eval.
+    Environment and Eval passed; production Memory unchanged after Eval.
 
 
 ## Scope and limits

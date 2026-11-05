@@ -318,17 +318,17 @@ second_quote = quoter.run({"subtotal": 100})
 assert first_quote.ok and first_quote.data["total"] == 116
 assert second_quote.data["previous_episodes"] == 1
 print("Input:", {"subtotal": 100})
-print("Proceso: load_skill → quote(Context) → Memory")
+print("Process: load_skill → quote(Context) → Memory")
 print("Output:", first_quote.data)
 print(
-    "Episodios previos en la segunda ejecución:", second_quote.data["previous_episodes"]
+    "Previous episodes on the second execution:", second_quote.data["previous_episodes"]
 )
 ```
 
     Input: {'subtotal': 100}
-    Proceso: load_skill → quote(Context) → Memory
+    Process: load_skill → quote(Context) → Memory
     Output: {'subtotal': 100, 'total': 116, 'currency': 'MXN', 'policy_source': 'tax-policy-v1', 'previous_episodes': 0, 'preceding_events': 0}
-    Episodios previos en la segunda ejecución: 1
+    Previous episodes on the second execution: 1
 
 
 ### The same Context in Tools and nodes
@@ -387,10 +387,10 @@ projected = toolkit.Agent("nested-input", graph=graph, context=domain).run(
     {"order": {"subtotal": 100}}
 )
 assert projected.ok and projected.data["total"] == 116
-print("Input:", {"order": {"subtotal": 100}}, "→ proyección →", projected.data)
+print("Input:", {"order": {"subtotal": 100}}, "→ projection →", projected.data)
 ```
 
-    Input: {'order': {'subtotal': 100}} → proyección → {'order': {'subtotal': 100}, 'total': 116, 'currency': 'MXN', 'policy_source': 'tax-policy-v1', 'previous_episodes': 0, 'preceding_events': 0}
+    Input: {'order': {'subtotal': 100}} → projection → {'order': {'subtotal': 100}, 'total': 116, 'currency': 'MXN', 'policy_source': 'tax-policy-v1', 'previous_episodes': 0, 'preceding_events': 0}
 
 
 ## Tools, Skills, Agents, System, Environment and Eval together
@@ -410,7 +410,7 @@ CASE = {
     "amount": 240,
     "expected_items": ["adapter", "sensor"],
     "received_items": ["adapter"],
-    "customer_note": "La caja llegó sellada. Encontré el adaptador; el sensor del albarán no venía. Quiero devolver todo.",
+    "customer_note": "The box arrived sealed. I found the adapter; the sensor on the packing slip was missing. I want to return everything.",
 }
 SCHEMA = {
     "type": "object",
@@ -717,7 +717,7 @@ episode = toolkit.Environment(
 episode_result = episode.run()
 assert episode_result.ok and episode_result.data["summary"]["state"] == {"sum": 348}
 print(
-    "Input: dos presupuestos → grafo por observación →", episode_result.data["summary"]
+    "Input: two quotes → graph per observation →", episode_result.data["summary"]
 )
 evaluation = toolkit.Eval(
     "tax-contract",
@@ -729,7 +729,7 @@ assert evaluation.ok
 print("Eval:", evaluation.data)
 ```
 
-    Input: dos presupuestos → grafo por observación → {'state': {'sum': 348}, 'processed': 2, 'terminated': True, 'truncated': False, 'reason': 'records_exhausted'}
+    Input: two quotes → graph per observation → {'state': {'sum': 348}, 'processed': 2, 'terminated': True, 'truncated': False, 'reason': 'records_exhausted'}
 
 
     Eval: {'total': 1, 'passed': 1, 'failed': 0, 'cases': [{'name': '0', 'ok': True, 'input': {'subtotal': 100}, 'execution_id': 'run-ed7383195f8342b9976d097bf9f0a128', 'checks': [{'ok': True, 'path': 'ok'}, {'ok': True}], 'judge': None}]}
@@ -748,16 +748,16 @@ Continuations are process-local. An interrupted function restarts on resume; pla
 program = build_system(interactive=True).compile()
 waiting = program.run(CASE, timeout_s=40)
 assert waiting.status == "paused"
-print("Pregunta:", waiting.interrupts)
+print("Question:", waiting.interrupts)
 restored = toolkit.RunResult(**waiting.to_dict())
 finished = program.resume(restored, True)
 assert finished.ok and finished.data["refund"] == 120
 print("Output:", finished.data)
 print(finished.lineage(name="R-17").render())
-print("Para otro agente:", finished.lineage().to_prompt_context())
+print("For another agent:", finished.lineage().to_prompt_context())
 ```
 
-    Pregunta: ({'id': '82fe5a3c5adf8d2cc063bddb1dc47a6e', 'value': {'question': 'Approve partial refund?', 'refund': 120, 'order_id': 'R-17'}},)
+    Question: ({'id': '82fe5a3c5adf8d2cc063bddb1dc47a6e', 'value': {'question': 'Approve partial refund?', 'refund': 120, 'order_id': 'R-17'}},)
 
 
     Output: {'order_id': 'R-17', 'refund': 120, 'currency': 'MXN', 'missing_units': 1, 'reason': 'Difference between packing slip and received item list', 'sources': ['packing-slip', 'customer-report'], 'previous_episodes': 0, 'status': 'approved'}
@@ -776,7 +776,7 @@ print("Para otro agente:", finished.lineage().to_prompt_context())
     - decision: completed [run-3ca8361381d146bb8708ff646f36e735]
     - Next node: review [run-3ca8361381d146bb8708ff646f36e735:decision]
     1 more steps; retrieve evidence by execution_id.
-    Para otro agente: {"ok":true,"steps":[{"step_id":"run-efbe41f3d22f412380543b4dcefb6ba3","kind":"execution","title":"refunds","summary":"completed","source":"python-runtime","why":"Recorded execution evidence","evidence":{"ok":true,"data":{"order_id":"R-17","refund":120,"currency":"MXN","missing_units":1,"reason":"Difference between packing slip and received item list","sources":["packing-slip","customer-report"],"previous_episodes":0,"status":"approved"},"errors":[]}},{"step_id":"run-b61cb8bc2fa64e0e9d96cdb232c0ed73","kind":"execution","title":"normalize","summary":"completed","source":"python-runtime","why":"Recorded execution evidence","evidence":{"ok":true,"data":{"order_id":"R-17","amount":240,"expected_items":["adapter","sensor"],"received_items":["adapter"],"customer_note":"La caja llegó sellada. Encontré el adaptador; el sensor del albarán no venía. Quiero devolver todo."},"errors":[]}},{"step_id":"tool-22d67f05235941118dd5c75d2656e554","kind":"tool","title":"normalize","summary":"completed","source":"normalize","why":"Recorded Tool event","evidence":{"ok":true,"output":{"data":{"order_id":"R-17","amount":240,"expected_items":["adapter","sensor"],"received_items":["adapter"],"customer_note":"La caja llegó sellada. Encontré el adaptador; el sensor del albarán no venía. Quiero devolver todo."}},"error":null}}],"omitted_steps":10,"failed_steps":0,"execution_id":"run-efbe41f3d22f412380543b4dcefb6ba3"}
+    For another agent: {"ok":true,"steps":[{"step_id":"run-efbe41f3d22f412380543b4dcefb6ba3","kind":"execution","title":"refunds","summary":"completed","source":"python-runtime","why":"Recorded execution evidence","evidence":{"ok":true,"data":{"order_id":"R-17","refund":120,"currency":"MXN","missing_units":1,"reason":"Difference between packing slip and received item list","sources":["packing-slip","customer-report"],"previous_episodes":0,"status":"approved"},"errors":[]}},{"step_id":"run-b61cb8bc2fa64e0e9d96cdb232c0ed73","kind":"execution","title":"normalize","summary":"completed","source":"python-runtime","why":"Recorded execution evidence","evidence":{"ok":true,"data":{"order_id":"R-17","amount":240,"expected_items":["adapter","sensor"],"received_items":["adapter"],"customer_note":"The box arrived sealed. I found the adapter; the sensor on the packing slip was missing. I want to return everything."},"errors":[]}},{"step_id":"tool-22d67f05235941118dd5c75d2656e554","kind":"tool","title":"normalize","summary":"completed","source":"normalize","why":"Recorded Tool event","evidence":{"ok":true,"output":{"data":{"order_id":"R-17","amount":240,"expected_items":["adapter","sensor"],"received_items":["adapter"],"customer_note":"The box arrived sealed. I found the adapter; the sensor on the packing slip was missing. I want to return everything."}},"error":null}}],"omitted_steps":10,"failed_steps":0,"execution_id":"run-efbe41f3d22f412380543b4dcefb6ba3"}
 
 
 ## model_artifact: identity and provenance
@@ -822,14 +822,14 @@ connection = toolkit.runtime(
 )
 assert server.endpoint.owned is False
 assert "example-local-token" not in str(server.inspect())
-print("Comando redactado:", server.command)
-print("Endpoint previsto:", server.endpoint)
-print("Conexión prevista, sin inferencia:", connection.inspect())
+print("Redacted command:", server.command)
+print("Planned endpoint:", server.endpoint)
+print("Planned connection, without inference:", connection.inspect())
 ```
 
-    Comando redactado: ('vllm', 'serve', 'Qwen/Qwen2.5-0.5B-Instruct', '--host', '127.0.0.1', '--port', '8000', '--served-model-name', 'quote-model', '--gpu-memory-utilization', '0.5', '--max-model-len', '2048', '--max-num-seqs', '1', '--generation-config', 'vllm', '--api-key', '[REDACTED]')
-    Endpoint previsto: _Endpoint(url='http://127.0.0.1:8000/v1', model='quote-model', backend='vllm', api_key_configured=True, pid=None, owned=False)
-    Conexión prevista, sin inferencia: {'provider': 'vllm-runtime', 'model': 'quote-model', 'region': None, 'endpoint': 'http://127.0.0.1:8000/v1', 'api_key_configured': True, 'session_configured': False, 'authentication_mode': 'provider-configuration', 'timeout_s': 60.0, 'max_retries': 0, 'max_tool_calls': 5, 'max_turns': 6, 'max_tokens': 128, 'backoff_s': 0.0, 'max_concurrency': 1}
+    Redacted command: ('vllm', 'serve', 'Qwen/Qwen2.5-0.5B-Instruct', '--host', '127.0.0.1', '--port', '8000', '--served-model-name', 'quote-model', '--gpu-memory-utilization', '0.5', '--max-model-len', '2048', '--max-num-seqs', '1', '--generation-config', 'vllm', '--api-key', '[REDACTED]')
+    Planned endpoint: _Endpoint(url='http://127.0.0.1:8000/v1', model='quote-model', backend='vllm', api_key_configured=True, pid=None, owned=False)
+    Planned connection, without inference: {'provider': 'vllm-runtime', 'model': 'quote-model', 'region': None, 'endpoint': 'http://127.0.0.1:8000/v1', 'api_key_configured': True, 'session_configured': False, 'authentication_mode': 'provider-configuration', 'timeout_s': 60.0, 'max_retries': 0, 'max_tool_calls': 5, 'max_turns': 6, 'max_tokens': 128, 'backoff_s': 0.0, 'max_concurrency': 1}
 
 
 ### Prepared GPU environment only; not executed here

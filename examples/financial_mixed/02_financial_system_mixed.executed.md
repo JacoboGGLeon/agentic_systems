@@ -15,10 +15,10 @@ import agentic_systems as toolkit
 profile = globals().get("profile", "python")
 assert profile in {"python", "mixed"}
 assert toolkit.__version__ == "2.1.4"
-print("API:", toolkit.__version__, "perfil:", profile)
+print("API:", toolkit.__version__, "profile:", profile)
 ```
 
-    API: 2.1.4.dev8 perfil: mixed
+    API: 2.1.4.dev8 profile: mixed
 
 
 ## 1. Business contracts
@@ -86,11 +86,11 @@ else:
 audit_framework = "strands" if profile == "mixed" else "native"
 local_framework = "strands" if profile == "mixed" else "native"
 cloud_framework = "openai-agents" if profile == "mixed" else "native"
-print("Comisión: native; auditoría:", audit_framework,
-      "; verificación local:", local_framework, "; final:", cloud_framework)
+print("Fee: native; audit:", audit_framework,
+      "; local verification:", local_framework, "; final:", cloud_framework)
 ```
 
-    Comisión: native; auditoría: strands ; verificación local: strands ; final: openai-agents
+    Fee: native; audit: strands ; local verification: strands ; final: openai-agents
 
 
 ## 3. Context and Memory
@@ -276,7 +276,7 @@ program = system.compile()
 single_input = {"payment_id": "SINGLE", "amount": 15000}
 single = program.run(single_input, timeout_s=480)
 print("INPUT:", single_input)
-print("PROCESO: validar → comisión → auditoría → verificación local/cloud → decisión")
+print("PROCESS: validate → fee → audit → local/cloud verification → decision")
 print("OUTPUT:", single.data)
 print(single.human_results())
 assert single.ok, single.errors
@@ -308,7 +308,7 @@ assert single.data == {**single_input, "fee": 150, "decision": "review", "status
 
 
     INPUT: {'payment_id': 'SINGLE', 'amount': 15000}
-    PROCESO: validar → comisión → auditoría → verificación local/cloud → decisión
+    PROCESS: validate → fee → audit → local/cloud verification → decision
     OUTPUT: {'payment_id': 'SINGLE', 'amount': 15000, 'fee': 150, 'decision': 'review', 'status': 'pending_review'}
     payments: COMPLETED
     Execution: run-935e845fdb2f4ddeaac46c5bfbaff8c2
@@ -349,7 +349,7 @@ environment = toolkit.Environment("payment_episodes", graph=episode_graph, recor
 
 episodes = environment.compile().run(timeout_s=960)
 print("INPUT:", [sample, sample])
-print("PROCESO: dos episodios; la segunda auditoría consulta Memory")
+print("PROCESS: two episodes; the second audit consults Memory")
 print("OUTPUT:", episodes.data)
 print(episodes.human_results())
 assert episodes.ok, episodes.errors
@@ -412,7 +412,7 @@ assert episodes.data["summary"]["state"] == {"processed": 2, "approved": 1, "rew
 
 
     INPUT: [{'payment_id': 'PAY-001', 'amount': 5000}, {'payment_id': 'PAY-001', 'amount': 5000}]
-    PROCESO: dos episodios; la segunda auditoría consulta Memory
+    PROCESS: two episodes; the second audit consults Memory
     OUTPUT: {'outputs': [{'payment_id': 'PAY-001', 'amount': 5000, 'fee': 50, 'decision': 'approve', 'status': 'approved'}, {'payment_id': 'PAY-001', 'amount': 5000, 'fee': 50, 'decision': 'review_duplicate', 'status': 'pending_review'}], 'history': [{'step': 0, 'record': {'payment_id': 'PAY-001', 'amount': 5000}, 'state_before': {'processed': 0, 'approved': 0, 'reward': 0}, 'state_after': {'processed': 1, 'approved': 1, 'reward': 1}, 'execution_id': 'run-256530791ef846debb7ad278eb4e043e'}, {'step': 1, 'record': {'payment_id': 'PAY-001', 'amount': 5000}, 'state_before': {'processed': 1, 'approved': 1, 'reward': 1}, 'state_after': {'processed': 2, 'approved': 1, 'reward': 1}, 'execution_id': 'run-22358f9bb37842edad4e2efafb51c7a9'}], 'summary': {'state': {'processed': 2, 'approved': 1, 'reward': 1}, 'processed': 2, 'terminated': True, 'truncated': False, 'reason': 'records_exhausted'}}
     payment_episodes: COMPLETED
     Execution: run-23dfad40d2604ff08fe22c9ef5d6feb2
@@ -448,8 +448,8 @@ evaluation = toolkit.Eval("isolated_payments", unit=system,
 before_eval = memory.read()
 evaluated = evaluation.compile().run(timeout_s=960)
 after_eval = memory.read()
-print("INPUT: dos casos EVAL-001 independientes")
-print("PROCESO: ejecutar → comprobar contrato/datos → aislar Memory por caso")
+print("INPUT: two independent EVAL-001 cases")
+print("PROCESS: execute → check contract/data → isolate Memory per case")
 print("OUTPUT:", evaluated.data)
 print(evaluated.human_results())
 assert evaluated.ok and evaluated.data["passed"] == 2, evaluated.errors
@@ -510,8 +510,8 @@ assert before_eval == after_eval and len(after_eval) == 2
     INFO - HTTP Request: POST https://ollama.com/v1/chat/completions "HTTP/1.1 200 OK"
 
 
-    INPUT: dos casos EVAL-001 independientes
-    PROCESO: ejecutar → comprobar contrato/datos → aislar Memory por caso
+    INPUT: two independent EVAL-001 cases
+    PROCESS: execute → check contract/data → isolate Memory per case
     OUTPUT: {'total': 2, 'passed': 2, 'failed': 0, 'cases': [{'name': 'first', 'ok': True, 'input': {'payment_id': 'EVAL-001', 'amount': 5000}, 'execution_id': 'run-c370ca18a8a8439cb253aaa55ca27070', 'checks': [{'ok': True, 'path': 'ok'}, {'ok': True}], 'judge': None}, {'name': 'independent_second', 'ok': True, 'input': {'payment_id': 'EVAL-001', 'amount': 5000}, 'execution_id': 'run-6237b6dcbb9345e49b5499f4b7be4c14', 'checks': [{'ok': True, 'path': 'ok'}, {'ok': True}], 'judge': None}]}
     isolated_payments: COMPLETED
     Execution: run-f4d1669d4900407580a16e2c8002b6d2
@@ -541,11 +541,11 @@ for row in received:
     context = row["context"]
     print(row["agent"], row["input"]["payment_id"],
           "policy=", context["data"],
-          "episodios=", len(context["episodes"]),
+          "episodes=", len(context["episodes"]),
           "linaje=", [step["name"] for step in context["lineage"]])
 
 review_context = next(row["context"] for row in received if row["agent"] == "reviewer")
-print("CONTEXT EXACTO DEL PRIMER REVISOR:")
+print("EXACT CONTEXT OF THE FIRST REVIEWER:")
 print(json.dumps(review_context, ensure_ascii=False, indent=2))
 
 for result in (single, episodes, evaluated):
@@ -562,30 +562,30 @@ evidence = {
     "contexts_received": received,
     "memory_before_eval": before_eval, "memory_after_eval": after_eval,
 }
-print("Comprobaciones completas:", profile)
+print("Checks complete:", profile)
 ```
 
-    fees SINGLE policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodios= 0 linaje= ['validate']
-    reviewer SINGLE policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodios= 0 linaje= ['fees']
-    local SINGLE policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodios= 0 linaje= ['fees', 'reviewer']
-    cloud SINGLE policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodios= 0 linaje= ['fees', 'reviewer', 'local_verifier']
-    fees PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodios= 1 linaje= ['observe', 'validate']
-    reviewer PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodios= 1 linaje= ['observe', 'fees']
-    local PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodios= 1 linaje= ['observe', 'fees', 'reviewer']
-    cloud PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodios= 1 linaje= ['observe', 'fees', 'reviewer', 'local_verifier']
-    fees PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodios= 2 linaje= ['observe', 'run', 'update', 'observe', 'validate']
-    reviewer PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodios= 2 linaje= ['observe', 'run', 'update', 'observe', 'fees']
-    local PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodios= 2 linaje= ['observe', 'run', 'update', 'observe', 'fees', 'reviewer']
-    cloud PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodios= 2 linaje= ['observe', 'run', 'update', 'observe', 'fees', 'reviewer', 'local_verifier']
-    fees EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodios= 2 linaje= ['validate']
-    reviewer EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodios= 2 linaje= ['fees']
-    local EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodios= 2 linaje= ['fees', 'reviewer']
-    cloud EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodios= 2 linaje= ['fees', 'reviewer', 'local_verifier']
-    fees EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodios= 2 linaje= ['evaluate', 'validate']
-    reviewer EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodios= 2 linaje= ['evaluate', 'fees']
-    local EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodios= 2 linaje= ['evaluate', 'fees', 'reviewer']
-    cloud EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodios= 2 linaje= ['evaluate', 'fees', 'reviewer', 'local_verifier']
-    CONTEXT EXACTO DEL PRIMER REVISOR:
+    fees SINGLE policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 0 linaje= ['validate']
+    reviewer SINGLE policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 0 linaje= ['fees']
+    local SINGLE policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 0 linaje= ['fees', 'reviewer']
+    cloud SINGLE policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 0 linaje= ['fees', 'reviewer', 'local_verifier']
+    fees PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 1 linaje= ['observe', 'validate']
+    reviewer PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 1 linaje= ['observe', 'fees']
+    local PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 1 linaje= ['observe', 'fees', 'reviewer']
+    cloud PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 1 linaje= ['observe', 'fees', 'reviewer', 'local_verifier']
+    fees PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 linaje= ['observe', 'run', 'update', 'observe', 'validate']
+    reviewer PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 linaje= ['observe', 'run', 'update', 'observe', 'fees']
+    local PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 linaje= ['observe', 'run', 'update', 'observe', 'fees', 'reviewer']
+    cloud PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 linaje= ['observe', 'run', 'update', 'observe', 'fees', 'reviewer', 'local_verifier']
+    fees EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 linaje= ['validate']
+    reviewer EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 linaje= ['fees']
+    local EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 linaje= ['fees', 'reviewer']
+    cloud EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 linaje= ['fees', 'reviewer', 'local_verifier']
+    fees EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 linaje= ['evaluate', 'validate']
+    reviewer EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 linaje= ['evaluate', 'fees']
+    local EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 linaje= ['evaluate', 'fees', 'reviewer']
+    cloud EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 linaje= ['evaluate', 'fees', 'reviewer', 'local_verifier']
+    EXACT CONTEXT OF THE FIRST REVIEWER:
     {
       "data": {
         "ceiling": 10000,
@@ -656,7 +656,7 @@ print("Comprobaciones completas:", profile)
     23 more steps; retrieve evidence by execution_id.
 
 
-    Comprobaciones completas: mixed
+    Checks complete: mixed
 
 
 ## Scope

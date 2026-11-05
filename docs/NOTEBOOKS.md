@@ -2,7 +2,7 @@
 
 Install the matching SDK and optional dependencies before running notebooks. Execute cells in order from a fresh kernel. The SDK wheel does not install notebook source or Studio. Download the repository for linked local resources.
 
-Every notebook has a generated Markdown reading view. Use it if GitHub cannot render an .ipynb preview; the original notebook remains the executable source. Markdown views preserve code and saved textual output but do not execute it. Saved live output is historical evidence, not a new provider certification.
+Every notebook has a generated Markdown reading view. Use it if GitHub cannot render an .ipynb preview; the original notebook remains the executable source. Markdown views preserve code and saved textual output but do not execute it. Saved output captions and the sample customer message have been translated into English. Stored execution IDs and verdicts describe historical runs; this editorial translation is not a new provider certification. Original run reports retain their original bytes.
 
 Offline validation skips cells explicitly tagged live or local-service. Live providers require their own credentials, endpoint, explicit authorization and budget. There is no automatic model/provider fallback. Local-server and GPU availability are separate checks.
 
