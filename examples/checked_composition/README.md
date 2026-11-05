@@ -1,20 +1,11 @@
-# Graph, Tools Pydantic y resultados · 2.1.4
+# Graph, Pydantic Tools and results · 2.1.4
 
-[Notebook explícito](01_checked_composition.ipynb) · [Programa](example.py).
-El identificador de carpeta es histórico; la API actual no contiene check.
+[Notebook](01_checked_composition.ipynb) · [English reading view](01_checked_composition.md) · [Program](example.py). The folder name is historical; the current API has no check constructor.
 
-Input 5000 centavos → Agent con Graph calcula fee=50 y total=5050 → Agent
-revisor aplica Context → System aprueba. Environment procesa también 12000 y
-obtiene pending_review. Las Tools reciben/devuelven modelos Pydantic; sus
-contratos rechazan ausencias, valores incorrectos y entradas adicionales.
+Input 5000 cents → graph-backed Agent computes fee=50 and total=5050 → reviewer Agent applies Context → System approves. Environment also processes 12000 and returns pending_review. Pydantic Tools reject missing, incorrect and extra inputs.
 
-compile prepara sin ejecutar negocio. Eval comprueba ambos casos con vistas
-de Memory aisladas: el número de episodios de producción permanece en tres.
-human_results muestra entradas, operaciones y decisiones sin repetir IDs de
-wrappers. El detalle completo sigue en RunResult.to_dict/lineage.
+compile prepares without business execution. Eval checks both cases using isolated Memory views; production Memory retains three episodes. human_results shows inputs, operations and decisions without repeating wrapper IDs. RunResult.to_dict/lineage retains complete evidence.
 
-La recompensa se calcula explícitamente en update y se conserva en state/history.
-Coincidir con el oráculo del Environment suma uno; total_reward termina en dos.
-El oráculo no se pasa al System. No hay reward= ni entrenamiento automático.
+Reward is explicitly computed in update and retained in state/history. Matching the Environment oracle adds one; total_reward=2. The oracle is not passed to the System. There is no reward= parameter or automatic training.
 
-[API](../../docs/API_214.md) · [Informe](../../revisions/2.1.4/grammar-dev7/REPORT.md).
+[API](../../docs/API_214.md) · [Historical report](../../revisions/2.1.4/grammar-dev7/REPORT.md).

@@ -1,76 +1,27 @@
-# Pendientes observados · 2.1.4.dev8
+# Recorded issues and verification limits · 2.1.4
 
-## Endpoint de Ollama native en un System heterogéneo
+## Ollama native endpoint coexistence
 
-Actualización: [corrección y regresiones offline](../revisions/2.1.4/ollama-connection-fix/01/REPORT.md).
-El nuevo wheel resuelve conexión por actor y cierra clientes propios sin mutar
-variables globales. La [repetición online](../revisions/2.1.4/ollama-connection-fix/01/live/REPORT.md)
-pasó pilotos, dos ejecuciones sync, dos arun y el notebook original con local/native.
-La regresión específica queda validada para esos bytes; los resultados históricos
-siguientes describen la implementación anterior.
+[The connection correction](../revisions/2.1.4/ollama-connection-fix/01/REPORT.md) resolves connection settings per actor and closes owned clients without changing global environment variables. Its [live recheck](../revisions/2.1.4/ollama-connection-fix/01/live/REPORT.md) passed pilots, two sync runs, two arun runs and the original local/native financial notebook. Those results apply to the recorded artifact hashes.
 
-El [notebook financiero mixto](../examples/financial_mixed/README.md) detectó que
-el actor native de Ollama toma endpoint/clave de variables globales en vez de la
-conexión explícita. Al mezclar local y cloud en el mismo proceso, el contador
-rechazó la ruta incompatible antes de transporte. El intento falló y se conserva.
-La configuración final del example usa Strands/local y OpenAI Agents/cloud y pasa;
-eso no corregía ni certificaba el caso native original. Esto motivó propagar conexión
-por actor y añadir regresiones de coexistencia sin mutaciones globales. Ese example
-no modificó el SDK; el parche posterior y su repetición online ya cubren esa ruta.
+Earlier mixed-profile execution failed because native Ollama used global endpoint/key settings rather than explicit connection data; the budget counter rejected the incompatible route before transport. That failure remains recorded. Switching to Strands/local and OpenAI Agents/cloud was a workaround, not proof that native was fixed. The subsequent SDK correction and live recheck cover that route separately. [Provider fixes](../revisions/2.1.4/problem-fixes/01/REPORT.md) distinguish newer verification from historical failures.
 
-La [revisión posterior de defectos](../revisions/2.1.4/problem-fixes/01/REPORT.md)
-separa correcciones offline y repeticiones online de los intentos históricos
-descritos debajo. Estos últimos se conservan y no certifican el wheel nuevo.
+## Ollama Cloud interoperability
 
-## Interoperabilidad con Ollama cloud
+The historical three-framework-interop case uses Gemma4:31b and three actors in one System. Input value=42/trail=[] should produce value=45/trail=[native, openai-agents, strands]. In the recorded failed cloud attempt, native invoked mark_native and recorded value=43, then returned an empty model output. The System retained the failure. Successful Tool evidence is not acceptance of the complete run; the interaction between final response, loop completion and tool contract needs its own analysis.
 
-El caso `three-framework-interop` usa Gemma4:31b, runtime Ollama y tres actores
-en el mismo System. Input value=42/trail=[]; cada Tool debe sumar uno y dejar
-su identidad; output esperado value=45/trail=[native, openai-agents, strands].
+Cloud successes in basic notebooks, refunds, Studio or MCP/A2A do not substitute for this exact case. See the [historical attempt summary](../revisions/2.1.4/contracts-dev5/REPORT.md).
 
-El intento dev5 aprobado para OpenAI y Ollama GPU falló en cloud: el primer
-actor native ejecutó mark_native correctamente y registró value=43, pero el
-proveedor terminó con `Provider returned an empty model output`. El System
-conservó el fallo. Debe investigarse la interacción entre respuesta final,
-finalización del bucle y contrato de Tools; no se atribuye definitivamente a
-modelo o adaptador sin ese análisis. No se convierte el evento exitoso en un
-PASS de toda la ejecución.
+## Bedrock credentials and nullable business input
 
-Ese caso permanece fallido. Los PASS cloud del notebook básico, reembolso,
-Studio o MCP/A2A no lo sustituyen. La evidencia está en el
-[resumen de todos los intentos](../revisions/2.1.4/contracts-dev5/summary.json).
+Early notebooks failed with expired credentials. A later attempt recorded 14 failed requests after the service rejected the credential format. Initial local checks recognized only long ABSK keys, not short bedrock-api-key keys; eight offline regressions corrected support for both. A short-key pilot subsequently restored authentication. Credentials are never printed or saved in evidence.
 
-## Bedrock
+Basic matrix/refund/MCP cases passed, but the required nullable-amount business case failed across native, OpenAI Agents and Strands: Pydantic received a missing amount instead of the required amount:null field. Missing data was not repaired with a computed value and authentication was not silently changed to IAM.
 
-Los primeros tres notebooks fallaron por token expirado. Tras la confirmación
-de renovación, el servicio rechazó el formato de la credencial; esa repetición
-registró 14 solicitudes fallidas. La comprobación local posterior era
-incompleta: solo reconocía claves largas ABSK, no claves cortas
-bedrock-api-key-. Se corrigió con ocho regresiones offline para ambos formatos.
-El piloto con la clave corta actual pasó y recuperó la autenticación.
-La clave nunca se imprime ni se persiste en evidencia.
+A historical Studio campaign stopped at 148/150 requests because two remaining requests could not cover its observed three-request protocol. [Recheck evidence](../revisions/2.1.4/contracts-dev5/bedrock-recheck.md) records that budget boundary. Later campaigns must be assessed by their own report, not this old balance.
 
-La matriz básica, reembolso y MCP/A2A pasaron con Bedrock. El caso obligatorio
-de negocio volvió a fallar en native, OpenAI Agents y Strands: la Tool recibió
-una fila sin amount:null y Pydantic rechazó el campo ausente. No se declara
-arreglado ni se sustituye el nulo por un valor calculado. No se cambió a IAM.
+Investigation confirmed the prompt/schema contained the null but the service response omitted the field before validation. [Build 03](../revisions/2.1.4/contracts-dev5/bedrock-null-fix/REPORT.md) enabled strict tool use for the selected Qwen and compatible schemas without changing the business contract. Offline regressions still reject missing fields before effects. This corrects request construction but does not itself prove live null preservation.
 
-Studio/Bedrock queda pendiente en los tres actores por presupuesto. El cierre
-registró 148/150 solicitudes; las dos restantes no alcanzan para un caso de
-Studio, cuyo protocolo observado necesita tres. [Repetición y evidencia](../revisions/2.1.4/contracts-dev5/bedrock-recheck.md).
+## Current acceptance boundary
 
-La investigación posterior confirmó que el prompt y el esquema contenían el
-nulo, pero la respuesta del servicio ya omitía el campo antes de la validación.
-Build 03 activa strict tool use para el Qwen configurado y esquemas compatibles,
-sin modificar el contrato. Las regresiones offline cubren los tres SDKs y
-siguen rechazando campos omitidos antes de efectos. Esto corrige una carencia
-de la petición; no demuestra aún que Bedrock preserve el nulo en vivo. Los
-fallos anteriores siguen abiertos hasta repetir el caso con el nuevo wheel.
-[Corrección y presupuesto de cierre](../revisions/2.1.4/contracts-dev5/bedrock-null-fix/REPORT.md).
-
-## Aceptación estable
-
-Dev8 es local. Los workflows ya están preparados; faltan la CI remota
-Python 3.10–3.14 y el cierre live de los fallos obligatorios. vLLM está aplazado por decisión del usuario;
-AWS IAM/ADA IAM requieren sus entornos. Memory y continuaciones no ofrecen
-recuperación durable. [Estado](STATUS_214.md) · [Release](RELEASE_214.md).
+The 2.1.4 distribution is published; current repository changes have separate CI evidence in [status](STATUS_214.md). Remote Python 3.10–3.14 quality and mutation validation are no longer blanket historical blockers, but their results remain commit-specific. Real GPU vLLM and AWS/ADA IAM require prepared environments and explicit campaigns. Memory and continuations do not provide durable recovery. Historical provider failures remain unresolved unless the exact case has a later recorded successful recheck.

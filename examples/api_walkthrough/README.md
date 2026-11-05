@@ -1,14 +1,7 @@
-# Toda la API: de Tool a Eval · 2.1.4
+# The complete API: from Tool to Eval · 2.1.4
 
-Recorrer la gramática completa y una aprobación de pedidos con resultados observables.
+Walk through the complete grammar and observable order approval. Composition and assertions are visible in [code](example.py), the [notebook](01_api_user_guide.ipynb) and its [English reading view](01_api_user_guide.md). Read Tool, Agent and Graph declarations before executing.
 
-La composición y las aserciones están visibles en [el código](example.py).
-Lee las declaraciones de Tools, Agents y Graph antes de ejecutar el ejemplo.
+Input → process → output: Tools and Skills → six Agent/System patterns → two orders, decisions, Memory and Eval → results and lineage.
 
-Input → proceso → output: Tools y Skills → seis flujos Agent/System → dos pedidos, decisiones, memoria y Eval → resultados y linaje.
-
-[Declaración](example.py) · [Evidencia dev8](../../revisions/2.1.4/grammar-dev8/closure/examples/examples--api_walkthrough--example.py.json)
-
-Perfil actual: **offline-passed**. El catálogo [de validación](../../docs/LEARNING_VALIDATION_214.md) separa configuración, Python, servicios locales y pruebas de modelos. La evidencia 2.1.3 conservada es histórica y no certifica estos bytes.
-
-[Validación histórica dev5 de Pydantic y human_results](../../revisions/2.1.4/contracts-dev5/REPORT.md). Las revisiones previas se conservan como evidencia histórica.
+[Historical dev8 evidence](../../revisions/2.1.4/grammar-dev8/closure/examples/examples--api_walkthrough--example.py.json). Validation distinguishes configuration, Python execution, local services and language-model calls. Historical 2.1.3 and dev5 evidence does not certify changed source or a new wheel.

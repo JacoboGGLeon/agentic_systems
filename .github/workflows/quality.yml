@@ -63,6 +63,8 @@ jobs:
           echo "EXPECTED_VERSION=$(python -c 'import agentic_systems as t; print(t.__version__)')" >> "$GITHUB_ENV"
           echo "AGENTIC_TEST_VERSION=$(python -c 'import agentic_systems as t; print(t.__version__)')" >> "$GITHUB_ENV"
           echo "AGENTIC_VALIDATION_SITE=$(python -c 'import agentic_systems as t; from pathlib import Path; print(Path(t.__file__).parent.parent)')" >> "$GITHUB_ENV"
+      - name: Validate notebook reading views
+        run: python scripts/render_notebook_docs.py --check
       - name: Lint current surfaces
         run: |
           python -m ruff check src/agentic_systems tests/v214_graph tests/grammar214 tests/learning214 tests/current integrations/ada/src scripts/build_candidate.py scripts/install_candidate.py scripts/verify_candidate.py scripts/smoke_release.py scripts/check_catalog.py scripts/test_offline_214.py

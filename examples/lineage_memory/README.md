@@ -1,82 +1,84 @@
-# Lineage y Memory entre agentes y ejecuciones
+# Lineage and Memory that change decisions · 2.1.4
 
-API local: **2.1.4**. [Notebook ejecutado, con composición visible](01_lineage_memory_decisions.ipynb) · [Código completo y explícito](example.py).
+**Input → process → output:** payment PAY-001 arrives with 5000 MXN cents. One Agent computes a fee of 50; another checks its evidence and decides. The first run approves. The second receives exactly the same input and requests duplicate review because Memory retained the previous episode.
 
-El notebook contiene los Context completos de las dos ejecuciones, Environment
-y Eval, human_results y tres controles causales, con verificaciones de estado
-y memoria. Validado offline en un kernel limpio: 18 celdas de código, ninguna omitida.
-La evidencia y el primer intento corregido se conservan en
-[notebook-validation](../../revisions/2.1.4/grammar-dev7/lineage-memory/notebook-validation/).
+Everything uses deterministic Python coordinated by LangGraph: no models, keys or inference. Install local SDK **2.1.4** and its dependencies first. The notebook installs nothing. Run cells in order from a clean kernel.
 
-Input → Agent `fees` calcula comisión → Agent `reviewer` aplica la política → Output.
-Ambos se coordinan con un Graph dentro de System. Cada Agent también tiene su Graph.
-Todos los pasos son Python determinista; no hay inferencia.
+| Channel | Contents | Decision role |
+|---|---|---|
+| State | payment_id, amount, fee, decision | Current payment data |
+| Context.data / sources | Policy and provenance | Fee and limit |
+| Context.lineage | Preceding Agent evidence | Require and verify computation |
+| Context.episodes | Prior execution with compact lineage | Detect prior approval of the same payment |
 
-`Context.data` aporta moneda, comisión y límite; `Context.sources` identifica la política.
-El segundo agente exige una observación exitosa del primero en `Context.lineage`
-y verifica que fee coincide con esa observación y con la política actual.
-`Memory(capacity=2)` se adjunta al System; después del primer run conserva un episodio.
-Durante el segundo run ambos agentes reciben ese episodio en `Context.episodes`.
-El revisor consulta su linaje estructurado: si el mismo payment_id ya fue aprobado,
-devuelve review_duplicate. Los dos runs tienen exactamente el mismo input.
-El linaje actual y el histórico se mantienen separados.
+Context captures are separate inspection records, never Graph state. Lineage records observations, not private thoughts.
 
-Environment procesa PAY-002 dos veces: approve y review_duplicate. Su update
-captura la Memory del System después de cada episodio; con capacidad dos cambian
-los IDs retenidos, aunque la longitud se mantiene en dos. Cada decisión correcta
-suma una recompensa explícita; total_reward=2.
+## 1. Small state and explicit Tools
 
-Eval ejecuta dos casos del mismo Environment, cada uno con PAY-003 repetido.
-Dentro del caso la memoria cambia y produce approve/review_duplicate. Ambos
-casos empiezan con los mismos IDs de producción; las escrituras de un caso no
-pasan al siguiente y Memory.read() antes/después de Eval es exactamente igual.
-Los checks que leen Memory mediante un cierre ven también la vista aislada.
-La auditoría en listas externas sigue acumulando observaciones: Eval no aísla
-variables arbitrarias, clientes, archivos ni otros efectos externos.
+strict=True rejects type coercion; extra="forbid" rejects unexpected fields. Optional fields are outputs not yet computed. The reviewer does not trust a fee solely because it appears in state: successful fees lineage and consistency with current policy are required. It then checks structured evidence of previous approvals in Memory.
 
-| Run | Agent | Context.lineage | Context.episodes |
-|---|---|---|---|
-| 1 · PAY-001, amount=5000 | fees | vacío | vacío |
-| 1 · PAY-001, amount=5000 | reviewer | fees → fee=50 | vacío → approve |
-| 2 · PAY-001, amount=5000 | fees | vacío | ejecución 1 y su linaje compacto |
-| 2 · PAY-001, amount=5000 | reviewer | fees → fee=50 | ejecución 1 → review_duplicate |
+## 2. One Graph per Agent and one for the System
 
-El estado público solo contiene `payment_id`, `amount`, `fee` y `decision`. Las capturas de Context
-se registran en una lista de observación independiente; nunca se devuelven al Graph.
-El estado interno utiliza referencias acotadas para enlazar evidencia.
-La decisión usa evidencia actual y aprobaciones anteriores del mismo identificador.
-La política es explícita; la memoria no aprende ni modifica reglas automáticamente.
+fees organizes computation; reviewer organizes the decision. The System connects them in that order. There is no manual global-trace lookup or history attached to Payment. Context is delivered when each Tool executes.
 
-Controles offline ejecutados:
+## 3. Policy and shared Memory from the System
 
-- Mismo input, sin Memory: approve. Con el episodio anterior: review_duplicate.
-- Sin linaje previo de fees: error; los campos de negocio por sí solos no autorizan.
-- Fee=51 con linaje pero fuera de política: error; registrar algo no lo vuelve correcto.
+Memory retains up to two local episodes. Entry snapshots of prior episodes are inherited by Agents. The System remembers its result on completion. compile() prepares the harness without executing Tools or writing Memory.
 
-Context también contiene política y fuentes externas. Se puede presentar solamente
-su linaje, pero esa proyección no es el Context completo. El informe conserva ambos
-conceptos separados y los cuatro snapshots exactos.
+## 4. First execution: current evidence, no history yet
 
-Con el SDK local dev7 y sus dependencias instaladas:
+fees receives empty lineage and episodes. reviewer receives current fees evidence but no previous episode, so PAY-001 can be approved.
 
-```console
-python examples/lineage_memory/example.py
-```
+### Exact Context received in the first execution
 
-Desde este checkout, el runner añade bloqueo offline y verifica el wheel instalado:
+The complete object is shown: policy, sources, current lineage and episodes.
 
-```console
-.venv/Scripts/python.exe revisions/2.1.4/grammar-dev7/lineage-memory/run_validation.py
-```
+## 5. Second execution: identical input changes the decision through Memory
 
-Validación: dos ejecuciones correctas, cuatro capturas principales, tres controles,
-dos episodios, cero inferencia
-y cero intentos externos. `compile()` no ejecutó Tools ni escribió Memory.
+The same harness and Memory are reused. Fee and limit remain unchanged. reviewer finds previous approval of PAY-001 in episode lineage and returns review_duplicate. Execution succeeds: requesting review is a business decision, not a runtime failure.
 
-- [Informe ejecutado: Context exactos y human_results](../../revisions/2.1.4/grammar-dev7/lineage-memory/REPORT.md)
-- [Evidencia serializada y RunResults](../../revisions/2.1.4/grammar-dev7/lineage-memory/evidence.json)
+### Exact Context received in the second execution
 
-Memory es local al proceso, sin persistencia ni búsqueda semántica. La detección
-de duplicados solo alcanza los episodios retenidos y su resumen: no es un registro
-persistente de idempotencia ni evita carreras concurrentes. La validación
-corresponde a este ejemplo y este wheel, no a nuevos bytes ni a proveedores externos.
+Both Tools receive the first episode in episodes. Only reviewer also receives current fees evidence in lineage. The first Agent does not confuse previous-run history with work already performed in this run.
+
+## 6. Controls demonstrating causal dependence
+
+1. Same input and Graph without Memory: approve again.
+2. fee=50 in state without preceding fees lineage: fail.
+3. fees records fee=51: lineage exists but contradicts policy, so fail.
+
+Controls use independent Systems and do not write this example’s Memory.
+
+## 7. Verified summary: four Context objects, four business fields
+
+## 8. Environment: Memory evolves between episodes
+
+Process PAY-002 twice through the same System. observe supplies only payment fields; expected_decision stays outside System input as an Environment oracle. update records an explicit reward and captures Memory separately. Capacity is two: episode count stops growing but IDs change. No additional Memory is attached to Environment; we observe the System’s Memory.
+
+### Exact Context objects during Environment
+
+The second Tool pair receives the first PAY-002 episode. The observation list is not added to state.
+
+## 9. Eval: live episodes within a case, isolated Memory between cases
+
+Evaluate the same Environment twice, each case repeating PAY-003. Each starts with the same production Memory containing PAY-002. Within each case, first approval of PAY-003 feeds the second episode and changes its decision. The next case returns to production baseline and approves its first PAY-003.
+
+The check reads Memory captured by closure and also receives the private case view. After Eval, exact equality of production Memory is required. Audit lists still accumulate observations: Eval does not isolate files, arbitrary variables, SDK clients or external effects.
+
+### Exact Context objects during Eval
+
+Eight Context objects are shown: two cases × two episodes × two Agents. Both cases start with the same production IDs; writes from one case do not reach the other.
+
+## Scope and limits
+
+Agent/System lineage can provide context to another unit. Context may also contain policy and external sources; lineage alone is only a projection. We inspect complete objects, but decisions read structured fields rather than human_results text.
+
+Memory is local, bounded and summarized. Absence of an approval in retained episodes does **not prove** it never happened. This demonstration is not a persistent idempotency ledger and does not prevent concurrent duplicates. The four business fields contain no Context, episodes or RunResult trees; internally the graph uses bounded evidence references.
+
+Validation covers this deterministic scenario and its controls. It does not certify external providers or new versions and publishes no artifact.
+
+[Base two-Agent program](example.py); Environment and Eval are declared directly in this notebook. [Explanation and evidence](README.md).
+
+[Executable notebook](01_lineage_memory_decisions.ipynb) · [Complete reading view](01_lineage_memory_decisions.md) · [Program](example.py).
+
+Historical validation: [report](../../revisions/2.1.4/grammar-dev7/lineage-memory/REPORT.md), [serialized evidence](../../revisions/2.1.4/grammar-dev7/lineage-memory/evidence.json), [fresh-kernel records](../../revisions/2.1.4/grammar-dev7/lineage-memory/notebook-validation/). Historical results retain their original wheel identity.

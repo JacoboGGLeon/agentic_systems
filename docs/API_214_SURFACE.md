@@ -1,6 +1,6 @@
-# API observada del wheel · 2.1.4.dev8
+# Observed API surface · 2.1.4
 
-15 conceptos propios, cinco reexportaciones originales de LangGraph y __version__. Métodos nativos de Pydantic/LangGraph pertenecen a esas bibliotecas y no son constructores nuevos. Graph requiere un owner para obtener RunResult; compile del owner valida el subconjunto integrado de LangGraph.
+Fifteen toolkit concepts, five original LangGraph reexports and __version__. Native Pydantic/LangGraph methods belong to those libraries, not additional toolkit constructors. Execute Graph through its owner to obtain RunResult; owner.compile validates the integrated LangGraph subset.
 
 ## Agent
 
@@ -152,7 +152,7 @@ tool(function=None, /, *, name=None, description=None, input_schema=None, output
 
 ## Objetos devueltos y protocolo de nodo
 
-No se construyen directamente. run/arun devuelven RunResult; __call__(state) en Tools/Agents/Systems es el protocolo de nodo que entrega una actualización al Graph.
+Do not construct these directly. run/arun return RunResult; __call__(state) on Tools/Agents/Systems is the node protocol returning a Graph update.
 
 ### compile()
 

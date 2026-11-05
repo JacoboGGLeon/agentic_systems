@@ -1,14 +1,8 @@
-# Environment y rewards · 2.1.4.dev8
+# Environment and rewards · 2.1.4
 
-La API pública ofrece graph, records, state, observe, update, stop y max_steps.
-No tiene reward=, espacios/action_space, reset/step públicos ni aprendizaje de
-políticas. El mecanismo reward_fn de la implementación histórica interna no
-constituye otra API pública soportada.
+The public API exposes graph, records, state, observe, update, stop and max_steps. It has no reward= parameter, spaces/action_space, public reset/step methods or policy learning. Historical internal reward_fn implementation is not a second supported public API.
 
-Se puede calcular una recompensa con la gramática actual, en update, y guardarla
-en state/history. El ejemplo integrado compara la decisión con un oráculo de
-referencia del Environment: 1 si coincide, 0 si no. Ese oráculo no se entrega
-como input al System; observe solo proyecta amount.
+Compute an explicit reward in update and retain it in state/history. The integrated example compares a decision against an Environment reference oracle: 1 for a match, 0 otherwise. observe projects only amount; the oracle is not supplied to the System.
 
 ```python
 def observe_payment(record, state):
@@ -21,10 +15,6 @@ def update_day(state, record, result):
             "total_reward": state["total_reward"] + reward}
 ```
 
-Esto demuestra feedback episódico como dato de negocio. No activa entrenamiento,
-optimización de políticas ni una API RL completa. Formalizar reward requeriría
-un contrato explícito para episodios, fallos, tipos, acumulación y evidencia;
-no se añade un constructor o comportamiento de aprendizaje implícito.
+This demonstrates episodic feedback as business data, not training, policy optimization or a complete RL API. A formal reward feature would require explicit contracts for episodes, failures, types, accumulation and evidence; no constructor or learning behavior is implicitly added.
 
-[Fuente completa](../examples/checked_composition/example.py) ·
-[Notebook](../examples/checked_composition/01_checked_composition.ipynb).
+[Complete source](../examples/checked_composition/example.py) · [English notebook view](../examples/checked_composition/01_checked_composition.md).

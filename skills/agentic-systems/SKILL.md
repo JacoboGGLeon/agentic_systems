@@ -37,7 +37,9 @@ has one Tool; compose multiple operations with Graph. Never describe a
 Python fixture as a language-model reasoner or semantic judge.
 
 Graph is the sole public graph name, exposing the original LangGraph StateGraph.
-Do not generate toolkit.StateGraph, toolkit.check or a check decorator. Constructors
+Do not generate toolkit.StateGraph, toolkit.check or a check decorator.
+Use toolkit.tool and toolkit.skill factories; toolkit.Tool and toolkit.Skill
+constructors are not public API. Constructors
 validate local contracts; owner.compile prepares and checks graph structure without
 executing business work. Agent organizes a capability; System coordinates the app.
 Graph remains a definition: execute through its Agent/System/Environment for RunResult.
