@@ -1,23 +1,88 @@
-# Estado de Environment y Memory · 2.1.4
+# Episode memory · Agentic Systems 2.1.5
 
-Input: importes 2, 3 y 100. observe combina el siguiente importe con el total
-actual; el Graph suma; update conserva el total. stop termina al alcanzar 5,
-antes de consumir 100. Outputs: total=2 y total=5. Repetir run reinicia el
-estado del episodio y produce los mismos totales con otro execution_id.
+Observe, update and stop episodes while retaining execution identity.
 
-El acumulador es estado del Environment. Memory conserva episodios observados;
-no participa en esta suma y no debe presentarse como aprendizaje. Para ver cómo
-sí modifica una decisión, y cómo Eval aísla sus escrituras, consulta
-[el notebook de lineage y Memory](../lineage_memory/01_lineage_memory_decisions.ipynb).
+## Run
 
-La composición y las aserciones están visibles en [el código](example.py).
-Lee las declaraciones de Tools, Agents y Graph antes de ejecutar el ejemplo.
+Follow the [shared execution guide](../../docs/EXAMPLES_GUIDE.md). From the repository root:
 
-El código expone observe, update, stop y Graph. El replay determinista no implica
-persistencia ni reanudación después de reiniciar el proceso.
+```bash
+python scripts/run_example.py examples/episode_memory/example.py
+```
 
-[Declaración](example.py) · [Evidencia dev8](../../revisions/2.1.4/grammar-dev8/closure/examples/examples--episode_memory--example.py.json)
+## Read the implementation
 
-Perfil actual: **offline-passed**. El catálogo [de validación](../../docs/LEARNING_VALIDATION_214.md) separa configuración, Python, servicios locales y pruebas de modelos. La evidencia 2.1.3 conservada es histórica y no certifica estos bytes.
+[Open the source](example.py). Start with the Tool body, then its Skill,
+state model and Graph. Follow START, node names, conditional routes and END.
+The entrypoint runs supplied cases and asserts their outcomes. The assertions
+are executable expectations; inspect them before changing the scenario.
 
-[Validación histórica dev5 de Pydantic y human_results](../../revisions/2.1.4/contracts-dev5/REPORT.md). Las revisiones previas se conservan como evidencia histórica.
+## Expected behavior and changes
+
+Observe, update and stop episodes while retaining execution identity. The command prints serialized evidence after the
+entrypoint assertions pass. An assertion failure exits unsuccessfully; an
+intentional business rejection or controlled Tool error can be a passing test
+when the example explicitly expects it. Change the supplied input and update
+its business assertions together; do not remove checks to obtain PASS.
+
+## Recorded offline result
+
+The following data was observed by the 2026-11-08 review against the pinned
+2.1.5 wheel. See the source assertions for the complete checks.
+
+```json
+{
+  "outputs": [
+    {
+      "total": 2
+    },
+    {
+      "total": 5
+    }
+  ],
+  "history": [
+    {
+      "step": 0,
+      "record": {
+        "amount": 2
+      },
+      "state_before": {
+        "total": 0
+      },
+      "state_after": {
+        "total": 2
+      },
+      "execution_id": "run-820fcd3da3764c8faf6a9454568ff438"
+    },
+    {
+      "step": 1,
+      "record": {
+        "amount": 3
+      },
+      "state_before": {
+        "total": 2
+      },
+      "state_after": {
+        "total": 5
+      },
+      "execution_id": "run-182ce835fc5846e1ae3a5430ac4018e1"
+    }
+  ],
+  "summary": {
+    "state": {
+      "total": 5
+    },
+    "processed": 2,
+    "terminated": true,
+    "truncated": false,
+    "reason": "stop"
+  }
+}
+```
+
+## Validation scope
+
+This is a deterministic or configuration-only lesson unless its source explicitly
+requires the separate local-service profile. It does not demonstrate a model
+reasoning about arbitrary inputs. Current offline review and historical artifact
+identities are distinguished in [the review report](../../docs/NARRATIVE_REVIEW_215.md).

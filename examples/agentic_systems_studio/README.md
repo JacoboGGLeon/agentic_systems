@@ -24,3 +24,13 @@ Separate checks cover controller/conversation, UI, handoffs and MCP/A2A. Local s
 [The explicit demonstration](example.py) exposes Graph, Tools, Skills, Agent, System, Context and Memory. The full controller API is an additional application integration rather than a substitute for those declarations; the notebook shows both boundaries.
 
 The Python controller chat uses a deterministic hello_world fixture. It does not interpret language or automatically select the calculator. safe_calculate can be invoked explicitly. Recorded model-backed controller checks cover history and calculator invocation, not every UI control. [Historical validation](../../revisions/2.1.4/contracts-dev5/REPORT.md) retains its original provenance.
+
+## Run from a repository checkout
+
+Follow the [shared execution guide](../../docs/EXAMPLES_GUIDE.md). From the repository root:
+
+```bash
+python scripts/run_example.py examples/agentic_systems_studio/example.py
+```
+
+This command runs the offline profile only. Its validation scope is separate from live provider campaigns.

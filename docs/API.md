@@ -1,9 +1,12 @@
-# API de usuario · 2.1.4.dev8
+# User API · Agentic Systems 2.1.5
 
-La referencia vigente es [API de usuario](API_214.md).
-LangGraph orquesta; Agentic Systems compone operadores y actores con contratos
-y evidencia comunes. Runtime y scheduler conservan el control de ejecución.
+Start with [your first result](ONBOARDING_FIRST_RUN.md), then use the
+[construction guide](API_214.md), [exact signatures](API_214_SURFACE.md), and
+[actor contracts](ACTOR_CONTRACTS.md). The `_214` filenames are stable links;
+these pages describe the compatible 2.1.5 public grammar.
 
-[Runtime y scheduler](RUNTIME_SCHEDULER_214.md) · [System y harness](SYSTEM_HARNESS_214.md) ·
-[Estado por revisión](STATUS_214.md). Las versiones anteriores se conservan
-en las instantáneas históricas de revisions/, sin constituir otra API soportada.
+LangGraph defines orchestration; native, openai-agents and strands implement
+actors; runtime chooses the provider and execution controls. Add each layer only
+when it has a responsibility in your application.
+
+[CLI](CLI.md) · [Examples](../examples/README.md) · [Validation](VALIDATION_215_20261108.md).

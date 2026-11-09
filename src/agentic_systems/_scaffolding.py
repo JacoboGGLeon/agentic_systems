@@ -34,7 +34,7 @@ def create_project(destination):
         "nbformat": 4, "nbformat_minor": 5,
         "metadata": {"kernelspec": {"name": "python3", "display_name": "Python 3", "language": "python"}},
         "cells": [
-            {"cell_type": "markdown", "id": "intro", "metadata": {}, "source": [f"# Pedidos · API única {__version__}\n", "Input → validación → precio/stock → política → decisión. Sin inferencia."]},
+            {"cell_type": "markdown", "id": "intro", "metadata": {}, "source": [f"# Orders · one public API {__version__}\n", "Input → validation → price/stock → policy → decision. No inference."]},
             {"cell_type": "code", "id": "run", "metadata": {}, "execution_count": None, "outputs": [],
              "source": ['from pathlib import Path\n', 'import sys\n',
                         'root = next(p for p in (Path.cwd(), *Path.cwd().parents) if (p / "app.py").is_file())\n',
@@ -43,7 +43,7 @@ def create_project(destination):
                         'import agentic_systems as toolkit\n', f'assert toolkit.__version__ == "{__version__}"\n',
                         ]},
             {"cell_type": "markdown", "id": "declarations-title", "metadata": {},
-             "source": ["## Declaración completa\n", "Las Tools, Skills, Agents, System, Environment y Eval están visibles; las funciones locales muestran su implementación."]},
+             "source": ["## Complete declaration\n", "Tools, Skills, Agents, System, Environment and Eval are visible; local functions show their implementation."]},
             {"cell_type": "code", "id": "declarations", "metadata": {}, "execution_count": None, "outputs": [],
              "source": (destination / "src/order_fulfillment/application.py").read_text(encoding="utf-8").splitlines(keepends=True)},
             {"cell_type": "code", "id": "evidence", "metadata": {}, "execution_count": None, "outputs": [],

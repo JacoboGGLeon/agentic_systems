@@ -14,6 +14,25 @@ framework/provider extras and Studio. Historical live evidence retains its origi
 artifact identity. This maintenance release uses fresh offline and mutation checks;
 see the [2.1.5 release notes](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/RELEASE_NOTES_215.md).
 
+## Get your first result
+
+```python
+import agentic_systems as toolkit
+
+@toolkit.tool
+def increment(value: int) -> dict:
+    return {"value": value + 1}
+
+result = increment.run({"value": 3})
+assert result.ok and result.data == {"value": 4}
+print(result.data)
+```
+
+This runs deterministic Python without a model account. Continue with the
+[first-run guide](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/ONBOARDING_FIRST_RUN.md)
+or [generate an offline project](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/CLI.md).
+The worked payment example below introduces the remaining concepts.
+
 ## Build from the bottom up
 
 ### 1. Runtime: choose how a capability executes
@@ -287,8 +306,45 @@ contains RunResults, human_results, lineage, artifact hashes and recorded consum
 The reference development wheel passed 544 offline tests and this focused online campaign.
 The 2.1.4 release used approved executable-payload equivalence to that development wheel.
 Version 2.1.5 includes reviewed runtime simplifications and fresh offline/mutation checks;
-it does not claim a new live provider campaign. These results do not certify
-every provider feature or a complete release matrix.
+the historical financial example above retains its original artifact identity.
+The subsequent 2.1.5 integration campaign is reported below.
+
+## Agentic Systems 2.1.5 integration validation
+
+On 2026-11-08, the operator executed the following bounded campaigns. Returned
+artifacts were reviewed for Bedrock IAM and both vLLM environments; the ADA row
+is based on the operator's shared result log.
+
+| Environment | Model | Campaign result | Evidence |
+|---|---|---|---|
+| Bedrock IAM, SageMaker, us-east-2 | `qwen.qwen3-32b-v1:0` | 12/12 PASS | Result records and installed-version report reviewed |
+| Bedrock IAM in ADA | Model/region not recorded in the shared log | 12/12 PASS | Operator-reported; version and artifact identity not independently reconciled |
+| vLLM, Colab L4 | Unsloth Qwen3-4B Instruct-2507 and Thinking-2507 | 22/22 PASS | Full result archive reviewed |
+| vLLM, SageMaker L4 | Same two pinned model revisions | 22/22 PASS | Full result archive reviewed |
+
+The suites cover offline contracts, composition, flows and controls, plus live
+text and actual Tool execution with `native`, `openai-agents` and `strands`.
+Each Tool case must execute `add(19, 23)`, return `42`, and satisfy result
+invariants. Bedrock also checks IAM identity resolution. Repeated offline groups
+are not additional independent feature coverage.
+
+The passing vLLM configuration uses Python 3.12, vLLM 0.11.0, Transformers 4.57.1,
+FP16, an 8192-token context and a 4096-token output allowance. Required-tool cases
+use `policy={"tool_choice": "required"}` and
+`completion="when_required_tools_satisfied"`, with instructions that do not
+reveal the answer. An earlier Thinking/Strands automatic-choice attempt returned
+the correct number without calling the required Tool and correctly failed.
+The SDK wheel was unchanged; both prompt and policy changed in the passing setup.
+
+These results validate the listed cases and configurations, not all models,
+all SDK features, long-running multi-agent applications, or the separate
+historical 2.1.2 semantic suite.
+[Configuration, evidence hashes and limitations](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/VALIDATION_215_20261108.md).
+
+A subsequent SageMaker learning check passed all 33 notebooks in fresh Jupyter
+kernels (237 offline code cells), plus real local MCP/A2A services through
+deterministic Strands fixtures, with zero inference. Twelve existing live/local-service
+cells were skipped. The linked report records this scope and the reviewed archive.
 
 ## Learn, scaffold and explore
 
@@ -325,8 +381,9 @@ the key before local validation. Agentic Systems rejects them; it does not inser
 defaults or invent values. This is a **known integration limitation**, not a PASS
 for that scenario. [Reproduction and evidence](https://github.com/JacoboGGLeon/agentic_systems/blob/main/revisions/2.1.4/problem-fixes/01/REPORT.md).
 
-vLLM GPU, AWS IAM and ADA IAM remain pending their environments. Configuration
-support, offline tests and live validation are reported separately. SDK integrations
+The scoped 2.1.5 integration campaign above completed on vLLM GPU and Bedrock IAM;
+ADA results are identified separately as operator-reported. Configuration support,
+offline tests and live validation are reported separately. SDK integrations
 do not promise universal feature parity. Memory and pause/resume remain local to
 the process; durable recovery is not implemented.
 

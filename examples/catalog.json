@@ -1,6 +1,6 @@
 {
   "schema_version": "agentic-systems.examples-catalog.v2",
-  "reviewed_at": "2026-10-29",
+  "reviewed_at": "2026-11-08",
   "inference_executed_during_catalog_update": false,
   "baseline": {
     "version": "2.1.4.dev8",
@@ -9,15 +9,15 @@
   "entries": [
     {
       "id": "agentic_systems_creator",
-      "title": "Generar un proyecto",
+      "title": "Agentic systems creator",
       "group": "applications",
-      "purpose": "Crear una aplicaciÃ³n con el scaffolder instalado.",
-      "flow": "Destino nuevo â†’ CLI â†’ fuente, notebook y tests; generar no acredita su ejecuciÃ³n.",
+      "purpose": "Generate an offline application with the installed SDK scaffolder.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Current implementation",
+          "label": "Source or evidence",
           "target": "examples/applications/agentic_systems_creator/example.py"
         }
       ],
@@ -30,8 +30,8 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
-      "api_version": "2.1.4.dev8",
+      "next_action": "Use the linked example README for execution and validation scope.",
+      "api_version": "2.1.5",
       "historical_validation": {
         "status": "historical-pass",
         "scope": "Historical Ollama record dated 2026-08-20: qwen3:4b-instruct, framework identity recorded as agentic-systems (native path). This entry passed its recorded stage/engine/invariant checks in the 10/10 batch. No wheel hash establishes acceptance of the published 2.1.2 artifact; this is not an independent semantic certification.",
@@ -100,19 +100,27 @@
         "source_sha256": "0b5214a35051c063a5fa68b685d75dbd303fa3b5561f7f3f25973edf85cf0297",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Generar un proyecto",
+        "purpose": "Crear una aplicaciÃ³n con el scaffolder instalado.",
+        "flow": "Destino nuevo â†’ CLI â†’ fuente, notebook y tests; generar no acredita su ejecuciÃ³n.",
+        "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "research_synthesis",
-      "title": "Separar afirmaciones y fuentes",
+      "title": "Research synthesis",
       "group": "applications",
-      "purpose": "Distinguir afirmaciones con una referencia declarada de las que no la tienen.",
-      "flow": "Dos afirmaciones y una fuente â†’ Tool de clasificaciÃ³n â†’ supported y unverified. No comprueba el contenido de la fuente.",
+      "purpose": "Distinguish structured claims with declared references from claims without them.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Current implementation",
+          "label": "Source or evidence",
           "target": "examples/applications/research_synthesis/example.py"
         }
       ],
@@ -125,8 +133,8 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
-      "api_version": "2.1.4.dev8",
+      "next_action": "Use the linked example README for execution and validation scope.",
+      "api_version": "2.1.5",
       "historical_validation": {
         "status": "historical-pass",
         "scope": "Historical Ollama record dated 2026-08-20: qwen3:4b-instruct, framework identity recorded as agentic-systems (native path). This entry passed its recorded stage/engine/invariant checks in the 10/10 batch. No wheel hash establishes acceptance of the published 2.1.2 artifact; this is not an independent semantic certification.",
@@ -218,19 +226,27 @@
         "source_sha256": "20ce282fad23e545fb7b820d4adf0cb4d00de9dd7e5ef84b2b2314de41155983",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Separar afirmaciones y fuentes",
+        "purpose": "Distinguir afirmaciones con una referencia declarada de las que no la tienen.",
+        "flow": "Dos afirmaciones y una fuente â†’ Tool de clasificaciÃ³n â†’ supported y unverified. No comprueba el contenido de la fuente.",
+        "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "decision_intelligence",
-      "title": "Comparar opciones",
+      "title": "Decision intelligence",
       "group": "applications",
-      "purpose": "Aplicar una regla de puntuaciÃ³n explÃ­cita.",
-      "flow": "Calidad y coste de A/B â†’ quality âˆ’ cost â†’ B, con puntuaciÃ³n 5.",
+      "purpose": "Apply an explicit scoring rule to supplied facts.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Current implementation",
+          "label": "Source or evidence",
           "target": "examples/applications/decision_intelligence/example.py"
         }
       ],
@@ -243,8 +259,8 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
-      "api_version": "2.1.4.dev8",
+      "next_action": "Use the linked example README for execution and validation scope.",
+      "api_version": "2.1.5",
       "historical_validation": {
         "status": "historical-pass",
         "scope": "Historical Ollama record dated 2026-08-20: qwen3:4b-instruct, framework identity recorded as agentic-systems (native path). This entry passed its recorded stage/engine/invariant checks in the 10/10 batch. No wheel hash establishes acceptance of the published 2.1.2 artifact; this is not an independent semantic certification.",
@@ -336,19 +352,27 @@
         "source_sha256": "581f04a80c6f7788f1e4037cbfa4ef5470a697cdad72ef192c6416dbd26175b3",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Comparar opciones",
+        "purpose": "Aplicar una regla de puntuaciÃ³n explÃ­cita.",
+        "flow": "Calidad y coste de A/B â†’ quality âˆ’ cost â†’ B, con puntuaciÃ³n 5.",
+        "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "incident_response",
-      "title": "Clasificar incidentes",
+      "title": "Incident response",
       "group": "applications",
-      "purpose": "Convertir eventos en una decisiÃ³n reproducible.",
-      "flow": "Tres eventos, dos errores â†’ regla de severidad â†’ high e investigaciÃ³n.",
+      "purpose": "Map supplied events to a reproducible incident decision.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Current implementation",
+          "label": "Source or evidence",
           "target": "examples/applications/incident_response/example.py"
         }
       ],
@@ -361,8 +385,8 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
-      "api_version": "2.1.4.dev8",
+      "next_action": "Use the linked example README for execution and validation scope.",
+      "api_version": "2.1.5",
       "historical_validation": {
         "status": "historical-pass",
         "scope": "Historical Ollama record dated 2026-08-20: qwen3:4b-instruct, framework identity recorded as agentic-systems (native path). This entry passed its recorded stage/engine/invariant checks in the 10/10 batch. No wheel hash establishes acceptance of the published 2.1.2 artifact; this is not an independent semantic certification.",
@@ -454,19 +478,27 @@
         "source_sha256": "3970fd38b5950e089ff923bd694344ef69601c7a26d330bac3cc481862d27d09",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Clasificar incidentes",
+        "purpose": "Convertir eventos en una decisiÃ³n reproducible.",
+        "flow": "Tres eventos, dos errores â†’ regla de severidad â†’ high e investigaciÃ³n.",
+        "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "code_review",
-      "title": "Inspeccionar cÃ³digo",
+      "title": "Code review",
       "group": "applications",
-      "purpose": "Revisar sintaxis y anotaciones de retorno con AST.",
-      "flow": "CÃ³digo Python â†’ parseo sin ejecutarlo â†’ funciÃ³n sin anotaciÃ³n. No es una revisiÃ³n semÃ¡ntica completa.",
+      "purpose": "Inspect Python syntax and return annotations with the AST.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Current implementation",
+          "label": "Source or evidence",
           "target": "examples/applications/code_review/example.py"
         }
       ],
@@ -479,8 +511,8 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
-      "api_version": "2.1.4.dev8",
+      "next_action": "Use the linked example README for execution and validation scope.",
+      "api_version": "2.1.5",
       "historical_validation": {
         "status": "historical-pass",
         "scope": "Historical Ollama record dated 2026-08-20: qwen3:4b-instruct, framework identity recorded as agentic-systems (native path). This entry passed its recorded stage/engine/invariant checks in the 10/10 batch. No wheel hash establishes acceptance of the published 2.1.2 artifact; this is not an independent semantic certification.",
@@ -572,19 +604,27 @@
         "source_sha256": "993e047a29a90eb7847764c15e396d1e96140caaace6c274095f933c778e3d3f",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Inspeccionar cÃ³digo",
+        "purpose": "Revisar sintaxis y anotaciones de retorno con AST.",
+        "flow": "CÃ³digo Python â†’ parseo sin ejecutarlo â†’ funciÃ³n sin anotaciÃ³n. No es una revisiÃ³n semÃ¡ntica completa.",
+        "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "data_quality",
-      "title": "Perfilar datos",
+      "title": "Data quality",
       "group": "applications",
-      "purpose": "Detectar duplicados y valores ausentes.",
-      "flow": "Dos registros â†’ conteos deterministas â†’ un ID duplicado y un importe ausente.",
+      "purpose": "Count duplicate identifiers and missing amounts in supplied records.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Current implementation",
+          "label": "Source or evidence",
           "target": "examples/applications/data_quality/example.py"
         }
       ],
@@ -597,8 +637,8 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
-      "api_version": "2.1.4.dev8",
+      "next_action": "Use the linked example README for execution and validation scope.",
+      "api_version": "2.1.5",
       "historical_validation": {
         "status": "historical-pass",
         "scope": "Historical Ollama record dated 2026-08-20: qwen3:4b-instruct, framework identity recorded as agentic-systems (native path). This entry passed its recorded stage/engine/invariant checks in the 10/10 batch. No wheel hash establishes acceptance of the published 2.1.2 artifact; this is not an independent semantic certification.",
@@ -690,19 +730,27 @@
         "source_sha256": "46d6db868728a57525606b3fc963b979edfb46e4ec6dc4a655cf4f655c5e5645",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Perfilar datos",
+        "purpose": "Detectar duplicados y valores ausentes.",
+        "flow": "Dos registros â†’ conteos deterministas â†’ un ID duplicado y un importe ausente.",
+        "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "prompt_security",
-      "title": "Detectar seÃ±ales en un prompt",
+      "title": "Prompt security",
       "group": "applications",
-      "purpose": "Marcar instrucciones sospechosas mediante reglas visibles.",
-      "flow": "Texto â†’ coincidencias lÃ©xicas â†’ flags y revisiÃ³n requerida. No constituye una defensa completa.",
+      "purpose": "Flag suspicious instructions using visible deterministic rules.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Current implementation",
+          "label": "Source or evidence",
           "target": "examples/applications/prompt_security/example.py"
         }
       ],
@@ -715,8 +763,8 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
-      "api_version": "2.1.4.dev8",
+      "next_action": "Use the linked example README for execution and validation scope.",
+      "api_version": "2.1.5",
       "historical_validation": {
         "status": "historical-pass",
         "scope": "Historical Ollama record dated 2026-08-20: qwen3:4b-instruct, framework identity recorded as agentic-systems (native path). This entry passed its recorded stage/engine/invariant checks in the 10/10 batch. No wheel hash establishes acceptance of the published 2.1.2 artifact; this is not an independent semantic certification.",
@@ -808,19 +856,27 @@
         "source_sha256": "cfb9777313d757c95a9d7ab3ca52e71e9accbb50d0f62b1bf38a65ed041e54cb",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Detectar seÃ±ales en un prompt",
+        "purpose": "Marcar instrucciones sospechosas mediante reglas visibles.",
+        "flow": "Texto â†’ coincidencias lÃ©xicas â†’ flags y revisiÃ³n requerida. No constituye una defensa completa.",
+        "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "meeting_action_center",
-      "title": "Estructurar tareas",
+      "title": "Meeting action center",
       "group": "applications",
-      "purpose": "Convertir notas de formato conocido en tareas.",
-      "flow": "Responsable | tarea | fecha â†’ Tool de parseo â†’ lista de acciones.",
+      "purpose": "Parse notes in a known format into action items.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Current implementation",
+          "label": "Source or evidence",
           "target": "examples/applications/meeting_action_center/example.py"
         }
       ],
@@ -833,8 +889,8 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
-      "api_version": "2.1.4.dev8",
+      "next_action": "Use the linked example README for execution and validation scope.",
+      "api_version": "2.1.5",
       "historical_validation": {
         "status": "historical-pass",
         "scope": "Historical Ollama record dated 2026-08-20: qwen3:4b-instruct, framework identity recorded as agentic-systems (native path). This entry passed its recorded stage/engine/invariant checks in the 10/10 batch. No wheel hash establishes acceptance of the published 2.1.2 artifact; this is not an independent semantic certification.",
@@ -926,19 +982,27 @@
         "source_sha256": "9060c79b9bee46b98b39d9bf7a933452738a79aa11b0560db9b1fd7552cabb03",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Estructurar tareas",
+        "purpose": "Convertir notas de formato conocido en tareas.",
+        "flow": "Responsable | tarea | fecha â†’ Tool de parseo â†’ lista de acciones.",
+        "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "quantitative_analysis",
-      "title": "Calcular margen",
+      "title": "Quantitative analysis",
       "group": "applications",
-      "purpose": "Sumar importes con Decimal.",
-      "flow": "Ingresos y costes â†’ cÃ¡lculo exacto â†’ beneficio 50.25.",
+      "purpose": "Sum decimal amounts without binary floating-point arithmetic.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Current implementation",
+          "label": "Source or evidence",
           "target": "examples/applications/quantitative_analysis/example.py"
         }
       ],
@@ -951,8 +1015,8 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
-      "api_version": "2.1.4.dev8",
+      "next_action": "Use the linked example README for execution and validation scope.",
+      "api_version": "2.1.5",
       "historical_validation": {
         "status": "historical-pass",
         "scope": "Historical Ollama record dated 2026-08-20: qwen3:4b-instruct, framework identity recorded as agentic-systems (native path). This entry passed its recorded stage/engine/invariant checks in the 10/10 batch. No wheel hash establishes acceptance of the published 2.1.2 artifact; this is not an independent semantic certification.",
@@ -1044,19 +1108,27 @@
         "source_sha256": "23589303d7c9367f2f049bbdce3094244bb95cd8ba2949a5ca2085870c1df217",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Calcular margen",
+        "purpose": "Sumar importes con Decimal.",
+        "flow": "Ingresos y costes â†’ cÃ¡lculo exacto â†’ beneficio 50.25.",
+        "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "customer_support",
-      "title": "Enrutar un ticket",
+      "title": "Customer support",
       "group": "applications",
-      "purpose": "Asignar un equipo mediante una regla explÃ­cita.",
-      "flow": "Solicitud con refund â†’ clasificaciÃ³n â†’ billing.",
+      "purpose": "Route a supplied support request using an explicit team-selection rule.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Current implementation",
+          "label": "Source or evidence",
           "target": "examples/applications/customer_support/example.py"
         }
       ],
@@ -1069,8 +1141,8 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
-      "api_version": "2.1.4.dev8",
+      "next_action": "Use the linked example README for execution and validation scope.",
+      "api_version": "2.1.5",
       "historical_validation": {
         "status": "historical-pass",
         "scope": "Historical Ollama record dated 2026-08-20: qwen3:4b-instruct, framework identity recorded as agentic-systems (native path). This entry passed its recorded stage/engine/invariant checks in the 10/10 batch. No wheel hash establishes acceptance of the published 2.1.2 artifact; this is not an independent semantic certification.",
@@ -1162,19 +1234,27 @@
         "source_sha256": "44dc5de2d39ce8aa673fc058f04df6cf5a6250fd9cc5869d3db688ac2cdfb9a4",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Enrutar un ticket",
+        "purpose": "Asignar un equipo mediante una regla explÃ­cita.",
+        "flow": "Solicitud con refund â†’ clasificaciÃ³n â†’ billing.",
+        "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "semantic_calculation",
-      "title": "Calcular una factura",
+      "title": "Semantic calculation",
       "group": "patterns",
-      "purpose": "Separar cÃ¡lculo verificable de presentaciÃ³n.",
-      "flow": "Tres unidades de 100 â†’ subtotal e impuesto del 16% â†’ total 348.",
+      "purpose": "Separate verified multiplication from presentation of its result.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Current implementation",
+          "label": "Source or evidence",
           "target": "examples/patterns/semantic_calculation/example.py"
         }
       ],
@@ -1187,8 +1267,8 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
-      "api_version": "2.1.4.dev8",
+      "next_action": "Use the linked example README for execution and validation scope.",
+      "api_version": "2.1.5",
       "historical_validation": {
         "status": "accepted-2.1.2",
         "scope": "Published 2.1.2 core-12-live-v1 acceptance: OpenAI, Bedrock API key and Ollama Ã— native/LangGraph/OpenAI Agents/Strands, two passes. Four-framework Python controls are deterministic. This accepts the declared cases and routes only, not all SDK-specific features or arbitrary models.",
@@ -1281,19 +1361,27 @@
         "source_sha256": "4bda3b211de8ead978d5372de1fb0e58bfb40c1a9be4de54760e73676b0c0aeb",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Calcular una factura",
+        "purpose": "Separar cÃ¡lculo verificable de presentaciÃ³n.",
+        "flow": "Tres unidades de 100 â†’ subtotal e impuesto del 16% â†’ total 348.",
+        "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "text_analysis",
-      "title": "Contar texto",
+      "title": "Text analysis",
       "group": "patterns",
-      "purpose": "Usar un Tool para anÃ¡lisis bÃ¡sico reproducible.",
-      "flow": "Tres palabras â†’ conteos â†’ dos palabras Ãºnicas y dos menciones de evidence.",
+      "purpose": "Count words, unique words and exact evidence mentions in supplied text.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Current implementation",
+          "label": "Source or evidence",
           "target": "examples/patterns/text_analysis/example.py"
         }
       ],
@@ -1306,8 +1394,8 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
-      "api_version": "2.1.4.dev8",
+      "next_action": "Use the linked example README for execution and validation scope.",
+      "api_version": "2.1.5",
       "historical_validation": {
         "status": "accepted-2.1.2",
         "scope": "Published 2.1.2 core-12-live-v1 acceptance: OpenAI, Bedrock API key and Ollama Ã— native/LangGraph/OpenAI Agents/Strands, two passes. Four-framework Python controls are deterministic. This accepts the declared cases and routes only, not all SDK-specific features or arbitrary models.",
@@ -1400,19 +1488,27 @@
         "source_sha256": "5fa2cc23fbebf452b5b18a36e21536d3a4526ea788ed80e036b47eb2bcbaa9b3",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Contar texto",
+        "purpose": "Usar un Tool para anÃ¡lisis bÃ¡sico reproducible.",
+        "flow": "Tres palabras â†’ conteos â†’ dos palabras Ãºnicas y dos menciones de evidence.",
+        "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "scope_clarification",
-      "title": "Respetar el alcance",
+      "title": "Scope clarification",
       "group": "patterns",
-      "purpose": "Rechazar una operaciÃ³n no declarada.",
-      "flow": "transfer_money â†’ consulta de capacidades â†’ accepted=False y operaciones disponibles.",
+      "purpose": "Return an explicit outside-scope decision for an undeclared operation.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Current implementation",
+          "label": "Source or evidence",
           "target": "examples/patterns/scope_clarification/example.py"
         }
       ],
@@ -1425,8 +1521,8 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
-      "api_version": "2.1.4.dev8",
+      "next_action": "Use the linked example README for execution and validation scope.",
+      "api_version": "2.1.5",
       "historical_validation": {
         "status": "accepted-2.1.2",
         "scope": "Published 2.1.2 core-12-live-v1 acceptance: OpenAI, Bedrock API key and Ollama Ã— native/LangGraph/OpenAI Agents/Strands, two passes. Four-framework Python controls are deterministic. This accepts the declared cases and routes only, not all SDK-specific features or arbitrary models.",
@@ -1519,19 +1615,27 @@
         "source_sha256": "ed335d18f746ecab2fdcfbcccdb7e4530f15800cfa3134d7140280b2617e6699",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Respetar el alcance",
+        "purpose": "Rechazar una operaciÃ³n no declarada.",
+        "flow": "transfer_money â†’ consulta de capacidades â†’ accepted=False y operaciones disponibles.",
+        "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "evidence_grounded_poem",
-      "title": "Evaluar versos guardados",
+      "title": "Evidence grounded poem",
       "group": "patterns",
-      "purpose": "Comprobar formato y una cifra en candidatos suministrados.",
-      "flow": "Dos textos guardados â†’ Eval â†’ uno aceptado y otro rechazado; sin generaciÃ³n ni juez semÃ¡ntico.",
+      "purpose": "Check supplied candidate poems for format and a verified number.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Current implementation",
+          "label": "Source or evidence",
           "target": "examples/patterns/evidence_grounded_poem/example.py"
         }
       ],
@@ -1544,8 +1648,8 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
-      "api_version": "2.1.4.dev8",
+      "next_action": "Use the linked example README for execution and validation scope.",
+      "api_version": "2.1.5",
       "historical_validation": {
         "status": "accepted-2.1.2",
         "scope": "Published 2.1.2 core-12-live-v1 acceptance: OpenAI, Bedrock API key and Ollama Ã— native/LangGraph/OpenAI Agents/Strands, two passes. Four-framework Python controls are deterministic. This accepts the declared cases and routes only, not all SDK-specific features or arbitrary models. The poem case is a language-model case; Python does not demonstrate creative generation.",
@@ -1615,19 +1719,27 @@
         "source_sha256": "4e4025fc10a23ea132e389f4e989b1257246aec0cc3bc4e88e739d581673c0f4",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Evaluar versos guardados",
+        "purpose": "Comprobar formato y una cifra en candidatos suministrados.",
+        "flow": "Dos textos guardados â†’ Eval â†’ uno aceptado y otro rechazado; sin generaciÃ³n ni juez semÃ¡ntico.",
+        "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "controlled_failure",
-      "title": "Conservar un fallo",
+      "title": "Controlled failure",
       "group": "patterns",
-      "purpose": "Inspeccionar errores, eventos y linaje de una operaciÃ³n fallida.",
-      "flow": "Producto A17 â†’ Tool lanza LookupError â†’ RunResult fallido con evidencia e invariantes vÃ¡lidas.",
+      "purpose": "Inspect the structured error and evidence from an intentionally failed operation.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Current implementation",
+          "label": "Source or evidence",
           "target": "examples/patterns/controlled_failure/example.py"
         }
       ],
@@ -1640,8 +1752,8 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
-      "api_version": "2.1.4.dev8",
+      "next_action": "Use the linked example README for execution and validation scope.",
+      "api_version": "2.1.5",
       "historical_validation": {
         "status": "accepted-2.1.2",
         "scope": "Published acceptance includes one controlled failure/serialization check per route/pass (32 in total). Failure is the expected behavior; it remains visible in RunResult.",
@@ -1711,19 +1823,27 @@
         "source_sha256": "1a218d2bc5b64467fb358fc3f23dd9d6737a51c4ea2d3c3e2d0c94ec930ffb0a",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Conservar un fallo",
+        "purpose": "Inspeccionar errores, eventos y linaje de una operaciÃ³n fallida.",
+        "flow": "Producto A17 â†’ Tool lanza LookupError â†’ RunResult fallido con evidencia e invariantes vÃ¡lidas.",
+        "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "strands_protocol_graph",
-      "title": "Conectar MCP y A2A",
+      "title": "Strands protocol graph",
       "group": "patterns",
-      "purpose": "Usar servicios locales reales desde Strands.",
-      "flow": "Valor conocido â†’ MCP Streamable HTTP y agente A2A â†’ evidencia remota; modelos deterministas y cero inferencia.",
+      "purpose": "Use real local MCP/A2A services through Strands in a separate service profile.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "local-protocol-fixture; not-live-LM",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Current implementation",
+          "label": "Source or evidence",
           "target": "examples/patterns/strands_protocol_graph/example.py"
         }
       ],
@@ -1737,8 +1857,8 @@
         "current_version": "2.1.4.dev8",
         "current_acceptance": false
       },
-      "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
-      "api_version": "2.1.4.dev7",
+      "next_action": "Use the linked example README for execution and validation scope.",
+      "api_version": "2.1.5",
       "historical_validation": {
         "status": "historical-pass",
         "scope": "Three historical routes passed on a 2.1.0 wheel with SHA-256 46fa5e7e117d6482a4d15332d52d9520b897fd2beeef92bdcb816bf93896b9d5. This differs from the published 2.1.2 wheel. Shipping the source bundle does not transfer that acceptance.",
@@ -1796,19 +1916,27 @@
         "entrypoint": "examples/patterns/strands_protocol_graph/example.py",
         "wheel_sha256": "f96d9fc165251e798374a1a9ed6b32e99c2704e210925acf6a579b06cd1a4f16",
         "report": "revisions/2.1.4/grammar-dev7/REPORT.md"
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Conectar MCP y A2A",
+        "purpose": "Usar servicios locales reales desde Strands.",
+        "flow": "Valor conocido â†’ MCP Streamable HTTP y agente A2A â†’ evidencia remota; modelos deterministas y cero inferencia.",
+        "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
+        "api_version": "2.1.4.dev7"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "bounded_conversation",
-      "title": "Acotar una conversaciÃ³n",
+      "title": "Bounded conversation",
       "group": "patterns",
-      "purpose": "Mantener una ventana de contexto explÃ­cita.",
-      "flow": "Cuatro mensajes â†’ Ãºltimas tres entradas, longitud acotada â†’ historia conservada.",
+      "purpose": "Retain an explicit bounded conversation window.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Current implementation",
+          "label": "Source or evidence",
           "target": "examples/patterns/bounded_conversation/example.py"
         }
       ],
@@ -1821,8 +1949,8 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
-      "api_version": "2.1.4.dev8",
+      "next_action": "Use the linked example README for execution and validation scope.",
+      "api_version": "2.1.5",
       "historical_validation": {
         "status": "mixed",
         "scope": "Historical conversation runs include passes and failures. A local artifact named studio-long-certified.json recorded failures for all three LLM providers; its filename is not acceptance. Source reports also retain judge schema and explanation defects. No blanket 2.1.2 conversation certification is claimed.",
@@ -1891,19 +2019,27 @@
         "source_sha256": "5de39faa64cfa5caf25bd38f1dfc9a6c0ff4dd2465f2afb6fb058495b23508cd",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Acotar una conversaciÃ³n",
+        "purpose": "Mantener una ventana de contexto explÃ­cita.",
+        "flow": "Cuatro mensajes â†’ Ãºltimas tres entradas, longitud acotada â†’ historia conservada.",
+        "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "two_phase_poem",
-      "title": "Calcular antes de presentar",
+      "title": "Two phase poem",
       "group": "patterns",
-      "purpose": "Conservar evidencia de un Tool al formatear una respuesta.",
-      "flow": "3 Ã— 116 â†’ Tool exact_total â†’ tres versos de una plantilla con total 348; sin generaciÃ³n de lenguaje.",
+      "purpose": "Preserve Tool evidence while formatting a supplied response.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Current implementation",
+          "label": "Source or evidence",
           "target": "examples/patterns/two_phase_poem/example.py"
         }
       ],
@@ -1916,8 +2052,8 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
-      "api_version": "2.1.4.dev8",
+      "next_action": "Use the linked example README for execution and validation scope.",
+      "api_version": "2.1.5",
       "historical_validation": {
         "status": "mixed",
         "scope": "The source report records deterministic candidate gates, but judge explanations and citation/schema experiments retain failures. Twelve automatic judge approvals were not twelve fully faithful explanations. This experiment is distinct from the final core release acceptance.",
@@ -1982,19 +2118,27 @@
         "source_sha256": "72ee136f504186aab9136435a6e5f30071bb179a14c1362ed6c72889be324938",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Calcular antes de presentar",
+        "purpose": "Conservar evidencia de un Tool al formatear una respuesta.",
+        "flow": "3 Ã— 116 â†’ Tool exact_total â†’ tres versos de una plantilla con total 348; sin generaciÃ³n de lenguaje.",
+        "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "compact_evaluation",
-      "title": "Evaluar y resumir evidencia",
+      "title": "Compact evaluation",
       "group": "patterns",
-      "purpose": "Evaluar una ejecuciÃ³n guardada y consultar su traza.",
-      "flow": "Suma 2 + 3 â†’ guardar RunResult â†’ Eval, trace y lineage sin repetir el candidato.",
+      "purpose": "Evaluate a saved execution and inspect its compact trace.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Current implementation",
+          "label": "Source or evidence",
           "target": "examples/patterns/compact_evaluation/example.py"
         }
       ],
@@ -2007,8 +2151,8 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
-      "api_version": "2.1.4.dev8",
+      "next_action": "Use the linked example README for execution and validation scope.",
+      "api_version": "2.1.5",
       "historical_validation": {
         "status": "mixed",
         "scope": "Source matrix: 20/32 case gates passed; 8/16 routes passed both cases, including four deterministic Python controls. Ollama failed both cases on all four frameworks; OpenAI and Bedrock also retain failed cases. Not release certification.",
@@ -2073,19 +2217,27 @@
         "source_sha256": "14ec0f0545ca7b0b374847238aac8cf5a0f3f92040b9e412173cb4e3fa52448a",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Evaluar y resumir evidencia",
+        "purpose": "Evaluar una ejecuciÃ³n guardada y consultar su traza.",
+        "flow": "Suma 2 + 3 â†’ guardar RunResult â†’ Eval, trace y lineage sin repetir el candidato.",
+        "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "claim_review",
-      "title": "Revisar referencias y causalidad",
+      "title": "Claim review",
       "group": "patterns",
-      "purpose": "Aplicar comprobaciones explÃ­citas sobre afirmaciones estructuradas.",
-      "flow": "Fuente ausente y causalidad sin evidencia declarada â†’ dos hallazgos â†’ accepted=False.",
+      "purpose": "Apply explicit checks to structured claims.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Current implementation",
+          "label": "Source or evidence",
           "target": "examples/patterns/claim_review/example.py"
         }
       ],
@@ -2098,8 +2250,8 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
-      "api_version": "2.1.4.dev8",
+      "next_action": "Use the linked example README for execution and validation scope.",
+      "api_version": "2.1.5",
       "historical_validation": {
         "status": "mixed",
         "scope": "Held-out verdict matches were Bedrock/native 6/6, OpenAI/langgraph 5/6 and Ollama/native 5/6, with additional citation limits. Exposed v3/v4/v5 regressions are separate experiments; v5 accepted 4/6, not a complete matrix. Correct binary results do not certify citation quality.",
@@ -2203,19 +2355,27 @@
         "source_sha256": "0be54c8d6361c6274d735636073b83ff021d481ea6f6899d0f8eae2dea24106a",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Revisar referencias y causalidad",
+        "purpose": "Aplicar comprobaciones explÃ­citas sobre afirmaciones estructuradas.",
+        "flow": "Fuente ausente y causalidad sin evidencia declarada â†’ dos hallazgos â†’ accepted=False.",
+        "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "typed_claim_review",
-      "title": "Validar una afirmaciÃ³n tipada",
+      "title": "Typed claim review",
       "group": "patterns",
-      "purpose": "Rechazar datos que incumplen el esquema de entrada.",
-      "flow": "Una entrada vÃ¡lida y otra con texto numÃ©rico â†’ Tool con esquema estricto â†’ Ã©xito y fallo conservados.",
+      "purpose": "Reject supplied claims that violate the declared input schema.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Current implementation",
+          "label": "Source or evidence",
           "target": "examples/patterns/typed_claim_review/example.py"
         }
       ],
@@ -2228,8 +2388,8 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
-      "api_version": "2.1.4.dev8",
+      "next_action": "Use the linked example README for execution and validation scope.",
+      "api_version": "2.1.5",
       "historical_validation": {
         "status": "mixed",
         "scope": "Live source pilots: v1 OpenAI/langgraph 3/6 and Ollama/native 0/6; v2 OpenAI/langgraph 1/3 and Ollama/native 0/3. Extraction/audit defects remain unresolved. Offline callback tests across frameworks do not supply live framework acceptance.",
@@ -2294,19 +2454,27 @@
         "source_sha256": "af934f0e45ae4602967f8bb537eedab9a26017ac5eaf2a444b3c8b98866cdeb7",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Validar una afirmaciÃ³n tipada",
+        "purpose": "Rechazar datos que incumplen el esquema de entrada.",
+        "flow": "Una entrada vÃ¡lida y otra con texto numÃ©rico â†’ Tool con esquema estricto â†’ Ã©xito y fallo conservados.",
+        "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "judge_calibration",
-      "title": "Comprobar un juez optimista",
+      "title": "Judge calibration",
       "group": "patterns",
-      "purpose": "Combinar expectativas exactas y un juez fixture.",
-      "flow": "Respuestas VALID y WRONG â†’ juez que siempre aprueba + expectativas â†’ [True, False]; no es calibraciÃ³n empÃ­rica de un modelo.",
+      "purpose": "Combine exact expectations with a deterministic fixture judge.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Current implementation",
+          "label": "Source or evidence",
           "target": "examples/patterns/judge_calibration/example.py"
         }
       ],
@@ -2319,8 +2487,8 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
-      "api_version": "2.1.4.dev8",
+      "next_action": "Use the linked example README for execution and validation scope.",
+      "api_version": "2.1.5",
       "historical_validation": {
         "status": "mixed",
         "scope": "Calibration includes false approvals, schema/citation failures and source-only observations. A local holdout report recorded ok=true, but that does not certify a full candidate matrix or a new wheel. Prior failures remain part of the record.",
@@ -2393,19 +2561,27 @@
         "source_sha256": "a26a37430a2abed9f491c2e5d973ca8355ed2ab10d45a54f914f4af59e22204e",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Comprobar un juez optimista",
+        "purpose": "Combinar expectativas exactas y un juez fixture.",
+        "flow": "Respuestas VALID y WRONG â†’ juez que siempre aprueba + expectativas â†’ [True, False]; no es calibraciÃ³n empÃ­rica de un modelo.",
+        "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "long_environment",
-      "title": "Recorrer un episodio",
+      "title": "Long environment",
       "group": "patterns",
-      "purpose": "Acumular memoria sin contaminar la siguiente ejecuciÃ³n.",
-      "flow": "Treinta movimientos de +1 â†’ Environment con memoria â†’ balance 30 en dos episodios independientes.",
+      "purpose": "Accumulate bounded episode memory without contaminating the next execution.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Current implementation",
+          "label": "Source or evidence",
           "target": "examples/patterns/long_environment/example.py"
         }
       ],
@@ -2418,8 +2594,8 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
-      "api_version": "2.1.4.dev8",
+      "next_action": "Use the linked example README for execution and validation scope.",
+      "api_version": "2.1.5",
       "historical_validation": {
         "status": "offline-only",
         "scope": "The control is deterministic. A separately reported hybrid saved candidate used eight Python Agents plus one LLM Agent on one route; it does not establish an all-LLM or complete long-case matrix.",
@@ -2484,19 +2660,27 @@
         "source_sha256": "8fdde4bdd6f11ad012c2249c99f8536acd25163a824af1116f5ce9078898606d",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Recorrer un episodio",
+        "purpose": "Acumular memoria sin contaminar la siguiente ejecuciÃ³n.",
+        "flow": "Treinta movimientos de +1 â†’ Environment con memoria â†’ balance 30 en dos episodios independientes.",
+        "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "saved_execution_eval",
-      "title": "Evaluar sin repetir",
+      "title": "Saved execution eval",
       "group": "patterns",
-      "purpose": "Restaurar RunResult y evaluar evidencia guardada.",
-      "flow": "Suma 2 + 3 â†’ serializaciÃ³n â†’ Eval acepta total 5 sin volver a ejecutar el cÃ¡lculo.",
+      "purpose": "Restore RunResult and evaluate the saved execution evidence.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Current implementation",
+          "label": "Source or evidence",
           "target": "examples/patterns/saved_execution_eval/example.py"
         }
       ],
@@ -2509,8 +2693,8 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
-      "api_version": "2.1.4.dev8",
+      "next_action": "Use the linked example README for execution and validation scope.",
+      "api_version": "2.1.5",
       "historical_validation": {
         "status": "mixed",
         "scope": "One OpenAI/openai-agents episode: 7/7 original verdicts accepted and 7/7 negatives rejected; one explanation invented an increment. Later claim-based review retained irrelevant citations for six nonfactual fragments. Neither result certifies every explanation or the full matrix.",
@@ -2579,19 +2763,27 @@
         "source_sha256": "fb3928b0aabe3ff6c8e9773f03778ac69fe45ba0365bba5a44c512a6e5e670f4",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Evaluar sin repetir",
+        "purpose": "Restaurar RunResult y evaluar evidencia guardada.",
+        "flow": "Suma 2 + 3 â†’ serializaciÃ³n â†’ Eval acepta total 5 sin volver a ejecutar el cÃ¡lculo.",
+        "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "api_contract_lab",
-      "title": "Comparar run y compile",
+      "title": "Api contract lab",
       "group": "validation",
-      "purpose": "Comprobar que preparar una unidad conserva su ejecuciÃ³n.",
-      "flow": "value=3 â†’ run directo y compile().run â†’ mismo resultado; firmas pÃºblicas disponibles.",
+      "purpose": "Check that compiling a declared unit preserves its execution result.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Current implementation",
+          "label": "Source or evidence",
           "target": "examples/validation/api_contract_lab/example.py"
         }
       ],
@@ -2604,8 +2796,8 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
-      "api_version": "2.1.4.dev8",
+      "next_action": "Use the linked example README for execution and validation scope.",
+      "api_version": "2.1.5",
       "historical_validation": {
         "status": "mixed",
         "scope": "Exact published 2.1.2 wheel: 1435 offline tests, 223/223 concrete public callable entries observed and 16 Tool route cases passed. Twelve generation transports succeeded, but only eight literal READY checks passed; all four Bedrock results returned READY. The summary is not the full raw audit or a new release certification.",
@@ -2670,19 +2862,27 @@
         "source_sha256": "755e2a6966aeb6d2c7ec2962b4d898f3252646574d776a0fd4882e1b3da53f87",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Comparar run y compile",
+        "purpose": "Comprobar que preparar una unidad conserva su ejecuciÃ³n.",
+        "flow": "value=3 â†’ run directo y compile().run â†’ mismo resultado; firmas pÃºblicas disponibles.",
+        "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "provider_framework_conformance",
-      "title": "Ejecutar tres actores",
+      "title": "Provider framework conformance",
       "group": "validation",
-      "purpose": "Usar los tres SDKs con Python determinista.",
-      "flow": "value=3 â†’ Tool echo en native, OpenAI Agents y Strands, orquestados por LangGraph â†’ misma evidencia; la matriz live se documenta aparte.",
+      "purpose": "Exercise native, OpenAI Agents and Strands with deterministic Python.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Current implementation",
+          "label": "Source or evidence",
           "target": "examples/validation/provider_framework_conformance/example.py"
         }
       ],
@@ -2695,8 +2895,8 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
-      "api_version": "2.1.4.dev8",
+      "next_action": "Use the linked example README for execution and validation scope.",
+      "api_version": "2.1.5",
       "historical_validation": {
         "status": "accepted-2.1.2",
         "scope": "Published 2.1.2 core-12-live-v1 acceptance: OpenAI, Bedrock API key and Ollama Ã— native/LangGraph/OpenAI Agents/Strands, two passes. Four-framework Python controls are deterministic. This accepts the declared cases and routes only, not all SDK-specific features or arbitrary models. The published summary totals 120 episodes including deterministic controls; it is not 120 independent LLM episodes.",
@@ -2776,19 +2976,27 @@
         "source_sha256": "e58f488fb514c36e2a380c71a59504c7de554f99796b573c54fa919efa9cac04",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Ejecutar tres actores",
+        "purpose": "Usar los tres SDKs con Python determinista.",
+        "flow": "value=3 â†’ Tool echo en native, OpenAI Agents y Strands, orquestados por LangGraph â†’ misma evidencia; la matriz live se documenta aparte.",
+        "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "vllm_colab",
-      "title": "Preparar vLLM/Colab",
+      "title": "Vllm colab",
       "group": "validation",
-      "purpose": "Inspeccionar la configuraciÃ³n antes de conectarse a una GPU.",
-      "flow": "Variables del entorno â†’ runtime y Agent â†’ contrato inspeccionable; GPU y endpoint pendientes.",
+      "purpose": "Inspect a vLLM runtime declaration without starting a GPU server.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "configuration-offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Current implementation",
+          "label": "Source or evidence",
           "target": "examples/validation/vllm_colab/example.py"
         }
       ],
@@ -2801,8 +3009,8 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Ejecutar en el entorno de destino.",
-      "api_version": "2.1.4.dev8",
+      "next_action": "Use the linked example README for execution and validation scope.",
+      "api_version": "2.1.5",
       "historical_validation": {
         "status": "pending-2.1.2",
         "scope": "Earlier-release evidence is recorded in the changelog. vLLM/Colab, AWS IAM and ADA IAM remain explicitly pending for the exact published 2.1.2 wheel. ADA is an enterprise environment, not a provider or an installed [ada] extra.",
@@ -2875,19 +3083,27 @@
         "source_sha256": "1818e5508ae61dfc7c377223bc3923c82bd3ddba7b465569d3d1abd38e7edfc8",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Preparar vLLM/Colab",
+        "purpose": "Inspeccionar la configuraciÃ³n antes de conectarse a una GPU.",
+        "flow": "Variables del entorno â†’ runtime y Agent â†’ contrato inspeccionable; GPU y endpoint pendientes.",
+        "next_action": "Ejecutar en el entorno de destino.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "aws_iam",
-      "title": "Preparar AWS IAM",
+      "title": "Aws iam",
       "group": "validation",
-      "purpose": "Declarar Bedrock sin una API key embebida.",
-      "flow": "Modelo y regiÃ³n â†’ runtime â†’ configuraciÃ³n; el proceso de destino debe usar su rol IAM sin bearer token. AutenticaciÃ³n pendiente.",
+      "purpose": "Declare a Bedrock runtime without embedding an API key.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "configuration-offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Current implementation",
+          "label": "Source or evidence",
           "target": "examples/validation/aws_iam/example.py"
         }
       ],
@@ -2900,8 +3116,8 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Ejecutar en el entorno de destino.",
-      "api_version": "2.1.4.dev8",
+      "next_action": "Use the linked example README for execution and validation scope.",
+      "api_version": "2.1.5",
       "historical_validation": {
         "status": "pending-2.1.2",
         "scope": "Earlier-release evidence is recorded in the changelog. vLLM/Colab, AWS IAM and ADA IAM remain explicitly pending for the exact published 2.1.2 wheel. ADA is an enterprise environment, not a provider or an installed [ada] extra.",
@@ -2974,19 +3190,27 @@
         "source_sha256": "d01a8fcc0daea776c64759aad0d031e5c0fb642c4b6452fa5d34a0b18357ab38",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Preparar AWS IAM",
+        "purpose": "Declarar Bedrock sin una API key embebida.",
+        "flow": "Modelo y regiÃ³n â†’ runtime â†’ configuraciÃ³n; el proceso de destino debe usar su rol IAM sin bearer token. AutenticaciÃ³n pendiente.",
+        "next_action": "Ejecutar en el entorno de destino.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "ada_iam",
-      "title": "Preparar ADA IAM",
+      "title": "Ada iam",
       "group": "validation",
-      "purpose": "Preparar el mismo contrato para un workload empresarial.",
-      "flow": "Modelo y regiÃ³n â†’ runtime â†’ configuraciÃ³n; rol, red y dependencias de ADA requieren prueba en ese entorno. Sin extra [ada].",
+      "purpose": "Inspect a Bedrock configuration for an enterprise workload.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "configuration-offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Current implementation",
+          "label": "Source or evidence",
           "target": "examples/validation/ada_iam/example.py"
         }
       ],
@@ -2999,8 +3223,8 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Ejecutar en el entorno de destino.",
-      "api_version": "2.1.4.dev8",
+      "next_action": "Use the linked example README for execution and validation scope.",
+      "api_version": "2.1.5",
       "historical_validation": {
         "status": "pending-2.1.2",
         "scope": "Earlier-release evidence is recorded in the changelog. vLLM/Colab, AWS IAM and ADA IAM remain explicitly pending for the exact published 2.1.2 wheel. ADA is an enterprise environment, not a provider or an installed [ada] extra.",
@@ -3073,19 +3297,27 @@
         "source_sha256": "7debbf8dd3614617c2c0b332d72e8eb942bb455378a40b6cd63c8ff392db89d2",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Preparar ADA IAM",
+        "purpose": "Preparar el mismo contrato para un workload empresarial.",
+        "flow": "Modelo y regiÃ³n â†’ runtime â†’ configuraciÃ³n; rol, red y dependencias de ADA requieren prueba en ese entorno. Sin extra [ada].",
+        "next_action": "Ejecutar en el entorno de destino.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "refund_resolution",
-      "title": "Resolver un reembolso",
+      "title": "Refund resolution",
       "group": "applications",
-      "purpose": "Aplicar una polÃ­tica de negocio pequeÃ±a y visible.",
-      "flow": "280 MXN, cuenta de 90 dÃ­as â†’ regla declarada â†’ approved; datos sintÃ©ticos.",
+      "purpose": "Decide refund eligibility from amount, currency and account age.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Current implementation",
+          "label": "Source or evidence",
           "target": "examples/applications/refund_resolution/example.py"
         }
       ],
@@ -3098,8 +3330,8 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
-      "api_version": "2.1.4.dev8",
+      "next_action": "Use the linked example README for execution and validation scope.",
+      "api_version": "2.1.5",
       "historical_validation": {
         "status": "designed",
         "scope": "Not implemented, not executed and not certified. Native is the intended framework; Python is deterministic control and OpenAI/Bedrock API key/Ollama are intended LLM routes. The earlier eight-constructor matrix and proposed extra budget were not executed or authorized.",
@@ -3187,19 +3419,27 @@
         "source_sha256": "b0933d494df03ba2839251fb89df22ba3c7ce16467dcc43155f11770932148e3",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Resolver un reembolso",
+        "purpose": "Aplicar una polÃ­tica de negocio pequeÃ±a y visible.",
+        "flow": "280 MXN, cuenta de 90 dÃ­as â†’ regla declarada â†’ approved; datos sintÃ©ticos.",
+        "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "fixed_judge_pilot",
-      "title": "Bloquear un falso positivo",
+      "title": "Fixed judge pilot",
       "group": "patterns",
-      "purpose": "Impedir que un juez fixture apruebe una respuesta incorrecta.",
-      "flow": "WRONG â†’ expectativa VALID y juez optimista â†’ caso rechazado, conservando ambos resultados.",
+      "purpose": "Ensure an optimistic fixture judge cannot approve an incorrect exact result.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Current implementation",
+          "label": "Source or evidence",
           "target": "examples/patterns/fixed_judge_pilot/example.py"
         }
       ],
@@ -3212,8 +3452,8 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
-      "api_version": "2.1.4.dev8",
+      "next_action": "Use the linked example README for execution and validation scope.",
+      "api_version": "2.1.5",
       "historical_validation": {
         "status": "mixed",
         "scope": "Six native pilot cases, 14 guarded requests. OpenAI schema failures, Bedrock unsupported positive explanation and budget-interrupted negative, Ollama citation/type errors and false semantic approval. Expansion was blocked; no release certification.",
@@ -3278,19 +3518,27 @@
         "source_sha256": "52a95ddaa6dc314de9675f361612a331709c20950ee613b977f19f997ba630c0",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Bloquear un falso positivo",
+        "purpose": "Impedir que un juez fixture apruebe una respuesta incorrecta.",
+        "flow": "WRONG â†’ expectativa VALID y juez optimista â†’ caso rechazado, conservando ambos resultados.",
+        "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "unambiguous_lm_gate",
-      "title": "Exigir una respuesta literal",
+      "title": "Unambiguous lm gate",
       "group": "patterns",
-      "purpose": "Distinguir coincidencia exacta de parecido textual.",
-      "flow": "VALID, VALID., invalid y vacÃ­o â†’ Eval â†’ solo VALID aceptado; respuestas guardadas, sin modelo.",
+      "purpose": "Distinguish exact matching from loose textual resemblance.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Current implementation",
+          "label": "Source or evidence",
           "target": "examples/patterns/unambiguous_lm_gate/example.py"
         }
       ],
@@ -3303,8 +3551,8 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
-      "api_version": "2.1.4.dev8",
+      "next_action": "Use the linked example README for execution and validation scope.",
+      "api_version": "2.1.5",
       "historical_validation": {
         "status": "mixed",
         "scope": "Historical source pilots: OpenAI/native and Ollama/native passed 10/10; Bedrock Nova/langgraph omitted two unknown decisions and failed 8/10. A separately recorded Qwen/langgraph A/B passed 10/10 without erasing Nova. This is not full matrix or exact-wheel acceptance.",
@@ -3369,19 +3617,27 @@
         "source_sha256": "22317fa3fdd5f51ba2a9c9b0faef1c22ee0fb6b9302dedf327305f5d03846257",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Exigir una respuesta literal",
+        "purpose": "Distinguir coincidencia exacta de parecido textual.",
+        "flow": "VALID, VALID., invalid y vacÃ­o â†’ Eval â†’ solo VALID aceptado; respuestas guardadas, sin modelo.",
+        "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "unified_grammar",
-      "title": "Agent y System: seis flujos",
+      "title": "Unified grammar",
       "group": "applications",
-      "purpose": "Aprender secuencia, paralelo y decisiones con la misma interfaz.",
-      "flow": "value=3 â†’ seis declaraciones en LangGraph, Environment y Eval â†’ resultados y linaje verificables.",
+      "purpose": "Compose sequence, branches and decisions with the public Graph API.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Current implementation",
+          "label": "Source or evidence",
           "target": "examples/applications/unified_grammar/example.py"
         }
       ],
@@ -3394,8 +3650,8 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
-      "api_version": "2.1.4.dev8",
+      "next_action": "Use the linked example README for execution and validation scope.",
+      "api_version": "2.1.5",
       "historical_validation": {
         "status": "offline-only",
         "scope": "Exact 2.1.2 installed wheel bytes verified. All 12 owner/flow/backend cells passed direct and compiled execution, plus 4 alternative decision cases. 79 offline tests passed, including direct-function/legacy-Route compatibility, invalid destinations, threshold behavior, negative controls and async. A fresh-kernel notebook passed all 20 code cells showing six explicit examples and their Skill/Environment/Eval connections. The added matrix passed 24 Environment steps, 24 Eval cases and two expected negative controls. The target-2.1.3 order challenge passed 14 contracts; its generated project ran outside the repository with 12 passing tests and a fresh-kernel notebook. The restricted Windows local-transport attempt and earlier socketpair guard failure remain documented separately. This is prototype acceptance, not release/model certification.",
@@ -3480,25 +3736,33 @@
         "source_sha256": "75674adc2a825578c2be54749bf8f29410dc4fd7c5b444295c72f691326a5fd6",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Agent y System: seis flujos",
+        "purpose": "Aprender secuencia, paralelo y decisiones con la misma interfaz.",
+        "flow": "value=3 â†’ seis declaraciones en LangGraph, Environment y Eval â†’ resultados y linaje verificables.",
+        "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "order_fulfillment_213",
-      "title": "Pedidos con siete Agents",
+      "title": "Order fulfillment",
       "group": "applications",
-      "purpose": "ValidaciÃ³n, precio/inventario en paralelo, polÃ­tica y decisiones con siete casos verificables.",
-      "flow": "Order JSON â†’ validate â†’ parallel price/stock â†’ policy â†’ approve/review/reject; Environment and Eval reuse the unit.",
+      "purpose": "Coordinate order validation, price/stock checks, policy and decisions.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "sources": [
         {
-          "label": "Application",
+          "label": "Source or evidence",
           "target": "examples/order_fulfillment/README.md"
         },
         {
-          "label": "Single declaration",
+          "label": "Source or evidence",
           "target": "examples/order_fulfillment/system.py"
         }
       ],
-      "api_version": "2.1.4.dev8",
+      "api_version": "2.1.5",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "validation": {
@@ -3510,7 +3774,7 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Use the root 2.1.3 SDK and its measured offline evidence; API Ãºnica publicada.",
+      "next_action": "Use the linked example README for execution and validation scope.",
       "entrypoint": "examples/order_fulfillment/example.py",
       "historical_validation": {
         "status": "offline-only",
@@ -3574,25 +3838,33 @@
         "source_sha256": "9edb4077939f1e0a092db5f4f50eefcbceee6d1bdc210766e4421f2b4edfdc97",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Pedidos con siete Agents",
+        "purpose": "ValidaciÃ³n, precio/inventario en paralelo, polÃ­tica y decisiones con siete casos verificables.",
+        "flow": "Order JSON â†’ validate â†’ parallel price/stock â†’ policy â†’ approve/review/reject; Environment and Eval reuse the unit.",
+        "next_action": "Use the root 2.1.3 SDK and its measured offline evidence; API Ãºnica publicada.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "api_213_tutorials",
-      "title": "Tutorials de la API dev8",
+      "title": "Api tutorials",
       "group": "patterns",
-      "purpose": "22 notebooks por core, providers, frameworks y API.",
-      "flow": "Instalar el wheel dev8 → construir → ejecutar → comprobar; live y servicios locales quedan separados.",
+      "purpose": "Follow the active notebook lessons for core concepts, providers and actors.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "sources": [
         {
-          "label": "Curso actual",
+          "label": "Source or evidence",
           "target": "tutorials/README.md"
         },
         {
-          "label": "API vigente",
+          "label": "Source or evidence",
           "target": "docs/API_214.md"
         }
       ],
-      "api_version": "2.1.4.dev8",
+      "api_version": "2.1.5",
       "readiness": "offline-profile-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "validation": {
@@ -3601,7 +3873,7 @@
         "wheel_sha256": "14148af530c14660b888479f6a2eabb4ef1bf74637b7cc3244422f447b547e23",
         "report": "docs/NOTEBOOK_INVENTORY_214.md"
       },
-      "next_action": "Abrir tutorials/README.md y elegir una ruta de aprendizaje.",
+      "next_action": "Use the linked example README for execution and validation scope.",
       "historical_validation": {
         "status": "offline-only",
         "scope": "Las secciones offline se ejecutan en kernels nuevos. Las celdas live no se cuentan como ejecutadas offline; su campaÃ±a tiene evidencia propia.",
@@ -3633,20 +3905,28 @@
         "entrypoint": null,
         "wheel_sha256": "0e8e84221c8caee96b7a9d14f5dc056c62e42a0b651a55bf54e7499d6c865dec",
         "report": "revisions/2.1.4/contracts-dev5/REPORT.md"
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Tutorials de la API dev8",
+        "purpose": "22 notebooks por core, providers, frameworks y API.",
+        "flow": "Instalar el wheel dev8 → construir → ejecutar → comprobar; live y servicios locales quedan separados.",
+        "next_action": "Abrir tutorials/README.md y elegir una ruta de aprendizaje.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "retired_accountability_otc",
-      "title": "Asignar responsables a evidencia",
+      "title": "Retired accountability otc",
       "group": "applications",
-      "purpose": "Mostrar un reemplazo pÃºblico y sintÃ©tico del experimento retirado.",
-      "flow": "Dos afirmaciones â†’ comprobar owner/evidence â†’ C2 sin responsable ni respaldo. El cÃ³digo privado original no se recuperÃ³.",
-      "api_version": "2.1.4.dev8",
+      "purpose": "Run a public synthetic replacement for a retired experiment.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
+      "api_version": "2.1.5",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Current implementation",
+          "label": "Source or evidence",
           "target": "examples/applications/retired_accountability_otc/example.py"
         }
       ],
@@ -3659,7 +3939,7 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
+      "next_action": "Use the linked example README for execution and validation scope.",
       "historical_validation": {
         "status": "retired",
         "scope": "The previous catalog explicitly excluded this retired reference. It is now listed for completeness; no validation or migration is claimed.",
@@ -3742,27 +4022,35 @@
         "source_sha256": "a9f2c2e596a036e439dd932095b540d5fc762742e997a49c2ff4767c3e0b6a69",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Asignar responsables a evidencia",
+        "purpose": "Mostrar un reemplazo pÃºblico y sintÃ©tico del experimento retirado.",
+        "flow": "Dos afirmaciones â†’ comprobar owner/evidence â†’ C2 sin responsable ni respaldo. El cÃ³digo privado original no se recuperÃ³.",
+        "next_action": "Leer las declaraciones visibles y ejecutar el ejemplo con sus aserciones; consultar la evidencia del archivo.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "tool_contracts",
-      "title": "Tool Contracts â€” API 2.1.4.dev3",
+      "title": "Tool contracts",
       "group": "patterns",
-      "purpose": "Pydantic input/output schemas, direct/async deterministic Tool and a controlled invalid input.",
-      "flow": "Synthetic JSON input â†’ canonical SDK computation/configuration â†’ asserted output and JSON evidence.",
+      "purpose": "Check typed Tool inputs/outputs, async execution and an invalid input.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Runnable example",
+          "label": "Source or evidence",
           "target": "examples/tool_contracts/example.py"
         },
         {
-          "label": "Walkthrough",
+          "label": "Source or evidence",
           "target": "examples/tool_contracts/README.md"
         }
       ],
-      "api_version": "2.1.4.dev8",
+      "api_version": "2.1.5",
       "validation": {
         "version": "2.1.4.dev8",
         "status": "offline-passed",
@@ -3772,7 +4060,7 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Use the named wheel and scope from implementation evidence. External model/GPU/IAM routes require separate authorization and execution.",
+      "next_action": "Use the linked example README for execution and validation scope.",
       "entrypoint": "examples/tool_contracts/example.py",
       "historical_validation": {
         "status": "offline-only",
@@ -3836,27 +4124,35 @@
         "source_sha256": "e82dae8036e4f66ba2ddfa2eb434c6dc18163cb746e7032a9bc4228bc5618645",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Tool Contracts â€” API 2.1.4.dev3",
+        "purpose": "Pydantic input/output schemas, direct/async deterministic Tool and a controlled invalid input.",
+        "flow": "Synthetic JSON input â†’ canonical SDK computation/configuration â†’ asserted output and JSON evidence.",
+        "next_action": "Use the named wheel and scope from implementation evidence. External model/GPU/IAM routes require separate authorization and execution.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "portable_skills",
-      "title": "Portable Skills â€” API 2.1.4.dev3",
+      "title": "Portable skills",
       "group": "patterns",
-      "purpose": "Exact path loading, relative imports including lazy use, instructions and versioned capability.",
-      "flow": "Synthetic JSON input â†’ canonical SDK computation/configuration â†’ asserted output and JSON evidence.",
+      "purpose": "Load a local Skill with sibling imports and a versioned capability.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Runnable example",
+          "label": "Source or evidence",
           "target": "examples/portable_skills/example.py"
         },
         {
-          "label": "Walkthrough",
+          "label": "Source or evidence",
           "target": "examples/portable_skills/README.md"
         }
       ],
-      "api_version": "2.1.4.dev8",
+      "api_version": "2.1.5",
       "validation": {
         "version": "2.1.4.dev8",
         "status": "offline-passed",
@@ -3866,7 +4162,7 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Use the named wheel and scope from implementation evidence. External model/GPU/IAM routes require separate authorization and execution.",
+      "next_action": "Use the linked example README for execution and validation scope.",
       "entrypoint": "examples/portable_skills/example.py",
       "historical_validation": {
         "status": "offline-only",
@@ -3930,27 +4226,35 @@
         "source_sha256": "f470e7791e3d9f1689775e0933ce005bbb3c125ff6caf0573eb7e86442e929b4",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Portable Skills â€” API 2.1.4.dev3",
+        "purpose": "Exact path loading, relative imports including lazy use, instructions and versioned capability.",
+        "flow": "Synthetic JSON input â†’ canonical SDK computation/configuration â†’ asserted output and JSON evidence.",
+        "next_action": "Use the named wheel and scope from implementation evidence. External model/GPU/IAM routes require separate authorization and execution.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "flow_semantics",
-      "title": "Agent/System con seis grafos",
+      "title": "Flow semantics",
       "group": "patterns",
-      "purpose": "Secuencia, ramas disjuntas y decisiones; solo LangGraph.",
-      "flow": "Synthetic JSON input â†’ canonical SDK computation/configuration â†’ asserted output and JSON evidence.",
+      "purpose": "Run sequence, disjoint branches and conditional decisions with LangGraph.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Runnable example",
+          "label": "Source or evidence",
           "target": "examples/flow_semantics/example.py"
         },
         {
-          "label": "Walkthrough",
+          "label": "Source or evidence",
           "target": "examples/flow_semantics/README.md"
         }
       ],
-      "api_version": "2.1.4.dev8",
+      "api_version": "2.1.5",
       "validation": {
         "version": "2.1.4.dev8",
         "status": "offline-passed",
@@ -3960,7 +4264,7 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Use the named wheel and scope from implementation evidence. External model/GPU/IAM routes require separate authorization and execution.",
+      "next_action": "Use the linked example README for execution and validation scope.",
       "entrypoint": "examples/flow_semantics/example.py",
       "historical_validation": {
         "status": "offline-only",
@@ -4024,27 +4328,35 @@
         "source_sha256": "75674adc2a825578c2be54749bf8f29410dc4fd7c5b444295c72f691326a5fd6",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Agent/System con seis grafos",
+        "purpose": "Secuencia, ramas disjuntas y decisiones; solo LangGraph.",
+        "flow": "Synthetic JSON input â†’ canonical SDK computation/configuration â†’ asserted output and JSON evidence.",
+        "next_action": "Use the named wheel and scope from implementation evidence. External model/GPU/IAM routes require separate authorization and execution.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "execution_lifecycle",
-      "title": "Execution Lifecycle â€” API 2.1.4.dev3",
+      "title": "Execution lifecycle",
       "group": "patterns",
-      "purpose": "Direct/compiled and async execution, shared action limits and controlled exhaustion.",
-      "flow": "Synthetic JSON input â†’ canonical SDK computation/configuration â†’ asserted output and JSON evidence.",
+      "purpose": "Compare direct, compiled and async execution with controlled exhaustion.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Runnable example",
+          "label": "Source or evidence",
           "target": "examples/execution_lifecycle/example.py"
         },
         {
-          "label": "Walkthrough",
+          "label": "Source or evidence",
           "target": "examples/execution_lifecycle/README.md"
         }
       ],
-      "api_version": "2.1.4.dev8",
+      "api_version": "2.1.5",
       "validation": {
         "version": "2.1.4.dev8",
         "status": "offline-passed",
@@ -4054,7 +4366,7 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Use the named wheel and scope from implementation evidence. External model/GPU/IAM routes require separate authorization and execution.",
+      "next_action": "Use the linked example README for execution and validation scope.",
       "entrypoint": "examples/execution_lifecycle/example.py",
       "historical_validation": {
         "status": "offline-only",
@@ -4118,27 +4430,35 @@
         "source_sha256": "73e1ba08497a21ee3efc973be18f0b79ae35d731a93f874ea7da61bdb704d9e4",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Execution Lifecycle â€” API 2.1.4.dev3",
+        "purpose": "Direct/compiled and async execution, shared action limits and controlled exhaustion.",
+        "flow": "Synthetic JSON input â†’ canonical SDK computation/configuration â†’ asserted output and JSON evidence.",
+        "next_action": "Use the named wheel and scope from implementation evidence. External model/GPU/IAM routes require separate authorization and execution.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "results_lineage",
-      "title": "Results Lineage â€” API 2.1.4.dev3",
+      "title": "Results lineage",
       "group": "patterns",
-      "purpose": "JSON roundtrip, invariants, execution hierarchy, trace and evidence-derived lineage.",
-      "flow": "Synthetic JSON input â†’ canonical SDK computation/configuration â†’ asserted output and JSON evidence.",
+      "purpose": "Check result serialization, invariants, execution hierarchy and lineage.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Runnable example",
+          "label": "Source or evidence",
           "target": "examples/results_lineage/example.py"
         },
         {
-          "label": "Walkthrough",
+          "label": "Source or evidence",
           "target": "examples/results_lineage/README.md"
         }
       ],
-      "api_version": "2.1.4.dev8",
+      "api_version": "2.1.5",
       "validation": {
         "version": "2.1.4.dev8",
         "status": "offline-passed",
@@ -4148,7 +4468,7 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Use the named wheel and scope from implementation evidence. External model/GPU/IAM routes require separate authorization and execution.",
+      "next_action": "Use the linked example README for execution and validation scope.",
       "entrypoint": "examples/results_lineage/example.py",
       "historical_validation": {
         "status": "offline-only",
@@ -4212,27 +4532,35 @@
         "source_sha256": "ed5000f3e1eb220d10b9901d710928da9a4c011e0a7d4af11a488d3625340a99",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Results Lineage â€” API 2.1.4.dev3",
+        "purpose": "JSON roundtrip, invariants, execution hierarchy, trace and evidence-derived lineage.",
+        "flow": "Synthetic JSON input â†’ canonical SDK computation/configuration â†’ asserted output and JSON evidence.",
+        "next_action": "Use the named wheel and scope from implementation evidence. External model/GPU/IAM routes require separate authorization and execution.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "episode_memory",
-      "title": "Estado de episodio y memoria",
+      "title": "Episode memory",
       "group": "patterns",
-      "purpose": "Observe, update, stop, replay e identidad de ejecuciones.",
-      "flow": "Synthetic JSON input â†’ canonical SDK computation/configuration â†’ asserted output and JSON evidence.",
+      "purpose": "Observe, update and stop episodes while retaining execution identity.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Runnable example",
+          "label": "Source or evidence",
           "target": "examples/episode_memory/example.py"
         },
         {
-          "label": "Walkthrough",
+          "label": "Source or evidence",
           "target": "examples/episode_memory/README.md"
         }
       ],
-      "api_version": "2.1.4.dev8",
+      "api_version": "2.1.5",
       "validation": {
         "version": "2.1.4.dev8",
         "status": "offline-passed",
@@ -4242,7 +4570,7 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Use the named wheel and scope from implementation evidence. External model/GPU/IAM routes require separate authorization and execution.",
+      "next_action": "Use the linked example README for execution and validation scope.",
       "entrypoint": "examples/episode_memory/example.py",
       "historical_validation": {
         "status": "offline-only",
@@ -4306,27 +4634,35 @@
         "source_sha256": "16fb93920cbcdecff9c08324e065b10cb8bd14262e835e0113ef59767f87e5e3",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Estado de episodio y memoria",
+        "purpose": "Observe, update, stop, replay e identidad de ejecuciones.",
+        "flow": "Synthetic JSON input â†’ canonical SDK computation/configuration â†’ asserted output and JSON evidence.",
+        "next_action": "Use the named wheel and scope from implementation evidence. External model/GPU/IAM routes require separate authorization and execution.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "evaluation_checks",
-      "title": "Checks y juez fixture",
+      "title": "Evaluation checks",
       "group": "patterns",
-      "purpose": "Expectativas, checks, mÃ©trica de negocio y control negativo; sin juez LM.",
-      "flow": "Synthetic JSON input â†’ canonical SDK computation/configuration â†’ asserted output and JSON evidence.",
+      "purpose": "Combine exact expectations, checks and a business metric with a negative control.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Runnable example",
+          "label": "Source or evidence",
           "target": "examples/evaluation_checks/example.py"
         },
         {
-          "label": "Walkthrough",
+          "label": "Source or evidence",
           "target": "examples/evaluation_checks/README.md"
         }
       ],
-      "api_version": "2.1.4.dev8",
+      "api_version": "2.1.5",
       "validation": {
         "version": "2.1.4.dev8",
         "status": "offline-passed",
@@ -4336,7 +4672,7 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Use the named wheel and scope from implementation evidence. External model/GPU/IAM routes require separate authorization and execution.",
+      "next_action": "Use the linked example README for execution and validation scope.",
       "entrypoint": "examples/evaluation_checks/example.py",
       "historical_validation": {
         "status": "offline-only",
@@ -4400,27 +4736,35 @@
         "source_sha256": "2b016bd8eabec028d36688f7a8cb4903f45bec7569322ccc6f4fb26970e45451",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Checks y juez fixture",
+        "purpose": "Expectativas, checks, mÃ©trica de negocio y control negativo; sin juez LM.",
+        "flow": "Synthetic JSON input â†’ canonical SDK computation/configuration â†’ asserted output and JSON evidence.",
+        "next_action": "Use the named wheel and scope from implementation evidence. External model/GPU/IAM routes require separate authorization and execution.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "model_serving",
-      "title": "Model Serving â€” API 2.1.4.dev3",
+      "title": "Model serving",
       "group": "patterns",
-      "purpose": "Artifact and explicit server configuration/inspection only. Lifecycle exercised separately with fake HTTP/process in SDK tests; no GPU or model started.",
-      "flow": "Synthetic JSON input â†’ canonical SDK computation/configuration â†’ asserted output and JSON evidence.",
+      "purpose": "Inspect artifact and server configuration without GPU startup or model inference.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Runnable example",
+          "label": "Source or evidence",
           "target": "examples/model_serving/example.py"
         },
         {
-          "label": "Walkthrough",
+          "label": "Source or evidence",
           "target": "examples/model_serving/README.md"
         }
       ],
-      "api_version": "2.1.4.dev8",
+      "api_version": "2.1.5",
       "validation": {
         "version": "2.1.4.dev8",
         "status": "offline-passed",
@@ -4430,7 +4774,7 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Use the named wheel and scope from implementation evidence. External model/GPU/IAM routes require separate authorization and execution.",
+      "next_action": "Use the linked example README for execution and validation scope.",
       "entrypoint": "examples/model_serving/example.py",
       "historical_validation": {
         "status": "offline-only",
@@ -4494,27 +4838,35 @@
         "source_sha256": "1adc14701e0b440460c444691bba5aa4d6bf7f2d345e4db857427d761e9140fe",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Model Serving â€” API 2.1.4.dev3",
+        "purpose": "Artifact and explicit server configuration/inspection only. Lifecycle exercised separately with fake HTTP/process in SDK tests; no GPU or model started.",
+        "flow": "Synthetic JSON input â†’ canonical SDK computation/configuration â†’ asserted output and JSON evidence.",
+        "next_action": "Use the named wheel and scope from implementation evidence. External model/GPU/IAM routes require separate authorization and execution.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "package_install",
-      "title": "Package Install â€” API 2.1.4.dev3",
+      "title": "Package install",
       "group": "patterns",
-      "purpose": "Installed version/API identity; CLI and generated projects are checked separately in SDK/distribution evidence.",
-      "flow": "Synthetic JSON input â†’ canonical SDK computation/configuration â†’ asserted output and JSON evidence.",
+      "purpose": "Inspect the installed SDK version and public API identity.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Runnable example",
+          "label": "Source or evidence",
           "target": "examples/package_install/example.py"
         },
         {
-          "label": "Walkthrough",
+          "label": "Source or evidence",
           "target": "examples/package_install/README.md"
         }
       ],
-      "api_version": "2.1.4.dev8",
+      "api_version": "2.1.5",
       "validation": {
         "version": "2.1.4.dev8",
         "status": "offline-passed",
@@ -4524,7 +4876,7 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Use the named wheel and scope from implementation evidence. External model/GPU/IAM routes require separate authorization and execution.",
+      "next_action": "Use the linked example README for execution and validation scope.",
       "entrypoint": "examples/package_install/example.py",
       "historical_validation": {
         "status": "offline-only",
@@ -4588,27 +4940,35 @@
         "source_sha256": "b9e5484f859add9beb17e033b9675621c591b8b2a3901720add96cf130ec1290",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Package Install â€” API 2.1.4.dev3",
+        "purpose": "Installed version/API identity; CLI and generated projects are checked separately in SDK/distribution evidence.",
+        "flow": "Synthetic JSON input â†’ canonical SDK computation/configuration â†’ asserted output and JSON evidence.",
+        "next_action": "Use the named wheel and scope from implementation evidence. External model/GPU/IAM routes require separate authorization and execution.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "agent_contracts",
-      "title": "Agent Contracts â€” API 2.1.4.dev3",
+      "title": "Agent contracts",
       "group": "patterns",
-      "purpose": "Required/allowed Tools, actor budget and portable JSON Schema positive/negative on three Python-runtime actors.",
-      "flow": "Synthetic JSON input â†’ canonical SDK computation/configuration â†’ asserted output and JSON evidence.",
+      "purpose": "Check required/allowed Tools, actor budgets and output schemas with three Python actors.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "sources": [
         {
-          "label": "Runnable example",
+          "label": "Source or evidence",
           "target": "examples/agent_contracts/example.py"
         },
         {
-          "label": "Walkthrough",
+          "label": "Source or evidence",
           "target": "examples/agent_contracts/README.md"
         }
       ],
-      "api_version": "2.1.4.dev8",
+      "api_version": "2.1.5",
       "validation": {
         "version": "2.1.4.dev8",
         "status": "offline-passed",
@@ -4618,7 +4978,7 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Use the named wheel and scope from implementation evidence. External model/GPU/IAM routes require separate authorization and execution.",
+      "next_action": "Use the linked example README for execution and validation scope.",
       "entrypoint": "examples/agent_contracts/example.py",
       "historical_validation": {
         "status": "offline-only",
@@ -4682,19 +5042,27 @@
         "source_sha256": "f3852c7a388fd90dbd3f5ace0c1d7080e9e06725ec994b9c1b7dd20947483e2a",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Agent Contracts â€” API 2.1.4.dev3",
+        "purpose": "Required/allowed Tools, actor budget and portable JSON Schema positive/negative on three Python-runtime actors.",
+        "flow": "Synthetic JSON input â†’ canonical SDK computation/configuration â†’ asserted output and JSON evidence.",
+        "next_action": "Use the named wheel and scope from implementation evidence. External model/GPU/IAM routes require separate authorization and execution.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
-      "api_version": "2.1.4.dev8",
+      "api_version": "2.1.5",
       "id": "framework_interop",
-      "title": "Tres actores en un System",
+      "title": "Framework interop",
       "group": "applications",
-      "purpose": "native, OpenAI Agents y Strands coordinados por un StateGraph.",
-      "flow": "42 y trail vacÃ­o â†’ native, OpenAI Agents y Strands, orquestados por LangGraph â†’ 46 y cuatro identidades. TambiÃ©n se probÃ³ la asignaciÃ³n mixta Python/OpenAI/Ollama/Bedrock.",
+      "purpose": "Coordinate native, OpenAI Agents and Strands actors through one Graph.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "entrypoint": "examples/framework_interop/example.py",
       "sources": [
         {
-          "label": "ImplementaciÃ³n",
+          "label": "Source or evidence",
           "target": "examples/framework_interop/example.py"
         }
       ],
@@ -4707,7 +5075,7 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Abrir el ejemplo y revisar su evidencia.",
+      "next_action": "Use the linked example README for execution and validation scope.",
       "historical_validation": {
         "status": "live-tested",
         "scope": "Interop Python y mixta ejecutadas. La tarea exige argumentos intactos y resultados observados de Tools; no es una certificaciÃ³n de cualquier workflow.",
@@ -4772,22 +5140,30 @@
         "source_sha256": "e5405bca2efb197dfe88935e69d9192ead935ee3d20127deff62ab703518ea7e",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Tres actores en un System",
+        "purpose": "native, OpenAI Agents y Strands coordinados por un StateGraph.",
+        "flow": "42 y trail vacÃ­o â†’ native, OpenAI Agents y Strands, orquestados por LangGraph â†’ 46 y cuatro identidades. TambiÃ©n se probÃ³ la asignaciÃ³n mixta Python/OpenAI/Ollama/Bedrock.",
+        "next_action": "Abrir el ejemplo y revisar su evidencia.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
-      "api_version": "2.1.4.dev8",
+      "api_version": "2.1.5",
       "id": "studio",
       "title": "Studio",
       "group": "applications",
-      "purpose": "Conversar, conservar contexto y usar una calculadora con un proveedor y framework explÃ­citos.",
-      "flow": "ConversaciÃ³n de tres turnos â†’ contexto acotado, Tool y actor â†’ texto, evidencia y RunResult. Python es un mock visible.",
+      "purpose": "Exercise the offline conversation fixture and its calculator/context behavior.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "sources": [
         {
-          "label": "Abrir Studio",
+          "label": "Source or evidence",
           "target": "examples/agentic_systems_studio/README.md"
         },
         {
-          "label": "AplicaciÃ³n",
+          "label": "Source or evidence",
           "target": "examples/agentic_systems_studio/src/agentic_systems_studio/conversation.py"
         }
       ],
@@ -4800,7 +5176,7 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Abrir el ejemplo y revisar su evidencia.",
+      "next_action": "Use the linked example README for execution and validation scope.",
       "historical_validation": {
         "status": "live-tested",
         "scope": "Backend: 16 combinaciones, tres turnos cada una. Las pruebas de widgets y sus lÃ­mites se detallan en el informe; no implica cualquier consulta o entorno.",
@@ -4866,23 +5242,31 @@
         "source_sha256": "2b851048e822812fb2e3936e390b9e84d444f6e40665494edfc7b3a427b78973",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Studio",
+        "purpose": "Conversar, conservar contexto y usar una calculadora con un proveedor y framework explÃ­citos.",
+        "flow": "ConversaciÃ³n de tres turnos â†’ contexto acotado, Tool y actor â†’ texto, evidencia y RunResult. Python es un mock visible.",
+        "next_action": "Abrir el ejemplo y revisar su evidencia.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "api_walkthrough",
-      "title": "Toda la API: de Tool a Eval",
+      "title": "Api walkthrough",
       "group": "applications",
-      "api_version": "2.1.4.dev8",
-      "purpose": "Recorrer la gramÃ¡tica completa y una aprobaciÃ³n de pedidos con resultados observables.",
-      "flow": "Tools y Skills â†’ seis flujos Agent/System â†’ dos pedidos, decisiones, memoria y Eval â†’ resultados y linaje.",
+      "api_version": "2.1.5",
+      "purpose": "Build the public grammar step by step around observable order approval.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "entrypoint": "examples/api_walkthrough/example.py",
       "sources": [
         {
-          "label": "Notebook autÃ³nomo",
+          "label": "Notebook",
           "target": "examples/api_walkthrough/01_api_user_guide.ipynb"
         },
         {
-          "label": "DeclaraciÃ³n compartida",
+          "label": "Source or evidence",
           "target": "examples/api_walkthrough/example.py"
         }
       ],
@@ -4895,7 +5279,7 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Abrir el ejemplo y revisar su evidencia.",
+      "next_action": "Use the linked example README for execution and validation scope.",
       "historical_validation": {
         "status": "live-tested",
         "scope": "Notebook ejecutado offline. La declaraciÃ³n integrada se probÃ³ en 16 combinaciones; quote es determinista y los actores approve/review usan el runtime explÃ­cito. Conserva fallos previos y evidencia de Tools.",
@@ -4960,23 +5344,31 @@
         "source_sha256": "37917481bde02977e949339c88d772f0c3249ffb8ad58fab2ad01afc51af94ca",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Toda la API: de Tool a Eval",
+        "purpose": "Recorrer la gramÃ¡tica completa y una aprobaciÃ³n de pedidos con resultados observables.",
+        "flow": "Tools y Skills â†’ seis flujos Agent/System â†’ dos pedidos, decisiones, memoria y Eval â†’ resultados y linaje.",
+        "next_action": "Abrir el ejemplo y revisar su evidencia.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "execution_controls",
-      "title": "Runtime y scheduler",
+      "title": "Execution controls",
       "group": "patterns",
-      "purpose": "Controlar ejecuciÃ³n del actor y lÃ­mites compartidos con contratos Pydantic.",
-      "flow": "Input 3 -> runtime/scheduler -> Agent/System -> resultado y negativo verificables",
+      "purpose": "Check actor limits, shared deadlines and invalid runtime configuration.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "sources": [
         {
-          "label": "Visible construction",
+          "label": "Source or evidence",
           "target": "examples/execution_controls/example.py"
         }
       ],
       "entrypoint": "examples/execution_controls/example.py",
       "historical_validation_dev4": {},
-      "api_version": "2.1.4.dev8",
+      "api_version": "2.1.5",
       "readiness": "offline-passed",
       "implementation": "Construction is visible in the current teaching source; fixture/CLI scope is explicit.",
       "validation": {
@@ -5021,24 +5413,32 @@
         "source_sha256": "889e3a3020e33394c56e7eaa400989a33f91d0b2747afc8acd9838664c97648d",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Runtime y scheduler",
+        "purpose": "Controlar ejecuciÃ³n del actor y lÃ­mites compartidos con contratos Pydantic.",
+        "flow": "Input 3 -> runtime/scheduler -> Agent/System -> resultado y negativo verificables",
+        "api_version": "2.1.4.dev8"
+      },
+      "next_action": "Use the linked example README for execution and validation scope.",
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "lineage_memory",
-      "title": "Lineage y Memory que cambian decisiones",
+      "title": "Lineage memory",
       "group": "patterns",
-      "purpose": "Evidencia entre Agents, memoria entre episodios y aislamiento de Eval.",
-      "flow": "PAY-001 approve â†’ mismo pago review_duplicate; Environment comparte progreso y Eval lo aÃ­sla por caso.",
+      "purpose": "Use earlier Agent evidence and prior episodes to change a payment decision.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "offline-passed",
-      "api_version": "2.1.4.dev8",
+      "api_version": "2.1.5",
       "implementation": "Tools, Graph, Agents, System, Context, Memory, Environment y Eval visibles en el notebook.",
       "sources": [
         {
-          "label": "Notebook ejecutado",
+          "label": "Notebook",
           "target": "examples/lineage_memory/01_lineage_memory_decisions.ipynb"
         },
         {
-          "label": "Programa base de dos Agents",
+          "label": "Source or evidence",
           "target": "examples/lineage_memory/example.py"
         }
       ],
@@ -5051,7 +5451,7 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Abrir el notebook y recorrer las dos ejecuciones, controles, episodios y casos aislados.",
+      "next_action": "Use the linked example README for execution and validation scope.",
       "historical_validation_dev7": {
         "version": "2.1.4.dev7",
         "status": "offline-passed",
@@ -5069,18 +5469,26 @@
         "source_sha256": "8502ac148d0a87d8e2c02c2a4da73a088db932e914123d86c9c62e210dda0151",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline execution only; live providers, IAM and full Studio UI are not certified."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Lineage y Memory que cambian decisiones",
+        "purpose": "Evidencia entre Agents, memoria entre episodios y aislamiento de Eval.",
+        "flow": "PAY-001 approve â†’ mismo pago review_duplicate; Environment comparte progreso y Eval lo aÃ­sla por caso.",
+        "next_action": "Abrir el notebook y recorrer las dos ejecuciones, controles, episodios y casos aislados.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     },
     {
       "id": "aws_session",
-      "title": "Prestar una sesion AWS y diagnosticar ADA",
+      "title": "Aws session",
       "group": "validation",
-      "purpose": "Configurar Bedrock IAM con una sesion del workload y diagnostico independiente sin extraer credenciales.",
-      "flow": "Session existente -> runtime(session=...) y compile -> configuracion y diagnostico; no acceso a AWS.",
+      "purpose": "Borrow a platform AWS session for configuration-only inspection and optional ADA diagnostics.",
+      "flow": "Read the declared input and assertions, run the named entrypoint, and inspect recorded output.",
       "readiness": "configuration-offline-passed",
       "sources": [
         {
-          "label": "Implementacion visible",
+          "label": "Source or evidence",
           "target": "examples/aws_session/example.py"
         },
         {
@@ -5089,7 +5497,7 @@
         }
       ],
       "entrypoint": "examples/aws_session/example.py",
-      "api_version": "2.1.4.dev8",
+      "api_version": "2.1.5",
       "validation": {
         "version": "2.1.4.dev8",
         "status": "configuration-offline-passed",
@@ -5099,7 +5507,7 @@
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "Offline only; configuration/SDK fixtures do not certify live services or the complete Studio UI."
       },
-      "next_action": "Ejecutar la ruta IAM en el workload AWS/ADA autorizado con sus credenciales administradas.",
+      "next_action": "Use the linked example README for execution and validation scope.",
       "historical_validation_dev8_build05": {
         "version": "2.1.4.dev8",
         "status": "configuration-offline-passed",
@@ -5108,10 +5516,18 @@
         "source_sha256": "4bd4981ad7d8b2f4622aa39faa650ded35d653742d549c584d326aaafd72996a",
         "report": "revisions/2.1.4/grammar-dev8/closure/examples-offline.json",
         "scope": "No AWS clients, credentials resolution or enterprise certification."
-      }
+      },
+      "historical_catalog_text": {
+        "title": "Prestar una sesion AWS y diagnosticar ADA",
+        "purpose": "Configurar Bedrock IAM con una sesion del workload y diagnostico independiente sin extraer credenciales.",
+        "flow": "Session existente -> runtime(session=...) y compile -> configuracion y diagnostico; no acceso a AWS.",
+        "next_action": "Ejecutar la ruta IAM en el workload AWS/ADA autorizado con sus credenciales administradas.",
+        "api_version": "2.1.4.dev8"
+      },
+      "target_sdk_version": "2.1.5"
     }
   ],
-  "current_api_version": "2.1.4.dev5",
+  "current_api_version": "2.1.5",
   "current_adaptations": {
     "historical_experiments": 34,
     "active_entrypoints": 54,
@@ -5125,7 +5541,7 @@
     "assembly_commit": "d2ea0d7a0fa1da8f4c38e24bc057c700eb4a31ab",
     "release_url": "https://github.com/JacoboGGLeon/agentic_systems/releases/"
   },
-  "api_version": "2.1.4.dev7",
+  "api_version": "2.1.5",
   "validation_report": "revisions/2.1.4/grammar-dev7/REPORT.md",
   "catalog_id_policy": "Historical IDs are stable catalog identifiers, not API aliases. Current implementation and evidence fields determine scope.",
   "historical_baselines": [
@@ -5142,5 +5558,23 @@
     "examples/checked_composition/example.py",
     "examples/applications/financial_harness/example.py",
     "examples/applications/financial_harness/progressive.py"
-  ]
+  ],
+  "historical_catalog_identity": {
+    "reviewed_at": "2026-10-29",
+    "baseline": {
+      "version": "2.1.4.dev8",
+      "wheel_sha256": "14148af530c14660b888479f6a2eabb4ef1bf74637b7cc3244422f447b547e23"
+    },
+    "current_api_version": "2.1.4.dev5",
+    "api_version": "2.1.4.dev7",
+    "validation_report": "revisions/2.1.4/grammar-dev7/REPORT.md",
+    "current_adaptations": {
+      "historical_experiments": 34,
+      "active_entrypoints": 54,
+      "strict_offline_passed": 53,
+      "separate_local_protocol_profile": 1,
+      "target_configuration_only": 3
+    }
+  },
+  "review_scope": "Narrative targets 2.1.5. Historical validation fields retain original artifact identities. See docs/NARRATIVE_REVIEW_215.md for current offline evidence."
 }

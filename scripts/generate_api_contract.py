@@ -1,4 +1,6 @@
-"""Generate documentation and a notebook from the runtime API manifest."""
+"""Historical tooling: uses a retired API; do not use for 2.1.5 learning material.
+
+Generate documentation and a notebook from the runtime API manifest."""
 
 from __future__ import annotations
 

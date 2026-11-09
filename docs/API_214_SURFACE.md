@@ -1,4 +1,4 @@
-# Observed API surface · 2.1.4
+# Observed API surface · 2.1.5
 
 Fifteen toolkit concepts, five original LangGraph reexports and __version__. Native Pydantic/LangGraph methods belong to those libraries, not additional toolkit constructors. Execute Graph through its owner to obtain RunResult; owner.compile validates the integrated LangGraph subset.
 
@@ -150,7 +150,7 @@ tool(function=None, /, *, name=None, description=None, input_schema=None, output
 - inspect(self)
 - run(self, input=None)
 
-## Objetos devueltos y protocolo de nodo
+## Returned objects and node protocol
 
 Do not construct these directly. run/arun return RunResult; __call__(state) on Tools/Agents/Systems is the node protocol returning a Graph update.
 
@@ -172,3 +172,5 @@ Do not construct these directly. run/arun return RunResult; __call__(state) on T
 ### RunResult.check_invariants()
 
 - to_dict(self)
+
+For accepted actor policy and contract values, see [actor contracts](ACTOR_CONTRACTS.md).
