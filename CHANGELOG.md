@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.1.6
+
+- Improve Tool-first onboarding, API/CLI guidance, actor contracts and example execution instructions.
+- Generate English notebook narrative in scaffolded projects; retain the public API and runtime behavior.
+- Include reviewed 2.1.5 Bedrock/vLLM campaign evidence and 33 fresh-kernel notebook checks with real local MCP/A2A fixtures.
+- Preserve historical artifact identity: no live inference is claimed on the new 2.1.6 packages.
+- Retain the complete quality and mutation gates and immutable TestPyPI-to-PyPI promotion.
+
 ## 2.1.5
 
 - Add behavioral contract coverage and simplify redundant result/configuration normalization.

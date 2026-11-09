@@ -1,4 +1,4 @@
-# Your first result · Agentic Systems 2.1.5
+# Your first result · Agentic Systems 2.1.6
 
 Use Python 3.10–3.14. Install the SDK in a clean virtual environment using
 [installation instructions](../INSTALL.md). No model account is needed here.
@@ -7,7 +7,7 @@ Save this as `first_result.py`:
 
 ```python
 import agentic_systems as toolkit
-assert toolkit.__version__ == "2.1.5"
+assert toolkit.__version__ == "2.1.6"
 
 @toolkit.tool
 def increment(value: int) -> dict:
