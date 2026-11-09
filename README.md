@@ -341,6 +341,11 @@ all SDK features, long-running multi-agent applications, or the separate
 historical 2.1.2 semantic suite.
 [Configuration, evidence hashes and limitations](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/VALIDATION_215_20261108.md).
 
+A subsequent SageMaker learning check passed all 33 notebooks in fresh Jupyter
+kernels (237 offline code cells), plus real local MCP/A2A services through
+deterministic Strands fixtures, with zero inference. Twelve existing live/local-service
+cells were skipped. The linked report records this scope and the reviewed archive.
+
 ## Learn, scaffold and explore
 
 - [Install the matching SDK and Studio](https://github.com/JacoboGGLeon/agentic_systems/blob/main/INSTALL.md).

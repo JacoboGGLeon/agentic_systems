@@ -16,7 +16,8 @@ this review does not relabel published artifacts or change the public API.
 - The generated quote and refund applications executed; both generated business tests passed.
 - The Skill's complete offline composition example executed successfully.
 - The repository example validator selected 59 entrypoints: 58 passed, one
-  Strands MCP/A2A case requires its separate local-service profile. There were
+  Strands MCP/A2A case was reserved for its separate local-service profile
+  (subsequently passed in the SageMaker closure below). There were
   zero application networking/process attempts and zero inference requests.
 - All 33 active notebooks passed their non-live/non-local-service code cells
   in separate Python processes, preserving cell order and top-level await.
@@ -24,9 +25,16 @@ this review does not relabel published artifacts or change the public API.
   The initial check failed on proxy configuration, a missing optional package,
   and the first harness's handling of top-level await; the corrected offline
   harness passed without changing notebook business code.
-- Fresh Jupyter-kernel execution was unavailable in this environment because
-  its ZeroMQ transport was blocked. The cell checks are not a fresh-kernel
-  notebook-rendering certification.
+- The initial review host blocked ZeroMQ, so its cell checks did not certify
+  fresh kernels. The subsequent SageMaker campaign closed this limitation: all
+  33 notebooks passed with fresh Jupyter kernels, executing 237 code cells.
+  Twelve existing live/local-service cells were skipped by the offline profile.
+- The same SageMaker campaign passed real loopback MCP and A2A services through
+  deterministic Strands fixtures. Both successful RunResults were captured,
+  both owned servers exited and their ports closed. There were zero inference
+  requests and no blocked external connection attempts in the protocol worker.
+  The returned ZIP, SDK identity and all 33 source notebook hashes were reviewed;
+  see the [closure record](validation/215-learning-closure.json).
 - An independent task using the revised Skill produced a beginner order
   classifier with batch Environment and Eval. Four batch records, three Eval
   cases and five strict-input rejection cases passed. A wrong expected answer
