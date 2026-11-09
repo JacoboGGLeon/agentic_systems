@@ -9,7 +9,7 @@ A Tool performs an operation; a Skill declares capabilities and instructions. Th
 ```python
 import pydantic
 import agentic_systems as toolkit
-assert toolkit.__version__ == '2.1.5'
+assert toolkit.__version__ == '2.1.6'
 
 ```
 

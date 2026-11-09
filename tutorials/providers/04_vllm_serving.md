@@ -15,7 +15,7 @@ That campaign uses explicit server settings, not the named fast/medium/power pre
 
 ```python
 import agentic_systems as toolkit
-assert toolkit.__version__ == '2.1.5'
+assert toolkit.__version__ == '2.1.6'
 
 ```
 

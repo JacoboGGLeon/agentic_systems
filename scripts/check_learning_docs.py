@@ -1,20 +1,27 @@
 """Check current learning navigation and target-version metadata, preserving history."""
+import ast
 import json
 from pathlib import Path
 import re
 
 ROOT = Path(__file__).resolve().parents[1]
 
+def project_version(root):
+    module = ast.parse((root / "src/agentic_systems/__init__.py").read_text())
+    return next(ast.literal_eval(node.value) for node in module.body
+                if isinstance(node, ast.Assign) and any(isinstance(t, ast.Name) and t.id == "__version__" for t in node.targets))
+
 
 def check(root=ROOT):
+    version = project_version(root)
     catalog = json.loads((root / 'examples/catalog.json').read_text(encoding='utf-8'))
-    assert catalog['current_api_version'] == '2.1.5'
+    assert catalog['current_api_version'] == version
     pages = [root / p for p in ('README.md', 'INSTALL.md', 'docs/README.md',
              'docs/API.md', 'docs/API_214.md', 'docs/API_214_SURFACE.md',
              'docs/CLI.md', 'docs/ACTOR_CONTRACTS.md', 'docs/EXAMPLES_GUIDE.md',
              'docs/ONBOARDING_FIRST_RUN.md', 'examples/README.md', 'tutorials/README.md')]
     for entry in catalog['entries']:
-        assert entry['target_sdk_version'] == '2.1.5', entry['id']
+        assert entry['target_sdk_version'] == version, entry['id']
         path = entry.get('entrypoint')
         if path and (root / path).is_file():
             pages.append((root / path).parent / 'README.md')
@@ -28,7 +35,14 @@ def check(root=ROOT):
         p for p in (root / 'examples').rglob('*.ipynb') if 'history' not in p.parts)
     for path in notebooks:
         metadata = json.loads(path.read_text(encoding='utf-8'))['metadata']['agentic_systems']
-        assert metadata['target_sdk_version'] == '2.1.5', path
+        assert metadata['target_sdk_version'] == version, path
+        notebook = json.loads(path.read_text(encoding='utf-8'))
+        for cell in notebook['cells']:
+            if cell['cell_type'] != 'code':
+                continue
+            source = ''.join(cell['source'])
+            pins = re.findall(r"__version__\s*==\s*['\"]([^'\"]+)['\"]", source)
+            assert all(pin == version for pin in pins), (path, pins, version)
     return {'pages_checked': len(pages), 'notebooks_checked': len(notebooks),
             'inference_executed': False}
 

@@ -9,7 +9,7 @@ Input 2, 3, 100 → observe/run/update/stop → total=5 after two records. State
 ```python
 import pydantic
 import agentic_systems as toolkit
-assert toolkit.__version__ == '2.1.5'
+assert toolkit.__version__ == '2.1.6'
 
 ```
 

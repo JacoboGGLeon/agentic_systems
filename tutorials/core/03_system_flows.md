@@ -9,7 +9,7 @@ The graph grammar is unchanged; its nodes are now Agents. LangGraph remains the 
 ```python
 import pydantic
 import agentic_systems as toolkit
-assert toolkit.__version__ == '2.1.5'
+assert toolkit.__version__ == '2.1.6'
 
 class State(pydantic.BaseModel):
     value: int

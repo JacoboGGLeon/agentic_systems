@@ -10,7 +10,7 @@ Qwen was unavailable in the cloud catalog during the recorded campaign; Gemma4:3
 
 ```python
 import agentic_systems as toolkit
-assert toolkit.__version__ == '2.1.5'
+assert toolkit.__version__ == '2.1.6'
 
 ```
 

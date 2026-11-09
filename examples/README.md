@@ -1,4 +1,4 @@
-# Examples · Agentic Systems 2.1.5
+# Examples · Agentic Systems 2.1.6
 
 Start with [your first Tool](../docs/ONBOARDING_FIRST_RUN.md). Then choose a task,
 not a number of abstraction layers:
