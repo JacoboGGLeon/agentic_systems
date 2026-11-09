@@ -5,6 +5,13 @@
 
 Declaring a model artifact or server does not start a GPU process or download weights. [Prepare WSL](../../docs/VLLM_GPU_214.md). A missing endpoint is reported as pending.
 
+## Validated 4B deployment configurations
+
+A separate Agentic Systems 2.1.5 campaign passed 22/22 checks on both Colab L4 and SageMaker L4 using `unsloth/Qwen3-4B-Instruct-2507` and `unsloth/Qwen3-4B-Thinking-2507`, loaded sequentially. See the [configuration and evidence report](../../docs/VALIDATION_215_20261108.md).
+
+That campaign uses explicit server settings, not the named fast/medium/power presets. It does not execute or certify the Qwen3-0.6B example below. The example remains a declaration and an opt-in live cell requiring its own matching server.
+
+
 
 ```python
 import agentic_systems as toolkit

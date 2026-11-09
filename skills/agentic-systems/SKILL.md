@@ -9,6 +9,24 @@ metadata:
 
 Use `import agentic_systems as toolkit`. Target version 2.1.5 and verify installed signatures before writing executable examples.
 
+## Choose the smallest useful design
+
+1. State the user's input, expected business output and one rejection case.
+2. Use a function/Tool for one deterministic operation. Add a Skill for a reusable
+   capability group. Use Agent(runtime=...) for actor execution or Agent(graph=...)
+   for explicit composition. Add System only for application coordination.
+3. Add Environment for records with observation/update/stop; add Eval for acceptance
+   cases. They are independent choices, not mandatory layers of every application.
+4. Start beginners with [the first Tool](assets/first_tool.py), then explain each
+   new declaration through input, operation and output. Use assets/minimal.py only
+   for the complete composition lesson; it is not the first five-minute example.
+5. For model-selected actions, read [actor recipes](references/actor-recipes.md).
+   Preserve the user's provider and actor choice and verify real Tool evidence.
+6. Deliver commands from an explicit working directory, prerequisites, expected
+   output, a positive and negative check, and the exact verification scope.
+   Write repository documentation and notebook narrative in English; explain work
+   conversationally in the user's language.
+
 ## Construction
 
 Use `import pydantic` and `import agentic_systems as toolkit`. Use an uncompiled `toolkit.Graph(State)` with State declared as `pydantic.BaseModel` for every composed
@@ -87,7 +105,8 @@ Add contracts, negative controls and a bounded root deadline before external pro
 Read [the conceptual model](references/conceptual-model.md) for architecture,
 [project structure](references/project-contract.md) for scaffolding,
 [provider/framework rules](references/provider-framework.md) for SDK options,
-and [testing](references/testing.md) for acceptance.
+and [testing](references/testing.md) for acceptance. Read
+[actor recipes](references/actor-recipes.md) before building required-tool actors.
 
 Keep notebooks readable and executable in order. Show actual Tool/Skill/Agent/
 System/Environment/Eval declarations relevant to the lesson and its assertions.

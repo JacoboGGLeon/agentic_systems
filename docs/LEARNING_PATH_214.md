@@ -1,29 +1,15 @@
-# Ruta de aprendizaje · 2.1.4.dev8
+# Learning path · Agentic Systems 2.1.5
 
-Empieza por un recorrido pequeño. Cada notebook muestra sus datos,
-declaraciones, ejecución y aserciones; las funciones locales se pueden leer.
-No necesitas estudiar toda la referencia antes de ejecutar el primer caso.
+Start with [one Tool and a visible result](ONBOARDING_FIRST_RUN.md). Continue
+through [the core notebooks](../tutorials/README.md) in order, then select
+[an example by task](../examples/README.md). Read data and assertions before
+execution. Add each abstraction when it owns a distinct responsibility.
 
-| Paso | Lección | Pregunta que resuelve |
-| --- | --- | --- |
-| 1 | [Inicio](../tutorials/core/00_start.ipynb) | ¿Cómo ejecuto una operación y leo el resultado? |
-| 2 | [Tools/Skills](../tutorials/core/01_tools_skills.ipynb) | ¿Qué capacidades expongo y cómo las reutilizo? |
-| 3 | [Agent](../tutorials/core/02_agent_flows.ipynb) | ¿Cómo organizo operaciones y decisiones? |
-| 4 | [System](../tutorials/core/03_system_flows.ipynb) | ¿Cómo coordino unidades con el mismo grafo? |
-| 5 | [Environment](../tutorials/core/04_environment.ipynb) | ¿Cómo proceso observaciones conservando estado de episodio? |
-| 6 | [Eval](../tutorials/core/05_eval.ipynb) | ¿Cómo demuestro un resultado y detecto uno incorrecto? |
-| 7 | [Context/Memory](../tutorials/core/08_context_memory.ipynb) | ¿Qué información heredo y qué episodios consulto? |
-| 8 | [Controles](../tutorials/api/03_execution_controls.ipynb) | ¿Qué gobiernan runtime, scheduler, policy, contract y plazo raíz? |
-| 9 | [Pedidos](../tutorials/core/07_order_challenge.ipynb) | ¿Cómo se ven siete Agents con casos de negocio y fallos? |
+First inspect status, ok, data and human_results(). For debugging inspect errors,
+invariants and lineage; for audit retain the complete serialized evidence.
+A paused execution is not a final completed result even if ok is true.
 
-Después elige una ruta de providers y su framework de actor. LangGraph ya
-orquesta: no es otra casilla de framework que debas seleccionar. Los ejemplos
-avanzados de SDK muestran handoff, sesión, guardrail y MCP/A2A en su frontera
-propia. La prueba Python de un SDK no acredita razonamiento de un LM.
-
-En la primera lectura usa `status`, `ok`, `data` y `human_results()`.
-Para depurar consulta errores, invariantes y linaje. Para auditar conserva
-la evidencia completa. Una pausa no es un resultado final aunque ok sea true.
-
-[Todos los notebooks y vocabulario](NOTEBOOK_INVENTORY_214.md) ·
-[Estado y evidencia](STATUS_214.md).
+Choose a provider and actor framework after the offline case works. LangGraph
+already orchestrates the route. Handoffs, sessions, guardrails and MCP/A2A have
+additional SDK-specific boundaries. Follow [actor contracts](ACTOR_CONTRACTS.md)
+and [runtime controls](RUNTIME_SCHEDULER_214.md) before authorizing inference.

@@ -56,8 +56,11 @@ The optional ADA asset is separate; its diagnostics do not certify AWS/ADA acces
 
 ## Reproducibility
 
-Verify SHA-256 against release-manifest.json before installation. TestPyPI, PyPI and
-GitHub promote the same SDK distributions. Historical dev8 runs retain their original
-artifact identities; stable acceptance explicitly uses approved executable-payload
-equivalence plus stable offline CI, without claiming new stable live inference.
-See docs/RELEASE_NOTES_214.md for known limitations and the acceptance scope.
+Verify SHA-256 against the release's manifest before installation. Historical
+reports retain their original wheel identities. Current integration configurations
+and scope are listed in [the 2.1.5 campaign report](docs/VALIDATION_215_20261108.md).
+Editing documentation does not replace published artifacts or their metadata.
+
+For vLLM server execution, use the separately pinned Python 3.12 GPU environment
+in the campaign report; the SDK's Python range does not imply every GPU server
+package supports that entire range.

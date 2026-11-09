@@ -81,4 +81,14 @@ Validation covers this deterministic scenario and its controls. It does not cert
 
 [Executable notebook](01_lineage_memory_decisions.ipynb) · [Complete reading view](01_lineage_memory_decisions.md) · [Program](example.py).
 
-Historical validation: [report](../../revisions/2.1.4/grammar-dev7/lineage-memory/REPORT.md), [serialized evidence](../../revisions/2.1.4/grammar-dev7/lineage-memory/evidence.json), [fresh-kernel records](../../revisions/2.1.4/grammar-dev7/lineage-memory/notebook-validation/). Historical results retain their original wheel identity.
+Historical validation: [report](../../revisions/2.1.4/grammar-dev7/lineage-memory/REPORT.md), serialized evidence (historical artifact path, not distributed in this checkout: `../../revisions/2.1.4/grammar-dev7/lineage-memory/evidence.json`), fresh-kernel records (historical artifact path, not distributed in this checkout: `../../revisions/2.1.4/grammar-dev7/lineage-memory/notebook-validation/`). Historical results retain their original wheel identity.
+
+## Run from a repository checkout
+
+Follow the [shared execution guide](../../docs/EXAMPLES_GUIDE.md). From the repository root:
+
+```bash
+python scripts/run_example.py examples/lineage_memory/example.py
+```
+
+This command runs the offline profile only. Its validation scope is separate from live provider campaigns.

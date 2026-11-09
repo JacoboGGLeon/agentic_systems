@@ -1,4 +1,4 @@
-# Recorded issues and verification limits · 2.1.4
+# Recorded issues and verification limits · 2.1.5
 
 ## Ollama native endpoint coexistence
 
@@ -24,4 +24,8 @@ Investigation confirmed the prompt/schema contained the null but the service res
 
 ## Current acceptance boundary
 
-The 2.1.4 distribution is published; current repository changes have separate CI evidence in [status](STATUS_214.md). Remote Python 3.10–3.14 quality and mutation validation are no longer blanket historical blockers, but their results remain commit-specific. Real GPU vLLM and AWS/ADA IAM require prepared environments and explicit campaigns. Memory and continuations do not provide durable recovery. Historical provider failures remain unresolved unless the exact case has a later recorded successful recheck.
+The current SDK is 2.1.5. The [2026-11-08 report](VALIDATION_215_20261108.md)
+records scoped Bedrock IAM and GPU vLLM campaigns, with ADA separately labeled
+operator-reported. These do not close the historical nullable-input or Ollama
+cloud-interoperability cases above. Memory and continuations remain process-local.
+CI and mutation acceptance remain commit-specific. See [status](STATUS_214.md).

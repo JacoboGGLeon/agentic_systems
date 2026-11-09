@@ -1,4 +1,6 @@
-"""Build and inspect every generated app across the static runtime matrix."""
+"""Historical tooling: uses a retired API; do not use for 2.1.5 learning material.
+
+Build and inspect every generated app across the static runtime matrix."""
 
 from __future__ import annotations
 

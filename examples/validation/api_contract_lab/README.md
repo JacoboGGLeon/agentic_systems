@@ -1,14 +1,72 @@
-# Comparar run y compile · 2.1.4
+# Api contract lab · Agentic Systems 2.1.5
 
-Comprobar que preparar una unidad conserva su ejecución.
+Check that compiling a declared unit preserves its execution result.
 
-La composición y las aserciones están visibles en [el código](example.py).
-Lee las declaraciones de Tools, Agents y Graph antes de ejecutar el ejemplo.
+## Run
 
-Input → proceso → output: value=3 → run directo y compile().run → mismo resultado; firmas públicas disponibles.
+Follow the [shared execution guide](../../../docs/EXAMPLES_GUIDE.md). From the repository root:
 
-[Declaración](example.py) · [Evidencia dev8](../../../revisions/2.1.4/grammar-dev8/closure/examples/examples--validation--api_contract_lab--example.py.json)
+```bash
+python scripts/run_example.py examples/validation/api_contract_lab/example.py
+```
 
-Perfil actual: **offline-passed**. El catálogo [de validación](../../../docs/LEARNING_VALIDATION_214.md) separa configuración, Python, servicios locales y pruebas de modelos. La evidencia 2.1.3 conservada es histórica y no certifica estos bytes.
+## Read the implementation
 
-[Validación histórica dev5 de Pydantic y human_results](../../../revisions/2.1.4/contracts-dev5/REPORT.md). Las revisiones previas se conservan como evidencia histórica.
+[Open the source](example.py). Start with the Tool body, then its Skill,
+state model and Graph. Follow START, node names, conditional routes and END.
+The entrypoint runs supplied cases and asserts their outcomes. The assertions
+are executable expectations; inspect them before changing the scenario.
+
+## Expected behavior and changes
+
+Check that compiling a declared unit preserves its execution result. The command prints serialized evidence after the
+entrypoint assertions pass. An assertion failure exits unsuccessfully; an
+intentional business rejection or controlled Tool error can be a passing test
+when the example explicitly expects it. Change the supplied input and update
+its business assertions together; do not remove checks to obtain PASS.
+
+## Recorded offline result
+
+The following data was observed by the 2026-11-08 review against the pinned
+2.1.5 wheel. See the source assertions for the complete checks.
+
+```json
+{
+  "version": "2.1.5",
+  "exports": [
+    "tool",
+    "skill",
+    "load_skill",
+    "Agent",
+    "System",
+    "Environment",
+    "Eval",
+    "RunResult",
+    "Context",
+    "Memory",
+    "pause",
+    "runtime",
+    "framework",
+    "model_artifact",
+    "model_server",
+    "Graph",
+    "START",
+    "END",
+    "Command",
+    "Send",
+    "__version__"
+  ],
+  "Agent": "(name: 'str', graph: 'Any' = None, skills: 'tuple' = (), runtime: 'Any' = None, framework: 'Any' = None, instructions: 'str' = '', policy: 'dict | BaseModel | None' = None, *, context: 'Context | None' = None, memory: 'Memory | None' = None, contract: 'dict | None' = None) -> None",
+  "System": "(name: 'str', graph: 'Any' = None, *, context: 'Context | None' = None, memory: 'Memory | None' = None, contract: 'dict | None' = None) -> None",
+  "output": {
+    "value": 3
+  }
+}
+```
+
+## Validation scope
+
+This is a deterministic or configuration-only lesson unless its source explicitly
+requires the separate local-service profile. It does not demonstrate a model
+reasoning about arbitrary inputs. Current offline review and historical artifact
+identities are distinguished in [the review report](../../../docs/NARRATIVE_REVIEW_215.md).

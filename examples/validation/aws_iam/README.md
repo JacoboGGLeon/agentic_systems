@@ -1,14 +1,95 @@
-# Preparar AWS IAM · 2.1.4
+# Aws iam · Agentic Systems 2.1.5
 
-Declarar Bedrock sin una API key embebida.
+Declare a Bedrock runtime without embedding an API key.
 
-La composición y las aserciones están visibles en [el código](example.py).
-Lee las declaraciones de Tools, Agents y Graph antes de ejecutar el ejemplo.
+## Run
 
-Input → proceso → output: Modelo y región → runtime → configuración; el proceso de destino debe usar su rol IAM sin bearer token. Autenticación pendiente.
+Follow the [shared execution guide](../../../docs/EXAMPLES_GUIDE.md). From the repository root:
 
-[Declaración](example.py) · [Evidencia dev8](../../../revisions/2.1.4/grammar-dev8/closure/examples/examples--validation--aws_iam--example.py.json)
+```bash
+python scripts/run_example.py examples/validation/aws_iam/example.py
+```
 
-Perfil actual: **offline-passed**. El catálogo [de validación](../../../docs/LEARNING_VALIDATION_214.md) separa configuración, Python, servicios locales y pruebas de modelos. La evidencia 2.1.3 conservada es histórica y no certifica estos bytes.
+## Read the implementation
 
-[Validación histórica dev5 de Pydantic y human_results](../../../revisions/2.1.4/contracts-dev5/REPORT.md). Las revisiones previas se conservan como evidencia histórica.
+[Open the source](example.py). Start with the Tool body, then its Skill,
+state model and Graph. Follow START, node names, conditional routes and END.
+The entrypoint runs supplied cases and asserts their outcomes. The assertions
+are executable expectations; inspect them before changing the scenario.
+
+## Expected behavior and changes
+
+Declare a Bedrock runtime without embedding an API key. The command prints serialized evidence after the
+entrypoint assertions pass. An assertion failure exits unsuccessfully; an
+intentional business rejection or controlled Tool error can be a passing test
+when the example explicitly expects it. Change the supplied input and update
+its business assertions together; do not remove checks to obtain PASS.
+
+## Recorded offline result
+
+The following data was observed by the 2026-11-08 review against the pinned
+2.1.5 wheel. See the source assertions for the complete checks.
+
+```json
+{
+  "mode": "AWS IAM",
+  "runtime": {
+    "provider": "bedrock-runtime",
+    "model": "configure-in-target-environment",
+    "region": "us-east-2",
+    "endpoint": null,
+    "api_key_configured": false,
+    "session_configured": false,
+    "authentication_mode": "provider-configuration",
+    "timeout_s": 60.0,
+    "max_retries": 0,
+    "max_tool_calls": 5,
+    "max_turns": 6,
+    "max_tokens": null,
+    "backoff_s": 0.0,
+    "max_concurrency": 1
+  },
+  "application": {
+    "name": "target",
+    "kind": "agent",
+    "graph": {
+      "engine": "langgraph",
+      "state": [
+        "input",
+        "output",
+        "result_ref"
+      ],
+      "state_validation": "typed-dict",
+      "nodes": [
+        "actor"
+      ],
+      "edges": [
+        {
+          "source": "__start__",
+          "target": "actor"
+        },
+        {
+          "source": "actor",
+          "target": "__end__"
+        }
+      ],
+      "barriers": [],
+      "decisions": {},
+      "lineage": "bounded IDs in state; full records outside checkpoints"
+    },
+    "framework": "native",
+    "continuations": "process-local",
+    "checkpoint_state": "business data + bounded lineage references"
+  },
+  "status": "configuration-only; target environment not executed",
+  "inference_requests": 0,
+  "authentication": "Remove bearer token from the target IAM process; use its workload role. Never embed access keys."
+}
+```
+
+## Validation scope
+
+This is a deterministic or configuration-only lesson unless its source explicitly
+requires the separate local-service profile. It does not demonstrate a model
+reasoning about arbitrary inputs. Current offline review and historical artifact
+identities are distinguished in [the review report](../../../docs/NARRATIVE_REVIEW_215.md).

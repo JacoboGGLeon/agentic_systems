@@ -14,6 +14,25 @@ framework/provider extras and Studio. Historical live evidence retains its origi
 artifact identity. This maintenance release uses fresh offline and mutation checks;
 see the [2.1.5 release notes](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/RELEASE_NOTES_215.md).
 
+## Get your first result
+
+```python
+import agentic_systems as toolkit
+
+@toolkit.tool
+def increment(value: int) -> dict:
+    return {"value": value + 1}
+
+result = increment.run({"value": 3})
+assert result.ok and result.data == {"value": 4}
+print(result.data)
+```
+
+This runs deterministic Python without a model account. Continue with the
+[first-run guide](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/ONBOARDING_FIRST_RUN.md)
+or [generate an offline project](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/CLI.md).
+The worked payment example below introduces the remaining concepts.
+
 ## Build from the bottom up
 
 ### 1. Runtime: choose how a capability executes
@@ -357,7 +376,7 @@ the key before local validation. Agentic Systems rejects them; it does not inser
 defaults or invent values. This is a **known integration limitation**, not a PASS
 for that scenario. [Reproduction and evidence](https://github.com/JacoboGGLeon/agentic_systems/blob/main/revisions/2.1.4/problem-fixes/01/REPORT.md).
 
-The scoped 2.1.5 integration campaign below completed on vLLM GPU and Bedrock IAM;
+The scoped 2.1.5 integration campaign above completed on vLLM GPU and Bedrock IAM;
 ADA results are identified separately as operator-reported. Configuration support,
 offline tests and live validation are reported separately. SDK integrations
 do not promise universal feature parity. Memory and pause/resume remain local to

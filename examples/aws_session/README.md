@@ -7,3 +7,13 @@ Explicit fixture credentials prevent credential or metadata lookup. No client or
 Install the matching SDK and separate agentic-systems-ada package plus boto3. The add-on is not included in all. Diagnostics do not repair environment variables or certify identity/access. Adapter regressions use simulated transport; real AWS IAM/ADA access requires separate verification.
 
 Toolkit invocations sharing a session are serialized. Its owner coordinates external concurrent use and lifetime. The toolkit does not close the session or store it in Context, Memory, state or evidence.
+
+## Run from a repository checkout
+
+Follow the [shared execution guide](../../docs/EXAMPLES_GUIDE.md). From the repository root:
+
+```bash
+python scripts/run_example.py examples/aws_session/example.py
+```
+
+This command runs the offline profile only. Its validation scope is separate from live provider campaigns.

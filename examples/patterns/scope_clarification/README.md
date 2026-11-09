@@ -1,14 +1,57 @@
-# Respetar el alcance · 2.1.4
+# Scope clarification · Agentic Systems 2.1.5
 
-Rechazar una operación no declarada.
+Return an explicit outside-scope decision for an undeclared operation.
 
-La composición y las aserciones están visibles en [el código](example.py).
-Lee las declaraciones de Tools, Agents y Graph antes de ejecutar el ejemplo.
+## Run
 
-Input → proceso → output: transfer_money → consulta de capacidades → accepted=False y operaciones disponibles.
+Follow the [shared execution guide](../../../docs/EXAMPLES_GUIDE.md). From the repository root:
 
-[Declaración](example.py) · [Evidencia dev8](../../../revisions/2.1.4/grammar-dev8/closure/examples/examples--patterns--scope_clarification--example.py.json)
+```bash
+python scripts/run_example.py examples/patterns/scope_clarification/example.py
+```
 
-Perfil actual: **offline-passed**. El catálogo [de validación](../../../docs/LEARNING_VALIDATION_214.md) separa configuración, Python, servicios locales y pruebas de modelos. La evidencia 2.1.3 conservada es histórica y no certifica estos bytes.
+## Read the implementation
 
-[Validación histórica dev5 de Pydantic y human_results](../../../revisions/2.1.4/contracts-dev5/REPORT.md). Las revisiones previas se conservan como evidencia histórica.
+[Open the source](example.py). Start with the Tool body, then its Skill,
+state model and Graph. Follow START, node names, conditional routes and END.
+The entrypoint runs supplied cases and asserts their outcomes. The assertions
+are executable expectations; inspect them before changing the scenario.
+
+The supplied input is:
+
+```json
+{
+  "operation": "transfer_money"
+}
+```
+
+## Expected behavior and changes
+
+Return an explicit outside-scope decision for an undeclared operation. The command prints serialized evidence after the
+entrypoint assertions pass. An assertion failure exits unsuccessfully; an
+intentional business rejection or controlled Tool error can be a passing test
+when the example explicitly expects it. Change the supplied input and update
+its business assertions together; do not remove checks to obtain PASS.
+
+## Recorded offline result
+
+The following data was observed by the 2026-11-08 review against the pinned
+2.1.5 wheel. See the source assertions for the complete checks.
+
+```json
+{
+  "accepted": false,
+  "supported": [
+    "count",
+    "sum"
+  ],
+  "reason": "outside declared capabilities"
+}
+```
+
+## Validation scope
+
+This is a deterministic or configuration-only lesson unless its source explicitly
+requires the separate local-service profile. It does not demonstrate a model
+reasoning about arbitrary inputs. Current offline review and historical artifact
+identities are distinguished in [the review report](../../../docs/NARRATIVE_REVIEW_215.md).

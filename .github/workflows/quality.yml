@@ -71,6 +71,7 @@ jobs:
           python -m ruff check tutorials examples --select F821
       - run: python scripts/check_secrets.py
       - run: python scripts/check_catalog.py
+      - run: python scripts/check_learning_docs.py
       - name: Type-check current schema and normalization contracts strictly
         run: python -m pyright
       - run: lint-imports
