@@ -1,4 +1,4 @@
-# User API · Agentic Systems 2.1.5
+# User API · Agentic Systems 2.1.6
 
 Start with [your first result](ONBOARDING_FIRST_RUN.md), then use the
 [construction guide](API_214.md), [exact signatures](API_214_SURFACE.md), and

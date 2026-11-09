@@ -8,11 +8,11 @@ Start with a Python function. Turn it into a Tool, give an Agent a capability,
 and compose Agents into a System. Add Context, Memory, episodic execution and
 evaluation as the application grows.
 
-**Release 2.1.5** uses one public grammar. Install the SDK with
-`pip install agentic-systems==2.1.5`; see [installation](https://github.com/JacoboGGLeon/agentic_systems/blob/main/INSTALL.md) for optional
+**Release 2.1.6** uses one public grammar. Install the SDK with
+`pip install agentic-systems==2.1.6`; see [installation](https://github.com/JacoboGGLeon/agentic_systems/blob/main/INSTALL.md) for optional
 framework/provider extras and Studio. Historical live evidence retains its original
 artifact identity. This maintenance release uses fresh offline and mutation checks;
-see the [2.1.5 release notes](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/RELEASE_NOTES_215.md).
+see the [2.1.6 release notes](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/RELEASE_NOTES_216.md).
 
 ## Get your first result
 

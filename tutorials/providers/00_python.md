@@ -8,7 +8,7 @@ The same actor and input dictionary, without a language model. A Python actor ha
 
 ```python
 import agentic_systems as toolkit
-assert toolkit.__version__ == '2.1.5'
+assert toolkit.__version__ == '2.1.6'
 
 ```
 

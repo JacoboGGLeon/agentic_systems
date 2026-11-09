@@ -1,4 +1,4 @@
-# CLI and generated projects · Agentic Systems 2.1.5
+# CLI and generated projects · Agentic Systems 2.1.6
 
 The SDK wheel installs `agentic-systems`. Run these commands in the environment
 where you installed the SDK:
