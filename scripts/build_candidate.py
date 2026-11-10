@@ -24,7 +24,8 @@ def build(destination):
     stage = destination / "source"
     stage.mkdir(parents=True)
     shutil.copytree(ROOT / "src", stage / "src", ignore=shutil.ignore_patterns("__pycache__", "*.pyc", "*.egg-info"))
-    for name in ("pyproject.toml", "README.md", "CHANGELOG.md", "LICENSE", "MANIFEST.in"):
+    shutil.copytree(ROOT / "skills" / "agentic-systems", stage / "skills" / "agentic-systems", ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
+    for name in ("pyproject.toml", "README.md", "CHANGELOG.md", "LICENSE", "MANIFEST.in", "setup.py"):
         shutil.copyfile(ROOT / name, stage / name)
     version = tomllib.loads((stage / "pyproject.toml").read_text(encoding="utf-8"))["project"]["version"]
     dist = destination / "dist"
@@ -38,13 +39,14 @@ def build(destination):
         assert not any("__pycache__" in name or name.endswith((".pyc", "/.env")) for name in names)
         for name in names:
             if name.startswith("agentic_systems/") and not name.endswith("/"):
-                assert archive.read(name) == (stage / "src" / name).read_bytes(), name
+                source = (stage / "skills" / "agentic-systems" / name.removeprefix("agentic_systems/_bundled_skills/agentic-systems/")) if name.startswith("agentic_systems/_bundled_skills/agentic-systems/") else stage / "src" / name
+                assert archive.read(name) == source.read_bytes(), name
     manifest = {
         "version": version, "status": "offline-candidate-not-published", "inference_requests": 0,
         "commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
         "artifacts": {path.name: hashlib.sha256(path.read_bytes()).hexdigest() for path in sorted(dist.iterdir())},
         "source_sha256": {path.relative_to(ROOT).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
-                          for path in [ROOT / "pyproject.toml", ROOT / "README.md", ROOT / "CHANGELOG.md", *sorted((ROOT / "src").rglob("*.py"))]},
+                          for path in [ROOT / "pyproject.toml", ROOT / "README.md", ROOT / "CHANGELOG.md", ROOT / "setup.py", *sorted((ROOT / "src").rglob("*.py")), *sorted(p for p in (ROOT / "skills/agentic-systems").rglob("*") if p.is_file() and "__pycache__" not in p.parts and p.suffix not in {".pyc", ".pyo"})]},
     }
     (destination / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     return wheel

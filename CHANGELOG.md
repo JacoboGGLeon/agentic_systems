@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Bundle the canonical authoring skill with the SDK wheel and sdist.
+- Add offline `skill info`, `skill install` and `skill export` CLI commands, preserving existing destinations.
+- Align the skill's target, executable guards and display metadata with validated SDK 2.1.6.
+- Document graph output-channel projection for parallel agents and distinguish authoring skills from runtime capabilities.
+- Keep published 2.1.6 artifacts immutable; this feature requires a new release.
+
 ## 2.1.6
 
 - Improve Tool-first onboarding, API/CLI guidance, actor contracts and example execution instructions.

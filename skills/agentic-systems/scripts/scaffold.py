@@ -1,4 +1,4 @@
-"""Generate with the installed 2.1.5 CLI and record skill provenance."""
+"""Generate with the installed 2.1.6 CLI and record skill provenance."""
 
 import argparse
 import hashlib
@@ -9,7 +9,7 @@ from agentic_systems.cli import main
 
 
 def scaffold(destination):
-    assert toolkit.__version__ == "2.1.5", "Install agentic-systems==2.1.5 first"
+    assert toolkit.__version__ == "2.1.6", "Install agentic-systems==2.1.6 first"
     path = Path(destination).resolve()
     if path.exists():
         raise FileExistsError(path)
@@ -18,7 +18,7 @@ def scaffold(destination):
     # Keep a single scaffold instead of appending a second pytest TOML table.
     manifest = path / "manifest.json"
     metadata = json.loads(manifest.read_text(encoding="utf-8"))
-    metadata["skill_version"] = "2.1.5"
+    metadata["skill_version"] = "2.1.6"
     manifest.write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
     files = sorted(
         p for p in path.rglob("*") if p.is_file() and p.name != "SHA256SUMS.txt"

@@ -40,3 +40,25 @@ this starting example.
 The separate ADA add-on installs `agentic-systems-ada doctor`. Its diagnostics
 inspect configuration without resolving credentials or querying AWS.
 [Installation](../INSTALL.md) · [API](API.md) · [AWS/ADA](ADA_214.md).
+
+## Bundled authoring skill (next release)
+
+These additive commands are available in source installations of this branch and the
+next release, not the published 2.1.6 wheel:
+
+| Command | Result |
+| --- | --- |
+| `agentic-systems skill info` | JSON SDK version and SHA-256 of every bundled file |
+| `agentic-systems skill install` | New `.agents/skills/agentic-systems` folder in the current project |
+| `agentic-systems skill install /path/to/agentic-systems` | New skill folder at an explicit destination |
+| `agentic-systems skill export skill.zip` | Importable ZIP with `agentic-systems/SKILL.md` at its root folder |
+
+Installation and export never overwrite existing files, directories or symlinks.
+Choose a fresh destination for an updated copy and review it before replacing your
+existing skill. The commands are offline and do not execute the bundled scripts,
+install dependencies or register a skill in a remote assistant account. Use your
+assistant's supported import/installation workflow for the exported folder or ZIP.
+
+The skill retains SDK 2.1.6 instructions; it is not a live-provider certification.
+`toolkit.skill(...)` and `load_skill(...)` remain runtime capability APIs, separate
+from this coding-assistant bundle.

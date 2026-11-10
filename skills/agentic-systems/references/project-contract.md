@@ -1,5 +1,5 @@
 # Generated application
-Verify agentic_systems.__version__ == "2.1.5" and installed wheel identity.
+Verify agentic_systems.__version__ == "2.1.6" and installed wheel identity.
 Run scripts/scaffold.py NEW_PATH to use the installed SDK scaffolder. Never
 overwrite an existing directory. The CLI supplies the example, notebook and
 business tests; the script records skill provenance without duplicating them.

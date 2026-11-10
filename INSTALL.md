@@ -64,3 +64,16 @@ Editing documentation does not replace published artifacts or their metadata.
 For vLLM server execution, use the separately pinned Python 3.12 GPU environment
 in the campaign report; the SDK's Python range does not imply every GPU server
 package supports that entire range.
+
+## Bundled skill in the next release
+
+The next SDK release will include the authoring skill directly in the wheel. In a
+source installation of this branch, run `agentic-systems skill install` to create
+`.agents/skills/agentic-systems` in your project, or `agentic-systems skill export
+skill.zip` for manual import. Both commands are offline and refuse existing paths.
+`agentic-systems skill info` reports SDK identity and bundled file hashes.
+
+The published 2.1.6 wheel remains unchanged; a new version is required to deliver
+this feature and its README to PyPI. The current GitHub release ZIP remains the
+installation route for published 2.1.6. Exporting/copying the authoring skill does
+not register it as a personal ChatGPT skill or alter runtime `toolkit.skill` objects.

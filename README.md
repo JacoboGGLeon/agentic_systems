@@ -33,6 +33,37 @@ This runs deterministic Python without a model account. Continue with the
 or [generate an offline project](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/CLI.md).
 The worked payment example below introduces the remaining concepts.
 
+## Install the authoring skill (next release)
+
+The next SDK release includes the Agentic Systems **authoring skill**: instructions,
+API references and executable examples for coding assistants. It is separate from
+`toolkit.skill(...)`, which groups runtime Tools and instructions.
+
+From a source installation of this branch:
+
+```bash
+python -m pip install .
+agentic-systems skill install
+```
+
+The default destination is `.agents/skills/agentic-systems` in your current project.
+You can choose another assistant's skill directory or export a ZIP for manual import:
+
+```bash
+agentic-systems skill install /path/to/skills/agentic-systems
+agentic-systems skill export agentic-systems-skill.zip
+agentic-systems skill info
+```
+
+These commands work offline, include references/scripts/assets, report the installed
+SDK identity, and refuse existing destinations. Import the exported ZIP through your
+assistant's supported skill-import workflow; copying files does not register a personal
+ChatGPT skill. No extra pip dependency or separate download is needed.
+
+**Availability:** the published `2.1.6` wheel does not include these commands. They
+are prepared for a new release; published artifacts will not be replaced. After that
+release, installing/upgrading the SDK from PyPI supplies the skill too.
+
 ## Build from the bottom up
 
 ### 1. Runtime: choose how a capability executes
