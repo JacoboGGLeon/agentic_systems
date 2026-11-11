@@ -1,6 +1,6 @@
 # 2.1.7 candidate validation
 
-This candidate removes CLI project generation and bundles the authoring skill. It is not published. SDK engine/runtime implementation is unchanged. SDK, Studio, ADA and active learning/skill version targets are 2.1.7. Historical reports and saved notebook outputs retain their original identities.
+This report records pre-publication candidate validation: removal of CLI project generation and bundling of the authoring skill. SDK engine/runtime implementation is unchanged. SDK, Studio, ADA and active learning/skill version targets are 2.1.7. Historical reports and saved notebook outputs retain their original identities.
 
 ## Executed locally (Python 3.12.14)
 

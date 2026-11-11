@@ -1,8 +1,8 @@
 # Install Agentic Systems 2.1.7
 
-**Candidate status:** 2.1.7 has not been published. The PyPI/release-download
-commands below apply after publication. For current acceptance, install the exact
-supplied wheel in the Python interpreter that actually runs the application:
+Use the versioned PyPI distribution or GitHub release assets when available.
+For pre-publication acceptance, install the exact supplied frozen wheel instead,
+in the Python interpreter that actually runs the application:
 
 ```bash
 python -m pip install "wheels/agentic_systems-2.1.7-py3-none-any.whl[bedrock]"

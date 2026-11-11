@@ -21,5 +21,6 @@ and long-running credential renewal remain unverified. Both new SageMaker two-st
 pipelines passed according to operator-supplied controller/comparison reports;
 automatic and supplied-session modes used identical runtime JSON.
 
-2.1.7 remains unpublished. Publication requires successful quality/mutation checks on final source, a sealed candidate
-and reviewed TestPyPI-to-PyPI promotion; no 2.1.6 artifact may be replaced.
+Distribution is gated by successful quality/mutation checks on final source,
+a sealed candidate and reviewed TestPyPI-to-PyPI promotion. Published 2.1.6
+artifacts remain unchanged.

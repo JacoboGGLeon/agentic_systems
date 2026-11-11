@@ -6,7 +6,7 @@ Targeted Bedrock checks passed in SageMaker Studio, one standalone Processing jo
 
 | Identity | Value |
 |---|---|
-| SDK | 2.1.7, unpublished candidate |
+| SDK | 2.1.7 frozen candidate, tested before publication |
 | Wheel SHA-256 | `b3de241cad7bd6a9639a1c57417234c597bf97756f92bebaa98330d0912588fd` |
 | Reviewed PR head | `5357691f4337a3321eed23f30085f4de5f8a4a43` |
 | CI synthetic merge checkout | `e83a1269a691ae757d1837afc559abe4f6b9de85` |

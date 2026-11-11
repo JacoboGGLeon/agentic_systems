@@ -8,9 +8,10 @@ Start with a Python function. Turn it into a Tool, give an Agent a capability,
 and compose Agents into a System. Add Context, Memory, episodic execution and
 evaluation as the application grows.
 
-**2.1.7 is a release candidate, not yet published.** It bundles the authoring skill
-and simplifies the CLI. Until publication, install the supplied frozen wheel;
-the version-pinned PyPI commands below describe installation after release.
+**Agentic Systems 2.1.7** bundles the authoring skill and simplifies the CLI.
+Use the version-pinned installation commands below for the release distribution.
+For pre-publication acceptance, install the supplied frozen wheel instead; its
+identity is recorded separately from final release artifacts.
 See [installation](https://github.com/JacoboGGLeon/agentic_systems/blob/main/INSTALL.md)
 and the [2.1.7 release notes](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/RELEASE_NOTES_217.md).
 Targeted operator-reported Bedrock checks passed in SageMaker Studio and Processing;
