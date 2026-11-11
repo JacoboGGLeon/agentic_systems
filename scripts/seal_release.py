@@ -1,4 +1,4 @@
-"""Seal exact quality-built maintenance artifacts, retaining mutation evidence."""
+"""Seal exact quality-built approved artifacts, retaining mutation evidence."""
 import argparse
 import json
 from pathlib import Path
@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def verify_delivery(distributions, build, policy, version, commit):
-    if (policy['release'] != version or policy['mode'] != 'offline-verified-maintenance-release'
+    if (policy['release'] != version or policy['mode'] not in {'offline-verified-maintenance-release', 'offline-verified-feature-release'}
             or policy['new_live_inference'] is not False):
         raise ValueError('Release policy does not authorize this version/mode')
     if build['version'] != version or build['commit'] != commit:
