@@ -62,6 +62,6 @@ def run():
     result = evaluation.run()
     assert not result.ok
     return {
-        "evaluation": result.to_dict(),
+        "evaluation": result.evidence(),
         "scope": "optimistic judge cannot overrule a failed exact expectation; fixture, not live judge",
     }

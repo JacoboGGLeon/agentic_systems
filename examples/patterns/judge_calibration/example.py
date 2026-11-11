@@ -69,5 +69,5 @@ def run():
         "calibration": decisions,
         "false_approvals": 0,
         "scope": "fixture protocol; no empirical model judge calibration",
-        "evaluation": result.to_dict(),
+        "evaluation": result.evidence(),
     }

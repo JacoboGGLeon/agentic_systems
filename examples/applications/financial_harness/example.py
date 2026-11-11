@@ -138,7 +138,7 @@ def run():
         "decision": "approved", "balance_after_cents": 88000,
     }, single.to_dict()
     episode = daily_environment.run(timeout_s=deadline_s)
-    assert episode.ok and check_day(episode, {})["ok"], episode.to_dict()
+    assert episode.ok and check_day(episode, {})["ok"], episode.evidence()
     checked = evaluation.run(timeout_s=deadline_s)  # Executes the three records again.
     assert checked.ok and checked.data["passed"] == 1, checked.to_dict()
     for result in (single, episode, checked):
@@ -151,7 +151,7 @@ def run():
         "input": {"balance_cents": 100000, "records": records},
         "process": "Environment -> compiled System -> analyst -> conditional edge -> officer/reject -> update -> Eval",
         "single": single.to_dict(),
-        "episode": episode.to_dict(),
+        "episode": episode.evidence(),
         "evaluation": checked.to_dict(),
         "memory": memory.read(),
         "human_results": episode.human_results(),

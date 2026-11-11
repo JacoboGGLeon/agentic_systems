@@ -1,4 +1,4 @@
-# Actor contracts · Agentic Systems 2.1.5
+# Actor contracts · Agentic Systems 2.1.8
 
 Use an actor-backed Agent when a model needs to choose or explain actions.
 Keep exact arithmetic, parsing and business rules in Tools. A graph-backed

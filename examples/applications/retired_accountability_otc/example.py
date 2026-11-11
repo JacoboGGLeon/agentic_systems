@@ -72,5 +72,5 @@ def run():
         "unowned": ["C2"],
         "unsupported": ["C2"],
         "data": "public synthetic fixture",
-    }, result.to_dict()
+    }, result.evidence()
     return result

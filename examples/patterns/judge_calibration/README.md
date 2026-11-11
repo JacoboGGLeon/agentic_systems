@@ -1,4 +1,4 @@
-# Judge calibration · Agentic Systems 2.1.7
+# Judge calibration · Agentic Systems 2.1.8
 
 Combine exact expectations with a deterministic fixture judge.
 

@@ -1,4 +1,4 @@
-# Text analysis · Agentic Systems 2.1.7
+# Text analysis · Agentic Systems 2.1.8
 
 Count words, unique words and exact evidence mentions in supplied text.
 

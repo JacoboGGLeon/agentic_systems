@@ -62,6 +62,6 @@ sample = {"message": "Please refund order A17"}
 def run():
     result = app.run({"input": sample})
     assert result.ok and result.data == {"category": "refund", "owner": "billing"}, (
-        result.to_dict()
+        result.evidence()
     )
     return result

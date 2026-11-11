@@ -1,4 +1,4 @@
-# Model serving · Agentic Systems 2.1.7
+# Model serving · Agentic Systems 2.1.8
 
 Inspect artifact and server configuration without GPU startup or model inference.
 

@@ -1,13 +1,13 @@
 ---
 name: agentic-systems
-description: Design, implement or audit applications using the Agentic Systems 2.1.7 API, LangGraph orchestration, deterministic Tools and portable agent actors.
+description: Design, implement or audit applications using the Agentic Systems 2.1.8 API, LangGraph orchestration, deterministic Tools and portable agent actors.
 metadata:
-  short-description: Build and validate Agentic Systems 2.1.7 apps
+  short-description: Build and validate Agentic Systems 2.1.8 apps
 ---
 
-# Agentic Systems 2.1.7
+# Agentic Systems 2.1.8
 
-Use `import agentic_systems as toolkit`. Target version 2.1.7 and verify installed signatures before writing executable examples.
+Use `import agentic_systems as toolkit`. Target version 2.1.8 and verify installed signatures before writing executable examples.
 
 The SDK bundles this authoring skill. Use `agentic-systems skill install`
 to copy it into `.agents/skills/agentic-systems`, or `agentic-systems skill export skill.zip`
@@ -138,3 +138,11 @@ from permission to build or test.
 ## Integration boundaries
 
 Declare endpoint and credentials per actor when mixing Ollama local/cloud; native honors explicit connection settings before environment defaults. Keep credentials out of Context and traces. Bedrock/Qwen may omit a required nullable field even with strict schema; fail closed, retain evidence and never invent defaults. This is a documented known limitation, not a passed compatibility case.
+
+## 2.1.8 execution evidence
+
+Use result.evidence() as the primary RunResult export; to_dict() remains a compatible alias. Do not rename Context, Lineage or Validation to_dict(). trace() returns dict, human_results() returns str, lineage() returns an object with to_dict(), walk() yields RunResults, check_invariants() returns an object with ok/issues/to_dict().
+
+Eval independently targets Agent/System/Environment; it is not a required layer after Environment. Graphs can nest, have no implicit Python provider and may mix deterministic nodes with actor nodes. Agent(graph=...) and Agent(runtime=...) are alternatives. Context can supply domain data and prior observations; Memory retains bounded episodes in-process, not durable learning.
+
+Read [execution and result types](references/execution-results.md) and use [five Eval recipes](assets/eval_recipes.py) for independent acceptance examples.

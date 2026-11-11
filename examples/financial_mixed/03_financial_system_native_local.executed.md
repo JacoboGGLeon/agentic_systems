@@ -14,7 +14,7 @@ import agentic_systems as toolkit
 
 profile = globals().get("profile", "python")
 assert profile in {"python", "mixed"}
-assert toolkit.__version__ == "2.1.7"
+assert toolkit.__version__ == "2.1.8"
 print("API:", toolkit.__version__, "profile:", profile)
 ```
 
@@ -551,12 +551,12 @@ print(json.dumps(review_context, ensure_ascii=False, indent=2))
 for result in (single, episodes, evaluated):
     print(result.lineage().render())
     assert result.check_invariants().ok
-    assert toolkit.RunResult(**result.to_dict()).data == result.data
+    assert toolkit.RunResult(**result.evidence()).data == result.data
 
 assert all(set(row) == set(PaymentOutput.model_fields) for row in episodes.data["outputs"])
 evidence = {
     "profile": profile, "input": single_input,
-    "run_results": [result.to_dict() for result in (single, episodes, evaluated)],
+    "run_results": [result.evidence() for result in (single, episodes, evaluated)],
     "human_results": [result.human_results() for result in (single, episodes, evaluated)],
     "lineage": [result.lineage().to_dict() for result in (single, episodes, evaluated)],
     "contexts_received": received,

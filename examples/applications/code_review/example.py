@@ -64,5 +64,5 @@ def run():
         "syntax_ok": True,
         "functions": 1,
         "missing_return_annotations": ["total"],
-    }, result.to_dict()
+    }, result.evidence()
     return result

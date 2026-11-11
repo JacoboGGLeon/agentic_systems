@@ -50,6 +50,6 @@ def run():
     return {
         "input": [{"amount": 2}, {"amount": 3}, {"amount": 100}],
         "process": "state 0 to 2 to 5; stop before 100",
-        "output": result.to_dict(),
+        "output": result.evidence(),
         "memory": episode.memory.read(),
     }

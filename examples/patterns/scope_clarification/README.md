@@ -1,4 +1,4 @@
-# Scope clarification · Agentic Systems 2.1.7
+# Scope clarification · Agentic Systems 2.1.8
 
 Return an explicit outside-scope decision for an undeclared operation.
 

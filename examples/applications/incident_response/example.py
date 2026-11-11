@@ -62,5 +62,5 @@ def run():
         "failures": 2,
         "severity": "high",
         "action": "isolate and investigate",
-    }, result.to_dict()
+    }, result.evidence()
     return result

@@ -1,4 +1,4 @@
-# Ada iam · Agentic Systems 2.1.7
+# Ada iam · Agentic Systems 2.1.8
 
 Inspect a Bedrock configuration for an enterprise workload.
 

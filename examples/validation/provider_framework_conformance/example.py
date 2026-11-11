@@ -19,7 +19,7 @@ def run():
         )
         result = worker.run({"tool": "echo", "input": {"value": 3}})
         assert result.ok
-        rows.append({"framework": framework, "result": result.to_dict()})
+        rows.append({"framework": framework, "result": result.evidence()})
     return {
         "scope": "real SDKs with deterministic Python; live evidence is separate",
         "rows": rows,

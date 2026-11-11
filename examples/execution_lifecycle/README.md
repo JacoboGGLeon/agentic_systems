@@ -1,4 +1,4 @@
-# Execution lifecycle · Agentic Systems 2.1.7
+# Execution lifecycle · Agentic Systems 2.1.8
 
 Compare direct, compiled and async execution with controlled exhaustion.
 

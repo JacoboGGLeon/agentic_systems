@@ -1,11 +1,11 @@
-# Install Agentic Systems 2.1.7
+# Install Agentic Systems 2.1.8
 
-Use the versioned PyPI distribution or GitHub release assets when available.
+Install the matching versioned distribution when available. During pre-publication acceptance, install the supplied frozen wheel instead.
 For pre-publication acceptance, install the exact supplied frozen wheel instead,
 in the Python interpreter that actually runs the application:
 
 ```bash
-python -m pip install "wheels/agentic_systems-2.1.7-py3-none-any.whl[bedrock]"
+python -m pip install "wheels/agentic_systems-2.1.8-py3-none-any.whl[bedrock]"
 ```
 
 In Jupyter, use `%pip` in the target kernel and restart after installation.
@@ -17,19 +17,19 @@ Use Python 3.10–3.14 in a clean environment:
 python -m venv .venv
 # Activate .venv with your operating system's usual command.
 python -m pip install --upgrade pip
-python -m pip install "agentic-systems==2.1.7"
+python -m pip install "agentic-systems==2.1.8"
 ```
 
 For the supported model-backed actor integrations:
 
 ```bash
-python -m pip install "agentic-systems[openai,bedrock,openai-agents,strands]==2.1.7"
+python -m pip install "agentic-systems[openai,bedrock,openai-agents,strands]==2.1.8"
 ```
 
 ```python
 import pydantic
 import agentic_systems as toolkit
-assert toolkit.__version__ == "2.1.7"
+assert toolkit.__version__ == "2.1.8"
 ```
 
 The wheel includes the SDK and CLI. Python execution does not require model credentials.
@@ -48,17 +48,17 @@ agentic-systems skill install
 ## Studio, learning material and skill
 
 Download the matching assets from the GitHub release:
-https://github.com/JacoboGGLeon/agentic_systems/releases/tag/v2.1.7
+https://github.com/JacoboGGLeon/agentic_systems/releases/tag/v2.1.8
 
-Extract agentic-systems-studio-2.1.7.zip. From its studio directory:
+Extract agentic-systems-studio-2.1.8.zip. From its studio directory:
 
 ```bash
-python -m pip install "wheels/agentic_systems_studio-2.1.7-py3-none-any.whl[ui,notebook]"
+python -m pip install "wheels/agentic_systems_studio-2.1.8-py3-none-any.whl[ui,notebook]"
 python -m streamlit run app.py
 ```
 
 Follow the included Studio README for launch commands. Tutorials/examples and docs
-are in agentic-systems-learning-2.1.7.zip. Install a Jupyter kernel in this same
+are in agentic-systems-learning-2.1.8.zip. Install a Jupyter kernel in this same
 environment before executing notebooks. Live cells require configured providers
 and an explicitly authorized persistent budget; reading saved outputs costs nothing.
 
@@ -80,5 +80,5 @@ package supports that entire range.
 
 ## CLI migration
 
-Version 2.1.7 removes `agentic-systems new`. Start applications from the
+Version 2.1.8 removes `agentic-systems new`. Start applications from the
 repository examples or the bundled skill assets. Existing projects are untouched.

@@ -1,9 +1,3 @@
-# RunResult y evidencia · 2.1.4.dev8
+# RunResult contract · 2.1.8
 
-La referencia vigente es [RunResult y evidencia](RUNRESULTS_LINEAGE_214.md).
-LangGraph orquesta; Agentic Systems compone operadores y actores con contratos
-y evidencia comunes. Runtime y scheduler conservan el control de ejecución.
-
-[Runtime y scheduler](RUNTIME_SCHEDULER_214.md) · [System y harness](SYSTEM_HARNESS_214.md) ·
-[Estado por revisión](STATUS_214.md). Las versiones anteriores se conservan
-en las instantáneas históricas de revisions/, sin constituir otra API soportada.
+Use the current [RunResult reference](RESULTS.md) for fields, method return types, evidence export and consistency checks. The [2.1.4 lineage campaign](RUNRESULTS_LINEAGE_214.md) is historical validation, not the current API reference; some original evidence attachments are not in this checkout.

@@ -1,4 +1,4 @@
-# Recorded issues and verification limits · 2.1.5
+# Recorded issues and verification limits · 2.1.8 candidate
 
 ## Ollama native endpoint coexistence
 
@@ -24,7 +24,7 @@ Investigation confirmed the prompt/schema contained the null but the service res
 
 ## Current acceptance boundary
 
-The current SDK is 2.1.5. The [2026-11-08 report](VALIDATION_215_20261108.md)
+The published baseline is 2.1.7; this branch prepares 2.1.8. Historical campaigns below keep their original scope. The [2026-11-08 report](VALIDATION_215_20261108.md)
 records scoped Bedrock IAM and GPU vLLM campaigns, with ADA separately labeled
 operator-reported. These do not close the historical nullable-input or Ollama
 cloud-interoperability cases above. Memory and continuations remain process-local.

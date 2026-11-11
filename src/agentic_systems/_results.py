@@ -194,16 +194,21 @@ class RunResult:
             value = _redact(_json(getattr(self, name)))
             object.__setattr__(self, name, tuple(value) if name in {"messages", "raw_responses", "errors"} else value)
 
-    def to_dict(self):
+    def evidence(self):
+        """Export JSON-compatible evidence with the existing schema and redaction."""
         payload = {}
         for item in fields(self):
             if item.name == "children":
-                payload[item.name] = [child.to_dict() for child in self.children]
+                payload[item.name] = [child.evidence() for child in self.children]
             elif item.name == "tool_events":
                 payload[item.name] = [{f.name: getattr(event, f.name) for f in fields(event)} for event in self.tool_events]
             else:
                 payload[item.name] = getattr(self, item.name)
         return _redact(_json(payload))
+
+    def to_dict(self):
+        """Compatibility alias for evidence(); no schema or behavior change."""
+        return self.evidence()
 
     def walk(self):
         yield self

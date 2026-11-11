@@ -1,4 +1,4 @@
-# Agent contracts · Agentic Systems 2.1.7
+# Agent contracts · Agentic Systems 2.1.8
 
 Check required/allowed Tools, actor budgets and output schemas with three Python actors.
 

@@ -211,7 +211,7 @@ def run():
     assert checked.ok and checked.data["passed"] == 2
     assert memory.read() == before_eval, "Eval must not change production Memory"
     for output in (result, episode, checked):
-        assert output.check_invariants().ok, output.to_dict()
+        assert output.check_invariants().ok, output.evidence()
         assert output.usage.get("inference_requests", 0) == 0
     return {
         "input": {"amount": 5000},

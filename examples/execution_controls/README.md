@@ -1,4 +1,4 @@
-# Execution controls · Agentic Systems 2.1.7
+# Execution controls · Agentic Systems 2.1.8
 
 Check actor limits, shared deadlines and invalid runtime configuration.
 

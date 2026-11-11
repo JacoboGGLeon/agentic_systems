@@ -49,7 +49,7 @@ def run():
     for framework in ("native", "openai-agents", "strands"):
         app = build(framework)
         first = app.run({"message": "Hola", "history": []})
-        assert first.ok, first.to_dict()
+        assert first.ok, first.evidence()
         second = app.run(
             {
                 "message": "Continua",
@@ -59,12 +59,12 @@ def run():
                 ],
             }
         )
-        assert second.ok and second.data["history_turns"] == 2, second.to_dict()
+        assert second.ok and second.data["history_turns"] == 2, second.evidence()
         rows.append(
             {
                 "framework": framework,
-                "first": first.to_dict(),
-                "second": second.to_dict(),
+                "first": first.evidence(),
+                "second": second.evidence(),
             }
         )
     return {

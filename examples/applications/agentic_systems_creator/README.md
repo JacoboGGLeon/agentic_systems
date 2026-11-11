@@ -1,4 +1,4 @@
-# Authoring skill distribution · Agentic Systems 2.1.7
+# Authoring skill distribution · Agentic Systems 2.1.8
 
 Inspect, install and export the authoring skill bundled with the installed SDK.
 
@@ -25,9 +25,9 @@ intentional business rejection or controlled Tool error can be a passing test
 when the example explicitly expects it. Change the supplied input and update
 its business assertions together; do not remove checks to obtain PASS.
 
-## Historical scaffold result (before 2.1.7)
+## Historical scaffold result (before 2.1.8)
 
-The old project-generation example was replaced in 2.1.7. The following data was observed by the 2026-11-08 review against the pinned
+The old project-generation example was replaced in 2.1.8. The following data was observed by the 2026-11-08 review against the pinned
 2.1.5 wheel. See the source assertions for the complete checks.
 
 ```json

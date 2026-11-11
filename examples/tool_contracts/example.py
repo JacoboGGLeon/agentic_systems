@@ -28,6 +28,6 @@ def run():
     return {
         "input": {"value": 3},
         "process": increment.inspect(),
-        "output": result.to_dict(),
+        "output": result.evidence(),
         "negative_detected": not negative.ok,
     }

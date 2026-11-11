@@ -1,4 +1,4 @@
-# Controlled failure · Agentic Systems 2.1.7
+# Controlled failure · Agentic Systems 2.1.8
 
 Inspect the structured error and evidence from an intentionally failed operation.
 

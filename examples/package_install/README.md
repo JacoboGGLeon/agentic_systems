@@ -1,4 +1,4 @@
-# Package install · Agentic Systems 2.1.7
+# Package install · Agentic Systems 2.1.8
 
 Inspect the installed SDK version and public API identity.
 
@@ -28,14 +28,14 @@ its business assertions together; do not remove checks to obtain PASS.
 ## Recorded offline result
 
 The following data was observed by the 2026-11-08 review against the pinned
-2.1.7 wheel. See the source assertions for the complete checks.
+2.1.8 wheel. See the source assertions for the complete checks.
 
 ```json
 {
   "input": "installed distribution",
   "process": "Compare metadata, version and public names",
   "output": {
-    "version": "2.1.7",
+    "version": "2.1.8",
     "public_api": [
       "tool",
       "skill",

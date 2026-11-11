@@ -57,6 +57,6 @@ sample = {"items": [{"quantity": 3, "unit_price": 100}]}
 def run():
     result = app.run({"input": sample})
     assert result.ok and result.data == {"subtotal": 300, "tax": 48, "total": 348}, (
-        result.to_dict()
+        result.evidence()
     )
     return result

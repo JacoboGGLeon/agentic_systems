@@ -111,7 +111,7 @@ def run():
     assert result.ok and result.data == {
         "amount_cents": 9450, "currency": "MXN",
         "budget_cents": 9000, "decision": "review",
-    }, result.to_dict()
+    }, result.evidence()
     assert result.check_invariants().ok
     assert result.usage.get("inference_requests", 0) == 0
     return result

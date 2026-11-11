@@ -112,8 +112,8 @@ def run():
     return {
         "input": {"value": 3},
         "process": "Exact expected + check + explicit fixture judge; separate episode check",
-        "output": positive.to_dict(),
-        "negative": negative.to_dict(),
-        "episode": episode.to_dict(),
+        "output": positive.evidence(),
+        "negative": negative.evidence(),
+        "episode": episode.evidence(),
         "judge_validation": "fixture-only; no semantic model inference",
     }

@@ -40,7 +40,7 @@ def run():
     invalid = app.run({"text": 12, "source": "report"})
     assert result.ok and (not invalid.ok)
     return {
-        "valid": result.to_dict(),
+        "valid": result.evidence(),
         "invalid": invalid.to_dict(),
         "scope": "types and source presence; not natural-language entailment",
     }

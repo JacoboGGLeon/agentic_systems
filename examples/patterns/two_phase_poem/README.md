@@ -1,4 +1,4 @@
-# Two phase poem · Agentic Systems 2.1.7
+# Two phase poem · Agentic Systems 2.1.8
 
 Preserve Tool evidence while formatting a supplied response.
 

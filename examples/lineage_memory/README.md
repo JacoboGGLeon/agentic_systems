@@ -1,4 +1,4 @@
-# Lineage and Memory that change decisions · 2.1.7
+# Lineage and Memory that change decisions · 2.1.8
 
 **Input → process → output:** payment PAY-001 arrives with 5000 MXN cents. One Agent computes a fee of 50; another checks its evidence and decides. The first run approves. The second receives exactly the same input and requests duplicate review because Memory retained the previous episode.
 

@@ -1,4 +1,4 @@
-# Api contract lab · Agentic Systems 2.1.7
+# Api contract lab · Agentic Systems 2.1.8
 
 Check that compiling a declared unit preserves its execution result.
 

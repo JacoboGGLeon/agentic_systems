@@ -49,9 +49,9 @@ def run():
             result = toolkit.Agent("local_" + kind, graph=graph).run(
                 {"value": "FRAMEWORKS_TOGETHER"}, timeout_s=90
             )
-            assert result.ok, result.to_dict()
+            assert result.ok, result.evidence()
             rows.append(
-                {"protocol": kind, "witness": witness, "result": result.to_dict()}
+                {"protocol": kind, "witness": witness, "result": result.evidence()}
             )
     assert budget.summary()["attempts"] == 0
     return {

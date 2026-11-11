@@ -1,4 +1,4 @@
-# Observed API surface · 2.1.5
+# Observed API surface · 2.1.8
 
 Fifteen toolkit concepts, five original LangGraph reexports and __version__. Native Pydantic/LangGraph methods belong to those libraries, not additional toolkit constructors. Execute Graph through its owner to obtain RunResult; owner.compile validates the integrated LangGraph subset.
 
@@ -59,6 +59,7 @@ Memory(*, capacity=20)
 RunResult(text: 'str' = '', final: 'dict' = <factory>, data: 'dict' = <factory>, ok: 'bool' = True, messages: 'tuple' = (), tool_events: 'tuple' = (), raw_responses: 'tuple' = (), usage: 'dict' = <factory>, engine: 'str' = 'python-runtime', model: 'str' = '', mode: 'str' = 'default', trace_schema_version: 'str' = 'agentic_systems.trace.v1', validation: 'dict | None' = None, errors: 'tuple' = (), meta: 'dict' = <factory>, execution_id: 'str' = <factory>, parent_execution_id: 'str | None' = None, children: 'tuple' = (), status: 'str' = '', interrupts: 'tuple' = (), continuation: 'dict | None' = None) -> None
 ```
 
+- evidence(self) -> dict (primary export; to_dict remains compatible)
 - check_invariants(self)
 - human_results(self, *, max_steps=8, max_chars=4000)
 - lineage(self, *, name='run', question=None, goal='', tags=None, metadata=None, max_tool_rows=3)

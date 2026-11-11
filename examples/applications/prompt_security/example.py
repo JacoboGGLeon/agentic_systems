@@ -60,5 +60,5 @@ def run():
         "flags": ["ignore previous", "reveal secret"],
         "requires_review": True,
         "scope": "lexical signals; not a complete defense",
-    }, result.to_dict()
+    }, result.evidence()
     return result

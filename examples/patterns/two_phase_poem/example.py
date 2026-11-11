@@ -70,6 +70,6 @@ def run():
         )
     )
     return {
-        "result": result.to_dict(),
+        "result": result.evidence(),
         "scope": "exact evidence then formatting fixture; no language-model generation",
     }
