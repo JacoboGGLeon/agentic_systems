@@ -330,7 +330,7 @@ model_result = assistant.run("Read recovery guidance for checkout.")
 
 An `Agent(graph=...)` follows the explicit workflow you declare. An `Agent(runtime=...)` executes an actor. Both return `RunResult`; actor calls can participate inside graph callbacks with nested evidence.
 
-The contract requires a successful call to one of the declared tools. A task-specific Eval should additionally verify that the actor chose the appropriate one. The full nested-actor example is available in [the executable tutorial](examples/readme/incident_response.py).
+The contract requires a successful call to one of the declared tools. A task-specific Eval should additionally verify that the actor chose the appropriate one. The full nested-actor example is available in [the executable tutorial](https://github.com/JacoboGGLeon/agentic_systems/blob/main/examples/readme/incident_response.py).
 
 ### Switch the framework and keep Bedrock
 
