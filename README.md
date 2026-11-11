@@ -8,11 +8,11 @@ Start with a Python function. Turn it into a Tool, give an Agent a capability,
 and compose Agents into a System. Add Context, Memory, episodic execution and
 evaluation as the application grows.
 
-**Release 2.1.6** uses one public grammar. Install the SDK with
-`pip install agentic-systems==2.1.6`; see [installation](https://github.com/JacoboGGLeon/agentic_systems/blob/main/INSTALL.md) for optional
+**Release 2.1.7** uses one public grammar. Install the SDK with
+`pip install agentic-systems==2.1.7`; see [installation](https://github.com/JacoboGGLeon/agentic_systems/blob/main/INSTALL.md) for optional
 framework/provider extras and Studio. Historical live evidence retains its original
-artifact identity. This maintenance release uses fresh offline and mutation checks;
-see the [2.1.6 release notes](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/RELEASE_NOTES_216.md).
+artifact identity. This release candidate requires fresh quality and mutation checks;
+see the [2.1.7 release notes](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/RELEASE_NOTES_217.md).
 
 ## Get your first result
 
@@ -30,19 +30,19 @@ print(result.data)
 
 This runs deterministic Python without a model account. Continue with the
 [first-run guide](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/ONBOARDING_FIRST_RUN.md)
-or [generate an offline project](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/CLI.md).
+or inspect the [CLI](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/CLI.md).
 The worked payment example below introduces the remaining concepts.
 
-## Install the authoring skill (next release)
+## Install the authoring skill
 
-The next SDK release includes the Agentic Systems **authoring skill**: instructions,
+Release 2.1.7 includes the Agentic Systems **authoring skill**: instructions,
 API references and executable examples for coding assistants. It is separate from
 `toolkit.skill(...)`, which groups runtime Tools and instructions.
 
-From a source installation of this branch:
+Install the SDK and copy its skill into your project:
 
 ```bash
-python -m pip install .
+python -m pip install agentic-systems==2.1.7
 agentic-systems skill install
 ```
 
@@ -59,10 +59,6 @@ These commands work offline, include references/scripts/assets, report the insta
 SDK identity, and refuse existing destinations. Import the exported ZIP through your
 assistant's supported skill-import workflow; copying files does not register a personal
 ChatGPT skill. No extra pip dependency or separate download is needed.
-
-**Availability:** the published `2.1.6` wheel does not include these commands. They
-are prepared for a new release; published artifacts will not be replaced. After that
-release, installing/upgrading the SDK from PyPI supplies the skill too.
 
 ## Build from the bottom up
 
@@ -377,7 +373,7 @@ kernels (237 offline code cells), plus real local MCP/A2A services through
 deterministic Strands fixtures, with zero inference. Twelve existing live/local-service
 cells were skipped. The linked report records this scope and the reviewed archive.
 
-## Learn, scaffold and explore
+## Learn and explore
 
 - [Install the matching SDK and Studio](https://github.com/JacoboGGLeon/agentic_systems/blob/main/INSTALL.md).
 - [Tutorials: core, providers, frameworks and API](https://github.com/JacoboGGLeon/agentic_systems/blob/main/tutorials/README.md).
@@ -387,8 +383,9 @@ cells were skipped. The linked report records this scope and the reviewed archiv
 - [API contracts and signatures](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/API_214_SURFACE.md).
 - [Studio](https://github.com/JacoboGGLeon/agentic_systems/blob/main/examples/agentic_systems_studio/README.md) and the [Codex/ChatGPT skill](https://github.com/JacoboGGLeon/agentic_systems/blob/main/skills/agentic-systems/SKILL.md).
 
-`agentic-systems new my_project` scaffolds an application using the same grammar.
-Studio and the skill are separate deliverables from the SDK wheel.
+Use the repository examples and notebooks as starting points for applications.
+The authoring skill is included in the wheel; Studio remains separate.
+The `new` command was removed in 2.1.7; see the CLI migration notes.
 
 ## AWS sessions and optional ADA integration
 

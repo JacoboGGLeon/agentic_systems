@@ -1,4 +1,4 @@
-# Portable skills · Agentic Systems 2.1.5
+# Portable skills · Agentic Systems 2.1.7
 
 Load a local Skill with sibling imports and a versioned capability.
 

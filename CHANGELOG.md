@@ -1,12 +1,13 @@
 # Changelog
 
-## Unreleased
+## 2.1.7 · release candidate
 
-- Bundle the canonical authoring skill with the SDK wheel and sdist.
-- Add offline `skill info`, `skill install` and `skill export` CLI commands, preserving existing destinations.
-- Align the skill's target, executable guards and display metadata with validated SDK 2.1.6.
-- Document graph output-channel projection for parallel agents and distinguish authoring skills from runtime capabilities.
-- Keep published 2.1.6 artifacts immutable; this feature requires a new release.
+- Bundle the authoring skill in wheel/sdist; add offline skill info/install/export.
+- Remove `new`, the project scaffolder, templates and the skill's scaffolding script (breaking CLI change).
+- Start applications from examples/notebooks or bundled skill assets instead.
+- Align active SDK, optional packages, skill and learning targets with 2.1.7.
+- Preserve existing files, historical evidence and published 2.1.6 artifacts.
+- Agent execution behavior is unchanged; no new live inference certification.
 
 ## 2.1.6
 

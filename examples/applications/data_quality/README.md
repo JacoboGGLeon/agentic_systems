@@ -1,4 +1,4 @@
-# Data quality · Agentic Systems 2.1.5
+# Data quality · Agentic Systems 2.1.7
 
 Count duplicate identifiers and missing amounts in supplied records.
 

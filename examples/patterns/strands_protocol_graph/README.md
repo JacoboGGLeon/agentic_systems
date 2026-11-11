@@ -1,4 +1,4 @@
-# Strands protocol graph · Agentic Systems 2.1.5
+# Strands protocol graph · Agentic Systems 2.1.7
 
 Use real local MCP/A2A services through Strands in a separate service profile.
 

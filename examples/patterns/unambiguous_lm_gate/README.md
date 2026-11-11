@@ -1,4 +1,4 @@
-# Unambiguous lm gate · Agentic Systems 2.1.5
+# Unambiguous lm gate · Agentic Systems 2.1.7
 
 Distinguish exact matching from loose textual resemblance.
 

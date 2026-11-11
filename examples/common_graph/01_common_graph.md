@@ -16,7 +16,7 @@ from pathlib import Path
 import sys
 import agentic_systems as toolkit
 
-assert toolkit.__version__ == '2.1.6'
+assert toolkit.__version__ == '2.1.7'
 ROOT = next(
     (
         path

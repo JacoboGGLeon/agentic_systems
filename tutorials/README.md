@@ -1,4 +1,4 @@
-# Tutorials · Agentic Systems 2.1.6
+# Tutorials · Agentic Systems 2.1.7
 
 Start with core/00 and run cells in order. Each lesson exposes input → process → output and executable assertions. Use `import agentic_systems as toolkit`; LangGraph is the sole graph orchestrator.
 

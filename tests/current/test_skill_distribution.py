@@ -16,7 +16,7 @@ def test_install_contains_complete_executable_skill_and_matches_identity(tmp_pat
     info = distribution.skill_info()
     assert info['sdk_version'] == toolkit.__version__
     assert info['network_required'] is False
-    assert {'SKILL.md', 'assets/first_tool.py', 'scripts/scaffold.py', 'agents/openai.yaml'} <= info['files'].keys()
+    assert {'SKILL.md', 'assets/first_tool.py', 'agents/openai.yaml'} <= info['files'].keys()
     import hashlib
     actual = {p.relative_to(destination).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
               for p in destination.rglob('*') if p.is_file()}
@@ -141,6 +141,18 @@ def test_skill_target_and_guards_match_installed_sdk():
     # Prevent a future release from silently shipping the stale exact-version guards
     # that blocked the original 2.1.5 skill when used with SDK 2.1.6.
     with distribution.skill_source() as source:
-        for name in ('SKILL.md', 'assets/first_tool.py', 'scripts/scaffold.py',
+        for name in ('SKILL.md', 'assets/first_tool.py',
                      'agents/openai.yaml', 'references/project-contract.md'):
             assert toolkit.__version__ in source.joinpath(*name.split('/')).read_text(encoding='utf-8'), name
+
+
+def test_editable_checkout_fallback_works_without_bundled_resources(monkeypatch, tmp_path):
+    source = tmp_path / 'skills/agentic-systems'
+    source.mkdir(parents=True)
+    (tmp_path / 'pyproject.toml').write_text('[project]')
+    (source / 'SKILL.md').write_text('editable skill')
+    monkeypatch.setattr(distribution.resources, 'files', lambda name: tmp_path / 'absent')
+    monkeypatch.setattr(distribution, '__file__', str(tmp_path / 'src/agentic_systems/module.py'))
+    with distribution.skill_source() as selected:
+        assert selected == source
+    assert set(distribution.skill_info()['files']) == {'SKILL.md'}

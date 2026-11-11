@@ -1,4 +1,4 @@
-# Code review · Agentic Systems 2.1.5
+# Code review · Agentic Systems 2.1.7
 
 Inspect Python syntax and return annotations with the AST.
 

@@ -9,7 +9,7 @@ Input value=3 → Agent adds one → Eval requires 4. A negative control require
 ```python
 import pydantic
 import agentic_systems as toolkit
-assert toolkit.__version__ == '2.1.6'
+assert toolkit.__version__ == '2.1.7'
 
 ```
 

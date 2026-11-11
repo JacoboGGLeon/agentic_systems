@@ -9,7 +9,7 @@ One Agent constructor and one Graph. Input value=2 → visible computation → 6
 ```python
 import pydantic
 import agentic_systems as toolkit
-assert toolkit.__version__ == '2.1.6'
+assert toolkit.__version__ == '2.1.7'
 
 class State(pydantic.BaseModel):
     value: int

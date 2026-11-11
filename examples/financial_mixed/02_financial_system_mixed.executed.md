@@ -14,7 +14,7 @@ import agentic_systems as toolkit
 
 profile = globals().get("profile", "python")
 assert profile in {"python", "mixed"}
-assert toolkit.__version__ == "2.1.6"
+assert toolkit.__version__ == "2.1.7"
 print("API:", toolkit.__version__, "profile:", profile)
 ```
 

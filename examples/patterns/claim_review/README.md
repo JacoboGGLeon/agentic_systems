@@ -1,4 +1,4 @@
-# Claim review · Agentic Systems 2.1.5
+# Claim review · Agentic Systems 2.1.7
 
 Apply explicit checks to structured claims.
 

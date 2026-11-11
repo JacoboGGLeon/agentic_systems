@@ -1,4 +1,4 @@
-# Framework interop · Agentic Systems 2.1.5
+# Framework interop · Agentic Systems 2.1.7
 
 Coordinate native, OpenAI Agents and Strands actors through one Graph.
 

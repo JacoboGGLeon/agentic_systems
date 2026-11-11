@@ -1,4 +1,4 @@
-# Agentic Systems Studio · 2.1.5
+# Agentic Systems Studio · 2.1.7
 
 Studio is a separate application. Install the matching SDK wheel, then:
 

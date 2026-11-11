@@ -1,4 +1,4 @@
-# Provider framework conformance · Agentic Systems 2.1.5
+# Provider framework conformance · Agentic Systems 2.1.7
 
 Exercise native, OpenAI Agents and Strands with deterministic Python.
 
