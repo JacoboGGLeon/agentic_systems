@@ -1,6 +1,6 @@
 # Agentic Systems 2.1.7
 
-Release candidate: bundled authoring skill and a smaller CLI. Not published yet.
+Bundled authoring skill and a smaller CLI.
 
 The SDK wheel/sdist includes the canonical authoring skill. Use `skill info`,
 `skill install [destination]` and `skill export file.zip` without network calls.

@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.1.7 · release candidate
+## 2.1.7
 
 - Bundle the authoring skill in wheel/sdist; add offline skill info/install/export.
 - Remove `new`, the project scaffolder, templates and the skill's scaffolding script (breaking CLI change).
