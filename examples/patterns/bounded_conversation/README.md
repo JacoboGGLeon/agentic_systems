@@ -1,4 +1,4 @@
-# Bounded conversation · Agentic Systems 2.1.5
+# Bounded conversation · Agentic Systems 2.1.7
 
 Retain an explicit bounded conversation window.
 

@@ -1,4 +1,4 @@
-# Vllm colab · Agentic Systems 2.1.5
+# Vllm colab · Agentic Systems 2.1.7
 
 Inspect a vLLM runtime declaration without starting a GPU server.
 

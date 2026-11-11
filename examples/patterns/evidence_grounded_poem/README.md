@@ -1,4 +1,4 @@
-# Evidence grounded poem · Agentic Systems 2.1.5
+# Evidence grounded poem · Agentic Systems 2.1.7
 
 Check supplied candidate poems for format and a verified number.
 

@@ -1,4 +1,4 @@
-# Actor selection and required tools · 2.1.5
+# Actor selection and required tools · 2.1.7
 
 Use Agent(runtime=...) for actor execution. Keep exact computation in Tools.
 For an explicit deterministic route use Agent(graph=...), with Tools as nodes.

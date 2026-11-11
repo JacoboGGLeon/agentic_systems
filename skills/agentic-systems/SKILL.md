@@ -1,13 +1,18 @@
 ---
 name: agentic-systems
-description: Design, scaffold, implement or audit applications using the Agentic Systems 2.1.5 API, LangGraph orchestration, deterministic Tools and portable agent actors.
+description: Design, implement or audit applications using the Agentic Systems 2.1.7 API, LangGraph orchestration, deterministic Tools and portable agent actors.
 metadata:
-  short-description: Build and validate Agentic Systems 2.1.5 apps
+  short-description: Build and validate Agentic Systems 2.1.7 apps
 ---
 
-# Agentic Systems 2.1.5
+# Agentic Systems 2.1.7
 
-Use `import agentic_systems as toolkit`. Target version 2.1.5 and verify installed signatures before writing executable examples.
+Use `import agentic_systems as toolkit`. Target version 2.1.7 and verify installed signatures before writing executable examples.
+
+The SDK bundles this authoring skill. Use `agentic-systems skill install`
+to copy it into `.agents/skills/agentic-systems`, or `agentic-systems skill export skill.zip`
+for a manual import. These commands do not register a personal ChatGPT skill or install
+runtime dependencies. Inspect `agentic-systems skill info` for the installed bundle identity.
 
 ## Choose the smallest useful design
 
@@ -31,6 +36,9 @@ Use `import agentic_systems as toolkit`. Target version 2.1.5 and verify install
 
 Use `import pydantic` and `import agentic_systems as toolkit`. Use an uncompiled `toolkit.Graph(State)` with State declared as `pydantic.BaseModel` for every composed
 Agent, System and Environment. Add Tools/functions/Agents/Systems as nodes;
+Declare every Tool output channel in the graph state; undeclared channels are
+projected away. For parallel Agents, use a per-agent Graph output_schema that
+returns only its owned channels, or explicit reducers for shared channels. Then
 use edges for sequence, branches plus barriers for parallel work, and
 add_conditional_edges with ordinary Python decisions. Do not generate
 Sequence, Parallel, flow=, backend= or framework("langgraph").
@@ -103,7 +111,7 @@ it is not installed by all and does not certify AWS/ADA access or repair variabl
 Start with one small declaration and a deterministic input → process → output.
 Add contracts, negative controls and a bounded root deadline before external providers.
 Read [the conceptual model](references/conceptual-model.md) for architecture,
-[project structure](references/project-contract.md) for scaffolding,
+[project structure](references/project-contract.md) for application layout,
 [provider/framework rules](references/provider-framework.md) for SDK options,
 and [testing](references/testing.md) for acceptance. Read
 [actor recipes](references/actor-recipes.md) before building required-tool actors.
@@ -123,8 +131,8 @@ before calls; no silent substitution. Unavailable GPU/service/catalog routes
 stay pending. Keep credentials outside source, notebooks, manifests and bundles.
 
 For delivery read [distribution](references/release-distribution.md). A wheel
-contains the SDK/CLI; application source, notebooks, Studio and this skill are
-separate artifacts. Never infer permission to publish, send messages or deploy
+contains the SDK/CLI and this authoring skill. Application
+source, notebooks and Studio remain separate artifacts. Never infer permission to publish, send messages or deploy
 from permission to build or test.
 
 ## Integration boundaries

@@ -140,3 +140,28 @@ def test_seal_retains_bound_evidence_without_rebuilding(tmp_path, monkeypatch, c
     acceptance = json.loads((output / 'acceptance.json').read_text())
     assert acceptance['live_passed_on_this_artifact'] is False
     assert acceptance['new_inference'] is False and acceptance['mutation'] == report
+
+
+def test_feature_policy_pins_exact_reviewed_payload(tmp_path):
+    seal = module()
+    wheel = tmp_path / 'agentic_systems-2.1.7-py3-none-any.whl'
+    init, cli = b'__version__ = "2.1.7"\n', b'def main(): return 0\n'
+    with zipfile.ZipFile(wheel, 'w') as archive:
+        archive.writestr('agentic_systems/__init__.py', init)
+        archive.writestr('agentic_systems/cli.py', cli)
+    sdist = tmp_path / 'agentic_systems-2.1.7.tar.gz'
+    sdist.write_bytes(b'source')
+    policy = {'release': '2.1.7', 'mode': 'offline-verified-feature-release', 'new_live_inference': False,
+              'reference_python_sha256': {'agentic_systems/__init__.py': hashlib.sha256(init).hexdigest(),
+                                          'agentic_systems/cli.py': hashlib.sha256(cli).hexdigest()},
+              'stable_init_sha256': hashlib.sha256(init).hexdigest()}
+    build = {'version': '2.1.7', 'commit': 'a' * 40,
+             'artifacts': {p.name: seal.sha256(p) for p in (wheel, sdist)}}
+    assert seal.verify_delivery(tmp_path, build, policy, '2.1.7', 'a' * 40) == 2
+    with zipfile.ZipFile(wheel, 'w') as archive:
+        archive.writestr('agentic_systems/__init__.py', init)
+        archive.writestr('agentic_systems/cli.py', b'def main(): return 99\n')
+    # Even after transport hashes are updated, unreviewed executable bytes fail.
+    build['artifacts'][wheel.name] = seal.sha256(wheel)
+    with pytest.raises(ValueError, match='Unapproved executable difference'):
+        seal.verify_delivery(tmp_path, build, policy, '2.1.7', 'a' * 40)

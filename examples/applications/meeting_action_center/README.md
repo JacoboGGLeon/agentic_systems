@@ -1,4 +1,4 @@
-# Meeting action center · Agentic Systems 2.1.5
+# Meeting action center · Agentic Systems 2.1.7
 
 Parse notes in a known format into action items.
 

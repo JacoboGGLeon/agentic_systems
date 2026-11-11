@@ -8,7 +8,7 @@ Input value=37 → real tool invocation → recorded evidence. Live cells consum
 
 ```python
 import agentic_systems as toolkit
-assert toolkit.__version__ == '2.1.6'
+assert toolkit.__version__ == '2.1.7'
 
 ```
 

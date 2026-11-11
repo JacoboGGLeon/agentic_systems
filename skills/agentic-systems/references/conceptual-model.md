@@ -1,4 +1,4 @@
-# Concepts and boundaries · 2.1.5
+# Concepts and boundaries · 2.1.7
 
 Tool is a typed operation; Skill groups Tools/instructions. Agent owns a capability
 or actor; System coordinates the application; Environment supplies episodes.

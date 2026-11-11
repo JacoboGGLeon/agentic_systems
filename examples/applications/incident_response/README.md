@@ -1,4 +1,4 @@
-# Incident response · Agentic Systems 2.1.5
+# Incident response · Agentic Systems 2.1.7
 
 Map supplied events to a reproducible incident decision.
 

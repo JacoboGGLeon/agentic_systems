@@ -1,4 +1,4 @@
-# Examples · Agentic Systems 2.1.6
+# Examples · Agentic Systems 2.1.7
 
 Start with [your first Tool](../docs/ONBOARDING_FIRST_RUN.md). Then choose a task,
 not a number of abstraction layers:
@@ -23,7 +23,7 @@ is not a live service test. Saved provider output belongs to its recorded wheel.
 
 | Example | What it demonstrates |
 |---|---|
-| [Agentic systems creator](applications/agentic_systems_creator/README.md) | Generate an offline application with the installed SDK scaffolder. |
+| [Agentic systems creator](applications/agentic_systems_creator/README.md) | Inspect, install and export the bundled authoring skill. |
 | [Research synthesis](applications/research_synthesis/README.md) | Distinguish structured claims with declared references from claims without them. |
 | [Decision intelligence](applications/decision_intelligence/README.md) | Apply an explicit scoring rule to supplied facts. |
 | [Incident response](applications/incident_response/README.md) | Map supplied events to a reproducible incident decision. |

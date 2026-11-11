@@ -1,0 +1,96 @@
+[
+  {
+    "arguments": [
+      "-m",
+      "agentic_systems.cli",
+      "version"
+    ],
+    "returncode": 0,
+    "stdout": "2.1.7\n",
+    "stderr": ""
+  },
+  {
+    "arguments": [
+      "-m",
+      "agentic_systems.cli",
+      "skill",
+      "info"
+    ],
+    "returncode": 0,
+    "stdout": "{\"name\": \"agentic-systems\", \"sdk_version\": \"2.1.7\", \"files\": {\"SKILL.md\": \"e565ed87dfdd49160e047be4e75e280992f95d7aa817326a92414ea3c40070b4\", \"agents/openai.yaml\": \"9261f25c5704eff2a968c6c422ea16650089a813375526dcf21a8fbe923b26d7\", \"assets/application-layout.txt\": \"5db8619fb603afef4788b9f2e705c6110d5e58ab9efa7e76e782d714e1881508\", \"assets/first_tool.py\": \"d0bb60e5974fe29dcf22d7f7d3fcd95e02b5a8c4018b1799096a63420c79d13f\", \"assets/logo_agentic_systems.png\": \"86d004f138b0f0a4e9c19e65ad7860c83ebcc8c2f2be6ad5eefd754e46a721e7\", \"assets/minimal.py\": \"ef3ec458ab99d6b9009cf9d75ce7e5482fd693c8f30c719a10cca40cc6b6a75c\", \"references/actor-recipes.md\": \"5e220c075908557c89875f95efc3f134323d18684696f1485c6e5ebf2bb50287\", \"references/conceptual-model.md\": \"c7252d923abe73d43ba69780dbf3a334b18c8e7c38082c2801eb44941b09c58e\", \"references/project-contract.md\": \"dd9b5ca3041717fc094acd869e6ba1c98c31321e3ea26983cec7797f9bea006f\", \"references/provider-framework.md\": \"c624751a49ad89b649a2109d0faa8b6290c3b21fe6834718a89d240cd0ec6cac\", \"references/release-distribution.md\": \"9b6765da1412c42fdc649e00aefcb09e065e4fa7b249fc6e8940190f45eaa9f9\", \"references/testing.md\": \"78cccd6358969ff1a848f0d7702d091d861d5cab5095e4a19ac0db491e1611b0\"}, \"scope\": \"authoring-skill\", \"network_required\": false}\n",
+    "stderr": ""
+  },
+  {
+    "arguments": [
+      "-m",
+      "agentic_systems.cli",
+      "skill",
+      "install"
+    ],
+    "returncode": 0,
+    "stdout": "/tmp/agentic-skill-lp733o41/.agents/skills/agentic-systems\n",
+    "stderr": ""
+  },
+  {
+    "arguments": [
+      "-m",
+      "agentic_systems.cli",
+      "skill",
+      "install"
+    ],
+    "returncode": 2,
+    "stdout": "",
+    "stderr": "agentic-systems: Refusing to overwrite existing destination: /tmp/agentic-skill-lp733o41/.agents/skills/agentic-systems\n"
+  },
+  {
+    "arguments": [
+      "-m",
+      "agentic_systems.cli",
+      "skill",
+      "export",
+      "skill.zip"
+    ],
+    "returncode": 0,
+    "stdout": "/tmp/agentic-skill-lp733o41/skill.zip\n",
+    "stderr": ""
+  },
+  {
+    "arguments": [
+      "-m",
+      "agentic_systems.cli",
+      "skill",
+      "export",
+      "skill.zip"
+    ],
+    "returncode": 2,
+    "stdout": "",
+    "stderr": "agentic-systems: Refusing to overwrite existing destination: /tmp/agentic-skill-lp733o41/skill.zip\n"
+  },
+  {
+    "arguments": [
+      "-m",
+      "agentic_systems.cli",
+      "new",
+      "must-not-exist"
+    ],
+    "returncode": 2,
+    "stdout": "",
+    "stderr": "usage: agentic-systems [-h] {version,api,doctor,skill} ...\nagentic-systems: error: argument command: invalid choice: 'new' (choose from version, api, doctor, skill)\n"
+  },
+  {
+    "arguments": [
+      "/tmp/agentic-skill-lp733o41/.agents/skills/agentic-systems/assets/first_tool.py"
+    ],
+    "returncode": 0,
+    "stdout": "{'value': 4}\n",
+    "stderr": ""
+  },
+  {
+    "arguments": [
+      "/tmp/agentic-skill-lp733o41/.agents/skills/agentic-systems/assets/minimal.py"
+    ],
+    "returncode": 0,
+    "stdout": "{\n  \"agent\": {\n    \"subtotal\": 100,\n    \"total\": 116,\n    \"currency\": \"MXN\"\n  },\n  \"system\": {\n    \"subtotal\": 100,\n    \"total\": 116,\n    \"currency\": \"MXN\",\n    \"status\": \"approved\"\n  },\n  \"environment\": {\n    \"state\": {\n      \"sum\": 348\n    },\n    \"processed\": 2,\n    \"terminated\": true,\n    \"truncated\": false,\n    \"reason\": \"records_exhausted\"\n  },\n  \"eval_ok\": true\n}\n",
+    "stderr": ""
+  }
+]

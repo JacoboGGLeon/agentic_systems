@@ -27,7 +27,8 @@ def verify(wheel):
                 raise ValueError("Invalid wheel member")
             if name.startswith("agentic_systems/"):
                 assert archive.read(name) == (installed / name).read_bytes(), name
-                assert archive.read(name) == (root / "src" / name).read_bytes(), name
+                source = (root / "skills/agentic-systems" / name.removeprefix("agentic_systems/_bundled_skills/agentic-systems/")) if name.startswith("agentic_systems/_bundled_skills/agentic-systems/") else root / "src" / name
+                assert archive.read(name) == source.read_bytes(), name
         record = next(name for name in names if name.endswith(".dist-info/RECORD"))
         for name, digest, size in csv.reader(io.StringIO(archive.read(record).decode())):
             if digest:

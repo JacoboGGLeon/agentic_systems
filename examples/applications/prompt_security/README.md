@@ -1,4 +1,4 @@
-# Prompt security · Agentic Systems 2.1.5
+# Prompt security · Agentic Systems 2.1.7
 
 Flag suspicious instructions using visible deterministic rules.
 

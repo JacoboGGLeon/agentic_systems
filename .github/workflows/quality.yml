@@ -97,7 +97,7 @@ jobs:
         run: |
           python scripts/validate_learning_offline_214.py
           python scripts/validate_learning_notebooks_214.py --profile offline
-          python scripts/validate_scaffold.py
+          python scripts/validate_skill_distribution.py
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:

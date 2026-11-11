@@ -1,4 +1,4 @@
-# Fixed judge pilot · Agentic Systems 2.1.5
+# Fixed judge pilot · Agentic Systems 2.1.7
 
 Ensure an optimistic fixture judge cannot approve an incorrect exact result.
 

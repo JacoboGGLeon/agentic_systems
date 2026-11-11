@@ -21,7 +21,7 @@ Context captures are separate inspection records, never Graph state. Lineage rec
 import pydantic
 import agentic_systems as toolkit
 
-assert toolkit.__version__ == "2.1.6"
+assert toolkit.__version__ == "2.1.7"
 print("SDK:", toolkit.__version__)
 ```
 

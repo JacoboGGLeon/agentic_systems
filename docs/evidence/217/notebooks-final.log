@@ -1,0 +1,45 @@
+/workspace/scratch/968d4fcd7b84/agentic_systems/.venv216/lib/python3.12/site-packages/jupyter_client/localinterfaces.py:58: UserWarning: Unexpected error discovering local network interfaces: [Errno 1] Operation not permitted
+  ret = f(**kwargs)
+/workspace/scratch/968d4fcd7b84/agentic_systems/.venv216/lib/python3.12/site-packages/jupyter_client/localinterfaces.py:58: UserWarning: Unexpected error discovering local network interfaces: [Errno 1] Operation not permitted
+  ret = f(**kwargs)
+[IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
+Operation not permitted (src/ip_resolver.cpp:542)
+Traceback (most recent call last):
+  File "/workspace/scratch/968d4fcd7b84/agentic_systems/scripts/validate_learning_notebooks_214.py", line 150, in <module>
+    km.shutdown_kernel(now=False)
+  File "/workspace/scratch/968d4fcd7b84/agentic_systems/.venv216/lib/python3.12/site-packages/jupyter_core/utils/__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/workspace/scratch/968d4fcd7b84/agentic_systems/.venv216/lib/python3.12/site-packages/jupyter_client/manager.py", line 116, in wrapper
+    raise e
+  File "/workspace/scratch/968d4fcd7b84/agentic_systems/.venv216/lib/python3.12/site-packages/jupyter_client/manager.py", line 107, in wrapper
+    out = await method(self, *args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/968d4fcd7b84/agentic_systems/.venv216/lib/python3.12/site-packages/jupyter_client/manager.py", line 640, in _async_shutdown_kernel
+    await self._async_request_shutdown(restart=restart)
+  File "/workspace/scratch/968d4fcd7b84/agentic_systems/.venv216/lib/python3.12/site-packages/jupyter_client/manager.py", line 542, in _async_request_shutdown
+    self._connect_control_socket()
+  File "/workspace/scratch/968d4fcd7b84/agentic_systems/.venv216/lib/python3.12/site-packages/jupyter_client/manager.py", line 448, in _connect_control_socket
+    self._control_socket = self._create_connected_socket("control")
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/968d4fcd7b84/agentic_systems/.venv216/lib/python3.12/site-packages/jupyter_client/connect.py", line 697, in _create_connected_socket
+    sock = self.context.socket(socket_type)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/968d4fcd7b84/agentic_systems/.venv216/lib/python3.12/site-packages/zmq/sugar/context.py", line 348, in socket
+    raise ZMQError(Errno.ENOTSUP)
+zmq.error.ZMQError: Operation not supported
+Exception ignored in atexit callback: <bound method run_sync.<locals>.wrapped of <nbclient.client.NotebookClient object at 0x7fd077c208f0>>
+Traceback (most recent call last):
+  File "/workspace/scratch/968d4fcd7b84/agentic_systems/.venv216/lib/python3.12/site-packages/jupyter_core/utils/__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/workspace/scratch/968d4fcd7b84/agentic_systems/.venv216/lib/python3.12/site-packages/nbclient/client.py", line 504, in _async_cleanup_kernel
+    assert self.km is not None
+           ^^^^^^^^^^^^^^^^^^^
+AssertionError:

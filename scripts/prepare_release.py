@@ -36,6 +36,10 @@ def prepare(approved, output, manifest_sha256):
         raise ValueError("Reviewed offline/live acceptance is incomplete or bound to other bytes")
     sources = acceptance.get("source_sha256", {})
     required = {"pyproject.toml", "README.md", *[p.relative_to(ROOT).as_posix() for p in (ROOT / "src").rglob("*.py")]}
+    if (ROOT / "setup.py").is_file():
+        required.add("setup.py")
+        required.update(p.relative_to(ROOT).as_posix() for p in (ROOT / "skills/agentic-systems").rglob("*")
+                        if p.is_file() and "__pycache__" not in p.parts and p.suffix not in {".pyc", ".pyo"})
     if not required <= set(sources):
         raise ValueError("Acceptance must cover the current SDK source")
     for name, expected in sources.items():

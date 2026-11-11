@@ -1,0 +1,25 @@
+.....................................................F
+=================================== FAILURES ===================================
+_ test_contextual_tool_runs_with_python_runtime_on_all_adapters[openai-agents] _
+
+framework = 'openai-agents'
+
+    @pytest.mark.parametrize("framework", ["native", "openai-agents", "strands"])
+    def test_contextual_tool_runs_with_python_runtime_on_all_adapters(framework):
+        @toolkit.tool
+        def operation(value: int, *, context: toolkit.Context) -> dict:
+            return {"value": value + context.data["increment"]}
+        worker = toolkit.Agent("operator", runtime=toolkit.runtime(provider="python-runtime"), framework=toolkit.framework(framework),
+                               context=toolkit.Context({"increment": 2}), skills=(toolkit.skill(name="s", tools=(operation,)),))
+        result = worker.run({"value": 1})
+>       assert result.ok and result.data == {"value": 3}, result.to_dict()
+E       AssertionError: {'text': "Using SOCKS proxy, but the 'socksio' package is not installed. Make sure to install httpx using `pip install...ackage is not installed. Make sure to install httpx using `pip install httpx[socks]`."}}, 'data': {}, 'ok': False, ...}
+E       assert (False)
+E        +  where False = RunResult(text="Using SOCKS proxy, but the 'socksio' package is not installed. Make sure to install httpx using `pip i...ation=None),), status='failed', interrupts=(), continuation=None),), status='failed', interrupts=(), continuation=None).ok
+
+tests/v214_graph/test_provider_boundary.py:16: AssertionError
+=========================== short test summary info ============================
+FAILED tests/v214_graph/test_provider_boundary.py::test_contextual_tool_runs_with_python_runtime_on_all_adapters[openai-agents]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 53 passed in 3.35s
+Offline guard: blocked attempts=0; real inference requests=0

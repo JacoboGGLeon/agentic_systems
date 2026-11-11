@@ -1,4 +1,4 @@
-# Refund resolution · Agentic Systems 2.1.5
+# Refund resolution · Agentic Systems 2.1.7
 
 Decide refund eligibility from amount, currency and account age.
 

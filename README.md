@@ -8,11 +8,14 @@ Start with a Python function. Turn it into a Tool, give an Agent a capability,
 and compose Agents into a System. Add Context, Memory, episodic execution and
 evaluation as the application grows.
 
-**Release 2.1.6** uses one public grammar. Install the SDK with
-`pip install agentic-systems==2.1.6`; see [installation](https://github.com/JacoboGGLeon/agentic_systems/blob/main/INSTALL.md) for optional
-framework/provider extras and Studio. Historical live evidence retains its original
-artifact identity. This maintenance release uses fresh offline and mutation checks;
-see the [2.1.6 release notes](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/RELEASE_NOTES_216.md).
+**Agentic Systems 2.1.7** bundles the authoring skill and simplifies the CLI.
+Use the version-pinned installation commands below for the release distribution.
+For pre-publication acceptance, install the supplied frozen wheel instead; its
+identity is recorded separately from final release artifacts.
+See [installation](https://github.com/JacoboGGLeon/agentic_systems/blob/main/INSTALL.md)
+and the [2.1.7 release notes](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/RELEASE_NOTES_217.md).
+Targeted operator-reported Bedrock checks passed in SageMaker Studio and Processing;
+EMR and distributed Spark remain unverified. Each result retains its tested artifact identity.
 
 ## Get your first result
 
@@ -30,8 +33,35 @@ print(result.data)
 
 This runs deterministic Python without a model account. Continue with the
 [first-run guide](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/ONBOARDING_FIRST_RUN.md)
-or [generate an offline project](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/CLI.md).
+or inspect the [CLI](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/CLI.md).
 The worked payment example below introduces the remaining concepts.
+
+## Install the authoring skill
+
+Release 2.1.7 includes the Agentic Systems **authoring skill**: instructions,
+API references and executable examples for coding assistants. It is separate from
+`toolkit.skill(...)`, which groups runtime Tools and instructions.
+
+Install the SDK and copy its skill into your project:
+
+```bash
+python -m pip install agentic-systems==2.1.7
+agentic-systems skill install
+```
+
+The default destination is `.agents/skills/agentic-systems` in your current project.
+You can choose another assistant's skill directory or export a ZIP for manual import:
+
+```bash
+agentic-systems skill install /path/to/skills/agentic-systems
+agentic-systems skill export agentic-systems-skill.zip
+agentic-systems skill info
+```
+
+These commands work offline, include references/scripts/assets, report the installed
+SDK identity, and refuse existing destinations. Import the exported ZIP through your
+assistant's supported skill-import workflow; copying files does not register a personal
+ChatGPT skill. No extra pip dependency or separate download is needed.
 
 ## Build from the bottom up
 
@@ -346,7 +376,7 @@ kernels (237 offline code cells), plus real local MCP/A2A services through
 deterministic Strands fixtures, with zero inference. Twelve existing live/local-service
 cells were skipped. The linked report records this scope and the reviewed archive.
 
-## Learn, scaffold and explore
+## Learn and explore
 
 - [Install the matching SDK and Studio](https://github.com/JacoboGGLeon/agentic_systems/blob/main/INSTALL.md).
 - [Tutorials: core, providers, frameworks and API](https://github.com/JacoboGGLeon/agentic_systems/blob/main/tutorials/README.md).
@@ -356,8 +386,9 @@ cells were skipped. The linked report records this scope and the reviewed archiv
 - [API contracts and signatures](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/API_214_SURFACE.md).
 - [Studio](https://github.com/JacoboGGLeon/agentic_systems/blob/main/examples/agentic_systems_studio/README.md) and the [Codex/ChatGPT skill](https://github.com/JacoboGGLeon/agentic_systems/blob/main/skills/agentic-systems/SKILL.md).
 
-`agentic-systems new my_project` scaffolds an application using the same grammar.
-Studio and the skill are separate deliverables from the SDK wheel.
+Use the repository examples and notebooks as starting points for applications.
+The authoring skill is included in the wheel; Studio remains separate.
+The `new` command was removed in 2.1.7; see the CLI migration notes.
 
 ## AWS sessions and optional ADA integration
 
@@ -367,6 +398,14 @@ Conflicting API-key, endpoint or region settings are rejected. The session stays
 outside serialized state, Context, Memory and evidence, and the toolkit does not
 close it. Toolkit invocations sharing it are serialized; external use remains
 the owner's responsibility. The resource cannot be moved across processes.
+
+To move configuration between jobs, export `runtime.model_dump_json()`, load that
+JSON in the destination process, create a local Boto3 session there, and provide it
+with `toolkit.runtime(**config, session=local_session)`. A common IAM role does not
+make two jobs share a Session object. Creating a Boto3 session does not configure
+an EMR runtime role or transfer the caller's identity to another job.
+
+[Targeted 2.1.7 AWS acceptance and remaining scope](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/AWS_SESSION_VALIDATION_217.md).
 
 [Session example](https://github.com/JacoboGGLeon/agentic_systems/blob/main/examples/aws_session/01_aws_session.ipynb) ·
 [Independent ADA package](https://github.com/JacoboGGLeon/agentic_systems/blob/main/integrations/ada/README.md).

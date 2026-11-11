@@ -26,9 +26,7 @@ VERSION = str(
 DIST = ROOT / "dist"
 CERTIFICATION_SUMMARY = DIST / "release-evidence" / "final-certification-summary.json"
 CERTIFICATION_ASSET = DIST / "final-certification-summary.json"
-SKILL_SOURCE = (
-    ROOT / "examples" / "agentic_systems_studio" / "skills" / "agentic-systems"
-)
+SKILL_SOURCE = ROOT / "skills" / "agentic-systems"
 STUDIO_SOURCE = (
     ROOT
     / "examples"

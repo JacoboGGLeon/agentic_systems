@@ -1,4 +1,4 @@
-# Tool contracts · Agentic Systems 2.1.5
+# Tool contracts · Agentic Systems 2.1.7
 
 Check typed Tool inputs/outputs, async execution and an invalid input.
 

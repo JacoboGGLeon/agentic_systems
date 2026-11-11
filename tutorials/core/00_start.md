@@ -9,7 +9,7 @@ Input value=3 → deterministic Tool inside a Graph → value=4. Only the instal
 ```python
 import pydantic
 import agentic_systems as toolkit
-assert toolkit.__version__ == '2.1.6'
+assert toolkit.__version__ == '2.1.7'
 
 ```
 

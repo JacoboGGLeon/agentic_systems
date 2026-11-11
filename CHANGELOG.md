@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.1.7
+
+- Bundle the authoring skill in wheel/sdist; add offline skill info/install/export.
+- Remove `new`, the project scaffolder, templates and the skill's scaffolding script (breaking CLI change).
+- Start applications from examples/notebooks or bundled skill assets instead.
+- Align active SDK, optional packages, skill and learning targets with 2.1.7.
+- Preserve existing files, historical evidence and published 2.1.6 artifacts.
+- Agent execution behavior is unchanged. Record targeted, operator-reported Bedrock acceptance in SageMaker Studio and Processing against the frozen 2.1.7 candidate; EMR and distributed Spark remain unverified.
+
 ## 2.1.6
 
 - Improve Tool-first onboarding, API/CLI guidance, actor contracts and example execution instructions.
