@@ -231,7 +231,7 @@ def demonstrate(framework="native"):
     definition = build_system(framework, interactive=True)
     program = definition.compile()
     waiting = program.run(CASE, timeout_s=40)
-    assert waiting.status == "paused", waiting.to_dict()
+    assert waiting.status == "paused", waiting.evidence()
     final = program.resume(waiting, True)
     assert check_result(final), final.to_dict()
     graph = toolkit.Graph(RefundState, output_schema=RefundOutput)
@@ -254,7 +254,7 @@ def demonstrate(framework="native"):
         checks=(lambda result, case: {"ok": check_result(result)},),
     ).run(timeout_s=40)
     assert episode.ok and episode.data["summary"]["state"] == {"total": 240}, (
-        episode.to_dict()
+        episode.evidence()
     )
     assert evaluation.ok, evaluation.to_dict()
     restored = toolkit.RunResult(**final.to_dict())
@@ -273,9 +273,9 @@ def demonstrate(framework="native"):
         ],
         "output": final.data,
         "run_results": [
-            waiting.to_dict(),
+            waiting.evidence(),
             final.to_dict(),
-            episode.to_dict(),
+            episode.evidence(),
             evaluation.to_dict(),
         ],
         "human_lineage": final.lineage(name="Refund R-17").render(),

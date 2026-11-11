@@ -1,23 +1,10 @@
 # Agentic Systems
 
-<p align="center"><img src="https://raw.githubusercontent.com/JacoboGGLeon/agentic_systems/main/docs/assets/logo_agentic_systems.png" alt="Agentic Systems" width="320"></p>
+A Python toolkit for composing deterministic Tools and model-backed agents in explicit LangGraph workflows, with contracts and shared execution evidence.
 
-**Agentic Systems is a Python toolkit for building agentic applications that combine deterministic operations and language-model agents in explicit, inspectable workflows.** Compose capabilities with LangGraph, define contracts with Pydantic, and preserve results, errors, usage and lineage in a shared format—even when agents use different providers and frameworks.
+**Agentic Systems 2.1.8** adds a primary evidence export and a unified learning path. Use the matching versioned distribution, or the supplied frozen wheel during pre-publication acceptance. Use Python 3.10–3.14.
 
-Start with a Python function. Turn it into a Tool, give an Agent a capability,
-and compose Agents into a System. Add Context, Memory, episodic execution and
-evaluation as the application grows.
-
-**Agentic Systems 2.1.7** bundles the authoring skill and simplifies the CLI.
-Use the version-pinned installation commands below for the release distribution.
-For pre-publication acceptance, install the supplied frozen wheel instead; its
-identity is recorded separately from final release artifacts.
-See [installation](https://github.com/JacoboGGLeon/agentic_systems/blob/main/INSTALL.md)
-and the [2.1.7 release notes](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/RELEASE_NOTES_217.md).
-Targeted operator-reported Bedrock checks passed in SageMaker Studio and Processing;
-EMR and distributed Spark remain unverified. Each result retains its tested artifact identity.
-
-## Get your first result
+## First result
 
 ```python
 import agentic_systems as toolkit
@@ -29,403 +16,71 @@ def increment(value: int) -> dict:
 result = increment.run({"value": 3})
 assert result.ok and result.data == {"value": 4}
 print(result.data)
+evidence = result.evidence()  # New in 2.1.8; to_dict() stays compatible.
 ```
 
-This runs deterministic Python without a model account. Continue with the
-[first-run guide](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/ONBOARDING_FIRST_RUN.md)
-or inspect the [CLI](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/CLI.md).
-The worked payment example below introduces the remaining concepts.
+No model account is required. [Installation](https://github.com/JacoboGGLeon/agentic_systems/blob/main/INSTALL.md) explains candidate wheels, extras and notebooks.
 
-## Install the authoring skill
-
-Release 2.1.7 includes the Agentic Systems **authoring skill**: instructions,
-API references and executable examples for coding assistants. It is separate from
-`toolkit.skill(...)`, which groups runtime Tools and instructions.
-
-Install the SDK and copy its skill into your project:
-
-```bash
-python -m pip install agentic-systems==2.1.7
-agentic-systems skill install
-```
-
-The default destination is `.agents/skills/agentic-systems` in your current project.
-You can choose another assistant's skill directory or export a ZIP for manual import:
-
-```bash
-agentic-systems skill install /path/to/skills/agentic-systems
-agentic-systems skill export agentic-systems-skill.zip
-agentic-systems skill info
-```
-
-These commands work offline, include references/scripts/assets, report the installed
-SDK identity, and refuse existing destinations. Import the exported ZIP through your
-assistant's supported skill-import workflow; copying files does not register a personal
-ChatGPT skill. No extra pip dependency or separate download is needed.
-
-## Build from the bottom up
-
-### 1. Runtime: choose how a capability executes
-
-```python
-import pydantic
-import agentic_systems as toolkit
-
-execution = toolkit.runtime(provider="python-runtime")
-```
-
-A model-backed runtime also specifies a model and execution controls:
-
-```python
-model_execution = toolkit.runtime(
-    provider="openai-runtime",
-    model="gpt-4.1-mini",
-    timeout_s=60,
-    max_retries=0,
-    max_turns=3,
-    max_tool_calls=1,
-)
-```
-
-Keep credentials outside application code.
-
-| Concept | Responsibility |
-|---|---|
-| **Provider** | Implements access to Python, OpenAI, Bedrock, Ollama or vLLM. |
-| **Runtime** | Configures that access, its connection and execution controls. |
-| **Scheduler** | Applies scheduling controls, timeouts and retries through runtime configuration. No separate public Scheduler constructor is needed. |
-
-`run(..., timeout_s=60)` establishes a shared root deadline. A timeout does not
-guarantee that a running thread stops or that external effects are rolled back.
-[Execution controls and precedence](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/RUNTIME_SCHEDULER_214.md).
-
-### 2. Tool: implement a concrete operation
-
-Keep arithmetic, validation and business rules in functions you can test.
-This Tool calculates a one-percent fee using integer cents:
-
-```python
-@toolkit.tool
-def calculate_fee(amount: int) -> dict:
-    """Calculate a fee using integer cents."""
-    return {"amount": amount, "fee": amount // 100}
-```
-
-```text
-Input: amount=5000 → Process: calculate 1% → Output: amount=5000, fee=50
-```
-
-`@toolkit.tool` gives the function a discoverable contract and recorded execution.
-Tools can also declare Pydantic input and output models.
-
-### 3. Skill: group capabilities and instructions
-
-```python
-fees = toolkit.skill(
-    name="fees",
-    tools=(calculate_fee,),
-    instructions="Calculate fees in integer cents.",
-)
-```
-
-A Skill declares capabilities and how to use them. The graph defines execution order.
-
-### 4. Agent: organize a capability
-
-An actor-backed Agent executes through a runtime. Start with Python:
-
-```python
-fee_operator = toolkit.Agent(
-    "fee_operator",
-    runtime=execution,
-    skills=(fees,),
-)
-result = fee_operator.run({
-    "tool": "calculate_fee",
-    "input": {"amount": 5000},
-})
-assert result.ok and result.data == {"amount": 5000, "fee": 50}
-print(result.human_results())
-```
-
-An Agent can also organize steps through its own graph:
-
-```python
-class Payment(pydantic.BaseModel):
-    amount: int = pydantic.Field(gt=0)
-    fee: int | None = None
-
-fee_graph = toolkit.Graph(Payment)
-fee_graph.add_node("calculate_fee", calculate_fee)
-fee_graph.add_edge(toolkit.START, "calculate_fee")
-fee_graph.add_edge("calculate_fee", toolkit.END)
-
-fee_agent = toolkit.Agent("fees", graph=fee_graph)
-```
-
-An Agent accepts **runtime or graph**, not both. A graph-backed Agent can contain
-actor-backed Agents as nodes, so deterministic steps and model calls compose.
-
-### 5. Framework: choose the actor implementation
-
-```python
-fee_reasoner = toolkit.Agent(
-    "fee_reasoner",
-    runtime=model_execution,
-    framework=toolkit.framework("openai-agents"),
-    skills=(fees,),
-    instructions="Use calculate_fee for arithmetic; preserve its result.",
-)
-```
-
-Defining this Agent does not call a model.
-
-| Actor | Implementation |
-|---|---|
-| `native` | Agentic Systems' own execution loop. |
-| `openai-agents` | OpenAI Agents SDK integration, including supported handoff configuration. |
-| `strands` | AWS Strands integration. |
-
-**LangGraph orchestrates. Frameworks implement actors. Providers supply execution.**
-`native` is not another name for LangGraph. A System can combine actors from
-different frameworks and providers.
-
-### 6. System: coordinate the application
-
-An Agent organizes a capability; a System coordinates application work:
-
-```text
-Payment → calculate fee → review evidence → approve or request review
-```
-
-Start with one Agent, then add nodes and decisions:
-
-```python
-memory = toolkit.Memory(capacity=2)
-
-system_graph = toolkit.Graph(Payment)
-system_graph.add_node("fees", fee_agent)
-system_graph.add_edge(toolkit.START, "fees")
-system_graph.add_edge("fees", toolkit.END)
-
-system = toolkit.System("payments", graph=system_graph, memory=memory)
-```
-
-Use `add_conditional_edges` with ordinary Python functions for decisions;
-use branches and barriers for parallel work. `toolkit.Graph` exposes LangGraph's
-original StateGraph. START, END, Command and Send are original LangGraph objects too.
-There is one graph builder and orchestration engine.
-
-### 7. Context, Memory and lineage: give information a clear role
+## Choose the pieces you need
 
 | Piece | Purpose |
 |---|---|
-| **Pydantic state** | Business data flowing through the graph. |
-| **Context** | Domain information, sources and execution observations available to a capability. |
-| **Memory** | Bounded episodes retained between executions within the process. |
-| **Lineage** | Evidence of actual work and the relationships between executions. |
+| Tool / Skill | Execute an operation / group capabilities and instructions |
+| Agent(graph=...) | Organize an explicit capability workflow |
+| Agent(runtime=...) | Execute an actor with its provider and framework |
+| System | Coordinate application work through a graph |
+| Environment | Execute episodes with observation, state updates and stopping |
+| Eval | Independently check an Agent, System or Environment |
+| Context / Memory | Supply domain information / retain bounded local episodes |
 
-Tools and graph functions can request Context explicitly:
+Graph is LangGraph's original StateGraph. Its nodes may be functions, Tools or units containing other graphs. It has no implicit Python provider. Frameworks implement actors; providers supply execution. Shared APIs do not imply universal feature parity.
 
-```python
-@toolkit.tool
-def calculate_policy_fee(amount: int, *, context: toolkit.Context) -> dict:
-    return {"fee": amount * context.data["fee_bps"] // 10000}
+## Build, run and inspect
 
-policy_graph = toolkit.Graph(Payment)
-policy_graph.add_node("fee", calculate_policy_fee)
-policy_graph.add_edge(toolkit.START, "fee")
-policy_graph.add_edge("fee", toolkit.END)
-
-policy_agent = toolkit.Agent(
-    "policy_fees",
-    graph=policy_graph,
-    context=toolkit.Context({"fee_bps": 100}, sources=("payment-policy-v1",)),
-)
-```
-
-Lineage can inform another Agent without copying the full trace into state.
-Memory lets later executions consult earlier episodes. Neither implies durable
-storage or recovery after restarting the process.
-
-### 8. Environment: run episodes and track evolution
-
-```text
-Record → observation → System → result → state update → next episode or stop
-```
+Agent, System, Environment and Eval expose compile/run/arun/inspect. Agent/System accept an input; Environment/Eval use declared records/cases. compile prepares without business execution or inference. Direct run compiles internally.
 
 ```python
-episode_graph = toolkit.Graph(Payment)
-episode_graph.add_node("payments", system)
-episode_graph.add_edge(toolkit.START, "payments")
-episode_graph.add_edge("payments", toolkit.END)
-
-def update(state, record, result):
-    return {"processed": state["processed"] + 1}
-
-environment = toolkit.Environment(
-    "payment_episodes",
-    graph=episode_graph,
-    records=({"amount": 5000}, {"amount": 15000}),
-    state={"processed": 0},
-    update=update,
-    max_steps=2,
-)
-```
-
-Environment supports records, observation, updates and stopping conditions.
-Calculate rewards explicitly in update/state/history when needed. It does not
-provide an implicit `reward=` API, training loop or complete reinforcement-learning API.
-
-### 9. Eval: check behavior explicitly
-
-```python
-def check_fee(result, case):
-    return {"ok": result.ok and result.data["fee"] == case["input"]["amount"] // 100}
-
-evaluation = toolkit.Eval(
-    "fee_acceptance",
-    unit=system,
-    cases=({"input": {"amount": 5000}, "expected": {"ok": True}},),
-    checks=(check_fee,),
-)
-```
-
-Eval targets an Agent, System or Environment. Each case receives an isolated view
-of toolkit Memory, starting from its initial snapshot. This does not isolate
-files, external services or sessions owned by other SDKs.
-
-### 10. Compile, execute and inspect
-
-```python
-program = system.compile()  # Prepare and validate; no business execution or inference.
-result = program.run({"amount": 5000})
-assert result.ok
-print(result.data)
+# After declaring an Agent or System:
+program = system.compile()
+result = program.run({"value": 3})
+print(result.status, result.ok, result.data)
 print(result.human_results())
-
-evidence = result.to_dict()
-lineage = result.lineage()
+evidence = result.evidence()       # dict
+lineage = result.lineage()         # object; .to_dict() exports it
+validation = result.check_invariants()
 ```
 
-| Operation | Meaning |
-|---|---|
-| `compile()` | Prepare execution and check structure. |
-| `run()` | Execute synchronously. |
-| `arun()` | Execute through the asynchronous API. |
-| `human_results()` | Present input, observed steps, output and errors without inference. |
-| `lineage()` | Inspect execution relationships and evidence. |
+[Complete first program](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/ONBOARDING_FIRST_RUN.md) · [Execution](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/EXECUTION.md) · [Results](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/RESULTS.md)
 
-RunResult records data, errors, usage, Tool events and child executions.
-`result.lineage().to_prompt_context()` provides a compact projection for agents;
-`result.trace("full")` provides detailed inspection.
+## Authoring skill and CLI
 
-**`ok=True` means the declared checks passed. It is not a universal guarantee
-that every model statement is true.**
+The wheel bundles instructions, references and examples for coding assistants. This authoring skill differs from runtime toolkit.skill(...).
 
-## See the pieces working together
+```bash
+agentic-systems version
+agentic-systems api
+agentic-systems doctor
+agentic-systems skill info
+agentic-systems skill install
+agentic-systems skill export agentic-systems-skill-2.1.8.zip
+```
 
-[Open the executed financial notebook](https://github.com/JacoboGGLeon/agentic_systems/blob/main/examples/financial_mixed/03_financial_system_native_local.executed.ipynb).
-It combines OpenAI/native, Bedrock/Strands, Ollama local/native and Ollama
-cloud/OpenAI Agents in one System, with Tools, Skills, Context, Memory,
-Environment, reward calculation and Eval. Python and mixed-provider runs
-produce the same business results. It transfers no funds.
+Install defaults to .agents/skills/agentic-systems. Install/export refuse existing destinations. The exported ZIP is suitable for manual import; copying it does not register a personal ChatGPT skill. doctor checks dependencies, not service access. There is no new/scaffolder command.
 
-The [validation report](https://github.com/JacoboGGLeon/agentic_systems/blob/main/revisions/2.1.4/ollama-connection-fix/01/live/REPORT.md)
-contains RunResults, human_results, lineage, artifact hashes and recorded consumption.
-The reference development wheel passed 544 offline tests and this focused online campaign.
-The 2.1.4 release used approved executable-payload equivalence to that development wheel.
-Version 2.1.5 includes reviewed runtime simplifications and fresh offline/mutation checks;
-the historical financial example above retains its original artifact identity.
-The subsequent 2.1.5 integration campaign is reported below.
+## Learn by task
 
-## Agentic Systems 2.1.5 integration validation
+- [Documentation entry point](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/README.md)
+- [Concepts](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/CONCEPTS.md) and [graphs](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/GRAPHS.md)
+- [Independent evaluation: five examples](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/EVALUATION.md)
+- [Context and Memory](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/CONTEXT_MEMORY.md)
+- [Providers/frameworks](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/INTEGRATIONS.md) and [actor contracts](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/ACTOR_CONTRACTS.md)
+- [Tutorials](https://github.com/JacoboGGLeon/agentic_systems/blob/main/tutorials/README.md), [examples](https://github.com/JacoboGGLeon/agentic_systems/blob/main/examples/README.md), [signatures](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/API_214_SURFACE.md)
+- [Migration from 2.1.7](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/MIGRATION_217_TO_218.md)
 
-On 2026-11-08, the operator executed the following bounded campaigns. Returned
-artifacts were reviewed for Bedrock IAM and both vLLM environments; the ADA row
-is based on the operator's shared result log.
+## Verification boundaries
 
-| Environment | Model | Campaign result | Evidence |
-|---|---|---|---|
-| Bedrock IAM, SageMaker, us-east-2 | `qwen.qwen3-32b-v1:0` | 12/12 PASS | Result records and installed-version report reviewed |
-| Bedrock IAM in ADA | Model/region not recorded in the shared log | 12/12 PASS | Operator-reported; version and artifact identity not independently reconciled |
-| vLLM, Colab L4 | Unsloth Qwen3-4B Instruct-2507 and Thinking-2507 | 22/22 PASS | Full result archive reviewed |
-| vLLM, SageMaker L4 | Same two pinned model revisions | 22/22 PASS | Full result archive reviewed |
+ok=True describes declared acceptance, not universal truth. Tools, events and independent checks establish observed work. Memory and pause/resume are process-local; timeouts do not guarantee thread termination or rollback. Boto3 sessions are borrowed resources, excluded from configuration JSON; create a local session in each destination process.
 
-The suites cover offline contracts, composition, flows and controls, plus live
-text and actual Tool execution with `native`, `openai-agents` and `strands`.
-Each Tool case must execute `add(19, 23)`, return `42`, and satisfy result
-invariants. Bedrock also checks IAM identity resolution. Repeated offline groups
-are not additional independent feature coverage.
+Historical [2.1.7 AWS session checks](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/AWS_SESSION_VALIDATION_217.md) and [2.1.5 model campaigns](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/VALIDATION_215_20261108.md) retain their artifact identities. They do not certify the new wheel. EMR and distributed Spark remain unverified. The documented Bedrock required-nullable-field limitation remains; see [known issues](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/OPEN_ISSUES_214.md).
 
-The passing vLLM configuration uses Python 3.12, vLLM 0.11.0, Transformers 4.57.1,
-FP16, an 8192-token context and a 4096-token output allowance. Required-tool cases
-use `policy={"tool_choice": "required"}` and
-`completion="when_required_tools_satisfied"`, with instructions that do not
-reveal the answer. An earlier Thinking/Strands automatic-choice attempt returned
-the correct number without calling the required Tool and correctly failed.
-The SDK wheel was unchanged; both prompt and policy changed in the passing setup.
-
-These results validate the listed cases and configurations, not all models,
-all SDK features, long-running multi-agent applications, or the separate
-historical 2.1.2 semantic suite.
-[Configuration, evidence hashes and limitations](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/VALIDATION_215_20261108.md).
-
-A subsequent SageMaker learning check passed all 33 notebooks in fresh Jupyter
-kernels (237 offline code cells), plus real local MCP/A2A services through
-deterministic Strands fixtures, with zero inference. Twelve existing live/local-service
-cells were skipped. The linked report records this scope and the reviewed archive.
-
-## Learn and explore
-
-- [Install the matching SDK and Studio](https://github.com/JacoboGGLeon/agentic_systems/blob/main/INSTALL.md).
-- [Tutorials: core, providers, frameworks and API](https://github.com/JacoboGGLeon/agentic_systems/blob/main/tutorials/README.md).
-- [Examples and their validation status](https://github.com/JacoboGGLeon/agentic_systems/blob/main/examples/README.md).
-- [Full API walkthrough](https://github.com/JacoboGGLeon/agentic_systems/blob/main/examples/api_walkthrough/01_api_user_guide.ipynb).
-- [Lineage and Memory that change decisions](https://github.com/JacoboGGLeon/agentic_systems/blob/main/examples/lineage_memory/01_lineage_memory_decisions.ipynb).
-- [API contracts and signatures](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/API_214_SURFACE.md).
-- [Studio](https://github.com/JacoboGGLeon/agentic_systems/blob/main/examples/agentic_systems_studio/README.md) and the [Codex/ChatGPT skill](https://github.com/JacoboGGLeon/agentic_systems/blob/main/skills/agentic-systems/SKILL.md).
-
-Use the repository examples and notebooks as starting points for applications.
-The authoring skill is included in the wheel; Studio remains separate.
-The `new` command was removed in 2.1.7; see the CLI migration notes.
-
-## AWS sessions and optional ADA integration
-
-`toolkit.runtime(provider="bedrock-runtime", model=..., session=supplied_session)`
-borrows a session prepared by your platform and explicitly selects IAM.
-Conflicting API-key, endpoint or region settings are rejected. The session stays
-outside serialized state, Context, Memory and evidence, and the toolkit does not
-close it. Toolkit invocations sharing it are serialized; external use remains
-the owner's responsibility. The resource cannot be moved across processes.
-
-To move configuration between jobs, export `runtime.model_dump_json()`, load that
-JSON in the destination process, create a local Boto3 session there, and provide it
-with `toolkit.runtime(**config, session=local_session)`. A common IAM role does not
-make two jobs share a Session object. Creating a Boto3 session does not configure
-an EMR runtime role or transfer the caller's identity to another job.
-
-[Targeted 2.1.7 AWS acceptance and remaining scope](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/AWS_SESSION_VALIDATION_217.md).
-
-[Session example](https://github.com/JacoboGGLeon/agentic_systems/blob/main/examples/aws_session/01_aws_session.ipynb) ·
-[Independent ADA package](https://github.com/JacoboGGLeon/agentic_systems/blob/main/integrations/ada/README.md).
-The optional diagnostic package is not included in `all`; its offline diagnostics
-do not resolve credentials or certify real AWS/ADA access.
-
-## Validation boundaries and known limitations
-
-Bedrock/Qwen has reproducibly omitted an obligatory `amount` key when its value
-was `null`, despite a strict schema. The received Tool arguments already lack
-the key before local validation. Agentic Systems rejects them; it does not insert
-defaults or invent values. This is a **known integration limitation**, not a PASS
-for that scenario. [Reproduction and evidence](https://github.com/JacoboGGLeon/agentic_systems/blob/main/revisions/2.1.4/problem-fixes/01/REPORT.md).
-
-The scoped 2.1.5 integration campaign above completed on vLLM GPU and Bedrock IAM;
-ADA results are identified separately as operator-reported. Configuration support,
-offline tests and live validation are reported separately. SDK integrations
-do not promise universal feature parity. Memory and pause/resume remain local to
-the process; durable recovery is not implemented.
-
-[Current status](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/STATUS_214.md) · [Known issues](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/OPEN_ISSUES_214.md).
-
-For notebook reading views that do not depend on GitHub’s notebook renderer, see the [English notebook index](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/NOTEBOOKS.md).
+Studio, notebooks and the optional ADA diagnostics package are separate resources. [Release notes](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/RELEASE_NOTES_218.md).

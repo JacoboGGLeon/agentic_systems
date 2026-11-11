@@ -42,7 +42,7 @@ def loaded_skill_example():
         "process": "load_skill → quote with Context → remember",
         "output": first.data,
         "skill": capability.inspect(),
-        "run_results": [first.to_dict(), second.to_dict()],
+        "run_results": [first.evidence(), second.evidence()],
     }
 
 

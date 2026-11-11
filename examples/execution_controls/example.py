@@ -42,7 +42,7 @@ def run():
     system = toolkit.System("bounded_system", graph=graph)
     deadline_s = 60
     result = system.run(State(value=3), timeout_s=deadline_s)
-    assert result.ok and result.data == {"value": 3}, result.to_dict()
+    assert result.ok and result.data == {"value": 3}, result.evidence()
     negative = system.run({"value": "invalid"}, timeout_s=deadline_s)
     assert not negative.ok
     assert isinstance(execution, pydantic.BaseModel)
@@ -61,8 +61,8 @@ def run():
     return {
         "input": {"value": 3},
         "process": "runtime + scheduler caps -> actor -> root deadline",
-        "output": result.to_dict(),
-        "negative": negative.to_dict(),
+        "output": result.evidence(),
+        "negative": negative.evidence(),
         "runtime": execution.inspect(),
         "timeout_s": deadline_s,
         "inference_requests": 0,

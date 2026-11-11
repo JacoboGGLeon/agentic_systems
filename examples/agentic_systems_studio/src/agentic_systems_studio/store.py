@@ -62,7 +62,7 @@ def _result_payload(result: Any) -> dict[str, Any]:
     if hasattr(result, "model_dump"):
         return result.model_dump(mode="json")
     if hasattr(result, "to_dict"):
-        return result.to_dict()
+        return result.evidence()
     return {"value": result}
 
 

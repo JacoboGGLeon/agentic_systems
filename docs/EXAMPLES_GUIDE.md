@@ -1,4 +1,4 @@
-# Run examples · Agentic Systems 2.1.7
+# Run examples · Agentic Systems 2.1.8
 
 Use a repository checkout or the matching learning archive. The SDK wheel
 contains the library and CLI; it does not contain these application folders.
@@ -9,7 +9,7 @@ Keep the repository layout intact, including linked local Skill resources.
 Activate a clean Python 3.10–3.14 virtual environment, then install:
 
 ```bash
-python -m pip install 'agentic-systems[openai,bedrock,openai-agents,strands]==2.1.7'
+python -m pip install 'agentic-systems[openai,bedrock,openai-agents,strands]==2.1.8'
 agentic-systems version
 ```
 
@@ -31,7 +31,7 @@ unique=2 and mentions=2. The entrypoint asserts that result before printing JSON
 A failed assertion gives a nonzero exit code. Check Tool events and invariants
 as well as business data; `ok` describes execution, not universal truth.
 
-The runner uses the installed 2.1.7 SDK and denies application networking and
+The runner uses the installed 2.1.8 SDK and denies application networking and
 subprocess execution. It refuses historical examples and the separate Strands
 local-service case. It does not execute tagged live notebook cells or start
 GPU/HTTP servers. The offline denial helper is a Python-level application guard,

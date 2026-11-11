@@ -443,7 +443,7 @@ def check_tree(output):
             assert child.parent_execution_id == node.execution_id
     events = [e for n in nodes for e in n.tool_events]
     assert len({e.id for e in events}) == len(events)
-    toolkit.RunResult(**json.loads(json.dumps(output.to_dict(), allow_nan=False)))
+    toolkit.RunResult(**json.loads(json.dumps(output.evidence(), allow_nan=False)))
 
 
 def trace(output):
@@ -465,9 +465,9 @@ def verify():
         output = prepared.run(payload)
         assert payload == case["input"]
         check_tree(output)
-        assert output.ok == case["expected"]["ok"], output.to_dict()
+        assert output.ok == case["expected"]["ok"], output.evidence()
         if output.ok:
-            assert output.data == case["expected"]["data"], output.to_dict()
+            assert output.data == case["expected"]["data"], output.evidence()
         events = [e for n in output.walk() for e in n.tool_events]
         names = {e.name for e in events}
         if case["name"] == "invalid":
@@ -510,7 +510,7 @@ def verify():
                 "process": trace(output),
                 "output": output.data,
                 "ok": output.ok,
-                "result": output.to_dict(),
+                "result": output.evidence(),
             }
         )
     accepted = [case for case in cases if case["expected"]["ok"]]
@@ -558,9 +558,9 @@ def verify():
         "cases_passed": len(rows),
         "cases": rows,
         "topology": prepared.inspect(),
-        "environment": episode.to_dict(),
+        "environment": episode.evidence(),
         "evaluation": judged.to_dict(),
-        "negative_control": negative.to_dict(),
+        "negative_control": negative.evidence(),
     }
 
 

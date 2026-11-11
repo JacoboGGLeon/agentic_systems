@@ -61,6 +61,6 @@ sample = {
 def run():
     result = app.run({"input": sample})
     assert result.ok and result.data == {"scores": {"A": 2, "B": 5}, "selected": "B"}, (
-        result.to_dict()
+        result.evidence()
     )
     return result

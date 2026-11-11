@@ -1,4 +1,4 @@
-# Learning path · Agentic Systems 2.1.5
+# Learning path · Agentic Systems 2.1.8
 
 Start with [one Tool and a visible result](ONBOARDING_FIRST_RUN.md). Continue
 through [the core notebooks](../tutorials/README.md) in order, then select

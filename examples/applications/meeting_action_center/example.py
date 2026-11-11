@@ -52,5 +52,5 @@ def run():
     result = app.run({"input": sample})
     assert result.ok and result.data == {
         "actions": [{"owner": "Ana", "task": "Review budget", "due": "Friday"}]
-    }, result.to_dict()
+    }, result.evidence()
     return result

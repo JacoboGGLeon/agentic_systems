@@ -22,8 +22,8 @@ def main(argv=None):
                    str(ROOT / 'examples/agentic_systems_studio/src')]
     from _offline import enforce_offline, blocked_attempts
     import agentic_systems as toolkit
-    if toolkit.__version__ != '2.1.7':
-        parser.error('Install agentic-systems==2.1.7 in this Python environment')
+    if toolkit.__version__ != '2.1.8':
+        parser.error('Install agentic-systems==2.1.8 in this Python environment')
     platform.platform()  # Prewarm stdlib OS discovery before the application guard.
     enforce_offline()
     module = importlib.import_module('.'.join(path.relative_to(ROOT).with_suffix('').parts))

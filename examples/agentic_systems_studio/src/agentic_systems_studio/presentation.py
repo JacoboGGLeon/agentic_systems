@@ -89,7 +89,7 @@ def usage_mark(result):
 
 
 def public_result_payload(result):
-    return result.to_dict()
+    return result.evidence()
 
 
 def validate_generated_tool_contracts(text: str) -> None:

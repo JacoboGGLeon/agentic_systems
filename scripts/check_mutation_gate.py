@@ -29,7 +29,7 @@ def evaluate(policy, records, sources, versions):
         raise ValueError('Unbound mutation scope')
     counts = {path: sum(r['file'] == path for r in records) for path in expected}
     if not records or counts != expected or any(r['file'] not in expected for r in records):
-        raise ValueError('Incomplete or changed mutation catalog')
+        raise ValueError(f'Incomplete or changed mutation catalog: observed={counts}, expected={expected}')
     approved = policy['equivalents']
     keys = [(a['file'], a['diff_sha256']) for a in approved]
     if (len(set(keys)) != len(keys) or any(

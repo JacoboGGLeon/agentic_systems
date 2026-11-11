@@ -104,7 +104,7 @@ def run():
         assert result.check_invariants().ok
         if unit.name.endswith("decision"):
             assert unit.run({"value": -3}).data == {"value": -2}
-        rows.append({"unit": unit.name, "result": result.to_dict()})
+        rows.append({"unit": unit.name, "result": result.evidence()})
     return {
         "input": {"value": 3},
         "process": "Agent/System with sequence, branches and decisions; LangGraph only",

@@ -48,6 +48,6 @@ def run():
         and (not result.data["cases"][1]["ok"])
     )
     return {
-        "evaluation": result.to_dict(),
+        "evaluation": result.evidence(),
         "scope": "saved creative candidates; no generation or semantic judge inferred",
     }

@@ -26,9 +26,9 @@ def run():
         )
         assert result.ok and result.data["value"] == 3, {
             "framework": name,
-            "result": result.to_dict(),
+            "result": result.evidence(),
         }
-        rows.append({"framework": name, "output": result.to_dict()})
+        rows.append({"framework": name, "output": result.evidence()})
     external = {
         name: toolkit.runtime(provider=name, model="explicit-configured-only").inspect()
         for name in (

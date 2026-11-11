@@ -58,5 +58,5 @@ def run():
         "accepted": False,
         "supported": ["count", "sum"],
         "reason": "outside declared capabilities",
-    }, result.to_dict()
+    }, result.evidence()
     return result

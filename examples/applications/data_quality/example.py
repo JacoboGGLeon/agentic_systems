@@ -70,5 +70,5 @@ def run():
         "rows": 2,
         "duplicate_ids": 1,
         "missing_amounts": 1,
-    }, result.to_dict()
+    }, result.evidence()
     return result

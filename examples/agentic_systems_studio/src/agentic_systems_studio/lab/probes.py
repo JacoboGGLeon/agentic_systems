@@ -37,10 +37,10 @@ def matrix(provider, framework):
     events = [event for node in result.walk() for event in node.tool_events]
     assert result.ok and any(
         e.name == "certify" and e.ok and e.input.get("value") == value for e in events
-    ), result.to_dict()
+    ), result.evidence()
     assert result.check_invariants().ok
-    assert json.loads(json.dumps(result.to_dict()))["ok"]
-    return {"provider": provider, "framework": framework, "result": result.to_dict()}
+    assert json.loads(json.dumps(result.evidence()))["ok"]
+    return {"provider": provider, "framework": framework, "result": result.evidence()}
 
 
 def handoffs(provider):
@@ -90,8 +90,8 @@ def handoffs(provider):
             "provider": provider,
             "framework": "openai-agents",
             "handoff_callback": observed,
-            "result": result.to_dict(),
-            "guardrail_negative": negative.to_dict(),
+            "result": result.evidence(),
+            "guardrail_negative": negative.evidence(),
         }
     finally:
         session.close()
@@ -117,19 +117,19 @@ def protocols(provider, kind, budget):
             else "Call " + name + " with value=FRAMEWORKS_TOGETHER.",
             timeout_s=180,
         )
-        assert result.ok, result.to_dict()
+        assert result.ok, result.evidence()
         assert any(
             event.name == name
             and event.ok
             and "FRAMEWORKS_TOGETHER" in json.dumps(event.output)
             for node in result.walk()
             for event in node.tool_events
-        ), result.to_dict()
+        ), result.evidence()
         return {
             "provider": provider,
             "framework": "strands",
             "protocol": witness,
-            "result": result.to_dict(),
+            "result": result.evidence(),
         }
 
 
@@ -152,5 +152,5 @@ def interop(mixed):
         "value": 45,
         "trail": list(FRAMEWORKS),
         "validated": True,
-    }, result.to_dict()
-    return {"assignments": selected, "result": result.to_dict()}
+    }, result.evidence()
+    return {"assignments": selected, "result": result.evidence()}

@@ -37,8 +37,8 @@ def run():
         rows.append(
             {
                 "framework": name,
-                "positive": positive.to_dict(),
-                "negative": negative.to_dict(),
+                "positive": positive.evidence(),
+                "negative": negative.evidence(),
             }
         )
     return {

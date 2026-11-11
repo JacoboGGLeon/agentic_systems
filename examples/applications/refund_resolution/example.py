@@ -68,5 +68,5 @@ def run():
         "order_id": "A17",
         "decision": "approved",
         "amount": 280,
-    }, result.to_dict()
+    }, result.evidence()
     return result

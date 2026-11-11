@@ -68,5 +68,5 @@ def run():
     assert result.ok and result.data == {
         "supported": ["Revenue grew 5%"],
         "unverified": ["It will double"],
-    }, result.to_dict()
+    }, result.evidence()
     return result

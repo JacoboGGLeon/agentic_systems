@@ -20,9 +20,9 @@ def run():
     graph_1.add_edge(toolkit.START, "increment")
     graph_1.add_edge("increment", toolkit.END)
     result = toolkit.Agent("incrementer", graph=graph_1).run({"value": 3})
-    payload = json.loads(json.dumps(result.to_dict()))
+    payload = json.loads(json.dumps(result.evidence()))
     restored = toolkit.RunResult(**payload)
-    assert restored.to_dict() == payload and restored.check_invariants().ok
+    assert restored.evidence() == payload and restored.check_invariants().ok
     memory = restored.lineage(
         name="increment",
         question="What happened?",

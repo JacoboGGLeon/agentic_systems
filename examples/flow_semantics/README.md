@@ -1,4 +1,4 @@
-# Flow semantics · Agentic Systems 2.1.7
+# Flow semantics · Agentic Systems 2.1.8
 
 Run sequence, disjoint branches and conditional decisions with LangGraph.
 

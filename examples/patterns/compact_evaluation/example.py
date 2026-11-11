@@ -46,7 +46,7 @@ def run():
     assert result.ok and len(calls) == before
     return {
         "original": saved.to_dict(),
-        "evaluation": result.to_dict(),
+        "evaluation": result.evidence(),
         "candidate_reruns": 0,
         "compact_trace": frozen.trace(),
         "lineage": frozen.lineage().to_dict(),

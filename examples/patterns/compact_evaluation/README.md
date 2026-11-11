@@ -1,4 +1,4 @@
-# Compact evaluation · Agentic Systems 2.1.7
+# Compact evaluation · Agentic Systems 2.1.8
 
 Evaluate a saved execution and inspect its compact trace.
 

@@ -1,4 +1,4 @@
-# Runtime and scheduler · Agentic Systems 2.1.5
+# Runtime and scheduler · Agentic Systems 2.1.8
 
 runtime(...) is the sole public execution-configuration factory. It retains provider, model, connection and scheduler controls from earlier releases. The internal scheduler manages time, retries, backoff and executor capacity; no additional constructor is required.
 

@@ -73,5 +73,5 @@ def run():
             {"claim": "C1", "issue": "missing source"},
             {"claim": "C1", "issue": "unsupported causality"},
         ],
-    }, result.to_dict()
+    }, result.evidence()
     return result

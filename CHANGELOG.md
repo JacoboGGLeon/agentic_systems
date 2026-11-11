@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.1.8
+
+- Make RunResult.evidence() the primary evidence export; preserve to_dict() as a compatibility alias with the same schema and redaction.
+- Consolidate concepts, execution, results, evaluation and integration guides; distinguish current usage from historical acceptance.
+- Align active examples, notebooks and bundled authoring skill; provide an independently exportable skill ZIP.
+- No change to providers, actor behavior, memory persistence or existing AWS acceptance scope.
+
+
 ## 2.1.7
 
 - Bundle the authoring skill in wheel/sdist; add offline skill info/install/export.

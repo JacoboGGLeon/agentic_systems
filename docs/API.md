@@ -1,12 +1,5 @@
-# User API · Agentic Systems 2.1.7
+# User API · 2.1.8
 
-Start with [your first result](ONBOARDING_FIRST_RUN.md), then use the
-[construction guide](API_214.md), [exact signatures](API_214_SURFACE.md), and
-[actor contracts](ACTOR_CONTRACTS.md). The `_214` filenames are stable links;
-these pages describe the compatible 2.1.5 public grammar.
+Start with [concepts](CONCEPTS.md), [graphs](GRAPHS.md), [execution](EXECUTION.md) and [results](RESULTS.md). Consult [exact signatures](API_214_SURFACE.md), [construction](API_214.md) and [actor contracts](ACTOR_CONTRACTS.md) afterward. `_214` filenames are stable links, not separate supported grammars.
 
-LangGraph defines orchestration; native, openai-agents and strands implement
-actors; runtime chooses the provider and execution controls. Add each layer only
-when it has a responsibility in your application.
-
-[CLI](CLI.md) · [Examples](../examples/README.md) · [Validation](VALIDATION_215_20261108.md).
+[Independent evaluation](EVALUATION.md) · [Context/Memory](CONTEXT_MEMORY.md) · [Integrations](INTEGRATIONS.md) · [CLI](CLI.md) · [Migration](MIGRATION_217_TO_218.md)

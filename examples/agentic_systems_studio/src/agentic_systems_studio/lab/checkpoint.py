@@ -23,7 +23,7 @@ def run():
     final = program.resume(waiting, True)
     assert waiting.status == "paused" and final.ok and final.data["approved"]
     return {
-        "paused": waiting.to_dict(),
+        "paused": waiting.evidence(),
         "resumed": final.to_dict(),
         "inference_requests": 0,
     }

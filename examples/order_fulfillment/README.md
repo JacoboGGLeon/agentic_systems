@@ -1,4 +1,4 @@
-# Order fulfillment · Agentic Systems 2.1.7
+# Order fulfillment · Agentic Systems 2.1.8
 
 Coordinate order validation, price/stock checks, policy and decisions.
 

@@ -21,7 +21,7 @@ def test_conversation_uses_real_python_framework_with_memory(framework):
     assert first.ok and second.ok and first.text and second.text
     assert second.data["history_turns"] == 1
     assert second.check_invariants().ok
-    assert json.loads(json.dumps(second.to_dict()))["ok"]
+    assert json.loads(json.dumps(second.evidence()))["ok"]
     assert studio.inspect()["framework"] == framework
 
 

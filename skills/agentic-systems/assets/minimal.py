@@ -125,7 +125,7 @@ def demonstrate():
         "memory": memory.read(),
         "human_lineage": batch.lineage().render(),
         "agent_lineage": batch.lineage().to_prompt_context(),
-        "run_results": [result.to_dict() for result in results],
+        "run_results": [result.evidence() for result in results],
     }
 
 

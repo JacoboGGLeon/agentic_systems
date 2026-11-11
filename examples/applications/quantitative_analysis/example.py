@@ -67,5 +67,5 @@ def run():
         "revenue": "120.30",
         "cost": "70.05",
         "profit": "50.25",
-    }, result.to_dict()
+    }, result.evidence()
     return result
