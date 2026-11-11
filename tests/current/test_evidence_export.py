@@ -30,3 +30,10 @@ def test_failure_export_and_existing_secret_redaction():
     assert result.evidence()['status'] == 'failed'
     assert 'do-not-export' not in json.dumps(result.evidence())
     assert replace(result, ok=True, errors=()).evidence()['status'] == 'completed'
+
+
+def test_five_independent_eval_recipes_accept_and_reject():
+    import runpy
+    from pathlib import Path
+    namespace = runpy.run_path(str(Path(__file__).resolve().parents[2] / 'examples/eval_recipes.py'))
+    assert len(namespace['evaluations']) == 5

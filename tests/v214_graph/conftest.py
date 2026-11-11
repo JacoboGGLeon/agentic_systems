@@ -1,5 +1,6 @@
 """The current public grammar is LangGraph only; all tests deny inference."""
 import os
+from importlib.metadata import version
 from pathlib import Path
 import sys
 
@@ -10,6 +11,6 @@ from _offline import enforce_offline  # noqa: E402
 enforce_offline()
 import agentic_systems as toolkit  # noqa: E402
 
-assert toolkit.__version__ == os.environ.get("AGENTIC_TEST_VERSION", '2.1.7')
+assert toolkit.__version__ == os.environ.get("AGENTIC_TEST_VERSION", version("agentic-systems"))
 if os.environ.get("AGENTIC_TEST_REQUIRE_INSTALLED") == "1":
     assert "site-packages" in Path(toolkit.__file__).parts
