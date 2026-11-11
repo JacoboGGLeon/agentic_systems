@@ -20,6 +20,17 @@ Commands: `python scripts/test_offline_214.py --source` and `python scripts/test
 
 The first local source run failed because this environment's SOCKS proxy required socksio. Installing that environment dependency fixed the failures without SDK changes. The initial notebook invocation omitted a required environment variable; after correction the kernel failed with `Operation not permitted`/ZMQ socket restrictions. Fresh-kernel notebook execution is **BLOCKED locally**, not PASS; its original CI step remains required. See [kernel log](evidence/217/notebooks-final.log).
 
-Prior PR CI failed the installed coverage threshold because the editable-skill fallback was not exercised; a new test covers that real branch. Prior mutation CI failed baseline collection because canonical skill resources were absent from the copied workspace; `also_copy` now includes `skills`. These fixes do not certify a fresh mutation run. Python 3.10–3.14 CI and mutation checks on the final commit remain release gates, with no weakening or reinterpretation of historical equivalence approvals.
+Prior PR CI failed the installed coverage threshold because the editable-skill fallback was not exercised; a new test covers that real branch. Prior mutation CI failed baseline collection because canonical skill resources were absent from the copied workspace; `also_copy` now includes `skills`. The subsequent quality run [42957145873](https://github.com/JacoboGGLeon/agentic_systems/actions/runs/42957145873) and mutation run [42957145881](https://github.com/JacoboGGLeon/agentic_systems/actions/runs/42957145881) both completed successfully for reviewed head `5357691f4337a3321eed23f30085f4de5f8a4a43`. These results are not attributed to later documentation commits. Quality and mutation on the exact final main commit remain release gates, with no weakening of historical equivalence approvals.
 
-No live provider/service certification, publication, or 2.1.6 replacement occurred. The artifacts are local candidates; their build manifest refers to the pre-commit baseline plus the actual changed source fingerprints, not a sealed/promotable final commit. Final release artifacts must be built and tested by CI on the reviewed commit.
+The local offline campaign above did not invoke providers. Subsequent operator-supplied reports establish targeted live Bedrock acceptance for the frozen CI wheel in Studio and Processing; see [AWS acceptance](AWS_SESSION_VALIDATION_217.md). This does not certify all providers or EMR. The original local build and its pre-commit source fingerprints remain historical candidate evidence. The tested CI wheel has its own SHA and synthetic merge checkout, recorded separately. No publication or 2.1.6 replacement occurred. Final release artifacts still require exact-main CI, sealing and TestPyPI promotion. Documentation changes do not retrospectively change the identity of a tested wheel.
+
+
+## Supplemental pipeline acceptance
+
+Operator-supplied controller/comparison reports now mark both session variants PASS:
+`automatic` campaign `20261111T055851Z-e0a39fd5` and `injected` campaign
+`20261111T060123Z-33897585`. Four Processing jobs completed, with eight agent
+executions and eight HTTP reservations according to the controller checks. Both
+variants used the same runtime JSON; artifact continuity, worker session policies,
+application lineage and dependency order passed. See the AWS acceptance document
+and machine-readable summary for provenance and limits. EMR remains unverified.

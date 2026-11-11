@@ -1,5 +1,16 @@
 # Install Agentic Systems 2.1.7
 
+**Candidate status:** 2.1.7 has not been published. The PyPI/release-download
+commands below apply after publication. For current acceptance, install the exact
+supplied wheel in the Python interpreter that actually runs the application:
+
+```bash
+python -m pip install "wheels/agentic_systems-2.1.7-py3-none-any.whl[bedrock]"
+```
+
+In Jupyter, use `%pip` in the target kernel and restart after installation.
+Installing in Studio does not install packages in a remote EMR driver.
+
 Use Python 3.10–3.14 in a clean environment:
 
 ```bash

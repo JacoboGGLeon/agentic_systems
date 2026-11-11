@@ -5,6 +5,7 @@
 3. [Explore executable examples](../examples/README.md).
 4. [Inspect the API](API.md), [actor contracts](ACTOR_CONTRACTS.md) and [signatures](API_214_SURFACE.md).
 5. [Use the current assistant skill](../skills/agentic-systems/SKILL.md).
+6. [Review 2.1.7 AWS session acceptance and limits](AWS_SESSION_VALIDATION_217.md).
 
 The SDK wheel contains the computational grammar and CLI. Notebooks and Studio source are separate repository resources; PyPI is a package index, not a documentation file server. README and project metadata links use absolute GitHub URLs so they remain usable from PyPI.
 

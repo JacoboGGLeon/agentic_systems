@@ -7,7 +7,7 @@
 - Start applications from examples/notebooks or bundled skill assets instead.
 - Align active SDK, optional packages, skill and learning targets with 2.1.7.
 - Preserve existing files, historical evidence and published 2.1.6 artifacts.
-- Agent execution behavior is unchanged; no new live inference certification.
+- Agent execution behavior is unchanged. Record targeted, operator-reported Bedrock acceptance in SageMaker Studio and Processing against the frozen 2.1.7 candidate; EMR and distributed Spark remain unverified.
 
 ## 2.1.6
 

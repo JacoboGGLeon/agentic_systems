@@ -8,11 +8,13 @@ Start with a Python function. Turn it into a Tool, give an Agent a capability,
 and compose Agents into a System. Add Context, Memory, episodic execution and
 evaluation as the application grows.
 
-**Release 2.1.7** uses one public grammar. Install the SDK with
-`pip install agentic-systems==2.1.7`; see [installation](https://github.com/JacoboGGLeon/agentic_systems/blob/main/INSTALL.md) for optional
-framework/provider extras and Studio. Historical live evidence retains its original
-artifact identity. This release candidate requires fresh quality and mutation checks;
-see the [2.1.7 release notes](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/RELEASE_NOTES_217.md).
+**2.1.7 is a release candidate, not yet published.** It bundles the authoring skill
+and simplifies the CLI. Until publication, install the supplied frozen wheel;
+the version-pinned PyPI commands below describe installation after release.
+See [installation](https://github.com/JacoboGGLeon/agentic_systems/blob/main/INSTALL.md)
+and the [2.1.7 release notes](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/RELEASE_NOTES_217.md).
+Targeted operator-reported Bedrock checks passed in SageMaker Studio and Processing;
+EMR and distributed Spark remain unverified. Each result retains its tested artifact identity.
 
 ## Get your first result
 
@@ -395,6 +397,14 @@ Conflicting API-key, endpoint or region settings are rejected. The session stays
 outside serialized state, Context, Memory and evidence, and the toolkit does not
 close it. Toolkit invocations sharing it are serialized; external use remains
 the owner's responsibility. The resource cannot be moved across processes.
+
+To move configuration between jobs, export `runtime.model_dump_json()`, load that
+JSON in the destination process, create a local Boto3 session there, and provide it
+with `toolkit.runtime(**config, session=local_session)`. A common IAM role does not
+make two jobs share a Session object. Creating a Boto3 session does not configure
+an EMR runtime role or transfer the caller's identity to another job.
+
+[Targeted 2.1.7 AWS acceptance and remaining scope](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/AWS_SESSION_VALIDATION_217.md).
 
 [Session example](https://github.com/JacoboGGLeon/agentic_systems/blob/main/examples/aws_session/01_aws_session.ipynb) ·
 [Independent ADA package](https://github.com/JacoboGGLeon/agentic_systems/blob/main/integrations/ada/README.md).

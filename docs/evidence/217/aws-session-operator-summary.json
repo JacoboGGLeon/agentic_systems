@@ -1,0 +1,116 @@
+{
+  "schema": "agentic-217-operator-aws-acceptance-summary.v1",
+  "provenance": "Summary of complete reports supplied by the operator in the working conversation; not an independent download from AWS. Original reports and ledgers remain with the operator.",
+  "candidate": {
+    "version": "2.1.7",
+    "wheel_sha256": "b3de241cad7bd6a9639a1c57417234c597bf97756f92bebaa98330d0912588fd",
+    "reviewed_head": "5357691f4337a3321eed23f30085f4de5f8a4a43",
+    "ci_checkout_commit": "e83a1269a691ae757d1837afc559abe4f6b9de85",
+    "installed_package_files": 115
+  },
+  "studio": {
+    "campaign": "20261111T050225_3988e763",
+    "acceptance": "PASS",
+    "python": "3.12.9",
+    "boto3": "1.44.0",
+    "http_attempts_reserved": 3,
+    "checks": {
+      "borrowed_session_configuration": "PASS",
+      "boto3_direct": "PASS",
+      "agent_injected": "PASS",
+      "agent_default_chain": "PASS",
+      "environment_unchanged": true,
+      "both_agent_invariants": true
+    },
+    "agent_execution_ids": [
+      "run-1972bb02e41f481b9a9820de6a70e406",
+      "run-1d2515b7c2e947f4805bd42c5ca0fb3d"
+    ]
+  },
+  "processing": {
+    "campaign": "20261111T052200Z-0cc57a3e",
+    "job_status": "Completed",
+    "acceptance": "PASS",
+    "boto3": "1.44.0",
+    "http_attempts_reserved": 2,
+    "runtime_json_sha256": "cd769c9575fb337d2e0f68bdf068d28be877a96224dec7531ece0e287f10d8af",
+    "checks": {
+      "json_roundtrip_in_worker": "PASS",
+      "worker_boto3_direct": "PASS",
+      "worker_agent_restored_runtime": "PASS",
+      "configuration_equal": true,
+      "session_serialized": false,
+      "environment_unchanged": true,
+      "agent_invariants": true,
+      "configured_job_role_matches": true
+    },
+    "agent_execution_id": "run-2fc7a2f415704d5c914a818e11aa0a86"
+  },
+  "region": "us-east-1",
+  "model": "us.amazon.nova-pro-v1:0",
+  "pending": {
+    "emr_driver": "BLOCKED: target runtime role not confirmed; no live EMR acceptance",
+    "spark_executors": "NOT RUN",
+    "long_running_credential_renewal": "NOT RUN",
+    "sts_role_attestation": "NOT RUN"
+  },
+  "earlier_attempts": [
+    {
+      "outcome": "FAIL",
+      "reason": "Direct Boto3 AssertionError in original probe; exact assertion not recoverable from that report. Both agents passed."
+    },
+    {
+      "outcome": "BLOCKED_BY_BUDGET",
+      "reason": "Later diagnostic reused the spent original campaign ledger; resulting agent FAIL statuses do not establish an IAM defect."
+    }
+  ],
+  "pipelines": {
+    "provenance": "Operator-supplied controller reports and comparison; underlying worker files not independently downloaded.",
+    "acceptance": "PASS",
+    "same_runtime_json_between_variants": true,
+    "runtime_json_sha256": "cd769c9575fb337d2e0f68bdf068d28be877a96224dec7531ece0e287f10d8af",
+    "variants": {
+      "automatic": {
+        "campaign": "20261111T055851Z-e0a39fd5",
+        "execution_reference": "a2xki92pp48y",
+        "acceptance": "PASS",
+        "pipeline_status": "Succeeded",
+        "completed_jobs": 2,
+        "agent_executions": 4,
+        "http_attempts_reserved_from_controller_checks": 4
+      },
+      "injected": {
+        "campaign": "20261111T060123Z-33897585",
+        "execution_reference": "2sz7x90iq9e5",
+        "acceptance": "PASS",
+        "pipeline_status": "Succeeded",
+        "completed_jobs": 2,
+        "agent_executions": 4,
+        "http_attempts_reserved_from_controller_checks": 4
+      }
+    },
+    "controller_checks": {
+      "both_workers_pass": true,
+      "both_frozen_wheels": true,
+      "same_runtime_json": true,
+      "environment_unchanged": true,
+      "session_not_serialized": true,
+      "two_attempts_each": true,
+      "mode_and_campaign_match": true,
+      "steps_match": true,
+      "step_1_all_checks_pass": true,
+      "step_2_all_checks_pass": true,
+      "upstream_artifact_hash_matches": true,
+      "application_lineage_matches": true,
+      "expected_campaign_and_mode": true,
+      "pipeline_succeeded": true,
+      "two_completed_jobs_with_expected_role": true,
+      "step_dependency_order": true
+    },
+    "bundle_sources_sha256": {
+      "worker.py": "e756163df8ec85717d870bbf59c778728199a9fb4bbe4a4b49aeb0d0f60e4844",
+      "bootstrap.py": "cd24b22d3a231c921963523dcfbd7b19a85bc7bb3d010cb5f5204e74fdb5e548",
+      "support.py": "b21acef852e638caf25c8705e396cf2dc008dbca01173447a06483cf038b1303"
+    }
+  }
+}
