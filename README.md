@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/assets/logo_agentic_systems.png" alt="Agentic Systems logo" width="190">
+</p>
+
 # Agentic Systems
 
 > **“Did the level of this series change? Compare the observations and show what supports the finding.”**
@@ -5,6 +9,8 @@
 Build applications around executable Tools. Let actors select capabilities, let graph-backed actuators run declared operations, coordinate them in Systems, and inspect the evidence behind each result.
 
 This guide follows one investigation from a numerical comparison to an episodic, evaluated application. Each question introduces the next part of the grammar.
+
+The conversation panels below summarize the observed behavior; they are an edited teaching narrative, not verbatim model transcripts.
 
 **Version scope:** this is the README proposal for 2.1.9. The reported executions used the published **2.1.8** SDK. They establish a baseline; verification against the 2.1.9 release candidate remains pending. Explicit Agent contracts and policies, and their broader framework/provider validation, are planned for 2.1.10.
 
@@ -56,9 +62,17 @@ The initial comparison uses 2005–2009 versus 2010–2014. The episodic investi
 
 ## 1. “Did the level of this series change?”
 
-**user:** Compare the observations and show what supports the finding.
+> [!NOTE]
+> **USER**
+>
+> Compare the observations and show what supports the finding.
 
-**agentic-systems:** The earlier mean is **84.82**, the later mean is **92.21**, and the difference is **+7.39 index points**.
+> [!TIP]
+> **AGENTIC SYSTEMS**
+>
+> The earlier mean is **84.82**, the later mean is **92.21**, and the difference is **+7.39 index points**.
+
+![Interaction 1: Compare two chronological windows with a deterministic Tool](docs/assets/readme_219/interaction_01.svg)
 
 **context:** Ten observations from 2005–2014, split into equal chronological windows. This is a descriptive comparison; it does not establish a structural break or a cause.
 
@@ -114,9 +128,17 @@ The notebook uses a richer measurement schema shared by its later blocks. Eviden
 
 ## 2. “Can you choose the analysis from my question?”
 
-**user:** Describe the observations instead of comparing the periods.
+> [!NOTE]
+> **USER**
+>
+> Describe the observations instead of comparing the periods.
 
-**agentic-systems:** Selected `profile_series`. **10 observations**, average **88.515**, minimum **80.09**, maximum **97.84**.
+> [!TIP]
+> **AGENTIC SYSTEMS**
+>
+> Selected `profile_series`. **10 observations**, average **88.515**, minimum **80.09**, maximum **97.84**.
+
+![Interaction 2: Choose a Tool from a Skill using a model actor](docs/assets/readme_219/interaction_02.svg)
 
 **context:** A Skill exposes description, comparison and endpoint-slope Tools. Instructions ask the actor to choose one appropriate Tool and preserve all observations.
 
@@ -130,9 +152,17 @@ Both Bedrock/Native and Bedrock/OpenAI Agents selected the correct description T
 
 ## 3. “Can you coordinate and validate the investigation?”
 
-**user:** Compare the periods and check the measurement before forwarding a finding.
+> [!NOTE]
+> **USER**
+>
+> Compare the periods and check the measurement before forwarding a finding.
 
-**agentic-systems:** Discovery profiled the data, selected comparison and verified the recorded measurement. The live Discovery evaluation confirmed **+7.39 points** for 2005–2014.
+> [!TIP]
+> **AGENTIC SYSTEMS**
+>
+> Discovery profiled the data, selected comparison and verified the recorded measurement. The live Discovery evaluation confirmed **+7.39 points** for 2005–2014.
+
+![Interaction 3: Coordinate the Discovery agents with reference context](docs/assets/readme_219/interaction_03.svg)
 
 **context:** Dataset identity, source reference and declared business criteria live in `Context`. Business channels such as measurements and validation flags live in graph state.
 
@@ -152,9 +182,17 @@ Evidence: each profile's Environment descendants and `*_eval.evidence.json`.
 
 ## 4. “Can another capability review and report the finding?”
 
-**user:** Review the finding and produce a report backed by execution evidence.
+> [!NOTE]
+> **USER**
+>
+> Review the finding and produce a report backed by execution evidence.
 
-**agentic-systems:** Review independently recomputed the difference, applied the screening rule and produced a report containing measurement, verdict, threshold and analytical scope.
+> [!TIP]
+> **AGENTIC SYSTEMS**
+>
+> Review independently recomputed the difference, applied the screening rule and produced a report containing measurement, verdict, threshold and analytical scope.
+
+![Interaction 4: Compose Discovery and Review Systems](docs/assets/readme_219/interaction_04.svg)
 
 **context:** At least ten observations and an absolute difference of at least ten index points identify a review candidate. This business screening rule is implemented in a Tool; it is not an explicit Agent `policy` declaration.
 
@@ -164,25 +202,21 @@ Evidence: each profile's Environment descendants and `*_eval.evidence.json`.
 
 **route:** Discovery System → Review System → reviewed report.
 
-```mermaid
-flowchart TD
-    subgraph Discovery
-        P["Profiler · actuator"] --> I["Investigator · actor"]
-        I --> A["Analyst · actuator"]
-    end
-    subgraph Review
-        C["Challenger · actor"] --> R["Reporter · actuator"]
-    end
-    A --> C
-```
-
 Evidence: `check_finding` and `render_report` events in each live Environment bundle. Review verifies observations and arithmetic; agreement between models is not its acceptance criterion.
 
 ## 5. “Can you investigate successive periods and remember prior observations?”
 
-**user:** Process successive periods, retain previous observations and stop when a candidate requires review.
+> [!NOTE]
+> **USER**
+>
+> Process successive periods, retain previous observations and stop when a candidate requires review.
 
-**agentic-systems:** Four episodes were processed. The fourth reached the screening threshold, so the Environment stopped before processing the next record.
+> [!TIP]
+> **AGENTIC SYSTEMS**
+>
+> Four episodes were processed. The fourth reached the screening threshold, so the Environment stopped before processing the next record.
+
+![Interaction 5: Run episodes with memory and a stop condition](docs/assets/readme_219/interaction_05.svg)
 
 **context:** Chronological ten-year records, bounded episode history, accumulated processed count and candidate flag.
 
@@ -191,16 +225,6 @@ Evidence: `check_finding` and `render_report` events in each live Environment bu
 **grammar:** `Environment` + `records` + `state` + `update` + `stop` + `max_steps` + `Memory`.
 
 **route:** Record → Discovery/Review → state update → stop decision → next record if needed.
-
-```mermaid
-flowchart TD
-    E["Next record"] --> D["Discovery System"]
-    D --> R["Review System"]
-    R --> U["Update state and history"]
-    U --> S{"Candidate or record limit?"}
-    S -->|"No"| E
-    S -->|"Yes"| F["Finish with evidence"]
-```
 
 Both frameworks produced the same observed progression:
 
@@ -217,9 +241,17 @@ The final difference exceeds the threshold by only 0.034 points. The result is s
 
 ## 6. “How do I know the result and the procedure are correct?”
 
-**user:** Verify the finding and confirm that the required operations used the original observations.
+> [!NOTE]
+> **USER**
+>
+> Verify the finding and confirm that the required operations used the original observations.
 
-**agentic-systems:** Result and trajectory checks passed for live Discovery under both frameworks. Local acceptance also covered an Agent, a System, an Environment and rejecting controls.
+> [!TIP]
+> **AGENTIC SYSTEMS**
+>
+> Result and trajectory checks passed for live Discovery under both frameworks. Local acceptance also covered an Agent, a System, an Environment and rejecting controls.
+
+![Interaction 6: Evaluate the result and the execution trajectory](docs/assets/readme_219/interaction_06.svg)
 
 **context:** A numerical oracle using `math.fsum` checks the result independently of the comparison Tool. Trajectory checks inspect operation order, successful status and exact original values.
 
@@ -245,9 +277,17 @@ Eval is fail-fast. Memory isolation is process-local and starts from existing to
 
 ## 7. “Can I change the framework and preserve the application?”
 
-**user:** Run the actors through OpenAI Agents while retaining Bedrock, IAM and Qwen3 32B.
+> [!NOTE]
+> **USER**
+>
+> Run the actors through OpenAI Agents while retaining Bedrock, IAM and Qwen3 32B.
 
-**agentic-systems:** Both Native and OpenAI Agents completed description, the four-episode Environment and the live Discovery evaluation with the same numerical results and decisions.
+> [!TIP]
+> **AGENTIC SYSTEMS**
+>
+> Both Native and OpenAI Agents completed description, the four-episode Environment and the live Discovery evaluation with the same numerical results and decisions.
+
+![Interaction 7: Select Native or OpenAI Agents while preserving Bedrock](docs/assets/readme_219/interaction_07.svg)
 
 **context:** Same dataset, Tools, Skills, graph structure, provider and model; fresh application Memory per profile. Sessions stay outside serialized configuration.
 
