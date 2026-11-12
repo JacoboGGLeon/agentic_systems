@@ -1,24 +1,39 @@
 <p align="center">
-  <img src="docs/assets/logo_agentic_systems.png" alt="Agentic Systems logo" width="190">
+  <img src="docs/assets/logo_agentic_systems.png" alt="Agentic Systems logo" width="360">
 </p>
 
 # Agentic Systems
 
-> **“Did the level of this series change? Compare the observations and show what supports the finding.”**
+**Agentic Systems is a computational grammar for building applications from executable capabilities, explicit graphs and model actors, with shared execution evidence.**
 
-Build applications around executable Tools. Let actors select capabilities, let graph-backed actuators run declared operations, coordinate them in Systems, and inspect the evidence behind each result.
+Use the same Python objects to compose deterministic operations and model-selected actions, coordinate them, run episodes and evaluate both outputs and trajectories.
 
-This guide follows one investigation from a numerical comparison to an episodic, evaluated application. Each question introduces the next part of the grammar.
+| Object | Responsibility |
+|---|---|
+| **Tool** | Execute an operation with validated arguments |
+| **Skill** | Group reusable Tools and capability instructions |
+| **Agent** | Own a capability: a model actor or a graph-backed actuator |
+| **Graph** | Declare state flow, execution edges and branching |
+| **System** | Coordinate capabilities, including nested Systems |
+| **Runtime / Framework** | Select the provider/model and the actor execution framework independently |
+| **Context / Memory** | Supply immutable references and bounded episode history |
+| **Environment** | Supply records, accumulate episode state and decide when to stop |
+| **Eval** | Execute acceptance cases and check results and trajectories |
+| **RunResult** | Retain outputs, usage, failures and nested execution evidence |
 
-The conversation panels below summarize the observed behavior; they are an edited teaching narrative, not verbatim model transcripts.
+Actors choose actions through a model. Actuators follow the graph you declare. Both use `Agent`, both operate through Tools, and both return inspectable results. LangGraph orchestrates graphs; Native or OpenAI Agents executes actors; the runtime supplies Python or model-provider execution.
 
-**Version scope:** this is the README proposal for 2.1.9. The reported executions used the published **2.1.8** SDK. They establish a baseline; verification against the 2.1.9 release candidate remains pending. Explicit Agent contracts and policies, and their broader framework/provider validation, are planned for 2.1.10.
+The sections below introduce these objects progressively through one real-data example. **User input** states the request; **Agentic Systems output** shows recorded values or an explicitly labeled summary. These panels are a teaching presentation, not verbatim conversation transcripts.
+
+**Version:** documentation proposal for 2.1.9, supported by executions of SDK **2.1.8**. Release-candidate validation is still pending. Explicit Agent contracts and policies remain in the 2.1.10 scope.
 
 ## Start with the executable example
 
 Open [ADA_Time_Series_Discovery_219_Core.ipynb](examples/time_series_discovery_219/ADA_Time_Series_Discovery_219_Core.ipynb). Its filename describes the development target; its dependency pin is `agentic-systems==2.1.8`.
 
-The notebook contains the data, visible declarations, seven teaching blocks, local checks, optional live execution, and evidence export. Live results reported here come from the supplied ADA execution bundles. The downloadable source notebook is supplied without those live cell outputs; those bundles are the live evidence.
+The application notebook contains visible declarations and the complete runnable example. To inspect actual outputs without making model calls, open the **[recorded outputs notebook](examples/time_series_discovery_219/Recorded_Outputs.ipynb)**. Its cells were executed against the committed [Native evidence](examples/time_series_discovery_219/outputs/native.json) and [OpenAI Agents evidence](examples/time_series_discovery_219/outputs/openai_agents.json); GitHub renders the saved tables and outputs.
+
+This viewer does not pretend to be the original application notebook. The uploaded Native PDF contains a **different failed rerun** (page 25); the earlier Native PASS comes from its JSON bundle. The OpenAI Agents PDF shows PASS (page 21). The [failed-rerun record](examples/time_series_discovery_219/outputs/native_failed_rerun.json) preserves that distinction.
 
 Install into the notebook kernel:
 
@@ -43,7 +58,7 @@ The notebook reuses an existing Boto3 `session` or unwraps `sagemaker_session.bo
 
 The current continuation configuration retains the existing campaign ledger and explicitly raises its cumulative cap from 60 to 100 HTTP attempts. Keep the same working directory. It expects the existing ledger; set `ALLOW_NEW_CAMPAIGN=True` only for a first-ever campaign. Budget preflight, send counting and failures are recorded. Changing the framework does not reset the counter.
 
-## One dataset, one investigation
+## The teaching example: time-series discovery
 
 | Property | Value |
 |---|---|
@@ -60,19 +75,32 @@ Source provenance, retrieval time and archive hash are recorded in the JSON. The
 
 The initial comparison uses 2005–2009 versus 2010–2014. The episodic investigation uses successive non-overlapping ten-year blocks, comparing each block's two five-year halves.
 
-## 1. “Did the level of this series change?”
+## 1. Tool + Graph + Agent actuator
 
-> [!NOTE]
-> **USER**
->
+A **Tool** is the executable unit. A **Graph** declares how it runs and writes state. An **Agent(graph=...)** owns that deterministic capability.
+
+**User input**
+
 > Compare the observations and show what supports the finding.
 
-> [!TIP]
-> **AGENTIC SYSTEMS**
->
-> The earlier mean is **84.82**, the later mean is **92.21**, and the difference is **+7.39 index points**.
+**Agentic Systems output**
 
-![Interaction 1: Compare two chronological windows with a deterministic Tool](docs/assets/readme_219/interaction_01.svg)
+```text
+Earlier mean: 84.820
+Later mean: 92.210
+Difference: +7.390 index points
+```
+
+```mermaid
+flowchart TD
+    V["Original observations"] --> E["Earlier window"]
+    V --> L["Later window"]
+    subgraph A["Agent · graph-backed actuator"]
+        E --> T["Tool · compare_windows"]
+        L --> T
+    end
+    T --> R["RunResult · +7.39 and Tool evidence"]
+```
 
 **context:** Ten observations from 2005–2014, split into equal chronological windows. This is a descriptive comparison; it does not establish a structural break or a cause.
 
@@ -126,19 +154,34 @@ print(result.data["measurement"])
 
 The notebook uses a richer measurement schema shared by its later blocks. Evidence: `01_comparison.evidence.json`.
 
-## 2. “Can you choose the analysis from my question?”
+## 2. Skill + Runtime + Framework + Agent actor
 
-> [!NOTE]
-> **USER**
->
+A **Skill** groups capabilities. An **Agent(runtime=...)** delegates action selection to a model through a **Framework**. The **Runtime** selects the provider and model.
+
+**User input**
+
 > Describe the observations instead of comparing the periods.
 
-> [!TIP]
-> **AGENTIC SYSTEMS**
->
-> Selected `profile_series`. **10 observations**, average **88.515**, minimum **80.09**, maximum **97.84**.
+**Agentic Systems output**
 
-![Interaction 2: Choose a Tool from a Skill using a model actor](docs/assets/readme_219/interaction_02.svg)
+```text
+{'profile': {'count': 10, 'average': 88.515, 'minimum': 80.09, 'maximum': 97.84}}
+```
+
+```mermaid
+flowchart TD
+    Q["User input"] --> A["Agent · model actor"]
+    R["Runtime + Framework"] -. execution .-> A
+    subgraph S["Skill · available capabilities"]
+        P["profile_series"]
+        C["compare_windows"]
+        T["measure_trend"]
+    end
+    A -->|"observed selection"| P
+    A -. alternative .-> C
+    A -. alternative .-> T
+    P --> O["Tool output · count 10, average 88.515"]
+```
 
 **context:** A Skill exposes description, comparison and endpoint-slope Tools. Instructions ask the actor to choose one appropriate Tool and preserve all observations.
 
@@ -150,19 +193,30 @@ The notebook uses a richer measurement schema shared by its later blocks. Eviden
 
 Both Bedrock/Native and Bedrock/OpenAI Agents selected the correct description Tool. Evidence: `bedrock_native_description.evidence.json` and `bedrock_openai_agents_description.evidence.json`.
 
-## 3. “Can you coordinate and validate the investigation?”
+## 3. System + Context + validated state
 
-> [!NOTE]
-> **USER**
->
+A **System** coordinates capabilities through a graph. **Context** carries reference information; graph state carries the changing business outputs.
+
+**User input**
+
 > Compare the periods and check the measurement before forwarding a finding.
 
-> [!TIP]
-> **AGENTIC SYSTEMS**
->
-> Discovery profiled the data, selected comparison and verified the recorded measurement. The live Discovery evaluation confirmed **+7.39 points** for 2005–2014.
+**Agentic Systems output**
 
-![Interaction 3: Coordinate the Discovery agents with reference context](docs/assets/readme_219/interaction_03.svg)
+```text
+Selected: compare_windows
+Measurement checked: True
+```
+
+```mermaid
+flowchart TD
+    C["Context · dataset and sources"] -. supplies .-> P
+    subgraph D["System · Discovery"]
+        P["Profiler · actuator"] --> I["Investigator · actor"]
+        I --> A["Analyst · actuator"]
+    end
+    A --> R["Checked measurement in graph state"]
+```
 
 **context:** Dataset identity, source reference and declared business criteria live in `Context`. Business channels such as measurements and validation flags live in graph state.
 
@@ -180,19 +234,32 @@ Both Bedrock/Native and Bedrock/OpenAI Agents selected the correct description T
 
 Evidence: each profile's Environment descendants and `*_eval.evidence.json`.
 
-## 4. “Can another capability review and report the finding?”
+## 4. System composition + nested evidence
 
-> [!NOTE]
-> **USER**
->
+A System can contain other Systems. Their child executions remain connected in the parent **RunResult**, so composition preserves inspectability.
+
+**User input**
+
 > Review the finding and produce a report backed by execution evidence.
 
-> [!TIP]
-> **AGENTIC SYSTEMS**
->
-> Review independently recomputed the difference, applied the screening rule and produced a report containing measurement, verdict, threshold and analytical scope.
+**Agentic Systems output**
 
-![Interaction 4: Compose Discovery and Review Systems](docs/assets/readme_219/interaction_04.svg)
+```text
+2005–2014: difference=+7.390 index points; review=no_candidate; threshold=10.0.
+Descriptive screening only; no statistical significance or causal claim.
+```
+
+```mermaid
+flowchart TD
+    subgraph D["System · Discovery"]
+        P["Profiler"] --> I["Investigator"] --> A["Analyst"]
+    end
+    subgraph V["System · Review"]
+        C["Challenger · check_finding"] --> R["Reporter · render_report"]
+    end
+    A --> C
+    R --> E["RunResult · report and nested lineage"]
+```
 
 **context:** At least ten observations and an absolute difference of at least ten index points identify a review candidate. This business screening rule is implemented in a Tool; it is not an explicit Agent `policy` declaration.
 
@@ -204,19 +271,34 @@ Evidence: each profile's Environment descendants and `*_eval.evidence.json`.
 
 Evidence: `check_finding` and `render_report` events in each live Environment bundle. Review verifies observations and arithmetic; agreement between models is not its acceptance criterion.
 
-## 5. “Can you investigate successive periods and remember prior observations?”
+## 5. Environment + Memory + episode state
 
-> [!NOTE]
-> **USER**
->
+An **Environment** executes a graph over records. Its accumulated state, update function and stop function govern episodes. **Memory** makes bounded prior observations available.
+
+**User input**
+
 > Process successive periods, retain previous observations and stop when a candidate requires review.
 
-> [!TIP]
-> **AGENTIC SYSTEMS**
->
-> Four episodes were processed. The fourth reached the screening threshold, so the Environment stopped before processing the next record.
+**Agentic Systems output**
 
-![Interaction 5: Run episodes with memory and a stop condition](docs/assets/readme_219/interaction_05.svg)
+```text
+processed: 4
+candidate_found: true
+reason: stop
+truncated: false
+```
+
+```mermaid
+flowchart TD
+    N["Environment · next record"] --> D["Discovery System"]
+    D --> R["Review System"]
+    R --> U["Update accumulated state"]
+    M["Memory · prior episodes"] -. available .-> D
+    U -. retain .-> M
+    U --> S{"Candidate or record limit?"}
+    S -->|"Continue"| N
+    S -->|"Stop"| E["Episode outputs and summary"]
+```
 
 **context:** Chronological ten-year records, bounded episode history, accumulated processed count and candidate flag.
 
@@ -239,19 +321,33 @@ Evidence: `*_environment.evidence.json`; summary reports `processed=4`, `candida
 
 The final difference exceeds the threshold by only 0.034 points. The result is sensitive to the declared threshold and windows. Availability of history does not demonstrate that memory improved analytical quality.
 
-## 6. “How do I know the result and the procedure are correct?”
+## 6. Eval + result and trajectory checks
 
-> [!NOTE]
-> **USER**
->
+An **Eval** executes an Agent, System or Environment against cases. Checks can inspect both business data and the actual operations that produced it.
+
+**User input**
+
 > Verify the finding and confirm that the required operations used the original observations.
 
-> [!TIP]
-> **AGENTIC SYSTEMS**
->
-> Result and trajectory checks passed for live Discovery under both frameworks. Local acceptance also covered an Agent, a System, an Environment and rejecting controls.
+**Agentic Systems output**
 
-![Interaction 6: Evaluate the result and the execution trajectory](docs/assets/readme_219/interaction_06.svg)
+```text
+06_eval_agent status= completed invariants= True
+06_eval_system status= completed invariants= True
+06_eval_environment status= completed invariants= True
+06_negative_wrong_answer status= failed invariants= True
+06_invalid_windows status= completed invariants= True
+```
+
+```mermaid
+flowchart TD
+    C["Eval · cases"] --> U["Execute declared unit"]
+    U --> R["RunResult"]
+    R --> N["Result check · independent oracle"]
+    R --> T["Trajectory check · Tools and arguments"]
+    N --> V["Acceptance result and evidence"]
+    T --> V
+```
 
 **context:** A numerical oracle using `math.fsum` checks the result independently of the comparison Tool. Trajectory checks inspect operation order, successful status and exact original values.
 
@@ -275,19 +371,31 @@ Evidence: `06_*` and `*_eval.evidence.json`. A failed negative-control execution
 
 Eval is fail-fast. Memory isolation is process-local and starts from existing toolkit history; it does not isolate SDK sessions or external effects. Use separate evaluations when each negative case needs a report.
 
-## 7. “Can I change the framework and preserve the application?”
+## 7. Framework portability + shared Runtime
 
-> [!NOTE]
-> **USER**
->
+**Framework** and **Runtime** are independent choices. Reconstruct actors with another framework while preserving the provider, Tools and surrounding graphs; then evaluate that profile.
+
+**User input**
+
 > Run the actors through OpenAI Agents while retaining Bedrock, IAM and Qwen3 32B.
 
-> [!TIP]
-> **AGENTIC SYSTEMS**
->
-> Both Native and OpenAI Agents completed description, the four-episode Environment and the live Discovery evaluation with the same numerical results and decisions.
+**Agentic Systems output**
 
-![Interaction 7: Select Native or OpenAI Agents while preserving Bedrock](docs/assets/readme_219/interaction_07.svg)
+```text
+bedrock_openai_agents_description status= completed invariants= True
+bedrock_openai_agents_environment status= completed invariants= True
+bedrock_openai_agents_eval status= completed invariants= True
+```
+
+```mermaid
+flowchart TD
+    S{"Select actor framework"} --> N["Native"]
+    S --> O["OpenAI Agents"]
+    N --> R["Runtime · Bedrock + Qwen3 32B + IAM"]
+    O --> R
+    R --> T["Same Tools and application graphs"]
+    T --> E["Same result and trajectory checks"]
+```
 
 **context:** Same dataset, Tools, Skills, graph structure, provider and model; fresh application Memory per profile. Sessions stay outside serialized configuration.
 
@@ -380,7 +488,7 @@ An operational failure is surfaced before checking model selection. Insufficient
 
 ## Verification boundaries and release scope
 
-The baseline validates this example with Python/Native and two live Bedrock profiles on SDK 2.1.8. The live Environment contains the coordinated Discovery/Review operations; blocks 3–5 were not all executed as separate live acceptance campaigns.
+The successful JSON baseline validates this example with Python/Native and two live Bedrock profiles on SDK 2.1.8. The live Environment contains the coordinated Discovery/Review operations; blocks 3–5 were not all executed as separate live acceptance campaigns.
 
 The business output is grounded in Tool results. Generated intermediate prose is not comprehensively evaluated: Native used the phrase “significant increase” without a significance test. The deterministic report retains the descriptive limitation. Extending text evaluation is separate work.
 
