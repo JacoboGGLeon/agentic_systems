@@ -1,4 +1,4 @@
-# Gramática canónica · 2.1.4.dev8
+# Gramática canónica · 2.1.9
 
 15 funciones/constructores propios; cinco objetos originales de LangGraph
 expuestos como Graph, START, END, Command y Send; más __version__.

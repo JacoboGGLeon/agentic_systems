@@ -6,8 +6,9 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
+EVIDENCE_VIEWERS = {ROOT / "examples/time_series_discovery_219/Recorded_Outputs.ipynb"}
 NOTEBOOKS = sorted((ROOT / "tutorials").rglob("*.ipynb")) + sorted(
-    p for p in (ROOT / "examples").rglob("*.ipynb") if "history" not in p.parts
+    p for p in (ROOT / "examples").rglob("*.ipynb") if "history" not in p.parts and p not in EVIDENCE_VIEWERS
 )
 
 
@@ -51,3 +52,21 @@ def test_documented_execution_controls_are_executable():
     assert report["runtime"]["max_retries"] == 0
     assert report["runtime"]["timeout_s"] < report["timeout_s"]
     assert report["inference_requests"] == 0
+
+
+def test_recorded_output_viewer_preserves_historical_identity():
+    for path in EVIDENCE_VIEWERS:
+        notebook = json.loads(path.read_text(encoding="utf-8"))
+        meta = notebook["metadata"]["agentic_systems"]
+        assert meta["recorded_sdk_version"] == "2.1.8"
+        code = "\n".join("".join(c["source"]) for c in notebook["cells"] if c["cell_type"] == "code")
+        tree = ast.parse(code)
+        assert not list(hidden_builders(tree))
+        assert not any(isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute)
+                       and n.func.attr in {"run", "arun"} for n in ast.walk(tree))
+        for name in ("native.json", "openai_agents.json"):
+            assert name in code
+            record = json.loads((path.parent / "outputs" / name).read_text())
+            assert record["summary"]["sdk_version"] == "2.1.8"
+            assert record["manifest"]["sdk_target"] == "2.1.8"
+        assert any(c.get("outputs") for c in notebook["cells"] if c["cell_type"] == "code")

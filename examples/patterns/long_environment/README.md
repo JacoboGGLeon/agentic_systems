@@ -1,4 +1,4 @@
-# Long environment · Agentic Systems 2.1.8
+# Long environment · Agentic Systems 2.1.9
 
 Accumulate bounded episode memory without contaminating the next execution.
 

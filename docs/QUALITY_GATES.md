@@ -1,6 +1,5 @@
-# Validación y límites · 2.1.4.dev8
+# Quality gates · Agentic Systems 2.1.9
 
-Consulta [Validación y límites](LEARNING_VALIDATION_214.md) y el [estado actual](STATUS_214.md).
-La evidencia conserva versión y hash del artefacto; una prueba offline no
-acredita inferencia ni una capacidad específica de todos los SDK.
-Las instantáneas anteriores permanecen en revisions/.
+Publication uses exact-commit quality checks, mutation testing, a reviewed version-specific acceptance policy, sealed artifact hashes, TestPyPI promotion and post-publication verification. See [Publishing](RELEASE_PUBLISHING.md).
+
+Local source checks, installed-wheel checks, simulated transport and live model runs establish different things. Preserve failed attempts and original artifact identities. Use [current validation](VALIDATION_219.md) for 2.1.9 status; earlier campaign reports remain historical.

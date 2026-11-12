@@ -1,4 +1,4 @@
-# Graphs · 2.1.8
+# Graphs · 2.1.9
 
 Declare business channels in a Pydantic state model. A node returns partial updates; output channels absent from the declared schema can be projected away. A Tool with input_schema and one business argument receives the complete Pydantic model.
 

@@ -1,0 +1,4857 @@
+{
+  "source_kind": "recorded ADA execution bundle",
+  "run_directory": "20261111T235206Z_702520",
+  "profile": "bedrock_native",
+  "manifest": {
+    "sdk_target": "2.1.8",
+    "next_development_target": "2.1.9",
+    "versions": {
+      "agentic-systems": "2.1.8",
+      "langgraph": "1.2.20",
+      "pydantic": "2.12.5",
+      "boto3": "1.44.1",
+      "openai-agents": "0.18.3"
+    },
+    "python": "3.12.9 | packaged by conda-forge | (main, Feb 14 2025, 08:00:06) [GCC 13.3.0]",
+    "data_sha256": "59109a8fc4f18b0bf73ab9a19df2357800a303debaa23ceb2f505363f271fab2",
+    "pypi_wheel": {
+      "filename": "agentic_systems-2.1.8-py3-none-any.whl",
+      "sha256": "e4bb4b12bbb8f5445e82c6a214cf16b37d98e2e338bf35616375c963761b2c5d"
+    },
+    "imported_sdk_init_sha256": "4db3be744c1cf6d24db06d655614ab078af59d11adff4e3ed0838b4cd8ca181e",
+    "live_requested": true,
+    "bedrock_model": "qwen.qwen3-32b-v1:0",
+    "region": "us-east-1",
+    "session_exported": false
+  },
+  "summary": {
+    "scope": "Time Series Discovery example only",
+    "sdk_version": "2.1.8",
+    "data_sha256": "59109a8fc4f18b0bf73ab9a19df2357800a303debaa23ceb2f505363f271fab2",
+    "local_evaluations": [
+      {
+        "case": "agent",
+        "expected_acceptance": true,
+        "actual": true,
+        "test": "PASS"
+      },
+      {
+        "case": "system",
+        "expected_acceptance": true,
+        "actual": true,
+        "test": "PASS"
+      },
+      {
+        "case": "environment",
+        "expected_acceptance": true,
+        "actual": true,
+        "test": "PASS"
+      },
+      {
+        "case": "wrong expected answer",
+        "expected_acceptance": false,
+        "actual": false,
+        "test": "PASS"
+      },
+      {
+        "case": "odd windows rejected",
+        "expected_acceptance": true,
+        "actual": true,
+        "test": "PASS"
+      }
+    ],
+    "live": [
+      {
+        "profile": "bedrock_native",
+        "description_selection": "PASS",
+        "environment": "completed",
+        "environment_check": true,
+        "discovery_eval": "completed",
+        "http_attempts_reserved": 30
+      }
+    ],
+    "result_count": 13,
+    "invariants": {
+      "01_comparison": true,
+      "02_description_python": true,
+      "03_discovery": true,
+      "04_reviewed": true,
+      "05_environment": true,
+      "06_eval_agent": true,
+      "06_eval_system": true,
+      "06_eval_environment": true,
+      "06_negative_wrong_answer": true,
+      "06_invalid_windows": true,
+      "bedrock_native_description": true,
+      "bedrock_native_environment": true,
+      "bedrock_native_eval": true
+    },
+    "http_attempts_reserved": 30
+  },
+  "results": {
+    "01_comparison": {
+      "execution_id": "run-ce2f617cd2cc4d0f9fa03e32a9feba53",
+      "status": "completed",
+      "ok": true,
+      "data": {
+        "question": "Compare the earlier and later observations and show supporting measurements.",
+        "years": [
+          2005,
+          2006,
+          2007,
+          2008,
+          2009,
+          2010,
+          2011,
+          2012,
+          2013,
+          2014
+        ],
+        "values": [
+          80.09,
+          83.88,
+          85.97,
+          88.18,
+          85.98,
+          88.71,
+          87.69,
+          92.28,
+          94.53,
+          97.84
+        ],
+        "measurement": {
+          "kind": "compare",
+          "value": 7.389999999999986,
+          "details": {
+            "earlier_mean": 84.82000000000001,
+            "later_mean": 92.21,
+            "window_size": 5
+          }
+        }
+      },
+      "usage": {
+        "requests": 1,
+        "inference_requests": 0,
+        "tool_calls": 1
+      },
+      "errors": [],
+      "invariants": {
+        "ok": true,
+        "issues": []
+      },
+      "tool_events": [
+        {
+          "id": "tool-58b6e402649e422298f2abd2555eb054",
+          "name": "compare_windows",
+          "input": {
+            "values": [
+              80.09,
+              83.88,
+              85.97,
+              88.18,
+              85.98,
+              88.71,
+              87.69,
+              92.28,
+              94.53,
+              97.84
+            ]
+          },
+          "output": {
+            "data": {
+              "measurement": {
+                "kind": "compare",
+                "value": 7.389999999999986,
+                "details": {
+                  "earlier_mean": 84.82000000000001,
+                  "later_mean": 92.21,
+                  "window_size": 5
+                }
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        }
+      ]
+    },
+    "02_description_python": {
+      "execution_id": "run-640eed9a97834c7abc4048cf0a10650b",
+      "status": "completed",
+      "ok": true,
+      "data": {
+        "profile": {
+          "count": 10,
+          "average": 88.515,
+          "minimum": 80.09,
+          "maximum": 97.84
+        }
+      },
+      "usage": {
+        "client_duration_ms": 0.828,
+        "inference_requests": 0,
+        "tool_calls": 1
+      },
+      "errors": [],
+      "invariants": {
+        "ok": true,
+        "issues": []
+      },
+      "tool_events": [
+        {
+          "id": "tool-6a89e973867747c1a75a60286f1fb6a4",
+          "name": "profile_series",
+          "input": {
+            "values": [
+              80.09,
+              83.88,
+              85.97,
+              88.18,
+              85.98,
+              88.71,
+              87.69,
+              92.28,
+              94.53,
+              97.84
+            ]
+          },
+          "output": {
+            "data": {
+              "profile": {
+                "count": 10,
+                "average": 88.515,
+                "minimum": 80.09,
+                "maximum": 97.84
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        }
+      ]
+    },
+    "03_discovery": {
+      "execution_id": "run-f7032f9795984f29b6e51924f10c97ad",
+      "status": "completed",
+      "ok": true,
+      "data": {
+        "question": "Compare the earlier and later observations and show supporting measurements.",
+        "years": [
+          2005,
+          2006,
+          2007,
+          2008,
+          2009,
+          2010,
+          2011,
+          2012,
+          2013,
+          2014
+        ],
+        "values": [
+          80.09,
+          83.88,
+          85.97,
+          88.18,
+          85.98,
+          88.71,
+          87.69,
+          92.28,
+          94.53,
+          97.84
+        ],
+        "profile": {
+          "count": 10,
+          "average": 88.515,
+          "minimum": 80.09,
+          "maximum": 97.84
+        },
+        "measurement": {
+          "kind": "compare",
+          "value": 7.389999999999986,
+          "details": {
+            "earlier_mean": 84.82000000000001,
+            "later_mean": 92.21,
+            "window_size": 5
+          }
+        },
+        "selected_tool": "compare_windows",
+        "analysis_checked": true
+      },
+      "usage": {
+        "requests": 2,
+        "inference_requests": 0,
+        "tool_calls": 3,
+        "client_duration_ms": 0.605
+      },
+      "errors": [],
+      "invariants": {
+        "ok": true,
+        "issues": []
+      },
+      "tool_events": [
+        {
+          "id": "tool-da4bfc399dc14bbf9d729c899285617b",
+          "name": "profile_series",
+          "input": {
+            "values": [
+              80.09,
+              83.88,
+              85.97,
+              88.18,
+              85.98,
+              88.71,
+              87.69,
+              92.28,
+              94.53,
+              97.84
+            ]
+          },
+          "output": {
+            "data": {
+              "profile": {
+                "count": 10,
+                "average": 88.515,
+                "minimum": 80.09,
+                "maximum": 97.84
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-e975086c50fd442283ae9139ae3a29ce",
+          "name": "compare_windows",
+          "input": {
+            "values": [
+              80.09,
+              83.88,
+              85.97,
+              88.18,
+              85.98,
+              88.71,
+              87.69,
+              92.28,
+              94.53,
+              97.84
+            ]
+          },
+          "output": {
+            "data": {
+              "measurement": {
+                "kind": "compare",
+                "value": 7.389999999999986,
+                "details": {
+                  "earlier_mean": 84.82000000000001,
+                  "later_mean": 92.21,
+                  "window_size": 5
+                }
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-1a6fccce534945fbbd693ff1a0737c2c",
+          "name": "validate_measurement",
+          "input": {
+            "years": [
+              2005,
+              2006,
+              2007,
+              2008,
+              2009,
+              2010,
+              2011,
+              2012,
+              2013,
+              2014
+            ],
+            "values": [
+              80.09,
+              83.88,
+              85.97,
+              88.18,
+              85.98,
+              88.71,
+              87.69,
+              92.28,
+              94.53,
+              97.84
+            ],
+            "measurement": {
+              "kind": "compare",
+              "value": 7.389999999999986,
+              "details": {
+                "earlier_mean": 84.82000000000001,
+                "later_mean": 92.21,
+                "window_size": 5
+              }
+            }
+          },
+          "output": {
+            "data": {
+              "analysis_checked": true
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        }
+      ]
+    },
+    "04_reviewed": {
+      "execution_id": "run-e00a0d45c8bc4585a6b92292bf5f82ee",
+      "status": "completed",
+      "ok": true,
+      "data": {
+        "question": "Compare the earlier and later observations and show supporting measurements.",
+        "years": [
+          2005,
+          2006,
+          2007,
+          2008,
+          2009,
+          2010,
+          2011,
+          2012,
+          2013,
+          2014
+        ],
+        "values": [
+          80.09,
+          83.88,
+          85.97,
+          88.18,
+          85.98,
+          88.71,
+          87.69,
+          92.28,
+          94.53,
+          97.84
+        ],
+        "profile": {
+          "count": 10,
+          "average": 88.515,
+          "minimum": 80.09,
+          "maximum": 97.84
+        },
+        "measurement": {
+          "kind": "compare",
+          "value": 7.389999999999986,
+          "details": {
+            "earlier_mean": 84.82000000000001,
+            "later_mean": 92.21,
+            "window_size": 5
+          }
+        },
+        "review": {
+          "verdict": "no_candidate",
+          "threshold": 10.0,
+          "previous_episodes": 0,
+          "scope": "Descriptive screening only; no statistical significance or causal claim."
+        },
+        "selected_tool": "compare_windows",
+        "analysis_checked": true,
+        "report": "2005\u20132014: difference=+7.390 index points; review=no_candidate; threshold=10.0. Descriptive screening only; no statistical significance or causal claim."
+      },
+      "usage": {
+        "requests": 3,
+        "inference_requests": 0,
+        "tool_calls": 5,
+        "client_duration_ms": 1.153
+      },
+      "errors": [],
+      "invariants": {
+        "ok": true,
+        "issues": []
+      },
+      "tool_events": [
+        {
+          "id": "tool-7d286280f4e94fc997da4904da8f1785",
+          "name": "profile_series",
+          "input": {
+            "values": [
+              80.09,
+              83.88,
+              85.97,
+              88.18,
+              85.98,
+              88.71,
+              87.69,
+              92.28,
+              94.53,
+              97.84
+            ]
+          },
+          "output": {
+            "data": {
+              "profile": {
+                "count": 10,
+                "average": 88.515,
+                "minimum": 80.09,
+                "maximum": 97.84
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-9b4033c7a85e442eb37fde7284f1c389",
+          "name": "compare_windows",
+          "input": {
+            "values": [
+              80.09,
+              83.88,
+              85.97,
+              88.18,
+              85.98,
+              88.71,
+              87.69,
+              92.28,
+              94.53,
+              97.84
+            ]
+          },
+          "output": {
+            "data": {
+              "measurement": {
+                "kind": "compare",
+                "value": 7.389999999999986,
+                "details": {
+                  "earlier_mean": 84.82000000000001,
+                  "later_mean": 92.21,
+                  "window_size": 5
+                }
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-35860c8c09d240108ad68360d0f2ad3e",
+          "name": "validate_measurement",
+          "input": {
+            "years": [
+              2005,
+              2006,
+              2007,
+              2008,
+              2009,
+              2010,
+              2011,
+              2012,
+              2013,
+              2014
+            ],
+            "values": [
+              80.09,
+              83.88,
+              85.97,
+              88.18,
+              85.98,
+              88.71,
+              87.69,
+              92.28,
+              94.53,
+              97.84
+            ],
+            "measurement": {
+              "kind": "compare",
+              "value": 7.389999999999986,
+              "details": {
+                "earlier_mean": 84.82000000000001,
+                "later_mean": 92.21,
+                "window_size": 5
+              }
+            }
+          },
+          "output": {
+            "data": {
+              "analysis_checked": true
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-6b5042308389406ca668020a4bfe4c6e",
+          "name": "check_finding",
+          "input": {
+            "values": [
+              80.09,
+              83.88,
+              85.97,
+              88.18,
+              85.98,
+              88.71,
+              87.69,
+              92.28,
+              94.53,
+              97.84
+            ],
+            "difference": 7.389999999999986
+          },
+          "output": {
+            "data": {
+              "review": {
+                "verdict": "no_candidate",
+                "threshold": 10.0,
+                "previous_episodes": 0,
+                "scope": "Descriptive screening only; no statistical significance or causal claim."
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-3fb5fd6b5ab34d699e8f5fb9f2060c00",
+          "name": "render_report",
+          "input": {
+            "years": [
+              2005,
+              2006,
+              2007,
+              2008,
+              2009,
+              2010,
+              2011,
+              2012,
+              2013,
+              2014
+            ],
+            "measurement": {
+              "kind": "compare",
+              "value": 7.389999999999986,
+              "details": {
+                "earlier_mean": 84.82000000000001,
+                "later_mean": 92.21,
+                "window_size": 5
+              }
+            },
+            "review": {
+              "verdict": "no_candidate",
+              "threshold": 10.0,
+              "previous_episodes": 0,
+              "scope": "Descriptive screening only; no statistical significance or causal claim."
+            }
+          },
+          "output": {
+            "data": {
+              "report": "2005\u20132014: difference=+7.390 index points; review=no_candidate; threshold=10.0. Descriptive screening only; no statistical significance or causal claim."
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        }
+      ]
+    },
+    "05_environment": {
+      "execution_id": "run-b6779f3868f249379559d56ac63f52d5",
+      "status": "completed",
+      "ok": true,
+      "data": {
+        "outputs": [
+          {
+            "question": "Compare the earlier and later observations and show supporting measurements.",
+            "years": [
+              1961,
+              1962,
+              1963,
+              1964,
+              1965,
+              1966,
+              1967,
+              1968,
+              1969,
+              1970
+            ],
+            "values": [
+              20.49,
+              21.83,
+              22.95,
+              25.11,
+              26.81,
+              28.44,
+              28.92,
+              29.75,
+              29.17,
+              30.55
+            ],
+            "profile": {
+              "count": 10,
+              "average": 26.402,
+              "minimum": 20.49,
+              "maximum": 30.55
+            },
+            "measurement": {
+              "kind": "compare",
+              "value": 5.928000000000001,
+              "details": {
+                "earlier_mean": 23.438,
+                "later_mean": 29.366,
+                "window_size": 5
+              }
+            },
+            "review": {
+              "verdict": "no_candidate",
+              "threshold": 10.0,
+              "previous_episodes": 1,
+              "scope": "Descriptive screening only; no statistical significance or causal claim."
+            },
+            "selected_tool": "compare_windows",
+            "analysis_checked": true,
+            "report": "1961\u20131970: difference=+5.928 index points; review=no_candidate; threshold=10.0. Descriptive screening only; no statistical significance or causal claim."
+          },
+          {
+            "question": "Compare the earlier and later observations and show supporting measurements.",
+            "years": [
+              1971,
+              1972,
+              1973,
+              1974,
+              1975,
+              1976,
+              1977,
+              1978,
+              1979,
+              1980
+            ],
+            "values": [
+              31.88,
+              33.38,
+              34.7,
+              35.84,
+              36.94,
+              37.16,
+              40.97,
+              44.08,
+              42.92,
+              46.86
+            ],
+            "profile": {
+              "count": 10,
+              "average": 38.473,
+              "minimum": 31.88,
+              "maximum": 46.86
+            },
+            "measurement": {
+              "kind": "compare",
+              "value": 7.849999999999994,
+              "details": {
+                "earlier_mean": 34.548,
+                "later_mean": 42.397999999999996,
+                "window_size": 5
+              }
+            },
+            "review": {
+              "verdict": "no_candidate",
+              "threshold": 10.0,
+              "previous_episodes": 2,
+              "scope": "Descriptive screening only; no statistical significance or causal claim."
+            },
+            "selected_tool": "compare_windows",
+            "analysis_checked": true,
+            "report": "1971\u20131980: difference=+7.850 index points; review=no_candidate; threshold=10.0. Descriptive screening only; no statistical significance or causal claim."
+          },
+          {
+            "question": "Compare the earlier and later observations and show supporting measurements.",
+            "years": [
+              1981,
+              1982,
+              1983,
+              1984,
+              1985,
+              1986,
+              1987,
+              1988,
+              1989,
+              1990
+            ],
+            "values": [
+              50.14,
+              49.15,
+              51.29,
+              51.8,
+              53.59,
+              55.0,
+              55.45,
+              54.47,
+              51.86,
+              54.9
+            ],
+            "profile": {
+              "count": 10,
+              "average": 52.765,
+              "minimum": 49.15,
+              "maximum": 55.45
+            },
+            "measurement": {
+              "kind": "compare",
+              "value": 3.141999999999996,
+              "details": {
+                "earlier_mean": 51.194,
+                "later_mean": 54.336,
+                "window_size": 5
+              }
+            },
+            "review": {
+              "verdict": "no_candidate",
+              "threshold": 10.0,
+              "previous_episodes": 3,
+              "scope": "Descriptive screening only; no statistical significance or causal claim."
+            },
+            "selected_tool": "compare_windows",
+            "analysis_checked": true,
+            "report": "1981\u20131990: difference=+3.142 index points; review=no_candidate; threshold=10.0. Descriptive screening only; no statistical significance or causal claim."
+          },
+          {
+            "question": "Compare the earlier and later observations and show supporting measurements.",
+            "years": [
+              1991,
+              1992,
+              1993,
+              1994,
+              1995,
+              1996,
+              1997,
+              1998,
+              1999,
+              2000
+            ],
+            "values": [
+              56.06,
+              56.62,
+              58.2,
+              60.43,
+              63.24,
+              65.25,
+              66.38,
+              69.49,
+              71.41,
+              72.19
+            ],
+            "profile": {
+              "count": 10,
+              "average": 63.927,
+              "minimum": 56.06,
+              "maximum": 72.19
+            },
+            "measurement": {
+              "kind": "compare",
+              "value": 10.033999999999999,
+              "details": {
+                "earlier_mean": 58.910000000000004,
+                "later_mean": 68.944,
+                "window_size": 5
+              }
+            },
+            "review": {
+              "verdict": "candidate",
+              "threshold": 10.0,
+              "previous_episodes": 4,
+              "scope": "Descriptive screening only; no statistical significance or causal claim."
+            },
+            "selected_tool": "compare_windows",
+            "analysis_checked": true,
+            "report": "1991\u20132000: difference=+10.034 index points; review=candidate; threshold=10.0. Descriptive screening only; no statistical significance or causal claim."
+          }
+        ],
+        "history": [
+          {
+            "step": 0,
+            "record": {
+              "question": "Compare the earlier and later observations and show supporting measurements.",
+              "years": [
+                1961,
+                1962,
+                1963,
+                1964,
+                1965,
+                1966,
+                1967,
+                1968,
+                1969,
+                1970
+              ],
+              "values": [
+                20.49,
+                21.83,
+                22.95,
+                25.11,
+                26.81,
+                28.44,
+                28.92,
+                29.75,
+                29.17,
+                30.55
+              ]
+            },
+            "state_before": {
+              "processed": 0,
+              "candidate_found": false
+            },
+            "state_after": {
+              "processed": 1,
+              "candidate_found": false
+            },
+            "execution_id": "run-c27c94e823f04a92967e60fcdc8ca0b8"
+          },
+          {
+            "step": 1,
+            "record": {
+              "question": "Compare the earlier and later observations and show supporting measurements.",
+              "years": [
+                1971,
+                1972,
+                1973,
+                1974,
+                1975,
+                1976,
+                1977,
+                1978,
+                1979,
+                1980
+              ],
+              "values": [
+                31.88,
+                33.38,
+                34.7,
+                35.84,
+                36.94,
+                37.16,
+                40.97,
+                44.08,
+                42.92,
+                46.86
+              ]
+            },
+            "state_before": {
+              "processed": 1,
+              "candidate_found": false
+            },
+            "state_after": {
+              "processed": 2,
+              "candidate_found": false
+            },
+            "execution_id": "run-c7508a026c9c4888a481bf756f449b9c"
+          },
+          {
+            "step": 2,
+            "record": {
+              "question": "Compare the earlier and later observations and show supporting measurements.",
+              "years": [
+                1981,
+                1982,
+                1983,
+                1984,
+                1985,
+                1986,
+                1987,
+                1988,
+                1989,
+                1990
+              ],
+              "values": [
+                50.14,
+                49.15,
+                51.29,
+                51.8,
+                53.59,
+                55.0,
+                55.45,
+                54.47,
+                51.86,
+                54.9
+              ]
+            },
+            "state_before": {
+              "processed": 2,
+              "candidate_found": false
+            },
+            "state_after": {
+              "processed": 3,
+              "candidate_found": false
+            },
+            "execution_id": "run-dddfb62673bf41279fb6b4d51ad185c5"
+          },
+          {
+            "step": 3,
+            "record": {
+              "question": "Compare the earlier and later observations and show supporting measurements.",
+              "years": [
+                1991,
+                1992,
+                1993,
+                1994,
+                1995,
+                1996,
+                1997,
+                1998,
+                1999,
+                2000
+              ],
+              "values": [
+                56.06,
+                56.62,
+                58.2,
+                60.43,
+                63.24,
+                65.25,
+                66.38,
+                69.49,
+                71.41,
+                72.19
+              ]
+            },
+            "state_before": {
+              "processed": 3,
+              "candidate_found": false
+            },
+            "state_after": {
+              "processed": 4,
+              "candidate_found": true
+            },
+            "execution_id": "run-2c16b58ef481422d9dca02ccbc7b1c14"
+          }
+        ],
+        "summary": {
+          "state": {
+            "processed": 4,
+            "candidate_found": true
+          },
+          "processed": 4,
+          "terminated": true,
+          "truncated": false,
+          "reason": "stop"
+        }
+      },
+      "usage": {
+        "requests": 12,
+        "inference_requests": 0,
+        "tool_calls": 20,
+        "client_duration_ms": 4.665
+      },
+      "errors": [],
+      "invariants": {
+        "ok": true,
+        "issues": []
+      },
+      "tool_events": [
+        {
+          "id": "tool-f2a987a8ef7b40cdbbbbb5ef3db31146",
+          "name": "profile_series",
+          "input": {
+            "values": [
+              20.49,
+              21.83,
+              22.95,
+              25.11,
+              26.81,
+              28.44,
+              28.92,
+              29.75,
+              29.17,
+              30.55
+            ]
+          },
+          "output": {
+            "data": {
+              "profile": {
+                "count": 10,
+                "average": 26.402,
+                "minimum": 20.49,
+                "maximum": 30.55
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-b7b501aa4aac45b9ba9b0d40c05c164a",
+          "name": "compare_windows",
+          "input": {
+            "values": [
+              20.49,
+              21.83,
+              22.95,
+              25.11,
+              26.81,
+              28.44,
+              28.92,
+              29.75,
+              29.17,
+              30.55
+            ]
+          },
+          "output": {
+            "data": {
+              "measurement": {
+                "kind": "compare",
+                "value": 5.928000000000001,
+                "details": {
+                  "earlier_mean": 23.438,
+                  "later_mean": 29.366,
+                  "window_size": 5
+                }
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-01af9f579eb343648a253e5068599287",
+          "name": "validate_measurement",
+          "input": {
+            "years": [
+              1961,
+              1962,
+              1963,
+              1964,
+              1965,
+              1966,
+              1967,
+              1968,
+              1969,
+              1970
+            ],
+            "values": [
+              20.49,
+              21.83,
+              22.95,
+              25.11,
+              26.81,
+              28.44,
+              28.92,
+              29.75,
+              29.17,
+              30.55
+            ],
+            "measurement": {
+              "kind": "compare",
+              "value": 5.928000000000001,
+              "details": {
+                "earlier_mean": 23.438,
+                "later_mean": 29.366,
+                "window_size": 5
+              }
+            }
+          },
+          "output": {
+            "data": {
+              "analysis_checked": true
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-d8ef32dd50954c9db9ed2781528b0827",
+          "name": "check_finding",
+          "input": {
+            "values": [
+              20.49,
+              21.83,
+              22.95,
+              25.11,
+              26.81,
+              28.44,
+              28.92,
+              29.75,
+              29.17,
+              30.55
+            ],
+            "difference": 5.928000000000001
+          },
+          "output": {
+            "data": {
+              "review": {
+                "verdict": "no_candidate",
+                "threshold": 10.0,
+                "previous_episodes": 1,
+                "scope": "Descriptive screening only; no statistical significance or causal claim."
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-c31b5346e678476aa6cbe73822488791",
+          "name": "render_report",
+          "input": {
+            "years": [
+              1961,
+              1962,
+              1963,
+              1964,
+              1965,
+              1966,
+              1967,
+              1968,
+              1969,
+              1970
+            ],
+            "measurement": {
+              "kind": "compare",
+              "value": 5.928000000000001,
+              "details": {
+                "earlier_mean": 23.438,
+                "later_mean": 29.366,
+                "window_size": 5
+              }
+            },
+            "review": {
+              "verdict": "no_candidate",
+              "threshold": 10.0,
+              "previous_episodes": 1,
+              "scope": "Descriptive screening only; no statistical significance or causal claim."
+            }
+          },
+          "output": {
+            "data": {
+              "report": "1961\u20131970: difference=+5.928 index points; review=no_candidate; threshold=10.0. Descriptive screening only; no statistical significance or causal claim."
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-46c157d4d1264bb0b2ffc71223d515d9",
+          "name": "profile_series",
+          "input": {
+            "values": [
+              31.88,
+              33.38,
+              34.7,
+              35.84,
+              36.94,
+              37.16,
+              40.97,
+              44.08,
+              42.92,
+              46.86
+            ]
+          },
+          "output": {
+            "data": {
+              "profile": {
+                "count": 10,
+                "average": 38.473,
+                "minimum": 31.88,
+                "maximum": 46.86
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-3c319784307a4ad7b88a2c7388e292f9",
+          "name": "compare_windows",
+          "input": {
+            "values": [
+              31.88,
+              33.38,
+              34.7,
+              35.84,
+              36.94,
+              37.16,
+              40.97,
+              44.08,
+              42.92,
+              46.86
+            ]
+          },
+          "output": {
+            "data": {
+              "measurement": {
+                "kind": "compare",
+                "value": 7.849999999999994,
+                "details": {
+                  "earlier_mean": 34.548,
+                  "later_mean": 42.397999999999996,
+                  "window_size": 5
+                }
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-965292bb70324611bab376e2452504f6",
+          "name": "validate_measurement",
+          "input": {
+            "years": [
+              1971,
+              1972,
+              1973,
+              1974,
+              1975,
+              1976,
+              1977,
+              1978,
+              1979,
+              1980
+            ],
+            "values": [
+              31.88,
+              33.38,
+              34.7,
+              35.84,
+              36.94,
+              37.16,
+              40.97,
+              44.08,
+              42.92,
+              46.86
+            ],
+            "measurement": {
+              "kind": "compare",
+              "value": 7.849999999999994,
+              "details": {
+                "earlier_mean": 34.548,
+                "later_mean": 42.397999999999996,
+                "window_size": 5
+              }
+            }
+          },
+          "output": {
+            "data": {
+              "analysis_checked": true
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-60c387c6467f4daba92d8ce4bc2db9d2",
+          "name": "check_finding",
+          "input": {
+            "values": [
+              31.88,
+              33.38,
+              34.7,
+              35.84,
+              36.94,
+              37.16,
+              40.97,
+              44.08,
+              42.92,
+              46.86
+            ],
+            "difference": 7.849999999999994
+          },
+          "output": {
+            "data": {
+              "review": {
+                "verdict": "no_candidate",
+                "threshold": 10.0,
+                "previous_episodes": 2,
+                "scope": "Descriptive screening only; no statistical significance or causal claim."
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-b9eb6f1f2b6348ada999ca68545232ca",
+          "name": "render_report",
+          "input": {
+            "years": [
+              1971,
+              1972,
+              1973,
+              1974,
+              1975,
+              1976,
+              1977,
+              1978,
+              1979,
+              1980
+            ],
+            "measurement": {
+              "kind": "compare",
+              "value": 7.849999999999994,
+              "details": {
+                "earlier_mean": 34.548,
+                "later_mean": 42.397999999999996,
+                "window_size": 5
+              }
+            },
+            "review": {
+              "verdict": "no_candidate",
+              "threshold": 10.0,
+              "previous_episodes": 2,
+              "scope": "Descriptive screening only; no statistical significance or causal claim."
+            }
+          },
+          "output": {
+            "data": {
+              "report": "1971\u20131980: difference=+7.850 index points; review=no_candidate; threshold=10.0. Descriptive screening only; no statistical significance or causal claim."
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-b42cce227c084e21a8b4039c060dd07e",
+          "name": "profile_series",
+          "input": {
+            "values": [
+              50.14,
+              49.15,
+              51.29,
+              51.8,
+              53.59,
+              55.0,
+              55.45,
+              54.47,
+              51.86,
+              54.9
+            ]
+          },
+          "output": {
+            "data": {
+              "profile": {
+                "count": 10,
+                "average": 52.765,
+                "minimum": 49.15,
+                "maximum": 55.45
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-a6cb7d25235d41e2a6c2d238bde5aaa4",
+          "name": "compare_windows",
+          "input": {
+            "values": [
+              50.14,
+              49.15,
+              51.29,
+              51.8,
+              53.59,
+              55.0,
+              55.45,
+              54.47,
+              51.86,
+              54.9
+            ]
+          },
+          "output": {
+            "data": {
+              "measurement": {
+                "kind": "compare",
+                "value": 3.141999999999996,
+                "details": {
+                  "earlier_mean": 51.194,
+                  "later_mean": 54.336,
+                  "window_size": 5
+                }
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-b27acd67fac145fd95ba3470c4169b9b",
+          "name": "validate_measurement",
+          "input": {
+            "years": [
+              1981,
+              1982,
+              1983,
+              1984,
+              1985,
+              1986,
+              1987,
+              1988,
+              1989,
+              1990
+            ],
+            "values": [
+              50.14,
+              49.15,
+              51.29,
+              51.8,
+              53.59,
+              55.0,
+              55.45,
+              54.47,
+              51.86,
+              54.9
+            ],
+            "measurement": {
+              "kind": "compare",
+              "value": 3.141999999999996,
+              "details": {
+                "earlier_mean": 51.194,
+                "later_mean": 54.336,
+                "window_size": 5
+              }
+            }
+          },
+          "output": {
+            "data": {
+              "analysis_checked": true
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-76ec46a429234d008ba7a61b663489aa",
+          "name": "check_finding",
+          "input": {
+            "values": [
+              50.14,
+              49.15,
+              51.29,
+              51.8,
+              53.59,
+              55.0,
+              55.45,
+              54.47,
+              51.86,
+              54.9
+            ],
+            "difference": 3.141999999999996
+          },
+          "output": {
+            "data": {
+              "review": {
+                "verdict": "no_candidate",
+                "threshold": 10.0,
+                "previous_episodes": 3,
+                "scope": "Descriptive screening only; no statistical significance or causal claim."
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-bd8cce1fd7a24d24bd44b705a3ee3f4c",
+          "name": "render_report",
+          "input": {
+            "years": [
+              1981,
+              1982,
+              1983,
+              1984,
+              1985,
+              1986,
+              1987,
+              1988,
+              1989,
+              1990
+            ],
+            "measurement": {
+              "kind": "compare",
+              "value": 3.141999999999996,
+              "details": {
+                "earlier_mean": 51.194,
+                "later_mean": 54.336,
+                "window_size": 5
+              }
+            },
+            "review": {
+              "verdict": "no_candidate",
+              "threshold": 10.0,
+              "previous_episodes": 3,
+              "scope": "Descriptive screening only; no statistical significance or causal claim."
+            }
+          },
+          "output": {
+            "data": {
+              "report": "1981\u20131990: difference=+3.142 index points; review=no_candidate; threshold=10.0. Descriptive screening only; no statistical significance or causal claim."
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-619de0a1fe184c359bb2d6afcb5cd607",
+          "name": "profile_series",
+          "input": {
+            "values": [
+              56.06,
+              56.62,
+              58.2,
+              60.43,
+              63.24,
+              65.25,
+              66.38,
+              69.49,
+              71.41,
+              72.19
+            ]
+          },
+          "output": {
+            "data": {
+              "profile": {
+                "count": 10,
+                "average": 63.927,
+                "minimum": 56.06,
+                "maximum": 72.19
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-23494f4b69aa4bc4bc94a078c9dbdabb",
+          "name": "compare_windows",
+          "input": {
+            "values": [
+              56.06,
+              56.62,
+              58.2,
+              60.43,
+              63.24,
+              65.25,
+              66.38,
+              69.49,
+              71.41,
+              72.19
+            ]
+          },
+          "output": {
+            "data": {
+              "measurement": {
+                "kind": "compare",
+                "value": 10.033999999999999,
+                "details": {
+                  "earlier_mean": 58.910000000000004,
+                  "later_mean": 68.944,
+                  "window_size": 5
+                }
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-9dd4b4d85b0247fdb4270687670e829f",
+          "name": "validate_measurement",
+          "input": {
+            "years": [
+              1991,
+              1992,
+              1993,
+              1994,
+              1995,
+              1996,
+              1997,
+              1998,
+              1999,
+              2000
+            ],
+            "values": [
+              56.06,
+              56.62,
+              58.2,
+              60.43,
+              63.24,
+              65.25,
+              66.38,
+              69.49,
+              71.41,
+              72.19
+            ],
+            "measurement": {
+              "kind": "compare",
+              "value": 10.033999999999999,
+              "details": {
+                "earlier_mean": 58.910000000000004,
+                "later_mean": 68.944,
+                "window_size": 5
+              }
+            }
+          },
+          "output": {
+            "data": {
+              "analysis_checked": true
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-122e06ec58414884b98542fbc8004ca6",
+          "name": "check_finding",
+          "input": {
+            "values": [
+              56.06,
+              56.62,
+              58.2,
+              60.43,
+              63.24,
+              65.25,
+              66.38,
+              69.49,
+              71.41,
+              72.19
+            ],
+            "difference": 10.033999999999999
+          },
+          "output": {
+            "data": {
+              "review": {
+                "verdict": "candidate",
+                "threshold": 10.0,
+                "previous_episodes": 4,
+                "scope": "Descriptive screening only; no statistical significance or causal claim."
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-be5ac75fe5864512a2f13ae4669e696a",
+          "name": "render_report",
+          "input": {
+            "years": [
+              1991,
+              1992,
+              1993,
+              1994,
+              1995,
+              1996,
+              1997,
+              1998,
+              1999,
+              2000
+            ],
+            "measurement": {
+              "kind": "compare",
+              "value": 10.033999999999999,
+              "details": {
+                "earlier_mean": 58.910000000000004,
+                "later_mean": 68.944,
+                "window_size": 5
+              }
+            },
+            "review": {
+              "verdict": "candidate",
+              "threshold": 10.0,
+              "previous_episodes": 4,
+              "scope": "Descriptive screening only; no statistical significance or causal claim."
+            }
+          },
+          "output": {
+            "data": {
+              "report": "1991\u20132000: difference=+10.034 index points; review=candidate; threshold=10.0. Descriptive screening only; no statistical significance or causal claim."
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        }
+      ]
+    },
+    "06_eval_agent": {
+      "execution_id": "run-771bd7e105e24dfca9784e931a9529ef",
+      "status": "completed",
+      "ok": true,
+      "data": {
+        "total": 1,
+        "passed": 1,
+        "failed": 0,
+        "cases": [
+          {
+            "name": "0",
+            "ok": true,
+            "input": {
+              "tool": "compare_windows",
+              "input": {
+                "values": [
+                  80.09,
+                  83.88,
+                  85.97,
+                  88.18,
+                  85.98,
+                  88.71,
+                  87.69,
+                  92.28,
+                  94.53,
+                  97.84
+                ]
+              }
+            },
+            "execution_id": "run-7b6a9ca15ee4433ea32df03581725474",
+            "checks": [
+              {
+                "ok": true,
+                "path": "ok"
+              },
+              {
+                "ok": true
+              }
+            ],
+            "judge": null
+          }
+        ]
+      },
+      "usage": {
+        "client_duration_ms": 0.728,
+        "inference_requests": 0,
+        "tool_calls": 1
+      },
+      "errors": [],
+      "invariants": {
+        "ok": true,
+        "issues": []
+      },
+      "tool_events": [
+        {
+          "id": "tool-77444483de0f45aab24e33df2ac3c2f4",
+          "name": "compare_windows",
+          "input": {
+            "values": [
+              80.09,
+              83.88,
+              85.97,
+              88.18,
+              85.98,
+              88.71,
+              87.69,
+              92.28,
+              94.53,
+              97.84
+            ]
+          },
+          "output": {
+            "data": {
+              "measurement": {
+                "kind": "compare",
+                "value": 7.389999999999986,
+                "details": {
+                  "earlier_mean": 84.82000000000001,
+                  "later_mean": 92.21,
+                  "window_size": 5
+                }
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        }
+      ]
+    },
+    "06_eval_system": {
+      "execution_id": "run-7ad2bdf542534a97b34c5d0f9d6de074",
+      "status": "completed",
+      "ok": true,
+      "data": {
+        "total": 1,
+        "passed": 1,
+        "failed": 0,
+        "cases": [
+          {
+            "name": "0",
+            "ok": true,
+            "input": {
+              "question": "Compare the earlier and later observations and show supporting measurements.",
+              "years": [
+                2005,
+                2006,
+                2007,
+                2008,
+                2009,
+                2010,
+                2011,
+                2012,
+                2013,
+                2014
+              ],
+              "values": [
+                80.09,
+                83.88,
+                85.97,
+                88.18,
+                85.98,
+                88.71,
+                87.69,
+                92.28,
+                94.53,
+                97.84
+              ]
+            },
+            "execution_id": "run-2273ce9c15d843e5a8f585c3a397bc58",
+            "checks": [
+              {
+                "ok": true,
+                "path": "ok"
+              },
+              {
+                "ok": true
+              },
+              {
+                "ok": true
+              }
+            ],
+            "judge": null
+          }
+        ]
+      },
+      "usage": {
+        "requests": 2,
+        "inference_requests": 0,
+        "tool_calls": 3,
+        "client_duration_ms": 0.543
+      },
+      "errors": [],
+      "invariants": {
+        "ok": true,
+        "issues": []
+      },
+      "tool_events": [
+        {
+          "id": "tool-85ec019a7c584fdb9fdf4eead44b6158",
+          "name": "profile_series",
+          "input": {
+            "values": [
+              80.09,
+              83.88,
+              85.97,
+              88.18,
+              85.98,
+              88.71,
+              87.69,
+              92.28,
+              94.53,
+              97.84
+            ]
+          },
+          "output": {
+            "data": {
+              "profile": {
+                "count": 10,
+                "average": 88.515,
+                "minimum": 80.09,
+                "maximum": 97.84
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-93a5432a640148b783ad5d5dcebef406",
+          "name": "compare_windows",
+          "input": {
+            "values": [
+              80.09,
+              83.88,
+              85.97,
+              88.18,
+              85.98,
+              88.71,
+              87.69,
+              92.28,
+              94.53,
+              97.84
+            ]
+          },
+          "output": {
+            "data": {
+              "measurement": {
+                "kind": "compare",
+                "value": 7.389999999999986,
+                "details": {
+                  "earlier_mean": 84.82000000000001,
+                  "later_mean": 92.21,
+                  "window_size": 5
+                }
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-88069c5939c34eb5bf4fae395b84f658",
+          "name": "validate_measurement",
+          "input": {
+            "years": [
+              2005,
+              2006,
+              2007,
+              2008,
+              2009,
+              2010,
+              2011,
+              2012,
+              2013,
+              2014
+            ],
+            "values": [
+              80.09,
+              83.88,
+              85.97,
+              88.18,
+              85.98,
+              88.71,
+              87.69,
+              92.28,
+              94.53,
+              97.84
+            ],
+            "measurement": {
+              "kind": "compare",
+              "value": 7.389999999999986,
+              "details": {
+                "earlier_mean": 84.82000000000001,
+                "later_mean": 92.21,
+                "window_size": 5
+              }
+            }
+          },
+          "output": {
+            "data": {
+              "analysis_checked": true
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        }
+      ]
+    },
+    "06_eval_environment": {
+      "execution_id": "run-d62691e6cf284807998c6aaa26e15de9",
+      "status": "completed",
+      "ok": true,
+      "data": {
+        "total": 1,
+        "passed": 1,
+        "failed": 0,
+        "cases": [
+          {
+            "name": "0",
+            "ok": true,
+            "input": {},
+            "execution_id": "run-b7356756d9eb43399b7e3d100034b883",
+            "checks": [
+              {
+                "ok": true,
+                "path": "ok"
+              },
+              {
+                "ok": true
+              }
+            ],
+            "judge": null
+          }
+        ]
+      },
+      "usage": {
+        "requests": 12,
+        "inference_requests": 0,
+        "tool_calls": 20,
+        "client_duration_ms": 4.283
+      },
+      "errors": [],
+      "invariants": {
+        "ok": true,
+        "issues": []
+      },
+      "tool_events": [
+        {
+          "id": "tool-b271a71b994a493abae280db5334840b",
+          "name": "profile_series",
+          "input": {
+            "values": [
+              20.49,
+              21.83,
+              22.95,
+              25.11,
+              26.81,
+              28.44,
+              28.92,
+              29.75,
+              29.17,
+              30.55
+            ]
+          },
+          "output": {
+            "data": {
+              "profile": {
+                "count": 10,
+                "average": 26.402,
+                "minimum": 20.49,
+                "maximum": 30.55
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-4eff5df5149f4862a81fd1eb9c3d7bf3",
+          "name": "compare_windows",
+          "input": {
+            "values": [
+              20.49,
+              21.83,
+              22.95,
+              25.11,
+              26.81,
+              28.44,
+              28.92,
+              29.75,
+              29.17,
+              30.55
+            ]
+          },
+          "output": {
+            "data": {
+              "measurement": {
+                "kind": "compare",
+                "value": 5.928000000000001,
+                "details": {
+                  "earlier_mean": 23.438,
+                  "later_mean": 29.366,
+                  "window_size": 5
+                }
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-b228ca1cb8b54c4b8e1d8cc26839de86",
+          "name": "validate_measurement",
+          "input": {
+            "years": [
+              1961,
+              1962,
+              1963,
+              1964,
+              1965,
+              1966,
+              1967,
+              1968,
+              1969,
+              1970
+            ],
+            "values": [
+              20.49,
+              21.83,
+              22.95,
+              25.11,
+              26.81,
+              28.44,
+              28.92,
+              29.75,
+              29.17,
+              30.55
+            ],
+            "measurement": {
+              "kind": "compare",
+              "value": 5.928000000000001,
+              "details": {
+                "earlier_mean": 23.438,
+                "later_mean": 29.366,
+                "window_size": 5
+              }
+            }
+          },
+          "output": {
+            "data": {
+              "analysis_checked": true
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-4121651bb04e42128f2007316576c7dc",
+          "name": "check_finding",
+          "input": {
+            "values": [
+              20.49,
+              21.83,
+              22.95,
+              25.11,
+              26.81,
+              28.44,
+              28.92,
+              29.75,
+              29.17,
+              30.55
+            ],
+            "difference": 5.928000000000001
+          },
+          "output": {
+            "data": {
+              "review": {
+                "verdict": "no_candidate",
+                "threshold": 10.0,
+                "previous_episodes": 0,
+                "scope": "Descriptive screening only; no statistical significance or causal claim."
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-312fa7414eb54fa6b651f351e4be3346",
+          "name": "render_report",
+          "input": {
+            "years": [
+              1961,
+              1962,
+              1963,
+              1964,
+              1965,
+              1966,
+              1967,
+              1968,
+              1969,
+              1970
+            ],
+            "measurement": {
+              "kind": "compare",
+              "value": 5.928000000000001,
+              "details": {
+                "earlier_mean": 23.438,
+                "later_mean": 29.366,
+                "window_size": 5
+              }
+            },
+            "review": {
+              "verdict": "no_candidate",
+              "threshold": 10.0,
+              "previous_episodes": 0,
+              "scope": "Descriptive screening only; no statistical significance or causal claim."
+            }
+          },
+          "output": {
+            "data": {
+              "report": "1961\u20131970: difference=+5.928 index points; review=no_candidate; threshold=10.0. Descriptive screening only; no statistical significance or causal claim."
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-400aaca78f2d4ed2856d17db45da4871",
+          "name": "profile_series",
+          "input": {
+            "values": [
+              31.88,
+              33.38,
+              34.7,
+              35.84,
+              36.94,
+              37.16,
+              40.97,
+              44.08,
+              42.92,
+              46.86
+            ]
+          },
+          "output": {
+            "data": {
+              "profile": {
+                "count": 10,
+                "average": 38.473,
+                "minimum": 31.88,
+                "maximum": 46.86
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-d9947b9aa30a4821880c421e9b99af90",
+          "name": "compare_windows",
+          "input": {
+            "values": [
+              31.88,
+              33.38,
+              34.7,
+              35.84,
+              36.94,
+              37.16,
+              40.97,
+              44.08,
+              42.92,
+              46.86
+            ]
+          },
+          "output": {
+            "data": {
+              "measurement": {
+                "kind": "compare",
+                "value": 7.849999999999994,
+                "details": {
+                  "earlier_mean": 34.548,
+                  "later_mean": 42.397999999999996,
+                  "window_size": 5
+                }
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-a7e7483dce074a84a8981eb2f8e16a94",
+          "name": "validate_measurement",
+          "input": {
+            "years": [
+              1971,
+              1972,
+              1973,
+              1974,
+              1975,
+              1976,
+              1977,
+              1978,
+              1979,
+              1980
+            ],
+            "values": [
+              31.88,
+              33.38,
+              34.7,
+              35.84,
+              36.94,
+              37.16,
+              40.97,
+              44.08,
+              42.92,
+              46.86
+            ],
+            "measurement": {
+              "kind": "compare",
+              "value": 7.849999999999994,
+              "details": {
+                "earlier_mean": 34.548,
+                "later_mean": 42.397999999999996,
+                "window_size": 5
+              }
+            }
+          },
+          "output": {
+            "data": {
+              "analysis_checked": true
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-265aa04fb4b04e08addd1884072f4de2",
+          "name": "check_finding",
+          "input": {
+            "values": [
+              31.88,
+              33.38,
+              34.7,
+              35.84,
+              36.94,
+              37.16,
+              40.97,
+              44.08,
+              42.92,
+              46.86
+            ],
+            "difference": 7.849999999999994
+          },
+          "output": {
+            "data": {
+              "review": {
+                "verdict": "no_candidate",
+                "threshold": 10.0,
+                "previous_episodes": 1,
+                "scope": "Descriptive screening only; no statistical significance or causal claim."
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-91e30d7a369d4cfca9d649e053d2e030",
+          "name": "render_report",
+          "input": {
+            "years": [
+              1971,
+              1972,
+              1973,
+              1974,
+              1975,
+              1976,
+              1977,
+              1978,
+              1979,
+              1980
+            ],
+            "measurement": {
+              "kind": "compare",
+              "value": 7.849999999999994,
+              "details": {
+                "earlier_mean": 34.548,
+                "later_mean": 42.397999999999996,
+                "window_size": 5
+              }
+            },
+            "review": {
+              "verdict": "no_candidate",
+              "threshold": 10.0,
+              "previous_episodes": 1,
+              "scope": "Descriptive screening only; no statistical significance or causal claim."
+            }
+          },
+          "output": {
+            "data": {
+              "report": "1971\u20131980: difference=+7.850 index points; review=no_candidate; threshold=10.0. Descriptive screening only; no statistical significance or causal claim."
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-f59fa8ab998841c6bc94e10636a763ed",
+          "name": "profile_series",
+          "input": {
+            "values": [
+              50.14,
+              49.15,
+              51.29,
+              51.8,
+              53.59,
+              55.0,
+              55.45,
+              54.47,
+              51.86,
+              54.9
+            ]
+          },
+          "output": {
+            "data": {
+              "profile": {
+                "count": 10,
+                "average": 52.765,
+                "minimum": 49.15,
+                "maximum": 55.45
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-eef2181f85604fa395a93e5782acff6c",
+          "name": "compare_windows",
+          "input": {
+            "values": [
+              50.14,
+              49.15,
+              51.29,
+              51.8,
+              53.59,
+              55.0,
+              55.45,
+              54.47,
+              51.86,
+              54.9
+            ]
+          },
+          "output": {
+            "data": {
+              "measurement": {
+                "kind": "compare",
+                "value": 3.141999999999996,
+                "details": {
+                  "earlier_mean": 51.194,
+                  "later_mean": 54.336,
+                  "window_size": 5
+                }
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-356bd8e8c9e54441a9405f6858ebcc8f",
+          "name": "validate_measurement",
+          "input": {
+            "years": [
+              1981,
+              1982,
+              1983,
+              1984,
+              1985,
+              1986,
+              1987,
+              1988,
+              1989,
+              1990
+            ],
+            "values": [
+              50.14,
+              49.15,
+              51.29,
+              51.8,
+              53.59,
+              55.0,
+              55.45,
+              54.47,
+              51.86,
+              54.9
+            ],
+            "measurement": {
+              "kind": "compare",
+              "value": 3.141999999999996,
+              "details": {
+                "earlier_mean": 51.194,
+                "later_mean": 54.336,
+                "window_size": 5
+              }
+            }
+          },
+          "output": {
+            "data": {
+              "analysis_checked": true
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-e78d2f92afb94c868641ffd71cf13927",
+          "name": "check_finding",
+          "input": {
+            "values": [
+              50.14,
+              49.15,
+              51.29,
+              51.8,
+              53.59,
+              55.0,
+              55.45,
+              54.47,
+              51.86,
+              54.9
+            ],
+            "difference": 3.141999999999996
+          },
+          "output": {
+            "data": {
+              "review": {
+                "verdict": "no_candidate",
+                "threshold": 10.0,
+                "previous_episodes": 2,
+                "scope": "Descriptive screening only; no statistical significance or causal claim."
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-8e3b85480ea542089ee88f70d765c158",
+          "name": "render_report",
+          "input": {
+            "years": [
+              1981,
+              1982,
+              1983,
+              1984,
+              1985,
+              1986,
+              1987,
+              1988,
+              1989,
+              1990
+            ],
+            "measurement": {
+              "kind": "compare",
+              "value": 3.141999999999996,
+              "details": {
+                "earlier_mean": 51.194,
+                "later_mean": 54.336,
+                "window_size": 5
+              }
+            },
+            "review": {
+              "verdict": "no_candidate",
+              "threshold": 10.0,
+              "previous_episodes": 2,
+              "scope": "Descriptive screening only; no statistical significance or causal claim."
+            }
+          },
+          "output": {
+            "data": {
+              "report": "1981\u20131990: difference=+3.142 index points; review=no_candidate; threshold=10.0. Descriptive screening only; no statistical significance or causal claim."
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-8a974516af0d4a9897781455152c7682",
+          "name": "profile_series",
+          "input": {
+            "values": [
+              56.06,
+              56.62,
+              58.2,
+              60.43,
+              63.24,
+              65.25,
+              66.38,
+              69.49,
+              71.41,
+              72.19
+            ]
+          },
+          "output": {
+            "data": {
+              "profile": {
+                "count": 10,
+                "average": 63.927,
+                "minimum": 56.06,
+                "maximum": 72.19
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-3eddf11a49d9437cb92b5e5b93cd88c6",
+          "name": "compare_windows",
+          "input": {
+            "values": [
+              56.06,
+              56.62,
+              58.2,
+              60.43,
+              63.24,
+              65.25,
+              66.38,
+              69.49,
+              71.41,
+              72.19
+            ]
+          },
+          "output": {
+            "data": {
+              "measurement": {
+                "kind": "compare",
+                "value": 10.033999999999999,
+                "details": {
+                  "earlier_mean": 58.910000000000004,
+                  "later_mean": 68.944,
+                  "window_size": 5
+                }
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-567a0cfb282a4831b9a824b855bac937",
+          "name": "validate_measurement",
+          "input": {
+            "years": [
+              1991,
+              1992,
+              1993,
+              1994,
+              1995,
+              1996,
+              1997,
+              1998,
+              1999,
+              2000
+            ],
+            "values": [
+              56.06,
+              56.62,
+              58.2,
+              60.43,
+              63.24,
+              65.25,
+              66.38,
+              69.49,
+              71.41,
+              72.19
+            ],
+            "measurement": {
+              "kind": "compare",
+              "value": 10.033999999999999,
+              "details": {
+                "earlier_mean": 58.910000000000004,
+                "later_mean": 68.944,
+                "window_size": 5
+              }
+            }
+          },
+          "output": {
+            "data": {
+              "analysis_checked": true
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-feb9b4ce335d49d5b6c287bb84278dde",
+          "name": "check_finding",
+          "input": {
+            "values": [
+              56.06,
+              56.62,
+              58.2,
+              60.43,
+              63.24,
+              65.25,
+              66.38,
+              69.49,
+              71.41,
+              72.19
+            ],
+            "difference": 10.033999999999999
+          },
+          "output": {
+            "data": {
+              "review": {
+                "verdict": "candidate",
+                "threshold": 10.0,
+                "previous_episodes": 3,
+                "scope": "Descriptive screening only; no statistical significance or causal claim."
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-ad6b4ec549534dfb8f0bcc65a7644265",
+          "name": "render_report",
+          "input": {
+            "years": [
+              1991,
+              1992,
+              1993,
+              1994,
+              1995,
+              1996,
+              1997,
+              1998,
+              1999,
+              2000
+            ],
+            "measurement": {
+              "kind": "compare",
+              "value": 10.033999999999999,
+              "details": {
+                "earlier_mean": 58.910000000000004,
+                "later_mean": 68.944,
+                "window_size": 5
+              }
+            },
+            "review": {
+              "verdict": "candidate",
+              "threshold": 10.0,
+              "previous_episodes": 3,
+              "scope": "Descriptive screening only; no statistical significance or causal claim."
+            }
+          },
+          "output": {
+            "data": {
+              "report": "1991\u20132000: difference=+10.034 index points; review=candidate; threshold=10.0. Descriptive screening only; no statistical significance or causal claim."
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        }
+      ]
+    },
+    "06_negative_wrong_answer": {
+      "execution_id": "run-40bc3f14c8744e1fb32421a3c35b9457",
+      "status": "failed",
+      "ok": false,
+      "data": {
+        "total": 1,
+        "passed": 0,
+        "failed": 1,
+        "cases": [
+          {
+            "name": "0",
+            "ok": false,
+            "input": {
+              "question": "Compare the earlier and later observations and show supporting measurements.",
+              "years": [
+                2005,
+                2006,
+                2007,
+                2008,
+                2009,
+                2010,
+                2011,
+                2012,
+                2013,
+                2014
+              ],
+              "values": [
+                80.09,
+                83.88,
+                85.97,
+                88.18,
+                85.98,
+                88.71,
+                87.69,
+                92.28,
+                94.53,
+                97.84
+              ]
+            },
+            "execution_id": "run-006b68a8ac66428bbab248be3c78b409",
+            "checks": [
+              {
+                "ok": true,
+                "path": "ok"
+              },
+              {
+                "ok": false
+              },
+              {
+                "ok": true
+              }
+            ],
+            "judge": null
+          }
+        ]
+      },
+      "usage": {
+        "requests": 2,
+        "inference_requests": 0,
+        "tool_calls": 3,
+        "client_duration_ms": 0.549
+      },
+      "errors": [
+        {
+          "code": "_NodeFailure",
+          "message": "Required node failed: evaluate"
+        },
+        {
+          "code": "eval_failed"
+        },
+        {
+          "code": "eval_failed"
+        }
+      ],
+      "invariants": {
+        "ok": true,
+        "issues": []
+      },
+      "tool_events": [
+        {
+          "id": "tool-d2975b876ff54726928fa4e0f887aee2",
+          "name": "profile_series",
+          "input": {
+            "values": [
+              80.09,
+              83.88,
+              85.97,
+              88.18,
+              85.98,
+              88.71,
+              87.69,
+              92.28,
+              94.53,
+              97.84
+            ]
+          },
+          "output": {
+            "data": {
+              "profile": {
+                "count": 10,
+                "average": 88.515,
+                "minimum": 80.09,
+                "maximum": 97.84
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-227c22b554d6448e905f9aea4f3bb0a7",
+          "name": "compare_windows",
+          "input": {
+            "values": [
+              80.09,
+              83.88,
+              85.97,
+              88.18,
+              85.98,
+              88.71,
+              87.69,
+              92.28,
+              94.53,
+              97.84
+            ]
+          },
+          "output": {
+            "data": {
+              "measurement": {
+                "kind": "compare",
+                "value": 7.389999999999986,
+                "details": {
+                  "earlier_mean": 84.82000000000001,
+                  "later_mean": 92.21,
+                  "window_size": 5
+                }
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-3477cd672e514863a06292ba4c598772",
+          "name": "validate_measurement",
+          "input": {
+            "years": [
+              2005,
+              2006,
+              2007,
+              2008,
+              2009,
+              2010,
+              2011,
+              2012,
+              2013,
+              2014
+            ],
+            "values": [
+              80.09,
+              83.88,
+              85.97,
+              88.18,
+              85.98,
+              88.71,
+              87.69,
+              92.28,
+              94.53,
+              97.84
+            ],
+            "measurement": {
+              "kind": "compare",
+              "value": 7.389999999999986,
+              "details": {
+                "earlier_mean": 84.82000000000001,
+                "later_mean": 92.21,
+                "window_size": 5
+              }
+            }
+          },
+          "output": {
+            "data": {
+              "analysis_checked": true
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        }
+      ]
+    },
+    "06_invalid_windows": {
+      "execution_id": "run-35f5f9c2821e4ead9bb0fd39e84704c8",
+      "status": "completed",
+      "ok": true,
+      "data": {
+        "total": 1,
+        "passed": 1,
+        "failed": 0,
+        "cases": [
+          {
+            "name": "0",
+            "ok": true,
+            "input": {
+              "question": "Compare the earlier and later observations and show supporting measurements.",
+              "years": [
+                2005,
+                2006,
+                2007,
+                2008,
+                2009,
+                2010,
+                2011,
+                2012,
+                2013
+              ],
+              "values": [
+                80.09,
+                83.88,
+                85.97,
+                88.18,
+                85.98,
+                88.71,
+                87.69,
+                92.28,
+                94.53
+              ]
+            },
+            "execution_id": "run-6d687976da124958b09b746629c4ef5a",
+            "checks": [
+              {
+                "ok": true,
+                "path": "ok"
+              },
+              {
+                "ok": true
+              }
+            ],
+            "judge": null
+          }
+        ]
+      },
+      "usage": {
+        "requests": 1,
+        "inference_requests": 0,
+        "tool_calls": 1
+      },
+      "errors": [],
+      "invariants": {
+        "ok": true,
+        "issues": []
+      },
+      "tool_events": [
+        {
+          "id": "tool-bd323a1204cb4a45b78bf626d04581cf",
+          "name": "compare_windows",
+          "input": {
+            "values": [
+              80.09,
+              83.88,
+              85.97,
+              88.18,
+              85.98,
+              88.71,
+              87.69,
+              92.28,
+              94.53
+            ]
+          },
+          "output": {
+            "data": {
+              "category": "provider",
+              "message": "At least four finite values and equal-sized windows required",
+              "provider": "python-runtime",
+              "framework": "native",
+              "code": "ValueError",
+              "retryable": false,
+              "cause_type": "ValueError",
+              "details": {},
+              "error_type": "ValueError"
+            }
+          },
+          "ok": false,
+          "error": {
+            "category": "provider",
+            "message": "At least four finite values and equal-sized windows required",
+            "provider": "python-runtime",
+            "framework": "native",
+            "code": "ValueError",
+            "retryable": false,
+            "cause_type": "ValueError",
+            "details": {},
+            "error_type": "ValueError"
+          },
+          "duration_ms": null,
+          "meta": {
+            "retryable": false
+          }
+        }
+      ]
+    },
+    "bedrock_native_description": {
+      "execution_id": "run-0bdfaffc30a444f7b428292b434c5e83",
+      "status": "completed",
+      "ok": true,
+      "data": {},
+      "usage": {
+        "input_tokens": 1094,
+        "output_tokens": 136,
+        "total_tokens": 1230,
+        "requests": 2,
+        "service_latency_ms": 2400.0,
+        "client_duration_ms": 2539.242,
+        "inference_requests": 2,
+        "tool_calls": 1
+      },
+      "errors": [],
+      "invariants": {
+        "ok": true,
+        "issues": []
+      },
+      "tool_events": [
+        {
+          "id": "tooluse_QePd5ltcwTvYjiweILyngQ",
+          "name": "profile_series",
+          "input": {
+            "values": [
+              80.09,
+              83.88,
+              85.97,
+              88.18,
+              85.98,
+              88.71,
+              87.69,
+              92.28,
+              94.53,
+              97.84
+            ]
+          },
+          "output": {
+            "kind": "object",
+            "tool_name": "profile_series",
+            "ok": true,
+            "data": {
+              "profile": {
+                "count": 10,
+                "average": 88.515,
+                "minimum": 80.09,
+                "maximum": 97.84
+              }
+            },
+            "meta": {
+              "tool_name": "profile_series",
+              "serializer": "BedrockRuntime.ToolEnvelope.v1",
+              "timestamp_utc": "2026-11-11T23:52:11.134632+00:00",
+              "validated_input": {
+                "values": [
+                  80.09,
+                  83.88,
+                  85.97,
+                  88.18,
+                  85.98,
+                  88.71,
+                  87.69,
+                  92.28,
+                  94.53,
+                  97.84
+                ]
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {
+            "source": "bedrock_runtime"
+          }
+        }
+      ]
+    },
+    "bedrock_native_environment": {
+      "execution_id": "run-745439c5d922406ea201506ada6bc190",
+      "status": "completed",
+      "ok": true,
+      "data": {
+        "outputs": [
+          {
+            "question": "Compare the earlier and later observations and show supporting measurements.",
+            "years": [
+              1961,
+              1962,
+              1963,
+              1964,
+              1965,
+              1966,
+              1967,
+              1968,
+              1969,
+              1970
+            ],
+            "values": [
+              20.49,
+              21.83,
+              22.95,
+              25.11,
+              26.81,
+              28.44,
+              28.92,
+              29.75,
+              29.17,
+              30.55
+            ],
+            "profile": {
+              "count": 10,
+              "average": 26.402,
+              "minimum": 20.49,
+              "maximum": 30.55
+            },
+            "measurement": {
+              "kind": "compare",
+              "value": 5.928000000000001,
+              "details": {
+                "earlier_mean": 23.438,
+                "later_mean": 29.366,
+                "window_size": 5
+              }
+            },
+            "review": {
+              "verdict": "no_candidate",
+              "threshold": 10.0,
+              "previous_episodes": 0,
+              "scope": "Descriptive screening only; no statistical significance or causal claim."
+            },
+            "selected_tool": "compare_windows",
+            "analysis_checked": true,
+            "report": "1961\u20131970: difference=+5.928 index points; review=no_candidate; threshold=10.0. Descriptive screening only; no statistical significance or causal claim."
+          },
+          {
+            "question": "Compare the earlier and later observations and show supporting measurements.",
+            "years": [
+              1971,
+              1972,
+              1973,
+              1974,
+              1975,
+              1976,
+              1977,
+              1978,
+              1979,
+              1980
+            ],
+            "values": [
+              31.88,
+              33.38,
+              34.7,
+              35.84,
+              36.94,
+              37.16,
+              40.97,
+              44.08,
+              42.92,
+              46.86
+            ],
+            "profile": {
+              "count": 10,
+              "average": 38.473,
+              "minimum": 31.88,
+              "maximum": 46.86
+            },
+            "measurement": {
+              "kind": "compare",
+              "value": 7.849999999999994,
+              "details": {
+                "earlier_mean": 34.548,
+                "later_mean": 42.397999999999996,
+                "window_size": 5
+              }
+            },
+            "review": {
+              "verdict": "no_candidate",
+              "threshold": 10.0,
+              "previous_episodes": 1,
+              "scope": "Descriptive screening only; no statistical significance or causal claim."
+            },
+            "selected_tool": "compare_windows",
+            "analysis_checked": true,
+            "report": "1971\u20131980: difference=+7.850 index points; review=no_candidate; threshold=10.0. Descriptive screening only; no statistical significance or causal claim."
+          },
+          {
+            "question": "Compare the earlier and later observations and show supporting measurements.",
+            "years": [
+              1981,
+              1982,
+              1983,
+              1984,
+              1985,
+              1986,
+              1987,
+              1988,
+              1989,
+              1990
+            ],
+            "values": [
+              50.14,
+              49.15,
+              51.29,
+              51.8,
+              53.59,
+              55.0,
+              55.45,
+              54.47,
+              51.86,
+              54.9
+            ],
+            "profile": {
+              "count": 10,
+              "average": 52.765,
+              "minimum": 49.15,
+              "maximum": 55.45
+            },
+            "measurement": {
+              "kind": "compare",
+              "value": 3.141999999999996,
+              "details": {
+                "earlier_mean": 51.194,
+                "later_mean": 54.336,
+                "window_size": 5
+              }
+            },
+            "review": {
+              "verdict": "no_candidate",
+              "threshold": 10.0,
+              "previous_episodes": 2,
+              "scope": "Descriptive screening only; no statistical significance or causal claim."
+            },
+            "selected_tool": "compare_windows",
+            "analysis_checked": true,
+            "report": "1981\u20131990: difference=+3.142 index points; review=no_candidate; threshold=10.0. Descriptive screening only; no statistical significance or causal claim."
+          },
+          {
+            "question": "Compare the earlier and later observations and show supporting measurements.",
+            "years": [
+              1991,
+              1992,
+              1993,
+              1994,
+              1995,
+              1996,
+              1997,
+              1998,
+              1999,
+              2000
+            ],
+            "values": [
+              56.06,
+              56.62,
+              58.2,
+              60.43,
+              63.24,
+              65.25,
+              66.38,
+              69.49,
+              71.41,
+              72.19
+            ],
+            "profile": {
+              "count": 10,
+              "average": 63.927,
+              "minimum": 56.06,
+              "maximum": 72.19
+            },
+            "measurement": {
+              "kind": "compare",
+              "value": 10.033999999999999,
+              "details": {
+                "earlier_mean": 58.910000000000004,
+                "later_mean": 68.944,
+                "window_size": 5
+              }
+            },
+            "review": {
+              "verdict": "candidate",
+              "threshold": 10.0,
+              "previous_episodes": 3,
+              "scope": "Descriptive screening only; no statistical significance or causal claim."
+            },
+            "selected_tool": "compare_windows",
+            "analysis_checked": true,
+            "report": "1991\u20132000: difference=+10.034 index points; review=candidate; threshold=10.0. Descriptive screening only; no statistical significance or causal claim."
+          }
+        ],
+        "history": [
+          {
+            "step": 0,
+            "record": {
+              "question": "Compare the earlier and later observations and show supporting measurements.",
+              "years": [
+                1961,
+                1962,
+                1963,
+                1964,
+                1965,
+                1966,
+                1967,
+                1968,
+                1969,
+                1970
+              ],
+              "values": [
+                20.49,
+                21.83,
+                22.95,
+                25.11,
+                26.81,
+                28.44,
+                28.92,
+                29.75,
+                29.17,
+                30.55
+              ]
+            },
+            "state_before": {
+              "processed": 0,
+              "candidate_found": false
+            },
+            "state_after": {
+              "processed": 1,
+              "candidate_found": false
+            },
+            "execution_id": "run-d4def7d26c2647879c5f3c836cf6f409"
+          },
+          {
+            "step": 1,
+            "record": {
+              "question": "Compare the earlier and later observations and show supporting measurements.",
+              "years": [
+                1971,
+                1972,
+                1973,
+                1974,
+                1975,
+                1976,
+                1977,
+                1978,
+                1979,
+                1980
+              ],
+              "values": [
+                31.88,
+                33.38,
+                34.7,
+                35.84,
+                36.94,
+                37.16,
+                40.97,
+                44.08,
+                42.92,
+                46.86
+              ]
+            },
+            "state_before": {
+              "processed": 1,
+              "candidate_found": false
+            },
+            "state_after": {
+              "processed": 2,
+              "candidate_found": false
+            },
+            "execution_id": "run-6c6a50822f464ebf94a3b75bb688c3dc"
+          },
+          {
+            "step": 2,
+            "record": {
+              "question": "Compare the earlier and later observations and show supporting measurements.",
+              "years": [
+                1981,
+                1982,
+                1983,
+                1984,
+                1985,
+                1986,
+                1987,
+                1988,
+                1989,
+                1990
+              ],
+              "values": [
+                50.14,
+                49.15,
+                51.29,
+                51.8,
+                53.59,
+                55.0,
+                55.45,
+                54.47,
+                51.86,
+                54.9
+              ]
+            },
+            "state_before": {
+              "processed": 2,
+              "candidate_found": false
+            },
+            "state_after": {
+              "processed": 3,
+              "candidate_found": false
+            },
+            "execution_id": "run-7b305276b8264260a2835b32e3256706"
+          },
+          {
+            "step": 3,
+            "record": {
+              "question": "Compare the earlier and later observations and show supporting measurements.",
+              "years": [
+                1991,
+                1992,
+                1993,
+                1994,
+                1995,
+                1996,
+                1997,
+                1998,
+                1999,
+                2000
+              ],
+              "values": [
+                56.06,
+                56.62,
+                58.2,
+                60.43,
+                63.24,
+                65.25,
+                66.38,
+                69.49,
+                71.41,
+                72.19
+              ]
+            },
+            "state_before": {
+              "processed": 3,
+              "candidate_found": false
+            },
+            "state_after": {
+              "processed": 4,
+              "candidate_found": true
+            },
+            "execution_id": "run-026e5302e9b04d988e352edb233ded6e"
+          }
+        ],
+        "summary": {
+          "state": {
+            "processed": 4,
+            "candidate_found": true
+          },
+          "processed": 4,
+          "terminated": true,
+          "truncated": false,
+          "reason": "stop"
+        }
+      },
+      "usage": {
+        "requests": 28,
+        "inference_requests": 16,
+        "tool_calls": 20,
+        "input_tokens": 43588,
+        "output_tokens": 1444,
+        "total_tokens": 45032,
+        "service_latency_ms": 11512.0,
+        "client_duration_ms": 11960.648
+      },
+      "errors": [],
+      "invariants": {
+        "ok": true,
+        "issues": []
+      },
+      "tool_events": [
+        {
+          "id": "tool-b50bce46b9134b2a888ea738a08004e4",
+          "name": "profile_series",
+          "input": {
+            "values": [
+              20.49,
+              21.83,
+              22.95,
+              25.11,
+              26.81,
+              28.44,
+              28.92,
+              29.75,
+              29.17,
+              30.55
+            ]
+          },
+          "output": {
+            "data": {
+              "profile": {
+                "count": 10,
+                "average": 26.402,
+                "minimum": 20.49,
+                "maximum": 30.55
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tooluse_5LhbLIxFgsNHfnOChQ465V",
+          "name": "compare_windows",
+          "input": {
+            "values": [
+              20.49,
+              21.83,
+              22.95,
+              25.11,
+              26.81,
+              28.44,
+              28.92,
+              29.75,
+              29.17,
+              30.55
+            ]
+          },
+          "output": {
+            "kind": "object",
+            "tool_name": "compare_windows",
+            "ok": true,
+            "data": {
+              "measurement": {
+                "kind": "compare",
+                "value": 5.928000000000001,
+                "details": {
+                  "earlier_mean": 23.438,
+                  "later_mean": 29.366,
+                  "window_size": 5
+                }
+              }
+            },
+            "meta": {
+              "tool_name": "compare_windows",
+              "serializer": "BedrockRuntime.ToolEnvelope.v1",
+              "timestamp_utc": "2026-11-11T23:52:12.241273+00:00",
+              "validated_input": {
+                "values": [
+                  20.49,
+                  21.83,
+                  22.95,
+                  25.11,
+                  26.81,
+                  28.44,
+                  28.92,
+                  29.75,
+                  29.17,
+                  30.55
+                ]
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {
+            "source": "bedrock_runtime"
+          }
+        },
+        {
+          "id": "tool-aa6e8aa89e0848e7b33cfe32358734d1",
+          "name": "validate_measurement",
+          "input": {
+            "years": [
+              1961,
+              1962,
+              1963,
+              1964,
+              1965,
+              1966,
+              1967,
+              1968,
+              1969,
+              1970
+            ],
+            "values": [
+              20.49,
+              21.83,
+              22.95,
+              25.11,
+              26.81,
+              28.44,
+              28.92,
+              29.75,
+              29.17,
+              30.55
+            ],
+            "measurement": {
+              "kind": "compare",
+              "value": 5.928000000000001,
+              "details": {
+                "earlier_mean": 23.438,
+                "later_mean": 29.366,
+                "window_size": 5
+              }
+            }
+          },
+          "output": {
+            "data": {
+              "analysis_checked": true
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tooluse_FqBRaq8zGBGYP3GaocRCm6",
+          "name": "check_finding",
+          "input": {
+            "values": [
+              20.49,
+              21.83,
+              22.95,
+              25.11,
+              26.81,
+              28.44,
+              28.92,
+              29.75,
+              29.17,
+              30.55
+            ],
+            "difference": 5.928000000000001
+          },
+          "output": {
+            "kind": "object",
+            "tool_name": "check_finding",
+            "ok": true,
+            "data": {
+              "review": {
+                "verdict": "no_candidate",
+                "threshold": 10.0,
+                "previous_episodes": 0,
+                "scope": "Descriptive screening only; no statistical significance or causal claim."
+              }
+            },
+            "meta": {
+              "tool_name": "check_finding",
+              "serializer": "BedrockRuntime.ToolEnvelope.v1",
+              "timestamp_utc": "2026-11-11T23:52:14.481261+00:00",
+              "validated_input": {
+                "values": [
+                  20.49,
+                  21.83,
+                  22.95,
+                  25.11,
+                  26.81,
+                  28.44,
+                  28.92,
+                  29.75,
+                  29.17,
+                  30.55
+                ],
+                "difference": 5.928000000000001
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {
+            "source": "bedrock_runtime"
+          }
+        },
+        {
+          "id": "tool-a4634fe056f1465ab8beecada9953859",
+          "name": "render_report",
+          "input": {
+            "years": [
+              1961,
+              1962,
+              1963,
+              1964,
+              1965,
+              1966,
+              1967,
+              1968,
+              1969,
+              1970
+            ],
+            "measurement": {
+              "kind": "compare",
+              "value": 5.928000000000001,
+              "details": {
+                "earlier_mean": 23.438,
+                "later_mean": 29.366,
+                "window_size": 5
+              }
+            },
+            "review": {
+              "verdict": "no_candidate",
+              "threshold": 10.0,
+              "previous_episodes": 0,
+              "scope": "Descriptive screening only; no statistical significance or causal claim."
+            }
+          },
+          "output": {
+            "data": {
+              "report": "1961\u20131970: difference=+5.928 index points; review=no_candidate; threshold=10.0. Descriptive screening only; no statistical significance or causal claim."
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-104fd74b3cac4955bbfe955aed842dd9",
+          "name": "profile_series",
+          "input": {
+            "values": [
+              31.88,
+              33.38,
+              34.7,
+              35.84,
+              36.94,
+              37.16,
+              40.97,
+              44.08,
+              42.92,
+              46.86
+            ]
+          },
+          "output": {
+            "data": {
+              "profile": {
+                "count": 10,
+                "average": 38.473,
+                "minimum": 31.88,
+                "maximum": 46.86
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tooluse_N40QqVcGEqHAaQ9Ci2KYoM",
+          "name": "compare_windows",
+          "input": {
+            "values": [
+              31.88,
+              33.38,
+              34.7,
+              35.84,
+              36.94,
+              37.16,
+              40.97,
+              44.08,
+              42.92,
+              46.86
+            ]
+          },
+          "output": {
+            "kind": "object",
+            "tool_name": "compare_windows",
+            "ok": true,
+            "data": {
+              "measurement": {
+                "kind": "compare",
+                "value": 7.849999999999994,
+                "details": {
+                  "earlier_mean": 34.548,
+                  "later_mean": 42.397999999999996,
+                  "window_size": 5
+                }
+              }
+            },
+            "meta": {
+              "tool_name": "compare_windows",
+              "serializer": "BedrockRuntime.ToolEnvelope.v1",
+              "timestamp_utc": "2026-11-11T23:52:15.808208+00:00",
+              "validated_input": {
+                "values": [
+                  31.88,
+                  33.38,
+                  34.7,
+                  35.84,
+                  36.94,
+                  37.16,
+                  40.97,
+                  44.08,
+                  42.92,
+                  46.86
+                ]
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {
+            "source": "bedrock_runtime"
+          }
+        },
+        {
+          "id": "tool-c5fa49fa6ace48e09eb16bf25291d29e",
+          "name": "validate_measurement",
+          "input": {
+            "years": [
+              1971,
+              1972,
+              1973,
+              1974,
+              1975,
+              1976,
+              1977,
+              1978,
+              1979,
+              1980
+            ],
+            "values": [
+              31.88,
+              33.38,
+              34.7,
+              35.84,
+              36.94,
+              37.16,
+              40.97,
+              44.08,
+              42.92,
+              46.86
+            ],
+            "measurement": {
+              "kind": "compare",
+              "value": 7.849999999999994,
+              "details": {
+                "earlier_mean": 34.548,
+                "later_mean": 42.397999999999996,
+                "window_size": 5
+              }
+            }
+          },
+          "output": {
+            "data": {
+              "analysis_checked": true
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tooluse_5XFIXN9B2Ux8ejYy9uSEeM",
+          "name": "check_finding",
+          "input": {
+            "values": [
+              31.88,
+              33.38,
+              34.7,
+              35.84,
+              36.94,
+              37.16,
+              40.97,
+              44.08,
+              42.92,
+              46.86
+            ],
+            "difference": 7.849999999999994
+          },
+          "output": {
+            "kind": "object",
+            "tool_name": "check_finding",
+            "ok": true,
+            "data": {
+              "review": {
+                "verdict": "no_candidate",
+                "threshold": 10.0,
+                "previous_episodes": 1,
+                "scope": "Descriptive screening only; no statistical significance or causal claim."
+              }
+            },
+            "meta": {
+              "tool_name": "check_finding",
+              "serializer": "BedrockRuntime.ToolEnvelope.v1",
+              "timestamp_utc": "2026-11-11T23:52:17.345482+00:00",
+              "validated_input": {
+                "values": [
+                  31.88,
+                  33.38,
+                  34.7,
+                  35.84,
+                  36.94,
+                  37.16,
+                  40.97,
+                  44.08,
+                  42.92,
+                  46.86
+                ],
+                "difference": 7.849999999999994
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {
+            "source": "bedrock_runtime"
+          }
+        },
+        {
+          "id": "tool-beb58f27f5c84467969debf11e3e69a5",
+          "name": "render_report",
+          "input": {
+            "years": [
+              1971,
+              1972,
+              1973,
+              1974,
+              1975,
+              1976,
+              1977,
+              1978,
+              1979,
+              1980
+            ],
+            "measurement": {
+              "kind": "compare",
+              "value": 7.849999999999994,
+              "details": {
+                "earlier_mean": 34.548,
+                "later_mean": 42.397999999999996,
+                "window_size": 5
+              }
+            },
+            "review": {
+              "verdict": "no_candidate",
+              "threshold": 10.0,
+              "previous_episodes": 1,
+              "scope": "Descriptive screening only; no statistical significance or causal claim."
+            }
+          },
+          "output": {
+            "data": {
+              "report": "1971\u20131980: difference=+7.850 index points; review=no_candidate; threshold=10.0. Descriptive screening only; no statistical significance or causal claim."
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-ad6a44ac45a24685a6cffec5b52410df",
+          "name": "profile_series",
+          "input": {
+            "values": [
+              50.14,
+              49.15,
+              51.29,
+              51.8,
+              53.59,
+              55.0,
+              55.45,
+              54.47,
+              51.86,
+              54.9
+            ]
+          },
+          "output": {
+            "data": {
+              "profile": {
+                "count": 10,
+                "average": 52.765,
+                "minimum": 49.15,
+                "maximum": 55.45
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tooluse_D9flC7Xvv8sdp5xCA6Utpd",
+          "name": "compare_windows",
+          "input": {
+            "values": [
+              50.14,
+              49.15,
+              51.29,
+              51.8,
+              53.59,
+              55.0,
+              55.45,
+              54.47,
+              51.86,
+              54.9
+            ]
+          },
+          "output": {
+            "kind": "object",
+            "tool_name": "compare_windows",
+            "ok": true,
+            "data": {
+              "measurement": {
+                "kind": "compare",
+                "value": 3.141999999999996,
+                "details": {
+                  "earlier_mean": 51.194,
+                  "later_mean": 54.336,
+                  "window_size": 5
+                }
+              }
+            },
+            "meta": {
+              "tool_name": "compare_windows",
+              "serializer": "BedrockRuntime.ToolEnvelope.v1",
+              "timestamp_utc": "2026-11-11T23:52:19.131710+00:00",
+              "validated_input": {
+                "values": [
+                  50.14,
+                  49.15,
+                  51.29,
+                  51.8,
+                  53.59,
+                  55.0,
+                  55.45,
+                  54.47,
+                  51.86,
+                  54.9
+                ]
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {
+            "source": "bedrock_runtime"
+          }
+        },
+        {
+          "id": "tool-a071799d2d9246669796af632615b837",
+          "name": "validate_measurement",
+          "input": {
+            "years": [
+              1981,
+              1982,
+              1983,
+              1984,
+              1985,
+              1986,
+              1987,
+              1988,
+              1989,
+              1990
+            ],
+            "values": [
+              50.14,
+              49.15,
+              51.29,
+              51.8,
+              53.59,
+              55.0,
+              55.45,
+              54.47,
+              51.86,
+              54.9
+            ],
+            "measurement": {
+              "kind": "compare",
+              "value": 3.141999999999996,
+              "details": {
+                "earlier_mean": 51.194,
+                "later_mean": 54.336,
+                "window_size": 5
+              }
+            }
+          },
+          "output": {
+            "data": {
+              "analysis_checked": true
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tooluse_hOG6GvhYNKGeQwFw6Fr8Pd",
+          "name": "check_finding",
+          "input": {
+            "values": [
+              50.14,
+              49.15,
+              51.29,
+              51.8,
+              53.59,
+              55.0,
+              55.45,
+              54.47,
+              51.86,
+              54.9
+            ],
+            "difference": 3.141999999999996
+          },
+          "output": {
+            "kind": "object",
+            "tool_name": "check_finding",
+            "ok": true,
+            "data": {
+              "review": {
+                "verdict": "no_candidate",
+                "threshold": 10.0,
+                "previous_episodes": 2,
+                "scope": "Descriptive screening only; no statistical significance or causal claim."
+              }
+            },
+            "meta": {
+              "tool_name": "check_finding",
+              "serializer": "BedrockRuntime.ToolEnvelope.v1",
+              "timestamp_utc": "2026-11-11T23:52:20.473328+00:00",
+              "validated_input": {
+                "values": [
+                  50.14,
+                  49.15,
+                  51.29,
+                  51.8,
+                  53.59,
+                  55.0,
+                  55.45,
+                  54.47,
+                  51.86,
+                  54.9
+                ],
+                "difference": 3.141999999999996
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {
+            "source": "bedrock_runtime"
+          }
+        },
+        {
+          "id": "tool-18b2301310584dc8aab363e7f173e39a",
+          "name": "render_report",
+          "input": {
+            "years": [
+              1981,
+              1982,
+              1983,
+              1984,
+              1985,
+              1986,
+              1987,
+              1988,
+              1989,
+              1990
+            ],
+            "measurement": {
+              "kind": "compare",
+              "value": 3.141999999999996,
+              "details": {
+                "earlier_mean": 51.194,
+                "later_mean": 54.336,
+                "window_size": 5
+              }
+            },
+            "review": {
+              "verdict": "no_candidate",
+              "threshold": 10.0,
+              "previous_episodes": 2,
+              "scope": "Descriptive screening only; no statistical significance or causal claim."
+            }
+          },
+          "output": {
+            "data": {
+              "report": "1981\u20131990: difference=+3.142 index points; review=no_candidate; threshold=10.0. Descriptive screening only; no statistical significance or causal claim."
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tool-687c321d585e4ed3ab94721047b610df",
+          "name": "profile_series",
+          "input": {
+            "values": [
+              56.06,
+              56.62,
+              58.2,
+              60.43,
+              63.24,
+              65.25,
+              66.38,
+              69.49,
+              71.41,
+              72.19
+            ]
+          },
+          "output": {
+            "data": {
+              "profile": {
+                "count": 10,
+                "average": 63.927,
+                "minimum": 56.06,
+                "maximum": 72.19
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tooluse_2P0qy7iFj7XJZhpeAcdEeY",
+          "name": "compare_windows",
+          "input": {
+            "values": [
+              56.06,
+              56.62,
+              58.2,
+              60.43,
+              63.24,
+              65.25,
+              66.38,
+              69.49,
+              71.41,
+              72.19
+            ]
+          },
+          "output": {
+            "kind": "object",
+            "tool_name": "compare_windows",
+            "ok": true,
+            "data": {
+              "measurement": {
+                "kind": "compare",
+                "value": 10.033999999999999,
+                "details": {
+                  "earlier_mean": 58.910000000000004,
+                  "later_mean": 68.944,
+                  "window_size": 5
+                }
+              }
+            },
+            "meta": {
+              "tool_name": "compare_windows",
+              "serializer": "BedrockRuntime.ToolEnvelope.v1",
+              "timestamp_utc": "2026-11-11T23:52:21.776002+00:00",
+              "validated_input": {
+                "values": [
+                  56.06,
+                  56.62,
+                  58.2,
+                  60.43,
+                  63.24,
+                  65.25,
+                  66.38,
+                  69.49,
+                  71.41,
+                  72.19
+                ]
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {
+            "source": "bedrock_runtime"
+          }
+        },
+        {
+          "id": "tool-362cea40cddc4592b9403441e34403f9",
+          "name": "validate_measurement",
+          "input": {
+            "years": [
+              1991,
+              1992,
+              1993,
+              1994,
+              1995,
+              1996,
+              1997,
+              1998,
+              1999,
+              2000
+            ],
+            "values": [
+              56.06,
+              56.62,
+              58.2,
+              60.43,
+              63.24,
+              65.25,
+              66.38,
+              69.49,
+              71.41,
+              72.19
+            ],
+            "measurement": {
+              "kind": "compare",
+              "value": 10.033999999999999,
+              "details": {
+                "earlier_mean": 58.910000000000004,
+                "later_mean": 68.944,
+                "window_size": 5
+              }
+            }
+          },
+          "output": {
+            "data": {
+              "analysis_checked": true
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tooluse_VyKOxZN1hWAzvJ4cldyau6",
+          "name": "check_finding",
+          "input": {
+            "values": [
+              56.06,
+              56.62,
+              58.2,
+              60.43,
+              63.24,
+              65.25,
+              66.38,
+              69.49,
+              71.41,
+              72.19
+            ],
+            "difference": 10.033999999999999
+          },
+          "output": {
+            "kind": "object",
+            "tool_name": "check_finding",
+            "ok": true,
+            "data": {
+              "review": {
+                "verdict": "candidate",
+                "threshold": 10.0,
+                "previous_episodes": 3,
+                "scope": "Descriptive screening only; no statistical significance or causal claim."
+              }
+            },
+            "meta": {
+              "tool_name": "check_finding",
+              "serializer": "BedrockRuntime.ToolEnvelope.v1",
+              "timestamp_utc": "2026-11-11T23:52:23.375763+00:00",
+              "validated_input": {
+                "values": [
+                  56.06,
+                  56.62,
+                  58.2,
+                  60.43,
+                  63.24,
+                  65.25,
+                  66.38,
+                  69.49,
+                  71.41,
+                  72.19
+                ],
+                "difference": 10.033999999999999
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {
+            "source": "bedrock_runtime"
+          }
+        },
+        {
+          "id": "tool-955793c7abb04b1283561a13abb289f2",
+          "name": "render_report",
+          "input": {
+            "years": [
+              1991,
+              1992,
+              1993,
+              1994,
+              1995,
+              1996,
+              1997,
+              1998,
+              1999,
+              2000
+            ],
+            "measurement": {
+              "kind": "compare",
+              "value": 10.033999999999999,
+              "details": {
+                "earlier_mean": 58.910000000000004,
+                "later_mean": 68.944,
+                "window_size": 5
+              }
+            },
+            "review": {
+              "verdict": "candidate",
+              "threshold": 10.0,
+              "previous_episodes": 3,
+              "scope": "Descriptive screening only; no statistical significance or causal claim."
+            }
+          },
+          "output": {
+            "data": {
+              "report": "1991\u20132000: difference=+10.034 index points; review=candidate; threshold=10.0. Descriptive screening only; no statistical significance or causal claim."
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        }
+      ]
+    },
+    "bedrock_native_eval": {
+      "execution_id": "run-191a69135c434cd88419cae3b11bbba8",
+      "status": "completed",
+      "ok": true,
+      "data": {
+        "total": 1,
+        "passed": 1,
+        "failed": 0,
+        "cases": [
+          {
+            "name": "0",
+            "ok": true,
+            "input": {
+              "question": "Compare the earlier and later observations and show supporting measurements.",
+              "years": [
+                2005,
+                2006,
+                2007,
+                2008,
+                2009,
+                2010,
+                2011,
+                2012,
+                2013,
+                2014
+              ],
+              "values": [
+                80.09,
+                83.88,
+                85.97,
+                88.18,
+                85.98,
+                88.71,
+                87.69,
+                92.28,
+                94.53,
+                97.84
+              ]
+            },
+            "execution_id": "run-47a3bd985e824855a233eb09977bf251",
+            "checks": [
+              {
+                "ok": true,
+                "path": "ok"
+              },
+              {
+                "ok": true
+              },
+              {
+                "ok": true
+              }
+            ],
+            "judge": null
+          }
+        ]
+      },
+      "usage": {
+        "requests": 4,
+        "inference_requests": 2,
+        "tool_calls": 3,
+        "input_tokens": 8357,
+        "output_tokens": 161,
+        "total_tokens": 8518,
+        "service_latency_ms": 1729.0,
+        "client_duration_ms": 1777.354
+      },
+      "errors": [],
+      "invariants": {
+        "ok": true,
+        "issues": []
+      },
+      "tool_events": [
+        {
+          "id": "tool-f6efa108c8c0476096a514c99e132c87",
+          "name": "profile_series",
+          "input": {
+            "values": [
+              80.09,
+              83.88,
+              85.97,
+              88.18,
+              85.98,
+              88.71,
+              87.69,
+              92.28,
+              94.53,
+              97.84
+            ]
+          },
+          "output": {
+            "data": {
+              "profile": {
+                "count": 10,
+                "average": 88.515,
+                "minimum": 80.09,
+                "maximum": 97.84
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        },
+        {
+          "id": "tooluse_GoT4Qi5NquJtBMMXCV52g3",
+          "name": "compare_windows",
+          "input": {
+            "values": [
+              80.09,
+              83.88,
+              85.97,
+              88.18,
+              85.98,
+              88.71,
+              87.69,
+              92.28,
+              94.53,
+              97.84
+            ]
+          },
+          "output": {
+            "kind": "object",
+            "tool_name": "compare_windows",
+            "ok": true,
+            "data": {
+              "measurement": {
+                "kind": "compare",
+                "value": 7.389999999999986,
+                "details": {
+                  "earlier_mean": 84.82000000000001,
+                  "later_mean": 92.21,
+                  "window_size": 5
+                }
+              }
+            },
+            "meta": {
+              "tool_name": "compare_windows",
+              "serializer": "BedrockRuntime.ToolEnvelope.v1",
+              "timestamp_utc": "2026-11-11T23:52:24.910485+00:00",
+              "validated_input": {
+                "values": [
+                  80.09,
+                  83.88,
+                  85.97,
+                  88.18,
+                  85.98,
+                  88.71,
+                  87.69,
+                  92.28,
+                  94.53,
+                  97.84
+                ]
+              }
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {
+            "source": "bedrock_runtime"
+          }
+        },
+        {
+          "id": "tool-53e9adee8986487ea8ed88c52e3424cc",
+          "name": "validate_measurement",
+          "input": {
+            "years": [
+              2005,
+              2006,
+              2007,
+              2008,
+              2009,
+              2010,
+              2011,
+              2012,
+              2013,
+              2014
+            ],
+            "values": [
+              80.09,
+              83.88,
+              85.97,
+              88.18,
+              85.98,
+              88.71,
+              87.69,
+              92.28,
+              94.53,
+              97.84
+            ],
+            "measurement": {
+              "kind": "compare",
+              "value": 7.389999999999986,
+              "details": {
+                "earlier_mean": 84.82000000000001,
+                "later_mean": 92.21,
+                "window_size": 5
+              }
+            }
+          },
+          "output": {
+            "data": {
+              "analysis_checked": true
+            }
+          },
+          "ok": true,
+          "error": null,
+          "duration_ms": null,
+          "meta": {}
+        }
+      ]
+    }
+  }
+}

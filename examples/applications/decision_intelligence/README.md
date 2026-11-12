@@ -1,4 +1,4 @@
-# Decision intelligence · Agentic Systems 2.1.8
+# Decision intelligence · Agentic Systems 2.1.9
 
 Apply an explicit scoring rule to supplied facts.
 

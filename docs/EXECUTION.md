@@ -1,4 +1,4 @@
-# Execution lifecycle · 2.1.8
+# Execution lifecycle · 2.1.9
 
 Definitions describe work. compile() prepares and validates integrated structure, without business execution or model inference. The compiled program executes work and returns RunResult. Direct owner.run() compiles internally.
 

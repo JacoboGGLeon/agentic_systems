@@ -1,4 +1,6 @@
-# Contratos · 2.1.4.dev8
+# Contratos · 2.1.9
+
+**Advanced reference.** The 2.1.9 introductory path uses instructions, Tool validation and external Evals without explicit Agent contracts or policies. These existing API options are retained; their broader provider/framework acceptance is planned for 2.1.10.
 
 1. Una sola gramática pública: Graph, Agent/System/Environment y compile/run/arun.
    Graph es el StateGraph original de LangGraph, sin alias público StateGraph ni check.

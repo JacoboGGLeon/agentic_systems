@@ -1,19 +1,31 @@
-# Concepts and composition · 2.1.8
+# Concepts and composition · Agentic Systems 2.1.9
 
-A Tool executes a concrete operation. A runtime Skill groups Tools and instructions. Neither requires a model.
+Start with an operation you can execute and check. A Tool owns that operation; a runtime Skill groups Tools and capability instructions. Neither needs a language model.
 
-| Element | Responsibility | Use when |
+## Two Agent roles
+
+| Declaration | Role | Use when |
 |---|---|---|
-| Agent(graph=...) | Explicit capability workflow | You control the sequence and decisions |
-| Agent(runtime=...) | Actor execution with an optional framework | An actor selects or executes a capability |
-| System(graph=...) | Application coordination | Several responsibilities belong to one application |
-| Environment(graph=..., records=...) | Episodic execution with observe/update/stop | Work evolves across records |
-| Eval(unit=..., cases=...) | Acceptance of an Agent, System or Environment | You need observable checks |
+| `Agent(graph=...)` | **Graph-based agent actuator** | You declare the execution route and decisions |
+| `Agent(runtime=...)` | **Model-backed agent actor**, when using a model runtime | A model selects actions from available capabilities |
 
-An Agent accepts graph OR runtime, not both. Graph is LangGraph's original StateGraph exposed as toolkit.Graph. It does not default to a Python provider. Python functions execute Python; actor nodes use their declared runtimes. A single graph can mix both.
+Agent accepts graph OR runtime, not both. A Python runtime actor executes an explicitly selected Tool; it does not interpret natural language. Graph is LangGraph's original StateGraph exposed as `toolkit.Graph`. A graph-backed Agent does not select a global provider: its Python nodes execute Python, while each actor node uses its own Runtime and Framework.
 
-A graph node may be an Agent or System containing another graph. This is nested composition: the outer graph coordinates units and each unit owns its internal steps. You do not need every layer. An Environment's graph describes work per episode; records/observe/update/stop govern the episode cycle. Eval can target an Agent or System without an Environment.
+## Compose only the responsibilities you need
 
-Framework and provider are different: native/OpenAI Agents/Strands implement actors; runtime configures Python or model-provider execution. LangGraph orchestrates graph topology.
+A **System** coordinates capabilities through a Graph. Nodes can be functions, Tools, Agents or other Systems; nested results retain the observed child executions. Add an **Environment** when a graph needs records, accumulated episode state, update logic and a stopping rule. Add **Eval** independently when you need acceptance cases and checks. Neither requires the other, and neither is mandatory after System.
 
-[Graphs](GRAPHS.md) · [Execution](EXECUTION.md) · [Information](CONTEXT_MEMORY.md)
+## Keep configuration and information distinct
+
+| Object | Responsibility |
+|---|---|
+| Runtime | Provider, model and execution limits |
+| Framework | Actor execution implementation: Native, OpenAI Agents or Strands |
+| Context | Immutable finite reference data and source identifiers |
+| Memory | Bounded previous execution observations within a process |
+| Graph state | Current business channels and updates |
+| RunResult | Outputs, errors, usage, Tool events and nested execution evidence |
+
+LangGraph orchestrates graph topology. Supporting a provider/framework configuration does not establish universal feature parity. Use the appropriate integration guide and evaluate the actual profile.
+
+[Graphs](GRAPHS.md) · [Execution](EXECUTION.md) · [Information](CONTEXT_MEMORY.md) · [Evaluation](EVALUATION.md).

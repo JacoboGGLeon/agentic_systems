@@ -1,4 +1,4 @@
-# Composición · 2.1.4.dev8
+# Composición · 2.1.9
 
 Agent y System usan Graph de LangGraph. Los nodos devuelven actualizaciones
 parciales; un hijo publica los campos que escribió. Las ramas paralelas necesitan

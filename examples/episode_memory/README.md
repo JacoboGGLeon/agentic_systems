@@ -1,4 +1,4 @@
-# Episode memory · Agentic Systems 2.1.8
+# Episode memory · Agentic Systems 2.1.9
 
 Observe, update and stop episodes while retaining execution identity.
 

@@ -1,7 +1,7 @@
 # Application structure
-Verify agentic_systems.__version__ == "2.1.8" and installed wheel identity.
+Verify agentic_systems.__version__ == "2.1.9" and installed wheel identity.
 Start with assets/first_tool.py or assets/minimal.py, or adapt a repository example.
-The CLI does not generate projects: `new` was removed in 2.1.8. Create application
+The CLI does not generate projects: `new` was removed in 2.1.9. Create application
 files explicitly and never overwrite existing user work.
 
 Keep application.py as the declaration, Tools and local Skill resources beside

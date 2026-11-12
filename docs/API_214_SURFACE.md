@@ -1,4 +1,4 @@
-# Observed API surface · 2.1.8
+# Observed API surface · 2.1.9
 
 Fifteen toolkit concepts, five original LangGraph reexports and __version__. Native Pydantic/LangGraph methods belong to those libraries, not additional toolkit constructors. Execute Graph through its owner to obtain RunResult; owner.compile validates the integrated LangGraph subset.
 

@@ -14,6 +14,15 @@ def project_version(root):
 
 def check(root=ROOT):
     version = project_version(root)
+    manifests = [root / 'pyproject.toml']
+    for directory in ('examples', 'integrations', 'tutorials'):
+        manifests.extend(path for pattern in ('pyproject.toml', 'requirements*.txt')
+                         for path in (root / directory).rglob(pattern)
+                         if not {'history', 'build', 'dist'} & set(path.relative_to(root).parts))
+    for manifest in manifests:
+        pins = re.findall(r'agentic-systems(?:\[[^\]]*\])?\s*==\s*([0-9.]+(?:dev[0-9]+)?)',
+                          manifest.read_text(encoding='utf-8'))
+        assert all(pin == version for pin in pins), (manifest, pins, version)
     catalog = json.loads((root / 'examples/catalog.json').read_text(encoding='utf-8'))
     assert catalog['current_api_version'] == version
     pages = [root / p for p in ('README.md', 'INSTALL.md', 'docs/README.md',
@@ -23,7 +32,9 @@ def check(root=ROOT):
              'docs/CONCEPTS.md', 'docs/GRAPHS.md', 'docs/EXECUTION.md',
              'docs/RESULTS.md', 'docs/EVALUATION.md', 'docs/CONTEXT_MEMORY.md',
              'docs/INTEGRATIONS.md', 'docs/MIGRATION_217_TO_218.md',
-             'docs/STATUS_214.md', 'docs/RUNRESULT_CONTRACT.md')]
+             'docs/STATUS_214.md', 'docs/RUNRESULT_CONTRACT.md',
+             'docs/MIGRATION_218_TO_219.md', 'docs/RELEASE_NOTES_219.md',
+             'docs/VALIDATION_219.md', 'docs/NARRATIVE_CONTRACT.md', 'ROADMAP.md')]
     for entry in catalog['entries']:
         assert entry['target_sdk_version'] == version, entry['id']
         path = entry.get('entrypoint')
@@ -33,7 +44,7 @@ def check(root=ROOT):
         assert page.is_file(), page
         text = page.read_text(encoding='utf-8')
         heading = next((line for line in text.splitlines() if line.startswith('# ')), '')
-        if page.name != 'MIGRATION_217_TO_218.md':
+        if not page.name.startswith('MIGRATION_'):
             versions = re.findall(r'2\.1\.\d+(?:\.dev\d+)?', heading)
             assert all(item == version for item in versions), (page, heading, version)
         assert not re.search(r'The current SDK(?: release)? is 2\.1\.(?!' + re.escape(version.split('.')[-1]) + r'\b)\d+', text), page

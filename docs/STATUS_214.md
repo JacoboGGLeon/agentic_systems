@@ -1,3 +1,7 @@
-# Current development status · 2.1.8
+# Current development status · 2.1.9
 
-The current release target is 2.1.8. Publication is gated by exact-commit quality, mutation and artifact checks; no new live-model certification is claimed. See [release notes](RELEASE_NOTES_218.md) and [migration](MIGRATION_217_TO_218.md). Historical reports remain tied to their versions/hashes. Memory and continuations are process-local; EMR and distributed Spark remain unverified.
+The release target is 2.1.9. Active documentation, tutorial targets, examples and the bundled authoring Skill use this target. Publication and new live certification are pending exact-artifact acceptance.
+
+[Candidate release notes](RELEASE_NOTES_219.md) · [Migration](MIGRATION_218_TO_219.md) · [Validation](VALIDATION_219.md).
+
+Historical 2.1.8 execution records are preserved as baseline evidence. Existing Agent contracts/policies are advanced references; their expanded matrix is in the 2.1.10 scope. Memory and continuations remain process-local; EMR and distributed Spark remain unverified.

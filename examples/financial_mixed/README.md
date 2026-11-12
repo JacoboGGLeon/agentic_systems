@@ -1,4 +1,4 @@
-# Financial System, step by step · 2.1.8
+# Financial System, step by step · 2.1.9
 
 [Python notebook](01_financial_system.ipynb) · [English reading view](01_financial_system.md) · [Recorded mixed execution](02_financial_system_mixed.executed.ipynb) · [Recorded native/local execution](03_financial_system_native_local.executed.ipynb).
 

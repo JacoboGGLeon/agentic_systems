@@ -1,4 +1,4 @@
-# Quantitative analysis · Agentic Systems 2.1.8
+# Quantitative analysis · Agentic Systems 2.1.9
 
 Sum decimal amounts without binary floating-point arithmetic.
 

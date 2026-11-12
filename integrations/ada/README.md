@@ -1,4 +1,4 @@
-# Optional AWS/ADA diagnostics · 2.1.7
+# Optional AWS/ADA diagnostics · 2.1.9
 
 This independent optional package provides read-only configuration diagnostics.
 It is not included in the SDK's `all` extra. It uses the existing Agent/System/Graph
@@ -7,12 +7,12 @@ extra duplicating `bedrock`.
 
 ## Install and inspect
 
-Install the matching SDK 2.1.7 first. For pre-publication acceptance, use the
+Install the matching SDK 2.1.9 first. For pre-publication acceptance, use the
 supplied frozen SDK wheel and approved dependencies.
 From the `ada` directory of the matching release asset:
 
 ```bash
-python -m pip install "wheels/agentic_systems_ada-2.1.7-py3-none-any.whl"
+python -m pip install "wheels/agentic_systems_ada-2.1.9-py3-none-any.whl"
 agentic-systems-ada doctor
 ```
 
@@ -56,7 +56,7 @@ The object cannot be moved across processes. Transfer JSON configuration instead
 then create and supply a session in the destination process.
 
 Local adapter regressions use simulated transport. Separate operator-supplied
-2.1.7 reports passed targeted Bedrock checks in Studio, Processing and two SageMaker
+2.1.9 reports passed targeted Bedrock checks in Studio, Processing and two SageMaker
 Pipelines. Those reports validate the SDK paths exercised, not live calls by this
 diagnostic command. EMR, Spark executors and prolonged credential renewal remain
 unverified. See [AWS acceptance and limits](../../docs/AWS_SESSION_VALIDATION_217.md)

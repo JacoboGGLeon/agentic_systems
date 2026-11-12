@@ -1,4 +1,4 @@
-# Graph, Context and resources · 2.1.8
+# Graph, Context and resources · 2.1.9
 
 [Notebook](01_common_graph.ipynb) · [English reading view](01_common_graph.md). Six Agent/System patterns cover Context, file-loaded Skills, Memory, Environment, Eval, pause/resume and model_artifact/model_server declarations. Execution is offline.
 

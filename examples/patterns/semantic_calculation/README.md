@@ -1,4 +1,4 @@
-# Semantic calculation · Agentic Systems 2.1.8
+# Semantic calculation · Agentic Systems 2.1.9
 
 Separate verified multiplication from presentation of its result.
 

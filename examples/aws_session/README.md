@@ -1,4 +1,4 @@
-# Borrowed AWS session and ADA add-on · 2.1.8
+# Borrowed AWS session and ADA add-on · 2.1.9
 
 Input: a prepared boto3 session, model and region. Process: validate runtime, compile the Agent and inspect configuration. Output: a credential-free configuration-only report. [Notebook](01_aws_session.ipynb) · [English reading view](01_aws_session.md) · [Code](example.py).
 
@@ -16,4 +16,4 @@ Follow the [shared execution guide](../../docs/EXAMPLES_GUIDE.md). From the repo
 python scripts/run_example.py examples/aws_session/example.py
 ```
 
-This command runs the offline profile only. Its validation scope is separate from live provider campaigns. See the [targeted 2.1.8 Studio/Processing acceptance](../../docs/AWS_SESSION_VALIDATION_217.md) for exact candidate identity, operator-reported live evidence and pending EMR/Spark checks. Saved outputs of this example are not relabeled as live 2.1.8 runs.
+This command runs the offline profile only. Its validation scope is separate from live provider campaigns. See the [historical 2.1.7 Studio/Processing acceptance](../../docs/AWS_SESSION_VALIDATION_217.md) for exact candidate identity, operator-reported live evidence and pending EMR/Spark checks. Saved outputs of this example are not relabeled as live 2.1.9 runs.

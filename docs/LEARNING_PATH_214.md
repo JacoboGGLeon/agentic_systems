@@ -1,4 +1,4 @@
-# Learning path · Agentic Systems 2.1.8
+# Learning path · Agentic Systems 2.1.9
 
 Start with [one Tool and a visible result](ONBOARDING_FIRST_RUN.md). Continue
 through [the core notebooks](../tutorials/README.md) in order, then select
@@ -11,5 +11,4 @@ A paused execution is not a final completed result even if ok is true.
 
 Choose a provider and actor framework after the offline case works. LangGraph
 already orchestrates the route. Handoffs, sessions, guardrails and MCP/A2A have
-additional SDK-specific boundaries. Follow [actor contracts](ACTOR_CONTRACTS.md)
-and [runtime controls](RUNTIME_SCHEDULER_214.md) before authorizing inference.
+additional SDK-specific boundaries. Start with [integrations](INTEGRATIONS.md) and [runtime controls](RUNTIME_SCHEDULER_214.md) before authorizing inference. Actor contracts are an advanced reference, not a prerequisite for the first model-backed actor.

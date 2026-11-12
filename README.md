@@ -1,433 +1,435 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/JacoboGGLeon/agentic_systems/main/docs/assets/logo_agentic_systems.png" alt="Agentic Systems" width="190">
+  <img src="https://raw.githubusercontent.com/JacoboGGLeon/agentic_systems/main/docs/assets/logo_agentic_systems.png" alt="Agentic Systems" width="360">
 </p>
 
 # Agentic Systems
 
-**Build agentic applications you can compose, inspect, and evaluate.**
+**Compose tools, model-backed agent actors, and graph-based agent actuators into systems you can inspect and evaluate.**
 
-Combine tools, model-backed agents, and explicit workflows. Coordinate capabilities through systems, run episodes in environments, and evaluate both the outputs and the actions that produced them.
+Agentic Systems is a Python library for combining executable operations, model-selected actions and explicit workflows. Build reusable capabilities, coordinate their work, and check the operations behind each result.
 
-Agentic Systems connects graph orchestration, actor frameworks, and runtime providers through **execution contracts and a shared evidence model**.
+## Why Agentic Systems?
 
-Use it when you need to compose capabilities without losing their execution history, check whether required tools actually ran, or evaluate an application across supported integrations.
+Use it when your application needs to:
 
-[Documentation](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/README.md) · [Tutorials](https://github.com/JacoboGGLeon/agentic_systems/blob/main/tutorials/README.md) · [Examples](https://github.com/JacoboGGLeon/agentic_systems/blob/main/examples/README.md)
+- **Combine code and model decisions.** Define operations as Tools, execute them through graphs or let model actors select them.
+- **Compose reusable capabilities.** Coordinate Agents and Tools in Systems, then run those workflows over successive inputs.
+- **Check what happened.** Inspect execution evidence and evaluate both the outputs and the operations that produced them.
 
-## Install
+The walkthrough below follows one capability as it grows: execute it, offer a choice of actions, compose a workflow, add episode history, and check the result.
 
-Python **3.10–3.14**:
+Each interaction shows a request, explains the answer, and then builds the capability behind it. In local examples, the answer text presents the returned data for the reader; the actuators themselves return structured results. The optional model interaction is labeled as expected rather than executed.
+
+[Documentation](https://github.com/JacoboGGLeon/agentic_systems/tree/main/docs) · [Examples](https://github.com/JacoboGGLeon/agentic_systems/tree/main/examples)
+
+## Get started
 
 ```bash
-pip install "agentic-systems==2.1.8"
+pip install "agentic-systems==2.1.9"
 ```
 
-## Start with one capability
+This guide targets **2.1.9**. During release preparation, install the candidate wheel; the registry command above applies after publication. Run the local examples in order. The model configuration is optional; the following composition and evaluation examples run without model access.
 
-This local example reads a service-health snapshot. It needs no model account. Start with a deterministic capability; add model-selected actions when your task needs them.
+## How it works
 
-```mermaid
-flowchart TD
-    I["Input: service = checkout"] --> T
-    subgraph A["Agent: inspector"]
-        subgraph G["Capability graph"]
-            T["Tool: inspect_service"]
-        end
-    end
-    C["Context: service-health snapshot"] -. supplies data .-> T
-    T --> R["RunResult: errors = 7"]
-```
+Start with one operation you can check: comparing two windows of observations.
+
+Define the calculation as a **Tool**, connect it through a **Graph**, and give that graph to an **Agent**. This creates a **graph-based agent actuator**: a capability that follows the execution path you declared.
+
+**User input**
+
+> My earlier observations are 10 and 10; the later observations are 15 and 15. How much did the average change?
+
+**Agentic Systems output**
+
+The earlier average is **10** and the later average is **15**. The difference is **+5 units**: the later window is higher on average.
+
+**How we build the answer**
+
+We need a numerical comparison with an inspectable calculation. First, `compare_windows` checks that the observations form two equally sized windows and contain finite numbers. It then subtracts the earlier mean from the later mean.
 
 ```python
-import agentic_systems as toolkit
+import math
+from statistics import mean
 from pydantic import BaseModel
+import agentic_systems as toolkit
 
-
-class Incident(BaseModel):
-    service: str
-    errors: int | None = None
-    action: str | None = None
-
-
-context = toolkit.Context(
-    {"services": {"catalog": 0, "checkout": 7}},
-    sources=("demo-health-snapshot-v1",),
-)
-
+class State(BaseModel):
+    values: list[float]
+    difference: float | None = None
+    verified: bool = False
 
 @toolkit.tool
-def inspect_service(service: str, *, context: toolkit.Context) -> dict:
-    return {"errors": context.data["services"][service]}
+def compare_windows(values: list[float]) -> dict:
+    """Compare the means of equal chronological windows."""
+    if len(values) < 4 or len(values) % 2:
+        raise ValueError("Two equal windows are required")
+    if not all(math.isfinite(v) for v in values):
+        raise ValueError("Finite observations are required")
+    n = len(values) // 2
+    return {"difference": mean(values[n:]) - mean(values[:n])}
 
-
-graph = toolkit.Graph(Incident)
-graph.add_node("inspect", inspect_service)
-graph.add_edge(toolkit.START, "inspect")
-graph.add_edge("inspect", toolkit.END)
-
-inspector = toolkit.Agent("inspector", graph=graph, context=context)
-result = inspector.run({"service": "checkout"})
-
-assert result.ok and result.data["errors"] == 7
-print(result.data)
 ```
 
-Output:
-
-```text
-{'service': 'checkout', 'errors': 7}
-```
-
-The Tool performs the operation. Context supplies information and its source. The Agent owns the capability graph. The same capability can run independently or become part of a larger application.
-
-## Inspect the work, then evaluate it
-
-The result includes more than business data:
+The calculation now has a name and an input/output boundary. To make it a reusable workflow, use the declared state, connect the Tool between START and END, and give the graph to an Agent.
 
 ```python
-evidence = result.evidence()
-lineage = result.lineage()
-print(result.human_results())
-assert result.check_invariants().ok
+graph = toolkit.Graph(State)
+graph.add_node("compare", compare_windows)
+graph.add_edge(toolkit.START, "compare")
+graph.add_edge("compare", toolkit.END)
+actuator = toolkit.Agent("comparison", graph=graph)
+
+sample = {"values": [10, 10, 15, 15]}
+result = actuator.run(sample)
+assert result.ok
+print(result.data["difference"])
 ```
 
-Excerpt from the local execution:
-
-```text
-inspector: COMPLETED
-Input: {"service":"checkout"}
-Output: {"service":"checkout","errors":7}
-Process:
-- Tool inspect_service: completed -> {"errors":7}
-```
-
-Use Eval to check the answer **and** the observed tool call:
+The diagram shows two things returned by the same execution: business data for the answer and evidence of the Tool that produced it.
 
 ```mermaid
 flowchart TD
-    E["Eval: cases and checks"] --> A["Execute Agent"]
+    I["Structured input"] --> A
+    subgraph A["Agent · graph-based actuator"]
+        T["Tool · compare_windows"]
+    end
     A --> R["RunResult"]
-    R --> D["Check business output"]
-    R --> T["Check observed tool calls"]
-    D --> V["Evaluation RunResult"]
-    T --> V
+    R --> O["Output · difference"]
+    R --> E["Evidence · Tool execution"]
 ```
 
-```python
-def checked_inspection(result, case):
-    calls = [
-        event
-        for execution in result.walk()
-        for event in execution.tool_events
-        if event.name == "inspect_service"
-    ]
-    return {"ok": len(calls) == 1 and calls[0].ok
-            and calls[0].input == case["input"]}
-
-
-evaluation = toolkit.Eval(
-    "inspection_acceptance",
-    unit=inspector,
-    cases=({
-        "input": {"service": "checkout"},
-        "expected": {"ok": True, "data": {"service": "checkout", "errors": 7}},
-    },),
-    checks=(checked_inspection,),
-)
-evaluation_result = evaluation.run()
-assert evaluation_result.ok
-
-negative_control = toolkit.Eval(
-    "reject_wrong_measurement",
-    unit=inspector,
-    cases=({
-        "input": {"service": "checkout"},
-        "expected": {"ok": True, "data": {"service": "checkout", "errors": 0}},
-    },),
-)
-negative_result = negative_control.run()
-assert not negative_result.ok
-print("Expected measurement accepted:", evaluation_result.ok)
-print("Wrong measurement accepted:", negative_result.ok)
-```
+**Returned data**
 
 ```text
-Expected measurement accepted: True
-Wrong measurement accepted: False
+5.0
 ```
 
-The first Eval accepts the measured value and verifies the inspection input. The negative control rejects a wrong measurement. A plausible answer alone would not establish that the required operation ran.
+Here, `5.0` is the `difference` field printed from `result.data`. It means **later mean minus earlier mean**, in the same units as the observations. `result.ok` checks execution success; it does not turn a descriptive difference into a statistical finding.
 
-Eval can evaluate an Agent, System, or Environment independently. It is fail-fast; use separate evaluations when every negative scenario needs an independent report.
+The question expresses the task; the local actuator receives the `sample` dictionary. You can now reuse this capability in a larger graph.
 
-[Evaluation patterns](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/EVALUATION.md)
+## Let a model choose an action
 
-## Coordinate capabilities in a System
+The first capability always compares its inputs. To support different requests, add a description Tool and group both operations in a **Skill**.
 
-Now add an escalation capability. The System decides which path to execute based on the observed error count.
+A **model-backed agent actor** uses the request to select an available Tool. The **Runtime** configures its provider and model. The **Framework** selects how the actor executes.
 
-```mermaid
-flowchart TD
-    I["Service name"] --> A["Inspection Agent"]
-    A --> C{"Errors ≥ 3?"}
-    C -->|Yes| B["Escalation Agent"]
-    C -->|No| M["Monitor Tool"]
-    B --> R["RunResult with nested evidence"]
-    M --> R
-    E["Independent Eval"] -. checks .-> R
-```
+**User input**
 
-Continue the first example:
+> Describe these observations instead of comparing them: 10, 10, 15, 15.
 
-```python
-@toolkit.tool
-def escalate(service: str, errors: int) -> dict:
-    return {"action": "escalate"}
+**Expected Agentic Systems output — model call not executed here**
 
+There are **4 observations**, with an average of **12.5**. For this request, the actor should select `profile_series` rather than compare the two windows.
 
-@toolkit.tool
-def monitor(service: str) -> dict:
-    return {"action": "monitor"}
+**How we build the answer**
 
+The user's request now determines which operation is useful. We add `profile_series`, expose both Tools through one Skill, and tell the actor how to choose. The model receives the request; the selected Python Tool performs the arithmetic.
 
-escalation_graph = toolkit.Graph(Incident)
-escalation_graph.add_node("decide", escalate)
-escalation_graph.add_edge(toolkit.START, "decide")
-escalation_graph.add_edge("decide", toolkit.END)
-escalation_agent = toolkit.Agent("escalation", graph=escalation_graph)
-
-
-def route(state):
-    return "escalate" if state.errors >= 3 else "monitor"
-
-
-system_graph = toolkit.Graph(Incident)
-system_graph.add_node("inspect", inspector)
-system_graph.add_node("escalate", escalation_agent)
-system_graph.add_node("monitor", monitor)
-system_graph.add_edge(toolkit.START, "inspect")
-system_graph.add_conditional_edges(
-    "inspect", route, {"escalate": "escalate", "monitor": "monitor"}
-)
-system_graph.add_edge("escalate", toolkit.END)
-system_graph.add_edge("monitor", toolkit.END)
-
-system = toolkit.System("incident_response", graph=system_graph)
-response = system.run({"service": "checkout"})
-
-assert response.ok
-assert response.data == {"service": "checkout", "errors": 7, "action": "escalate"}
-```
-
-These tools record decisions; they do not send alerts or change infrastructure. The branch for `catalog` monitors the service and skips escalation.
-
-Graphs can contain functions, Tools, Agents, and Systems. Each nested execution contributes evidence to the parent result. LangGraph supplies conditional transitions, parallel branches, and reducers; the topology remains explicit.
-
-[Graphs and composition](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/GRAPHS.md)
-
-## Run episodes in an Environment
-
-A System coordinates work within an execution. An Environment supplies records, accumulated state, and a stopping policy across episodes.
-
-```mermaid
-flowchart TD
-    N["Next service"] --> X["Execute System"]
-    X --> U["Update round state"]
-    U --> C{"Escalation observed?"}
-    C -->|Yes| S["Return episode evidence and summary"]
-    C -->|No| M{"Records remain?"}
-    M -->|Yes| N
-    M -->|No| S
-```
-
-```python
-episode_graph = toolkit.Graph(Incident)
-episode_graph.add_node("respond", system)
-episode_graph.add_edge(toolkit.START, "respond")
-episode_graph.add_edge("respond", toolkit.END)
-
-
-def update(state, record, result):
-    return {"processed": state["processed"] + 1,
-            "escalations": state["escalations"] + int(result.data["action"] == "escalate")}
-
-
-def stop(state, result):
-    return state["escalations"] >= 1
-
-
-environment = toolkit.Environment(
-    "service_round",
-    graph=episode_graph,
-    records=({"service": "catalog"}, {"service": "checkout"}, {"service": "catalog"}),
-    state={"processed": 0, "escalations": 0},
-    update=update,
-    stop=stop,
-    max_steps=3,
-)
-episodes = environment.run()
-
-assert episodes.ok and len(episodes.data["outputs"]) == 2
-assert episodes.data["summary"]["state"] == {"processed": 2, "escalations": 1}
-```
-
-The round stops after the first escalation. Its result retains the episode executions and accumulated summary. Eval can independently check those outputs and stopping behavior.
-
-## Add a model when it needs to choose an action
-
-Suppose users can ask either for a service's current health or for recovery guidance. Give an actor both tools and let it select the appropriate operation.
+Install the optional integration:
 
 ```bash
-pip install "agentic-systems[bedrock,openai-agents]==2.1.8"
+pip install "agentic-systems[bedrock]==2.1.9"
 ```
 
-The following continues the tool and Context declarations above. It requires an AWS region, a supported Bedrock model, and permissions. Running its calls uses real Bedrock inference.
+Continue with the comparison Tool above. This configuration uses Bedrock and the environment's AWS credential chain.
 
 ```python
-import os
 import boto3
 
-
 @toolkit.tool
-def read_runbook(service: str) -> dict:
-    return {"guidance": f"For {service}: inspect recent changes and dependency failures."}
+def profile_series(values: list[float]) -> dict:
+    """Describe finite numerical observations."""
+    if not values or not all(math.isfinite(v) for v in values):
+        raise ValueError("Finite observations are required")
+    return {"count": len(values), "average": mean(values)}
 
-
+skill = toolkit.skill(
+    name="series_analysis", tools=(compare_windows, profile_series),
+)
 runtime = toolkit.runtime(
-    provider="bedrock-runtime",
-    model=os.environ["BEDROCK_MODEL_ID"],
-    session=boto3.Session(region_name=os.environ["AWS_REGION"]),
-    max_turns=3,
-    max_tool_calls=1,
-    max_tokens=256,
-    max_retries=0,
+    provider="bedrock-runtime", model="qwen.qwen3-32b-v1:0",
+    session=boto3.Session(region_name="us-east-1"),
+    max_turns=1, max_tool_calls=1, max_tokens=256, max_retries=0,
 )
-service_skill = toolkit.skill(
-    name="service_support", tools=(inspect_service, read_runbook),
+actor = toolkit.Agent(
+    "analyst", runtime=runtime, framework=toolkit.framework("native"),
+    skills=(skill,),
+    instructions="Choose one appropriate Tool. Preserve all values. Report its result.",
 )
-instructions = (
-    "For current health, call inspect_service. For recovery guidance, call read_runbook. "
-    "Use the service named by the user."
-)
-policy = {"tool_choice": "required"}
-contract = {
-    "tool_expectation": {"any_of": ["inspect_service", "read_runbook"], "min_count": 1},
-    "completion": "when_required_tools_satisfied",
-}
-
-assistant = toolkit.Agent(
-    "service_support",
-    runtime=runtime,
-    framework=toolkit.framework("native"),
-    context=context,
-    skills=(service_skill,),
-    instructions=instructions,
-    policy=policy,
-    contract=contract,
-)
-model_result = assistant.run("Read recovery guidance for checkout.")
+# Live invocation: use the bounded ADA notebook linked below to run and inspect it.
+# selected = actor.run("Describe these observations: 10, 10, 15, 15.")
 ```
 
-An `Agent(graph=...)` follows the explicit workflow you declare. An `Agent(runtime=...)` executes an actor. Both return `RunResult`; actor calls can participate inside graph callbacks with nested evidence.
-
-The contract requires a successful call to one of the declared tools. A task-specific Eval should additionally verify that the actor chose the appropriate one. The full nested-actor example is available in [the executable tutorial](https://github.com/JacoboGGLeon/agentic_systems/blob/main/examples/readme/incident_response.py).
-
-### Switch the framework and keep Bedrock
-
-```python
-other_assistant = toolkit.Agent(
-    "service_support",
-    runtime=runtime,
-    framework=toolkit.framework("openai-agents"),
-    context=context,
-    skills=(service_skill,),
-    instructions=instructions,
-    policy=policy,
-    contract=contract,
-)
-other_result = other_assistant.run("Read recovery guidance for checkout.")
-```
-
-OpenAI Agents is the actor framework; Bedrock remains the model provider. The surrounding composition and result-inspection interfaces remain available. Supported integrations do not imply universal feature parity.
+The two outgoing paths represent available choices. The description path is the intended choice for this request, not a recorded model selection for this four-value example.
 
 ```mermaid
 flowchart TD
-    N["Native actor framework"] --> R["Bedrock runtime"]
-    O["OpenAI Agents framework"] --> R
-    R --> M["Configured Bedrock model"]
-    N -. produces .-> E["Common RunResult interface"]
-    O -. produces .-> E
+    Q["User input"] --> A["Model-backed agent actor"]
+    R["Runtime + Framework"] -. executes .-> A
+    subgraph S["Skill"]
+        P["profile_series"]
+        C["compare_windows"]
+    end
+    A -->|"description request"| P
+    A -. alternative .-> C
+    P --> O["Tool output and execution evidence"]
 ```
 
-These are alternative configurations; the diagram does not imply simultaneous execution.
+**Expected returned data**
 
-| Layer | Supported paths |
-|---|---|
-| Graph orchestration | LangGraph |
-| Actor framework | Native, OpenAI Agents, Strands |
-| Runtime provider | Python, OpenAI, Bedrock, Ollama, vLLM |
-| Interoperability | MCP and A2A through supported integration paths |
-| Serving configuration | `model_artifact(...)`, `model_server(...)` |
+```text
+{'count': 4, 'average': 12.5}
+```
 
-[Integration guide](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/INTEGRATIONS.md)
+The expected dictionary contains the Tool's calculated values. To establish that the actor actually used this Tool, inspect its recorded name and arguments in a live run. The linked ADA notebook includes real model executions, selection checks and a persistent HTTP budget.
 
-## Choose the execution and observation tools you need
+## Compose capabilities into a System
 
-Agent, System, Environment, and Eval expose `compile()`, `run()`, `arun()`, and `inspect()`. Compilation prepares execution without business work or model inference. Direct `run()` compiles internally.
+Once a capability works on its own, make it part of a larger workflow. A **System** coordinates capabilities through a graph and retains the evidence from their nested executions.
+
+Here the System reuses the local comparison actuator and adds a verification Tool. This path runs entirely in Python, so it also works if you skipped the optional model configuration.
+
+**User input**
+
+> You found a difference of 5. Can you check that it matches the original observations before returning the result?
+
+**Agentic Systems output**
+
+The difference is **+5 units**, and the numerical verification passed. Recomputing the means from the original observations agrees with the comparison result.
+
+**How we build the answer**
+
+We can reuse the comparison capability rather than repeat its implementation. The System runs that Agent first, then passes the observations and its measured difference to `verify`. A mismatch raises an error; an agreeing measurement writes `verified=True` into state.
 
 ```python
-program = system.compile()
-compiled_result = program.run({"service": "catalog"})
-assert compiled_result.ok and compiled_result.data["action"] == "monitor"
+@toolkit.tool
+def verify(values: list[float], difference: float) -> dict:
+    """Check the difference using an independent sum calculation."""
+    n = len(values) // 2
+    expected = math.fsum(values[n:]) / n - math.fsum(values[:n]) / n
+    if not math.isclose(difference, expected, abs_tol=1e-12):
+        raise ValueError("Measurement does not match observations")
+    return {"verified": True}
+
+coordination = toolkit.Graph(State)
+coordination.add_node("analyze", actuator)
+coordination.add_node("verify", verify)
+coordination.add_edge(toolkit.START, "analyze")
+coordination.add_edge("analyze", "verify")
+coordination.add_edge("verify", toolkit.END)
+system = toolkit.System("checked_comparison", graph=coordination)
+checked = system.run(sample)
+assert checked.ok
+print(checked.data["difference"], checked.data["verified"])
 ```
 
-Agent/System accept execution input; Environment uses declared records and Eval uses declared cases. Tools expose `run()`, `arun()`, and `inspect()` independently.
+The System boundary contains the coordinated work. Its RunResult retains both the checked measurement and the nested Agent and Tool executions.
 
-| Result method | Returns | Purpose |
-|---|---|---|
-| `evidence()` | `dict` | Export execution evidence and children. |
-| `lineage()` | Lineage object | Inspect execution and tool relationships. |
-| `trace()` | `dict` | Obtain a bounded execution projection. |
-| `human_results()` | `str` | Read an execution summary. |
-| `walk()` | Generator of `RunResult` | Visit the result and descendants. |
-| `check_invariants()` | Validation object | Check structural consistency, independently of business correctness. |
+```mermaid
+flowchart TD
+    I["Input"] --> A
+    subgraph S["System"]
+        A["Comparison Agent"] --> V["Verification Tool"]
+    end
+    V --> R["RunResult"]
+    R --> O["Checked measurement"]
+    R --> E["Nested execution evidence"]
+```
 
-Context supplies reference information. Optional Memory retains bounded prior execution observations. Reuse a Memory instance for continuity; use a new instance for an independent scenario. Eval isolates toolkit Memory changes per case, starting from the existing history.
+**Returned data**
 
-[Execution](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/EXECUTION.md) · [Results](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/RESULTS.md) · [Context and Memory](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/CONTEXT_MEMORY.md)
+```text
+5.0 True
+```
 
-## Build with the authoring skill
+The two printed values have separate meanings: `5.0` is the measurement; `True` means the verification Tool agreed with it. This check establishes numerical consistency for these inputs, not a causal explanation or a general guarantee about the model.
 
-The wheel includes version-matched instructions, references, and examples for coding assistants.
+The complete example also shows model actors participating through graph callbacks.
+
+## Add context and continuity
+
+Next, apply the workflow to successive segments using the same review rule.
+
+Use **Context** for immutable reference information, such as the review threshold. Attach **Memory** to the review capability to retain bounded episode history. An **Environment** supplies the records, executes each episode, updates accumulated state and decides when to stop.
+
+**User input**
+
+> Apply this comparison to successive segments. Use a review threshold of 3, retain prior observations, and stop when a segment needs review.
+
+**Agentic Systems output**
+
+Processed **2 of 3 segments**. The first difference was **0**. The second was **5**, which met the review threshold of **3**, so the round stopped before the third segment.
+
+**How we build the answer**
+
+A single System run handles one segment. The Environment supplies several records and controls the round. Context holds the threshold, the review System's Memory retains prior episodes, and the accumulated state counts processed records. The `stop` function uses the recorded candidate flag.
+
+```python
+class Episode(State):
+    candidate: bool = False
+    previous_episodes: int = 0
+
+context = toolkit.Context({"review_threshold": 3.0}, sources=("demo-rule-v1",))
+memory = toolkit.Memory(capacity=10)
+
+@toolkit.tool
+def screen(difference: float, *, context: toolkit.Context) -> dict:
+    """Apply the declared descriptive screening rule."""
+    return {
+        "candidate": abs(difference) >= context.data["review_threshold"],
+        "previous_episodes": len(context.episodes),
+    }
+
+screen_graph = toolkit.Graph(Episode)
+screen_graph.add_node("screen", screen)
+screen_graph.add_edge(toolkit.START, "screen")
+screen_graph.add_edge("screen", toolkit.END)
+review = toolkit.System("review", graph=screen_graph, context=context, memory=memory)
+
+episodes = toolkit.Graph(Episode)
+episodes.add_node("analyze", system)
+episodes.add_node("screen", review)
+episodes.add_edge(toolkit.START, "analyze")
+episodes.add_edge("analyze", "screen")
+episodes.add_edge("screen", toolkit.END)
+
+def update(state, record, result):
+    return {"processed": state["processed"] + 1}
+
+def stop(state, result):
+    return result.data["candidate"]
+
+environment = toolkit.Environment(
+    "series_round", graph=episodes,
+    records=({"values": [10, 10, 10, 10]}, sample, sample),
+    state={"processed": 0}, update=update, stop=stop, max_steps=3,
+    context=context,
+)
+round_result = environment.run()
+assert round_result.ok
+print(round_result.data["summary"]["state"])
+```
+
+Follow the loop once per record: execute the System, screen the difference, update state, then decide whether to continue. Context supplies the rule; Memory makes earlier review episodes available.
+
+```mermaid
+flowchart TD
+    N["Environment · next record"] --> S["Execute System"]
+    C["Context · review threshold"] -. supplies .-> T["Screening Tool"]
+    S --> T
+    M["Memory · previous episodes"] -. available .-> T
+    T --> U["Update accumulated state"]
+    U -. retain episode .-> M
+    U --> D{"Candidate found?"}
+    D -->|"No · records remain"| N
+    D -->|"Yes"| R["Return episode outputs and summary"]
+```
+
+**Returned data**
+
+```text
+{'processed': 2}
+```
+
+The printed summary reports how many records were processed. The episode outputs retain each difference, candidate flag and `previous_episodes` count. The first review has no prior episode; the second has one. Reaching this descriptive screening threshold is a reason for review, not a statistical-significance result.
+
+## Inspect and evaluate
+
+The application now produces results across several operations and episodes. How do you check that it did the right work?
+
+A **RunResult** lets you inspect outputs, Tool calls and nested executions. An **Eval** runs an Agent, System or Environment against declared cases and applies your acceptance checks. Here one check verifies the value; another verifies the comparison Tool's original input.
+
+**User input**
+
+> How can I check both the answer and whether the comparison actually used my original observations?
+
+**Agentic Systems output**
+
+Both declared acceptance checks passed: the verified difference is **5**, and exactly one successful `compare_windows` call used the original observations.
+
+**How we build the answer**
+
+Inspecting a RunResult lets you follow one execution. Eval goes further: it executes a declared case and applies repeatable acceptance checks. The result check tests the verified value; the trajectory check finds the actual comparison event and compares its input with the case input.
+
+```python
+evidence = checked.evidence()
+lineage = checked.lineage()
+
+def result_check(result, case):
+    return {"ok": result.data["verified"] and result.data["difference"] == 5.0}
+
+def trajectory_check(result, case):
+    calls = [event for run in result.walk() for event in run.tool_events
+             if event.name == "compare_windows"]
+    return {"ok": len(calls) == 1 and calls[0].ok
+            and calls[0].input["values"] == case["input"]["values"]}
+
+evaluation = toolkit.Eval(
+    "comparison_acceptance", unit=system,
+    cases=({"input": sample, "expected": {"ok": True}},),
+    checks=(result_check, trajectory_check),
+)
+accepted = evaluation.run()
+print("Acceptance:", accepted.ok)
+```
+
+The checks examine different parts of the same RunResult. A correct value alone does not establish that the required operation ran with the correct inputs.
+
+```mermaid
+flowchart TD
+    C["Eval · cases"] --> U["Execute declared unit"]
+    U --> R["RunResult"]
+    R --> B["Check business result"]
+    R --> T["Check actual Tool calls"]
+    B --> A["Evaluation result and evidence"]
+    T --> A
+```
+
+**Returned data**
+
+```text
+Acceptance: True
+```
+
+`Acceptance: True` means this case satisfied the declared checks. These checks cover the four-value teaching example; they do not certify all inputs. The complete notebook adds negative controls and real-data checks. Use `check_invariants()` separately to inspect structural consistency.
+
+## Build with ChatGPT or Codex
+
+The version-matched **authoring Skill** gives your coding assistant API guidance, examples and validation practices for building Agentic Systems applications.
+
+**[Download the authoring Skill ZIP · 2.1.9](https://github.com/JacoboGGLeon/agentic_systems/releases/download/v2.1.9/agentic-systems-skill-2.1.9.zip)**
+
+The 2.1.9 download becomes available when its GitHub release is published. Before publication, export it from the installed candidate.
+
+Use the ZIP as authoring material in a skill-capable ChatGPT workspace. For Codex, install the bundled Skill from your project directory:
 
 ```bash
 agentic-systems skill info
 agentic-systems skill install
-agentic-systems skill export agentic-systems-skill-2.1.8.zip
 ```
 
-Install defaults to `.agents/skills/agentic-systems`. The authoring skill helps write applications; runtime `toolkit.skill(...)` groups application capabilities.
+The default installation location is `.agents/skills/agentic-systems`. You can also export the same bundled material:
 
-[Download the 2.1.8 skill ZIP](https://github.com/JacoboGGLeon/agentic_systems/releases/download/v2.1.8/agentic-systems-skill-2.1.8.zip)
+```bash
+agentic-systems skill export agentic-systems-skill-2.1.9.zip
+```
 
-Additional CLI commands: `agentic-systems version`, `agentic-systems api`, and `agentic-systems doctor`. Doctor checks dependencies, not service access.
+For example, ask your assistant: “Use the Agentic Systems skill to build a Tool, compose it in a System, and add a result and trajectory evaluation.”
 
-## Learn by task
+The authoring Skill helps you write applications. Runtime `toolkit.skill(...)` groups the Tools available to an application's actors. Installing or exporting the authoring material does not automatically install it into your ChatGPT account.
 
-| Goal | Start here |
+## Continue building
+
+| Goal | Resource |
 |---|---|
-| Learn the concepts and API | [Concepts](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/CONCEPTS.md) and [core tutorials](https://github.com/JacoboGGLeon/agentic_systems/tree/main/tutorials/core) |
-| Build graphs and evaluate trajectories | [Graphs](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/GRAPHS.md) and [Eval patterns](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/EVALUATION.md) |
-| Configure OpenAI | [OpenAI tutorial](https://github.com/JacoboGGLeon/agentic_systems/blob/main/tutorials/providers/01_openai.md) |
-| Configure Bedrock and AWS sessions | [Bedrock tutorial](https://github.com/JacoboGGLeon/agentic_systems/blob/main/tutorials/providers/03_bedrock.md) and [AWS configuration](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/ADA_214.md) |
-| Use Ollama or vLLM | [Ollama](https://github.com/JacoboGGLeon/agentic_systems/blob/main/tutorials/providers/02_ollama.md), [local GPU](https://github.com/JacoboGGLeon/agentic_systems/blob/main/tutorials/providers/05_ollama_gpu.md), [vLLM](https://github.com/JacoboGGLeon/agentic_systems/blob/main/tutorials/providers/04_vllm_serving.md) |
-| Explore frameworks, MCP, and A2A | [Framework tutorials](https://github.com/JacoboGGLeon/agentic_systems/tree/main/tutorials/frameworks) and [protocol example](https://github.com/JacoboGGLeon/agentic_systems/tree/main/examples/patterns/strands_protocol_graph) |
-| Explore semantic acceptance campaigns | [Historical semantic challenges](https://github.com/JacoboGGLeon/agentic_systems/tree/main/semantic_challenges) |
+| Run the complete real-data application | [Time-series notebook](https://github.com/JacoboGGLeon/agentic_systems/blob/main/examples/time_series_discovery_219/ADA_Time_Series_Discovery_219_Core.ipynb) |
+| Inspect actual saved outputs | [Recorded execution viewer](https://github.com/JacoboGGLeon/agentic_systems/blob/main/examples/time_series_discovery_219/Recorded_Outputs.ipynb) |
+| Learn the grammar | [Concepts](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/CONCEPTS.md) |
+| Configure providers and frameworks | [Integrations](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/INTEGRATIONS.md) |
+| Build acceptance checks | [Evaluation](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/EVALUATION.md) |
 
-## Verification and execution boundaries
+The local walkthrough runs without model inference. The optional actor configuration introduces model-selected actions; its live invocation is kept in the bounded notebook. The application notebook targets 2.1.9. The recorded execution viewer preserves actual 2.1.8 outputs and failures as historical evidence; those runs are not certification of the 2.1.9 candidate.
 
-Unit tests, simulated transports, and live campaigns establish different things. Historical campaigns remain tied to their versions and artifact identities. See [2.1.8 validation](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/VALIDATION_218.md) and [historical AWS session tests](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/AWS_SESSION_VALIDATION_217.md).
-
-Memory and continuations are process-local. Timeouts do not guarantee thread termination or rollback. Boto3 sessions are borrowed resources excluded from configuration JSON; supply a session in each destination process. Per-run limits are not a persistent campaign spending budget. SDK redaction is not general anonymization. Recorded SageMaker tests do not establish EMR or distributed Spark compatibility.
-
-[Known issues](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/OPEN_ISSUES_214.md) · [Release notes](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/RELEASE_NOTES_218.md)
+You can start with a single capability and add the pieces your application needs. Explicit Agent contracts and policies are outside this introductory walkthrough.

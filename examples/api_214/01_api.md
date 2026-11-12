@@ -60,9 +60,6 @@ print(single.data)
 
 ```
 
-    {'subtotal': 100, 'total': 116, 'currency': 'MXN'}
-
-
 ## System and decision
 The Agent is a node. The graph approves amounts up to 1000 and routes larger amounts to review. compile prepares; run executes.
 
@@ -86,9 +83,6 @@ print(team.data)
 
 ```
 
-    {'subtotal': 100, 'total': 116, 'currency': 'MXN', 'status': 'approved'}
-
-
 ## Environment
 **Input** two records → **process** System per record and state update → **output** two steps, sum=348.
 
@@ -103,9 +97,6 @@ batch = environment.run()
 print(batch.data['summary'])
 
 ```
-
-    {'state': {'sum': 348}, 'processed': 2, 'terminated': True, 'truncated': False, 'reason': 'records_exhausted'}
-
 
 ## Eval and lineage
 Eval checks the System explicitly. Humans and agents read two views of the same result.
@@ -125,22 +116,3 @@ print(batch.lineage().render())
 print('Local episodes:', len(memory.read()))
 
 ```
-
-    Eval: True
-    run: OK
-    {"preview": "{\"outputs\":[{\"subtotal\":100,\"total\":116,\"currency\":\"MXN\",\"status\":\"approved\"},{\"subtotal\":200,\"total\":232,\"currency\":\"MXN\",\"status\":\"approved\"}],\"history\":[{\"step\":0,\"record\":{\"subtotal\":100},\"state_before\":{\"sum\":0},\"state_after\":{\"sum\":116},\"execution_id\":\"run-59bd3c9239ad4bef9490ddd5ea397055\"},{\"step\":1,\"record\":{\"subtotal\":200},\"state_before\":{\"sum\":116},\"state_after\":{\"sum\":348},\"execution_id", "omitted": true}
-    - batch: completed [run-8125f34a6bf747f3a467bb2f46a24477]
-    - observe: completed [run-c0907c90a5a943c49ddef9c4759b0f12]
-    - Next node: run [run-c0907c90a5a943c49ddef9c4759b0f12:decision]
-    - Next node: approve [run-e13ab0fc5e9748138621622148dbd592:decision]
-    - quote: completed [run-d88e29d69c6f40dab6a982b10407ed8d]
-    - quote: completed [tool-c849c6338b354376aff7c69539beb5b3]
-    - approve: completed [run-7f0655d4ed3b4f5da0a53b332a0cdbb1]
-    - update: completed [run-5c9045b5bbe4445d8a19b53d6c74444e]
-    - Next node: observe [run-5c9045b5bbe4445d8a19b53d6c74444e:decision]
-    - observe: completed [run-8f827013dc92410eb20343597e3aab43]
-    - Next node: run [run-8f827013dc92410eb20343597e3aab43:decision]
-    - Next node: approve [run-cb243a47e2ec4af9b14c4b0ebf57e66c:decision]
-    7 more steps; retrieve evidence by execution_id.
-    Local episodes: 3
-

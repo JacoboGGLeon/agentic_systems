@@ -1,4 +1,4 @@
-# CLI · Agentic Systems 2.1.8
+# CLI · Agentic Systems 2.1.9
 
 The SDK installs `agentic-systems`. Run it in the environment containing the SDK.
 
