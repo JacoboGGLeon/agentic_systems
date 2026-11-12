@@ -46,6 +46,7 @@ jobs:
       OTEL_SDK_DISABLED: 'true'
       OPENAI_AGENTS_DISABLE_TRACING: '1'
       AWS_EC2_METADATA_DISABLED: 'true'
+      MPLBACKEND: Agg
       AGENTIC_VALIDATION_EVIDENCE: .tmp/current-evidence
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
@@ -60,7 +61,8 @@ jobs:
       - name: Install the shared SDK and application wheels
         run: |
           python scripts/install_candidate.py .tmp/current/dist
-          python -m pip install 'streamlit>=1.37'
+          python -m pip install 'streamlit>=1.37' 'matplotlib>=3.8'
+          python -c 'import matplotlib.pyplot'  # Prepare font cache before the offline subprocess guard.
           mkdir -p .tmp/current-evidence
           echo "EXPECTED_VERSION=$(python -c 'import agentic_systems as t; print(t.__version__)')" >> "$GITHUB_ENV"
           echo "AGENTIC_TEST_VERSION=$(python -c 'import agentic_systems as t; print(t.__version__)')" >> "$GITHUB_ENV"

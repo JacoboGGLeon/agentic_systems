@@ -38,6 +38,10 @@ The package README link check correctly rejected relative links; canonical absol
 
 Matplotlib's first font-cache initialization attempted a font-discovery subprocess under the notebook offline guard. Preparing its cache before the guarded run resolved this environment setup issue without relaxing the guard. Later checks passed with that cache and the completed optional dependencies.
 
+## CI dependency correction
+
+The first PR quality run (`43149417001`) built successfully and passed source/installed contracts, but its fresh-kernel notebook phase failed because the runner lacked the new example's declared Matplotlib dependency. Quality setup now installs that dependency and prepares its font cache before the offline subprocess guard. The example requirements also pin the intended SDK 2.1.9. The complete CI matrix must pass again; the failed run is retained.
+
 ## Pending release gates
 
 Final installed-wheel/multi-Python quality, mutation, sealed artifact promotion and publication remain pending. The proposed [2.1.9 acceptance policy](../release/policy-2.1.9.json) compares all packaged Python files with main commit `45ca2bbf214d2d0ab77a7cf3459b5f0cea17d279`: the only executable edits are the SDK version/module description and the first Tool example version assertion. The policy selects offline maintenance acceptance and does not claim new live acceptance. The local build used the working tree and is not the sealed final release candidate. Ruff passed after its initial dependency-install timeout was resolved.
