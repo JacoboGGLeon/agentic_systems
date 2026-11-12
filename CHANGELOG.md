@@ -1,5 +1,14 @@
 # Changelog
 
+
+## 2.1.9 — candidate
+
+- Teach the core grammar through five progressive README interactions with code, Mermaid and interpreted outputs.
+- Align current docs, tutorial/example targets, optional package metadata and the bundled authoring Skill to 2.1.9.
+- Separate immutable 2.1.8 real-data evidence from unexecuted 2.1.9 application source.
+- Keep explicit Agent contracts/policies as advanced references; expanded validation is planned for 2.1.10.
+- No SDK execution behavior change is claimed. Release acceptance and publication remain pending.
+
 ## 2.1.8
 
 - Make RunResult.evidence() the primary evidence export; preserve to_dict() as a compatibility alias with the same schema and redaction.

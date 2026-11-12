@@ -1,4 +1,4 @@
-# Your first result · Agentic Systems 2.1.8
+# Your first result · Agentic Systems 2.1.9
 
 Use Python 3.10–3.14. Install the SDK in a clean virtual environment using
 [installation instructions](../INSTALL.md). No model account is needed here.
@@ -7,7 +7,7 @@ Save this as `first_result.py`:
 
 ```python
 import agentic_systems as toolkit
-assert toolkit.__version__ == "2.1.8"
+assert toolkit.__version__ == "2.1.9"
 
 @toolkit.tool
 def increment(value: int) -> dict:
@@ -32,7 +32,7 @@ Choose your next step:
 | Process records with evolving state | [Environment](../tutorials/core/04_environment.md) |
 | Check expected behavior | [Eval](../tutorials/core/05_eval.md) |
 | Inspect the SDK or install its authoring skill | [CLI](CLI.md) |
-| Let a model select actions | [Actor contracts](ACTOR_CONTRACTS.md), then a provider tutorial |
+| Let a model select actions | [Integrations](INTEGRATIONS.md), then a provider tutorial |
 
 State carries the current work. Context supplies domain information. Memory
 retains bounded episodes in this process. Add them when your task needs them;

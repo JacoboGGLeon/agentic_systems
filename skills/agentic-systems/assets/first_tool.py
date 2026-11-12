@@ -1,6 +1,6 @@
 """First result: one deterministic operation, no model or credentials."""
 import agentic_systems as toolkit
-assert toolkit.__version__ == "2.1.8"
+assert toolkit.__version__ == "2.1.9"
 
 @toolkit.tool
 def increment(value: int) -> dict:

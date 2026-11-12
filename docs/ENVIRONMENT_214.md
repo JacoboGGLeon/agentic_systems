@@ -1,4 +1,4 @@
-# Environment and rewards · 2.1.8
+# Environment and rewards · 2.1.9
 
 The public API exposes graph, records, state, observe, update, stop and max_steps. It has no reward= parameter, spaces/action_space, public reset/step methods or policy learning. Historical internal reward_fn implementation is not a second supported public API.
 

@@ -1,4 +1,4 @@
-# Aws iam · Agentic Systems 2.1.8
+# Aws iam · Agentic Systems 2.1.9
 
 Declare a Bedrock runtime without embedding an API key.
 

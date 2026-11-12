@@ -1,4 +1,4 @@
-# Results lineage · Agentic Systems 2.1.8
+# Results lineage · Agentic Systems 2.1.9
 
 Check result serialization, invariants, execution hierarchy and lineage.
 

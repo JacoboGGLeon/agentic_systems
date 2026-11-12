@@ -1,4 +1,4 @@
-# Typed claim review · Agentic Systems 2.1.8
+# Typed claim review · Agentic Systems 2.1.9
 
 Reject supplied claims that violate the declared input schema.
 

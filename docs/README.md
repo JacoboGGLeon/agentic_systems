@@ -1,29 +1,39 @@
-# Agentic Systems documentation · 2.1.8
+# Agentic Systems documentation · 2.1.9
 
-Start with one operation; add composition, model actors or episodes when they have a purpose. This documentation targets **2.1.8**. Historical acceptance belongs to its recorded version and artifact.
+Agentic Systems composes executable Tools, model-backed agent actors and graph-based agent actuators into inspectable, evaluable Systems. Start with the [progressive README](../README.md): each interaction explains the request, the meaning of its answer, the declarations that produce it and the recorded work behind it.
+
+This documentation targets **2.1.9**. Publication and exact-candidate acceptance are separate steps; versioned historical reports retain their original artifact identities.
+
+## Choose the next concept you need
 
 | Your question | Read next |
 |---|---|
-| How do I install and obtain a result? | [Install](../INSTALL.md), [first Tool](ONBOARDING_FIRST_RUN.md) |
-| Which pieces do I need? | [Concepts and composition](CONCEPTS.md) |
-| How do I connect steps and agents? | [Graphs](GRAPHS.md) |
-| What do compile/run/arun return? | [Execution lifecycle](EXECUTION.md) |
-| How do I inspect evidence and failures? | [RunResult reference](RESULTS.md) |
-| How do I check an Agent or System? | [Independent evaluation](EVALUATION.md) |
-| When do I need episodes? | [Environment](ENVIRONMENT_214.md) |
-| How do Context, Memory and AWS sessions differ? | [Information and resource lifetime](CONTEXT_MEMORY.md) |
-| Which model/framework should I configure? | [Integrations and boundaries](INTEGRATIONS.md) |
-| What are the exact signatures? | [API signatures](API_214_SURFACE.md), [actor contracts](ACTOR_CONTRACTS.md) |
-| What changed from 2.1.7? | [Migration](MIGRATION_217_TO_218.md) |
+| How do I obtain my first result? | [Install](../INSTALL.md), [first Tool](ONBOARDING_FIRST_RUN.md) |
+| What do the objects do? | [Concepts](CONCEPTS.md) |
+| How do I connect capabilities? | [Graphs](GRAPHS.md), [composition](COMPOSITION_LAWS.md) |
+| How do I configure provider, model and actor execution? | [Integrations](INTEGRATIONS.md), [runtime controls](RUNTIME_SCHEDULER_214.md) |
+| What do compile/run/arun do? | [Execution](EXECUTION.md) |
+| How do I read outputs, Tool calls and failures? | [Results](RESULTS.md) |
+| How do I check outputs and trajectories? | [Evaluation](EVALUATION.md) |
+| When do I need successive records? | [Environment](ENVIRONMENT_214.md) |
+| How do reference data, history and sessions differ? | [Context and Memory](CONTEXT_MEMORY.md) |
+| Where are the signatures? | [API surface](API_214_SURFACE.md) |
+| What changed from 2.1.8? | [Migration](MIGRATION_218_TO_219.md) |
 
 ## Learn by executing
 
-[Core lessons](../tutorials/README.md) progress from Tools to Agents and Systems. **Eval and Environment are independent branches**, not mandatory consecutive layers. Then explore Context/Memory, providers and frameworks. [Notebook index](NOTEBOOKS.md) links executable sources and generated reading views; [example catalog](../examples/README.md) is organized by task.
+[Core lessons](../tutorials/README.md) introduce Tools, Skills, Agents and Systems. Add Environment for episodes, Context/Memory for reference information and history, or Eval for acceptance. These are independent choices; an application does not need every object.
 
-## Authoring and distribution
+Use the [notebook index](NOTEBOOKS.md) for executable sources and generated reading views. The [example catalog](../examples/README.md) groups applications by task. The time-series [application source](../examples/time_series_discovery_219/ADA_Time_Series_Discovery_219_Core.ipynb) targets 2.1.9; its [recorded-output viewer](../examples/time_series_discovery_219/Recorded_Outputs.ipynb) intentionally preserves historical 2.1.8 runs.
 
-[CLI](CLI.md) supports version/api/doctor and skill info/install/export. The [authoring skill](../skills/agentic-systems/SKILL.md) is bundled in the wheel and can also be exported as a standalone ZIP. It differs from runtime `toolkit.skill(...)`. Notebooks and Studio are separate repository/release resources.
+## Build with ChatGPT or Codex
 
-## Historical evidence and maintenance
+The [version-matched authoring Skill](../skills/agentic-systems/SKILL.md) is bundled in the SDK. The [CLI](CLI.md) can inspect, install or export it. It helps coding assistants author applications; runtime `toolkit.skill(...)` groups an application's Tools.
 
-[Release notes](RELEASE_NOTES_218.md) distinguish current changes from [2.1.7 AWS acceptance](AWS_SESSION_VALIDATION_217.md) and [2.1.5 live campaigns](VALIDATION_215_20261108.md). Files under revisions/ and examples/history/ are archival. Versioned campaign reports retain their provenance and are not instructions for the current API. Stable `_214` guide URLs remain available, but current conceptual references are linked above.
+[Download the 2.1.9 authoring Skill](https://github.com/JacoboGGLeon/agentic_systems/releases/download/v2.1.9/agentic-systems-skill-2.1.9.zip) after release finalization. During preparation, export the ZIP from the installed candidate. Installation/export does not automatically register a personal ChatGPT Skill. Notebooks and optional Studio/ADA packages remain separate resources.
+
+## Advanced references and evidence
+
+[Actor contracts](ACTOR_CONTRACTS.md) document existing advanced options. The 2.1.9 introductory path uses Tool validation, instructions and external Evals without explicit Agent contracts or policies. Broader control-object validation is planned for 2.1.10.
+
+[Candidate release notes](RELEASE_NOTES_219.md), [validation scope](VALIDATION_219.md) and [publishing](RELEASE_PUBLISHING.md) describe current status. Historical acceptance, including [2.1.8 validation](VALIDATION_218.md), retains its recorded version and hashes. Reports and snapshots in revisions/ and examples/history/ are archival. Stable `_214` guide URLs remain available; they do not introduce a second supported grammar.

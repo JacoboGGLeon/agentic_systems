@@ -14,12 +14,9 @@ import agentic_systems as toolkit
 
 profile = globals().get("profile", "python")
 assert profile in {"python", "mixed"}
-assert toolkit.__version__ == "2.1.8"
+assert toolkit.__version__ == "2.1.9"
 print("API:", toolkit.__version__, "profile:", profile)
 ```
-
-    API: 2.1.4.dev8 profile: mixed
-
 
 ## 1. Business contracts
 
@@ -89,9 +86,6 @@ cloud_framework = "openai-agents" if profile == "mixed" else "native"
 print("Fee: native; audit:", audit_framework,
       "; local verification:", local_framework, "; final:", cloud_framework)
 ```
-
-    Fee: native; audit: strands ; local verification: native ; final: openai-agents
-
 
 ## 3. Context and Memory
 
@@ -283,49 +277,6 @@ assert single.ok, single.errors
 assert single.data == {**single_input, "fee": 150, "decision": "review", "status": "pending_review"}
 ```
 
-    INFO - Found token in environment variables.
-
-
-    INFO - Found token in environment variables.
-
-
-    INFO - Found token in environment variables.
-
-
-    INFO - Creating Strands MetricsClient
-
-
-    INFO - HTTP Request: POST http://127.0.0.1:11434/v1/chat/completions "HTTP/1.1 200 OK"
-
-
-    INFO - HTTP Request: POST http://127.0.0.1:11434/v1/chat/completions "HTTP/1.1 200 OK"
-
-
-    INFO - HTTP Request: POST https://ollama.com/v1/chat/completions "HTTP/1.1 200 OK"
-
-
-    INFO - HTTP Request: POST https://ollama.com/v1/chat/completions "HTTP/1.1 200 OK"
-
-
-    INPUT: {'payment_id': 'SINGLE', 'amount': 15000}
-    PROCESS: validate → fee → audit → local/cloud verification → decision
-    OUTPUT: {'payment_id': 'SINGLE', 'amount': 15000, 'fee': 150, 'decision': 'review', 'status': 'pending_review'}
-    payments: COMPLETED
-    Execution: run-be808dd2aa4c4d4986d75dbeca816140
-    Input: {"payment_id":"SINGLE","amount":15000}
-    Output: {"payment_id":"SINGLE","amount":15000,"fee":150,"decision":"review","status":"pending_review"}
-    Process:
-    - Agent fees: completed
-    - Tool validate_payment: completed -> {"payment_id":"SINGLE","amount":15000}
-    - Agent fee_actor: completed
-    - Tool calculate_fee: completed -> {"payment_id":"SINGLE","amount":15000,"fee":150}
-    - Agent reviewer: completed
-    - Agent audit_actor: completed
-    - Tool audit_payment: completed -> {"payment_id":"SINGLE","amount":15000,"fee":150,"decision":"review"}
-    - Agent local_verifier: completed
-    5 operations omitted; inspect lineage for full evidence.
-
-
 ## 8. Environment: two episodes, Memory and reward
 
 The same 5000-cent payment appears twice: first approved, then reviewed as a duplicate because of Memory. update computes an explicit teaching reward for approval. There is no RL training or implicit reward= parameter.
@@ -357,79 +308,6 @@ assert [row["decision"] for row in episodes.data["outputs"]] == ["approve", "rev
 assert episodes.data["summary"]["state"] == {"processed": 2, "approved": 1, "reward": 1}
 ```
 
-    INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
-
-
-    INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
-
-
-    INFO - Found token in environment variables.
-
-
-    INFO - Found token in environment variables.
-
-
-    INFO - Found token in environment variables.
-
-
-    INFO - HTTP Request: POST http://127.0.0.1:11434/v1/chat/completions "HTTP/1.1 200 OK"
-
-
-    INFO - HTTP Request: POST http://127.0.0.1:11434/v1/chat/completions "HTTP/1.1 200 OK"
-
-
-    INFO - HTTP Request: POST https://ollama.com/v1/chat/completions "HTTP/1.1 200 OK"
-
-
-    INFO - HTTP Request: POST https://ollama.com/v1/chat/completions "HTTP/1.1 200 OK"
-
-
-    INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
-
-
-    INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
-
-
-    INFO - Found token in environment variables.
-
-
-    INFO - Found token in environment variables.
-
-
-    INFO - Found token in environment variables.
-
-
-    INFO - HTTP Request: POST http://127.0.0.1:11434/v1/chat/completions "HTTP/1.1 200 OK"
-
-
-    INFO - HTTP Request: POST http://127.0.0.1:11434/v1/chat/completions "HTTP/1.1 200 OK"
-
-
-    INFO - HTTP Request: POST https://ollama.com/v1/chat/completions "HTTP/1.1 200 OK"
-
-
-    INFO - HTTP Request: POST https://ollama.com/v1/chat/completions "HTTP/1.1 200 OK"
-
-
-    INPUT: [{'payment_id': 'PAY-001', 'amount': 5000}, {'payment_id': 'PAY-001', 'amount': 5000}]
-    PROCESS: two episodes; the second audit consults Memory
-    OUTPUT: {'outputs': [{'payment_id': 'PAY-001', 'amount': 5000, 'fee': 50, 'decision': 'approve', 'status': 'approved'}, {'payment_id': 'PAY-001', 'amount': 5000, 'fee': 50, 'decision': 'review_duplicate', 'status': 'pending_review'}], 'history': [{'step': 0, 'record': {'payment_id': 'PAY-001', 'amount': 5000}, 'state_before': {'processed': 0, 'approved': 0, 'reward': 0}, 'state_after': {'processed': 1, 'approved': 1, 'reward': 1}, 'execution_id': 'run-7899d338a77142fdb7237b9386fce031'}, {'step': 1, 'record': {'payment_id': 'PAY-001', 'amount': 5000}, 'state_before': {'processed': 1, 'approved': 1, 'reward': 1}, 'state_after': {'processed': 2, 'approved': 1, 'reward': 1}, 'execution_id': 'run-a9068087cad540d9bc263272abe42b34'}], 'summary': {'state': {'processed': 2, 'approved': 1, 'reward': 1}, 'processed': 2, 'terminated': True, 'truncated': False, 'reason': 'records_exhausted'}}
-    payment_episodes: COMPLETED
-    Execution: run-9b746dede13a4776b8e62e15f5c764a9
-    Input: {"records_observed":[{"payment_id":"PAY-001","amount":5000},{"payment_id":"PAY-001","amount":5000}]}
-    Output: {"outputs":[{"payment_id":"PAY-001","amount":5000,"fee":50,"decision":"approve","status":"approved"},{"payment_id":"PAY-001","amount":5000,"fee":50,"decision":"review_duplicate","status":"pending_review"}],"summary":{"state":{"processed":2,"approved":1,"reward":1},"processed":2,"terminated":true,"truncated":false,"reason":"records_exhausted"}}
-    Process:
-    - System payments: completed
-    - Agent fees: completed
-    - Tool validate_payment: completed -> {"payment_id":"PAY-001","amount":5000}
-    - Agent fee_actor: completed
-    - Tool calculate_fee: completed -> {"payment_id":"PAY-001","amount":5000,"fee":50}
-    - Agent reviewer: completed
-    - Agent audit_actor: completed
-    - Tool audit_payment: completed -> {"payment_id":"PAY-001","amount":5000,"fee":50,"decision":"approve"}
-    20 operations omitted; inspect lineage for full evidence.
-
-
 ## 9. Eval: independent cases, the same application
 
 Two identical cases with a new ID must both approve. Each inherits an isolated copy of initial Memory and cannot write outer Memory. Eval does not isolate external services; no funds are transferred here.
@@ -455,79 +333,6 @@ print(evaluated.human_results())
 assert evaluated.ok and evaluated.data["passed"] == 2, evaluated.errors
 assert before_eval == after_eval and len(after_eval) == 2
 ```
-
-    INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
-
-
-    INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
-
-
-    INFO - Found token in environment variables.
-
-
-    INFO - Found token in environment variables.
-
-
-    INFO - Found token in environment variables.
-
-
-    INFO - HTTP Request: POST http://127.0.0.1:11434/v1/chat/completions "HTTP/1.1 200 OK"
-
-
-    INFO - HTTP Request: POST http://127.0.0.1:11434/v1/chat/completions "HTTP/1.1 200 OK"
-
-
-    INFO - HTTP Request: POST https://ollama.com/v1/chat/completions "HTTP/1.1 200 OK"
-
-
-    INFO - HTTP Request: POST https://ollama.com/v1/chat/completions "HTTP/1.1 200 OK"
-
-
-    INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
-
-
-    INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
-
-
-    INFO - Found token in environment variables.
-
-
-    INFO - Found token in environment variables.
-
-
-    INFO - Found token in environment variables.
-
-
-    INFO - HTTP Request: POST http://127.0.0.1:11434/v1/chat/completions "HTTP/1.1 200 OK"
-
-
-    INFO - HTTP Request: POST http://127.0.0.1:11434/v1/chat/completions "HTTP/1.1 200 OK"
-
-
-    INFO - HTTP Request: POST https://ollama.com/v1/chat/completions "HTTP/1.1 200 OK"
-
-
-    INFO - HTTP Request: POST https://ollama.com/v1/chat/completions "HTTP/1.1 200 OK"
-
-
-    INPUT: two independent EVAL-001 cases
-    PROCESS: execute → check contract/data → isolate Memory per case
-    OUTPUT: {'total': 2, 'passed': 2, 'failed': 0, 'cases': [{'name': 'first', 'ok': True, 'input': {'payment_id': 'EVAL-001', 'amount': 5000}, 'execution_id': 'run-6e1c23976890466385c80c214991ff74', 'checks': [{'ok': True, 'path': 'ok'}, {'ok': True}], 'judge': None}, {'name': 'independent_second', 'ok': True, 'input': {'payment_id': 'EVAL-001', 'amount': 5000}, 'execution_id': 'run-d6dafe7f47304c5caacd5beb09e2a733', 'checks': [{'ok': True, 'path': 'ok'}, {'ok': True}], 'judge': None}]}
-    isolated_payments: COMPLETED
-    Execution: run-8ddfb101c1f74ca29cf859cfc5aac83f
-    Input: {"cases_executed":[{"payment_id":"EVAL-001","amount":5000},{"payment_id":"EVAL-001","amount":5000}]}
-    Output: {"total":2,"passed":2,"failed":0}
-    Process:
-    - System payments: completed
-    - Agent fees: completed
-    - Tool validate_payment: completed -> {"payment_id":"EVAL-001","amount":5000}
-    - Agent fee_actor: completed
-    - Tool calculate_fee: completed -> {"payment_id":"EVAL-001","amount":5000,"fee":50}
-    - Agent reviewer: completed
-    - Agent audit_actor: completed
-    - Tool audit_payment: completed -> {"payment_id":"EVAL-001","amount":5000,"fee":50,"decision":"approve"}
-    20 operations omitted; inspect lineage for full evidence.
-
 
 ## 10. Context received by each Tool; lineage without inflating State
 
@@ -564,100 +369,6 @@ evidence = {
 }
 print("Checks complete:", profile)
 ```
-
-    fees SINGLE policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 0 lineage= ['validate']
-    reviewer SINGLE policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 0 lineage= ['fees']
-    local SINGLE policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 0 lineage= ['fees', 'reviewer']
-    cloud SINGLE policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 0 lineage= ['fees', 'reviewer', 'local_verifier']
-    fees PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 1 lineage= ['observe', 'validate']
-    reviewer PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 1 lineage= ['observe', 'fees']
-    local PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 1 lineage= ['observe', 'fees', 'reviewer']
-    cloud PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 1 lineage= ['observe', 'fees', 'reviewer', 'local_verifier']
-    fees PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 lineage= ['observe', 'run', 'update', 'observe', 'validate']
-    reviewer PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 lineage= ['observe', 'run', 'update', 'observe', 'fees']
-    local PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 lineage= ['observe', 'run', 'update', 'observe', 'fees', 'reviewer']
-    cloud PAY-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 lineage= ['observe', 'run', 'update', 'observe', 'fees', 'reviewer', 'local_verifier']
-    fees EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 lineage= ['validate']
-    reviewer EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 lineage= ['fees']
-    local EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 lineage= ['fees', 'reviewer']
-    cloud EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 lineage= ['fees', 'reviewer', 'local_verifier']
-    fees EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 lineage= ['evaluate', 'validate']
-    reviewer EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 lineage= ['evaluate', 'fees']
-    local EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 lineage= ['evaluate', 'fees', 'reviewer']
-    cloud EVAL-001 policy= {'ceiling': 10000, 'currency': 'MXN', 'fee_bps': 100} episodes= 2 lineage= ['evaluate', 'fees', 'reviewer', 'local_verifier']
-    EXACT CONTEXT OF THE FIRST REVIEWER:
-    {
-      "data": {
-        "ceiling": 10000,
-        "currency": "MXN",
-        "fee_bps": 100
-      },
-      "sources": [
-        "payment-policy-v1"
-      ],
-      "episodes": [],
-      "lineage": [
-        {
-          "data": {
-            "amount": 15000,
-            "fee": 150,
-            "payment_id": "SINGLE"
-          },
-          "execution_id": "run-31ec8ef0cd874fa8a842a52fb97ceb23",
-          "name": "fees",
-          "ok": true
-        }
-      ]
-    }
-    run: OK
-    {"payment_id": "SINGLE", "amount": 15000, "fee": 150, "decision": "review", "status": "pending_review"}
-    - payments: completed [run-be808dd2aa4c4d4986d75dbeca816140]
-    - validate_payment: completed [run-c2c5b03038804ee48cdb7f38b1e77bda]
-    - validate_payment: completed [tool-e583aa0da06343ef9132191700f26423]
-    - fee_actor: {"payment_id":"SINGLE","amount":15000,"fee":150} [run-5e69e5709fe74bceafbf15c43cc789b6]
-    - eval: {"payment_id":"SINGLE","amount":15000,"fee":150} [run-a0f5dbd9b946497984f1209d22551b30]
-    - calculate_fee: completed [tool-2e2997da5a2345c7986515d147071ad9]
-    - audit_actor: {"payment_id": "SINGLE", "amount": 15000, "fee": 150, "decision": "review"} [run-8722bf5c9527481faaa3fc5c42af0e6b]
-    - eval: {"payment_id": "SINGLE", "amount": 15000, "fee": 150, "decision": "review"} [run-eca71e3ebe8b47d9b7240a85f4bdfabc]
-    - audit_payment: completed [tooluse_hPjmbRyVIHnS0UvCG8Ch72]
-    - local_verifier: {"payment_id": "SINGLE", "amount": 15000, "fee": 150, "decision": "review"} [run-8046906db7f34ed5bee29617e7f82c29]
-    - eval: {"payment_id": "SINGLE", "amount": 15000, "fee": 150, "decision": "review"} [run-f618f5b5593847d495015cc5f4ee0654]
-    - verify_local: completed [tool-41275778eb8d4c8887c0f259c4e6aa5a]
-    5 more steps; retrieve evidence by execution_id.
-    run: OK
-    {"preview": "{\"outputs\":[{\"payment_id\":\"PAY-001\",\"amount\":5000,\"fee\":50,\"decision\":\"approve\",\"status\":\"approved\"},{\"payment_id\":\"PAY-001\",\"amount\":5000,\"fee\":50,\"decision\":\"review_duplicate\",\"status\":\"pending_review\"}],\"history\":[{\"step\":0,\"record\":{\"payment_id\":\"PAY-001\",\"amount\":5000},\"state_before\":{\"processed\":0,\"approved\":0,\"reward\":0},\"state_after\":{\"processed\":1,\"approved\":1,\"reward\":1},\"execution_id\":\"", "omitted": true}
-    - payment_episodes: completed [run-9b746dede13a4776b8e62e15f5c764a9]
-    - observe: completed [run-405088a7d1c042029762c477d2b857e9]
-    - Next node: run [run-405088a7d1c042029762c477d2b857e9:decision]
-    - validate_payment: completed [run-8d52569e0c7a41e3acd839dd806ec5e6]
-    - validate_payment: completed [tool-e0e6aff3b7f6462c82b9a2c3c139e5f3]
-    - fee_actor: {"payment_id":"PAY-001","amount":5000,"fee":50} [run-9734e766185942e791848b62d34819e0]
-    - eval: {"payment_id":"PAY-001","amount":5000,"fee":50} [run-b8368732427a406d8f773b8b2befa15c]
-    - calculate_fee: completed [tool-bb52f9bdb9654bd3a97b26779f4c887f]
-    - audit_actor: {"payment_id": "PAY-001", "amount": 5000, "fee": 50, "decision": "approve"} [run-246219f6bdd644288eed400d32c4c557]
-    - eval: {"payment_id": "PAY-001", "amount": 5000, "fee": 50, "decision": "approve"} [run-007c8455d624455baac3cd9102521cff]
-    - audit_payment: completed [tooluse_06yrVW6tabpcVc7andpbN8]
-    - local_verifier: {"payment_id": "PAY-001", "amount": 5000, "fee": 50, "decision": "approve"} [run-d4cda84c307043e2a7833d6ffa12207e]
-    31 more steps; retrieve evidence by execution_id.
-    run: OK
-    {"preview": "{\"total\":2,\"passed\":2,\"failed\":0,\"cases\":[{\"name\":\"first\",\"ok\":true,\"input\":{\"payment_id\":\"EVAL-001\",\"amount\":5000},\"execution_id\":\"run-6e1c23976890466385c80c214991ff74\",\"checks\":[{\"ok\":true,\"path\":\"ok\"},{\"ok\":true}],\"judge\":null},{\"name\":\"independent_second\",\"ok\":true,\"input\":{\"payment_id\":\"EVAL-001\",\"amount\":5000},\"execution_id\":\"run-d6dafe7f47304c5caacd5beb09e2a733\",\"checks\":[{\"ok\":true,\"path\":", "omitted": true}
-    - isolated_payments: completed [run-8ddfb101c1f74ca29cf859cfc5aac83f]
-    - Next node: evaluate [run-a01192675df64745a7533c25721d6cc1:decision]
-    - validate_payment: completed [run-4c36a392c621412d946dd976cd82d8ea]
-    - validate_payment: completed [tool-961648361eaa450491d5b95f8b16f37c]
-    - fee_actor: {"payment_id":"EVAL-001","amount":5000,"fee":50} [run-11aadaa3f12b4c40a11cd209f37162db]
-    - eval: {"payment_id":"EVAL-001","amount":5000,"fee":50} [run-a657b96670634ddbb7332792716b4edd]
-    - calculate_fee: completed [tool-4aef495c033a4cee9af03e829caf07ef]
-    - audit_actor: {"payment_id": "EVAL-001", "amount": 5000, "fee": 50, "decision": "approve"} [run-fb0c6990784742b188c60c5ebe5c1441]
-    - eval: {"payment_id": "EVAL-001", "amount": 5000, "fee": 50, "decision": "approve"} [run-ee641539a5b54d1580149d708b5ae971]
-    - audit_payment: completed [tooluse_1rLxDgcmx1TN5pYTPMJOB2]
-    - local_verifier: {"payment_id": "EVAL-001", "amount": 5000, "fee": 50, "decision": "approve"} [run-4af6fb4bb76a47b29acae8f99338663c]
-    - eval: {"payment_id": "EVAL-001", "amount": 5000, "fee": 50, "decision": "approve"} [run-bec7abc93843428d9011de7f3793d4e4]
-    23 more steps; retrieve evidence by execution_id.
-
-
-    Checks complete: mixed
-
 
 ## Scope
 

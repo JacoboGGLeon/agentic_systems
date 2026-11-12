@@ -1,9 +1,7 @@
-# Modelo computacional · 2.1.4.dev8
+# Computational model · Agentic Systems 2.1.9
 
-La referencia vigente es [Modelo computacional](CONTRACTS_214.md).
-LangGraph orquesta; Agentic Systems compone operadores y actores con contratos
-y evidencia comunes. Runtime y scheduler conservan el control de ejecución.
+Define operations as Tools and reusable capability groups as Skills. An Agent owns either a Graph or a Runtime-backed actor, not both. A System coordinates graph nodes; an Environment adds records and episode transitions; Eval executes independent acceptance cases.
 
-[Runtime y scheduler](RUNTIME_SCHEDULER_214.md) · [System y harness](SYSTEM_HARNESS_214.md) ·
-[Estado por revisión](STATUS_214.md). Las versiones anteriores se conservan
-en las instantáneas históricas de revisions/, sin constituir otra API soportada.
+Graph is the public LangGraph builder. State carries current business values. Context supplies immutable references, Memory supplies bounded history, and RunResult retains data and observed execution evidence. These objects serve different responsibilities rather than mandatory sequential layers.
+
+[Concepts](CONCEPTS.md) · [Graphs](GRAPHS.md) · [Context and Memory](CONTEXT_MEMORY.md) · [Evaluation](EVALUATION.md).

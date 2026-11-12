@@ -1,4 +1,6 @@
-# Actor contracts · Agentic Systems 2.1.8
+# Actor contracts · Agentic Systems 2.1.9
+
+**Advanced reference.** The 2.1.9 introductory path uses instructions, Tool validation and external Evals without explicit Agent contracts or policies. These existing API options are retained; their broader provider/framework acceptance is planned for 2.1.10.
 
 Use an actor-backed Agent when a model needs to choose or explain actions.
 Keep exact arithmetic, parsing and business rules in Tools. A graph-backed

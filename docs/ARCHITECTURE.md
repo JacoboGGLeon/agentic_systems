@@ -1,9 +1,7 @@
-# Arquitectura · 2.1.4.dev8
+# Architecture · Agentic Systems 2.1.9
 
-La referencia vigente es [Arquitectura](GRAMMAR_214.md).
-LangGraph orquesta; Agentic Systems compone operadores y actores con contratos
-y evidencia comunes. Runtime y scheduler conservan el control de ejecución.
+LangGraph orchestrates execution graphs. Agentic Systems supplies capability owners and a shared result model: model-backed agent actors select operations; graph-based agent actuators follow declared routes; Systems coordinate their capabilities.
 
-[Runtime y scheduler](RUNTIME_SCHEDULER_214.md) · [System y harness](SYSTEM_HARNESS_214.md) ·
-[Estado por revisión](STATUS_214.md). Las versiones anteriores se conservan
-en las instantáneas históricas de revisions/, sin constituir otra API soportada.
+Runtime configures the provider, model and limits. Framework selects actor execution. Context, Memory and graph state have separate lifetimes. Environment supplies records and episode decisions; Eval independently checks declared units.
+
+Start with [Concepts](CONCEPTS.md), then [Graphs](GRAPHS.md), [Execution](EXECUTION.md) and [Results](RESULTS.md). Historical proposals retain their original filenames and are not a parallel supported grammar.

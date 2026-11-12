@@ -1,13 +1,13 @@
 ---
 name: agentic-systems
-description: Design, implement or audit applications using the Agentic Systems 2.1.8 API, LangGraph orchestration, deterministic Tools and portable agent actors.
+description: Design, implement or audit applications using the Agentic Systems 2.1.9 API, LangGraph orchestration, deterministic Tools and portable agent actors.
 metadata:
-  short-description: Build and validate Agentic Systems 2.1.8 apps
+  short-description: Build and validate Agentic Systems 2.1.9 apps
 ---
 
-# Agentic Systems 2.1.8
+# Agentic Systems 2.1.9
 
-Use `import agentic_systems as toolkit`. Target version 2.1.8 and verify installed signatures before writing executable examples.
+Use `import agentic_systems as toolkit`. Target version 2.1.9 and verify installed signatures before writing executable examples.
 
 The SDK bundles this authoring skill. Use `agentic-systems skill install`
 to copy it into `.agents/skills/agentic-systems`, or `agentic-systems skill export skill.zip`
@@ -109,7 +109,7 @@ it is not installed by all and does not certify AWS/ADA access or repair variabl
 ## Workflow and evidence
 
 Start with one small declaration and a deterministic input → process → output.
-Add contracts, negative controls and a bounded root deadline before external providers.
+For the 2.1.9 core lesson, use Tool validation, external Evals, negative controls and a bounded root deadline before external providers. Explicit Agent contracts and policies are advanced choices, not mandatory onboarding steps. Do not imply blanket provider/framework acceptance; the expanded matrix is planned for 2.1.10.
 Read [the conceptual model](references/conceptual-model.md) for architecture,
 [project structure](references/project-contract.md) for application layout,
 [provider/framework rules](references/provider-framework.md) for SDK options,
@@ -139,7 +139,7 @@ from permission to build or test.
 
 Declare endpoint and credentials per actor when mixing Ollama local/cloud; native honors explicit connection settings before environment defaults. Keep credentials out of Context and traces. Bedrock/Qwen may omit a required nullable field even with strict schema; fail closed, retain evidence and never invent defaults. This is a documented known limitation, not a passed compatibility case.
 
-## 2.1.8 execution evidence
+## Execution evidence for 2.1.9 applications
 
 Use result.evidence() as the primary RunResult export; to_dict() remains a compatible alias. Do not rename Context, Lineage or Validation to_dict(). trace() returns dict, human_results() returns str, lineage() returns an object with to_dict(), walk() yields RunResults, check_invariants() returns an object with ok/issues/to_dict().
 

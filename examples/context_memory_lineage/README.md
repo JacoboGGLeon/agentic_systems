@@ -1,4 +1,4 @@
-# Context, Memory and lineage · 2.1.8
+# Context, Memory and lineage · 2.1.9
 
 [Notebook](01_context_memory_lineage.ipynb) · [English reading view](01_context_memory_lineage.md) · [Code](application.py).
 

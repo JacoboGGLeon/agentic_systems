@@ -1,4 +1,4 @@
-# Package install · Agentic Systems 2.1.8
+# Package install · Agentic Systems 2.1.9
 
 Inspect the installed SDK version and public API identity.
 

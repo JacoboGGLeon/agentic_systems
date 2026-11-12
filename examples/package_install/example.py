@@ -6,7 +6,7 @@ def run():
     assert (
         toolkit.__version__
         == importlib.metadata.version("agentic-systems")
-        == '2.1.8'
+        == '2.1.9'
     )
     assert set(toolkit.__all__) == {
         "tool", "skill", "load_skill", "Agent", "System", "Environment", "Eval",

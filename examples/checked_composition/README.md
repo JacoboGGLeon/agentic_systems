@@ -1,4 +1,4 @@
-# Graph, Pydantic Tools and results · 2.1.8
+# Graph, Pydantic Tools and results · 2.1.9
 
 [Notebook](01_checked_composition.ipynb) · [English reading view](01_checked_composition.md) · [Program](example.py). The folder name is historical; the current API has no check constructor.
 

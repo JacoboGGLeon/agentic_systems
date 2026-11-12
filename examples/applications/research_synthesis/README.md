@@ -1,4 +1,4 @@
-# Research synthesis · Agentic Systems 2.1.8
+# Research synthesis · Agentic Systems 2.1.9
 
 Distinguish structured claims with declared references from claims without them.
 

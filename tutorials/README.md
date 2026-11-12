@@ -1,10 +1,10 @@
-# Tutorials · Agentic Systems 2.1.8
+# Tutorials · Agentic Systems 2.1.9
 
 Start with core/00 and run cells in order. Each lesson exposes input → process → output and executable assertions. Use `import agentic_systems as toolkit`; LangGraph is the sole graph orchestrator.
 
 Install the SDK and extras using [installation instructions](../INSTALL.md). Core lessons do not require Studio unless explicitly stated. Linked local Skill resources require the repository. The wheel does not contain these notebooks.
 
-Follow **Start → Tools/Skills → Agent → System → Environment → Eval**, then Context/Memory and results. Explore providers, frameworks and execution controls afterward. Declarations are visible rather than hidden in an imported experiment.
+Begin with **Start → Tools/Skills → Agent → System**. Then choose Environment for successive records, Context/Memory for reference information and history, or Eval for acceptance checks. These are independent choices, not a required stack. Explore providers, frameworks and execution controls afterward. Declarations are visible rather than hidden in an imported experiment.
 
 [Complete English notebook index and Markdown reading views](../docs/NOTEBOOKS.md).
 

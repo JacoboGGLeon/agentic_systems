@@ -1,23 +1,7 @@
-# README execution examples
+# Introductory README checks · Agentic Systems 2.1.9
 
-The repository README is the short learning path. Its eight Python blocks are exercised directly by:
+The root README teaches a comparison capability, a model actor declaration, System composition, context/history/episodes and independent evaluation. Its Python declarations are visible and use the same sample throughout.
 
-```bash
-python scripts/check_readme_examples.py
-```
+Run `python scripts/check_readme_examples.py` with the installed candidate and Bedrock extra. The script executes local blocks, checks stopping and Memory, rejects incorrect expectations and invalid windows, and simulates Bedrock transport to inspect the actor's two Tool choices. No model inference is performed. Results are written to `.tmp/readme-validation/validation.json` with the exact README hash and installed SDK version.
 
-Run from the repository root with Agentic Systems 2.1.8 and the Bedrock/OpenAI Agents extras installed. The check uses local Tools, simulated Bedrock transport, and the repository's process-local offline guard. Outputs are written to `.tmp/readme-validation/`: `validation.json`, `evidence.json`, `execution.log`, and extracted `readme_local.py`.
-
-The extended nested-actor tutorial is:
-
-```bash
-python examples/readme/incident_response.py
-```
-
-By default it uses a local deterministic Python actor. It demonstrates explicit Agent graphs, a conditional System, three acceptance cases including an expected failed lookup, a rejecting negative control, Environment episodes and stopping, independent Environment evaluation, and bounded Memory.
-
-For a separately budgeted live campaign, the tutorial accepts `AS_PROVIDER=bedrock-runtime` and `AS_FRAMEWORK=native` or `openai-agents`, plus `AWS_REGION` and `BEDROCK_MODEL_ID`. This opt-in profile makes multiple real model requests, including evaluations and episodes. The default Python profile does not validate live model behavior or AWS permissions.
-
-The extended tutorial's fixed-tool inspection actor and the README's two-tool support actor serve different teaching goals. Neither is a production monitoring integration; the tools use a small service snapshot and record escalation decisions without changing infrastructure.
-
-These GitHub documentation changes do not modify the published PyPI 2.1.8 distribution.
+The complete real-data source is in `examples/time_series_discovery_219`. Its output viewer displays historical 2.1.8 evidence; that is separate from candidate acceptance. The older `incident_response.py` remains a previous teaching example, not the current README's executable source.

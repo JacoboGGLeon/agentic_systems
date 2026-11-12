@@ -23,7 +23,9 @@ def check(root=ROOT):
              'docs/CONCEPTS.md', 'docs/GRAPHS.md', 'docs/EXECUTION.md',
              'docs/RESULTS.md', 'docs/EVALUATION.md', 'docs/CONTEXT_MEMORY.md',
              'docs/INTEGRATIONS.md', 'docs/MIGRATION_217_TO_218.md',
-             'docs/STATUS_214.md', 'docs/RUNRESULT_CONTRACT.md')]
+             'docs/STATUS_214.md', 'docs/RUNRESULT_CONTRACT.md',
+             'docs/MIGRATION_218_TO_219.md', 'docs/RELEASE_NOTES_219.md',
+             'docs/VALIDATION_219.md', 'docs/NARRATIVE_CONTRACT.md', 'ROADMAP.md')]
     for entry in catalog['entries']:
         assert entry['target_sdk_version'] == version, entry['id']
         path = entry.get('entrypoint')
@@ -33,7 +35,7 @@ def check(root=ROOT):
         assert page.is_file(), page
         text = page.read_text(encoding='utf-8')
         heading = next((line for line in text.splitlines() if line.startswith('# ')), '')
-        if page.name != 'MIGRATION_217_TO_218.md':
+        if not page.name.startswith('MIGRATION_'):
             versions = re.findall(r'2\.1\.\d+(?:\.dev\d+)?', heading)
             assert all(item == version for item in versions), (page, heading, version)
         assert not re.search(r'The current SDK(?: release)? is 2\.1\.(?!' + re.escape(version.split('.')[-1]) + r'\b)\d+', text), page

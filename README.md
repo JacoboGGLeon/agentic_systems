@@ -25,10 +25,10 @@ Each interaction shows a request, explains the answer, and then builds the capab
 ## Get started
 
 ```bash
-pip install "agentic-systems==2.1.8"
+pip install "agentic-systems==2.1.9"
 ```
 
-The examples below target SDK 2.1.8, the verified baseline for the 2.1.9 documentation proposal. Run the local blocks in order. Block 2 is an optional Bedrock configuration; blocks 3–5 reuse the local actuator and need no model access.
+This guide targets **2.1.9**. During release preparation, install the candidate wheel; the registry command above applies after publication. Run the local examples in order. The model configuration is optional; the following composition and evaluation examples run without model access.
 
 ## How it works
 
@@ -71,7 +71,7 @@ def compare_windows(values: list[float]) -> dict:
 
 ```
 
-The calculation now has a name and an input/output boundary. To make it a reusable workflow, declare the state it writes to, connect the Tool between START and END, and give the graph to an Agent.
+The calculation now has a name and an input/output boundary. To make it a reusable workflow, use the declared state, connect the Tool between START and END, and give the graph to an Agent.
 
 ```python
 graph = toolkit.Graph(State)
@@ -130,7 +130,7 @@ The user's request now determines which operation is useful. We add `profile_ser
 Install the optional integration:
 
 ```bash
-pip install "agentic-systems[bedrock]==2.1.8"
+pip install "agentic-systems[bedrock]==2.1.9"
 ```
 
 Continue with the comparison Tool above. This configuration uses Bedrock and the environment's AWS credential chain.
@@ -399,7 +399,9 @@ Acceptance: True
 
 The version-matched **authoring Skill** gives your coding assistant API guidance, examples and validation practices for building Agentic Systems applications.
 
-**[Download the authoring Skill ZIP · 2.1.8](https://github.com/JacoboGGLeon/agentic_systems/releases/download/v2.1.8/agentic-systems-skill-2.1.8.zip)**
+**[Download the authoring Skill ZIP · 2.1.9](https://github.com/JacoboGGLeon/agentic_systems/releases/download/v2.1.9/agentic-systems-skill-2.1.9.zip)**
+
+The 2.1.9 download becomes available when its GitHub release is published. Before publication, export it from the installed candidate.
 
 Use the ZIP as authoring material in a skill-capable ChatGPT workspace. For Codex, install the bundled Skill from your project directory:
 
@@ -411,7 +413,7 @@ agentic-systems skill install
 The default installation location is `.agents/skills/agentic-systems`. You can also export the same bundled material:
 
 ```bash
-agentic-systems skill export agentic-systems-skill-2.1.8.zip
+agentic-systems skill export agentic-systems-skill-2.1.9.zip
 ```
 
 For example, ask your assistant: “Use the Agentic Systems skill to build a Tool, compose it in a System, and add a result and trajectory evaluation.”
@@ -422,12 +424,12 @@ The authoring Skill helps you write applications. Runtime `toolkit.skill(...)` g
 
 | Goal | Resource |
 |---|---|
-| Run the complete real-data application | [Time-series notebook](https://github.com/JacoboGGLeon/agentic_systems/blob/docs/2.1.9-readme-preview/examples/time_series_discovery_219/ADA_Time_Series_Discovery_219_Core.ipynb) |
-| Inspect actual saved outputs | [Recorded execution viewer](https://github.com/JacoboGGLeon/agentic_systems/blob/docs/2.1.9-readme-preview/examples/time_series_discovery_219/Recorded_Outputs.ipynb) |
+| Run the complete real-data application | [Time-series notebook](https://github.com/JacoboGGLeon/agentic_systems/blob/main/examples/time_series_discovery_219/ADA_Time_Series_Discovery_219_Core.ipynb) |
+| Inspect actual saved outputs | [Recorded execution viewer](https://github.com/JacoboGGLeon/agentic_systems/blob/main/examples/time_series_discovery_219/Recorded_Outputs.ipynb) |
 | Learn the grammar | [Concepts](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/CONCEPTS.md) |
 | Configure providers and frameworks | [Integrations](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/INTEGRATIONS.md) |
 | Build acceptance checks | [Evaluation](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/EVALUATION.md) |
 
-The local walkthrough runs without model inference. The optional actor configuration introduces model-selected actions; its live invocation is kept in the bounded notebook. That notebook records exact SDK versions, actual outputs and failures.
+The local walkthrough runs without model inference. The optional actor configuration introduces model-selected actions; its live invocation is kept in the bounded notebook. The application notebook targets 2.1.9. The recorded execution viewer preserves actual 2.1.8 outputs and failures as historical evidence; those runs are not certification of the 2.1.9 candidate.
 
 You can start with a single capability and add the pieces your application needs. Explicit Agent contracts and policies are outside this introductory walkthrough.

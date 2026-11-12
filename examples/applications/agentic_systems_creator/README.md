@@ -1,4 +1,4 @@
-# Authoring skill distribution · Agentic Systems 2.1.8
+# Authoring skill distribution · Agentic Systems 2.1.9
 
 Inspect, install and export the authoring skill bundled with the installed SDK.
 

@@ -1,4 +1,4 @@
-# Integrations and boundaries · 2.1.8
+# Integrations and boundaries · 2.1.9
 
 LangGraph orchestrates graphs. native, openai-agents and strands implement actors. Runtime selects python-runtime, openai-runtime, bedrock-runtime, ollama-runtime or vllm-runtime. An Agent with a graph does not itself select a provider; each actor node has its own configuration.
 
@@ -14,6 +14,6 @@ LangGraph orchestrates graphs. native, openai-agents and strands implement actor
 
 ## Evidence states
 
-Installed, configured, offline-tested and live-tested are different claims. doctor checks dependency presence, not authentication or service access. Mocked transport validates an adapter path, not a real model. Historical campaigns remain tied to their hashes: [2.1.5 providers](VALIDATION_215_20261108.md), [2.1.7 AWS sessions](AWS_SESSION_VALIDATION_217.md). Neither certifies a new 2.1.8 wheel.
+Installed, configured, offline-tested and live-tested are different claims. doctor checks dependency presence, not authentication or service access. Mocked transport validates an adapter path, not a real model. Historical campaigns remain tied to their hashes: [2.1.5 providers](VALIDATION_215_20261108.md), [2.1.7 AWS sessions](AWS_SESSION_VALIDATION_217.md). Neither certifies a new 2.1.9 wheel.
 
-EMR runtime-role access and distributed PySpark remain unverified by the recorded 2.1.7 SageMaker campaigns. Memory/continuations remain process-local; no rollback or durable recovery is added in 2.1.8. Live requests require configured credentials and a persistent campaign budget including errors and retries. No silent model/provider substitution.
+EMR runtime-role access and distributed PySpark remain unverified by the recorded 2.1.7 SageMaker campaigns. Memory/continuations remain process-local; no rollback or durable recovery is claimed for 2.1.9. Live requests require configured credentials and a persistent campaign budget including errors and retries. No silent model/provider substitution.
