@@ -8,11 +8,19 @@
 
 Agentic Systems is a Python library for combining executable operations, model-selected actions and explicit workflows. Build reusable capabilities, coordinate their work, and check the operations behind each result.
 
-Use it to build tool-using assistants, analytical workflows and applications that combine model decisions with deterministic code.
+## Why Agentic Systems?
+
+Use it when your application needs to:
+
+- **Combine code and model decisions.** Define operations as Tools, execute them through graphs or let model actors select them.
+- **Compose reusable capabilities.** Coordinate Agents and Tools in Systems, then run those workflows over successive inputs.
+- **Check what happened.** Inspect execution evidence and evaluate both the outputs and the operations that produced them.
+
+The walkthrough below follows one capability as it grows: execute it, offer a choice of actions, compose a workflow, add episode history, and check the result.
 
 [Documentation](https://github.com/JacoboGGLeon/agentic_systems/tree/main/docs) · [Examples](https://github.com/JacoboGGLeon/agentic_systems/tree/main/examples)
 
-## Install
+## Get started
 
 ```bash
 pip install "agentic-systems==2.1.8"
@@ -20,9 +28,11 @@ pip install "agentic-systems==2.1.8"
 
 The examples below target SDK 2.1.8, the verified baseline for the 2.1.9 documentation proposal. Run the local blocks in order. Block 2 is an optional Bedrock configuration; blocks 3–5 reuse the local actuator and need no model access.
 
-## 1. Define and run a capability
+## How it works
 
-A **Tool** executes an operation. A **Graph** declares its execution path. An **Agent(graph=...)** owns that workflow: a graph-based agent actuator.
+Start with one operation you can check: comparing two windows of observations.
+
+Define the calculation as a **Tool**, connect it through a **Graph**, and give that graph to an **Agent**. This creates a **graph-based agent actuator**: a capability that follows the execution path you declared.
 
 **User input**
 
@@ -78,11 +88,15 @@ flowchart TD
 5.0
 ```
 
-The request explains the task; this actuator receives structured values. These are illustrative observations, and the difference is descriptive.
+The Tool calculated the difference, the Graph determined the execution path, and the Agent returned a **RunResult** containing the output and execution evidence. You can now run this capability independently or reuse it inside another graph.
 
-## 2. Let a model select the action
+The question introduces the task; the actuator itself receives structured values. These illustrative observations support a descriptive comparison.
 
-A **Skill** groups Tools. A model-backed agent actor chooses an action from its available capabilities. **Runtime** configures the provider and model; **Framework** selects how the actor executes.
+## Let a model choose an action
+
+The first capability always compares its inputs. To support different requests, add a description Tool and group both operations in a **Skill**.
+
+A **model-backed agent actor** uses the request to select an available Tool. The **Runtime** configures its provider and model. The **Framework** selects how the actor executes.
 
 **User input**
 
@@ -94,7 +108,7 @@ Install the optional integration:
 pip install "agentic-systems[bedrock]==2.1.8"
 ```
 
-Continue with the Tool from block 1. This configuration uses Bedrock and the environment's AWS credential chain.
+Continue with the comparison Tool above. This configuration uses Bedrock and the environment's AWS credential chain.
 
 ```python
 import boto3
@@ -144,9 +158,11 @@ flowchart TD
 
 The model selects the operation; the Tool calculates. Instructions alone do not guarantee selection: inspect the actual Tool event. The complete ADA example includes real model runs, a persistent HTTP budget and selection checks.
 
-## 3. Compose capabilities into a System
+## Compose capabilities into a System
 
-A **System** coordinates capabilities through a graph and retains their nested evidence. Here it reuses the local actuator and adds an independent numerical check.
+Once a capability works on its own, make it part of a larger workflow. A **System** coordinates capabilities through a graph and retains the evidence from their nested executions.
+
+Here the System reuses the local comparison actuator and adds a verification Tool. This path runs entirely in Python, so it also works if you skipped the optional model configuration.
 
 **User input**
 
@@ -191,11 +207,13 @@ flowchart TD
 5.0 True
 ```
 
-The graph makes coordination explicit. A model actor can also participate through a graph callback, as shown in the complete example.
+The System returns the measurement and its verification together. Its result also retains the Agent and Tool executions, so you can inspect how the answer was produced. The complete example shows how model actors participate through graph callbacks.
 
-## 4. Add context and run episodes
+## Add context and continuity
 
-**Context** supplies immutable reference information. **Memory** retains bounded episode history. An **Environment** executes a graph over records, updates accumulated state and applies a stopping rule.
+Next, apply the workflow to successive segments using the same review rule.
+
+Use **Context** for immutable reference information, such as the review threshold. Attach **Memory** to the review capability to retain bounded episode history. An **Environment** supplies the records, executes each episode, updates accumulated state and decides when to stop.
 
 **User input**
 
@@ -268,9 +286,11 @@ flowchart TD
 
 The first segment has difference 0; the second has difference 5 and triggers the threshold of 3. The third record is not processed. Memory is process-local; reference information, episode history and accumulated state have separate responsibilities.
 
-## 5. Inspect and evaluate the execution
+## Inspect and evaluate
 
-Every execution returns a **RunResult**. Inspect its evidence, or use **Eval** to execute acceptance cases against an Agent, System or Environment.
+The application now produces results across several operations and episodes. How do you check that it did the right work?
+
+A **RunResult** lets you inspect outputs, Tool calls and nested executions. An **Eval** runs an Agent, System or Environment against declared cases and applies your acceptance checks. Here one check verifies the value; another verifies the comparison Tool's original input.
 
 **User input**
 
@@ -326,4 +346,6 @@ This check is specific to the four-value teaching case. The complete example add
 | Configure providers and frameworks | [Integrations](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/INTEGRATIONS.md) |
 | Build acceptance checks | [Evaluation](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/EVALUATION.md) |
 
-The local examples above run without model inference. Live outputs vary by model and configuration. The real-data notebook records its exact SDK version and keeps failures visible. Explicit Agent contracts and policies are outside this introductory walkthrough.
+The local walkthrough runs without model inference. The optional actor configuration introduces model-selected actions; its live invocation is kept in the bounded notebook. That notebook records exact SDK versions, actual outputs and failures.
+
+You can start with a single capability and add the pieces your application needs. Explicit Agent contracts and policies are outside this introductory walkthrough.
