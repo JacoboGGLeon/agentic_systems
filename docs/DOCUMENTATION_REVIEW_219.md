@@ -24,12 +24,15 @@ These checks used Python 3.12 in a reused environment. They are not a clean mult
 | `python scripts/check_readme_examples.py` | PASS on installed 2.1.9 candidate: local outputs, stop/Memory, negative controls and two Native Tool choices through simulated Bedrock transport; 4 simulated calls, no live inference |
 | `python scripts/validate_skill_distribution.py` | PASS on installed candidate: 9 CLI/install/export checks; no inference |
 | `python scripts/check_secrets.py` | PASS |
+| Installed wheel from PR commit `e6248ee0729e69d925a35da49dfc42f93b46d485` | PASS: 895 tests; source/installed bytes match; 122 RECORD hashes verified; Python 3.12, reused environment |
 | Ruff: current CI surfaces plus changed validation scripts | PASS |
 | `git diff --check` | PASS |
 
 ## Initial failures and corrections
 
 The initial build lacked setuptools; it passed after installing the declared build prerequisites. Notebook-view generation initially lacked nbconvert; it passed after installing the repository-pinned version. Initial full-suite collection lacked Streamlit. Further adapter checks lacked the Strands optional package and SOCKS support for the configured proxy. Dependencies were installed without changing network protections or weakening the tests.
+
+The first installed-wheel attempt omitted the optional Studio/ADA packages required by the suite and failed collection. After building and installing their 2.1.9 wheels, all 895 installed-wheel tests passed. This wheel predates the final release-note wording changes and is not the sealed CI artifact.
 
 The package README link check correctly rejected relative links; canonical absolute GitHub links were restored. The new recorded-output notebook is an evidence viewer, not a capability-construction lesson: a dedicated test now checks its preserved 2.1.8 records and absence of Agent execution, while construction lessons retain their declaration checks. The README transport fixture was updated to recognize the final synthesis phase, in which no Tool definitions are available.
 

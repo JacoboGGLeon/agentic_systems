@@ -13,6 +13,6 @@ Publication uses the repository workflows and never overwrites a version, tag or
 6. Production requires the identical complete distributions on TestPyPI. Post-publish
    installation checks and the GitHub finalizer verify those same bytes and never move tags.
 
-The version-specific policy and final artifact manifest for 2.1.9 are still pending preparation and review. They must reflect the actual executable and bundled-resource differences; never copy old payload hashes or claim old live acceptance applies to the new wheel. Candidate sealing also requires a successful mutation gate on the exact main commit.
+The [2.1.9 acceptance policy](../release/policy-2.1.9.json) records the reviewed executable differences. The final artifact manifest is produced by candidate sealing. Both must reflect the actual executable and bundled-resource differences; never copy old payload hashes or claim old live acceptance applies to the new wheel. Candidate sealing also requires a successful mutation gate on the exact main commit.
 
-The SDK, optional applications, learning bundle and authoring Skill ZIP are distinct assets. Keep their versions coherent. The README's 2.1.9 Skill download URL becomes available only after finalization. See [candidate notes](RELEASE_NOTES_219.md) and [validation scope](VALIDATION_219.md).
+The SDK, optional applications, learning bundle and authoring Skill ZIP are distinct assets. Keep their versions coherent. The README's 2.1.9 Skill download URL becomes available only after finalization. See [release notes](RELEASE_NOTES_219.md) and [validation scope](VALIDATION_219.md).
