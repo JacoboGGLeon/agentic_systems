@@ -24,6 +24,7 @@ These checks used Python 3.12 in a reused environment. They are not a clean mult
 | `python scripts/check_readme_examples.py` | PASS on installed 2.1.9 candidate: local outputs, stop/Memory, negative controls and two Native Tool choices through simulated Bedrock transport; 4 simulated calls, no live inference |
 | `python scripts/validate_skill_distribution.py` | PASS on installed candidate: 9 CLI/install/export checks; no inference |
 | `python scripts/check_secrets.py` | PASS |
+| Ruff: current CI surfaces plus changed validation scripts | PASS |
 | `git diff --check` | PASS |
 
 ## Initial failures and corrections
@@ -36,6 +37,6 @@ Matplotlib's first font-cache initialization attempted a font-discovery subproce
 
 ## Pending release gates
 
-Live model acceptance on the exact 2.1.9 wheel, final installed-wheel/multi-Python quality, mutation, the reviewed version-specific release policy, sealed artifact promotion and publication remain pending. The local build used the working tree and is not the sealed final release candidate. Ruff installation encountered a proxy timeout; no Ruff result is claimed in this report.
+Final installed-wheel/multi-Python quality, mutation, sealed artifact promotion and publication remain pending. The proposed [2.1.9 acceptance policy](../release/policy-2.1.9.json) compares all packaged Python files with main commit `45ca2bbf214d2d0ab77a7cf3459b5f0cea17d279`: the only executable edits are the SDK version/module description and the first Tool example version assertion. The policy selects offline maintenance acceptance and does not claim new live acceptance. The local build used the working tree and is not the sealed final release candidate. Ruff passed after its initial dependency-install timeout was resolved.
 
 Historical Native/OpenAI Agents success on 2.1.8 is baseline evidence only. No new provider/framework certification, durable Memory, EMR or distributed Spark compatibility is asserted.
