@@ -40,7 +40,7 @@ Matplotlib's first font-cache initialization attempted a font-discovery subproce
 
 ## CI dependency correction
 
-The first PR quality run (`43149417001`) built successfully and passed source/installed contracts, but its fresh-kernel notebook phase failed because the runner lacked the new example's declared Matplotlib dependency. Quality setup now installs that dependency and prepares its font cache before the offline subprocess guard. The example requirements also pin the intended SDK 2.1.9. The complete CI matrix must pass again; the failed run is retained.
+The first PR quality run (`43149417001`) built successfully and passed source/installed contracts, but its fresh-kernel notebook phase failed because the runner lacked the new example's declared Matplotlib dependency. Quality setup now installs that dependency and prepares its font cache before the offline subprocess guard. The example requirements also pin the intended SDK 2.1.9. A follow-up manifest audit also aligned the Order fulfillment package from its obsolete development pin, and the learning-document checker now covers active installation manifests. The complete CI matrix must pass again; failed runs are retained.
 
 ## Pending release gates
 

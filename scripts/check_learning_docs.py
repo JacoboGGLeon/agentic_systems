@@ -14,6 +14,15 @@ def project_version(root):
 
 def check(root=ROOT):
     version = project_version(root)
+    manifests = [root / 'pyproject.toml']
+    for directory in ('examples', 'integrations', 'tutorials'):
+        manifests.extend(path for pattern in ('pyproject.toml', 'requirements*.txt')
+                         for path in (root / directory).rglob(pattern)
+                         if not {'history', 'build', 'dist'} & set(path.relative_to(root).parts))
+    for manifest in manifests:
+        pins = re.findall(r'agentic-systems(?:\[[^\]]*\])?\s*==\s*([0-9.]+(?:dev[0-9]+)?)',
+                          manifest.read_text(encoding='utf-8'))
+        assert all(pin == version for pin in pins), (manifest, pins, version)
     catalog = json.loads((root / 'examples/catalog.json').read_text(encoding='utf-8'))
     assert catalog['current_api_version'] == version
     pages = [root / p for p in ('README.md', 'INSTALL.md', 'docs/README.md',
