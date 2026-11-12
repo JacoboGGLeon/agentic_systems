@@ -1,433 +1,354 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/JacoboGGLeon/agentic_systems/main/docs/assets/logo_agentic_systems.png" alt="Agentic Systems" width="190">
-</p>
-
 # Agentic Systems
 
-**Build agentic applications you can compose, inspect, and evaluate.**
+> **“Did the level of this series change? Compare the observations and show what supports the finding.”**
 
-Combine tools, model-backed agents, and explicit workflows. Coordinate capabilities through systems, run episodes in environments, and evaluate both the outputs and the actions that produced them.
+Build applications around executable Tools. Let actors select capabilities, let graph-backed actuators run declared operations, coordinate them in Systems, and inspect the evidence behind each result.
 
-Agentic Systems connects graph orchestration, actor frameworks, and runtime providers through **execution contracts and a shared evidence model**.
+This guide follows one investigation from a numerical comparison to an episodic, evaluated application. Each question introduces the next part of the grammar.
 
-Use it when you need to compose capabilities without losing their execution history, check whether required tools actually ran, or evaluate an application across supported integrations.
+**Version scope:** this is the README proposal for 2.1.9. The reported executions used the published **2.1.8** SDK. They establish a baseline; verification against the 2.1.9 release candidate remains pending. Explicit Agent contracts and policies, and their broader framework/provider validation, are planned for 2.1.10.
 
-[Documentation](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/README.md) · [Tutorials](https://github.com/JacoboGGLeon/agentic_systems/blob/main/tutorials/README.md) · [Examples](https://github.com/JacoboGGLeon/agentic_systems/blob/main/examples/README.md)
+## Start with the executable example
 
-## Install
+Open [ADA_Time_Series_Discovery_219_Core.ipynb](examples/time_series_discovery_219/ADA_Time_Series_Discovery_219_Core.ipynb). Its filename describes the development target; its dependency pin is `agentic-systems==2.1.8`.
 
-Python **3.10–3.14**:
+The notebook contains the data, visible declarations, seven teaching blocks, local checks, optional live execution, and evidence export. Live results reported here come from the supplied ADA execution bundles. The downloadable source notebook is supplied without those live cell outputs; those bundles are the live evidence.
 
-```bash
-pip install "agentic-systems==2.1.8"
+Install into the notebook kernel:
+
+```python
+%pip install "agentic-systems[bedrock,openai-agents]==2.1.8" "matplotlib>=3.8" "nbformat>=5.10" "nbclient>=0.10" "ipykernel>=6"
 ```
 
-## Start with one capability
+Restart the kernel after upgrading an already imported SDK, then configure and Run All.
 
-This local example reads a service-health snapshot. It needs no model account. Start with a deterministic capability; add model-selected actions when your task needs them.
+```python
+RUN_BEDROCK = True
+LIVE_FRAMEWORKS = ("openai-agents",)
+# Alternatives: ("native",) or ("native", "openai-agents")
+
+BEDROCK_MODEL_ID = "qwen.qwen3-32b-v1:0"
+AWS_REGION = "us-east-1"
+```
+
+For local execution only, set `RUN_BEDROCK=False`. Python runs explicitly selected operations; it does not interpret the natural-language questions.
+
+The notebook reuses an existing Boto3 `session` or unwraps `sagemaker_session.boto_session`. Otherwise it creates a Boto3 session using the environment credential chain. No OpenAI API key is needed for the Bedrock/OpenAI Agents profile.
+
+The current continuation configuration retains the existing campaign ledger and explicitly raises its cumulative cap from 60 to 100 HTTP attempts. Keep the same working directory. It expects the existing ledger; set `ALLOW_NEW_CAMPAIGN=True` only for a first-ever campaign. Budget preflight, send counting and failures are recorded. Changing the framework does not reset the counter.
+
+## One dataset, one investigation
+
+| Property | Value |
+|---|---|
+| Publisher / dataset | FAO / FAOSTAT Production Indices, QI |
+| Series | Mexico / Agriculture / Gross Production Index Number |
+| Base | 2014–2016 = 100 |
+| Coverage | Annual, 1961–2024; 64 observations |
+| Source flags | `E`: estimated values |
+| Snapshot | [data/series.json](examples/time_series_discovery_219/data/series.json), also embedded in the notebook |
+| Transformation | Exact identifier filtering, type conversion and chronological sorting; no imputation or smoothing |
+| Snapshot SHA256 | `59109a8fc4f18b0bf73ab9a19df2357800a303debaa23ceb2f505363f271fab2` |
+
+Source provenance, retrieval time and archive hash are recorded in the JSON. The notebook validates the frozen snapshot before analysis; ADA does not need to download FAOSTAT data.
+
+The initial comparison uses 2005–2009 versus 2010–2014. The episodic investigation uses successive non-overlapping ten-year blocks, comparing each block's two five-year halves.
+
+## 1. “Did the level of this series change?”
+
+**user:** Compare the observations and show what supports the finding.
+
+**agentic-systems:** The earlier mean is **84.82**, the later mean is **92.21**, and the difference is **+7.39 index points**.
+
+**context:** Ten observations from 2005–2014, split into equal chronological windows. This is a descriptive comparison; it does not establish a structural break or a cause.
+
+**internals:** A Tool computes the means. A graph-backed actuator executes that operation.
+
+**grammar:** `tool` → `Graph` → `Agent(graph=...)` → `RunResult`.
+
+**route:** Observations → comparison actuator → `compare_windows` → measurement.
+
+This standalone excerpt shows the first declaration:
+
+```python
+from statistics import mean
+import math
+from pydantic import BaseModel
+import agentic_systems as toolkit
+
+class ComparisonState(BaseModel):
+    values: list[float]
+    measurement: dict = {}
+
+@toolkit.tool
+def compare_windows(values: list[float]) -> dict:
+    """Compare the means of equal chronological windows."""
+    if len(values) < 4 or len(values) % 2:
+        raise ValueError("Two equal windows are required")
+    if not all(math.isfinite(value) for value in values):
+        raise ValueError("Finite observations are required")
+    midpoint = len(values) // 2
+    earlier = mean(values[:midpoint])
+    later = mean(values[midpoint:])
+    return {"measurement": {
+        "earlier_mean": earlier,
+        "later_mean": later,
+        "difference": later - earlier,
+    }}
+
+graph = toolkit.Graph(ComparisonState)
+graph.add_node("compare", compare_windows)
+graph.add_edge(toolkit.START, "compare")
+graph.add_edge("compare", toolkit.END)
+actuator = toolkit.Agent("comparison_actuator", graph=graph)
+
+result = actuator.run({"values": [
+    80.09, 83.88, 85.97, 88.18, 85.98,
+    88.71, 87.69, 92.28, 94.53, 97.84,
+]})
+assert result.ok
+print(result.data["measurement"])
+```
+
+The notebook uses a richer measurement schema shared by its later blocks. Evidence: `01_comparison.evidence.json`.
+
+## 2. “Can you choose the analysis from my question?”
+
+**user:** Describe the observations instead of comparing the periods.
+
+**agentic-systems:** Selected `profile_series`. **10 observations**, average **88.515**, minimum **80.09**, maximum **97.84**.
+
+**context:** A Skill exposes description, comparison and endpoint-slope Tools. Instructions ask the actor to choose one appropriate Tool and preserve all observations.
+
+**internals:** The model chooses the operation; the selected Tool performs arithmetic. External checks inspect the actual Tool name and arguments.
+
+**grammar:** `skill` + `runtime` + `framework` → `Agent(runtime=...)`.
+
+**route:** Question → actor → Tool selection → execution → recorded result.
+
+Both Bedrock/Native and Bedrock/OpenAI Agents selected the correct description Tool. Evidence: `bedrock_native_description.evidence.json` and `bedrock_openai_agents_description.evidence.json`.
+
+## 3. “Can you coordinate and validate the investigation?”
+
+**user:** Compare the periods and check the measurement before forwarding a finding.
+
+**agentic-systems:** Discovery profiled the data, selected comparison and verified the recorded measurement. The live Discovery evaluation confirmed **+7.39 points** for 2005–2014.
+
+**context:** Dataset identity, source reference and declared business criteria live in `Context`. Business channels such as measurements and validation flags live in graph state.
+
+**internals:** Three Agents contribute distinct responsibilities:
+
+| Agent | Role | Operation |
+|---|---|---|
+| Profiler | Actuator | Runs `profile_series` through a graph |
+| Investigator | Actor | Selects an analysis Tool |
+| Analyst | Actuator | Runs `validate_measurement` through a graph |
+
+**grammar:** Multiple `Agent` declarations → coordination `Graph` → `System`, with `Context` and bounded `Memory`.
+
+**route:** Discovery → Profiler → Investigator → Analyst → checked measurement.
+
+Evidence: each profile's Environment descendants and `*_eval.evidence.json`.
+
+## 4. “Can another capability review and report the finding?”
+
+**user:** Review the finding and produce a report backed by execution evidence.
+
+**agentic-systems:** Review independently recomputed the difference, applied the screening rule and produced a report containing measurement, verdict, threshold and analytical scope.
+
+**context:** At least ten observations and an absolute difference of at least ten index points identify a review candidate. This business screening rule is implemented in a Tool; it is not an explicit Agent `policy` declaration.
+
+**internals:** Challenger selects `check_finding`. Reporter is a graph-backed actuator that runs `render_report`. Together with the three Discovery roles, the application has five logical Agents and two coordinated Systems.
+
+**grammar:** System composition → nested Agents → `evidence()` and `lineage()`.
+
+**route:** Discovery System → Review System → reviewed report.
 
 ```mermaid
 flowchart TD
-    I["Input: service = checkout"] --> T
-    subgraph A["Agent: inspector"]
-        subgraph G["Capability graph"]
-            T["Tool: inspect_service"]
-        end
+    subgraph Discovery
+        P["Profiler · actuator"] --> I["Investigator · actor"]
+        I --> A["Analyst · actuator"]
     end
-    C["Context: service-health snapshot"] -. supplies data .-> T
-    T --> R["RunResult: errors = 7"]
+    subgraph Review
+        C["Challenger · actor"] --> R["Reporter · actuator"]
+    end
+    A --> C
 ```
 
-```python
-import agentic_systems as toolkit
-from pydantic import BaseModel
+Evidence: `check_finding` and `render_report` events in each live Environment bundle. Review verifies observations and arithmetic; agreement between models is not its acceptance criterion.
 
+## 5. “Can you investigate successive periods and remember prior observations?”
 
-class Incident(BaseModel):
-    service: str
-    errors: int | None = None
-    action: str | None = None
+**user:** Process successive periods, retain previous observations and stop when a candidate requires review.
 
+**agentic-systems:** Four episodes were processed. The fourth reached the screening threshold, so the Environment stopped before processing the next record.
 
-context = toolkit.Context(
-    {"services": {"catalog": 0, "checkout": 7}},
-    sources=("demo-health-snapshot-v1",),
-)
+**context:** Chronological ten-year records, bounded episode history, accumulated processed count and candidate flag.
 
+**internals:** Environment executes the Discovery/Review graph per record. `update` accumulates state; `stop` checks the candidate flag. Prior episodes are available through context.
 
-@toolkit.tool
-def inspect_service(service: str, *, context: toolkit.Context) -> dict:
-    return {"errors": context.data["services"][service]}
+**grammar:** `Environment` + `records` + `state` + `update` + `stop` + `max_steps` + `Memory`.
 
+**route:** Record → Discovery/Review → state update → stop decision → next record if needed.
 
-graph = toolkit.Graph(Incident)
-graph.add_node("inspect", inspect_service)
-graph.add_edge(toolkit.START, "inspect")
-graph.add_edge("inspect", toolkit.END)
-
-inspector = toolkit.Agent("inspector", graph=graph, context=context)
-result = inspector.run({"service": "checkout"})
-
-assert result.ok and result.data["errors"] == 7
-print(result.data)
+```mermaid
+flowchart TD
+    E["Next record"] --> D["Discovery System"]
+    D --> R["Review System"]
+    R --> U["Update state and history"]
+    U --> S{"Candidate or record limit?"}
+    S -->|"No"| E
+    S -->|"Yes"| F["Finish with evidence"]
 ```
 
-Output:
+Both frameworks produced the same observed progression:
 
-```text
-{'service': 'checkout', 'errors': 7}
-```
+| Episode | Period | Difference, index points | Prior episodes available | Decision |
+|---|---|---:|---:|---|
+| 1 | 1961–1970 | +5.928 | 0 | Continue |
+| 2 | 1971–1980 | +7.850 | 1 | Continue |
+| 3 | 1981–1990 | +3.142 | 2 | Continue |
+| 4 | 1991–2000 | +10.034 | 3 | Stop: candidate |
 
-The Tool performs the operation. Context supplies information and its source. The Agent owns the capability graph. The same capability can run independently or become part of a larger application.
+Evidence: `*_environment.evidence.json`; summary reports `processed=4`, `candidate_found=true`, `reason="stop"` and `truncated=false`.
 
-## Inspect the work, then evaluate it
+The final difference exceeds the threshold by only 0.034 points. The result is sensitive to the declared threshold and windows. Availability of history does not demonstrate that memory improved analytical quality.
 
-The result includes more than business data:
+## 6. “How do I know the result and the procedure are correct?”
+
+**user:** Verify the finding and confirm that the required operations used the original observations.
+
+**agentic-systems:** Result and trajectory checks passed for live Discovery under both frameworks. Local acceptance also covered an Agent, a System, an Environment and rejecting controls.
+
+**context:** A numerical oracle using `math.fsum` checks the result independently of the comparison Tool. Trajectory checks inspect operation order, successful status and exact original values.
+
+**internals:** Eval executes the declared unit and applies checks to its `RunResult`. Separate negative evaluations retain evidence of deliberately rejected behavior.
+
+**grammar:** `Eval` → `unit` + `cases` + `checks` → evaluation result.
+
+**route:** Case → actual execution → result checks + trajectory checks → acceptance evidence.
+
+| Evaluation | Observed outcome |
+|---|---|
+| Local Agent acceptance | PASS |
+| Local Discovery System acceptance | PASS |
+| Local Environment acceptance | PASS |
+| Deliberately incorrect expected difference | Rejected as intended |
+| Invalid odd-sized comparison windows | Rejected as intended |
+| Live Discovery result and trajectory, Native | PASS |
+| Live Discovery result and trajectory, OpenAI Agents | PASS |
+
+Evidence: `06_*` and `*_eval.evidence.json`. A failed negative-control execution can be the correct test outcome. Structural invariants are checked separately from analytical correctness.
+
+Eval is fail-fast. Memory isolation is process-local and starts from existing toolkit history; it does not isolate SDK sessions or external effects. Use separate evaluations when each negative case needs a report.
+
+## 7. “Can I change the framework and preserve the application?”
+
+**user:** Run the actors through OpenAI Agents while retaining Bedrock, IAM and Qwen3 32B.
+
+**agentic-systems:** Both Native and OpenAI Agents completed description, the four-episode Environment and the live Discovery evaluation with the same numerical results and decisions.
+
+**context:** Same dataset, Tools, Skills, graph structure, provider and model; fresh application Memory per profile. Sessions stay outside serialized configuration.
+
+**internals:** Reconstruct the actors using the selected framework. Native uses `max_turns=1`; OpenAI Agents uses `max_turns=2` to allow Tool selection and final response. Both use `max_tool_calls=1` per actor.
+
+**grammar:** Independent framework and runtime selection, preserving graph composition and external Evals.
+
+**route:** Selected framework → Bedrock actor → Tool → graph continuation → evidence.
+
+**OpenAI Agents is the framework; Bedrock remains the provider.** LangGraph orchestrates the surrounding graphs. Actors and actuators are architectural roles implemented through `Agent`.
+
+| Layer | Role in this example |
+|---|---|
+| Tool | Deterministic operation and argument validation |
+| Skill | Reusable capability group and instructions |
+| Runtime | Provider, model, borrowed session and operational limits |
+| Framework | Native or OpenAI Agents actor execution |
+| Graph | Explicit execution edges and state flow |
+| Agent | Model actor or graph-backed actuator |
+| System | Application coordination |
+| Context | Immutable reference data and sources |
+| Memory | Bounded local episode history |
+| Environment | Records, episode updates and stopping |
+| Eval | Result and trajectory acceptance |
+| RunResult | Outputs, failures, usage and execution evidence |
+
+The framework comparison is observed compatibility for this scenario, not universal feature parity.
+
+## Observed framework comparison
+
+Numbers cover description + Environment + live Discovery Eval. The two profiles were executed separately.
+
+| Measurement | Bedrock / Native | Bedrock / OpenAI Agents |
+|---|---:|---:|
+| Description selection | PASS | PASS |
+| Environment and stopping check | PASS | PASS |
+| Discovery result/trajectory Eval | PASS | PASS |
+| Environment episodes | 4 | 4 |
+| Environment Tool calls | 20 | 20 |
+| Live inference requests | 20 | 20 |
+| Input tokens | 53,039 | 51,920 |
+| Output tokens | 1,741 | 1,636 |
+| Total tokens | 54,780 | 53,556 |
+| Structural invariants across 13 saved results | PASS | PASS |
+
+OpenAI Agents used about 2.2% fewer tokens in these executions. A single run per profile is insufficient to establish an efficiency ranking or a reliability rate.
+
+History increased Environment input tokens substantially:
+
+| Episode | Native | OpenAI Agents |
+|---|---:|---:|
+| First | 4,152 | 4,049 |
+| Fourth | 17,068 | 16,508 |
+
+These counts aggregate both actors per episode. Compact history is a potential optimization; it requires its own evaluation.
+
+## Inspect and export the execution
+
+With a result from the notebook:
 
 ```python
 evidence = result.evidence()
-lineage = result.lineage()
+lineage = result.lineage().to_dict()
+trace = result.trace()
+validation = result.check_invariants()
+
 print(result.human_results())
-assert result.check_invariants().ok
+for execution in result.walk():
+    print(execution.execution_id, execution.status)
 ```
 
-Excerpt from the local execution:
+`compile()` prepares a definition without business execution or inference. `run()` and `arun()` execute it; direct execution compiles internally. Async execution alone does not introduce parallel branches.
 
-```text
-inspector: COMPLETED
-Input: {"service":"checkout"}
-Output: {"service":"checkout","errors":7}
-Process:
-- Tool inspect_service: completed -> {"errors":7}
-```
-
-Use Eval to check the answer **and** the observed tool call:
-
-```mermaid
-flowchart TD
-    E["Eval: cases and checks"] --> A["Execute Agent"]
-    A --> R["RunResult"]
-    R --> D["Check business output"]
-    R --> T["Check observed tool calls"]
-    D --> V["Evaluation RunResult"]
-    T --> V
-```
-
-```python
-def checked_inspection(result, case):
-    calls = [
-        event
-        for execution in result.walk()
-        for event in execution.tool_events
-        if event.name == "inspect_service"
-    ]
-    return {"ok": len(calls) == 1 and calls[0].ok
-            and calls[0].input == case["input"]}
-
-
-evaluation = toolkit.Eval(
-    "inspection_acceptance",
-    unit=inspector,
-    cases=({
-        "input": {"service": "checkout"},
-        "expected": {"ok": True, "data": {"service": "checkout", "errors": 7}},
-    },),
-    checks=(checked_inspection,),
-)
-evaluation_result = evaluation.run()
-assert evaluation_result.ok
-
-negative_control = toolkit.Eval(
-    "reject_wrong_measurement",
-    unit=inspector,
-    cases=({
-        "input": {"service": "checkout"},
-        "expected": {"ok": True, "data": {"service": "checkout", "errors": 0}},
-    },),
-)
-negative_result = negative_control.run()
-assert not negative_result.ok
-print("Expected measurement accepted:", evaluation_result.ok)
-print("Wrong measurement accepted:", negative_result.ok)
-```
-
-```text
-Expected measurement accepted: True
-Wrong measurement accepted: False
-```
-
-The first Eval accepts the measured value and verifies the inspection input. The negative control rejects a wrong measurement. A plausible answer alone would not establish that the required operation ran.
-
-Eval can evaluate an Agent, System, or Environment independently. It is fail-fast; use separate evaluations when every negative scenario needs an independent report.
-
-[Evaluation patterns](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/EVALUATION.md)
-
-## Coordinate capabilities in a System
-
-Now add an escalation capability. The System decides which path to execute based on the observed error count.
-
-```mermaid
-flowchart TD
-    I["Service name"] --> A["Inspection Agent"]
-    A --> C{"Errors ≥ 3?"}
-    C -->|Yes| B["Escalation Agent"]
-    C -->|No| M["Monitor Tool"]
-    B --> R["RunResult with nested evidence"]
-    M --> R
-    E["Independent Eval"] -. checks .-> R
-```
-
-Continue the first example:
-
-```python
-@toolkit.tool
-def escalate(service: str, errors: int) -> dict:
-    return {"action": "escalate"}
-
-
-@toolkit.tool
-def monitor(service: str) -> dict:
-    return {"action": "monitor"}
-
-
-escalation_graph = toolkit.Graph(Incident)
-escalation_graph.add_node("decide", escalate)
-escalation_graph.add_edge(toolkit.START, "decide")
-escalation_graph.add_edge("decide", toolkit.END)
-escalation_agent = toolkit.Agent("escalation", graph=escalation_graph)
-
-
-def route(state):
-    return "escalate" if state.errors >= 3 else "monitor"
-
-
-system_graph = toolkit.Graph(Incident)
-system_graph.add_node("inspect", inspector)
-system_graph.add_node("escalate", escalation_agent)
-system_graph.add_node("monitor", monitor)
-system_graph.add_edge(toolkit.START, "inspect")
-system_graph.add_conditional_edges(
-    "inspect", route, {"escalate": "escalate", "monitor": "monitor"}
-)
-system_graph.add_edge("escalate", toolkit.END)
-system_graph.add_edge("monitor", toolkit.END)
-
-system = toolkit.System("incident_response", graph=system_graph)
-response = system.run({"service": "checkout"})
-
-assert response.ok
-assert response.data == {"service": "checkout", "errors": 7, "action": "escalate"}
-```
-
-These tools record decisions; they do not send alerts or change infrastructure. The branch for `catalog` monitors the service and skips escalation.
-
-Graphs can contain functions, Tools, Agents, and Systems. Each nested execution contributes evidence to the parent result. LangGraph supplies conditional transitions, parallel branches, and reducers; the topology remains explicit.
-
-[Graphs and composition](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/GRAPHS.md)
-
-## Run episodes in an Environment
-
-A System coordinates work within an execution. An Environment supplies records, accumulated state, and a stopping policy across episodes.
-
-```mermaid
-flowchart TD
-    N["Next service"] --> X["Execute System"]
-    X --> U["Update round state"]
-    U --> C{"Escalation observed?"}
-    C -->|Yes| S["Return episode evidence and summary"]
-    C -->|No| M{"Records remain?"}
-    M -->|Yes| N
-    M -->|No| S
-```
-
-```python
-episode_graph = toolkit.Graph(Incident)
-episode_graph.add_node("respond", system)
-episode_graph.add_edge(toolkit.START, "respond")
-episode_graph.add_edge("respond", toolkit.END)
-
-
-def update(state, record, result):
-    return {"processed": state["processed"] + 1,
-            "escalations": state["escalations"] + int(result.data["action"] == "escalate")}
-
-
-def stop(state, result):
-    return state["escalations"] >= 1
-
-
-environment = toolkit.Environment(
-    "service_round",
-    graph=episode_graph,
-    records=({"service": "catalog"}, {"service": "checkout"}, {"service": "catalog"}),
-    state={"processed": 0, "escalations": 0},
-    update=update,
-    stop=stop,
-    max_steps=3,
-)
-episodes = environment.run()
-
-assert episodes.ok and len(episodes.data["outputs"]) == 2
-assert episodes.data["summary"]["state"] == {"processed": 2, "escalations": 1}
-```
-
-The round stops after the first escalation. Its result retains the episode executions and accumulated summary. Eval can independently check those outputs and stopping behavior.
-
-## Add a model when it needs to choose an action
-
-Suppose users can ask either for a service's current health or for recovery guidance. Give an actor both tools and let it select the appropriate operation.
-
-```bash
-pip install "agentic-systems[bedrock,openai-agents]==2.1.8"
-```
-
-The following continues the tool and Context declarations above. It requires an AWS region, a supported Bedrock model, and permissions. Running its calls uses real Bedrock inference.
-
-```python
-import os
-import boto3
-
-
-@toolkit.tool
-def read_runbook(service: str) -> dict:
-    return {"guidance": f"For {service}: inspect recent changes and dependency failures."}
-
-
-runtime = toolkit.runtime(
-    provider="bedrock-runtime",
-    model=os.environ["BEDROCK_MODEL_ID"],
-    session=boto3.Session(region_name=os.environ["AWS_REGION"]),
-    max_turns=3,
-    max_tool_calls=1,
-    max_tokens=256,
-    max_retries=0,
-)
-service_skill = toolkit.skill(
-    name="service_support", tools=(inspect_service, read_runbook),
-)
-instructions = (
-    "For current health, call inspect_service. For recovery guidance, call read_runbook. "
-    "Use the service named by the user."
-)
-policy = {"tool_choice": "required"}
-contract = {
-    "tool_expectation": {"any_of": ["inspect_service", "read_runbook"], "min_count": 1},
-    "completion": "when_required_tools_satisfied",
-}
-
-assistant = toolkit.Agent(
-    "service_support",
-    runtime=runtime,
-    framework=toolkit.framework("native"),
-    context=context,
-    skills=(service_skill,),
-    instructions=instructions,
-    policy=policy,
-    contract=contract,
-)
-model_result = assistant.run("Read recovery guidance for checkout.")
-```
-
-An `Agent(graph=...)` follows the explicit workflow you declare. An `Agent(runtime=...)` executes an actor. Both return `RunResult`; actor calls can participate inside graph callbacks with nested evidence.
-
-The contract requires a successful call to one of the declared tools. A task-specific Eval should additionally verify that the actor chose the appropriate one. The full nested-actor example is available in [the executable tutorial](https://github.com/JacoboGGLeon/agentic_systems/blob/main/examples/readme/incident_response.py).
-
-### Switch the framework and keep Bedrock
-
-```python
-other_assistant = toolkit.Agent(
-    "service_support",
-    runtime=runtime,
-    framework=toolkit.framework("openai-agents"),
-    context=context,
-    skills=(service_skill,),
-    instructions=instructions,
-    policy=policy,
-    contract=contract,
-)
-other_result = other_assistant.run("Read recovery guidance for checkout.")
-```
-
-OpenAI Agents is the actor framework; Bedrock remains the model provider. The surrounding composition and result-inspection interfaces remain available. Supported integrations do not imply universal feature parity.
-
-```mermaid
-flowchart TD
-    N["Native actor framework"] --> R["Bedrock runtime"]
-    O["OpenAI Agents framework"] --> R
-    R --> M["Configured Bedrock model"]
-    N -. produces .-> E["Common RunResult interface"]
-    O -. produces .-> E
-```
-
-These are alternative configurations; the diagram does not imply simultaneous execution.
-
-| Layer | Supported paths |
+| Saved artifact | Purpose |
 |---|---|
-| Graph orchestration | LangGraph |
-| Actor framework | Native, OpenAI Agents, Strands |
-| Runtime provider | Python, OpenAI, Bedrock, Ollama, vLLM |
-| Interoperability | MCP and A2A through supported integration paths |
-| Serving configuration | `model_artifact(...)`, `model_server(...)` |
+| `manifest.json` | SDK/dependency versions, source hashes and profile configuration |
+| `*.evidence.json` | Results, descendants, Tool arguments and outputs, errors and usage |
+| `*.lineage.json` | Relationships among executions and Tools |
+| `*.trace.json` | Bounded execution projection |
+| `*.invariants.json` | Structural checks |
+| `*.runtime.json` | Serialized runtime configuration, excluding the borrowed session |
+| `live_summary.json` | Per-profile status and failure stage |
+| `budget.json` | Cumulative HTTP sends, remaining allowance and cap-change history |
+| `summary.json` | Completed notebook summary |
+| `<run>_bundle.json` | Combined JSON evidence; excludes notebook checkpoints |
 
-[Integration guide](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/INTEGRATIONS.md)
+The live runner exports saved evidence before re-raising a stage failure. `summary.json` is produced only when the final summary cell runs. `write_run_bundle()` can also be called manually after a failure.
 
-## Choose the execution and observation tools you need
+An operational failure is surfaced before checking model selection. Insufficient allowance is reported as `BLOCKED_BUDGET`, rather than an incorrect Tool-selection verdict. No silent model, provider or Python fallback is used.
 
-Agent, System, Environment, and Eval expose `compile()`, `run()`, `arun()`, and `inspect()`. Compilation prepares execution without business work or model inference. Direct `run()` compiles internally.
+## Verification boundaries and release scope
 
-```python
-program = system.compile()
-compiled_result = program.run({"service": "catalog"})
-assert compiled_result.ok and compiled_result.data["action"] == "monitor"
-```
+The baseline validates this example with Python/Native and two live Bedrock profiles on SDK 2.1.8. The live Environment contains the coordinated Discovery/Review operations; blocks 3–5 were not all executed as separate live acceptance campaigns.
 
-Agent/System accept execution input; Environment uses declared records and Eval uses declared cases. Tools expose `run()`, `arun()`, and `inspect()` independently.
+The business output is grounded in Tool results. Generated intermediate prose is not comprehensively evaluated: Native used the phrase “significant increase” without a significance test. The deterministic report retains the descriptive limitation. Extending text evaluation is separate work.
 
-| Result method | Returns | Purpose |
-|---|---|---|
-| `evidence()` | `dict` | Export execution evidence and children. |
-| `lineage()` | Lineage object | Inspect execution and tool relationships. |
-| `trace()` | `dict` | Obtain a bounded execution projection. |
-| `human_results()` | `str` | Read an execution summary. |
-| `walk()` | Generator of `RunResult` | Visit the result and descendants. |
-| `check_invariants()` | Validation object | Check structural consistency, independently of business correctness. |
+Memory is bounded and process-local. Borrowed Boto3 sessions must be supplied in each process. Timeouts do not guarantee termination or rollback. The persistent HTTP ledger bounds send count, not monetary spend or tokens. Neither this example nor structural invariants certify all SDK integrations.
 
-Context supplies reference information. Optional Memory retains bounded prior execution observations. Reuse a Memory instance for continuity; use a new instance for an independent scenario. Eval isolates toolkit Memory changes per case, starting from the existing history.
-
-[Execution](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/EXECUTION.md) · [Results](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/RESULTS.md) · [Context and Memory](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/CONTEXT_MEMORY.md)
-
-## Build with the authoring skill
-
-The wheel includes version-matched instructions, references, and examples for coding assistants.
-
-```bash
-agentic-systems skill info
-agentic-systems skill install
-agentic-systems skill export agentic-systems-skill-2.1.8.zip
-```
-
-Install defaults to `.agents/skills/agentic-systems`. The authoring skill helps write applications; runtime `toolkit.skill(...)` groups application capabilities.
-
-[Download the 2.1.8 skill ZIP](https://github.com/JacoboGGLeon/agentic_systems/releases/download/v2.1.8/agentic-systems-skill-2.1.8.zip)
-
-Additional CLI commands: `agentic-systems version`, `agentic-systems api`, and `agentic-systems doctor`. Doctor checks dependencies, not service access.
-
-## Learn by task
-
-| Goal | Start here |
+| Target | Scope |
 |---|---|
-| Learn the concepts and API | [Concepts](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/CONCEPTS.md) and [core tutorials](https://github.com/JacoboGGLeon/agentic_systems/tree/main/tutorials/core) |
-| Build graphs and evaluate trajectories | [Graphs](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/GRAPHS.md) and [Eval patterns](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/EVALUATION.md) |
-| Configure OpenAI | [OpenAI tutorial](https://github.com/JacoboGGLeon/agentic_systems/blob/main/tutorials/providers/01_openai.md) |
-| Configure Bedrock and AWS sessions | [Bedrock tutorial](https://github.com/JacoboGGLeon/agentic_systems/blob/main/tutorials/providers/03_bedrock.md) and [AWS configuration](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/ADA_214.md) |
-| Use Ollama or vLLM | [Ollama](https://github.com/JacoboGGLeon/agentic_systems/blob/main/tutorials/providers/02_ollama.md), [local GPU](https://github.com/JacoboGGLeon/agentic_systems/blob/main/tutorials/providers/05_ollama_gpu.md), [vLLM](https://github.com/JacoboGGLeon/agentic_systems/blob/main/tutorials/providers/04_vllm_serving.md) |
-| Explore frameworks, MCP, and A2A | [Framework tutorials](https://github.com/JacoboGGLeon/agentic_systems/tree/main/tutorials/frameworks) and [protocol example](https://github.com/JacoboGGLeon/agentic_systems/tree/main/examples/patterns/strands_protocol_graph) |
-| Explore semantic acceptance campaigns | [Historical semantic challenges](https://github.com/JacoboGGLeon/agentic_systems/tree/main/semantic_challenges) |
+| 2.1.9 | Core grammar, executable real-data example, visible evidence and the demonstrated Native/OpenAI Agents paths; release-candidate verification still required |
+| 2.1.10 | Explicit Agent contracts and policies, completion semantics including `any_of`, interactions with limits, and the associated framework/provider test matrix |
 
-## Verification and execution boundaries
-
-Unit tests, simulated transports, and live campaigns establish different things. Historical campaigns remain tied to their versions and artifact identities. See [2.1.8 validation](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/VALIDATION_218.md) and [historical AWS session tests](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/AWS_SESSION_VALIDATION_217.md).
-
-Memory and continuations are process-local. Timeouts do not guarantee thread termination or rollback. Boto3 sessions are borrowed resources excluded from configuration JSON; supply a session in each destination process. Per-run limits are not a persistent campaign spending budget. SDK redaction is not general anonymization. Recorded SageMaker tests do not establish EMR or distributed Spark compatibility.
-
-[Known issues](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/OPEN_ISSUES_214.md) · [Release notes](https://github.com/JacoboGGLeon/agentic_systems/blob/main/docs/RELEASE_NOTES_218.md)
+Before publishing the 2.1.9 claim, rerun against its exact candidate artifact, retain the 2.1.8 baseline, and compare numerical outputs, Tool arguments, episode stopping, negative controls and invariants. Publish the executed notebook and selected evidence with the JSON snapshot so readers can inspect the run directly.
