@@ -395,6 +395,29 @@ Acceptance: True
 
 `Acceptance: True` means this case satisfied the declared checks. These checks cover the four-value teaching example; they do not certify all inputs. The complete notebook adds negative controls and real-data checks. Use `check_invariants()` separately to inspect structural consistency.
 
+## Build with ChatGPT or Codex
+
+The version-matched **authoring Skill** gives your coding assistant API guidance, examples and validation practices for building Agentic Systems applications.
+
+**[Download the authoring Skill ZIP · 2.1.8](https://github.com/JacoboGGLeon/agentic_systems/releases/download/v2.1.8/agentic-systems-skill-2.1.8.zip)**
+
+Use the ZIP as authoring material in a skill-capable ChatGPT workspace. For Codex, install the bundled Skill from your project directory:
+
+```bash
+agentic-systems skill info
+agentic-systems skill install
+```
+
+The default installation location is `.agents/skills/agentic-systems`. You can also export the same bundled material:
+
+```bash
+agentic-systems skill export agentic-systems-skill-2.1.8.zip
+```
+
+For example, ask your assistant: “Use the Agentic Systems skill to build a Tool, compose it in a System, and add a result and trajectory evaluation.”
+
+The authoring Skill helps you write applications. Runtime `toolkit.skill(...)` groups the Tools available to an application's actors. Installing or exporting the authoring material does not automatically install it into your ChatGPT account.
+
 ## Continue building
 
 | Goal | Resource |
